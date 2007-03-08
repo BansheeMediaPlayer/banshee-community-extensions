@@ -1,0 +1,105 @@
+2007-01-05  Bertrand Lorentz  <bertrand.lorentz@free.fr>
+    * src/GConfSchemas.cs:
+    * src/AlarmPlugin.cs: Updated to take advantage of the new configuration system.
+    
+    * build/*: Build rules for generating gconf schemas from assemblies
+
+    * src/Makefile.am: Generate gconf schemas
+    
+    * configure.ac:
+    * Makefile.am:
+    * autogen.sh:
+    * po/*: Getting ready to be I18N'ed
+
+2006-11-01  Bertrand Lorentz  <bertrand.lorentz@free.fr>
+    * Renamed Plugin.cs to AlarmPlugin.cs to be consistent with the class name and other plugins
+    * src/AlarmPlugin.cs: Added PluginModuleEntry. See http://abock.org/2006/10/30/cracking-down-on-heap-abuse-part-1/ for an explanation.
+
+2006-09-17  Patrick van Staveren  <trick@vanstaveren.us>
+
+        * BUGS, TODO, README, alarm.mds: updated
+        * configure.ac: added AssemblyInfo, made VERSION variable
+        * src/ConfigurationWidget.cs: revised layout of config page a
+        lot.  Removed Sleep Timer config section as it is empty.
+        * src/AssemblyInfo.cs.in: added assembly information attributes
+        * src/Makefile.am: added AssemblyInfo, removed passthru
+        MCS_FLAGS variable
+	* src/Alarm.cs: removed tex variable as it was unused
+	* configure.ac: changed name to be proper banshee-alarm-plugin
+	* data/Makefile.am: clean up Makefile.in
+
+2006-05-27  Bertrand Lorentz  <bertrand.lorentz@free.fr>
+    * configure.ac: Detect Banshee API version and choose compiler accordingly (copied from banshee-official-plugins).
+    * configure.ac, Makefile.am, data/Makefile.am, src/Makefile.am:  Autotools fixes so that "make distcheck" works.
+    * alarm.mdp: Update MonoDevelop project.
+
+2006-05-13  Bertrand Lorentz  <bertrand.lorentz@free.fr>
+    * Replace tabs with spaces in all .cs files.
+
+2006-05-10  Patrick van Staveren  <trick@vanstaveren.us>
+    * Converted windows to dialogs.  This is so the WM knows they're dialogs and treats them as so.  Minor change from a window, but worth it.
+    * AlarmConfigDialog.cs - how it accesses widgets to read variables.  Simpler.  Private variables & such.
+    * AlarmConfigDialog.cs - got rid of outer frame (since everything else it was framing from has moved to the plugin config page.
+    * AlarmConfigDialog & SleepTimerConfigDialog - moved some settings to the constructor.  Might make more sense.
+    * Random padding changes to be consistent
+    * Quick string changes in Plugin.cs
+
+2006-05-08  Bertrand Lorentz  <bertrand.lorentz@free.fr>
+    * Fix crash when AlarmCommand is not set.
+    * Renamed AlarmConfigPage to AlarmConfigDialog, it's a Window now.
+
+2006-05-07  Patrick van Staveren  <trick@vanstaveren.us>
+    * Added alarm external command execution
+    * Moved alarm configuration options (volume fade, command exec) to plugin's config page
+    * Fixed dispose bug with not removing menu entries when unloading plugin
+
+2006-04-21  Patrick van Staveren  <trick@vanstaveren.us>
+	* Quick autogen.sh fix of project name
+	* Added Enabled checkbox to alarm config - enables/disables the alarm
+	* Clean up AlarmConfigPage text formatting
+	* AlarmConfigPage - don't do debug outputs (open GNOME Config Editor if you need this)
+	* VolumeFade - debug a bit more, compare final volume to internal variable and not buggy PlayerEngineCore.Volume
+	
+2006-04-19  Patrick van Staveren  <trick@vanstaveren.us>
+	* Quick fix - VolumeFade was not working due to PlayerEngineCore.Volume not updating itself fast enough.  Fixed!
+
+2006-04-13  Patrick van Staveren  <trick@vanstaveren.us>
+	* Quick bugfix - require banshee 0.10.8 in configure.ac - due to PlayerEngineCore changes that were introduced in 0.10.8.
+
+2006-04-12  Patrick van Staveren  <trick@vanstaveren.us>
+	* VolumeFade now uses GLib timer, so it is a non-blocking call.
+	* Sleep Timer now calls volume fade and fades out current song first.
+	* UI: Alarm now has Volume sliders, and is cleaner.  Getting ready to move volume adjust to plugin config page.
+	* Updated TODO and BUGS files with some changes.
+	* Wrote a simple README.
+
+2006-04-11  Patrick van Staveren  <trick@vanstaveren.us>
+	* Code structure changes - SleepTimerConfigDialog branched out of Plugin.cs
+	* lots of RANDOM cleanups
+	* Stock OK buttons
+	* Load menu inserts after UI initializes (take advantage of newer override)
+
+2006-04-10  Patrick van Staveren  <trick@vanstaveren.us>
+	* Volume fade is it's own class, and works in either direction.  Much cleaner looking.
+	* Got rid of annoying popup when disabling plugin
+
+2006-04-10  Patrick van Staveren  <trick@vanstaveren.us>
+	* Volume fade in simplified, scaled to the volume slider's resolution, and yeah, it works :)
+	* removed some unnecessary this.xxx occurances
+
+2006-04-10  Patrick van Staveren  <trick@vanstaveren.us>
+
+	* Quick fix on dialog
+	* Don't try to pause with sleep timer unless we're playing
+
+2006-04-10  Patrick van Staveren  <trick@vanstaveren.us>
+
+	* First hack at mixing Bertrand's code with my sleep timer
+	* Lots 'o changes :)
+	* Still lots to do :)
+	* Alarm works, sleep timer works.  It's got the basics down!
+
+2006-02-19  Bertrand Lorentz  <bertrand.lorentz@free.fr>
+
+	* banshee-alarm: Initial revision of banshee-alarm plugin project
+

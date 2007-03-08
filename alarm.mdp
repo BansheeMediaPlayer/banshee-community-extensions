@@ -1,0 +1,53 @@
+<Project name="alarm" fileversion="2.0" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="DotNetProjectConfiguration">
+      <Output directory="./src" assembly="Alarm" />
+      <Build debugmode="True" target="Library" />
+      <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+    </Configuration>
+    <Configuration name="Release" ctype="DotNetProjectConfiguration">
+      <Output directory="./src" assembly="Alarm" />
+      <Build debugmode="False" target="Library" />
+      <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+    </Configuration>
+  </Configurations>
+  <DeployTargets />
+  <Contents>
+    <File name="./AUTHORS" subtype="Code" buildaction="Nothing" />
+    <File name="./COPYING" subtype="Code" buildaction="Nothing" />
+    <File name="./ChangeLog" subtype="Code" buildaction="Nothing" />
+    <File name="./Makefile.am" subtype="Code" buildaction="Nothing" />
+    <File name="./NEWS" subtype="Code" buildaction="Nothing" />
+    <File name="./README" subtype="Code" buildaction="Nothing" />
+    <File name="./autogen.sh" subtype="Code" buildaction="Nothing" />
+    <File name="./configure.ac" subtype="Code" buildaction="Nothing" />
+    <File name="./src/Alarm.cs" subtype="Code" buildaction="Compile" />
+    <File name="./src/AlarmPlugin.cs" subtype="Code" buildaction="Compile" />
+    <File name="./src/Makefile.am" subtype="Code" buildaction="Nothing" />
+    <File name="./BUGS" subtype="Code" buildaction="Nothing" />
+    <File name="./TODO" subtype="Code" buildaction="Nothing" />
+    <File name="./src/VolumeFade.cs" subtype="Code" buildaction="Compile" />
+    <File name="./data/alarm.schemas" subtype="Code" buildaction="Nothing" />
+    <File name="./src/SleepTimerConfigDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="./src/ConfigurationWidget.cs" subtype="Code" buildaction="Compile" />
+    <File name="./src/AlarmConfigDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="./data/Makefile.am" subtype="Code" buildaction="Nothing" />
+    <File name="./src/AssemblyInfo.cs.in" subtype="Code" buildaction="Compile" />
+    <File name="./build" subtype="Directory" buildaction="Compile" />
+    <File name="./build/Makefile.am" subtype="Code" buildaction="Compile" />
+    <File name="./build/gconf-schema-rules" subtype="Code" buildaction="Compile" />
+    <File name="./src/GConfSchemas.cs" subtype="Code" buildaction="Compile" />
+    <File name="./po/POTFILES.in" subtype="Code" buildaction="Nothing" />
+    <File name="./src/AlarmMenu.xml" subtype="Code" buildaction="Nothing" />
+  </Contents>
+  <References>
+    <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference type="Gac" localcopy="True" refto="Banshee.Base, Version=0.0.0.0, Culture=neutral" />
+    <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  </References>
+  <DeploymentInformation strategy="File">
+    <excludeFiles />
+  </DeploymentInformation>
+</Project>

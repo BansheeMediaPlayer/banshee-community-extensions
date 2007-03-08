@@ -1,0 +1,21 @@
+schema_in_files = $(ASSEMBLY_GCONF_SCHEMA)
+schemadir = $(GCONF_SCHEMA_FILE_DIR)
+schema_DATA = $(schema_in_files:.schemas.in=.schemas)
+
+GCONF_SCHEMA_EXTRACTOR = $(expanded_libdir)/banshee/gconf-schema-extractor.exe
+
+$(srcdir)/$(ASSEMBLY_GCONF_SCHEMA): $(ASSEMBLY)
+	if test -x $(GCONF_SCHEMA_EXTRACTOR); then \
+		if test -w $@ -o \( ! -e $@ -a -w $(srcdir) \); then \
+			$(MONO) $(GCONF_SCHEMA_EXTRACTOR) $< $(srcdir)/$@; \
+		fi; \
+	fi
+
+@INTLTOOL_SCHEMAS_RULE@
+
+if GCONF_SCHEMAS_INSTALL
+install-data-local:
+	if [ -z "$(DESTDIR)" ]; then \
+		GCONF_CONFIG_SOURCE="" $(GCONFTOOL) --makefile-install-rule $(builddir)$(schema_DATA); \
+	fi
+endif

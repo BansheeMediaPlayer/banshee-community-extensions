@@ -1,0 +1,12 @@
+Global:
+    * UI love
+        * volumes - sliders!  live volume check.
+        * Menu items - check box next to when enabled.
+	* use a glade UI config, rather than all this tweaking code in C#
+
+Sleep Timer:
+    * Evaluate sleep timer fade out - is this what we want?  It fades out till the end of track, and then pauses.
+    * Split some stuff into other files - make Plugin.cs shorter
+
+Alarm:
+    * Alarm thread executes once per second, 24/7.  Is this smart?  Better way to do this?  GLib timer?

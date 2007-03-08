@@ -1,0 +1,8 @@
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
+[assembly: AssemblyTitle("banshee-alarm-plugin")]
+[assembly: AssemblyDescription("Alarm & Sleep Timer plugin for Banshee")]
+[assembly: AssemblyVersion("@VERSION@")]
+[assembly: AssemblyDelaySign(false)]
+[assembly: AssemblyKeyFile("")]

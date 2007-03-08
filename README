@@ -1,0 +1,49 @@
+Alarm & Sleep Timer plugin
+--------------------------
+
+ABOUT:
+=================
+This is a relatively simple plugin, which allows the user to set an alarm time, and a sleep time.
+
+FEATURES:
+=================
+Alarm:
+* Set wake up time
+* Start and End volumes, with a variable duration.
+	* Example:  Set start to 10, and end to 85.  Duration to 600 seconds
+	  Will increase the volume by one unit every 8 seconds (600/(85-10)) until it reaches 85.
+* Can execute an arbitrary command on alarm trigger (eg. to set system volume)
+
+Sleep Timer:
+* Set Sleep Time (hours, minutes):
+  After the number of hours/minutes specified, will trigger the sleep timer
+  Sleep Timer finishes playing the current song, and fades it out from the current volume to zero.
+
+
+HOW TO USE:
+=================
+It's almost too easy!
+Go to the edit menu, and select alarm or sleep timer, depending on which one you want to configure.
+Edit the settings and click OK.
+Easy as that!
+
+To configure volume changing settings for alarm timer, go to Edit/Plugins..., click on Alarm & Sleep Timer, click on the Configure tab, and change settings as desired.
+
+REPORTING BUGS:
+=================
+See the BUGS file
+
+FEATURE REQUESTS:
+=================
+See the TODO file
+
+SUPPORT:
+=================
+This is an open source project, so please be patient...developers only have so much time on their hands :)
+
+Join us on irc.gnome.org/#banshee - look for trick, the active maintainer
+or join the banshee-list@gnome.org and ask nicely :)
+
+PATCHES:
+=================
+Submit all patches on GNOME Bugzilla at bugzilla.gnome.org, product Banshee, component Plugins.

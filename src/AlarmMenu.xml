@@ -1,0 +1,8 @@
+<ui>
+    <menubar name="MainMenu">
+        <menu name="ToolsMenu" action="ToolsMenuAction">
+            <menuitem name="SetSleepTimer" action="SetSleepTimerAction" />
+            <menuitem name="SetAlarm" action="SetAlarmAction" />
+        </menu>
+    </menubar>
+</ui>
