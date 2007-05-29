@@ -7,7 +7,6 @@
       <Entry build="True" name="alarm" configuration="Debug" />
     </Configuration>
   </Configurations>
-  <DeployTargets />
   <StartMode startupentry="alarm" single="True">
     <Execute type="None" entry="alarm" />
   </StartMode>

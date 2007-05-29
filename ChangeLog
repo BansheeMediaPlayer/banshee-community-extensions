@@ -1,3 +1,7 @@
+2007-05-29  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* alarm.mdp, alarm.mds: Update MonoDevelop files.
+
 2007-05-29  Bertrand Lorentz <bertrand.lorentz@free.fr> 
 
 	* src/ConfigurationWidget.cs, src/AlarmPlugin.cs,

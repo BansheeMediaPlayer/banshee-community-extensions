@@ -13,7 +13,6 @@
       <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
   </Configurations>
-  <DeployTargets />
   <Contents>
     <File name="./AUTHORS" subtype="Code" buildaction="Nothing" />
     <File name="./COPYING" subtype="Code" buildaction="Nothing" />
@@ -29,11 +28,9 @@
     <File name="./BUGS" subtype="Code" buildaction="Nothing" />
     <File name="./TODO" subtype="Code" buildaction="Nothing" />
     <File name="./src/VolumeFade.cs" subtype="Code" buildaction="Compile" />
-    <File name="./data/alarm.schemas" subtype="Code" buildaction="Nothing" />
     <File name="./src/SleepTimerConfigDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./src/ConfigurationWidget.cs" subtype="Code" buildaction="Compile" />
     <File name="./src/AlarmConfigDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./data/Makefile.am" subtype="Code" buildaction="Nothing" />
     <File name="./src/AssemblyInfo.cs.in" subtype="Code" buildaction="Compile" />
     <File name="./build" subtype="Directory" buildaction="Compile" />
     <File name="./build/Makefile.am" subtype="Code" buildaction="Compile" />
@@ -41,6 +38,12 @@
     <File name="./src/GConfSchemas.cs" subtype="Code" buildaction="Compile" />
     <File name="./po/POTFILES.in" subtype="Code" buildaction="Nothing" />
     <File name="./src/AlarmMenu.xml" subtype="Code" buildaction="Nothing" />
+    <File name="./po/ChangeLog" subtype="Code" buildaction="Nothing" />
+    <File name="./po/fr.po" subtype="Code" buildaction="Nothing" />
+    <File name="./po/LINGUAS" subtype="Code" buildaction="Nothing" />
+    <File name="./build/m4/shamrock/i18n.m4" subtype="Code" buildaction="Nothing" />
+    <File name="./build/m4/shamrock/mono.m4" subtype="Code" buildaction="Nothing" />
+    <File name="./build/m4/shamrock/programs.m4" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
