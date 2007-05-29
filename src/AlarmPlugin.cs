@@ -24,7 +24,7 @@ namespace Banshee.Plugins.Alarm
         private uint ui_manager_id;
         
         protected override string ConfigurationName { get { return "Alarm"; } }
-        public override string DisplayName { get { return "Alarm & Sleep Timer"; } }
+        public override string DisplayName { get { return Catalog.GetString("Alarm & Sleep Timer"); } }
 
         public override string Description {
             get {
@@ -127,7 +127,7 @@ namespace Banshee.Plugins.Alarm
         {
             timervalue = sleepHour.ValueAsInt * 60 + sleepMin.ValueAsInt;
             if(timervalue != 0) {
-                Console.WriteLine("Sleep Timer set to {0}", timervalue);
+                LogCore.Instance.PushDebug(String.Format("Sleep Timer set to {0}", timervalue), "");
                 sleep_timer_id = GLib.Timeout.Add((uint) timervalue * 60 * 1000, onSleepTimerActivate);
             }
         }

@@ -37,23 +37,23 @@ namespace Banshee.Plugins.Alarm
             VBox fade_big_box = new VBox();
 
             VBox fade_start_box = new VBox();
-            fade_start_box.PackEnd(new Label("Start"));
+            fade_start_box.PackEnd(new Label(Catalog.GetString("Start")));
             fade_start_box.PackStart(fade_start, false, false, 3);
 
             VBox fade_end_box = new VBox();
-            fade_end_box.PackEnd(new Label("End"));
+            fade_end_box.PackEnd(new Label(Catalog.GetString("End")));
             fade_end_box.PackStart(fade_end, false, false, 3);
 
             HBox fade_box_group = new HBox();
             fade_box_group.PackStart(fade_start_box);
             fade_box_group.PackStart(fade_end_box);
 
-            Label volume_label = new Label("<b>Volume</b>");
+            Label volume_label = new Label(Catalog.GetString("<b>Volume</b>"));
             volume_label.UseMarkup = true;
             fade_big_box.PackStart(volume_label, false, true, 3);
             fade_big_box.PackStart(fade_box_group);
             Label duration_label = new Label("Duration:");
-            Label duration_seconds_label = new Label(" <i>(seconds)</i>");
+            Label duration_seconds_label = new Label(Catalog.GetString(" <i>(seconds)</i>"));
             duration_label.UseMarkup = true;
             duration_seconds_label.UseMarkup = true;
             HBox duration_box = new HBox();
@@ -62,15 +62,15 @@ namespace Banshee.Plugins.Alarm
             duration_box.PackStart(duration_seconds_label, false, true, 3);
             fade_big_box.PackStart(duration_box);
 
-            Frame alarm_fade_frame = new Frame("Fade-In Adjustment");
+            Frame alarm_fade_frame = new Frame(Catalog.GetString("Fade-In Adjustment"));
             alarm_fade_frame.Add(fade_big_box);
 
             HBox command_box = new HBox();
-            command_box.PackStart(new Label("Command:"), false, false, 3);
+            command_box.PackStart(new Label(Catalog.GetString("Command:")), false, false, 3);
             command_entry = new Entry();
             command_box.PackStart(command_entry, true, true, 3);
             
-            Frame alarm_misc_frame = new Frame("Command To Execute:");
+            Frame alarm_misc_frame = new Frame(Catalog.GetString("Command To Execute:"));
             alarm_misc_frame.Add(command_box);
 
             VBox alarm_configs = new VBox();
@@ -78,7 +78,7 @@ namespace Banshee.Plugins.Alarm
             alarm_configs.PackStart(alarm_misc_frame, false, false, 3);
             
             VBox alarm_frame = new VBox();
-            Label alarm_frame_label = new Label("<big><b>Alarm Configuration</b></big>");
+            Label alarm_frame_label = new Label(Catalog.GetString("<big><b>Alarm Configuration</b></big>"));
             alarm_frame_label.UseMarkup = true;
             alarm_frame_label.Xalign = 0.0f;
             alarm_frame.PackStart(alarm_frame_label, false, false, 3);

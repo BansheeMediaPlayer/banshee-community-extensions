@@ -1,0 +1,124 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-05-29 21:33+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/banshee-plugin-alarm.schemas.in.h:1
+msgid "Duration of the volume fade"
+msgstr ""
+
+#: ../src/banshee-plugin-alarm.schemas.in.h:2
+msgid "Enable the Alarm plugin"
+msgstr ""
+
+#: ../src/banshee-plugin-alarm.schemas.in.h:3
+msgid "The command executed when the alarm goes off"
+msgstr ""
+
+#: ../src/banshee-plugin-alarm.schemas.in.h:4
+msgid "The hour at which the alarm goes off"
+msgstr ""
+
+#: ../src/banshee-plugin-alarm.schemas.in.h:5
+msgid "The minute at which the alarm goes off"
+msgstr ""
+
+#: ../src/banshee-plugin-alarm.schemas.in.h:6
+msgid "The volume level at which the alarm ends"
+msgstr ""
+
+#: ../src/banshee-plugin-alarm.schemas.in.h:7
+msgid "The volume level at which the alarm starts"
+msgstr ""
+
+#: ../src/AlarmConfigDialog.cs:38
+msgid "Enable Alarm"
+msgstr ""
+
+#: ../src/AlarmConfigDialog.cs:41
+msgid "Set Time: "
+msgstr ""
+
+#: ../src/AlarmPlugin.cs:27
+msgid "Alarm & Sleep Timer"
+msgstr ""
+
+#: ../src/AlarmPlugin.cs:32
+msgid ""
+"Gives Banshee alarm clock type functions.  Provides an alarm which can start "
+"playback at a predefined time, and allows you to set a sleep timer to pause "
+"playback after a set delay."
+msgstr ""
+
+#: ../src/AlarmPlugin.cs:74
+msgid "Sleep Timer..."
+msgstr ""
+
+#: ../src/AlarmPlugin.cs:75
+msgid "Set the sleep timer value"
+msgstr ""
+
+#: ../src/AlarmPlugin.cs:78
+msgid "Alarm..."
+msgstr ""
+
+#: ../src/AlarmPlugin.cs:79
+msgid "Set the alarm time"
+msgstr ""
+
+#: ../src/ConfigurationWidget.cs:40
+msgid "Start"
+msgstr ""
+
+#: ../src/ConfigurationWidget.cs:44
+msgid "End"
+msgstr ""
+
+#: ../src/ConfigurationWidget.cs:51
+msgid "<b>Volume</b>"
+msgstr ""
+
+#: ../src/ConfigurationWidget.cs:56
+msgid " <i>(seconds)</i>"
+msgstr ""
+
+#: ../src/ConfigurationWidget.cs:65
+msgid "Fade-In Adjustment"
+msgstr ""
+
+#: ../src/ConfigurationWidget.cs:69
+msgid "Command:"
+msgstr ""
+
+#: ../src/ConfigurationWidget.cs:73
+msgid "Command To Execute:"
+msgstr ""
+
+#: ../src/ConfigurationWidget.cs:81
+msgid "<big><b>Alarm Configuration</b></big>"
+msgstr ""
+
+#: ../src/SleepTimerConfigDialog.cs:17
+msgid "Sleep Timer"
+msgstr ""
+
+#: ../src/SleepTimerConfigDialog.cs:37
+msgid "Sleep Timer :"
+msgstr ""
+
+#: ../src/SleepTimerConfigDialog.cs:39
+msgid "<i>(set to 0:00 to disable)</i>"
+msgstr ""

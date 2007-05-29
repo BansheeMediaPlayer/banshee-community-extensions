@@ -1,3 +1,19 @@
+2007-05-29  Bertrand Lorentz <bertrand.lorentz@free.fr> 
+
+	* src/ConfigurationWidget.cs, src/AlarmPlugin.cs,
+	  src/SleepTimerConfigDialog.cs, src/AlarmConfigDialog.cs,
+	  autogen.sh, po/LINGUAS, po/fr.po, po/POTFILES.in: Fix the i18n
+	  support. Thanks to Alexandre Prokoudine for the suggestions.
+	* build/m4, build/m4/shamrock, build/m4/shamrock/mono.m4,
+	  build/m4/shamrock/programs.m4, build/m4/shamrock/i18n.m4: Add and
+	  use abock's macros from banshee. configure.ac looks a little bit
+	  better now.
+	* configure.ac: Fix the i18n support. Thanks to Alexandre Prokoudine
+	  for the suggestions.
+	
+	  Add and use abock's macros from banshee. configure.ac looks a
+	  little bit better now.
+
 2007-01-05  Bertrand Lorentz  <bertrand.lorentz@free.fr>
     * src/GConfSchemas.cs:
     * src/AlarmPlugin.cs: Updated to take advantage of the new configuration system.

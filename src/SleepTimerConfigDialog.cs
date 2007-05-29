@@ -1,5 +1,6 @@
 using System;
 using Gtk;
+using Mono.Unix;
 
 using Banshee.Base;
 
@@ -13,7 +14,7 @@ namespace Banshee.Plugins.Alarm
         {
             this.plugin = plugin;
             
-            Title = "Sleep Timer";
+            Title = Catalog.GetString("Sleep Timer");
             IconThemeUtils.SetWindowIcon(this);
             WidthRequest = 250;
             HeightRequest = 150;
@@ -33,9 +34,9 @@ namespace Banshee.Plugins.Alarm
             plugin.sleepHour.WidthChars = 2;
             plugin.sleepMin.WidthChars  = 2;
 
-            Label prefix    = new Label("Sleep Timer :");
+            Label prefix    = new Label(Catalog.GetString("Sleep Timer :"));
             Label separator = new Label(":");
-            Label comment   = new Label("<i>(set to 0:00 to disable)</i>");
+            Label comment   = new Label(Catalog.GetString("<i>(set to 0:00 to disable)</i>"));
             comment.UseMarkup = true;
 
             Button OK = new Button(Gtk.Stock.Ok);

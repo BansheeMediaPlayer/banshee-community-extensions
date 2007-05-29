@@ -35,10 +35,10 @@ namespace Banshee.Plugins.Alarm
             spbMinute = new SpinButton(0, 59, 1);
             spbMinute.WidthChars = 2;
 
-            isEnabled = new CheckButton("Enable Alarm");
+            isEnabled = new CheckButton(Catalog.GetString("Enable Alarm"));
 
             HBox time_box = new HBox();
-            time_box.PackStart(new Label("Set Time: "));
+            time_box.PackStart(new Label(Catalog.GetString("Set Time: ")));
             time_box.PackStart(spbHour);
             time_box.PackStart(new Label(" : "));
             time_box.PackStart(spbMinute);
