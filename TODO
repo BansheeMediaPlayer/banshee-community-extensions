@@ -9,4 +9,4 @@ Sleep Timer:
     * Split some stuff into other files - make Plugin.cs shorter
 
 Alarm:
-    * Alarm thread executes once per second, 24/7.  Is this smart?  Better way to do this?  GLib timer?
+    * Have different alarm times for each day of the week. Who wants to wake up early on Sunday mornings ?

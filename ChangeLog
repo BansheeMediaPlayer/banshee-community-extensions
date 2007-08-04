@@ -1,5 +1,12 @@
 2007-08-04  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	0.3 Released
+
+	* NEWS: Removed obsolete info, redirect to ChangeLog.
+	* TODO: One item done, one item added.
+
+2007-08-04  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* alarm.mdp: Enable Makefile integration.
 
 2007-08-04  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
