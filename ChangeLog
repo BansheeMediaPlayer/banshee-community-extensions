@@ -1,5 +1,10 @@
 2007-08-04  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* build/gconf-schema-rules, configure.ac: Fix build errors related to
+	  gconf stuff. Thanks to Scott Henson for the report.
+
+2007-08-04  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	0.3 Released
 
 	* NEWS: Removed obsolete info, redirect to ChangeLog.

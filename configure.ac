@@ -50,6 +50,10 @@ fi
 AC_SUBST(expanded_libdir)
 AC_SUBST(PLUGINDIR)
 
+dnl Path to the banshee installation, to find the the gconf-schema-extractor.exe tool
+banshee_libdir=`$PKG_CONFIG --variable=libdir banshee`
+AC_SUBST(banshee_libdir)
+
 dnl GConf
 AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
 AM_GCONF_SOURCE_2
