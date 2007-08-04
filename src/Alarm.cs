@@ -9,7 +9,6 @@ namespace Banshee.Plugins.Alarm
 {
     public class AlarmThread
     {
-        private bool isInAlarmMinute = false; // what a dirty hack :(
         private AlarmPlugin plugin;
 
         public AlarmThread(AlarmPlugin plugin)
@@ -23,15 +22,17 @@ namespace Banshee.Plugins.Alarm
             {
                 while(true)
                 {
-                    Thread.Sleep(10000);
-                    DateTime now = DateTime.Now;
-
-                    if (now.Hour == plugin.AlarmHour && now.Minute == plugin.AlarmMinute && plugin.AlarmEnabled)
+                    int delay = (int)TimeUntilAlarm().TotalMilliseconds;
+                    Thread.Sleep(delay);
+                    
+                    if (plugin.alarmTimeChanged)
                     {
-                        this.StartPlaying();
-                        isInAlarmMinute = true;
-                    }else{
-                        isInAlarmMinute = false;
+                        // The alarm time was changed, we don't play and go back to sleep
+                        plugin.alarmTimeChanged = false;
+                    }
+                    else
+                    {
+                        StartPlaying();
                     }
                 }
             }
@@ -43,7 +44,7 @@ namespace Banshee.Plugins.Alarm
 
         private void StartPlaying()
         {
-            if (PlayerEngineCore.CurrentState == PlayerEngineState.Playing || isInAlarmMinute)
+            if (PlayerEngineCore.CurrentState == PlayerEngineState.Playing)
             {
                 return;
             }
@@ -59,6 +60,21 @@ namespace Banshee.Plugins.Alarm
             
             if(plugin.AlarmCommand != null && plugin.AlarmCommand.Trim() != "")
                 Process.Start(plugin.AlarmCommand);
+        }
+        
+        private TimeSpan TimeUntilAlarm()
+        {
+            DateTime now = DateTime.Now;
+            DateTime alarmTime = new DateTime(now.Year, now.Month, now.Day, plugin.AlarmHour, plugin.AlarmMinute, 0);
+            
+            TimeSpan delay = alarmTime - now;
+            if (delay < TimeSpan.Zero)
+            {
+                alarmTime = alarmTime.AddDays(1);
+                delay = alarmTime - now;
+            }
+            LogCore.Instance.PushDebug("Time until alarm is " + delay.ToString(), "");
+            return delay;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Gtk;
 using GConf;
 using Mono.Unix;
@@ -65,6 +66,9 @@ namespace Banshee.Plugins.Alarm
         }
 
         private void OnOKClicked(object o, EventArgs e) {
+            // The alarm thread has to be re-initialized to take into account the new alarm time
+            this.plugin.alarmTimeChanged = true;
+            this.plugin.alarmThread.Interrupt();
             this.Destroy();
         }
 

@@ -47,13 +47,14 @@ namespace Banshee.Plugins.Alarm
 
         // --------------------------------------------------------------- //
 
-        private Thread alarmThread;
+        public Thread alarmThread;
         private static AlarmPlugin thePlugin;
         public SpinButton sleepHour = new SpinButton(0,23,1);
         public SpinButton sleepMin  = new SpinButton(0,59,1);
         public Window alarmDialog;
         public int timervalue;
         uint sleep_timer_id;
+        public bool alarmTimeChanged = false;
 
         protected override void PluginInitialize()
         {

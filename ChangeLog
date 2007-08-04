@@ -1,3 +1,9 @@
+2007-08-04  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* src/AlarmPlugin.cs, src/Alarm.cs, src/AlarmConfigDialog.cs: Say no to
+	  useless polling ! The alarm thread now sleeps until the time of the
+	  alarm.
+
 2007-05-29  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* alarm.mdp, alarm.mds: Update MonoDevelop files.
