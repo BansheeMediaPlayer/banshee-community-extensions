@@ -1,0 +1,9 @@
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
+[assembly: AssemblyTitle("banshee-plugin-mirage")]
+[assembly: AssemblyDescription("Automatic Playlist Generation Plugin for the Banshee Music Player")]
+[assembly: AssemblyVersion("@VERSION@")]
+[assembly: AssemblyDelaySign(false)]
+[assembly: AssemblyKeyFile("")]
+
