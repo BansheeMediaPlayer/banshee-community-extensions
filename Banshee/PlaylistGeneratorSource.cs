@@ -132,7 +132,6 @@ namespace Banshee.Plugins.Mirage
 
         public override void Commit ()
         {
-            Dbg.WriteLine("Commiting tracks.");
             int[] trackId;
             
             // Add seed tracks 
@@ -243,8 +242,6 @@ namespace Banshee.Plugins.Mirage
 
         public override void AddTrack(TrackInfo track)
         {
-            Dbg.WriteLine("AddTrack: " + track.ToString());
-            
             if(track is LibraryTrackInfo) {
                 lock(TracksMutex) {
                     tracksOverride.Add(track);

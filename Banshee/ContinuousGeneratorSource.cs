@@ -62,8 +62,6 @@ namespace Banshee.Plugins.Mirage
         {
             int[] trackId;
             
-            Dbg.WriteLine("Commit");
-            
             lock(TracksMutex) {
 
                 // add the seed tracks
