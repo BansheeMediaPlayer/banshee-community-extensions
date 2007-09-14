@@ -233,12 +233,12 @@ namespace Banshee.Plugins.Mirage
 
         public override void ShowPropertiesDialog()
         {
-            Console.WriteLine("ShowPropertiesDialog()");
+            // Show Properties
         }
 
         public override void Reorder(TrackInfo track, int position)
         {
-            Console.WriteLine("Reorder()");
+            // Reorder Tracks
         }
 
         public override void AddTrack(TrackInfo track)
