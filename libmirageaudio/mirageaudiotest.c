@@ -39,9 +39,10 @@ main (gint   argc,
 
   int size = 0;
   int frames = 0;
+  int ret = 0;
 
   MirageAudio *ma = mirageaudio_initialize(11025, 135, 512);
-  mirageaudio_decode(ma, argv[1], &frames, &size);
+  mirageaudio_decode(ma, argv[1], &frames, &size, &ret);
   ma = mirageaudio_destroy(ma);
 
   return 0;

@@ -20,18 +20,11 @@
  * Boston, MA  02110-1301, USA.
  */
 
-    #define _ISOC9X_SOURCE  1
-    #define _ISOC99_SOURCE  1
-
-    #define __USE_ISOC9X    1
-    #define __USE_ISOC99    1
-# define M_PI       3.14159265358979323846
-
-
 #include <math.h>
 #include <string.h>
 #include <time.h>
 
+#include <glib.h>
 #include <fftw3.h>
 #include <gst/gst.h>
 #include <samplerate.h>
@@ -39,6 +32,9 @@
 #include "gst-mirageaudio.h"
 
 struct MirageAudio {
+
+    // Cancel decoding mutex
+    GMutex *decoding_mutex;
 
     // Gstreamer
     GstElement *pipeline;
@@ -70,7 +66,9 @@ struct MirageAudio {
     gint hops;
     gint curhop;
     gint cursample;
+
     gboolean quit;
+    gboolean invalidate;
 };
 
 #define SRC_BUFFERLENGTH 4096
@@ -254,6 +252,9 @@ mirageaudio_initialize(gint rate, gint seconds, gint winsize)
     ma->src_data.data_out = malloc(SRC_BUFFERLENGTH*sizeof(float));
     ma->src_data.output_frames = SRC_BUFFERLENGTH;
 
+    // cancel decoding mutex
+    ma->decoding_mutex = g_mutex_new();
+
     return ma;
 }
 
@@ -330,16 +331,19 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
 }
 
 float*
-mirageaudio_decode(MirageAudio *ma, const gchar *file, int *frames, int* size)
+mirageaudio_decode(MirageAudio *ma, const gchar *file, int *frames, int* size, int* ret)
 {
     GstBus *bus;
-    gboolean decoding = TRUE;
     tic();
 
     ma->fftwsamples = 0;
     ma->curhop = 0;
     ma->cursample = 0;
     ma->quit = FALSE;
+
+    g_mutex_lock(ma->decoding_mutex);
+    ma->invalidate = FALSE;
+    g_mutex_unlock(ma->decoding_mutex);
 
     // Gstreamer setup
     mirageaudio_initgstreamer(ma, file);
@@ -354,7 +358,10 @@ mirageaudio_decode(MirageAudio *ma, const gchar *file, int *frames, int* size)
     // decode...
     gst_element_set_state(ma->pipeline, GST_STATE_PLAYING);
     g_print("libmirageaudio: decoding %s\n", file);
+
     bus = gst_pipeline_get_bus(GST_PIPELINE(ma->pipeline));
+    gboolean decoding = TRUE;
+    *ret = 0;
     while (decoding) {
         GstMessage* message = gst_bus_poll(bus, GST_MESSAGE_ANY, -1);
         if (message == NULL)
@@ -371,6 +378,7 @@ mirageaudio_decode(MirageAudio *ma, const gchar *file, int *frames, int* size)
                 g_free(debug);
                 ma->curhop = 0;
                 decoding = FALSE;
+                *ret = -1;
 
                 break;
             }
@@ -384,6 +392,8 @@ mirageaudio_decode(MirageAudio *ma, const gchar *file, int *frames, int* size)
         }
     }
     gst_object_unref(bus);
+    
+    g_mutex_lock(ma->decoding_mutex);
 
     // Gstreamer cleanup
     gst_element_set_state(ma->pipeline, GST_STATE_NULL);
@@ -391,8 +401,17 @@ mirageaudio_decode(MirageAudio *ma, const gchar *file, int *frames, int* size)
 
     toc();
 
-    *size = ma->winsize/2 + 1;
-    *frames = ma->curhop;
+    if (ma->invalidate) {
+        *size = 0;
+        *frames = 0;
+        *ret = -2;
+    } else {
+        *size = ma->winsize/2 + 1;
+        *frames = ma->curhop;
+    }
+
+    g_mutex_unlock(ma->decoding_mutex);
+
     g_print("libmirageaudio: frames=%d (maxhops=%d), size=%d\n", *frames, ma->hops, *size);
     return ma->out;
 }
@@ -400,6 +419,7 @@ mirageaudio_decode(MirageAudio *ma, const gchar *file, int *frames, int* size)
 MirageAudio*
 mirageaudio_destroy(MirageAudio *ma)
 {
+    g_print("libmirageaudio: destroy.\n");
     // FFTW cleanup
     fftwf_destroy_plan(ma->fftwplan);
     fftwf_free(ma->fftw);
@@ -422,4 +442,19 @@ void
 mirageaudio_initgst()
 {
     gst_init(NULL, NULL);
+}
+
+void
+mirageaudio_canceldecode(MirageAudio *ma)
+{
+    g_mutex_lock(ma->decoding_mutex);
+
+    GstBus *bus = gst_pipeline_get_bus(GST_PIPELINE(ma->pipeline));
+    gst_bus_post(bus, gst_message_new_eos(GST_OBJECT(ma->pipeline)));
+    g_print("libmirageaudio: EOS Message sent\n");
+    gst_object_unref(bus);
+
+    ma->invalidate = TRUE;
+
+    g_mutex_unlock(ma->decoding_mutex);
 }

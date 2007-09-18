@@ -33,10 +33,13 @@ public class AudioDecoder
     static extern IntPtr mirageaudio_initialize(int rate, int seconds, int winsize);
 
     [DllImport("libmirageaudio")]
-    static extern IntPtr mirageaudio_decode(IntPtr ma, string file, ref int frames, ref int size);
+    static extern IntPtr mirageaudio_decode(IntPtr ma, string file, ref int frames, ref int size, ref int ret);
 
     [DllImport("libmirageaudio")]
     static extern IntPtr mirageaudio_destroy(IntPtr ma);
+
+    [DllImport("libmirageaudio")]
+    static extern void mirageaudio_canceldecode(IntPtr ma);
 
     IntPtr ma;
 
@@ -49,11 +52,22 @@ public class AudioDecoder
     {
         int frames = 0;
         int size = 0;
+        int ret = 0;
 
-        IntPtr data = mirageaudio_decode(ma, file, ref frames, ref size);
-        Dbg.WriteLine("Mirage: decoded frames="+frames+",size="+size);
-        if (frames <= 0)
+        IntPtr data = mirageaudio_decode(ma, file, ref frames, ref size, ref ret);
+        // Error while decoding
+        if (ret == -1)
             return null;
+        // Canceled
+        // TODO: throw exception and dont mark current song as unprocessable
+        // in DB.
+        else if (ret == -2)
+            return null;
+        // No data
+        else if ((frames <= 0) || (size <= 0))
+            return null;
+
+        Dbg.WriteLine("Mirage: decoded frames="+frames+",size="+size);
 
         Matrix stft = new Matrix(size, frames);
         unsafe {
@@ -70,7 +84,13 @@ public class AudioDecoder
 
     ~AudioDecoder()
     {
-        ma = mirageaudio_destroy(ma);
+        mirageaudio_destroy(ma);
+        ma = IntPtr.Zero;
+    }
+
+    public void CancelDecode()
+    {
+        mirageaudio_canceldecode(ma);
     }
 }
     

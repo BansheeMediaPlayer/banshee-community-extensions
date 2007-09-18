@@ -28,7 +28,7 @@ MirageAudio*
 mirageaudio_initialize(gint rate, gint seconds, gint winsize);
 
 float*
-mirageaudio_decode(MirageAudio *ma, const gchar *file, int *frames, int *size);
+mirageaudio_decode(MirageAudio *ma, const gchar *file, int *frames, int *size, int *ret);
 
 MirageAudio*
 mirageaudio_destroy(MirageAudio *ma);

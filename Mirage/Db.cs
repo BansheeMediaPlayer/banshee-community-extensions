@@ -62,7 +62,7 @@ public class Db
     {
         dbcon.Close();
     }
-    
+
     public int AddTrack(int trackid, Scms scms)
     {
         IDbDataParameter dbparam = new SqliteParameter("@scms", DbType.Binary);
@@ -188,6 +188,22 @@ public class Db
         }
         
         return i;
+    }
+
+    public void Reset()
+    {
+        IDbCommand dbcmd;
+        lock (dbcon) {
+            dbcmd = dbcon.CreateCommand();
+        }
+
+        dbcmd.CommandText = "DELETE FROM mirage";
+
+        try {
+            dbcmd.ExecuteNonQuery();
+        } catch (SqliteExecutionException) {
+            return;
+        }
     }
     
 }

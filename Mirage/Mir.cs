@@ -38,6 +38,11 @@ public class Mir
     public static Mfcc mfcc = new Mfcc(windowsize, samplingrate, 36, 20);
     public static AudioDecoder ad = new AudioDecoder(samplingrate, 135, windowsize);
     
+    public static void CancelAnalyze()
+    {
+        ad.CancelDecode();
+    }
+
     public static Scms Analyze(string file)
     {
         Timer t = new Timer();

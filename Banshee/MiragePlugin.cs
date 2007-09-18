@@ -48,60 +48,15 @@ public static class PluginModuleEntry
 namespace Banshee.Plugins.Mirage
 {
 
-    public interface IMirageScanJob : IJob
-    {
-        TrackInfo Track { get; }
-    }
-    
-    public class MirageScanJob : IMirageScanJob
-    {
-        TrackInfo track;
-        Db db;
-
-        public MirageScanJob(int trackId, Db db)
-        {
-            this.track = Globals.Library.GetTrack(trackId);
-            this.db = db;
-        }
-
-        public TrackInfo Track
-        {
-            get {
-                return track;
-            }
-        }
-
-        public void Run()
-        {
-            // Process a track
-            if (track == null)
-                return;
-
-            if (track.Uri.IsLocalPath) {
-                int status = -1;
-                Dbg.WriteLine("Mirage: processing " + track.TrackId + "/" + track.Artist + "/" + track.Title);
-
-                Scms scms = Mir.Analyze(track.Uri.LocalPath);
-                if (scms != null) {
-                    status = 0;
-                    db.AddTrack(track.TrackId, scms);
-                }
-
-                Globals.Library.Db.Execute("INSERT INTO MirageProcessed"
-                        + " (TrackID, Status) VALUES (" + track.TrackId + ", "
-                        + status + ")");
-            }
-        }
-    }
-
     public class MiragePlugin : Banshee.Plugins.Plugin
     {
         Db db;
         ContinuousGeneratorSource continuousPlaylist = null;
 
-        int mirage_jobs_scheduled = 0;
+        Queue jobQueue;
+        Thread jobThread;
+        int jobsScheduled = 0;
 
-        public event EventHandler ScanStartStop;
         private ActiveUserEvent userEvent;
         
         protected override string ConfigurationName {
@@ -138,16 +93,17 @@ namespace Banshee.Plugins.Mirage
         protected override void PluginInitialize()
         {
             db = new Db();
-            mirage_jobs_scheduled = 0;
+
+            jobsScheduled = 0;
+            jobQueue = new Queue();
+
+            jobThread = new Thread(ProcessQueueThread);
+            jobThread.IsBackground = true;
+            jobThread.Priority = ThreadPriority.Lowest;
 
             Globals.Library.Db.Execute(
                     "CREATE TABLE IF NOT EXISTS MirageProcessed"
                     + " (TrackID INTEGER PRIMARY KEY, Status INTEGER)");
-
-            Scheduler.JobStarted += OnJobStarted;
-            Scheduler.JobScheduled += OnJobScheduled;
-            Scheduler.JobFinished += OnJobUnscheduled;
-            Scheduler.JobUnscheduled += OnJobUnscheduled;
 
             if(Globals.Library.IsLoaded) {
                 OnLibraryReloaded(null, EventArgs.Empty);
@@ -156,7 +112,6 @@ namespace Banshee.Plugins.Mirage
             }
             Globals.Library.TrackAdded += OnLibraryTrackAdded;
             Globals.Library.TrackRemoved += OnLibraryTrackRemoved;
-            Globals.ShutdownRequested += OnShutdownRequested;
             
             continuousPlaylist =
                     new ContinuousGeneratorSource("Playlist Generator", new Db());
@@ -171,22 +126,15 @@ namespace Banshee.Plugins.Mirage
         
         protected override void PluginDispose()
         {
-            db = null;
+            Globals.Library.Reloaded -= OnLibraryReloaded;
+            Globals.Library.TrackAdded -= OnLibraryTrackAdded;
+            Globals.Library.TrackRemoved -= OnLibraryTrackRemoved;
 
-            Globals.Library.Reloaded += OnLibraryReloaded;
-            Globals.Library.TrackAdded += OnLibraryTrackAdded;
-            Globals.Library.TrackRemoved += OnLibraryTrackRemoved;
-
-            Scheduler.JobStarted -= OnJobStarted;
-            Scheduler.JobScheduled -= OnJobScheduled;
-            Scheduler.JobFinished -= OnJobUnscheduled;
-            Scheduler.JobUnscheduled -= OnJobUnscheduled;
-        }
-
-        private bool OnShutdownRequested()
-        {
-            Dbg.WriteLine("Shutdown Requested");
-            return true;
+            // cancel analysis everything
+            lock(jobQueue) {
+                jobQueue.Clear();
+            }
+            Mir.CancelAnalyze();
         }
 
         private void OnInterfaceInitialized(object o, EventArgs args)
@@ -206,30 +154,101 @@ namespace Banshee.Plugins.Mirage
         {
             Dbg.WriteLine("Mirage: Scanning library for tracks to update");
 
+            // TODO: Eliminate this...
+            System.Threading.Thread.Sleep(5000);
+
             IDataReader reader = Globals.Library.Db.Query(
                     "SELECT TrackID FROM Tracks WHERE TrackID NOT IN"
                     + " (SELECT Tracks.TrackID FROM MirageProcessed, Tracks"
                     + " WHERE Tracks.TrackID = MirageProcessed.TrackID)");
 
-            while(reader.Read()) {
-                int trackId = Convert.ToInt32(reader["TrackID"]);
-                Scheduler.Schedule(new MirageScanJob(trackId, db), JobPriority.BelowNormal);
+            lock(jobQueue) {
+                jobsScheduled = 0;
+                while(reader.Read()) {
+                    int trackId = Convert.ToInt32(reader["TrackID"]);
+                    jobQueue.Enqueue(trackId);
+                    jobsScheduled++;
+                }
             }
 
             reader.Dispose();
-
             Dbg.WriteLine("Mirage: Done scanning library");
+
+            ProcessQueue();
+        }
+
+
+        private void ProcessQueue()
+        {
+            if (!jobThread.IsAlive)
+                jobThread.Start();
+        }
+
+        private void ProcessQueueThread()
+        {
+            int trackId = 0;
+            int queueLength = 0;
+            lock(jobQueue) {
+                queueLength = jobQueue.Count;
+                if (queueLength > 0)
+                    trackId = (int)jobQueue.Dequeue();
+                else
+                    return;
+            }
+
+            // Banshee user event
+            userEvent = new ActiveUserEvent(Catalog.GetString("Mirage"));
+            userEvent.Header = Catalog.GetString("Mirage: Analyzing Songs");
+            userEvent.CancelMessage = Catalog.GetString(
+                "Are you sure you want to stop Mirage. "
+                + "Automatic Playlist Generation will only work for the tracks which are already analyzed. "
+                + "The operation can be resumed at any time from the <i>Tools</i> menu.");
+            userEvent.Icon = IconThemeUtils.LoadIcon(22, "document-save", Gtk.Stock.Save);
+            userEvent.CancelRequested += OnUserEventCancelRequested;
+
+            while (queueLength > 0) {
+
+                TrackInfo track = Globals.Library.GetTrack(trackId);
+
+                if (track == null)
+                    return;
+
+                if (track.Uri.IsLocalPath) {
+                    int status = -1;
+                    Dbg.WriteLine("Mirage: processing " + track.TrackId + "/" + track.Artist + "/" + track.Title);
+
+                    // Banshee user event
+                    userEvent.Progress = 1 - (double)queueLength/(double)jobsScheduled;
+                    userEvent.Message = String.Format("{0} - {1}", track.Artist, track.Title);
+
+                    Scms scms = Mir.Analyze(track.Uri.LocalPath);
+                    if (scms != null) {
+                        status = 0;
+                        db.AddTrack(track.TrackId, scms);
+                    }
+
+                    Globals.Library.Db.Execute("INSERT INTO MirageProcessed"
+                            + " (TrackID, Status) VALUES (" + track.TrackId + ", "
+                            + status + ")");
+                }
+
+                lock(jobQueue) {
+                    queueLength = jobQueue.Count;
+                    if (queueLength > 0)
+                        trackId = (int)jobQueue.Dequeue();
+                }
+            }
+
+            if (userEvent != null) {
+                userEvent.CancelRequested -= OnUserEventCancelRequested;
+                userEvent.Dispose();
+                userEvent = null;
+            }
         }
 
         protected override void InterfaceInitialize()
         {
             //TODO: add Menu-Items to Banshee
-        }
-
-        public bool IsScanning {
-            get {
-                return mirage_jobs_scheduled > 1;
-            }
         }
 
         private void OnLibraryReloaded(object o, EventArgs args)
@@ -239,66 +258,8 @@ namespace Banshee.Plugins.Mirage
 
         private void OnLibraryTrackAdded(object o, LibraryTrackAddedArgs args)
         {
-            Dbg.WriteLine("Do Stuff");
+            //TODO: add to library
         }
-
-        private void OnJobScheduled(IJob job)
-        {
-            if(job is IMirageScanJob) {
-                bool previous = IsScanning;
-
-                mirage_jobs_scheduled++;
-
-                if(IsScanning != previous) {
-                    OnScanStartStop();
-                }
-            }
-        }
-
-        private void OnJobStarted(IJob job)
-        {
-            lock(this) {
-                if(job is IMirageScanJob) {
-                    Dbg.WriteLine("Jobs: " + mirage_jobs_scheduled);
-                    OnUpdateProgress(job as IMirageScanJob);
-                }
-            }
-        }
-
-        private void OnJobUnscheduled(IJob job)
-        {
-            if(job is IMirageScanJob) {
-                bool previous = IsScanning;
-
-                mirage_jobs_scheduled--;
-                Dbg.WriteLine("Jobs-Unscheduled: " + mirage_jobs_scheduled);
-
-                OnUpdateProgress(job as IMirageScanJob);
-
-                if(IsScanning != previous) {
-                    OnScanStartStop();
-                }
-            }
-        }
-
-        private void OnScanStartStop()
-        {
-            ThreadAssist.ProxyToMain(OnRaiseScanStartStop);
-        }
-
-        private void OnRaiseScanStartStop(object o, EventArgs args)
-        {
-            EventHandler handler = ScanStartStop;
-            if(handler != null) {
-                handler(this, EventArgs.Empty);
-            }
-        }
-
-        private void CancelJobs()
-        {
-            Scheduler.Unschedule(typeof(IMirageScanJob));
-        }
- 
 
         private void OnLibraryTrackRemoved(object o, LibraryTrackRemovedArgs args)
         {
@@ -309,35 +270,17 @@ namespace Banshee.Plugins.Mirage
             }
         }
 
-        private void OnUpdateProgress(IMirageScanJob job)
-        {
-            lock(this) {
-                try{
-                    if(IsScanning && userEvent == null) {
-                        userEvent = new ActiveUserEvent(Catalog.GetString("Download"));
-                        userEvent.Header = Catalog.GetString("Analyzing your Music Collection");
-                        userEvent.Message = Catalog.GetString("Analyzing");
-                        userEvent.CancelMessage = Catalog.GetString(
-                            "Are you sure you want to stop Mirage. "
-                            + "Automatic Playlist Generation will only work for the tracks which are already analyzed. "
-                            + "The operation can be resumed at any time from the <i>Tools</i> menu.");
-                        userEvent.Icon = IconThemeUtils.LoadIcon(22, "document-save", Gtk.Stock.Save);
-                        userEvent.CancelRequested += OnUserEventCancelRequested;
-                    } else if(!IsScanning && userEvent != null) {
-                        userEvent.Dispose();
-                        userEvent = null;
-                    } else if(userEvent != null) {
-                        userEvent.Progress = 0.6;
-                        userEvent.Message = String.Format("{0} - {1}", job.Track.Artist, job.Track.Album);
-                    }
-                } catch {
-                }
-            }
-        }
-
         private void OnUserEventCancelRequested(object o, EventArgs args)
         {
-            ThreadAssist.Spawn(CancelJobs);
+            if (userEvent != null) {
+                userEvent.CancelRequested -= OnUserEventCancelRequested;
+                userEvent.Dispose();
+                userEvent = null;
+            }
+
+            lock(jobQueue) {
+                jobQueue.Clear();
+            }
         }
 
         public static readonly SchemaEntry<bool> EnabledSchema = new SchemaEntry<bool>(
