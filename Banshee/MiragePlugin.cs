@@ -20,17 +20,21 @@
  * Boston, MA  02110-1301, USA.
  */
 
+using Gtk;
 
 using Banshee.Base;
 using Banshee.Kernel;
 using Banshee.Sources;
 using Banshee.Configuration;
 using Banshee.Widgets;
-using Mono.Unix;
+
 using System;
 using System.Collections;
 using System.Threading;
 using System.Data;
+
+using Mono.Unix;
+
 using Mirage;
 
 
@@ -57,7 +61,9 @@ namespace Banshee.Plugins.Mirage
         Thread jobThread;
         int jobsScheduled = 0;
 
-        private ActiveUserEvent userEvent;
+        ActionGroup actions;
+        ActiveUserEvent userEvent;
+        uint uiManagerId;
         
         protected override string ConfigurationName {
             get {
@@ -130,7 +136,7 @@ namespace Banshee.Plugins.Mirage
             Globals.Library.TrackAdded -= OnLibraryTrackAdded;
             Globals.Library.TrackRemoved -= OnLibraryTrackRemoved;
 
-            // cancel analysis everything
+            // cancel analysis, everything
             lock(jobQueue) {
                 jobQueue.Clear();
             }
@@ -161,6 +167,9 @@ namespace Banshee.Plugins.Mirage
                     "SELECT TrackID FROM Tracks WHERE TrackID NOT IN"
                     + " (SELECT Tracks.TrackID FROM MirageProcessed, Tracks"
                     + " WHERE Tracks.TrackID = MirageProcessed.TrackID)");
+
+            // TODO: include Failed models if rescanning:
+            // AND (MirageProcessed.Status = 0)
 
             lock(jobQueue) {
                 jobsScheduled = 0;
@@ -248,7 +257,70 @@ namespace Banshee.Plugins.Mirage
 
         protected override void InterfaceInitialize()
         {
-            //TODO: add Menu-Items to Banshee
+            InstallInterfaceActions();
+        }
+
+        private void InstallInterfaceActions()
+        {
+            actions = new ActionGroup("Mirage Playlist Generator");
+
+            // Pixbufs in 'PodcastPixbufs' should be registered with the StockManager and used here.
+            actions.Add(new ActionEntry [] {
+                    new ActionEntry ("MirageAction", null,
+                        Catalog.GetString ("Mirage Playlist Generator"), null,
+                        Catalog.GetString ("Manage the Mirage plugin"), null),
+
+                    new ActionEntry("MirageRescanMusicAction", Stock.Refresh,
+                        Catalog.GetString("Rescan the Music Collection"), null,
+                        Catalog.GetString("Rescans the Music Collection for new Songs"),
+                        OnMirageRescanMusicHandler),
+
+                    new ActionEntry("MirageResetAction", Stock.Stop,
+                        Catalog.GetString("Reset Mirage"), null,
+                        Catalog.GetString("Resets the Mirage Playlist Generation Plugin. "+
+                            "All songs have to be analyzed again to use Automatic Playlist Generation."),
+                        OnMirageResetHandler),
+                    });
+
+            Globals.ActionManager.UI.InsertActionGroup(actions, 0);
+            uiManagerId = Globals.ActionManager.UI.AddUiFromResource("MirageMenu.xml");
+        }
+
+        private void OnMirageRescanMusicHandler(object sender, EventArgs args)
+        {
+            Dbg.WriteLine("Mirage: Rescan");
+            ScanLibrary();
+        }
+
+        private void OnMirageResetHandler(object sender, EventArgs args)
+        {
+            MessageDialog md = new MessageDialog (null, DialogFlags.Modal, MessageType.Question,
+                    ButtonsType.Cancel, Catalog.GetString("Do you really want to reset the Mirage Automatic Playlist Generation Plugin. "+
+                    "All extracted information will be lost. Your music will have to be re-analyzed to use Mirage again."));
+            md.AddButton(Catalog.GetString("Reset Mirage"), ResponseType.Yes);
+            ResponseType result = (ResponseType)md.Run();
+            md.Destroy();
+
+            if (result == ResponseType.Yes) {
+                Dbg.WriteLine("Mirage: Reset");
+                if (userEvent != null) {
+                    userEvent.CancelRequested -= OnUserEventCancelRequested;
+                    userEvent.Dispose();
+                    userEvent = null;
+                }
+                lock(jobQueue) {
+                    jobQueue.Clear();
+                }
+                Mir.CancelAnalyze();
+                Globals.Library.Db.Execute("DELETE FROM MirageProcessed");
+                db.Reset();
+
+                md = new MessageDialog(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
+                        Catalog.GetString("Mirage was reset.  Your music will have to be re-analyzed to use Mirage again."));
+                md.Run();
+                md.Destroy();
+            }
+
         }
 
         private void OnLibraryReloaded(object o, EventArgs args)
@@ -258,6 +330,8 @@ namespace Banshee.Plugins.Mirage
 
         private void OnLibraryTrackAdded(object o, LibraryTrackAddedArgs args)
         {
+            lock(jobQueue) {
+            }
             //TODO: add to library
         }
 

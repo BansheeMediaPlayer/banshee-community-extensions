@@ -15,7 +15,8 @@ SOURCES = \
 RESOURCES = \
 	-resource:res/cp.png \
 	-resource:res/mirage.png \
-	-resource:res/source-localqueue.png
+	-resource:res/source-localqueue.png \
+	-resource:res/MirageMenu.xml
 
 REFERENCES =  \
 	$(GTK_SHARP_20_LIBS) \
