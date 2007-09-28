@@ -100,10 +100,10 @@ namespace Banshee.Plugins.Mirage
             vb.PackStart(view_scroll, true, true, 0);
             
             HBox hbex = new HBox(false, 4);
-            Label l1 = new Label("<b>Status:</b> ");
+            Label l1 = new Label("<b>"+Catalog.GetString("Status:") +"</b> ");
             l1.UseMarkup = true;
             hbex.PackStart(l1, false, false, 0);
-            statusLabel.Text = "Ready. Drag a song on the Playlist Generator to start!";
+            statusLabel.Text = Catalog.GetString("Ready. Drag a song on the Playlist Generator to start!");
             hbex.PackStart(statusLabel, false, false, 0);
             hbex.PackStart(new HBox(), true, true, 0);
             
@@ -155,7 +155,7 @@ namespace Banshee.Plugins.Mirage
             SimilarityCalculator sc =
                     new SimilarityCalculator(trackId, trackId, db,
                             UpdatePlaylist, 5);
-            SetStatusLabelText("Generating a playlist...");
+            SetStatusLabelText(Catalog.GetString("Generating the playlist..."));
             Thread similarityCalculatorThread =
                     new Thread(new ThreadStart(sc.Compute));
             similarityCalculatorThread.Start();
@@ -185,7 +185,7 @@ namespace Banshee.Plugins.Mirage
                         tracks.Add(track);
                         playlistView.AddTrack(track, tracks.Count);
                     }
-                    SetStatusLabelText("Playlist ready.");
+                    SetStatusLabelText(Catalog.GetString("Playlist ready."));
                 }
                 
                 playlistView.QueueDraw();

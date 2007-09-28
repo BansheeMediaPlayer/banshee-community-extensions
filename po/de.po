@@ -4,85 +4,92 @@
 # Dominik Schnitzer <dominik@schnitzer.at>, 2007.
 # , fuzzy
 # 
-# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Mirage 0.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-09-21 13:47+0200\n"
-"PO-Revision-Date: 2007-09-21 13:48+0200\n"
+"POT-Creation-Date: 2007-09-28 17:08+0200\n"
+"PO-Revision-Date: 2007-09-28 17:20+0200\n"
 "Last-Translator: Dominik Schnitzer <dominik@schnitzer.at>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit"
 
-#: Banshee/MiragePlugin.cs:73 Banshee/MiragePlugin.cs:223
-msgid "Mirage"
-msgstr ""
-
-#: Banshee/MiragePlugin.cs:80
+#: MiragePlugin.cs:80
 msgid "Automatic Playlist Generator"
-msgstr ""
+msgstr "Automatischer Playlist Generator"
 
-#: Banshee/MiragePlugin.cs:88
+#: MiragePlugin.cs:88
 msgid ""
 "Drag a song on the automatic playlist generator, Mirage will then try to "
 "automatically generate a playlist of similar songs.\n"
 "Mirage only looks at the audio signal!"
-msgstr ""
+msgstr "Ziehen Sie eine Lied auf den automatischen Playlist Generator, Mirage versucht dann automatisch eine Playliste von ähnlich klingenden Liedern zu erstellen.\n"
+"Mirage zieht bei der Generierung von Playlisten nur das Audiosignal in Betracht, keine Meta-Daten"
 
-#: Banshee/MiragePlugin.cs:91
-msgid "http://hop.at/mirage/"
-msgstr ""
-
-#: Banshee/MiragePlugin.cs:224
+#: MiragePlugin.cs:226
 msgid "Mirage: Analyzing Songs"
-msgstr ""
+msgstr "Mirage: Analysiere Lieder"
 
-#: Banshee/MiragePlugin.cs:226
+#: MiragePlugin.cs:228
 msgid ""
 "Are you sure you want to stop Mirage. Automatic Playlist Generation will "
 "only work for the tracks which are already analyzed. The operation can be "
 "resumed at any time from the <i>Tools</i> menu."
-msgstr ""
+msgstr "Wollen Sie Mirage tatsächlich abbrechen? Das automatische erzeugen von Playlists wird nur für Lieder funktionieren die schon analysiert wurden. Der Analyseprozess kann jederzeit wieder aufgenommen werden. Verwenden Sie dazu das <i>Tools</i> Menü in Banshee."
 
-#: Banshee/MiragePlugin.cs:284
+#: MiragePlugin.cs:286
 msgid "Mirage Playlist Generator"
-msgstr ""
+msgstr "Mirage Playlist Generator"
 
-#: Banshee/MiragePlugin.cs:285
+#: MiragePlugin.cs:287
 msgid "Manage the Mirage plugin"
-msgstr ""
+msgstr "Verwaltung des Mirage Plugins"
 
-#: Banshee/MiragePlugin.cs:288
+#: MiragePlugin.cs:290
 msgid "Rescan the Music Collection"
 msgstr "Musiksammlung neu scannen"
 
-#: Banshee/MiragePlugin.cs:289
+#: MiragePlugin.cs:291
 msgid "Rescans the Music Collection for new Songs"
-msgstr ""
+msgstr "Scannt die Musiksammlung nach neuen Liedern und analysiert diese mit Mirage."
 
-#: Banshee/MiragePlugin.cs:293 Banshee/MiragePlugin.cs:318
+#: MiragePlugin.cs:295 MiragePlugin.cs:320
 msgid "Reset Mirage"
-msgstr ""
+msgstr "Mirage zurücksetzen"
 
-#: Banshee/MiragePlugin.cs:294
+#: MiragePlugin.cs:296
 msgid ""
 "Resets the Mirage Playlist Generation Plugin. All songs have to be analyzed "
 "again to use Automatic Playlist Generation."
-msgstr ""
+msgstr "Setzt Mirage zurück. Alle Lieder müssen nochmals analysiert werden um wieder automatisch Playlisten mit Mirage generieren zu können."
 
-#: Banshee/MiragePlugin.cs:316
+#: MiragePlugin.cs:318
 msgid ""
 "Do you really want to reset the Mirage Automatic Playlist Generation Plugin. "
 "All extracted information will be lost. Your music will have to be re-"
 "analyzed to use Mirage again."
-msgstr ""
+msgstr "Wollen Sie Mirage tatsächlich zurücksetzen? Alle vorher extrahierte von Mirage extrahierte Information geht verloren. Ihre Musiksammlung muss neu analysiert werden um Mirage wieder zu verwenden."
 
-#: Banshee/MiragePlugin.cs:337
+#: MiragePlugin.cs:339
 msgid ""
-"Mirage was reset.  Your music will have to be re-analyzed to use Mirage "
-"again."
-msgstr ""
+"Mirage was reset. Your music will have to be re-analyzed to use Mirage again."
+msgstr "Mirage wurde zurückgesetzt. Ihre Musiksammlung muss reanalysiert werden um Mirage wieder zu verwenden."
+
+#: PlaylistGeneratorSource.cs:103
+msgid "Status:"
+msgstr "Status:"
+
+#: PlaylistGeneratorSource.cs:106
+msgid "Ready. Drag a song on the Playlist Generator to start!"
+msgstr "Bereit. Ziehen Sie eine Lied auf den Playlist Generator um zu beginnen."
+
+#: PlaylistGeneratorSource.cs:158
+msgid "Generating the playlist..."
+msgstr "Generiere die Playliste..."
+
+#: PlaylistGeneratorSource.cs:188
+msgid "Playlist ready."
+msgstr "Die Playliste wurde generiert."
 

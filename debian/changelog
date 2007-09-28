@@ -1,3 +1,9 @@
+mirage (0.2) feisty; urgency=low
+
+  * New upstream version. Better Banshee integration, GStreamer Backend.
+
+ -- Dominik Schnitzer <dominik@haydn.ofai.at>  Fri, 28 Sep 2007 17:38:55 +0200
+
 mirage (0.1.1-1) feisty; urgency=low
 
   * added fftw3-dev as dependency. Thanks to Marc Novel

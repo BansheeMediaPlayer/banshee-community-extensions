@@ -2,12 +2,12 @@ Source: mirage
 Section: Multimedia
 Priority: extra
 Maintainer: Dominik Schnitzer <dominik@schnitzer.at>
-Build-Depends: debhelper (>= 5), autotools-dev, banshee, mono-gmcs (>= 1.2.3), mpg123, vorbis-tools, faad, sox, fftw3, fftw3-dev, libmono-sqlite2.0-cil
+Build-Depends: debhelper (>= 5), autotools-dev, banshee, mono-gmcs (>= 1.2.3), fftw3-dev, libsamplerate0-dev, libmono-sqlite2.0-cil
 Standards-Version: 3.7.2
 
 Package: banshee-mirage
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, mpg123, vorbis-tools, faad, sox, fftw3, fftw3-dev, libmono-sqlite2.0-cil, banshee
+Depends: ${shlibs:Depends}, ${misc:Depends}, fftw3, libsamplerate0, libmono-sqlite2.0-cil, banshee
 Description: Automatic Playlist Generation Plugin for Banshee
  Mirage is an automatic playlist generation plugin for the Banshee
  Media Player. After having analyzed your music collection it is
