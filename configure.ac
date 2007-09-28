@@ -14,6 +14,12 @@ AC_PROG_INSTALL
 AM_PROG_LIBTOOL
 AC_PROG_LIBTOOL
 
+IT_PROG_INTLTOOL([0.35.0])
+GETTEXT_PACKAGE=Mirage
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Gettext Package])
+AM_GLIB_GNU_GETTEXT
+
 AC_PATH_PROG(GMCS, gmcs, no)
 if test "x$GMCS" = "xno"; then
         AC_MSG_ERROR([gmcs Not found])
@@ -57,9 +63,12 @@ AC_CONFIG_FILES([
 
                  Banshee/Makefile
                  Banshee/AssemblyInfo.cs
+                 Banshee/Config.cs
                  Banshee/res/Makefile
 
                  Test/Makefile
+
+                 po/Makefile.in
 
                  Makefile
 ])

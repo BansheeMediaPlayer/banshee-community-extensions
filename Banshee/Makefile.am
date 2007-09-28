@@ -7,15 +7,31 @@ ASSEMBLY = Banshee.Plugins.Mirage.dll
 SOURCES = \
 	ContinuousGeneratorSource.cs \
 	MiragePlugin.cs \
-	PlaylistColumns.cs \
 	PlaylistGeneratorSource.cs \
 	PlaylistGeneratorView.cs \
-	AssemblyInfo.cs
+	Config.cs \
+	AssemblyInfo.cs \
+	PlaylistModel.cs \
+	TrackView.Columns/TrackViewColumn.cs \
+	TrackView.Columns/TrackNumberColumn.cs \
+	TrackView.Columns/ArtistColumn.cs \
+	TrackView.Columns/TitleColumn.cs \
+	TrackView.Columns/AlbumColumn.cs \
+	TrackView.Columns/GenreColumn.cs \
+	TrackView.Columns/YearColumn.cs \
+	TrackView.Columns/DurationColumn.cs \
+	TrackView.Columns/PlayCountColumn.cs \
+	TrackView.Columns/LastPlayedColumn.cs \
+	TrackView.Columns/RatingColumn.cs \
+	TrackView.Columns/UriColumn.cs \
+	TrackView.Columns/DateAddedColumn.cs
+
 
 RESOURCES = \
 	-resource:res/cp.png \
 	-resource:res/mirage.png \
 	-resource:res/source-localqueue.png \
+	-resource:res/cd-action-rip-16.png \
 	-resource:res/MirageMenu.xml
 
 REFERENCES =  \

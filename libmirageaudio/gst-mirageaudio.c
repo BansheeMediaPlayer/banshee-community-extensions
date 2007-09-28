@@ -447,14 +447,22 @@ mirageaudio_initgst()
 void
 mirageaudio_canceldecode(MirageAudio *ma)
 {
-    g_mutex_lock(ma->decoding_mutex);
+    if (GST_IS_ELEMENT(ma->pipeline)) {
 
-    GstBus *bus = gst_pipeline_get_bus(GST_PIPELINE(ma->pipeline));
-    gst_bus_post(bus, gst_message_new_eos(GST_OBJECT(ma->pipeline)));
-    g_print("libmirageaudio: EOS Message sent\n");
-    gst_object_unref(bus);
+        GstState state;
+        gst_element_get_state(ma->pipeline, &state, NULL, 100*GST_MSECOND);
 
-    ma->invalidate = TRUE;
+        if (state != GST_STATE_NULL) {
+            g_mutex_lock(ma->decoding_mutex);
 
-    g_mutex_unlock(ma->decoding_mutex);
+            GstBus *bus = gst_pipeline_get_bus(GST_PIPELINE(ma->pipeline));
+            gst_bus_post(bus, gst_message_new_eos(GST_OBJECT(ma->pipeline)));
+            g_print("libmirageaudio: EOS Message sent\n");
+            gst_object_unref(bus);
+
+            ma->invalidate = TRUE;
+
+            g_mutex_unlock(ma->decoding_mutex);
+        }
+    }
 }

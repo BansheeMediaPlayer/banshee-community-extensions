@@ -55,11 +55,14 @@ namespace Banshee.Plugins.Mirage
     public class MiragePlugin : Banshee.Plugins.Plugin
     {
         Db db;
-        ContinuousGeneratorSource continuousPlaylist = null;
+        ContinuousGeneratorSource continuousPlaylist;
 
         Queue jobQueue;
         Thread jobThread;
-        int jobsScheduled = 0;
+        int jobsScheduled;
+
+        bool rescanFailed;
+        Thread scanThread;
 
         ActionGroup actions;
         ActiveUserEvent userEvent;
@@ -67,7 +70,7 @@ namespace Banshee.Plugins.Mirage
         
         protected override string ConfigurationName {
             get {
-                return Catalog.GetString("Mirage");
+                return "Mirage";
             }
         }
         
@@ -85,7 +88,7 @@ namespace Banshee.Plugins.Mirage
                     Catalog.GetString ("Drag a song on the automatic playlist generator, "+
                             "Mirage will then try to automatically generate a playlist of "+
                             "similar songs.\nMirage only looks at the audio signal!"),
-                    Catalog.GetString ("http://hop.at/mirage/"));
+                    "http://hop.at/mirage/");
             }
         }
 
@@ -98,14 +101,16 @@ namespace Banshee.Plugins.Mirage
         
         protected override void PluginInitialize()
         {
+            Catalog.Init("Mirage", Config.LocaleDir);
+
             db = new Db();
 
             jobsScheduled = 0;
             jobQueue = new Queue();
+            rescanFailed = false;
 
-            jobThread = new Thread(ProcessQueueThread);
-            jobThread.IsBackground = true;
-            jobThread.Priority = ThreadPriority.Lowest;
+            scanThread = null;
+            jobThread = null;
 
             Globals.Library.Db.Execute(
                     "CREATE TABLE IF NOT EXISTS MirageProcessed"
@@ -141,6 +146,9 @@ namespace Banshee.Plugins.Mirage
                 jobQueue.Clear();
             }
             Mir.CancelAnalyze();
+
+            Globals.ActionManager.UI.RemoveUi(uiManagerId);
+            Globals.ActionManager.UI.RemoveActionGroup(actions);
         }
 
         private void OnInterfaceInitialized(object o, EventArgs args)
@@ -150,10 +158,10 @@ namespace Banshee.Plugins.Mirage
 
         private void ScanLibrary()
         {
-            Thread thread = new Thread(ScanLibraryThread);
-            thread.IsBackground = true;
-            thread.Priority = ThreadPriority.Lowest;
-            thread.Start();
+            scanThread = new Thread(ScanLibraryThread);
+            scanThread.IsBackground = true;
+            scanThread.Priority = ThreadPriority.Lowest;
+            scanThread.Start();
         }
 
         private void ScanLibraryThread()
@@ -163,13 +171,19 @@ namespace Banshee.Plugins.Mirage
             // TODO: Eliminate this...
             System.Threading.Thread.Sleep(5000);
 
-            IDataReader reader = Globals.Library.Db.Query(
-                    "SELECT TrackID FROM Tracks WHERE TrackID NOT IN"
+            String query;
+            if (rescanFailed) {
+                query = "SELECT TrackID FROM Tracks WHERE TrackID NOT IN"
                     + " (SELECT Tracks.TrackID FROM MirageProcessed, Tracks"
-                    + " WHERE Tracks.TrackID = MirageProcessed.TrackID)");
+                    + " WHERE (Tracks.TrackID = MirageProcessed.TrackID) AND "
+                    + " (MirageProcessed.Status = 0))";
+            } else {
+                query = "SELECT TrackID FROM Tracks WHERE TrackID NOT IN"
+                    + " (SELECT Tracks.TrackID FROM MirageProcessed, Tracks"
+                    + " WHERE (Tracks.TrackID = MirageProcessed.TrackID))";
+            }
 
-            // TODO: include Failed models if rescanning:
-            // AND (MirageProcessed.Status = 0)
+            IDataReader reader = Globals.Library.Db.Query(query);
 
             lock(jobQueue) {
                 jobsScheduled = 0;
@@ -189,8 +203,10 @@ namespace Banshee.Plugins.Mirage
 
         private void ProcessQueue()
         {
-            if (!jobThread.IsAlive)
-                jobThread.Start();
+            jobThread = new Thread(ProcessQueueThread);
+            jobThread.IsBackground = true;
+            jobThread.Priority = ThreadPriority.Lowest;
+            jobThread.Start();
         }
 
         private void ProcessQueueThread()
@@ -206,7 +222,7 @@ namespace Banshee.Plugins.Mirage
             }
 
             // Banshee user event
-            userEvent = new ActiveUserEvent(Catalog.GetString("Mirage"));
+            userEvent = new ActiveUserEvent("Mirage");
             userEvent.Header = Catalog.GetString("Mirage: Analyzing Songs");
             userEvent.CancelMessage = Catalog.GetString(
                 "Are you sure you want to stop Mirage. "
@@ -288,8 +304,12 @@ namespace Banshee.Plugins.Mirage
 
         private void OnMirageRescanMusicHandler(object sender, EventArgs args)
         {
-            Dbg.WriteLine("Mirage: Rescan");
-            ScanLibrary();
+            if (((jobThread == null) && (scanThread == null)) ||
+                (!jobThread.IsAlive && !scanThread.IsAlive)) {
+                Dbg.WriteLine("Mirage: Rescan");
+                rescanFailed = true;
+                ScanLibrary();
+            }
         }
 
         private void OnMirageResetHandler(object sender, EventArgs args)
@@ -316,7 +336,7 @@ namespace Banshee.Plugins.Mirage
                 db.Reset();
 
                 md = new MessageDialog(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
-                        Catalog.GetString("Mirage was reset.  Your music will have to be re-analyzed to use Mirage again."));
+                        Catalog.GetString("Mirage was reset. Your music will have to be re-analyzed to use Mirage again."));
                 md.Run();
                 md.Destroy();
             }
@@ -331,8 +351,12 @@ namespace Banshee.Plugins.Mirage
         private void OnLibraryTrackAdded(object o, LibraryTrackAddedArgs args)
         {
             lock(jobQueue) {
+                jobQueue.Enqueue(args.Track.TrackId);
             }
-            //TODO: add to library
+            if (((jobThread == null) && (scanThread == null)) ||
+                (!jobThread.IsAlive && !scanThread.IsAlive)) {
+                ProcessQueue();
+            }
         }
 
         private void OnLibraryTrackRemoved(object o, LibraryTrackRemovedArgs args)

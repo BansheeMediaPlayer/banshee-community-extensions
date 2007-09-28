@@ -10,6 +10,7 @@ CONFIGURE=configure.ac
 : ${LIBTOOLIZE=libtoolize}
 : ${ACLOCAL=aclocal}
 : ${LIBTOOL=libtool}
+: ${INTLTOOLIZE=intltoolize}
 
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
@@ -70,11 +71,14 @@ esac
     $LIBTOOLIZE --force --copy
 }
 
+echo "Running $INTLTOOLIZE ..."
+$INTLTOOLIZE --force --copy --automake
+
 echo "Running $ACLOCAL $aclocalinclude ..."
 $ACLOCAL $aclocalinclude
 
 echo "Running $AUTOMAKE --gnu $am_opt ..."
-$AUTOMAKE --add-missing --gnu $am_opt
+$AUTOMAKE --add-missing --copy --gnu $am_opt
 
 echo "Running $AUTOCONF ..."
 $AUTOCONF

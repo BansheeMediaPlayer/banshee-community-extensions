@@ -41,7 +41,7 @@ namespace Banshee.Plugins.Mirage
     public class PlaylistGeneratorSource : Banshee.Sources.ChildSource
     {
         protected List<TrackInfo> tracks = new List<TrackInfo>();
-        protected List<TrackInfo> seeds = new List<TrackInfo>();
+        public static List<TrackInfo> seeds = new List<TrackInfo>();
         protected List<TrackInfo> tracksOverride = new List<TrackInfo>();
         
         protected Db db;
@@ -49,12 +49,6 @@ namespace Banshee.Plugins.Mirage
         protected HBox uiContainer;
         protected PlaylistGeneratorView playlistView;
         private Label statusLabel = new Label();
-        
-        public List<TrackInfo> SeedSongs {
-            get {
-                return seeds;
-            }
-        }
         
         public override int Count {
             get {
@@ -118,7 +112,7 @@ namespace Banshee.Plugins.Mirage
             lb1.Image = new Image(null, "mirage.png");
             hbex.PackStart(lb1, false, false, 0);*/
             
-            LinkButton lb2 = new LinkButton("http://www.cp.jku.at/", "");
+            LinkButton lb2 = new LinkButton("http://www.cp.jku.at/?miragelink", "");
             lb2.Image = new Image(null, "cp.png");
             lb2.Clicked += OnLinkButtonClicked;
             hbex.PackStart(lb2, false, false, 0);

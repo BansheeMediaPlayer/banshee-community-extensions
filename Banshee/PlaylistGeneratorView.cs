@@ -21,203 +21,293 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Collections;
-using Gtk;
-using Gdk;
-using Pango;
-using Mono.Unix;
+using System.Collections.Generic;
 
-using Banshee;
+using Gtk;
+
 using Banshee.Base;
+using Banshee.Dap;
 using Banshee.Sources;
 using Banshee.MediaEngine;
-using Banshee.Plugins.Mirage;
+using Banshee.Plugins.Mirage.TrackView.Columns;
 
 namespace Banshee.Plugins.Mirage
 {
-    public class PlaylistGeneratorView : TreeView
+    public class PlaylistGeneratorView : TreeView, IDisposable
     {
-        private enum ColumnId : int {
-            Track,
-            Artist,
-            Title,
-            Album,
-            Genre,
-            Year,
-            Time,
-            PlayCount,
-            LastPlayed,
-            Similarity
-        };
-        
-        ListStore model;
-        
-        ArrayList columns;
-        TreeIter playingIter;
-        PlaylistGeneratorSource ap;
-        
-        string seedSongColor = "#FFF065";
-        Pixbuf nowPlayingPixbuf;
-        
-        Dictionary<TrackInfo, float> similarity = 
-            new Dictionary<TrackInfo, float>();
+        private List<TrackViewColumn> columns;
+        private static PlaylistModel model = new PlaylistModel();
+       
+        private Gdk.Pixbuf ripping_pixbuf;
+        private Gdk.Pixbuf now_playing_pixbuf;
+        private Gdk.Pixbuf drm_pixbuf;
+        private Gdk.Pixbuf resource_not_found_pixbuf;
+        private Gdk.Pixbuf unknown_error_pixbuf;
 
-        public event EventHandler Stopped;
+        public TreeViewColumn RipColumn;
 
-        public PlaylistGeneratorView(PlaylistGeneratorSource ap)
-        {
-            ButtonPressEvent += OnPlaylistViewButtonPressEvent;
-            Globals.ActionManager["NextAction"].Activated += OnNextAction;
-            Globals.ActionManager["PlayPauseAction"].Activated += OnPlayPauseAction;
-            Globals.ActionManager["PreviousAction"].Activated += OnPreviousAction;
-            PlayerEngineCore.EventChanged += OnPlayerEngineEventChanged;
-            
-            this.ap = ap;
-            columns = new ArrayList();
-            
-            columns.Add(new PlaylistColumn(null, Catalog.GetString("Track"), "track", 
-                new TreeCellDataFunc(TrackCellTrack), new CellRendererText(),
-                0, -1));
-            columns.Add(new PlaylistColumn(null, Catalog.GetString("Artist"), "artist", 
-                new TreeCellDataFunc(TrackCellArtist), new CellRendererText(),
-                1, -1));
-            columns.Add(new PlaylistColumn(null, Catalog.GetString("Title"), "title", 
-                new TreeCellDataFunc(TrackCellTitle), new CellRendererText(),
-                2, -1));
-            columns.Add(new PlaylistColumn(null, Catalog.GetString("Album"), "album", 
-                new TreeCellDataFunc(TrackCellAlbum), new CellRendererText(),
-                3, -1));
-            columns.Add(new PlaylistColumn(null, Catalog.GetString("Genre"), "genre", 
-                new TreeCellDataFunc(TrackCellGenre), new CellRendererText(),
-                4, -1));
-            columns.Add(new PlaylistColumn(null, Catalog.GetString("Year"), "year", 
-                new TreeCellDataFunc(TrackCellYear), new CellRendererText(),
-                5, -1));
-               columns.Add(new PlaylistColumn(null, Catalog.GetString("Time"), "time", 
-                new TreeCellDataFunc(TrackCellTime), new CellRendererText(),
-                6, -1));
-            
-            PlaylistColumn PlaysColumn = new PlaylistColumn(null, 
-                Catalog.GetString("Plays"), "play_count",
-                new TreeCellDataFunc(TrackCellPlayCount), 
-                new CellRendererText(),
-                8, -1);
-            columns.Add(PlaysColumn);
-            
-            PlaylistColumn LastPlayedColumn = new PlaylistColumn(null, 
-                Catalog.GetString("Last Played"), "last_played",
-                new TreeCellDataFunc(TrackCellLastPlayed), 
-                new CellRendererText(),
-                9, -1);
-            columns.Add(LastPlayedColumn);
-            
-            foreach(PlaylistColumn plcol in columns) {
-                AppendColumn(plcol.Column);
-            }
+        PlaylistGeneratorSource pgs;
 
-            TreeViewColumn playIndColumn = new TreeViewColumn();
-            Gtk.Image playIndImg = new Gtk.Image(
-                    IconThemeUtils.LoadIcon(16, "audio-volume-high",
-                            "blue-speaker"));
-            playIndImg.Show();
-            playIndColumn.Expand = false;
-            playIndColumn.Resizable = false;
-            playIndColumn.Clickable = false;
-            playIndColumn.Reorderable = false;
-            playIndColumn.Widget = playIndImg;
-            
-            nowPlayingPixbuf =
-                    IconThemeUtils.LoadIcon(16, "media-playback-start",
-                            Stock.MediaPlay, "now-playing-arrow");
-            
-            CellRendererPixbuf indRenderer = new CellRendererPixbuf();
-            playIndColumn.PackStart(indRenderer, true);
-            playIndColumn.SetCellDataFunc(indRenderer, 
-                new TreeCellDataFunc(TrackCellInd));
-            InsertColumn(playIndColumn, 0);
-
-            ColumnDragFunction = new TreeViewColumnDropFunc(CheckColumnDrop);
-
-            model = new ListStore(typeof(TrackInfo));
+        public PlaylistGeneratorView(PlaylistGeneratorSource pgs)
+        {        
             Model = model;
             
+            // Load pixbufs
+            drm_pixbuf = IconThemeUtils.LoadIcon(16, "emblem-readonly", "emblem-important", Stock.DialogError);
+            resource_not_found_pixbuf = IconThemeUtils.LoadIcon(16, "emblem-unreadable", Stock.DialogError);
+            unknown_error_pixbuf = IconThemeUtils.LoadIcon(16, "dialog-error", Stock.DialogError);
+            ripping_pixbuf = Gdk.Pixbuf.LoadFromResource("cd-action-rip-16.png");
+            now_playing_pixbuf = IconThemeUtils.LoadIcon(16, "media-playback-start", 
+                Stock.MediaPlay, "now-playing-arrow");
+                
+            // Load configurable columns
+            columns = new List<TrackViewColumn>();            
+            columns.Add(new TrackNumberColumn());
+            columns.Add(new ArtistColumn());
+            columns.Add(new TitleColumn());
+            columns.Add(new AlbumColumn());
+            columns.Add(new GenreColumn());
+            columns.Add(new YearColumn());
+            columns.Add(new DurationColumn());
+            columns.Add(new LastPlayedColumn());
+            columns.Add(new PlayCountColumn());
+            columns.Add(new RatingColumn());
+            columns.Add(new UriColumn());
+            columns.Add(new DateAddedColumn());
+            columns.Sort();
+            
+            foreach(TrackViewColumn column in columns) {
+                column.Model = model;
+                AppendColumn(column);
+                column.CreatePopupableHeader();
+                column.SetMaxFixedWidth(this);
+            }
+
+            // Create static columns
+            TreeViewColumn status_column = new TreeViewColumn();
+            CellRendererPixbuf status_renderer = new CellRendererPixbuf();
+            status_column.Expand = false;
+            status_column.Resizable = false;
+            status_column.Clickable = false;
+            status_column.Reorderable = false;
+            status_column.Widget = new Image(IconThemeUtils.LoadIcon(16, "audio-volume-high", "blue-speaker"));
+            status_column.Widget.Show();
+            status_column.PackStart(status_renderer, true);
+            status_column.SetCellDataFunc(status_renderer, new TreeCellDataFunc(StatusColumnDataHandler));
+            InsertColumn(status_column, 0);
+            
+            CellRendererToggle rip_renderer = new CellRendererToggle();
+            rip_renderer.Activatable = true;
+            rip_renderer.Toggled += OnRipToggled;
+            
+            RipColumn = new TreeViewColumn();
+            RipColumn.Expand = false;
+            RipColumn.Resizable = false;
+            RipColumn.Clickable = false;
+            RipColumn.Reorderable = false;
+            RipColumn.Visible = false;
+            RipColumn.Widget = new Gtk.Image(ripping_pixbuf);
+            RipColumn.Widget.Show();
+            RipColumn.PackStart(rip_renderer, true);
+            RipColumn.SetCellDataFunc(rip_renderer, new TreeCellDataFunc(RipColumnDataHandler));
+            InsertColumn(RipColumn, 1);
+            
+            TreeViewColumn void_hack_column = new TreeViewColumn();
+            void_hack_column.Expand = false;
+            void_hack_column.Resizable = false;
+            void_hack_column.Clickable = false;
+            void_hack_column.Reorderable = false;
+            void_hack_column.FixedWidth = 1;
+            AppendColumn(void_hack_column);
+
+            // set up tree view
             RulesHint = true;
             HeadersClickable = false;
             HeadersVisible = true;
             Selection.Mode = SelectionMode.Browse;
             
-            model.SetSortFunc((int)ColumnId.Similarity,
-                new TreeIterCompareFunc(SimilarityTreeIterCompareFunc));
-            model.SetSortColumnId((int)ColumnId.Similarity, SortType.Ascending);
+            ColumnDragFunction = new TreeViewColumnDropFunc(CheckColumnDrop);
+
+            model.DefaultSortFunc = new TreeIterCompareFunc(SimilarityTreeIterCompareFunc);
+
+            SourceManager.ActiveSourceChanged += delegate(SourceEventArgs args) {
+                if (SourceManager.ActiveSource == pgs) {
+                    ButtonPressEvent += OnPlaylistViewButtonPressEvent;
+                    Globals.ActionManager["NextAction"].Activated += OnNextAction;
+                    Globals.ActionManager["PlayPauseAction"].Activated += OnPlayPauseAction;
+                    Globals.ActionManager["PreviousAction"].Activated += OnPreviousAction;
+                    PlayerEngineCore.EventChanged += OnPlayerEngineEventChanged;
+                } else {
+                    ButtonPressEvent -= OnPlaylistViewButtonPressEvent;
+                    Globals.ActionManager["NextAction"].Activated -= OnNextAction;
+                    Globals.ActionManager["PlayPauseAction"].Activated -= OnPlayPauseAction;
+                    Globals.ActionManager["PreviousAction"].Activated -= OnPreviousAction;
+                    PlayerEngineCore.EventChanged -= OnPlayerEngineEventChanged;
+                }
+            };
+
+            this.pgs = pgs;
+        }    
+
+        private void OnRipToggled(object o, ToggledArgs args)
+        {
+            try {
+                AudioCdTrackInfo ti = (AudioCdTrackInfo)model.PathTrackInfo(new TreePath(args.Path));
+                CellRendererToggle renderer = (CellRendererToggle)o;
+                ti.CanRip = !ti.CanRip;
+                renderer.Active = ti.CanRip;
+            } catch {
+            }   
         }
         
-        public void OnNextAction(object o, EventArgs e)
+        private bool CheckColumnDrop(TreeView tree, TreeViewColumn col, TreeViewColumn prev, TreeViewColumn next)
         {
-            if (SourceManager.ActiveSource != ap)
-                return;
-
-            GLib.Timeout.Add(500, delegate {
-                Advance();
-                UpdateView();
-                return false;
-            });
+            return prev != null && next != null;
         }
-
-        public void OnPlayPauseAction(object o, EventArgs e)
+            
+        public TrackInfo IterTrackInfo(TreeIter iter)
         {
-            if (SourceManager.ActiveSource != ap)
-                return;
-
-            UpdateView();
+            return Model.GetValue(iter, 0) as TrackInfo;
         }
-
-        public void OnPreviousAction(object o, EventArgs e)
+       
+        private void SetTrackPixbuf(CellRendererPixbuf renderer, TrackInfo track, bool nowPlaying)
         {
-            if (SourceManager.ActiveSource != ap)
+            if(nowPlaying) {
+                renderer.Pixbuf = now_playing_pixbuf;
                 return;
-
-            GLib.Timeout.Add(500, delegate {
-                Regress();
-                UpdateView();
-                return false;
-            });
-        }
-
-        private void OnPlayerEngineEventChanged(object o, PlayerEngineEventArgs args)
-        {
-            if (SourceManager.ActiveSource != ap)
+            } else if(track is AudioCdTrackInfo) {
+                renderer.Pixbuf = null;
                 return;
-
-            switch(args.Event) {
-                case PlayerEngineEvent.EndOfStream:
-                    GLib.Timeout.Add(500, delegate {
-                        Advance();
-                        UpdateView();
-                        return false;
-                    });
-                    break;                    
+            }
+            
+            switch(track.PlaybackError) {
+                case TrackPlaybackError.ResourceNotFound:
+                    renderer.Pixbuf = resource_not_found_pixbuf;
+                    break;
+                case TrackPlaybackError.Drm:
+                    renderer.Pixbuf = drm_pixbuf;
+                    break;
+                case TrackPlaybackError.Unknown:
+                case TrackPlaybackError.CodecNotFound:
+                    renderer.Pixbuf = unknown_error_pixbuf;
+                    break;
+                default:
+                    renderer.Pixbuf = null;
+                    break;
             }
         }
         
+        protected void StatusColumnDataHandler(TreeViewColumn tree_column,
+            CellRenderer cell, TreeModel tree_model, TreeIter iter)
+        {
+            TrackInfo ti = tree_model.GetValue(iter, 0) as TrackInfo;
+            CellRendererPixbuf renderer = (CellRendererPixbuf)cell;
+
+            renderer.CellBackground = null;
+            foreach (TrackInfo t in PlaylistGeneratorSource.seeds) {
+                if (ti == t) {
+                    renderer.CellBackground = "#FFF065";
+                }
+            }
+            
+            if(PlayerEngineCore.CurrentTrack == null) {
+                model.PlayingIter = TreeIter.Zero;
+                SetTrackPixbuf(renderer, ti, false);
+                return;
+            } else if(model.PlayingIter.Equals(iter)) {
+                SetTrackPixbuf(renderer, ti, true);
+                return;
+            } else if(!model.PlayingIter.Equals(TreeIter.Zero)) {
+                SetTrackPixbuf(renderer, ti, false);
+                return;
+            }
+            
+            if(ti != null) {
+                bool same_track = false;
+                
+                if(PlayerEngineCore.CurrentTrack != null && PlayerEngineCore.CurrentTrack.Uri != null) {
+                    same_track = PlayerEngineCore.CurrentTrack.Uri.Equals(ti.Uri);
+                    if(same_track) {
+                        model.PlayingIter = iter;
+                    }
+                } 
+                
+                SetTrackPixbuf(renderer, ti, same_track);
+            } else {
+                renderer.Pixbuf = null;
+            }
+        }
+        
+        protected void RipColumnDataHandler(TreeViewColumn tree_column, CellRenderer cell, 
+            TreeModel tree_model, TreeIter iter)
+        {
+            CellRendererToggle toggle = (CellRendererToggle)cell;
+            AudioCdTrackInfo ti = model.IterTrackInfo(iter) as AudioCdTrackInfo;
+ 
+            if(ti != null) {
+                toggle.Sensitive = ti.CanPlay && !ti.IsRipped;
+                toggle.Activatable = toggle.Sensitive;
+                toggle.Active = ti.CanRip && !ti.IsRipped;
+            } else {
+                toggle.Active = false;
+            }
+        }
+
+        public void PlayPath(TreePath path)
+        {
+            model.PlayPath(path);
+            QueueDraw();
+            ScrollToPlaying();
+        }
+        
+        public void UpdateView()
+        {
+            QueueDraw();
+            ScrollToPlaying();
+        }
+
+        public void ScrollToPlaying()
+        {
+            if(!IsRealized) {
+                return;
+            }
+            
+            Gdk.Rectangle cellRect = GetCellArea(model.PlayingPath, Columns[0]);
+
+            Gdk.Point point = new Gdk.Point();
+            WidgetToTreeCoords(cellRect.Left, cellRect.Top, out point.X, out point.Y);
+            cellRect.Location = point;
+
+            // we only care about vertical bounds
+            if(cellRect.Location.Y < VisibleRect.Location.Y ||
+                cellRect.Location.Y + cellRect.Size.Height > VisibleRect.Location.Y + VisibleRect.Size.Height) {
+                ScrollToCell(model.PlayingPath, null, true, 0.5f, 0.0f);
+            }
+        }
+
+        /* Mirage Modifications to Banshee/PlaylistView */
+
+        public Dictionary<TrackInfo, float> similarity = new Dictionary<TrackInfo, float>();
+
         public void Clear()
         {
             model.Clear();
-               similarity.Clear();
+            similarity.Clear();
         }
 
         public void RemoveTrack(TrackInfo ti)
         {
             if (ti == null)
                 return;
-        
+
             if (similarity.ContainsKey(ti)) {
                 TreeIter tri;
                 TreePath tp;
                 model.GetIterFirst(out tri);
                 tp = model.GetPath(tri);
-                    
-                while (PathTrackInfo(tp) != ti) {
+
+                while (model.PathTrackInfo(tp) != ti) {
                     tp.Next();
                 }
                 model.GetIter(out tri, tp);
@@ -225,12 +315,12 @@ namespace Banshee.Plugins.Mirage
                 similarity.Remove(ti);
             }
         }
-        
+
         public void AddTrack(TrackInfo ti, float sim)
         {
             if (ti == null)
                 return;
-                
+
             if (!similarity.ContainsKey(ti)) {
                 similarity.Add(ti, sim);
                 ti.TreeIter = model.AppendValues(ti);
@@ -239,83 +329,58 @@ namespace Banshee.Plugins.Mirage
             }
         }
 
-        public void UpdateView()
+        public int SimilarityTreeIterCompareFunc(TreeModel _model, TreeIter a,
+            TreeIter b)
         {
-            Gtk.Application.Invoke(delegate {
-                QueueDraw();
-                ScrollToPlaying();
-            });
-        }
-        
-        public TreePath PlayingPath
-        {
-            get {
-                try {
-                    return playingIter.Equals(TreeIter.Zero)
-                            ? null : model.GetPath(playingIter);
-                } catch (NullReferenceException) {
-                    return null;
+            float a1f = 0;
+            float b1f = 0;
+            if (SourceManager.ActiveSource != pgs)
+                return 0;
+
+            lock(((ICollection)similarity).SyncRoot) {
+
+                TrackInfo a1 = IterTrackInfo(a);
+                TrackInfo b1 = IterTrackInfo(b);
+
+                if (similarity.ContainsKey(a1)) {
+                    a1f = similarity[a1];
+                }
+                if (similarity.ContainsKey(b1)) {
+                    b1f = similarity[b1];
                 }
             }
-        }
 
-        public void ScrollToPlaying()
-        {
-            Gdk.Rectangle cellRect = GetCellArea (PlayingPath,
-                    Columns[0]);
-
-            Point point = new Point ();
-            WidgetToTreeCoords (cellRect.Left, cellRect.Top,
-                    out point.X, out point.Y);
-            cellRect.Location = point;
-
-            // we only care about vertical bounds
-            if (cellRect.Location.Y < VisibleRect.Location.Y ||
-                cellRect.Location.Y + cellRect.Size.Height >
-                        VisibleRect.Location.Y + VisibleRect.Size.Height) {
-                ScrollToCell(PlayingPath, null, true, 0.5f, 0.0f);
-            }
-        }
-
-        private bool CheckColumnDrop(TreeView tree, TreeViewColumn col,
-                                     TreeViewColumn prev, TreeViewColumn next)
-        {
-            // Don't allow moving other columns before the first column
-            return prev != null;
+            return a1f < b1f ? -1 : (a1f == b1f ? 0 : 1);
         }
 
         [GLib.ConnectBefore]
-        private void OnPlaylistViewButtonPressEvent(object o, 
+        private void OnPlaylistViewButtonPressEvent(object o,
             ButtonPressEventArgs args)
         {
             if (args.Event.Window != BinWindow)
                 return;
 
-/* DISABLED for now            if(args.Event.Button == 3) {
-                PlaylistMenuPopupTimeout(args.Event.Time);
-            }*/
-            
             TreePath path;
-            GetPathAtPos((int)args.Event.X, 
+            GetPathAtPos((int)args.Event.X,
                 (int)args.Event.Y, out path);
-        
+
             if(path == null)
                 return;
-            
+
             switch(args.Event.Type) {
-                case EventType.TwoButtonPress:
+                case Gdk.EventType.TwoButtonPress:
                     if(args.Event.Button != 1
-                        || (args.Event.State &  (ModifierType.ControlMask 
-                        | ModifierType.ShiftMask)) != 0)
+                        || (args.Event.State &  (Gdk.ModifierType.ControlMask
+                        | Gdk.ModifierType.ShiftMask)) != 0)
                         return;
                     Selection.UnselectAll();
                     Selection.SelectPath(path);
                     PlayPath(path);
                     return;
-                case EventType.ButtonPress:
+                case Gdk.EventType.ButtonPress:
                     if(Selection.PathIsSelected(path) &&
-                   (args.Event.State & (ModifierType.ControlMask |
-                            ModifierType.ShiftMask)) == 0)
+                   (args.Event.State & (Gdk.ModifierType.ControlMask |
+                            Gdk.ModifierType.ShiftMask)) == 0)
                         args.RetVal = true;
                     return;
                 default:
@@ -324,387 +389,35 @@ namespace Banshee.Plugins.Mirage
             }
         }
 
-        public int SimilarityTreeIterCompareFunc(TreeModel _model, TreeIter a,
-            TreeIter b)
+        public void OnNextAction(object o, EventArgs e)
         {
-            float a1f = 0;
-            float b1f = 0;
-            if (SourceManager.ActiveSource != ap)
-                return 0;
-                
-            lock(((ICollection)similarity).SyncRoot) {
-
-                TrackInfo a1 = IterTrackInfo(a);
-                TrackInfo b1 = IterTrackInfo(b);
-                
-                if (similarity.ContainsKey(a1)) {
-                    a1f = similarity[a1];
-                }
-                if (similarity.ContainsKey(b1)) {
-                    b1f = similarity[b1];
-                }
-            }
-            
-            return a1f < b1f ? -1 : (a1f == b1f ? 0 : 1);
+            Application.Invoke(delegate {
+                model.Advance();
+                UpdateView();
+            });
         }
 
-        protected void SetRendererAttributes(CellRendererText renderer, 
-            string text, TreeIter iter)
+        public void OnPlayPauseAction(object o, EventArgs e)
         {
-            renderer.Text = text;
-            renderer.Weight = iter.Equals(playingIter) 
-                ? (int)Pango.Weight.Bold 
-                : (int)Pango.Weight.Normal;
-            
-            renderer.Foreground = null;
-            renderer.CellBackground = null;
-            renderer.Sensitive = true;
-            
-            TrackInfo ti = IterTrackInfo(iter);
-            if (ti == null) {
-                return;
-            }
-            
-            foreach (TrackInfo t in ap.SeedSongs) {
-                if (ti == t) {
-                    renderer.CellBackground = seedSongColor;
-                }
-            }
-        }
-
-        protected void TrackCellInd(TreeViewColumn tree_column,
-            CellRenderer cell, TreeModel tree_model, TreeIter iter)
-        {
-            TrackInfo ti = tree_model.GetValue(iter, 0) as TrackInfo;
-            CellRendererPixbuf renderer = (CellRendererPixbuf)cell;
-            renderer.CellBackground = null;
-            
-            foreach (TrackInfo t in ap.SeedSongs) {
-                if (ti == t) {
-                    renderer.CellBackground = seedSongColor;
-                }
-            }
-           
-            if(PlayerEngineCore.CurrentTrack == null) {
-                playingIter = TreeIter.Zero;
-                renderer.Pixbuf = null;
-                return;
-            }
-        
-            if(ti != null) {
-                bool same_track = false;
-                
-                if(PlayerEngineCore.CurrentTrack != null) {
-                    same_track = PlayerEngineCore.CurrentTrack == ti;
-                }
-                
-                if(same_track) {
-                    renderer.Pixbuf = nowPlayingPixbuf;
-                    playingIter = iter;
-                } else {
-                    renderer.Pixbuf = null;
-                }
-            } else {
-                renderer.Pixbuf = null;
-            }
-        }
-        
-        protected void TrackCellTrack(TreeViewColumn tree_column,
-            CellRenderer cell, TreeModel tree_model, TreeIter iter)
-        {
-            TrackInfo ti = IterTrackInfo(iter);
-            if (ti == null) {
-                return;
-            }
-            
-            SetRendererAttributes((CellRendererText)cell,
-                ti.TrackNumber > 0 ?
-                        Convert.ToString(ti.TrackNumber) : String.Empty, iter);
-        }    
-        
-        protected void TrackCellArtist(TreeViewColumn tree_column,
-            CellRenderer cell, TreeModel tree_model, TreeIter iter)
-        {
-            TrackInfo ti = IterTrackInfo(iter);
-            if(ti == null) {
-                return;
-            }
-            
-            SetRendererAttributes((CellRendererText)cell, ti.Artist, iter);
-        }
-        
-        protected void TrackCellTitle(TreeViewColumn tree_column,
-            CellRenderer cell, TreeModel tree_model, TreeIter iter)
-        {
-            TrackInfo ti = IterTrackInfo(iter);
-            if (ti == null) {
-                return;
-            }
-            
-            SetRendererAttributes((CellRendererText)cell, ti.Title, iter);
-        }
-        
-        protected void TrackCellAlbum(TreeViewColumn tree_column,
-            CellRenderer cell, TreeModel tree_model, TreeIter iter)
-        {
-            TrackInfo ti = IterTrackInfo(iter);
-            if (ti == null) {
-                return;
-            }
-            
-            SetRendererAttributes((CellRendererText)cell, ti.Album, iter);
-        }
-        
-        protected void TrackCellGenre(TreeViewColumn tree_column,
-            CellRenderer cell, TreeModel tree_model, TreeIter iter)
-        {
-            TrackInfo ti = IterTrackInfo(iter);
-            if (ti == null) {
-                return;
-            }
-            
-            SetRendererAttributes((CellRendererText)cell, ti.Genre, iter);
-        }
-        
-        protected void TrackCellYear(TreeViewColumn tree_column,
-            CellRenderer cell, TreeModel tree_model, TreeIter iter)
-        {
-            TrackInfo ti = IterTrackInfo(iter);
-            if (ti == null) {
-                return;
-            }
-            
-            int year = ti.Year;
-            SetRendererAttributes((CellRendererText)cell,
-                    year > 0 ? Convert.ToString(year) : String.Empty, iter);
-        }
-        
-        protected void TrackCellTime(TreeViewColumn tree_column,
-            CellRenderer cell, TreeModel tree_model, TreeIter iter)
-        {
-            TrackInfo ti = IterTrackInfo(iter);
-            if (ti == null) {
-                return;
-            }
-            
-            SetRendererAttributes((CellRendererText)cell, 
-                ti.Duration.TotalSeconds < 0.0 ? Catalog.GetString("N/A") : 
-                        DateTimeUtil.FormatDuration(
-                                (long)ti.Duration.TotalSeconds), iter);
-        }
-        
-        protected void TrackCellPlayCount(TreeViewColumn tree_column,
-            CellRenderer cell, TreeModel tree_model, TreeIter iter)
-        {
-            TrackInfo ti = IterTrackInfo(iter);
-            if (ti == null) {
-                return;
-            }
-            
-            uint plays = ti.PlayCount;
-            SetRendererAttributes((CellRendererText)cell,
-                    plays > 0 ? Convert.ToString(plays) : String.Empty, iter);
-        }
-        
-        protected void TrackCellLastPlayed(TreeViewColumn tree_column,
-            CellRenderer cell, TreeModel tree_model, TreeIter iter)
-        {
-            TrackInfo ti = IterTrackInfo(iter);
-            if(ti == null) {
-                return;
-            }
-            
-            DateTime lastPlayed = ti.LastPlayed;
-            
-            string disp = String.Empty;
-            
-            if(lastPlayed > DateTime.MinValue) {
-                disp = lastPlayed.ToString();
-            }
-            
-            SetRendererAttributes((CellRendererText)cell,
-                    String.Format("{0}", disp), iter);
-        }
-        
-        public void PlayPath(TreePath path)
-        {
-            Play(path);
             UpdateView();
         }
-        
-        public TrackInfo IterTrackInfo(TreeIter iter)
-        {
-            object o = model.GetValue(iter, 0);
-            if (o != null) {
-                return o as TrackInfo;
-            }
 
-            return null;
+        public void OnPreviousAction(object o, EventArgs e)
+        {
+            Application.Invoke(delegate {
+                model.Regress();
+                UpdateView();
+            });
         }
 
-        public TrackInfo PathTrackInfo(TreePath path)
+        private void OnPlayerEngineEventChanged(object o, PlayerEngineEventArgs args)
         {
-            TreeIter iter;
-
-            if(!model.GetIter(out iter, path))
-                return null;
-
-            return IterTrackInfo(iter);
-        }
-
-
-        public void Play(TreePath path)
-        {
-            TrackInfo ti = PathTrackInfo(path);
-            if (ti == null)
-                return;
-            PlayerEngineCore.OpenPlay(ti);
-            model.GetIter(out playingIter, path);
-        }
-
-        public void PlayIter(TreeIter iter)
-        {
-            TrackInfo ti = IterTrackInfo(iter);
-            
-            if(ti == null)
-                return;
-                
-            if(ti.CanPlay) {
-                PlayerEngineCore.Open(ti);
-                PlayerEngineCore.Play();
-                playingIter = iter;
-            } else {
-                playingIter = iter;
-                Continue();
+            if (args.Event == PlayerEngineEvent.EndOfStream) {
+                Application.Invoke(delegate {
+                    model.Advance();
+                    UpdateView();
+                });
             }
         }
-
-        public void PlayPause()
-        {
-        
-        }
-        
-        public void Advance()
-        {
-            ChangeDirection(true);
-        }
-
-        public void Regress()
-        {
-            ChangeDirection(false);    
-        }
-
-        public void Continue()
-        {
-            Advance();
-        }
-        
-        private void StopPlaying()
-        {
-            EventHandler handler = Stopped;
-            if(handler != null) {
-                handler(this, new EventArgs());
-            }
-            
-            playingIter = TreeIter.Zero;
-        }
-
-        private void ChangeDirection(bool forward)
-        {
-            TreePath currentPath = null;
-            TreeIter currentIter, nextIter = TreeIter.Zero;
-            TrackInfo currentTrack = null, nextTrack;
-            
-            if(!playingIter.Equals(TreeIter.Zero)) {
-                try {
-                    currentPath = model.GetPath(playingIter);
-                } catch(NullReferenceException) {
-                }
-            }
-            
-            if(currentPath == null) {
-                if(!model.GetIterFirst(out nextIter)) {
-                    StopPlaying();
-                    return;
-                }
-
-                PlayIter(nextIter);
-                return;
-            }
-        
-            int count = Count();
-            int index = FindIndex(currentPath);
-            bool lastTrack = index == count - 1;
-        
-            if(count <= 0 || index >= count || index < 0) {
-                StopPlaying();
-                return;
-            }
-                
-            currentTrack = PathTrackInfo(currentPath);
-            currentIter = playingIter;
-
-            if (forward) {
-                if(lastTrack) {
-                    if(!model.IterNthChild(out nextIter, 0)) {
-                        StopPlaying();
-                        return;
-                    }
-                } else {                
-                    currentPath.Next();                
-                    if(!model.GetIter(out nextIter, currentPath)) {
-                        StopPlaying();
-                        return;
-                    }
-                }
-                
-                nextTrack = IterTrackInfo(nextIter);
-                nextTrack.PreviousTrack = currentIter;
-            } else {
-                if(currentTrack.PreviousTrack.Equals(TreeIter.Zero)) {
-                    if(index > 0 && currentPath.Prev()) {
-                        if(!model.GetIter(out nextIter, currentPath)) {
-                            StopPlaying();
-                            return;
-                        }
-                    } else {
-                        StopPlaying();
-                        return;
-                    }
-                } else {
-                    nextIter = currentTrack.PreviousTrack;
-                }
-            }
-            
-            if(!nextIter.Equals(TreeIter.Zero)) {
-                PlayIter(nextIter);
-            } else {
-                StopPlaying();
-            }
-        }
-
-        public int Count()
-        {
-            return model.IterNChildren();
-        }
-        
-        private int FindIndex(TreePath a)
-        {
-            TreeIter iter;
-            TreePath b;
-            int i, n;
-    
-            for(i = 0, n = Count(); i < n; i++) {
-                model.IterNthChild(out iter, i);
-                b = model.GetPath(iter);
-                if(a.Compare(b) == 0) 
-                    return i;
-            }
-    
-            return -1;
-        }
-
-
-
     }
 }
