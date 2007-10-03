@@ -1,0 +1,12 @@
+Mirage 0.2 - October the 3rd, 2007
+   * Integrated Mirage into Banhsee (ActionEvent)
+   * Internationalization (German Translation at the moment)
+   * Ability to Rescan the Music Library/Reset Mirage
+   * GStreamer backend for analyzing songs
+
+Mirage 0.1.1
+   * Update MFCC Filters, Load the filters from a file
+   * Fix configure.ac
+
+Mirage 0.1
+   * Initial Release
