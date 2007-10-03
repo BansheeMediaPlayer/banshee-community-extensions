@@ -29,9 +29,7 @@ SOURCES = \
 
 RESOURCES = \
 	-resource:res/cp.png \
-	-resource:res/mirage.png \
-	-resource:res/source-localqueue.png \
-	-resource:res/cd-action-rip-16.png \
+	-resource:res/source-mirage.png \
 	-resource:res/MirageMenu.xml
 
 REFERENCES =  \

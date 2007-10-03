@@ -39,13 +39,10 @@ namespace Banshee.Plugins.Mirage
         private List<TrackViewColumn> columns;
         private static PlaylistModel model = new PlaylistModel();
        
-        private Gdk.Pixbuf ripping_pixbuf;
         private Gdk.Pixbuf now_playing_pixbuf;
         private Gdk.Pixbuf drm_pixbuf;
         private Gdk.Pixbuf resource_not_found_pixbuf;
         private Gdk.Pixbuf unknown_error_pixbuf;
-
-        public TreeViewColumn RipColumn;
 
         PlaylistGeneratorSource pgs;
 
@@ -57,7 +54,6 @@ namespace Banshee.Plugins.Mirage
             drm_pixbuf = IconThemeUtils.LoadIcon(16, "emblem-readonly", "emblem-important", Stock.DialogError);
             resource_not_found_pixbuf = IconThemeUtils.LoadIcon(16, "emblem-unreadable", Stock.DialogError);
             unknown_error_pixbuf = IconThemeUtils.LoadIcon(16, "dialog-error", Stock.DialogError);
-            ripping_pixbuf = Gdk.Pixbuf.LoadFromResource("cd-action-rip-16.png");
             now_playing_pixbuf = IconThemeUtils.LoadIcon(16, "media-playback-start", 
                 Stock.MediaPlay, "now-playing-arrow");
                 
@@ -97,22 +93,6 @@ namespace Banshee.Plugins.Mirage
             status_column.SetCellDataFunc(status_renderer, new TreeCellDataFunc(StatusColumnDataHandler));
             InsertColumn(status_column, 0);
             
-            CellRendererToggle rip_renderer = new CellRendererToggle();
-            rip_renderer.Activatable = true;
-            rip_renderer.Toggled += OnRipToggled;
-            
-            RipColumn = new TreeViewColumn();
-            RipColumn.Expand = false;
-            RipColumn.Resizable = false;
-            RipColumn.Clickable = false;
-            RipColumn.Reorderable = false;
-            RipColumn.Visible = false;
-            RipColumn.Widget = new Gtk.Image(ripping_pixbuf);
-            RipColumn.Widget.Show();
-            RipColumn.PackStart(rip_renderer, true);
-            RipColumn.SetCellDataFunc(rip_renderer, new TreeCellDataFunc(RipColumnDataHandler));
-            InsertColumn(RipColumn, 1);
-            
             TreeViewColumn void_hack_column = new TreeViewColumn();
             void_hack_column.Expand = false;
             void_hack_column.Resizable = false;
@@ -150,17 +130,6 @@ namespace Banshee.Plugins.Mirage
             this.pgs = pgs;
         }    
 
-        private void OnRipToggled(object o, ToggledArgs args)
-        {
-            try {
-                AudioCdTrackInfo ti = (AudioCdTrackInfo)model.PathTrackInfo(new TreePath(args.Path));
-                CellRendererToggle renderer = (CellRendererToggle)o;
-                ti.CanRip = !ti.CanRip;
-                renderer.Active = ti.CanRip;
-            } catch {
-            }   
-        }
-        
         private bool CheckColumnDrop(TreeView tree, TreeViewColumn col, TreeViewColumn prev, TreeViewColumn next)
         {
             return prev != null && next != null;
@@ -239,21 +208,6 @@ namespace Banshee.Plugins.Mirage
             }
         }
         
-        protected void RipColumnDataHandler(TreeViewColumn tree_column, CellRenderer cell, 
-            TreeModel tree_model, TreeIter iter)
-        {
-            CellRendererToggle toggle = (CellRendererToggle)cell;
-            AudioCdTrackInfo ti = model.IterTrackInfo(iter) as AudioCdTrackInfo;
- 
-            if(ti != null) {
-                toggle.Sensitive = ti.CanPlay && !ti.IsRipped;
-                toggle.Activatable = toggle.Sensitive;
-                toggle.Active = ti.CanRip && !ti.IsRipped;
-            } else {
-                toggle.Active = false;
-            }
-        }
-
         public void PlayPath(TreePath path)
         {
             model.PlayPath(path);

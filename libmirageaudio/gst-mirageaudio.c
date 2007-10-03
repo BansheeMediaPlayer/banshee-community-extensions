@@ -323,11 +323,17 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
     if (gst_element_set_state(ma->pipeline, GST_STATE_PAUSED) == GST_STATE_CHANGE_ASYNC) {
         gst_element_get_state(ma->pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
     }
+
     GstPad *pad = gst_element_get_pad(ma->sink, "sink");
     GstCaps *caps = gst_pad_get_negotiated_caps(pad);
-    GstStructure *str = gst_caps_get_structure(caps, 0);
-    gst_structure_get_int(str, "rate", &ma->filerate);
+    if (GST_IS_CAPS(caps)) {
+        GstStructure *str = gst_caps_get_structure(caps, 0);
+        gst_structure_get_int(str, "rate", &ma->filerate);
+    } else {
+        ma->filerate = -1;
+    }
     gst_object_unref(pad);
+
 }
 
 float*
@@ -347,6 +353,19 @@ mirageaudio_decode(MirageAudio *ma, const gchar *file, int *frames, int* size, i
 
     // Gstreamer setup
     mirageaudio_initgstreamer(ma, file);
+    if (ma->filerate < 0) {
+        *size = 0;
+        *frames = 0;
+        *ret = -1;
+
+        // Gstreamer cleanup
+        gst_element_set_state(ma->pipeline, GST_STATE_NULL);
+        gst_object_unref(GST_OBJECT(ma->pipeline));
+
+        return NULL;
+    }
+
+
 
     // libsamplerate initialization
     ma->src_data.src_ratio = (double)ma->rate/(double)ma->filerate;

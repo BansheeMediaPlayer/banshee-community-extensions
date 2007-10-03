@@ -256,7 +256,7 @@ namespace Banshee.Plugins.Mirage
             }
         }
 
-        public static Image icon = new Image(null, "source-localqueue.png");
+        public static Image icon = new Image(null, "source-mirage.png");
 
         public override Gdk.Pixbuf Icon {
             get {
