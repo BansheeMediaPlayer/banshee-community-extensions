@@ -38,7 +38,7 @@ public class Config
     public static string Prefix
     {
         get {
-            return "/usr/local";
+            return "/usr";
         }
     }
 
@@ -52,7 +52,7 @@ public class Config
     public static string LocaleDir
     {
         get {
-            return "/usr/local/share/locale";
+            return "/usr/share/locale";
         }
     }
 }

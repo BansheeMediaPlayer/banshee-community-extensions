@@ -32,6 +32,7 @@ install: build
 	dh_installdirs
 
 	$(MAKE) DESTDIR=$(CURDIR)/debian/banshee-mirage install
+	find debian/ -type f -name "*.dll" -or -name "*.mdb" | xargs chmod -x
 
 
 # Build architecture-independent files here.
