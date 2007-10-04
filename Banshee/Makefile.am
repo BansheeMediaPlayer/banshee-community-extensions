@@ -49,7 +49,10 @@ $(ASSEMBLY) $(ASSEMBLY).mdb: $(SOURCES)
 	$(MCS) $(MCS_FLAGS) -out:$(ASSEMBLY) $(RESOURCES) $(REFERENCES) -target:library $(BANSHEE_LIBS) $(SOURCES)
 
 EXTRA_DIST = \
-	$(SOURCES)
+	$(SOURCES) \
+	res/cp.png \
+	res/source-mirage.png \
+	res/MirageMenu.xml
 
 CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb
 DISTCLEANFILES = *.mdb

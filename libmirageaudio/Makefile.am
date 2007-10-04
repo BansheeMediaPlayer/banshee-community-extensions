@@ -15,7 +15,8 @@ mirageaudiolib_LTLIBRARIES = libmirageaudio.la
 
 libmirageaudio_la_LDFLAGS = -avoid-version -module
 libmirageaudio_la_SOURCES = \
-							gst-mirageaudio.c
+	gst-mirageaudio.c \
+	gst-mirageaudio.h
 
 libmirageaudio_la_LIBADD = \
 	$(GLIB_LIBS) \
@@ -24,9 +25,9 @@ libmirageaudio_la_LIBADD = \
 	$(GST_LIBS)
 
 mirageaudiotest_SOURCES = \
-					  mirageaudiotest.c
+	mirageaudiotest.c
 mirageaudiotest_LDADD = \
-						-lmirageaudio
+	-lmirageaudio
 
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = $(libmirageaudio_la_SOURCES)
