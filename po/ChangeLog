@@ -1,0 +1,31 @@
+2007-10-03 13:29  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* POTFILES.in: forgot source file
+
+2007-09-28 15:43  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/PlaylistGeneratorSource.cs, debian/changelog,
+	  debian/control, debian/files, de.po: update debian package
+
+2007-09-28 14:46  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/Config.cs.in, Banshee/Makefile.am,
+	  Banshee/MiragePlugin.cs, Banshee/PlaylistGeneratorSource.cs,
+	  Banshee/PlaylistGeneratorView.cs, Banshee/TrackView.Columns,
+	  Banshee/TrackView.Columns/AlbumColumn.cs,
+	  Banshee/TrackView.Columns/ArtistColumn.cs,
+	  Banshee/TrackView.Columns/DateAddedColumn.cs,
+	  Banshee/TrackView.Columns/DurationColumn.cs,
+	  Banshee/TrackView.Columns/GenreColumn.cs,
+	  Banshee/TrackView.Columns/LastPlayedColumn.cs,
+	  Banshee/TrackView.Columns/PlayCountColumn.cs,
+	  Banshee/TrackView.Columns/RatingColumn.cs,
+	  Banshee/TrackView.Columns/TitleColumn.cs,
+	  Banshee/TrackView.Columns/TrackNumberColumn.cs,
+	  Banshee/TrackView.Columns/TrackViewColumn.cs,
+	  Banshee/TrackView.Columns/UriColumn.cs,
+	  Banshee/TrackView.Columns/YearColumn.cs, Makefile.am, autogen.sh,
+	  configure.ac, libmirageaudio/gst-mirageaudio.c, ., LINGUAS,
+	  POTFILES.in, de.po: * internationalization
+	  * new PlaylistView using Banhsee Playlistview columns
+
