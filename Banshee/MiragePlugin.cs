@@ -182,12 +182,14 @@ namespace Banshee.Plugins.Mirage
             if (rescanFailed) {
                 query = "SELECT TrackID FROM Tracks WHERE TrackID NOT IN"
                     + " (SELECT Tracks.TrackID FROM MirageProcessed, Tracks"
-                    + " WHERE (Tracks.TrackID = MirageProcessed.TrackID) AND "
-                    + " (MirageProcessed.Status = 0))";
+                    + " WHERE (Tracks.TrackID = MirageProcessed.TrackID) AND"
+                    + " (MirageProcessed.Status = 0))"
+                    + " ORDER BY Rating DESC, NumberOfPlays DESC";
             } else {
                 query = "SELECT TrackID FROM Tracks WHERE TrackID NOT IN"
                     + " (SELECT Tracks.TrackID FROM MirageProcessed, Tracks"
-                    + " WHERE (Tracks.TrackID = MirageProcessed.TrackID))";
+                    + " WHERE (Tracks.TrackID = MirageProcessed.TrackID))"
+                    + " ORDER BY Rating DESC, NumberOfPlays DESC";
             }
 
             IDataReader reader = Globals.Library.Db.Query(query);
