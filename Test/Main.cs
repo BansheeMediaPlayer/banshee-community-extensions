@@ -46,7 +46,7 @@ class MainClass
 		
 		Console.WriteLine("Distance = " + song1.Distance(song2));
 		
-		Timer t = new Timer();
+		Mirage.Timer t = new Mirage.Timer();
 		t.Start();
 		int runs = 100000;
 		for (int i = 0; i < runs; i++) {
