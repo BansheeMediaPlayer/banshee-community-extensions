@@ -245,7 +245,7 @@ namespace Banshee.Plugins.Mirage
                 "Are you sure you want to stop Mirage. "
                 + "Automatic Playlist Generation will only work for the tracks which are already analyzed. "
                 + "The operation can be resumed at any time from the <i>Tools</i> menu.");
-            userEvent.Icon = IconThemeUtils.LoadIcon(22, "document-save", Gtk.Stock.Save);
+            userEvent.Icon = IconThemeUtils.LoadIcon(22, "audio-x-generic");
             userEvent.CancelRequested += OnUserEventCancelRequested;
             userEvent.Progress = 0;
 
@@ -318,7 +318,7 @@ namespace Banshee.Plugins.Mirage
                         Catalog.GetString("Rescans the Music Collection for new Songs"),
                         OnMirageRescanMusicHandler),
 
-                    new ActionEntry("MirageResetAction", Stock.Stop,
+                    new ActionEntry("MirageResetAction", Stock.Clear,
                         Catalog.GetString("Reset Mirage"), null,
                         Catalog.GetString("Resets the Mirage Playlist Generation Plugin. "+
                             "All songs have to be analyzed again to use Automatic Playlist Generation."),
