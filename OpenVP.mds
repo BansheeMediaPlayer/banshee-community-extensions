@@ -1,0 +1,24 @@
+<Combine name="OpenVP" fileversion="2.0">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="CombineConfiguration">
+      <Entry build="True" name="OpenVP" configuration="Debug" />
+      <Entry build="True" name="Test" configuration="Debug" />
+      <Entry build="True" name="OpenVP.Core" configuration="Debug" />
+    </Configuration>
+    <Configuration name="Release" ctype="CombineConfiguration">
+      <Entry build="True" name="OpenVP" configuration="Release" />
+      <Entry build="True" name="Test" configuration="Release" />
+      <Entry build="True" name="OpenVP.Core" configuration="Release" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="Test" single="True">
+    <Execute type="None" entry="OpenVP" />
+    <Execute type="None" entry="Test" />
+    <Execute type="None" entry="OpenVP.Core" />
+  </StartMode>
+  <Entries>
+    <Entry filename="OpenVP/OpenVP.mdp" />
+    <Entry filename="Test/Test.mdp" />
+    <Entry filename="OpenVP.Core/OpenVP.Core.mdp" />
+  </Entries>
+</Combine>
