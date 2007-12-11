@@ -26,10 +26,13 @@ using Tao.OpenGl;
 namespace Test {
 	class MainClass {
 		public static void Main(string[] args) {
+			UDPPlayerData udp = new UDPPlayerData();
+			
 			Controller c = new Controller();
 			
 			c.Renderer = new TestEffect();
 			c.Initialize();
+			c.PlayerData = udp;
 			
 			bool run = true;
 			
@@ -37,8 +40,10 @@ namespace Test {
 				run = false;
 			};
 			
-			while (run)
+			while (run) {
+				udp.Update();
 				c.DrawFrame();
+			}
 			
 			c.Destroy();
 		}
@@ -48,6 +53,9 @@ namespace Test {
 	public class TestEffect : Effect {
 		[NonSerialized]
 		private float mR = 0;
+		
+		[NonSerialized]
+		private float[] mPcm = new float[512];
 		
 		public override void NextFrame(Controller controller) {
 			this.mR += 0.05f;
@@ -61,6 +69,16 @@ namespace Test {
 			
 			Gl.glVertex2f(0, 0);
 			Gl.glVertex2d(Math.Sin(this.mR), Math.Cos(this.mR));
+			
+			Gl.glEnd();
+			
+			controller.PlayerData.GetPCM(this.mPcm);
+			
+			Gl.glBegin(Gl.GL_LINE_STRIP);
+			
+			for (int i = 0; i < this.mPcm.Length; i++)
+				Gl.glVertex2f(((float) i / this.mPcm.Length) * 2 - 1,
+				              this.mPcm[i]);
 			
 			Gl.glEnd();
 		}

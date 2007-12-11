@@ -4,21 +4,25 @@
       <Entry build="True" name="OpenVP" configuration="Debug" />
       <Entry build="True" name="Test" configuration="Debug" />
       <Entry build="True" name="OpenVP.Core" configuration="Debug" />
+      <Entry build="True" name="AudaciousUDPStub" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
       <Entry build="True" name="OpenVP" configuration="Release" />
       <Entry build="True" name="Test" configuration="Release" />
       <Entry build="True" name="OpenVP.Core" configuration="Release" />
+      <Entry build="True" name="AudaciousUDPStub" configuration="Release" />
     </Configuration>
   </Configurations>
   <StartMode startupentry="Test" single="True">
     <Execute type="None" entry="OpenVP" />
     <Execute type="None" entry="Test" />
     <Execute type="None" entry="OpenVP.Core" />
+    <Execute type="None" entry="AudaciousUDPStub" />
   </StartMode>
   <Entries>
     <Entry filename="OpenVP/OpenVP.mdp" />
     <Entry filename="Test/Test.mdp" />
     <Entry filename="OpenVP.Core/OpenVP.Core.mdp" />
+    <Entry filename="AudaciousUDPStub/AudaciousUDPStub.mdp" />
   </Entries>
 </Combine>

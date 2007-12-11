@@ -210,5 +210,29 @@ namespace OpenVP {
 				}
 			}
 		}
+		
+		/// <value>
+		/// The length of the internal PCM data array.
+		/// </value>
+		/// <remarks>
+		/// This value can be used when an effect would like to render, for
+		/// example, a scope.  The most efficient approach would be to take the
+		/// exact PCM data since using a smaller array would be of lower quality
+		/// and using a larger array would not contain any more information (and
+		/// may in fact contain less due to interpolation).
+		/// </remarks>
+		public abstract int NativePCMLength { get; }
+		
+		/// <value>
+		/// The length of the internal spectrum data array.
+		/// </value>
+		/// <remarks>
+		/// This value can be used when an effect would like to render, for
+		/// example, a scope.  The most efficient approach would be to take the
+		/// exact spectrum data since using a smaller array would be of lower
+		/// quality and using a larger array would not contain any more
+		/// information (and may in fact contain less due to interpolation).
+		/// </remarks>
+		public abstract int NativeSpectrumLength { get; }
 	}
 }
