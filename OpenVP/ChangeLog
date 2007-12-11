@@ -1,0 +1,7 @@
+2007-12-10  Chris Howie <me@chrishowie.com> 
+
+	* UDPPlayerData.cs: Changed PlayerData.SongPosition from double to float. 
+	  Removed some debug code.
+	* PlayerData.cs: Changed PlayerData.SongPosition from double to float.
+	* ChangeLog: Added.
+

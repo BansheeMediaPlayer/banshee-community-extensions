@@ -78,12 +78,12 @@ namespace OpenVP {
 			}
 		}
 		
-		private double mSongPosition = 0;
+		private float mSongPosition = 0;
 		
 		/// <value>
 		/// The current song's position in fractional seconds.
 		/// </value>
-		public override double SongPosition {
+		public override float SongPosition {
 			get {
 				return this.mSongPosition;
 			}
@@ -130,10 +130,10 @@ namespace OpenVP {
 			
 			switch (type) {
 			case MessageType.PositionUpdate:
-				if (data.Length < 12)
+				if (data.Length < 8)
 					break;
 				
-				this.mSongPosition = BitConverter.ToDouble(data, 4);
+				this.mSongPosition = BitConverter.ToSingle(data, 4);
 				break;
 				
 			case MessageType.TitleUpdate:
@@ -192,10 +192,6 @@ namespace OpenVP {
 					this.mLazyUpdateQueue.Enqueue(data);
 				}
 			}
-			
-			if (this.mLazyUpdateQueue.Count != 0)
-				Console.WriteLine("Bailing with {0} messages in the queue.",
-				                  this.mLazyUpdateQueue.Count);
 			
 			return false;
 		}

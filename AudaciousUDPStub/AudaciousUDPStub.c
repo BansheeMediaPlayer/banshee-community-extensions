@@ -20,7 +20,9 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <audacious/plugin.h>
+#include <audacious/beepctrl.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -162,6 +164,70 @@ static void openvp_send_slice_complete() {
 		(struct sockaddr *)&destAddr_, sizeof(destAddr_));
 }
 
+static void openvp_send_position() {
+	struct {
+		MessageType type;
+		float position;
+	} out;
+	
+	if (socket_ == -1)
+		return;
+	
+	out.type = PositionUpdate;
+	out.position = (float) xmms_remote_get_output_time(openvp_vtable.xmms_session) / 1000;
+	
+	sendto(socket_, (void *) &out, sizeof(out), 0,
+		(struct sockaddr *) &destAddr_, sizeof(destAddr_));
+}
+
+static char *openvp_last_title = NULL;
+
+static void openvp_send_title() {
+	struct {
+		MessageType type;
+		char str;
+	} *out;
+	
+	int pos;
+	int outlen;
+	char *title;
+	
+	if (socket_ == -1)
+		return;
+	
+	pos = xmms_remote_get_playlist_pos(openvp_vtable.xmms_session);
+	
+	if (pos == -1) {
+		title = "";
+	} else {
+		title = xmms_remote_get_playlist_title(openvp_vtable.xmms_session, pos);
+		
+		if (title == NULL)
+			title = "";
+	}
+	
+	if (openvp_last_title != NULL) {
+		if (strcmp(title, openvp_last_title) == 0)
+			return;
+		
+		free(openvp_last_title);
+	}
+	
+	openvp_last_title = strdup(title);
+	
+	outlen = 4 + strlen(title);
+	
+	out = malloc(outlen);
+	
+	out->type = TitleUpdate;
+	memcpy(&out->str, title, strlen(title));
+	
+	sendto(socket_, (void *) out, outlen, 0,
+		(struct sockaddr *) &destAddr_, sizeof(destAddr_));
+	
+	free(out);
+}
+
 static void openvp_render_freq(gint16 freq_data[2][256]) {
 	struct {
 		MessageType type;
@@ -178,7 +244,9 @@ static void openvp_render_freq(gint16 freq_data[2][256]) {
 	sendto(socket_, (void *) &out, sizeof(out), 0,
 		(struct sockaddr *) &destAddr_, sizeof(destAddr_));
 	
-	// Frequency data is always the last.
+	// Frequency data is always the last.  Send the rest and signal completion.
+	openvp_send_position();
+	openvp_send_title();
 	openvp_send_slice_complete();
 }
 

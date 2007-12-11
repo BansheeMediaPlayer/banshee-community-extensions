@@ -175,7 +175,7 @@ namespace OpenVP {
 		/// <value>
 		/// The current position of the song in fractional seconds.
 		/// </value>
-		public abstract double SongPosition { get; }
+		public abstract float SongPosition { get; }
 		
 		/// <summary>
 		/// The current song title.

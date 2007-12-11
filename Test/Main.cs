@@ -58,29 +58,43 @@ namespace Test {
 		private float[] mPcm = new float[512];
 		
 		public override void NextFrame(Controller controller) {
-			this.mR += 0.05f;
+			this.mR += 1;
 		}
 		
 		public override void RenderFrame(Controller controller) {
 			Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
 			
+			Gl.glMatrixMode(Gl.GL_PROJECTION);
+			Gl.glPushMatrix();
+			
+			Gl.glRotatef(this.mR, 0, 0, 1);
+			
 			Gl.glColor3f(1, 1, 1);
 			Gl.glBegin(Gl.GL_LINES);
 			
 			Gl.glVertex2f(0, 0);
-			Gl.glVertex2d(Math.Sin(this.mR), Math.Cos(this.mR));
+			Gl.glVertex2f(1, 0);
 			
 			Gl.glEnd();
 			
+			Gl.glPopMatrix();
+			
 			controller.PlayerData.GetPCM(this.mPcm);
+			
+			Gl.glPushMatrix();
+			
+			Gl.glTranslatef(-1, 0, 0);
+			Gl.glScalef(2, 1, 1);
 			
 			Gl.glBegin(Gl.GL_LINE_STRIP);
 			
 			for (int i = 0; i < this.mPcm.Length; i++)
-				Gl.glVertex2f(((float) i / this.mPcm.Length) * 2 - 1,
+				Gl.glVertex2f((float) i / this.mPcm.Length,
 				              this.mPcm[i]);
 			
 			Gl.glEnd();
+			
+			Gl.glPopMatrix();
 		}
 	}
 }

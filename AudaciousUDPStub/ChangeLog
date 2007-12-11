@@ -1,0 +1,5 @@
+2007-12-10  Chris Howie <me@chrishowie.com> 
+
+	* AudaciousUDPStub.c: Implemented PositionUpdate and TitleUpdate messages.
+	* ChangeLog: Added.
+
