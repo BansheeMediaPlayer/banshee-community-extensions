@@ -19,12 +19,12 @@
     <File name="IRenderer.cs" subtype="Code" buildaction="Compile" />
     <File name="PlayerData.cs" subtype="Code" buildaction="Compile" />
     <File name="Effect.cs" subtype="Code" buildaction="Compile" />
-    <File name="EffectTitleAttribute.cs" subtype="Code" buildaction="Compile" />
     <File name="KeyboardEvent.cs" subtype="Code" buildaction="Compile" />
-    <File name="Preset.cs" subtype="Code" buildaction="Compile" />
     <File name="LinearPreset.cs" subtype="Code" buildaction="Compile" />
     <File name="Color.cs" subtype="Code" buildaction="Compile" />
     <File name="UDPPlayerData.cs" subtype="Code" buildaction="Compile" />
+    <File name="IBeatDetector.cs" subtype="Code" buildaction="Compile" />
+    <File name="NullPlayerData.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />

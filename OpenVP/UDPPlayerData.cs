@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -41,6 +42,27 @@ namespace OpenVP {
 		
 		private UdpClient mClient;
 		
+		private int mPort;
+		
+		/// <value>
+		/// The port number to listen on.
+		/// </value>
+		[Browsable(true), Category("Connection"), DefaultValue(40507),
+		 Description("The UDP port to listen on for incoming data.")]
+		public int Port {
+			get {
+				return this.mPort;
+			}
+			set {
+				if (value < 1 || value > 65535)
+					throw new ArgumentOutOfRangeException("Port numbers range from 1-65535.");
+				
+				this.mPort = value;
+				
+				this.RecreateClient();
+			}
+		}
+		
 		/// <summary>
 		/// Creates a new UDP-based player data source.
 		/// </summary>
@@ -57,24 +79,20 @@ namespace OpenVP {
 		/// The port number to listen on.
 		/// </param>
 		public UDPPlayerData(int port) {
-			try {
-				this.mClient = new UdpClient(port, AddressFamily.InterNetworkV6);
-			} catch {
-				this.mClient = new UdpClient(port, AddressFamily.InterNetwork);
-			}
+			this.mPort = port;
+			
+			this.RecreateClient();
 		}
 		
-		private bool mIsBeat = false;
-		
-		/// <value>
-		/// True if this slice of data is on a beat.
-		/// </value>
-		public override bool IsBeat {
-			get {
-				return this.mIsBeat;
-			}
-			set {
-				this.mIsBeat = true;
+		private void RecreateClient() {
+			this.mClient.Close();
+			
+			try {
+				this.mClient = new UdpClient(this.mPort,
+				                             AddressFamily.InterNetworkV6);
+			} catch {
+				this.mClient = new UdpClient(this.mPort,
+				                             AddressFamily.InterNetwork);
 			}
 		}
 		
@@ -277,12 +295,18 @@ namespace OpenVP {
 			this.GetChannels(this.mSpecData, channels);
 		}
 		
+		/// <value>
+		/// The length of the internal PCM data array.
+		/// </value>
 		public override int NativePCMLength {
 			get {
 				return this.mPCMData[0].Length;
 			}
 		}
 		
+		/// <value>
+		/// The length of the internal spectrum data array.
+		/// </value>
 		public override int NativeSpectrumLength {
 			get {
 				return this.mSpecData[0].Length;

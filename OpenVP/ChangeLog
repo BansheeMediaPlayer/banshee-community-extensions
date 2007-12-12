@@ -1,3 +1,19 @@
+2007-12-11  Chris Howie <me@chrishowie.com> 
+
+	* IBeatDetector.cs: Added IBeatDetector.
+	* NullPlayerData.cs: Added NullPlayerData.
+	* EffectTitleAttribute.cs: Removed EffectTitleAttribute in favor of
+	  System.ComponentModel.DisplayNameAttribute.
+	* Controller.cs: Added BeatDetector property.  PlayerData can no longer be
+	  null and is initialized with an instance of NullPlayerData.
+	* PlayerData.cs: Removed IsBeat in favor of IBeatDetector and tagged all
+	  properties as unbrowsable.
+	* Effect.cs: Removed EffectTitleAttribute in favor of
+	  System.ComponentModel.DisplayNameAttribute.  Removed GetPropertySheet
+	  and added ComponentModel attributes to all properties.
+	* UDPPlayerData.cs: Track API changes.  Add browsable Port property.
+	* Preset.cs: Deleted the Preset class for now.
+
 2007-12-10  Chris Howie <me@chrishowie.com> 
 
 	* UDPPlayerData.cs: Changed PlayerData.SongPosition from double to float. 

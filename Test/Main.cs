@@ -21,6 +21,7 @@
 using System;
 using System.Runtime.Serialization.Formatters.Soap;
 using OpenVP;
+using OpenVP.Core;
 using Tao.OpenGl;
 
 namespace Test {
@@ -30,7 +31,15 @@ namespace Test {
 			
 			Controller c = new Controller();
 			
-			c.Renderer = new TestEffect();
+			LinearPreset preset = new LinearPreset();
+			
+			ClearScreen clear = new ClearScreen();
+			clear.ClearColor = new Color(0, 0, 0, 0.3f);
+			
+			preset.Effects.Add(clear);
+			preset.Effects.Add(new TestEffect());
+			
+			c.Renderer = preset;
 			c.Initialize();
 			c.PlayerData = udp;
 			
@@ -41,7 +50,7 @@ namespace Test {
 			};
 			
 			while (run) {
-				udp.Update();
+				udp.UpdateWait();
 				c.DrawFrame();
 			}
 			
@@ -62,14 +71,12 @@ namespace Test {
 		}
 		
 		public override void RenderFrame(Controller controller) {
-			Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
-			
 			Gl.glMatrixMode(Gl.GL_PROJECTION);
 			Gl.glPushMatrix();
 			
 			Gl.glRotatef(this.mR, 0, 0, 1);
 			
-			Gl.glColor3f(1, 1, 1);
+			Gl.glColor4f(1, 1, 1, 0.2f);
 			Gl.glBegin(Gl.GL_LINES);
 			
 			Gl.glVertex2f(0, 0);
@@ -86,6 +93,7 @@ namespace Test {
 			Gl.glTranslatef(-1, 0, 0);
 			Gl.glScalef(2, 1, 1);
 			
+			Gl.glColor3f(1, 1, 1);
 			Gl.glBegin(Gl.GL_LINE_STRIP);
 			
 			for (int i = 0; i < this.mPcm.Length; i++)

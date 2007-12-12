@@ -1,3 +1,8 @@
+2007-12-11  Chris Howie <me@chrishowie.com> 
+
+	* ClearScreen.cs: Track API changes.  Changed clear technique so that the
+	  alpha component can be used.  Made ClearColor browsable.
+
 2007-12-10  Chris Howie <me@chrishowie.com> 
 
 	* ChangeLog: Added.

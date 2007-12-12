@@ -19,6 +19,7 @@
 //
 
 using System;
+using System.ComponentModel;
 
 namespace OpenVP {
 	/// <summary>
@@ -28,7 +29,8 @@ namespace OpenVP {
 	/// <para>An effect is some sequence of rendering steps.  Anything that is
 	/// possible with OpenGL may be performed by an effect.</para>
 	/// <para>If the effect is intended to be used from a designer interface
-	/// it should have an <see cref="OpenVP.EffectTitleAttribute"/>.</para>
+	/// it should have a
+	/// <see cref="System.ComponentModel.DisplayNameAttribute"/>.</para>
 	/// <para>If an effect is not serializable, a GUI designer may refuse to use
 	/// it since it would not be able to save the effect settings.</para>
 	/// </remarks>
@@ -41,18 +43,18 @@ namespace OpenVP {
 		/// A <see cref="System.Type"/> that derives from this class.
 		/// </param>
 		/// <returns>
-		/// The title of the effect.  If the type has an
-		/// <see cref="OpenVP.EffectTitleAttribute"/> then it will be used to
-		/// determine the title, otherwise the name of the runtime type will be
-		/// used.
+		/// The title of the effect.  If the type has a
+		/// <see cref="System.ComponentModel.DisplayNameAttribute"/> then it
+		/// will be used to determine the title, otherwise the name of the
+		/// runtime type will be used.
 		/// </returns>
 		public static string GetTitle(Type type) {
-			object[] attrs = type.GetCustomAttributes(typeof(EffectTitleAttribute), false);
+			object[] attrs = type.GetCustomAttributes(typeof(DisplayNameAttribute), false);
 			
 			if (attrs.Length == 0)
 				return type.FullName;
 			
-			return ((EffectTitleAttribute) attrs[0]).Title;
+			return ((DisplayNameAttribute) attrs[0]).DisplayName;
 		}
 		
 		private bool mEnabled = true;
@@ -60,6 +62,8 @@ namespace OpenVP {
 		/// <value>
 		/// Whether or not the effect is enabled.
 		/// </value>
+		[Browsable(true), Category("Basic"), DefaultValue(true),
+		 Description("Whether or not to render the effect.")]
 		public bool Enabled {
 			get {
 				return this.mEnabled;
@@ -69,7 +73,7 @@ namespace OpenVP {
 			}
 		}
 		
-		private string mName = null;
+		private string mName = "";
 		
 		/// <value>
 		/// The name of the effect.
@@ -78,6 +82,8 @@ namespace OpenVP {
 		/// This value may be used for a variety of purposes.  For example, the
 		/// value could be used to find a particular effect object in a list.
 		/// </remarks>
+		[Browsable(true), Category("Basic"), DefaultValue(""),
+		 Description("A name by which the effect may be referred to in scripts.")]
 		public string Name {
 			get {
 				return this.mName;
@@ -90,6 +96,7 @@ namespace OpenVP {
 		/// <value>
 		/// The title of this effect.
 		/// </value>
+		[Browsable(false)]
 		public string Title {
 			get {
 				return Effect.GetTitle(this.GetType());
@@ -132,28 +139,6 @@ namespace OpenVP {
 			
 			if (this.mEnabled)
 				this.RenderFrame(controller);
-		}
-		
-		/// <summary>
-		/// Returns a property sheet object.
-		/// </summary>
-		/// <returns>
-		/// A property sheet of the indicated type, or <c>null</c> if there is
-		/// no property sheet for this effect type.
-		/// </returns>
-		/// <exception cref="System.NotSupportedException">Thrown if the effect
-		/// does not know how to produce a property sheet for the specified
-		/// type.</exception>
-		/// <remarks>
-		/// <para>A property sheet is a widget in some windowing system that
-		/// will present the options for this effect and allow them to be
-		/// tweaked.</para>
-		/// <para>The type of the type parameter can be used to determine which
-		/// type of object to return.  See the core OpenVP effect library for an
-		/// example of how to properly implement multiple widget types.</para>
-		/// </remarks>
-		public virtual T GetPropertySheet<T>() where T : class {
-			return null;
 		}
 		
 		/// <summary>

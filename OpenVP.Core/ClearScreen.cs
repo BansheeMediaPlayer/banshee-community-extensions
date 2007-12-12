@@ -19,13 +19,25 @@
 //
 
 using System;
+using System.ComponentModel;
 using OpenVP;
 using Tao.OpenGl;
 
 namespace OpenVP.Core {
-	[Serializable, EffectTitle("Clear screen")]
+	[Serializable, DisplayName("Clear screen")]
 	public sealed class ClearScreen : Effect {
-		public Color ClearColor = new Color(0, 0, 0);
+		private Color mClearColor = new Color(0, 0, 0);
+		
+		[Browsable(true), DisplayName("Clear color"),
+		 Description("The color to clear the screen with.")]
+		public Color ClearColor {
+			get {
+				return this.mClearColor;
+			}
+			set {
+				this.mClearColor = value;
+			}
+		}
 		
 		public ClearScreen() {
 		}
@@ -34,12 +46,29 @@ namespace OpenVP.Core {
 		}
 		
 		public override void RenderFrame(Controller controller) {
-			Gl.glClearColor(this.ClearColor.Red,
-			                this.ClearColor.Green,
-			                this.ClearColor.Blue,
-			                this.ClearColor.Alpha);
+			this.ClearColor.Use();
 			
-			Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
+			Gl.glMatrixMode(Gl.GL_PROJECTION);
+			Gl.glPushMatrix();
+			Gl.glLoadIdentity();
+			
+			Gl.glMatrixMode(Gl.GL_MODELVIEW);
+			Gl.glPushMatrix();
+			Gl.glLoadIdentity();
+			
+			Gl.glBegin(Gl.GL_QUADS);
+			
+			Gl.glVertex2i(-1, -1);
+			Gl.glVertex2i( 1, -1);
+			Gl.glVertex2i( 1,  1);
+			Gl.glVertex2i(-1,  1);
+			
+			Gl.glEnd();
+			
+			Gl.glPopMatrix();
+			
+			Gl.glMatrixMode(Gl.GL_PROJECTION);
+			Gl.glPopMatrix();
 		}
 	}
 }

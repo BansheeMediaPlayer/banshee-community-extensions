@@ -1,6 +1,6 @@
-// EffectTitleAttribute.cs
+// IBeatDetector.cs
 //
-//  Copyright (C) 2007 Chris Howie
+//  Copyright (C) 2007 [name of author]
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,35 +22,25 @@ using System;
 
 namespace OpenVP {
 	/// <summary>
-	/// Specifies a title for an effect.
+	/// Implemented by classes that can detect beats in music.
 	/// </summary>
-	/// <remarks>
-	/// The title specified will be used, for example, in GUI applications.
-	/// </remarks>
-	[AttributeUsage(AttributeTargets.Class)]
-	public class EffectTitleAttribute : Attribute {
-		private string mTitle;
-		
+	public interface IBeatDetector {
 		/// <value>
-		/// The title of the effect.
+		/// True if there was a beat on the last update.
 		/// </value>
-		public string Title {
-			get {
-				return this.mTitle;
-			}
-		}
+		bool IsBeat { get; }
 		
 		/// <summary>
-		/// Constructor.
+		/// Requests that the detector process the next slice of data.
 		/// </summary>
-		/// <param name="title">
-		/// The effect title.  May not be <c>null</c>.
+		/// <param name="controller">
+		/// The <see cref="Controller"/>.
 		/// </param>
-		public EffectTitleAttribute(string title) {
-			if (title == null)
-				throw new ArgumentNullException("title");
-			
-			this.mTitle = title;
-		}
+		/// <remarks>
+		/// This method is free to use whatever technique it would like to check
+		/// for a beat.  It may use <see cref="Controller.PlayerData"/>, user
+		/// input, or anything else.
+		/// </remarks>
+		void Update(Controller controller);
 	}
 }

@@ -19,6 +19,7 @@
 //
 
 using System;
+using System.ComponentModel;
 
 namespace OpenVP {
 	/// <summary>
@@ -136,20 +137,6 @@ namespace OpenVP {
 		}
 		
 		/// <summary>
-		/// True if the current slice of data is on a beat, false otherwise.
-		/// </summary>
-		/// <value>
-		/// True if the current slice of data is on a beat, false otherwise.
-		/// </value>
-		/// <remarks>
-		/// <para>If the media player does not do beat detection, this property
-		/// should always be false after an update.</para>
-		/// <para>This property must allow itself to be set to a new value, as
-		/// the user may wish to use a custom beat detection system.</para>
-		/// </remarks>
-		public abstract bool IsBeat { get; set; }
-		
-		/// <summary>
 		/// Requests that the player data be updated before the call returns.
 		/// </summary>
 		/// <remarks>
@@ -175,6 +162,7 @@ namespace OpenVP {
 		/// <value>
 		/// The current position of the song in fractional seconds.
 		/// </value>
+		[Browsable(false)]
 		public abstract float SongPosition { get; }
 		
 		/// <summary>
@@ -183,6 +171,7 @@ namespace OpenVP {
 		/// <value>
 		/// The current song title.
 		/// </value>
+		[Browsable(false)]
 		public abstract string SongTitle { get; }
 		
 		/// <summary>
@@ -221,6 +210,7 @@ namespace OpenVP {
 		/// and using a larger array would not contain any more information (and
 		/// may in fact contain less due to interpolation).
 		/// </remarks>
+		[Browsable(false)]
 		public abstract int NativePCMLength { get; }
 		
 		/// <value>
@@ -233,6 +223,7 @@ namespace OpenVP {
 		/// quality and using a larger array would not contain any more
 		/// information (and may in fact contain less due to interpolation).
 		/// </remarks>
+		[Browsable(false)]
 		public abstract int NativeSpectrumLength { get; }
 	}
 }

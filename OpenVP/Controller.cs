@@ -73,21 +73,47 @@ namespace OpenVP {
 			}
 		}
 		
-		private PlayerData mPlayerData = null;
+		private PlayerData mPlayerData;
 		
 		/// <value>
 		/// An object that contains data received from a media player.
 		/// </value>
 		/// <remarks>
-		/// This property is initially <c>null</c>.  It must be set by
-		/// the consumer of this class.
+		/// <para>This property may not be set to null.</para>
+		/// <para>The initial value is an instance of
+		/// <see cref="NullPlayerData"/>.</para>
 		/// </remarks>
 		public PlayerData PlayerData {
 			get {
 				return this.mPlayerData;
 			}
 			set {
+				if (value == null)
+					throw new ArgumentNullException();
+				
 				this.mPlayerData = value;
+			}
+		}
+		
+		private IBeatDetector mBeatDetector;
+		
+		/// <value>
+		/// An object that can detect beats in music.
+		/// </value>
+		/// <remarks>
+		/// <para>This property may not be set to null.</para>
+		/// <para>The initial value is an instance of
+		/// <see cref="NullPlayerData"/>.</para>
+		/// </remarks>
+		public IBeatDetector BeatDetector {
+			get {
+				return this.mBeatDetector;
+			}
+			set {
+				if (value == null)
+					throw new ArgumentNullException();
+				
+				this.mBeatDetector = null;
 			}
 		}
 		
@@ -112,6 +138,10 @@ namespace OpenVP {
 		/// Creates a new controller.
 		/// </summary>
 		public Controller() {
+			NullPlayerData data = new NullPlayerData();
+			
+			this.mPlayerData = data;
+			this.mBeatDetector = data;
 		}
 		
 		private void SdlThrow() {
