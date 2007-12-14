@@ -1,5 +1,9 @@
 2007-12-14  Chris Howie <me@chrishowie.com> 
 
+	* Scope.cs: Fix description for Circular property.
+
+2007-12-14  Chris Howie <me@chrishowie.com> 
+
 	* ClearScreen.cs: Added CategoryAttribute to class.
 	* OpenVP.Core.mdp, Scope.cs: Added basic scope effect.
 

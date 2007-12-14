@@ -1,5 +1,9 @@
 2007-12-14  Chris Howie <me@chrishowie.com> 
 
+	* EffectEditor.cs: Added tooltips to Effect members with descriptions.
+
+2007-12-14  Chris Howie <me@chrishowie.com> 
+
 	* MainWindow.cs: Added public Controller property and methods to invoke
 	  delegates on the render loop.  The controller's PlayerData property is
 	  now initialized to an instance of UDPPlayerData pending the

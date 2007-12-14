@@ -56,7 +56,7 @@ namespace OpenVP.Core {
 		private bool mCircular = false;
 		
 		[Browsable(true), DisplayName("Circular"), Category("Display"),
-		 Description("Whether to draw the scope from right to left (off) or in a circle (on)."),
+		 Description("Whether to draw the scope from left to right (off) or in a circle (on)."),
 		 DefaultValue(false)]
 		public bool Circular {
 			get {

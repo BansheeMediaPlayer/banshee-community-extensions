@@ -33,6 +33,8 @@ namespace OpenVP.GtkGui {
 		
 		private List<EffectMember> mMembers = new List<EffectMember>();
 		
+		private Tooltips mTooltips = new Tooltips();
+		
 		public EffectEditor(Effect effect) {
 			Stetic.BinContainer.Attach(this);
 			
@@ -98,6 +100,10 @@ namespace OpenVP.GtkGui {
 				
 				Widget w = this.GetEditor(i);
 				w.Show();
+				
+				if (!string.IsNullOrEmpty(i.Description))
+					this.mTooltips.SetTip(w, i.Description, null);
+				
 				table.Attach(w, 1, 2, row, ++row,
 				             AttachOptions.Fill | AttachOptions.Expand,
 				             AttachOptions.Shrink, 5, 5);
@@ -105,6 +111,12 @@ namespace OpenVP.GtkGui {
 			
 			this.Add(table);
 			table.Show();
+		}
+		
+		protected override void OnDestroyed() {
+			base.OnDestroyed();
+			
+			this.mTooltips.Destroy();
 		}
 		
 		private Widget GetEditor(EffectMember member) {
