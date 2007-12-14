@@ -128,6 +128,12 @@ namespace OpenVP.GtkGui {
 		}
 		
 		private void NewPreset(IRenderer preset, Widget editor) {
+			IDisposable old = this.mPreset as IDisposable;
+			
+			if (old != null) {
+				this.InvokeOnRenderLoop(old.Dispose);
+			}
+			
 			this.mPreset = preset;
 			this.mController.Renderer = preset;
 			

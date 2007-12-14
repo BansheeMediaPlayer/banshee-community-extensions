@@ -291,6 +291,7 @@
                 <property name="ShowScrollbars">True</property>
                 <property name="HeadersVisible">False</property>
                 <property name="HeadersClickable">True</property>
+                <signal name="RowActivated" handler="OnEffectListRowActivated" />
               </widget>
             </child>
           </widget>

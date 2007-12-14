@@ -30,7 +30,7 @@ namespace OpenVP {
 	/// if it is being used as the main IRenderer.
 	/// </remarks>
 	[Serializable]
-	public class LinearPreset : IRenderer {
+	public class LinearPreset : IRenderer, IDisposable {
 		private List<Effect> mEffects = new List<Effect>();
 		
 		/// <value>
@@ -91,6 +91,14 @@ namespace OpenVP {
 		public void Render(Controller controller) {
 			foreach (Effect i in this.mEffects)
 				i.Render(controller);
+		}
+		
+		/// <summary>
+		/// Disposes all contained effects.
+		/// </summary>
+		public void Dispose() {
+			foreach (Effect i in this.mEffects)
+				i.Dispose();
 		}
 	}
 }

@@ -98,9 +98,14 @@ namespace OpenVP.GtkGui {
 			CellRendererText text = (CellRendererText) r;
 			
 			if (val is CategoryDivider)
-				text.Text = ((CategoryDivider) val).Category;
+				text.Markup = "<b>" + ((CategoryDivider) val).Category + "</b>";
 			else if (val is EffectEntry)
 				text.Text = ((EffectEntry) val).DisplayName;
+		}
+		
+		protected virtual void OnEffectListRowActivated(object o, Gtk.RowActivatedArgs args) {
+			if (this.buttonOk.Sensitive)
+				this.buttonOk.Click();
 		}
 		
 		// strings don't store well in a TreeStore...

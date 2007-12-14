@@ -1,5 +1,10 @@
 2007-12-14  Chris Howie <me@chrishowie.com> 
 
+	* LinearPreset.cs: Implemented IDisposable.Dispose, which disposes each
+	  contained effect.
+
+2007-12-14  Chris Howie <me@chrishowie.com> 
+
 	* Color.cs: Changed the internal storage from a float[] back to four floats,
 	  since copying the array will make two Color structs behave like one and
 	  this is not expected or desired with structs.
