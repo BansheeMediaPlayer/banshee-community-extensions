@@ -1,5 +1,13 @@
 2007-12-14  Chris Howie <me@chrishowie.com> 
 
+	* OpenVP.GtkGui.mdp, MainWindow.cs, gtk-gui/OpenVP.GtkGui.MainWindow.cs,
+	  gtk-gui/OpenVP.GtkGui.LinearPresetEditor.cs, gtk-gui/gui.stetic: Begin
+	  implementation for Save and Save As actions.  Added FPS indicator. 
+	  Improved controller loop semantics by adding another thread to handle
+	  updates.
+
+2007-12-14  Chris Howie <me@chrishowie.com> 
+
 	* MainWindow.cs: When replacing an old preset, it is now disposed if it
 	  implements IDisposable.
 	* EffectSelectorDialog.cs, gtk-gui/OpenVP.GtkGui.EffectSelectorDialog.cs,

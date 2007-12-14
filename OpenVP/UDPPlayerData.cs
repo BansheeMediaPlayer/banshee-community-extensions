@@ -232,8 +232,17 @@ namespace OpenVP {
 			
 			MessageType type;
 			
+			List<Socket> socket = new List<Socket>();
+			
 			for (;;) {
 				IPEndPoint remote = new IPEndPoint(IPAddress.Any, 0);
+				
+				socket.Clear();
+				while (!socket.Contains(this.mClient.Client)) {
+					socket.Add(this.mClient.Client);
+					
+					Socket.Select(socket, null, null, 100000);
+				}
 				
 				data = this.mClient.Receive(ref remote);
 				

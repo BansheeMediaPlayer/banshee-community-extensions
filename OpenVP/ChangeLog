@@ -1,5 +1,10 @@
 2007-12-14  Chris Howie <me@chrishowie.com> 
 
+	* UDPPlayerData.cs: Implemented blocking read such that the thread
+	  UpdateWait is run on can be aborted.
+
+2007-12-14  Chris Howie <me@chrishowie.com> 
+
 	* LinearPreset.cs: Implemented IDisposable.Dispose, which disposes each
 	  contained effect.
 

@@ -39,7 +39,7 @@ namespace OpenVP.GtkGui {
         
         private Gtk.Alignment PresetPane;
         
-        private Gtk.Statusbar statusbar1;
+        private Gtk.Statusbar StatusBar;
         
         protected virtual void Build() {
             Stetic.Gui.Initialize(this);
@@ -56,9 +56,11 @@ namespace OpenVP.GtkGui {
             this.open.ShortLabel = Mono.Unix.Catalog.GetString("_Open");
             w2.Add(this.open, null);
             this.save = new Gtk.Action("save", Mono.Unix.Catalog.GetString("_Save"), null, "gtk-save");
+            this.save.Sensitive = false;
             this.save.ShortLabel = Mono.Unix.Catalog.GetString("_Save");
             w2.Add(this.save, null);
             this.saveAs = new Gtk.Action("saveAs", Mono.Unix.Catalog.GetString("Save _As"), null, "gtk-save-as");
+            this.saveAs.Sensitive = false;
             this.saveAs.ShortLabel = Mono.Unix.Catalog.GetString("Save _As");
             w2.Add(this.saveAs, null);
             this.quit = new Gtk.Action("quit", Mono.Unix.Catalog.GetString("_Quit"), null, "gtk-quit");
@@ -101,11 +103,11 @@ namespace OpenVP.GtkGui {
             Gtk.Box.BoxChild w4 = ((Gtk.Box.BoxChild)(this.vbox1[this.PresetPane]));
             w4.Position = 1;
             // Container child vbox1.Gtk.Box+BoxChild
-            this.statusbar1 = new Gtk.Statusbar();
-            this.statusbar1.Name = "statusbar1";
-            this.statusbar1.Spacing = 6;
-            this.vbox1.Add(this.statusbar1);
-            Gtk.Box.BoxChild w5 = ((Gtk.Box.BoxChild)(this.vbox1[this.statusbar1]));
+            this.StatusBar = new Gtk.Statusbar();
+            this.StatusBar.Name = "StatusBar";
+            this.StatusBar.Spacing = 6;
+            this.vbox1.Add(this.StatusBar);
+            Gtk.Box.BoxChild w5 = ((Gtk.Box.BoxChild)(this.vbox1[this.StatusBar]));
             w5.Position = 2;
             w5.Expand = false;
             w5.Fill = false;
@@ -113,10 +115,13 @@ namespace OpenVP.GtkGui {
             if ((this.Child != null)) {
                 this.Child.ShowAll();
             }
-            this.DefaultWidth = 400;
-            this.DefaultHeight = 300;
+            this.DefaultWidth = 530;
+            this.DefaultHeight = 395;
             this.Show();
             this.DeleteEvent += new Gtk.DeleteEventHandler(this.OnDeleteEvent);
+            this.open.Activated += new System.EventHandler(this.OnOpenActivated);
+            this.save.Activated += new System.EventHandler(this.OnSaveActivated);
+            this.saveAs.Activated += new System.EventHandler(this.OnSaveAsActivated);
             this.quit.Activated += new System.EventHandler(this.OnQuitActivated);
             this.LinearPreset.Activated += new System.EventHandler(this.OnLinearPresetActivated);
             this.WaitForDataSliceToDraw.Toggled += new System.EventHandler(this.OnWaitForDataSliceToDrawToggled);

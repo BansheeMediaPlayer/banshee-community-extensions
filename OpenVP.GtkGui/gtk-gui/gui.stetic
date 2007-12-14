@@ -7,7 +7,7 @@
   <import>
     <widget-library name="../../build/OpenVP.GtkGui.exe" internal="true" />
   </import>
-  <widget class="Gtk.Window" id="OpenVP.GtkGui.MainWindow" design-size="400 300">
+  <widget class="Gtk.Window" id="OpenVP.GtkGui.MainWindow" design-size="530 395">
     <action-group name="Default">
       <action id="Preset">
         <property name="Type">Action</property>
@@ -25,18 +25,23 @@
         <property name="Label" translatable="yes">_Open</property>
         <property name="ShortLabel" translatable="yes">_Open</property>
         <property name="StockId">gtk-open</property>
+        <signal name="Activated" handler="OnOpenActivated" />
       </action>
       <action id="save">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes">_Save</property>
+        <property name="Sensitive">False</property>
         <property name="ShortLabel" translatable="yes">_Save</property>
         <property name="StockId">gtk-save</property>
+        <signal name="Activated" handler="OnSaveActivated" />
       </action>
       <action id="saveAs">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes">Save _As</property>
+        <property name="Sensitive">False</property>
         <property name="ShortLabel" translatable="yes">Save _As</property>
         <property name="StockId">gtk-save-as</property>
+        <signal name="Activated" handler="OnSaveAsActivated" />
       </action>
       <action id="quit">
         <property name="Type">Action</property>
@@ -120,7 +125,7 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.Statusbar" id="statusbar1">
+          <widget class="Gtk.Statusbar" id="StatusBar">
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <child>

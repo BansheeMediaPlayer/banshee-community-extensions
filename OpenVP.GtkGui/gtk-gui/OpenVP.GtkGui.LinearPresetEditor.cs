@@ -56,6 +56,7 @@ namespace OpenVP.GtkGui {
             this.vbox1.Spacing = 6;
             // Container child vbox1.Gtk.Box+BoxChild
             this.hbuttonbox1 = new Gtk.HButtonBox();
+            this.hbuttonbox1.Name = "hbuttonbox1";
             this.hbuttonbox1.Homogeneous = true;
             this.hbuttonbox1.Spacing = 6;
             // Container child hbuttonbox1.Gtk.ButtonBox+ButtonBoxChild
