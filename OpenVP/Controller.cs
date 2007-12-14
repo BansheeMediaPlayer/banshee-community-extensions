@@ -244,7 +244,8 @@ namespace OpenVP {
 				}
 			}
 			
-			this.mRenderer.Render(this);
+			if (this.mRenderer != null)
+				this.mRenderer.Render(this);
 			
 			Gl.glFlush();
 			Sdl.SDL_GL_SwapBuffers();

@@ -1,3 +1,11 @@
+2007-12-13  Chris Howie <me@chrishowie.com> 
+
+	* IBeatDetector.cs, NullPlayerData.cs: Added real name.
+	* UDPPlayerData.cs: Added real name.  The UDPClient is now only closed when
+	  it is not null.
+	* OpenVP.mdp, Registry.cs: Added Registry static class.
+	* Controller.cs: DrawFrame now checks if Renderer is null before using it.
+
 2007-12-11  Chris Howie <me@chrishowie.com> 
 
 	* IBeatDetector.cs: Added IBeatDetector.

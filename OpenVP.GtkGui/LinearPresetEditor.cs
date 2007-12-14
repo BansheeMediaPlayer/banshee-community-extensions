@@ -1,4 +1,4 @@
-// IBeatDetector.cs
+// LinearPresetEditor.cs
 //
 //  Copyright (C) 2007 Chris Howie
 //
@@ -19,28 +19,31 @@
 //
 
 using System;
+using Gtk;
 
-namespace OpenVP {
-	/// <summary>
-	/// Implemented by classes that can detect beats in music.
-	/// </summary>
-	public interface IBeatDetector {
-		/// <value>
-		/// True if there was a beat on the last update.
-		/// </value>
-		bool IsBeat { get; }
+namespace OpenVP.GtkGui {
+	public partial class LinearPresetEditor : Gtk.Bin {
+		private LinearPreset mPreset;
 		
-		/// <summary>
-		/// Requests that the detector process the next slice of data.
-		/// </summary>
-		/// <param name="controller">
-		/// The <see cref="Controller"/>.
-		/// </param>
-		/// <remarks>
-		/// This method is free to use whatever technique it would like to check
-		/// for a beat.  It may use <see cref="Controller.PlayerData"/>, user
-		/// input, or anything else.
-		/// </remarks>
-		void Update(Controller controller);
+		public LinearPresetEditor(LinearPreset preset) {
+			this.Build();
+			
+			this.mPreset = preset;
+		}
+		
+		protected virtual void OnAddEffectClicked(object sender, System.EventArgs e) {
+			new OpenVP.Core.ClearScreen();
+			Registry.Update();
+			
+			EffectSelectorDialog dialog = new EffectSelectorDialog();
+			dialog.Modal = true;
+			dialog.TransientFor = (Window) this.Toplevel;
+			
+			if (dialog.Run() == (int) ResponseType.Ok) {
+				Console.WriteLine(dialog.SelectedEffect.FullName);
+			}
+			
+			dialog.Destroy();
+		}
 	}
 }

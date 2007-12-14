@@ -1,0 +1,338 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stetic-interface>
+  <configuration>
+    <images-root-path>..</images-root-path>
+    <target-gtk-version>2.10.2</target-gtk-version>
+  </configuration>
+  <import>
+    <widget-library name="../../build/OpenVP.GtkGui.exe" internal="true" />
+  </import>
+  <widget class="Gtk.Window" id="OpenVP.GtkGui.MainWindow" design-size="400 300">
+    <action-group name="Default">
+      <action id="Preset">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Preset</property>
+        <property name="ShortLabel" translatable="yes">_Preset</property>
+      </action>
+      <action id="new">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_New</property>
+        <property name="ShortLabel" translatable="yes">_New</property>
+        <property name="StockId">gtk-new</property>
+      </action>
+      <action id="open">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Open</property>
+        <property name="ShortLabel" translatable="yes">_Open</property>
+        <property name="StockId">gtk-open</property>
+      </action>
+      <action id="save">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Save</property>
+        <property name="ShortLabel" translatable="yes">_Save</property>
+        <property name="StockId">gtk-save</property>
+      </action>
+      <action id="saveAs">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Save _As</property>
+        <property name="ShortLabel" translatable="yes">Save _As</property>
+        <property name="StockId">gtk-save-as</property>
+      </action>
+      <action id="quit">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Quit</property>
+        <property name="ShortLabel" translatable="yes">_Quit</property>
+        <property name="StockId">gtk-quit</property>
+        <signal name="Activated" handler="OnQuitActivated" />
+      </action>
+      <action id="LinearPreset">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Linear preset</property>
+        <property name="ShortLabel" translatable="yes">_Linear preset</property>
+        <signal name="Activated" handler="OnLinearPresetActivated" />
+      </action>
+      <action id="Options">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Options</property>
+        <property name="ShortLabel" translatable="yes">_Options</property>
+      </action>
+      <action id="WaitForDataSliceToDraw">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">_Wait for data slice to draw</property>
+        <property name="ShortLabel" translatable="yes">_Wait for data slice to draw</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">True</property>
+        <signal name="Toggled" handler="OnWaitForDataSliceToDrawToggled" />
+      </action>
+      <action id="AllowSlicesToBeSkipped">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">_Allow slices to be skipped</property>
+        <property name="ShortLabel" translatable="yes">_Allow slices to be skipped</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+        <signal name="Toggled" handler="OnAllowSlicesToBeSkippedToggled" />
+      </action>
+    </action-group>
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">Open Visualization Platform</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <signal name="DeleteEvent" handler="OnDeleteEvent" />
+    <child>
+      <widget class="Gtk.VBox" id="vbox1">
+        <property name="MemberName" />
+        <child>
+          <widget class="Gtk.MenuBar" id="menubar1">
+            <property name="MemberName" />
+            <node name="menubar1" type="Menubar">
+              <node type="Menu" action="Preset">
+                <node type="Menu" action="new">
+                  <node type="Menuitem" action="LinearPreset" />
+                </node>
+                <node type="Menuitem" action="open" />
+                <node type="Menuitem" action="save" />
+                <node type="Menuitem" action="saveAs" />
+                <node type="Separator" />
+                <node type="Menuitem" action="quit" />
+              </node>
+              <node type="Menu" action="Options">
+                <node type="Menuitem" action="WaitForDataSliceToDraw" />
+                <node type="Menuitem" action="AllowSlicesToBeSkipped" />
+              </node>
+            </node>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Alignment" id="PresetPane">
+            <property name="MemberName" />
+            <child>
+              <placeholder />
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Statusbar" id="statusbar1">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <placeholder />
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">2</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="OpenVP.GtkGui.LinearPresetEditor" design-size="523 354">
+    <property name="MemberName" />
+    <child>
+      <widget class="Gtk.Notebook" id="notebook1">
+        <property name="MemberName" />
+        <property name="CanFocus">True</property>
+        <property name="CurrentPage">0</property>
+        <child>
+          <widget class="Gtk.HPaned" id="hpaned1">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Position">211</property>
+            <child>
+              <widget class="Gtk.VBox" id="vbox1">
+                <property name="MemberName" />
+                <property name="Spacing">6</property>
+                <child>
+                  <widget class="Gtk.HButtonBox" id="hbuttonbox1">
+                    <property name="MemberName" />
+                    <property name="Homogeneous">True</property>
+                    <property name="Spacing">6</property>
+                    <property name="Size">2</property>
+                    <child>
+                      <widget class="Gtk.Button" id="AddEffect">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="UseStock">True</property>
+                        <property name="Type">StockItem</property>
+                        <property name="StockId">gtk-add</property>
+                        <signal name="Clicked" handler="OnAddEffectClicked" />
+                        <property name="label">gtk-add</property>
+                      </widget>
+                      <packing>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Button" id="RemoveEffect">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="UseStock">True</property>
+                        <property name="Type">StockItem</property>
+                        <property name="StockId">gtk-remove</property>
+                        <property name="label">gtk-remove</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">1</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+                    <property name="MemberName" />
+                    <property name="ShadowType">In</property>
+                    <child>
+                      <widget class="Gtk.TreeView" id="treeview1">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="ShowScrollbars">True</property>
+                        <property name="HeadersClickable">True</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="Resize">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Alignment" id="EffectPane">
+                <property name="MemberName" />
+                <child>
+                  <placeholder />
+                </child>
+              </widget>
+            </child>
+          </widget>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label1">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Effects</property>
+          </widget>
+          <packing>
+            <property name="type">tab</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder />
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label2">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Keybindings</property>
+          </widget>
+          <packing>
+            <property name="type">tab</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Dialog" id="OpenVP.GtkGui.EffectSelectorDialog" design-size="400 300">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">Select Effect</property>
+    <property name="TypeHint">Dialog</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <property name="Modal">True</property>
+    <property name="Buttons">2</property>
+    <property name="HelpButton">False</property>
+    <property name="HasSeparator">False</property>
+    <child internal-child="VBox">
+      <widget class="Gtk.VBox" id="dialog1_VBox">
+        <property name="MemberName" />
+        <property name="BorderWidth">2</property>
+        <child>
+          <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+            <property name="MemberName" />
+            <property name="ShadowType">In</property>
+            <child>
+              <widget class="Gtk.TreeView" id="EffectList">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="ShowScrollbars">True</property>
+                <property name="HeadersVisible">False</property>
+                <property name="HeadersClickable">True</property>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+    <child internal-child="ActionArea">
+      <widget class="Gtk.HButtonBox" id="dialog1_ActionArea">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <property name="BorderWidth">5</property>
+        <property name="Size">2</property>
+        <property name="LayoutStyle">End</property>
+        <child>
+          <widget class="Gtk.Button" id="buttonCancel">
+            <property name="MemberName" />
+            <property name="CanDefault">True</property>
+            <property name="CanFocus">True</property>
+            <property name="UseStock">True</property>
+            <property name="Type">StockItem</property>
+            <property name="StockId">gtk-cancel</property>
+            <property name="ResponseId">-6</property>
+            <property name="label">gtk-cancel</property>
+          </widget>
+          <packing>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="buttonOk">
+            <property name="MemberName" />
+            <property name="Sensitive">False</property>
+            <property name="CanDefault">True</property>
+            <property name="CanFocus">True</property>
+            <property name="UseStock">True</property>
+            <property name="Type">StockItem</property>
+            <property name="StockId">gtk-ok</property>
+            <property name="ResponseId">-5</property>
+            <property name="label">gtk-ok</property>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</stetic-interface>

@@ -1,4 +1,4 @@
-// IBeatDetector.cs
+// Util.cs
 //
 //  Copyright (C) 2007 Chris Howie
 //
@@ -19,28 +19,18 @@
 //
 
 using System;
+using System.Reflection;
 
-namespace OpenVP {
-	/// <summary>
-	/// Implemented by classes that can detect beats in music.
-	/// </summary>
-	public interface IBeatDetector {
-		/// <value>
-		/// True if there was a beat on the last update.
-		/// </value>
-		bool IsBeat { get; }
-		
-		/// <summary>
-		/// Requests that the detector process the next slice of data.
-		/// </summary>
-		/// <param name="controller">
-		/// The <see cref="Controller"/>.
-		/// </param>
-		/// <remarks>
-		/// This method is free to use whatever technique it would like to check
-		/// for a beat.  It may use <see cref="Controller.PlayerData"/>, user
-		/// input, or anything else.
-		/// </remarks>
-		void Update(Controller controller);
+namespace OpenVP.GtkGui {
+	public static class Util {
+		public static T GetAttribute<T>(MemberInfo info,
+		                                bool inherit) where T : Attribute {
+			object[] attrs = info.GetCustomAttributes(typeof(T), inherit);
+			
+			if (attrs.Length == 0)
+				return null;
+			
+			return (T) attrs[0];
+		}
 	}
 }

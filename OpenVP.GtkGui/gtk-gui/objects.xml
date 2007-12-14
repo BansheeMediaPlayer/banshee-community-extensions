@@ -1,0 +1,10 @@
+<objects>
+  <object type="OpenVP.GtkGui.LinearPresetEditor" palette-category="OpenVP.GtkGui" allow-children="false" base-type="Gtk.Bin">
+    <itemgroups />
+    <signals />
+  </object>
+  <object type="OpenVP.GtkGui.EffectEditor" palette-category="OpenVP.GtkGui" allow-children="false" base-type="Gtk.Bin">
+    <itemgroups />
+    <signals />
+  </object>
+</objects>

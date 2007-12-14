@@ -1,0 +1,10 @@
+2007-12-13  Chris Howie <me@chrishowie.com> 
+
+	* OpenVP.GtkGui.mdp, AssemblyInfo.cs, MainWindow.cs,
+	  EffectSelectorDialog.cs, Util.cs, BrowsableItem.cs, gtk-gui,
+	  gtk-gui/OpenVP.GtkGui.MainWindow.cs,
+	  gtk-gui/OpenVP.GtkGui.EffectSelectorDialog.cs, gtk-gui/generated.cs,
+	  gtk-gui/OpenVP.GtkGui.LinearPresetEditor.cs, gtk-gui/objects.xml,
+	  gtk-gui/gui.stetic, EffectEditor.cs, ChangeLog, Main.cs,
+	  LinearPresetEditor.cs: Added Gtk# GUI project.
+

@@ -24,7 +24,8 @@ using OpenVP;
 using Tao.OpenGl;
 
 namespace OpenVP.Core {
-	[Serializable, DisplayName("Clear screen")]
+	[Serializable, Browsable(true), DisplayName("Clear screen"),
+	 Description("Clears the screen")]
 	public sealed class ClearScreen : Effect {
 		private Color mClearColor = new Color(0, 0, 0);
 		
