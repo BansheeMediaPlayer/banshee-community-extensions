@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 using Gtk;
@@ -16,6 +17,12 @@ namespace OpenVP.GtkGui {
 		
 		private Controller mController;
 		
+		public Controller Controller {
+			get {
+				return this.mController;
+			}
+		}
+		
 		private volatile bool mInitialized = false;
 		
 		private volatile bool mLoopRunning = true;
@@ -28,6 +35,8 @@ namespace OpenVP.GtkGui {
 		
 		private string mLastSave = null;
 		
+		private Queue<ThreadStart> mRenderLoopJoins = new Queue<ThreadStart>();
+		
 		public MainWindow() : base(Gtk.WindowType.Toplevel) {
 			mSingleton = this;
 			
@@ -37,10 +46,30 @@ namespace OpenVP.GtkGui {
 			this.mController.WindowClosed += delegate {
 				this.Quit();
 			};
+			this.mController.PlayerData = new UDPPlayerData();
 			
 			new Thread(this.ControllerLoop).Start();
 			
 			while (!this.mInitialized);
+		}
+		
+		public void InvokeOnRenderLoop(ThreadStart call) {
+			lock (this.mRenderLoopJoins) {
+				this.mRenderLoopJoins.Enqueue(call);
+			}
+		}
+		
+		public void InvokeOnRenderLoopAndWait(ThreadStart call) {
+			ManualResetEvent wh = new ManualResetEvent(false);
+			
+			lock (this.mRenderLoopJoins) {
+				this.mRenderLoopJoins.Enqueue(delegate {
+					call();
+					wh.Set();
+				});
+			}
+			
+			wh.WaitOne();
 		}
 		
 		private void Quit() {
@@ -77,6 +106,14 @@ namespace OpenVP.GtkGui {
 					}
 				}
 				
+				if (this.mRenderLoopJoins.Count != 0) {
+					lock (this.mRenderLoopJoins) {
+						while (this.mRenderLoopJoins.Count != 0) {
+							this.mRenderLoopJoins.Dequeue()();
+						}
+					}
+				}
+				
 				this.mController.DrawFrame();
 			}
 		}
@@ -92,6 +129,7 @@ namespace OpenVP.GtkGui {
 		
 		private void NewPreset(IRenderer preset, Widget editor) {
 			this.mPreset = preset;
+			this.mController.Renderer = preset;
 			
 			if (this.PresetPane.Child != null)
 				this.PresetPane.Child.Destroy();

@@ -27,9 +27,9 @@ namespace OpenVP.GtkGui {
         
         private Gtk.ScrolledWindow GtkScrolledWindow;
         
-        private Gtk.TreeView treeview1;
+        private Gtk.TreeView EffectList;
         
-        private Gtk.Alignment EffectPane;
+        private Gtk.ScrolledWindow EffectPane;
         
         private Gtk.Label label1;
         
@@ -72,6 +72,7 @@ namespace OpenVP.GtkGui {
             w1.Fill = false;
             // Container child hbuttonbox1.Gtk.ButtonBox+ButtonBoxChild
             this.RemoveEffect = new Gtk.Button();
+            this.RemoveEffect.Sensitive = false;
             this.RemoveEffect.CanFocus = true;
             this.RemoveEffect.Name = "RemoveEffect";
             this.RemoveEffect.UseStock = true;
@@ -92,11 +93,12 @@ namespace OpenVP.GtkGui {
             this.GtkScrolledWindow.Name = "GtkScrolledWindow";
             this.GtkScrolledWindow.ShadowType = ((Gtk.ShadowType)(1));
             // Container child GtkScrolledWindow.Gtk.Container+ContainerChild
-            this.treeview1 = new Gtk.TreeView();
-            this.treeview1.CanFocus = true;
-            this.treeview1.Name = "treeview1";
-            this.treeview1.HeadersClickable = true;
-            this.GtkScrolledWindow.Add(this.treeview1);
+            this.EffectList = new Gtk.TreeView();
+            this.EffectList.CanFocus = true;
+            this.EffectList.Name = "EffectList";
+            this.EffectList.HeadersVisible = false;
+            this.EffectList.HeadersClickable = true;
+            this.GtkScrolledWindow.Add(this.EffectList);
             this.vbox1.Add(this.GtkScrolledWindow);
             Gtk.Box.BoxChild w5 = ((Gtk.Box.BoxChild)(this.vbox1[this.GtkScrolledWindow]));
             w5.Position = 1;
@@ -104,7 +106,8 @@ namespace OpenVP.GtkGui {
             Gtk.Paned.PanedChild w6 = ((Gtk.Paned.PanedChild)(this.hpaned1[this.vbox1]));
             w6.Resize = false;
             // Container child hpaned1.Gtk.Paned+PanedChild
-            this.EffectPane = new Gtk.Alignment(0.5F, 0.5F, 1F, 1F);
+            this.EffectPane = new Gtk.ScrolledWindow();
+            this.EffectPane.CanFocus = true;
             this.EffectPane.Name = "EffectPane";
             this.hpaned1.Add(this.EffectPane);
             this.notebook1.Add(this.hpaned1);
@@ -129,6 +132,7 @@ namespace OpenVP.GtkGui {
             }
             this.Show();
             this.AddEffect.Clicked += new System.EventHandler(this.OnAddEffectClicked);
+            this.RemoveEffect.Clicked += new System.EventHandler(this.OnRemoveEffectClicked);
         }
     }
 }

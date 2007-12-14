@@ -31,7 +31,10 @@ namespace OpenVP {
 	/// </remarks>
 	[Serializable]
 	public struct Color {
-		private float[] mComponents;
+		private float mRed;
+		private float mGreen;
+		private float mBlue;
+		private float mAlpha;
 		
 		/// <summary>
 		/// The red component.
@@ -41,10 +44,10 @@ namespace OpenVP {
 		/// </value>
 		public float Red {
 			get {
-				return this.mComponents[0];
+				return this.mRed;
 			}
 			set {
-				this.mComponents[0] = value;
+				this.mRed = value;
 			}
 		}
 		
@@ -56,10 +59,10 @@ namespace OpenVP {
 		/// </value>
 		public float Green {
 			get {
-				return this.mComponents[1];
+				return this.mGreen;
 			}
 			set {
-				this.mComponents[1] = value;
+				this.mGreen = value;
 			}
 		}
 		
@@ -71,10 +74,10 @@ namespace OpenVP {
 		/// </value>
 		public float Blue {
 			get {
-				return this.mComponents[2];
+				return this.mBlue;
 			}
 			set {
-				this.mComponents[2] = value;
+				this.mBlue = value;
 			}
 		}
 		
@@ -86,10 +89,10 @@ namespace OpenVP {
 		/// </value>
 		public float Alpha {
 			get {
-				return this.mComponents[3];
+				return this.mAlpha;
 			}
 			set {
-				this.mComponents[3] = value;
+				this.mAlpha = value;
 			}
 		}
 		
@@ -109,7 +112,10 @@ namespace OpenVP {
 		/// The alpha component.
 		/// </param>
 		public Color(float r, float g, float b, float a) {
-			this.mComponents = new float[] { r, g, b, a };
+			this.mRed = r;
+			this.mGreen = g;
+			this.mBlue = b;
+			this.mAlpha = a;
 		}
 		
 		/// <summary>
@@ -132,7 +138,7 @@ namespace OpenVP {
 		/// Issues glColor using the component values.
 		/// </summary>
 		public void Use() {
-			Gl.glColor4fv(this.mComponents);
+			Gl.glColor4f(this.mRed, this.mGreen, this.mBlue, this.mAlpha);
 		}
 	}
 }

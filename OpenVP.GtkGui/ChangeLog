@@ -1,3 +1,13 @@
+2007-12-14  Chris Howie <me@chrishowie.com> 
+
+	* MainWindow.cs: Added public Controller property and methods to invoke
+	  delegates on the render loop.  The controller's PlayerData property is
+	  now initialized to an instance of UDPPlayerData pending the
+	  implementation of a PlayerData selector dialog.
+	* gtk-gui/OpenVP.GtkGui.LinearPresetEditor.cs, gtk-gui/gui.stetic,
+	  LinearPresetEditor.cs: Implemented the linear preset editor effect list
+	  and effect pane.
+
 2007-12-13  Chris Howie <me@chrishowie.com> 
 
 	* OpenVP.GtkGui.mdp, AssemblyInfo.cs, MainWindow.cs,

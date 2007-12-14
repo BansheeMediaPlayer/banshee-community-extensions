@@ -25,10 +25,60 @@ namespace OpenVP.GtkGui {
 	public partial class LinearPresetEditor : Gtk.Bin {
 		private LinearPreset mPreset;
 		
+		private ListStore mEffectStore = new ListStore(typeof(Effect));
+		
 		public LinearPresetEditor(LinearPreset preset) {
 			this.Build();
 			
 			this.mPreset = preset;
+			
+			this.SyncStore();
+			
+			this.EffectList.AppendColumn("Effect", new CellRendererText(),
+			                             new TreeCellDataFunc(EffectFunc));
+			this.EffectList.Model = this.mEffectStore;
+			this.EffectList.Selection.Changed += this.OnSelectionChanged;
+		}
+		
+		private void OnSelectionChanged(object o, EventArgs e) {
+			TreeIter i;
+			
+			if (this.EffectPane.Child != null)
+				this.EffectPane.Child.Destroy();
+			
+			if (!this.EffectList.Selection.GetSelected(out i)) {
+				this.RemoveEffect.Sensitive = false;
+				return;
+			}
+			
+			this.RemoveEffect.Sensitive = true;
+			
+			Effect effect = (Effect) this.mEffectStore.GetValue(i, 0);
+			
+			EffectEditor editor = new EffectEditor(effect);
+			editor.Show();
+			this.EffectPane.AddWithViewport(editor);
+		}
+		
+		private void SyncStore() {
+			this.mEffectStore.Clear();
+			
+			foreach (Effect i in this.mPreset.Effects)
+				this.mEffectStore.AppendValues(i);
+		}
+		
+		private static void EffectFunc(TreeViewColumn col, CellRenderer r,
+		                               TreeModel m, TreeIter i) {
+			Effect e = (Effect) m.GetValue(i, 0);
+			
+			string text;
+			
+			if (string.IsNullOrEmpty(e.Name))
+				text = e.Title;
+			else
+				text = string.Format("{0} ({1})", e.Title, e.Name);
+			
+			((CellRendererText) r).Text = text;
 		}
 		
 		protected virtual void OnAddEffectClicked(object sender, System.EventArgs e) {
@@ -40,10 +90,43 @@ namespace OpenVP.GtkGui {
 			dialog.TransientFor = (Window) this.Toplevel;
 			
 			if (dialog.Run() == (int) ResponseType.Ok) {
-				Console.WriteLine(dialog.SelectedEffect.FullName);
+				Effect effect;
+				
+				try {
+					effect = (Effect) Activator.CreateInstance(dialog.SelectedEffect);
+				} catch (Exception ex) {
+					Console.WriteLine(ex.ToString());
+					dialog.Destroy();
+					return;
+				}
+				
+				MainWindow.Singleton.InvokeOnRenderLoopAndWait(delegate {
+					this.mPreset.Effects.Add(effect);
+				});
+				
+				this.mEffectStore.AppendValues(effect);
 			}
 			
 			dialog.Destroy();
+		}
+
+		protected virtual void OnRemoveEffectClicked(object sender, System.EventArgs e) {
+			TreeIter i;
+			
+			if (this.EffectList.Selection.GetSelected(out i)) {
+				TreePath path = this.mEffectStore.GetPath(i);
+				
+				int index = path.Indices[0];
+				
+				Effect eff = this.mPreset.Effects[index];
+				
+				MainWindow.Singleton.InvokeOnRenderLoopAndWait(delegate {
+					eff.Dispose();
+					this.mPreset.Effects.RemoveAt(index);
+				});
+				
+				this.mEffectStore.Remove(ref i);
+			}
 		}
 	}
 }

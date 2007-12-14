@@ -180,10 +180,12 @@
                     <child>
                       <widget class="Gtk.Button" id="RemoveEffect">
                         <property name="MemberName" />
+                        <property name="Sensitive">False</property>
                         <property name="CanFocus">True</property>
                         <property name="UseStock">True</property>
                         <property name="Type">StockItem</property>
                         <property name="StockId">gtk-remove</property>
+                        <signal name="Clicked" handler="OnRemoveEffectClicked" />
                         <property name="label">gtk-remove</property>
                       </widget>
                       <packing>
@@ -205,10 +207,11 @@
                     <property name="MemberName" />
                     <property name="ShadowType">In</property>
                     <child>
-                      <widget class="Gtk.TreeView" id="treeview1">
+                      <widget class="Gtk.TreeView" id="EffectList">
                         <property name="MemberName" />
                         <property name="CanFocus">True</property>
                         <property name="ShowScrollbars">True</property>
+                        <property name="HeadersVisible">False</property>
                         <property name="HeadersClickable">True</property>
                       </widget>
                     </child>
@@ -224,10 +227,17 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.Alignment" id="EffectPane">
+              <widget class="Gtk.ScrolledWindow" id="EffectPane">
                 <property name="MemberName" />
+                <property name="CanFocus">True</property>
                 <child>
-                  <placeholder />
+                  <widget class="Gtk.Viewport" id="GtkViewport">
+                    <property name="MemberName" />
+                    <property name="ShadowType">None</property>
+                    <child>
+                      <placeholder />
+                    </child>
+                  </widget>
                 </child>
               </widget>
             </child>

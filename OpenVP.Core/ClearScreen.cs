@@ -29,7 +29,7 @@ namespace OpenVP.Core {
 	public sealed class ClearScreen : Effect {
 		private Color mClearColor = new Color(0, 0, 0);
 		
-		[Browsable(true), DisplayName("Clear color"),
+		[Browsable(true), DisplayName("Clear color"), Category("Display"),
 		 Description("The color to clear the screen with.")]
 		public Color ClearColor {
 			get {

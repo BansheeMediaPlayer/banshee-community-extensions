@@ -1,3 +1,8 @@
+2007-12-14  Chris Howie <me@chrishowie.com> 
+
+	* ClearScreen.cs: Added CategoryAttribute to class.
+	* OpenVP.Core.mdp, Scope.cs: Added basic scope effect.
+
 2007-12-13  Chris Howie <me@chrishowie.com> 
 
 	* gtk-gui, gtk-gui/generated.cs, gtk-gui/gui.stetic, OpenVP.Core.mdp:

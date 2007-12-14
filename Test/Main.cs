@@ -37,7 +37,10 @@ namespace Test {
 			clear.ClearColor = new Color(0, 0, 0, 0.3f);
 			
 			preset.Effects.Add(clear);
-			preset.Effects.Add(new TestEffect());
+			Scope s = new Scope();
+			preset.Effects.Add(s);
+			s.Color = new Color(0, 1, 0);
+			s.Circular = true;
 			
 			c.Renderer = preset;
 			c.Initialize();
