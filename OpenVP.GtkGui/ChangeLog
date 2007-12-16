@@ -1,5 +1,11 @@
 2007-12-15  Chris Howie <me@chrishowie.com> 
 
+	* MainWindow.cs: Opening a preset now sets the last save fields to their
+	  appropriate values for the Save action to properly work.
+	* Util.cs: Fix/improve ConvertColor implementations.
+
+2007-12-15  Chris Howie <me@chrishowie.com> 
+
 	* MainWindow.cs: Added licensing information.  Implemented saving presets
 	  and started implementing opening presets.
 	* Util.cs: Added methods for converting between OpenVP.Color and Gdk.Color.

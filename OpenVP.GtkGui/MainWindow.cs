@@ -296,9 +296,12 @@ namespace OpenVP.GtkGui {
 				
 				object o;
 				
+				bool binary = false;
+				
 				using (FileStream file = File.Open(name, FileMode.Open, FileAccess.Read)) {
 					try {
 						o = new BinaryFormatter().Deserialize(file);
+						binary = true;
 					} catch {
 						file.Seek(0, SeekOrigin.Begin);
 						
@@ -323,6 +326,9 @@ namespace OpenVP.GtkGui {
 				} else {
 					// TODO: Handle different preset types.
 					this.NewPreset(preset, new LinearPresetEditor(preset));
+					
+					this.mLastSave = name;
+					this.mLastSaveBinary = binary;
 				}
 			}
 			

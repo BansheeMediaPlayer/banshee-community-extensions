@@ -34,15 +34,19 @@ namespace OpenVP.GtkGui {
 		}
 		
 		public static Gdk.Color ConvertColor(OpenVP.Color color) {
-			return new Gdk.Color((byte) (color.Red * 255),
-			                     (byte) (color.Green * 255),
-			                     (byte) (color.Blue * 255));
+			Gdk.Color conv = new Gdk.Color();
+			
+			conv.Red = (ushort) (color.Red * ushort.MaxValue);
+			conv.Green = (ushort) (color.Green * ushort.MaxValue);
+			conv.Blue = (ushort) (color.Blue * ushort.MaxValue);
+			
+			return conv;
 		}
 		
 		public static OpenVP.Color ConvertColor(Gdk.Color color) {
-			return new OpenVP.Color((float) color.Red / 255,
-			                        (float) color.Green / 255,
-			                        (float) color.Blue / 255);
+			return new OpenVP.Color((float) color.Red / ushort.MaxValue,
+			                        (float) color.Green / ushort.MaxValue,
+			                        (float) color.Blue / ushort.MaxValue);
 		}
 	}
 }
