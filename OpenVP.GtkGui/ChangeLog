@@ -1,3 +1,20 @@
+2007-12-15  Chris Howie <me@chrishowie.com> 
+
+	* MainWindow.cs: Added licensing information.  Implemented saving presets
+	  and started implementing opening presets.
+	* Util.cs: Added methods for converting between OpenVP.Color and Gdk.Color.
+	* MemberEditors, MemberEditors/StringEditor.cs,
+	  MemberEditors/ColorEditor.cs, MemberEditors/UnknownEditor.cs,
+	  MemberEditors/BooleanEditor.cs, MemberEditors/NumericEditor.cs,
+	  MemberEditor.cs, gtk-gui/OpenVP.GtkGui.MemberEditor.cs: Added
+	  MemberEditor and editors for string, bool, numeric types, OpenVP.Color,
+	  and a fallback for unknown types.
+	* gtk-gui/OpenVP.GtkGui.LinearPresetEditor.cs,
+	  gtk-gui/OpenVP.GtkGui.BrowsableEditor.cs, EffectEditor.cs,
+	  BrowsableEditor.cs, LinearPresetEditor.cs: Renamed EffectEditor to
+	  BrowsableEditor.
+	* Main.cs: Added licensing information.
+
 2007-12-14  Chris Howie <me@chrishowie.com> 
 
 	* OpenVP.GtkGui.mdp, MainWindow.cs, gtk-gui/OpenVP.GtkGui.MainWindow.cs,

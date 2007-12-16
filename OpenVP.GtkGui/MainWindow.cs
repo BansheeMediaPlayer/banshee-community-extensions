@@ -1,7 +1,29 @@
+// MainWindow.cs
+//
+//  Copyright (C) 2007 Chris Howie
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+//
+
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
+using System.Text;
 using System.Threading;
 
 using Gtk;
@@ -36,6 +58,8 @@ namespace OpenVP.GtkGui {
 		private object mPreset = null;
 		
 		private string mLastSave = null;
+		
+		private bool mLastSaveBinary = false;
 		
 		private Queue<ThreadStart> mRenderLoopJoins = new Queue<ThreadStart>();
 		
@@ -193,6 +217,7 @@ namespace OpenVP.GtkGui {
 			
 			this.save.Sensitive = true;
 			this.saveAs.Sensitive = true;
+			this.mLastSave = null;
 			
 			this.mPreset = preset;
 			this.mController.Renderer = preset;
@@ -228,17 +253,87 @@ namespace OpenVP.GtkGui {
 			dialog.AddFilter(this.mBinaryFilter);
 			
 			if (dialog.Run() == (int) ResponseType.Ok) {
-				Console.WriteLine(dialog.Filter.Name);
-				Console.WriteLine(dialog.Filename);
+				string name = dialog.Filename;
+				
+				bool binary = dialog.Filter == this.mBinaryFilter;
+				
+				if (!System.IO.Path.HasExtension(name)) {
+					if (dialog.Filter == this.mBinaryFilter) {
+						name = System.IO.Path.ChangeExtension(name, "ovpb");
+					} else {
+						name = System.IO.Path.ChangeExtension(name, "ovp");
+					}
+				}
+				
+				this.SavePreset(name, binary);
+				this.mLastSave = name;
+				this.mLastSaveBinary = binary;
 			}
 			
 			dialog.Destroy();
 		}
 		
+		private void SavePreset(string where, bool binary) {
+			using (FileStream fs = new FileStream(where, FileMode.Create, FileAccess.Write)) {
+				if (binary)
+					new BinaryFormatter().Serialize(fs, this.mPreset);
+				else
+					new SoapFormatter().Serialize(fs, this.mPreset);
+			}
+		}
+		
 		protected virtual void OnOpenActivated(object sender, System.EventArgs e) {
+			FileChooserDialog dialog = new FileChooserDialog("Open", this,
+			                                                 FileChooserAction.Open, 
+			                                                 Stock.Cancel, ResponseType.Cancel,
+			                                                 Stock.Open, ResponseType.Ok);
+			
+			dialog.AddFilter(this.mSoapFilter);
+			dialog.AddFilter(this.mBinaryFilter);
+			
+			if (dialog.Run() == (int) ResponseType.Ok) {
+				string name = dialog.Filename;
+				
+				object o;
+				
+				using (FileStream file = File.Open(name, FileMode.Open, FileAccess.Read)) {
+					try {
+						o = new BinaryFormatter().Deserialize(file);
+					} catch {
+						file.Seek(0, SeekOrigin.Begin);
+						
+						try {
+							o = new SoapFormatter().Deserialize(file);
+						} catch (Exception) {
+							o = null;
+						}
+					}
+				}
+				
+				LinearPreset preset = o as LinearPreset;
+				
+				if (preset == null) {
+					MessageDialog md = new MessageDialog(this, DialogFlags.Modal,
+					                                     MessageType.Error,
+					                                     ButtonsType.Ok,
+					                                     "Unable to load that preset.");
+					
+					md.Run();
+					md.Destroy();
+				} else {
+					// TODO: Handle different preset types.
+					this.NewPreset(preset, new LinearPresetEditor(preset));
+				}
+			}
+			
+			dialog.Destroy();
 		}
 		
 		protected virtual void OnSaveActivated(object sender, System.EventArgs e) {
+			if (this.mLastSave != null)
+				this.SavePreset(this.mLastSave, this.mLastSaveBinary);
+			else
+				this.saveAs.Activate();
 		}
 	}
 }

@@ -55,9 +55,9 @@ namespace OpenVP.GtkGui {
 			
 			Effect effect = (Effect) this.mEffectStore.GetValue(i, 0);
 			
-			EffectEditor editor = new EffectEditor(effect);
+			BrowsableEditor editor = new BrowsableEditor(effect);
 			editor.Show();
-			this.EffectPane.AddWithViewport(editor);
+			this.EffectPane.Add(editor);
 		}
 		
 		private void SyncStore() {

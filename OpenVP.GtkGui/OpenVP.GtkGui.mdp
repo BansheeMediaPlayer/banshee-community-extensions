@@ -23,11 +23,20 @@
     <File name="LinearPresetEditor.cs" subtype="Code" buildaction="Compile" />
     <File name="gtk-gui/OpenVP.GtkGui.LinearPresetEditor.cs" subtype="Code" buildaction="Compile" />
     <File name="gtk-gui/objects.xml" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="EffectEditor.cs" subtype="Code" buildaction="Compile" />
+    <File name="BrowsableEditor.cs" subtype="Code" buildaction="Compile" />
     <File name="EffectSelectorDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="gtk-gui/OpenVP.GtkGui.EffectSelectorDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="BrowsableItem.cs" subtype="Code" buildaction="Compile" />
     <File name="Util.cs" subtype="Code" buildaction="Compile" />
+    <File name="gtk-gui/OpenVP.GtkGui.BrowsableEditor.cs" subtype="Code" buildaction="Compile" />
+    <File name="MemberEditor.cs" subtype="Code" buildaction="Compile" />
+    <File name="gtk-gui/OpenVP.GtkGui.MemberEditor.cs" subtype="Code" buildaction="Compile" />
+    <File name="MemberEditors" subtype="Directory" buildaction="Compile" />
+    <File name="MemberEditors/StringEditor.cs" subtype="Code" buildaction="Compile" />
+    <File name="MemberEditors/UnknownEditor.cs" subtype="Code" buildaction="Compile" />
+    <File name="MemberEditors/BooleanEditor.cs" subtype="Code" buildaction="Compile" />
+    <File name="MemberEditors/NumericEditor.cs" subtype="Code" buildaction="Compile" />
+    <File name="MemberEditors/ColorEditor.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -45,6 +54,8 @@
     <ExportedWidgets>
       <Widget>OpenVP.GtkGui.LinearPresetEditor</Widget>
       <Widget>OpenVP.GtkGui.EffectEditor</Widget>
+      <Widget>OpenVP.GtkGui.MemberEditor</Widget>
+      <Widget>OpenVP.GtkGui.TestWidget</Widget>
     </ExportedWidgets>
   </GtkDesignInfo>
 </Project>

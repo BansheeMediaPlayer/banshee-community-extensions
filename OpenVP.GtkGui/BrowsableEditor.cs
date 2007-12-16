@@ -28,15 +28,21 @@ using OpenVP;
 namespace OpenVP.GtkGui {
 	using EffectMember = BrowsableItem<PropertyInfo>;
 	
-	public partial class EffectEditor : Gtk.Bin {
-		private Effect mEffect;
+	public partial class BrowsableEditor : Gtk.Bin {
+		private object mEffect;
 		
 		private List<EffectMember> mMembers = new List<EffectMember>();
 		
 		private Tooltips mTooltips = new Tooltips();
 		
-		public EffectEditor(Effect effect) {
-			Stetic.BinContainer.Attach(this);
+		private List<MemberEditor> mEditors = new List<MemberEditor>();
+		
+		private List<MemberEditor> mDirtyEditors = new List<MemberEditor>();
+		
+		private bool mSuspendCleanProcessing = false;
+		
+		public BrowsableEditor(object effect) {
+			this.Build();
 			
 			this.mEffect = effect;
 			
@@ -98,19 +104,47 @@ namespace OpenVP.GtkGui {
 				table.Attach(l, 0, 1, row, row + 1, AttachOptions.Fill,
 				             AttachOptions.Shrink, 5, 5);
 				
-				Widget w = this.GetEditor(i);
-				w.Show();
+				MemberEditor editor = MemberEditor.Create(this.mEffect, i.Item);
+				editor.Show();
+				
+				editor.MadeClean += this.OnEditorMadeClean;
+				editor.MadeDirty += this.OnEditorMadeDirty;
+				this.mEditors.Add(editor);
 				
 				if (!string.IsNullOrEmpty(i.Description))
-					this.mTooltips.SetTip(w, i.Description, null);
+					this.mTooltips.SetTip(editor, i.Description, null);
 				
-				table.Attach(w, 1, 2, row, ++row,
+				table.Attach(editor, 1, 2, row, ++row,
 				             AttachOptions.Fill | AttachOptions.Expand,
 				             AttachOptions.Shrink, 5, 5);
 			}
 			
-			this.Add(table);
+			this.SheetPane.AddWithViewport(table);
 			table.Show();
+		}
+		
+		private void OnEditorMadeDirty(object o, EventArgs e) {
+			MemberEditor editor = (MemberEditor) o;
+			
+			if (!this.mDirtyEditors.Contains(editor)) {
+				this.mDirtyEditors.Add(editor);
+				
+				this.RevertButton.Sensitive = true;
+				this.ApplyButton.Sensitive = true;
+			}
+		}
+		
+		private void OnEditorMadeClean(object o, EventArgs e) {
+			if (this.mSuspendCleanProcessing)
+				return;
+			
+			MemberEditor editor = (MemberEditor) o;
+			
+			if (this.mDirtyEditors.Remove(editor) &&
+			    this.mDirtyEditors.Count == 0) {
+				this.RevertButton.Sensitive = false;
+				this.ApplyButton.Sensitive = false;
+			}
 		}
 		
 		protected override void OnDestroyed() {
@@ -118,9 +152,31 @@ namespace OpenVP.GtkGui {
 			
 			this.mTooltips.Destroy();
 		}
-		
-		private Widget GetEditor(EffectMember member) {
-			return new Entry();
+
+		protected virtual void OnApplyButtonClicked(object sender, System.EventArgs e) {
+			this.mSuspendCleanProcessing = true;
+			
+			foreach (MemberEditor i in this.mDirtyEditors)
+				i.Apply();
+			
+			this.mDirtyEditors.Clear();
+			this.ApplyButton.Sensitive = false;
+			this.RevertButton.Sensitive = false;
+			
+			this.mSuspendCleanProcessing = false;
+		}
+
+		protected virtual void OnRevertButtonClicked(object sender, System.EventArgs e) {
+			this.mSuspendCleanProcessing = true;
+			
+			foreach (MemberEditor i in this.mDirtyEditors)
+				i.Revert();
+			
+			this.mDirtyEditors.Clear();
+			this.ApplyButton.Sensitive = false;
+			this.RevertButton.Sensitive = false;
+			
+			this.mSuspendCleanProcessing = false;
 		}
 	}
 }

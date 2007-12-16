@@ -1,3 +1,7 @@
+2007-12-15  Chris Howie <me@chrishowie.com> 
+
+	* RangeAttribute.cs, OpenVP.mdp: Added RangeAttribute.
+
 2007-12-14  Chris Howie <me@chrishowie.com> 
 
 	* UDPPlayerData.cs: Implemented blocking read such that the thread

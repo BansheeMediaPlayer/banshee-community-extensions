@@ -3,8 +3,13 @@
     <itemgroups />
     <signals />
   </object>
-  <object type="OpenVP.GtkGui.EffectEditor" palette-category="OpenVP.GtkGui" allow-children="false" base-type="Gtk.Bin">
+  <object type="OpenVP.GtkGui.MemberEditor" palette-category="OpenVP.GtkGui" allow-children="false" base-type="Gtk.Bin">
     <itemgroups />
-    <signals />
+    <signals>
+      <itemgroup label="MemberEditor Signals">
+        <signal name="MadeDirty" />
+        <signal name="MadeClean" />
+      </itemgroup>
+    </signals>
   </object>
 </objects>

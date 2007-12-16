@@ -1,4 +1,4 @@
-// Util.cs
+// BooleanEditor.cs
 //
 //  Copyright (C) 2007 Chris Howie
 //
@@ -20,29 +20,36 @@
 
 using System;
 using System.Reflection;
+using Gtk;
 
-namespace OpenVP.GtkGui {
-	public static class Util {
-		public static T GetAttribute<T>(MemberInfo info,
-		                                bool inherit) where T : Attribute {
-			object[] attrs = info.GetCustomAttributes(typeof(T), inherit);
+namespace OpenVP.GtkGui.MemberEditors {
+	public class BooleanEditor : MemberEditor {
+		private CheckButton mCheck;
+		
+		public BooleanEditor(object @object, PropertyInfo info) : base(@object, info) {
+			this.mCheck = new CheckButton("");
+			this.mCheck.Show();
+			this.Add(this.mCheck);
 			
-			if (attrs.Length == 0)
-				return null;
+			this.Revert();
 			
-			return (T) attrs[0];
+			this.mCheck.Toggled += this.OnCheckToggled;
 		}
 		
-		public static Gdk.Color ConvertColor(OpenVP.Color color) {
-			return new Gdk.Color((byte) (color.Red * 255),
-			                     (byte) (color.Green * 255),
-			                     (byte) (color.Blue * 255));
+		private void OnCheckToggled(object o, EventArgs e) {
+			this.FireMadeDirty();
 		}
 		
-		public static OpenVP.Color ConvertColor(Gdk.Color color) {
-			return new OpenVP.Color((float) color.Red / 255,
-			                        (float) color.Green / 255,
-			                        (float) color.Blue / 255);
+		public override void Apply() {
+			this.PropertyInfo.SetValue(this.Object, this.mCheck.Active, null);
+			
+			this.FireMadeClean();
+		}
+		
+		public override void Revert() {
+			this.mCheck.Active = (bool) this.PropertyInfo.GetValue(this.Object, null);
+			
+			this.FireMadeClean();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-// Util.cs
+// UnknownEditor.cs
 //
 //  Copyright (C) 2007 Chris Howie
 //
@@ -20,29 +20,22 @@
 
 using System;
 using System.Reflection;
+using Gtk;
 
-namespace OpenVP.GtkGui {
-	public static class Util {
-		public static T GetAttribute<T>(MemberInfo info,
-		                                bool inherit) where T : Attribute {
-			object[] attrs = info.GetCustomAttributes(typeof(T), inherit);
+namespace OpenVP.GtkGui.MemberEditors {
+	public class UnknownEditor : MemberEditor {
+		public UnknownEditor(object @object, PropertyInfo info) : base(@object, info) {
+			Label l = new Label("Cannot edit property of type " +
+			                    info.PropertyType.FullName);
+			l.Show();
 			
-			if (attrs.Length == 0)
-				return null;
-			
-			return (T) attrs[0];
+			this.Add(l);
 		}
 		
-		public static Gdk.Color ConvertColor(OpenVP.Color color) {
-			return new Gdk.Color((byte) (color.Red * 255),
-			                     (byte) (color.Green * 255),
-			                     (byte) (color.Blue * 255));
+		public override void Apply() {
 		}
 		
-		public static OpenVP.Color ConvertColor(Gdk.Color color) {
-			return new OpenVP.Color((float) color.Red / 255,
-			                        (float) color.Green / 255,
-			                        (float) color.Blue / 255);
+		public override void Revert() {
 		}
 	}
 }

@@ -29,7 +29,7 @@ namespace OpenVP.GtkGui {
         
         private Gtk.TreeView EffectList;
         
-        private Gtk.ScrolledWindow EffectPane;
+        private Gtk.Alignment EffectPane;
         
         private Gtk.Label label1;
         
@@ -106,8 +106,7 @@ namespace OpenVP.GtkGui {
             Gtk.Paned.PanedChild w6 = ((Gtk.Paned.PanedChild)(this.hpaned1[this.vbox1]));
             w6.Resize = false;
             // Container child hpaned1.Gtk.Paned+PanedChild
-            this.EffectPane = new Gtk.ScrolledWindow();
-            this.EffectPane.CanFocus = true;
+            this.EffectPane = new Gtk.Alignment(0.5F, 0.5F, 1F, 1F);
             this.EffectPane.Name = "EffectPane";
             this.hpaned1.Add(this.EffectPane);
             this.notebook1.Add(this.hpaned1);
