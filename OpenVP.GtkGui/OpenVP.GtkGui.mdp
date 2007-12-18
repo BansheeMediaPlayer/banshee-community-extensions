@@ -37,6 +37,7 @@
     <File name="MemberEditors/BooleanEditor.cs" subtype="Code" buildaction="Compile" />
     <File name="MemberEditors/NumericEditor.cs" subtype="Code" buildaction="Compile" />
     <File name="MemberEditors/ColorEditor.cs" subtype="Code" buildaction="Compile" />
+    <File name="MemberEditors/ScriptEditor.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -49,6 +50,7 @@
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Runtime.Serialization.Formatters.Soap, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <ProjectReference type="Project" localcopy="True" refto="OpenVP.Scripting" />
   </References>
   <GtkDesignInfo gtkVersion="2.10.2">
     <ExportedWidgets>

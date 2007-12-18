@@ -84,13 +84,30 @@ namespace OpenVP.GtkGui {
 			mEditorMap[typeof(double)] = typeof(MemberEditors.NumericEditor);
 			
 			mEditorMap[typeof(OpenVP.Color)] = typeof(MemberEditors.ColorEditor);
+			
+			mEditorMap[typeof(OpenVP.Scripting.UserScript)] = typeof(MemberEditors.ScriptEditor);
 		}
 		
 		public static MemberEditor Create(object @object, PropertyInfo info) {
 			Type editor;
 			
-			if (!mEditorMap.TryGetValue(info.PropertyType, out editor))
-				editor = typeof(MemberEditors.UnknownEditor);
+			if (!mEditorMap.TryGetValue(info.PropertyType, out editor)) {
+				editor = null;
+				
+				// Look for subclasses/interfaces.
+				foreach (KeyValuePair<Type, Type> i in mEditorMap) {
+					if (i.Key.IsValueType)
+						continue;
+					
+					if (i.Key.IsAssignableFrom(info.PropertyType)) {
+						editor = i.Value;
+						break;
+					}
+				}
+				
+				if (editor == null)
+					editor = typeof(MemberEditors.UnknownEditor);
+			}
 			
 			return (MemberEditor) Activator.CreateInstance(editor, @object,
 			                                               info);

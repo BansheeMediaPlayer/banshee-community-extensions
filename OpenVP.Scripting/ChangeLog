@@ -1,0 +1,5 @@
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
+	* AssemblyInfo.cs, OpenVP.Scripting.mdp, UserScript.cs, ChangeLog,
+	  AffeScript.cs, ScriptingEnvironment.cs: Added OpenVP.Scripting project.
+

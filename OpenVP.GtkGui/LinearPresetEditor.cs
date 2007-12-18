@@ -82,7 +82,10 @@ namespace OpenVP.GtkGui {
 		}
 		
 		protected virtual void OnAddEffectClicked(object sender, System.EventArgs e) {
+			// EVIL.  This makes sure the core assembly is loaded.  We should do
+			// this better and only once.
 			new OpenVP.Core.ClearScreen();
+			
 			Registry.Update();
 			
 			EffectSelectorDialog dialog = new EffectSelectorDialog();

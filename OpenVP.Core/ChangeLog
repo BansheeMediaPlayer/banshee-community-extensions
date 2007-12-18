@@ -1,3 +1,9 @@
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
+	* SuperScope.cs: Added SuperScope effect.
+	* OpenVP.Core.mdp: Added SuperScope effect.  Added OpenVP and Cdh.Affe to
+	  references.
+
 2007-12-14  Chris Howie <me@chrishowie.com> 
 
 	* Scope.cs: Fix description for Circular property.

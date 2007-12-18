@@ -75,7 +75,7 @@ namespace OpenVP.GtkGui {
 					effects.Add(entry);
 			}
 			
-			effects.Sort(EffectEntry.Sorter);
+			EffectEntry.Sort(effects);
 			
 			string category = null;
 			

@@ -1,3 +1,8 @@
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
+	* contrib, contrib/Cdh.Affe.dll: Added build of Cdh.Affe.
+	* OpenVP.Scripting, OpenVP.mds: Added OpenVP.Scripting project.
+
 2007-12-13  Chris Howie <me@chrishowie.com> 
 
 	* OpenVP.GtkGui, OpenVP.mds: Added Gtk# GUI project.

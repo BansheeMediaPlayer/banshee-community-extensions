@@ -117,6 +117,28 @@ namespace OpenVP {
 			}
 		}
 		
+		private int mWindowWidth;
+		
+		/// <value>
+		/// The width of the render window in pixels.
+		/// </value>
+		public int WindowWidth {
+			get {
+				return this.mWindowWidth;
+			}
+		}
+		
+		private int mWindowHeight;
+		
+		/// <value>
+		/// The height of the render window in pixels.
+		/// </value>
+		public int WindowHeight {
+			get {
+				return this.mWindowHeight;
+			}
+		}
+		
 		/// <summary>
 		/// Fired when the end user clicks the close button on the output
 		/// window.
@@ -160,6 +182,9 @@ namespace OpenVP {
 			
 			if (surface == IntPtr.Zero)
 				this.SdlThrow();
+			
+			this.mWindowWidth = w;
+			this.mWindowHeight = h;
 			
 			Gl.glViewport(0, 0, w, h);
 			

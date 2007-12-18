@@ -1,3 +1,8 @@
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
+	* OpenVP.mdp, FollowsAttribute.cs: Added FollowsAttribute.
+	* Controller.cs: Added WindowWidth and WindowHeight properties.
+
 2007-12-15  Chris Howie <me@chrishowie.com> 
 
 	* RangeAttribute.cs, OpenVP.mdp: Added RangeAttribute.

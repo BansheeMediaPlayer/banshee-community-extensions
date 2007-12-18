@@ -75,6 +75,14 @@ namespace OpenVP.GtkGui {
 		
 		private AutoResetEvent mUpdateSync = new AutoResetEvent(false);
 		
+		private object mRenderLock = new object();
+		
+		public object RenderLock {
+			get {
+				return this.mRenderLock;
+			}
+		}
+		
 		public MainWindow() : base(Gtk.WindowType.Toplevel) {
 			mSingleton = this;
 			
@@ -189,7 +197,10 @@ namespace OpenVP.GtkGui {
 						}
 					} while (!this.mUpdateSync.WaitOne(100, false));
 					
-					this.mController.DrawFrame();
+					lock (this.mRenderLock) {
+						this.mController.DrawFrame();
+					}
+					
 					this.mRenderSync.Set();
 					
 					this.mFPS++;

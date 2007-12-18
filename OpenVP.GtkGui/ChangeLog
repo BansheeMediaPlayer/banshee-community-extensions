@@ -1,3 +1,20 @@
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
+	* OpenVP.GtkGui.mdp: Added ScriptEditor.  Added reference to
+	  OpenVP.Scripting.
+	* MainWindow.cs: Added an object that threads can use to synchronize with
+	  the render loop.
+	* EffectSelectorDialog.cs: Track API changes.
+	* MemberEditors/ScriptEditor.cs: Added ScriptEditor.
+	* MemberEditor.cs: Added ScriptEditor to editor map.  If an editor is not
+	  found, the map is checked for superclasses of the type being edited
+	  before failing.
+	* BrowsableItem.cs: Implemented FollowsAttribute in sort mechanism.
+	* LinearPresetEditor.cs: Add comment explaning the hideousness of a line and
+	  that it needs to change sometime.
+	* BrowsableEditor.cs: Track API changes.  Lock on the render lock when
+	  applying changes.
+
 2007-12-15  Chris Howie <me@chrishowie.com> 
 
 	* MainWindow.cs: Opening a preset now sets the last save fields to their

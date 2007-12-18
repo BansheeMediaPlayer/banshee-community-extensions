@@ -19,6 +19,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -31,6 +32,8 @@ namespace OpenVP.GtkGui {
 		public readonly string Category;
 		
 		public readonly string Description;
+		
+		public readonly string Follows;
 		
 		private BrowsableItem(T item) {
 			this.Item = item;
@@ -55,6 +58,13 @@ namespace OpenVP.GtkGui {
 				this.Description = desc.Description;
 			else
 				this.Description = string.Empty;
+			
+			FollowsAttribute follows = Util.GetAttribute<FollowsAttribute>(item, false);
+			
+			if (follows != null)
+				this.Follows = follows.Follows;
+			else
+				this.Follows = null;
 		}
 		
 		public static BrowsableItem<T> Create(T item) {
@@ -66,7 +76,52 @@ namespace OpenVP.GtkGui {
 			return new BrowsableItem<T>(item);
 		}
 		
-		public static int Sorter(BrowsableItem<T> a, BrowsableItem<T> b) {
+		public static void Sort(BrowsableItem<T>[] array) {
+			Array.Sort(array, Sorter);
+			ApplyFollows(array);
+		}
+		
+		public static void Sort(List<BrowsableItem<T>> array) {
+			array.Sort(Sorter);
+			ApplyFollows(array);
+		}
+		
+		private static void ApplyFollows(IList<BrowsableItem<T>> array) {
+			if (array.Count == 0)
+				return;
+			
+			while (array[0].Follows != null) {
+				BrowsableItem<T> item = array[0];
+				
+				bool found = false;
+				
+				for (int i = 1; i < array.Count; i++) {
+					// Shift up.
+					array[i - 1] = array[i];
+					
+					// This is where this one goes.
+					if (array[i].Item.Name == item.Follows) {
+						array[i] = item;
+						found = true;
+						break;
+					}
+				}
+				
+				// We didn't find it, stick this one on the end.
+				if (!found)
+					array[array.Count - 1] = item;
+			}
+		}
+		
+		private static int Sorter(BrowsableItem<T> a, BrowsableItem<T> b) {
+			// Push items with FollowsAttribute to the top for quicker
+			// post-sort arrangement.
+			if (a.Follows != null && b.Follows == null)
+				return -1;
+			
+			if (a.Follows == null && b.Follows != null)
+				return 1;
+			
 			int order;
 			
 			order = a.Category.CompareTo(b.Category);

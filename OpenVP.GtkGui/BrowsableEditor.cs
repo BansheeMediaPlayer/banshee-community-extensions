@@ -61,7 +61,7 @@ namespace OpenVP.GtkGui {
 					this.mMembers.Add(member);
 			}
 			
-			this.mMembers.Sort(EffectMember.Sorter);
+			EffectMember.Sort(this.mMembers);
 		}
 		
 		private void BuildInterface() {
@@ -156,8 +156,10 @@ namespace OpenVP.GtkGui {
 		protected virtual void OnApplyButtonClicked(object sender, System.EventArgs e) {
 			this.mSuspendCleanProcessing = true;
 			
-			foreach (MemberEditor i in this.mDirtyEditors)
-				i.Apply();
+			lock (MainWindow.Singleton.RenderLock) {
+				foreach (MemberEditor i in this.mDirtyEditors)
+					i.Apply();
+			}
 			
 			this.mDirtyEditors.Clear();
 			this.ApplyButton.Sensitive = false;
