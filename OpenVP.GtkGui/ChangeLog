@@ -1,5 +1,10 @@
 2007-12-18  Chris Howie <me@chrishowie.com> 
 
+	* gtk-gui/OpenVP.GtkGui.LinearPresetEditor.cs, gtk-gui/gui.stetic,
+	  LinearPresetEditor.cs: Added Up/Down buttons to LinearPresetEditor.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
 	* MemberEditor.cs: Added using directive for the MemberEditors namespace.
 
 2007-12-18  Chris Howie <me@chrishowie.com> 

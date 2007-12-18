@@ -29,6 +29,12 @@ namespace OpenVP.GtkGui {
         
         private Gtk.TreeView EffectList;
         
+        private Gtk.HButtonBox hbuttonbox2;
+        
+        private Gtk.Button UpButton;
+        
+        private Gtk.Button DownButton;
+        
         private Gtk.Alignment EffectPane;
         
         private Gtk.Label label1;
@@ -102,9 +108,44 @@ namespace OpenVP.GtkGui {
             this.vbox1.Add(this.GtkScrolledWindow);
             Gtk.Box.BoxChild w5 = ((Gtk.Box.BoxChild)(this.vbox1[this.GtkScrolledWindow]));
             w5.Position = 1;
+            // Container child vbox1.Gtk.Box+BoxChild
+            this.hbuttonbox2 = new Gtk.HButtonBox();
+            this.hbuttonbox2.Name = "hbuttonbox2";
+            this.hbuttonbox2.Homogeneous = true;
+            this.hbuttonbox2.Spacing = 6;
+            // Container child hbuttonbox2.Gtk.ButtonBox+ButtonBoxChild
+            this.UpButton = new Gtk.Button();
+            this.UpButton.Sensitive = false;
+            this.UpButton.CanFocus = true;
+            this.UpButton.Name = "UpButton";
+            this.UpButton.UseStock = true;
+            this.UpButton.UseUnderline = true;
+            this.UpButton.Label = "gtk-go-up";
+            this.hbuttonbox2.Add(this.UpButton);
+            Gtk.ButtonBox.ButtonBoxChild w6 = ((Gtk.ButtonBox.ButtonBoxChild)(this.hbuttonbox2[this.UpButton]));
+            w6.Expand = false;
+            w6.Fill = false;
+            // Container child hbuttonbox2.Gtk.ButtonBox+ButtonBoxChild
+            this.DownButton = new Gtk.Button();
+            this.DownButton.Sensitive = false;
+            this.DownButton.CanFocus = true;
+            this.DownButton.Name = "DownButton";
+            this.DownButton.UseStock = true;
+            this.DownButton.UseUnderline = true;
+            this.DownButton.Label = "gtk-go-down";
+            this.hbuttonbox2.Add(this.DownButton);
+            Gtk.ButtonBox.ButtonBoxChild w7 = ((Gtk.ButtonBox.ButtonBoxChild)(this.hbuttonbox2[this.DownButton]));
+            w7.Position = 1;
+            w7.Expand = false;
+            w7.Fill = false;
+            this.vbox1.Add(this.hbuttonbox2);
+            Gtk.Box.BoxChild w8 = ((Gtk.Box.BoxChild)(this.vbox1[this.hbuttonbox2]));
+            w8.Position = 2;
+            w8.Expand = false;
+            w8.Fill = false;
             this.hpaned1.Add(this.vbox1);
-            Gtk.Paned.PanedChild w6 = ((Gtk.Paned.PanedChild)(this.hpaned1[this.vbox1]));
-            w6.Resize = false;
+            Gtk.Paned.PanedChild w9 = ((Gtk.Paned.PanedChild)(this.hpaned1[this.vbox1]));
+            w9.Resize = false;
             // Container child hpaned1.Gtk.Paned+PanedChild
             this.EffectPane = new Gtk.Alignment(0.5F, 0.5F, 1F, 1F);
             this.EffectPane.Name = "EffectPane";
@@ -117,13 +158,13 @@ namespace OpenVP.GtkGui {
             this.notebook1.SetTabLabel(this.hpaned1, this.label1);
             this.label1.ShowAll();
             // Notebook tab
-            Gtk.Label w9 = new Gtk.Label();
-            w9.Visible = true;
-            this.notebook1.Add(w9);
+            Gtk.Label w12 = new Gtk.Label();
+            w12.Visible = true;
+            this.notebook1.Add(w12);
             this.label2 = new Gtk.Label();
             this.label2.Name = "label2";
             this.label2.LabelProp = Mono.Unix.Catalog.GetString("Keybindings");
-            this.notebook1.SetTabLabel(w9, this.label2);
+            this.notebook1.SetTabLabel(w12, this.label2);
             this.label2.ShowAll();
             this.Add(this.notebook1);
             if ((this.Child != null)) {
@@ -132,6 +173,8 @@ namespace OpenVP.GtkGui {
             this.Show();
             this.AddEffect.Clicked += new System.EventHandler(this.OnAddEffectClicked);
             this.RemoveEffect.Clicked += new System.EventHandler(this.OnRemoveEffectClicked);
+            this.UpButton.Clicked += new System.EventHandler(this.OnUpButtonClicked);
+            this.DownButton.Clicked += new System.EventHandler(this.OnDownButtonClicked);
         }
     }
 }

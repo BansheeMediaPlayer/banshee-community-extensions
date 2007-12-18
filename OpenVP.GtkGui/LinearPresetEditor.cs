@@ -41,6 +41,8 @@ namespace OpenVP.GtkGui {
 		}
 		
 		private void OnSelectionChanged(object o, EventArgs e) {
+			this.CheckMovementButtons();
+			
 			TreeIter i;
 			
 			if (this.EffectPane.Child != null)
@@ -59,6 +61,22 @@ namespace OpenVP.GtkGui {
 			editor.Changed += this.OnEditorChanged;
 			editor.Show();
 			this.EffectPane.Add(editor);
+		}
+		
+		private void CheckMovementButtons() {
+			TreeIter i;
+			
+			if (!this.EffectList.Selection.GetSelected(out i)) {
+				this.UpButton.Sensitive = false;
+				this.DownButton.Sensitive = false;
+				
+				return;
+			}
+			
+			TreePath path = this.mEffectStore.GetPath(i);
+			
+			this.UpButton.Sensitive = path.Indices[0] != 0;
+			this.DownButton.Sensitive = this.mEffectStore.IterNext(ref i);
 		}
 		
 		private void OnEditorChanged(object o, EventArgs e) {
@@ -111,11 +129,12 @@ namespace OpenVP.GtkGui {
 					return;
 				}
 				
-				MainWindow.Singleton.InvokeOnRenderLoopAndWait(delegate {
+				lock (MainWindow.Singleton.RenderLock) {
 					this.mPreset.Effects.Add(effect);
-				});
+				}
 				
 				this.mEffectStore.AppendValues(effect);
+				this.CheckMovementButtons();
 			}
 			
 			dialog.Destroy();
@@ -131,13 +150,50 @@ namespace OpenVP.GtkGui {
 				
 				Effect eff = this.mPreset.Effects[index];
 				
-				MainWindow.Singleton.InvokeOnRenderLoopAndWait(delegate {
-					eff.Dispose();
+				MainWindow.Singleton.InvokeOnRenderLoop(eff.Dispose);
+				
+				lock (MainWindow.Singleton.RenderLock) {
 					this.mPreset.Effects.RemoveAt(index);
-				});
+				};
 				
 				this.mEffectStore.Remove(ref i);
 			}
+		}
+		
+		private void MoveSelectedEffect(int direction) {
+			TreeIter i;
+			if (!this.EffectList.Selection.GetSelected(out i))
+				return;
+			
+			TreePath p = this.mEffectStore.GetPath(i);
+			int index = p.Indices[0];
+			
+			lock (MainWindow.Singleton.RenderLock) {
+				TreeIter prev;
+				if (!this.mEffectStore.IterNthChild(out prev,
+				                                    index + direction))
+					return;
+				
+				if (direction == 1)
+					this.mEffectStore.MoveAfter(i, prev);
+				else
+					this.mEffectStore.MoveBefore(i, prev);
+				
+				Effect effect = this.mPreset.Effects[index];
+				
+				this.mPreset.Effects.RemoveAt(index);
+				this.mPreset.Effects.Insert(index + direction, effect);
+			}
+			
+			this.CheckMovementButtons();
+		}
+		
+		protected virtual void OnUpButtonClicked(object sender, System.EventArgs e) {
+			this.MoveSelectedEffect(-1);
+		}
+		
+		protected virtual void OnDownButtonClicked(object sender, System.EventArgs e) {
+			this.MoveSelectedEffect(1);
 		}
 	}
 }
