@@ -1,5 +1,10 @@
 2007-12-18  Chris Howie <me@chrishowie.com> 
 
+	* contrib/Cdh.Affe.dll: Update Affe build to fix bug dealing with literal
+	  fields.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
 	* contrib, contrib/Cdh.Affe.dll: Added build of Cdh.Affe.
 	* OpenVP.Scripting, OpenVP.mds: Added OpenVP.Scripting project.
 
