@@ -69,10 +69,10 @@ namespace OpenVP.Scripting {
 		}
 		
 		protected UserScript() {
-			this.mCallWrapper = this.PerformCall;
+			this.mCallWrapper = this.Run;
 		}
 		
-		private void PerformCall() {
+		public void Run() {
 			this.Call();
 		}
 		

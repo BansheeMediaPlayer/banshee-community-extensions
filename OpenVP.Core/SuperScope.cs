@@ -27,7 +27,7 @@ using Tao.OpenGl;
 
 namespace OpenVP.Core {
 	[Serializable, Browsable(true), DisplayName("SuperScope"),
-	 Category("Scriptable scopes"), Description("Powerful scriptable scope.")]
+	 Category("Render"), Description("Powerful scriptable scope.")]
 	public class SuperScope : Effect, IDeserializationCallback {
 		private AffeScript mInitScript = new AffeScript();
 		
@@ -54,10 +54,21 @@ namespace OpenVP.Core {
 			}
 		}
 		
+		private AffeScript mBeatScript = new AffeScript();
+		
+		[Browsable(true), DisplayName("On beat"),
+		 Category("Scripts"), Follows("FrameScript"),
+		 Description("This script is executed after the frame script when a beat is detected.")]
+		public AffeScript BeatScript {
+			get {
+				return this.mBeatScript;
+			}
+		}
+		
 		private AffeScript mVertexScript = new AffeScript();
 		
 		[Browsable(true), DisplayName("Vertex"),
-		 Category("Scripts"), Follows("FrameScript"),
+		 Category("Scripts"), Follows("BeatScript"),
 		 Description("This script is executed for each vertex on the scope.")]
 		public AffeScript VertexScript {
 			get {
@@ -92,6 +103,9 @@ namespace OpenVP.Core {
 			
 			this.mFrameScript.Compiler = compiler;
 			this.mFrameScript.TargetObject = this.mScriptHost;
+			
+			this.mBeatScript.Compiler = compiler;
+			this.mBeatScript.TargetObject = this.mScriptHost;
 			
 			this.mVertexScript.Compiler = compiler;
 			this.mVertexScript.TargetObject = this.mScriptHost;
@@ -142,6 +156,10 @@ namespace OpenVP.Core {
 			if (this.mScriptHost.NumPoints > 0) {
 				this.UpdateVariables(controller);
 				RunScript(this.FrameScript, "frame");
+				
+				this.UpdateVariables(controller);
+				if (controller.BeatDetector.IsBeat)
+					RunScript(this.BeatScript, "beat");
 			}
 		}
 		

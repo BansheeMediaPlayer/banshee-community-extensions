@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gtk;
+using OpenVP.GtkGui.MemberEditors;
 
 namespace OpenVP.GtkGui {
 	public abstract partial class MemberEditor : Gtk.Bin {
@@ -89,23 +90,23 @@ namespace OpenVP.GtkGui {
 			new Dictionary<Type, Type>();
 		
 		static MemberEditor() {
-			mEditorMap[typeof(string)] = typeof(MemberEditors.StringEditor);
-			mEditorMap[typeof(bool)] = typeof(MemberEditors.BooleanEditor);
+			mEditorMap[typeof(string)] = typeof(StringEditor);
+			mEditorMap[typeof(bool)] = typeof(BooleanEditor);
 			
-			mEditorMap[typeof(byte)] = typeof(MemberEditors.NumericEditor);
-			mEditorMap[typeof(sbyte)] = typeof(MemberEditors.NumericEditor);
-			mEditorMap[typeof(short)] = typeof(MemberEditors.NumericEditor);
-			mEditorMap[typeof(ushort)] = typeof(MemberEditors.NumericEditor);
-			mEditorMap[typeof(int)] = typeof(MemberEditors.NumericEditor);
-			mEditorMap[typeof(uint)] = typeof(MemberEditors.NumericEditor);
-			mEditorMap[typeof(long)] = typeof(MemberEditors.NumericEditor);
-			mEditorMap[typeof(ulong)] = typeof(MemberEditors.NumericEditor);
-			mEditorMap[typeof(float)] = typeof(MemberEditors.NumericEditor);
-			mEditorMap[typeof(double)] = typeof(MemberEditors.NumericEditor);
+			mEditorMap[typeof(byte)] = typeof(NumericEditor);
+			mEditorMap[typeof(sbyte)] = typeof(NumericEditor);
+			mEditorMap[typeof(short)] = typeof(NumericEditor);
+			mEditorMap[typeof(ushort)] = typeof(NumericEditor);
+			mEditorMap[typeof(int)] = typeof(NumericEditor);
+			mEditorMap[typeof(uint)] = typeof(NumericEditor);
+			mEditorMap[typeof(long)] = typeof(NumericEditor);
+			mEditorMap[typeof(ulong)] = typeof(NumericEditor);
+			mEditorMap[typeof(float)] = typeof(NumericEditor);
+			mEditorMap[typeof(double)] = typeof(NumericEditor);
 			
-			mEditorMap[typeof(OpenVP.Color)] = typeof(MemberEditors.ColorEditor);
+			mEditorMap[typeof(OpenVP.Color)] = typeof(ColorEditor);
 			
-			mEditorMap[typeof(OpenVP.Scripting.UserScript)] = typeof(MemberEditors.ScriptEditor);
+			mEditorMap[typeof(OpenVP.Scripting.UserScript)] = typeof(ScriptEditor);
 		}
 		
 		public static MemberEditor Create(object @object, PropertyInfo info) {
@@ -126,7 +127,7 @@ namespace OpenVP.GtkGui {
 				}
 				
 				if (editor == null)
-					editor = typeof(MemberEditors.UnknownEditor);
+					editor = typeof(UnknownEditor);
 			}
 			
 			return (MemberEditor) Activator.CreateInstance(editor, @object,

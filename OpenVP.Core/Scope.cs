@@ -25,6 +25,7 @@ using Tao.OpenGl;
 
 namespace OpenVP.Core {
 	[Serializable, Browsable(true), DisplayName("Basic scope"),
+	 Category("Render"),
 	 Description("Draws a scope with limited customizability.")]
 	public class Scope : Effect {
 		private Color mColor = new Color(1, 1, 1);

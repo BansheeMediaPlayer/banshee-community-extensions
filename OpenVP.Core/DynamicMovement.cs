@@ -1,0 +1,401 @@
+// DynamicMovement.cs
+//
+//  Copyright (C) 2007 Chris Howie
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+//
+
+using System;
+using System.ComponentModel;
+using System.Runtime.Serialization;
+using Tao.OpenGl;
+using Cdh.Affe;
+using OpenVP.Scripting;
+
+namespace OpenVP.Core {
+	[Serializable, DisplayName("Dynamic movement"), Category("Transform"),
+	 Description("Applies a movement function to the buffer.")]
+	public class DynamicMovement : Effect, IDeserializationCallback {
+		private AffeScript mInitScript = new AffeScript();
+		
+		[Browsable(true), DisplayName("Init"),
+		 Category("Scripts"),
+		 Description("This script is executed once, before any others.")]
+		public AffeScript InitScript {
+			get {
+				return this.mInitScript;
+			}
+		}
+		
+		[NonSerialized]
+		private bool mNeedInit = true;
+		
+		private AffeScript mFrameScript = new AffeScript();
+		
+		[Browsable(true), DisplayName("Frame"),
+		 Category("Scripts"), Follows("InitScript"),
+		 Description("This script is executed once each frame, before the vertex script.")]
+		public AffeScript FrameScript {
+			get {
+				return this.mFrameScript;
+			}
+		}
+		
+		private AffeScript mBeatScript = new AffeScript();
+		
+		[Browsable(true), DisplayName("On beat"),
+		 Category("Scripts"), Follows("FrameScript"),
+		 Description("This script is executed after the frame script when a beat is detected.")]
+		public AffeScript BeatScript {
+			get {
+				return this.mBeatScript;
+			}
+		}
+		
+		private AffeScript mVertexScript = new AffeScript();
+		
+		[Browsable(true), DisplayName("Vertex"),
+		 Category("Scripts"), Follows("BeatScript"),
+		 Description("This script is executed for each vertex in the grid.")]
+		public AffeScript VertexScript {
+			get {
+				return this.mVertexScript;
+			}
+		}
+		
+		[NonSerialized]
+		private ScriptHost mScriptHost;
+		
+		private int mXResolution = 16;
+		
+		[Browsable(true), DisplayName("X"), Category("Grid resolution"),
+		 Range(2, 512),
+		 Description("The number of verticies along the X axis.")]
+		public int XResolution {
+			get {
+				return this.mXResolution;
+			}
+			set {
+				if (value < 2)
+					throw new ArgumentOutOfRangeException("value < 2");
+				
+				this.mXResolution = value;
+				this.CreatePointDataArray();
+			}
+		}
+		
+		private int mYResolution = 16;
+		
+		[Browsable(true), DisplayName("Y"), Category("Grid resolution"),
+		 Range(2, 512),
+		 Description("The number of verticies along the Y axis.")]
+		public int YResolution {
+			get {
+				return this.mYResolution;
+			}
+			set {
+				if (value < 2)
+					throw new ArgumentOutOfRangeException("value < 2");
+				
+				this.mYResolution = value;
+				this.CreatePointDataArray();
+			}
+		}
+		
+		[NonSerialized]
+		private bool mHaveTexture = false;
+		
+		[NonSerialized]
+		private int mTextureId = -1;
+		
+		[NonSerialized]
+		private int mTextureSize = -1;
+		
+		private bool mWrap = true;
+		
+		[Browsable(true), DisplayName("Wrap"), Category("Miscellaneous"),
+		 Description("Whether to wrap when the scripts compute points that are off the screen.")]
+		public bool Wrap {
+			get {
+				return this.mWrap;
+			}
+			set {
+				this.mWrap = value;
+			}
+		}
+		
+		private bool mRectangular = false;
+		
+		[Browsable(true), DisplayName("Rectangular"), Category("Miscellaneous"),
+		 Description("Whether to use rectangular coordinates instead of polar.")]
+		public bool Rectangular {
+			get {
+				return this.mRectangular;
+			}
+			set {
+				this.mRectangular = value;
+			}
+		}
+		
+		[NonSerialized]
+		private PointData[,] mPointData;
+		
+		public DynamicMovement() {
+			this.InitializeScriptObjects();
+		}
+		
+		void IDeserializationCallback.OnDeserialization(object sender) {
+			this.InitializeScriptObjects();
+		}
+		
+		private void CreatePointDataArray() {
+			this.mPointData = new PointData[this.mXResolution,
+			                                this.mYResolution];
+		}
+		
+		private void InitializeScriptObjects() {
+			AffeCompiler compiler = new AffeCompiler(typeof(ScriptHost));
+			
+			ScriptingEnvironment.InstallBase(compiler);
+			ScriptingEnvironment.InstallMath(compiler);
+			
+			this.mScriptHost = new ScriptHost();
+			
+			this.mInitScript.Compiler = compiler;
+			this.mInitScript.TargetObject = this.mScriptHost;
+			
+			this.mFrameScript.Compiler = compiler;
+			this.mFrameScript.TargetObject = this.mScriptHost;
+			
+			this.mBeatScript.Compiler = compiler;
+			this.mBeatScript.TargetObject = this.mScriptHost;
+			
+			this.mVertexScript.Compiler = compiler;
+			this.mVertexScript.TargetObject = this.mScriptHost;
+			
+			this.mNeedInit = true;
+			
+			this.mInitScript.MadeDirty += this.OnInitMadeDirty;
+			
+			this.mHaveTexture = false;
+			this.CreatePointDataArray();
+		}
+		
+		private void OnInitMadeDirty(object o, EventArgs e) {
+			this.mNeedInit = true;
+		}
+		
+		private static bool RunScript(UserScript script, string type) {
+			try {
+				ScriptCall call = script.Call;
+				if (call == null)
+					return false;
+				
+				call();
+			} catch (Exception e) {
+				Console.WriteLine("Exception executing the {0} script:", type);
+				Console.WriteLine(e.ToString());
+				return false;
+			}
+			
+			return true;
+		}
+		
+		public override void NextFrame(Controller controller) {
+			if (this.mNeedInit) {
+				this.mNeedInit = false;
+				RunScript(this.InitScript, "initialization");
+			}
+			
+			RunScript(this.FrameScript, "frame");
+			
+			if (controller.BeatDetector.IsBeat)
+				RunScript(this.BeatScript, "beat");
+		}
+		
+		private void CheckTexture(int w, int h) {
+			int[] tex;
+			
+			w = Math.Max(w, h);
+			
+			if (this.mHaveTexture) {
+				if (this.mTextureSize >= w)
+					return;
+				
+				tex = new int[] { this.mTextureId };
+				
+				Gl.glDeleteTextures(1, tex);
+			} else {
+				tex = new int[1];
+			}
+			
+			Gl.glGetError();
+			
+			Gl.glGenTextures(1, tex);
+			
+			if (Gl.glGetError() != Gl.GL_NO_ERROR)
+				throw new InvalidOperationException("Cannot create texture.");
+			
+			this.mTextureId = tex[0];
+			this.mHaveTexture = true;
+			
+			int size = 1;
+			
+			while (size < w)
+				size <<= 1;
+			
+			this.mTextureSize = size;
+			
+			Gl.glBindTexture(Gl.GL_TEXTURE_2D, this.mTextureId);
+			
+			byte[] mData = new byte[size * size * 3];
+			
+			Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB, size, size, 0,
+			                Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, mData);
+			
+			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
+			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR);
+		}
+		
+		public override void RenderFrame(Controller controller) {
+			Gl.glMatrixMode(Gl.GL_PROJECTION);
+			Gl.glPushMatrix();
+			Gl.glLoadIdentity();
+			
+			Gl.glPushAttrib(Gl.GL_ENABLE_BIT);
+			Gl.glEnable(Gl.GL_TEXTURE_2D);
+			Gl.glDisable(Gl.GL_DEPTH_TEST);
+			Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_DECAL);
+			
+			this.CheckTexture(controller.WindowWidth, controller.WindowHeight);
+			
+			Gl.glBindTexture(Gl.GL_TEXTURE_2D, this.mTextureId);
+			
+			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S,
+			                   this.Wrap ? Gl.GL_REPEAT : Gl.GL_CLAMP);
+			
+			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T,
+			                   this.Wrap ? Gl.GL_REPEAT : Gl.GL_CLAMP);
+			
+			Gl.glCopyTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB, 0, 0,
+			                    controller.WindowWidth, controller.WindowHeight,
+			                    0);
+			
+			PointData pd;
+			
+			for (int yi = 0; yi < this.YResolution; yi++) {
+				for (int xi = 0; xi < this.XResolution; xi++) {
+					this.mScriptHost.XI = (float) xi / (this.XResolution - 1);
+					this.mScriptHost.YI = (float) yi / (this.YResolution - 1);
+					this.mScriptHost.X = this.mScriptHost.XI;
+					this.mScriptHost.Y = this.mScriptHost.YI;
+					
+					float xp = this.mScriptHost.X * 2 - 1;
+					float yp = this.mScriptHost.Y * 2 - 1;
+					
+					this.mScriptHost.D = (float) Math.Sqrt((xp * xp) + (yp * yp));
+					this.mScriptHost.R = (float) Math.Atan2(yp, xp);
+					
+					if (!RunScript(this.VertexScript, "vertex")) {
+						// Force breaking out of the outer loop too.
+						yi = this.YResolution;
+						break;
+					}
+					
+					if (this.Rectangular) {
+						pd.XOffset = this.mScriptHost.X;
+						pd.YOffset = this.mScriptHost.Y;
+					} else {
+						pd.XOffset = (this.mScriptHost.D * (float) Math.Cos(this.mScriptHost.R) + 1) / 2;
+						pd.YOffset = (this.mScriptHost.D * (float) Math.Sin(this.mScriptHost.R) + 1) / 2;
+					}
+					
+					pd.Alpha = this.mScriptHost.Alpha;
+					
+					this.mPointData[xi, yi] = pd;
+				}
+			}
+			
+			Gl.glColor4f(1, 1, 1, 1);
+			Gl.glBegin(Gl.GL_QUADS);
+			
+			for (int yi = 0; yi < this.YResolution - 1; yi++) {
+				for (int xi = 0; xi < this.XResolution - 1; xi++) {
+					this.RenderVertex(xi,     yi    );
+					this.RenderVertex(xi + 1, yi    );
+					this.RenderVertex(xi + 1, yi + 1);
+					this.RenderVertex(xi,     yi + 1);
+				}
+			}
+			
+			Gl.glEnd();
+			
+			Gl.glPopAttrib();
+		}
+		
+		private void RenderVertex(int x, int y) {
+			PointData pd = this.mPointData[x, y];
+			
+			Gl.glColor4f(1, 1, 1, pd.Alpha);
+			
+			Gl.glTexCoord2f(pd.XOffset, pd.YOffset);
+			
+			Gl.glVertex2f((float) x / (this.XResolution - 1) * 2 - 1,
+						  (float) y / (this.YResolution - 1) * 2 - 1);
+		}
+		
+		public override void Dispose() {
+			if (this.mHaveTexture) {
+				Gl.glDeleteTextures(1, new int[] { this.mTextureId });
+				this.mHaveTexture = false;
+			}
+		}
+		
+		private struct PointData {
+			public float XOffset;
+			
+			public float YOffset;
+			
+			public float Alpha;
+		}
+		
+		private class ScriptHost {
+			[AffeBound]
+			public ScriptState State = new ScriptState();
+			
+			[AffeBound("x")]
+			public float X = 0;
+			
+			[AffeBound("y")]
+			public float Y = 0;
+			
+			[AffeBound("xi")]
+			public float XI = 0;
+			
+			[AffeBound("yi")]
+			public float YI = 0;
+			
+			[AffeBound("alpha")]
+			public float Alpha = 1;
+			
+			[AffeBound("d")]
+			public float D = 0;
+			
+			[AffeBound("r")]
+			public float R = 0;
+		}
+	}
+}

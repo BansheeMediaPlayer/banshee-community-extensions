@@ -1,5 +1,10 @@
 2007-12-18  Chris Howie <me@chrishowie.com> 
 
+	* UserScript.cs: Renamed PerformCall to Run and made public since delegates
+	  targetting private methods cannot be deserialized.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
 	* ScriptCompileException.cs, OpenVP.Scripting.mdp: Added
 	  ScriptCompileException.
 	* UserScript.cs: Marked ScriptCall serializable.  Added CallWrapper property

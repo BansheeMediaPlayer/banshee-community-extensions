@@ -1,5 +1,9 @@
 2007-12-18  Chris Howie <me@chrishowie.com> 
 
+	* MemberEditor.cs: Added using directive for the MemberEditors namespace.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
 	* MemberEditors/ScriptEditor.cs, MemberEditors/StringEditor.cs,
 	  MemberEditors/ColorEditor.cs, MemberEditors/BooleanEditor.cs,
 	  MemberEditors/NumericEditor.cs: Fire the new Applied event where

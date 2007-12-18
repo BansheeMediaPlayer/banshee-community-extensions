@@ -1,5 +1,11 @@
 2007-12-18  Chris Howie <me@chrishowie.com> 
 
+	* DynamicMovement.cs, OpenVP.Core.mdp: Added DynamicMovement effect.
+	* ClearScreen.cs, Scope.cs: Changed category.
+	* SuperScope.cs: Changed category.  Added beat script.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
 	* SuperScope.cs: Added linewidth bound variable for glLineWidth.  Added
 	  bound ScriptState.
 
