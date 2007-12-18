@@ -159,7 +159,7 @@ namespace OpenVP.Core {
 			this.EnsureDataArrayLength(points);
 			controller.PlayerData.GetPCM(this.mScopeData);
 			
-			Gl.glLineWidth(1);
+			Gl.glLineWidth(this.mScriptHost.LineWidth);
 			
 			try {
 				Gl.glBegin(Gl.GL_LINE_STRIP);
@@ -183,7 +183,10 @@ namespace OpenVP.Core {
 			}
 		}
 		
-		private class ScriptHost {         
+		private class ScriptHost {    
+			[AffeBound]
+			public ScriptState State = new ScriptState();
+			
 			[AffeBound("red")]
 			public float Red = 1;
 			
@@ -231,6 +234,9 @@ namespace OpenVP.Core {
 			
 			[AffeBound("nativen")]
 			public float NativeN = 0;
+			
+			[AffeBound("linewidth")]
+			public float LineWidth = 1;
 		}
 	}
 }
