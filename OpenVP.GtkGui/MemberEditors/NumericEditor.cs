@@ -81,6 +81,7 @@ namespace OpenVP.GtkGui.MemberEditors {
 			                                              this.PropertyInfo.PropertyType),
 			                           null);
 			
+			this.FireApplied();
 			this.FireMadeClean();
 		}
 		

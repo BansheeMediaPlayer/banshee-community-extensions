@@ -60,6 +60,7 @@ namespace OpenVP.GtkGui.MemberEditors {
 		public override void Apply() {
 			this.PropertyInfo.SetValue(this.Object, this.mEntry.Text, null);
 			
+			this.FireApplied();
 			this.FireMadeClean();
 		}
 	}

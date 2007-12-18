@@ -56,8 +56,16 @@ namespace OpenVP.GtkGui {
 			Effect effect = (Effect) this.mEffectStore.GetValue(i, 0);
 			
 			BrowsableEditor editor = new BrowsableEditor(effect);
+			editor.Changed += this.OnEditorChanged;
 			editor.Show();
 			this.EffectPane.Add(editor);
+		}
+		
+		private void OnEditorChanged(object o, EventArgs e) {
+			TreeIter i;
+			
+			if (this.EffectList.Selection.GetSelected(out i))
+				this.mEffectStore.EmitRowChanged(this.mEffectStore.GetPath(i), i);
 		}
 		
 		private void SyncStore() {

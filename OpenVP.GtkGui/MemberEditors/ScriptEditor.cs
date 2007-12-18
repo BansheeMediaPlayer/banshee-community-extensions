@@ -126,6 +126,7 @@ namespace OpenVP.GtkGui.MemberEditors {
 				this.mErrorLabel.Show();
 			}
 			
+			this.FireApplied();
 			this.FireMadeClean();
 		}
 	}

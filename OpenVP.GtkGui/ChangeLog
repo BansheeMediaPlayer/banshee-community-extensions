@@ -1,5 +1,17 @@
 2007-12-18  Chris Howie <me@chrishowie.com> 
 
+	* MemberEditors/ScriptEditor.cs, MemberEditors/StringEditor.cs,
+	  MemberEditors/ColorEditor.cs, MemberEditors/BooleanEditor.cs,
+	  MemberEditors/NumericEditor.cs: Fire the new Applied event where
+	  appropriate.
+	* MemberEditor.cs, gtk-gui/objects.xml: Added Applied event.
+	* LinearPresetEditor.cs: When the effect being edited is changed, a
+	  RowChanged event is fired on the list in case the effect's name was
+	  changed.
+	* BrowsableEditor.cs: Added Changed event.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
 	* MemberEditors/ScriptEditor.cs: Added an error label.  Compiler errors now
 	  display the label with error text and underline the corresponding
 	  location in the editor.  The script editor now uses a monospace font. 

@@ -9,6 +9,7 @@
       <itemgroup label="MemberEditor Signals">
         <signal name="MadeDirty" />
         <signal name="MadeClean" />
+        <signal name="Applied" />
       </itemgroup>
     </signals>
   </object>

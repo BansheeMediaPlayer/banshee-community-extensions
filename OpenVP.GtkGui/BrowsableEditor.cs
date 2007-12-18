@@ -41,6 +41,8 @@ namespace OpenVP.GtkGui {
 		
 		private bool mSuspendCleanProcessing = false;
 		
+		public event EventHandler Changed;
+		
 		public BrowsableEditor(object effect) {
 			this.Build();
 			
@@ -109,6 +111,7 @@ namespace OpenVP.GtkGui {
 				
 				editor.MadeClean += this.OnEditorMadeClean;
 				editor.MadeDirty += this.OnEditorMadeDirty;
+				editor.Applied += this.OnEditorApplied;
 				this.mEditors.Add(editor);
 				
 				if (!string.IsNullOrEmpty(i.Description))
@@ -120,6 +123,14 @@ namespace OpenVP.GtkGui {
 			
 			this.SheetPane.AddWithViewport(table);
 			table.Show();
+		}
+		
+		private void OnEditorApplied(object o, EventArgs e) {
+			if (this.mSuspendCleanProcessing)
+				return;
+			
+			if (this.Changed != null)
+				this.Changed(this, EventArgs.Empty);
 		}
 		
 		private void OnEditorMadeDirty(object o, EventArgs e) {
@@ -165,6 +176,9 @@ namespace OpenVP.GtkGui {
 			this.RevertButton.Sensitive = false;
 			
 			this.mSuspendCleanProcessing = false;
+			
+			if (this.Changed != null)
+				this.Changed(this, EventArgs.Empty);
 		}
 
 		protected virtual void OnRevertButtonClicked(object sender, System.EventArgs e) {

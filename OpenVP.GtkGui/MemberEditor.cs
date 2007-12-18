@@ -64,6 +64,8 @@ namespace OpenVP.GtkGui {
 		
 		public event EventHandler MadeClean;
 		
+		public event EventHandler Applied;
+		
 		protected void FireMadeDirty() {
 			if (this.MadeDirty != null)
 				this.MadeDirty(this, EventArgs.Empty);
@@ -72,6 +74,11 @@ namespace OpenVP.GtkGui {
 		protected void FireMadeClean() {
 			if (this.MadeClean != null)
 				this.MadeClean(this, EventArgs.Empty);
+		}
+		
+		protected void FireApplied() {
+			if (this.Applied != null)
+				this.Applied(this, EventArgs.Empty);
 		}
 		
 		public abstract void Apply();
