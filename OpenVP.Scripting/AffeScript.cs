@@ -63,7 +63,15 @@ namespace OpenVP.Scripting {
 			if (script == null)
 				script = "";
 			
-			DynamicMethod dm = this.mCompiler.Compile(script);
+			DynamicMethod dm;
+			try {
+				dm = this.mCompiler.Compile(script);
+			} catch (AffeException e) {
+				throw new ScriptCompileException(e.RelatedNode == null ?
+				                                 "Syntax error" :
+				                                 e.Message, e.SourceLocation,
+				                                 e);
+			}
 			
 			return (ScriptCall) dm.CreateDelegate(typeof(ScriptCall),
 			                                      this.mTargetObject);

@@ -27,20 +27,58 @@ namespace OpenVP.GtkGui.MemberEditors {
 	public class ScriptEditor : MemberEditor {
 		private TextView mEditor;
 		
+		private TextTag mErrorTag;
+		
+		private Label mErrorLabel;
+		
+		public override AttachOptions YAttachment {
+			get {
+				return AttachOptions.Fill | AttachOptions.Expand;
+			}
+		}
+		
 		public ScriptEditor(object @object, PropertyInfo info) : base(@object, info) {
+			VBox box = new VBox(false, 3);
+			
 			ScrolledWindow window = new ScrolledWindow();
 			
 			this.mEditor = new TextView();
 			this.mEditor.Show();
 			this.mEditor.Buffer.Changed += this.OnEditorChanged;
+			this.mEditor.ModifyFont(Pango.FontDescription.FromString("monospace"));
+			
+			this.mErrorTag = new TextTag("compile error");
+			this.mErrorTag.Underline = Pango.Underline.Error;
+			
+			this.mEditor.Buffer.TagTable.Add(this.mErrorTag);
 			
 			window.Add(this.mEditor);
 			window.Show();
 			window.ShadowType = ShadowType.In;
 			
-			this.Add(window);
+			this.mErrorLabel = new Label();
+			this.mErrorLabel.Selectable = true;
+			this.mErrorLabel.LineWrap = true;
+			this.mErrorLabel.Xalign = 0;
+			
+			this.mErrorLabel.Style.FontDescription.Weight = Pango.Weight.Bold;
+			this.mErrorLabel.ModifyFont(this.mErrorLabel.Style.FontDescription);
+			
+			box.Add(window);
+			box.Add(this.mErrorLabel);
+			box.Show();
+			
+			box.SizeAllocated += this.OnBoxSizeAllocated;
+			
+			this.SetSizeRequest(1, -1);
+			
+			this.Add(box);
 			
 			this.Revert();
+		}
+		
+		private void OnBoxSizeAllocated(object o, SizeAllocatedArgs e) {
+			this.mErrorLabel.SetSizeRequest(e.Allocation.Width, -1);
 		}
 		
 		private void OnEditorChanged(object o, EventArgs e) {
@@ -58,8 +96,35 @@ namespace OpenVP.GtkGui.MemberEditors {
 		
 		public override void Apply() {
 			UserScript script = (UserScript) this.PropertyInfo.GetValue(this.Object, null);
+				
+			this.mEditor.Buffer.RemoveTag(this.mErrorTag,
+			                              this.mEditor.Buffer.StartIter,
+			                              this.mEditor.Buffer.EndIter);
+			
+			this.mErrorLabel.Hide();
 			
 			script.Script = this.mEditor.Buffer.Text;
+			try {
+				script.Recompile();
+			} catch (ScriptCompileException ex) {
+				TextIter start, end;
+				
+				if (ex.Position == -1) {
+					start = this.mEditor.Buffer.StartIter;
+					end = this.mEditor.Buffer.EndIter;
+				} else {
+					start = this.mEditor.Buffer.GetIterAtOffset(ex.Position);
+					
+					end = start;
+					if (!end.ForwardChar())
+						start.BackwardChar();
+				}
+				
+				this.mEditor.Buffer.ApplyTag(this.mErrorTag, start, end);
+				
+				this.mErrorLabel.Text = ex.Message;
+				this.mErrorLabel.Show();
+			}
 			
 			this.FireMadeClean();
 		}

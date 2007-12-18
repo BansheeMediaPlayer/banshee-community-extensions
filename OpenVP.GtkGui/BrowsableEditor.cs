@@ -115,8 +115,7 @@ namespace OpenVP.GtkGui {
 					this.mTooltips.SetTip(editor, i.Description, null);
 				
 				table.Attach(editor, 1, 2, row, ++row,
-				             AttachOptions.Fill | AttachOptions.Expand,
-				             AttachOptions.Shrink, 5, 5);
+				             editor.XAttachment, editor.YAttachment, 5, 5);
 			}
 			
 			this.SheetPane.AddWithViewport(table);

@@ -22,6 +22,7 @@ using System;
 using System.Runtime.Serialization;
 
 namespace OpenVP.Scripting {
+	[Serializable]
 	public delegate void ScriptCall();
 	
 	[Serializable]
@@ -59,7 +60,20 @@ namespace OpenVP.Scripting {
 			}
 		}
 		
+		private ScriptCall mCallWrapper;
+		
+		public ScriptCall CallWrapper {
+			get {
+				return this.mCallWrapper;
+			}
+		}
+		
 		protected UserScript() {
+			this.mCallWrapper = this.PerformCall;
+		}
+		
+		private void PerformCall() {
+			this.Call();
 		}
 		
 		protected abstract ScriptCall CompileScript();

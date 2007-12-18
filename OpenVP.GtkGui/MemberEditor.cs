@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gtk;
 
 namespace OpenVP.GtkGui {
 	public abstract partial class MemberEditor : Gtk.Bin {
@@ -37,6 +38,18 @@ namespace OpenVP.GtkGui {
 		protected object Object {
 			get {
 				return this.mObject;
+			}
+		}
+		
+		public virtual AttachOptions XAttachment {
+			get {
+				return AttachOptions.Fill | AttachOptions.Expand;
+			}
+		}
+		
+		public virtual AttachOptions YAttachment {
+			get {
+				return AttachOptions.Fill;
 			}
 		}
 		

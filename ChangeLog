@@ -1,5 +1,9 @@
 2007-12-18  Chris Howie <me@chrishowie.com> 
 
+	* contrib/Cdh.Affe.dll: Update Affe.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
 	* contrib/Cdh.Affe.dll: Update Affe build to fix bug dealing with literal
 	  fields.
 

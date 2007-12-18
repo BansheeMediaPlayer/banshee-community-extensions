@@ -1,5 +1,17 @@
 2007-12-18  Chris Howie <me@chrishowie.com> 
 
+	* MemberEditors/ScriptEditor.cs: Added an error label.  Compiler errors now
+	  display the label with error text and underline the corresponding
+	  location in the editor.  The script editor now uses a monospace font. 
+	  Added YAttachment override so that the editor will expand vertically if
+	  there is space.
+	* MemberEditor.cs: Added virtual XAttachment and YAttachment properties for
+	  controlling the table attachment.
+	* BrowsableEditor.cs: Use new XAttachment and YAttachment properties on
+	  MemberEditor when attaching an editor to the table.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
 	* OpenVP.GtkGui.mdp: Added ScriptEditor.  Added reference to
 	  OpenVP.Scripting.
 	* MainWindow.cs: Added an object that threads can use to synchronize with
