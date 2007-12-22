@@ -116,13 +116,7 @@ namespace OpenVP.Core {
 		}
 		
 		[NonSerialized]
-		private bool mHaveTexture = false;
-		
-		[NonSerialized]
-		private int mTextureId = -1;
-		
-		[NonSerialized]
-		private int mTextureSize = -1;
+		private TextureHandle mTexture = null;
 		
 		private bool mWrap = true;
 		
@@ -190,7 +184,7 @@ namespace OpenVP.Core {
 			
 			this.mInitScript.MadeDirty += this.OnInitMadeDirty;
 			
-			this.mHaveTexture = false;
+			this.mTexture = new TextureHandle();
 			this.CreatePointDataArray();
 		}
 		
@@ -226,50 +220,6 @@ namespace OpenVP.Core {
 				RunScript(this.BeatScript, "beat");
 		}
 		
-		private void CheckTexture(int w, int h) {
-			int[] tex;
-			
-			w = Math.Max(w, h);
-			
-			if (this.mHaveTexture) {
-				if (this.mTextureSize >= w)
-					return;
-				
-				tex = new int[] { this.mTextureId };
-				
-				Gl.glDeleteTextures(1, tex);
-			} else {
-				tex = new int[1];
-			}
-			
-			Gl.glGetError();
-			
-			Gl.glGenTextures(1, tex);
-			
-			if (Gl.glGetError() != Gl.GL_NO_ERROR)
-				throw new InvalidOperationException("Cannot create texture.");
-			
-			this.mTextureId = tex[0];
-			this.mHaveTexture = true;
-			
-			int size = 1;
-			
-			while (size < w)
-				size <<= 1;
-			
-			this.mTextureSize = size;
-			
-			Gl.glBindTexture(Gl.GL_TEXTURE_2D, this.mTextureId);
-			
-			byte[] mData = new byte[size * size * 3];
-			
-			Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB, size, size, 0,
-			                Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, mData);
-			
-			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
-			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR);
-		}
-		
 		public override void RenderFrame(Controller controller) {
 			Gl.glMatrixMode(Gl.GL_PROJECTION);
 			Gl.glPushMatrix();
@@ -280,9 +230,10 @@ namespace OpenVP.Core {
 			Gl.glDisable(Gl.GL_DEPTH_TEST);
 			Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_DECAL);
 			
-			this.CheckTexture(controller.WindowWidth, controller.WindowHeight);
+			this.mTexture.SetTextureSize(controller.WindowWidth,
+			                             controller.WindowHeight);
 			
-			Gl.glBindTexture(Gl.GL_TEXTURE_2D, this.mTextureId);
+			Gl.glBindTexture(Gl.GL_TEXTURE_2D, this.mTexture.TextureId);
 			
 			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S,
 			                   this.Wrap ? Gl.GL_REPEAT : Gl.GL_CLAMP);
@@ -358,10 +309,7 @@ namespace OpenVP.Core {
 		}
 		
 		public override void Dispose() {
-			if (this.mHaveTexture) {
-				Gl.glDeleteTextures(1, new int[] { this.mTextureId });
-				this.mHaveTexture = false;
-			}
+			this.mTexture.Dispose();
 		}
 		
 		private struct PointData {

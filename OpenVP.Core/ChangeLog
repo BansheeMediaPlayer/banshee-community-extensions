@@ -1,3 +1,11 @@
+2007-12-21  Chris Howie <me@chrishowie.com> 
+
+	* TextureHandle.cs: Added TextureHandle class.
+	* DynamicMovement.cs: Refactored to use TextureHandle.
+	* OpenVP.Core.mdp: Added Buffer load/save effect.  Added TextureHandle
+	  class.
+	* Buffer.cs: Added Buffer load/save effect.
+
 2007-12-18  Chris Howie <me@chrishowie.com> 
 
 	* DynamicMovement.cs, OpenVP.Core.mdp: Added DynamicMovement effect.
