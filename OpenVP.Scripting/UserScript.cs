@@ -60,6 +60,7 @@ namespace OpenVP.Scripting {
 			}
 		}
 		
+		[NonSerialized]
 		private ScriptCall mCallWrapper;
 		
 		public ScriptCall CallWrapper {
@@ -93,6 +94,8 @@ namespace OpenVP.Scripting {
 		void IDeserializationCallback.OnDeserialization(object sender) {
 			this.mDirty = true;
 			this.mCall = null;
+			
+			this.mCallWrapper = this.Run;
 		}
 	}
 }
