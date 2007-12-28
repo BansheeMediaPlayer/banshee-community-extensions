@@ -144,6 +144,22 @@ namespace OpenVP.Core {
 			}
 		}
 		
+		private bool mStatic = false;
+		
+		[Browsable(true), DisplayName("Static motion"), Category("Miscellaneous"),
+		 Description("Whether the motion can change over time (off) or is static (on).")]
+		public bool Static {
+			get {
+				return this.mStatic;
+			}
+			set {
+				this.mStatic = value;
+			}
+		}
+		
+		[NonSerialized]
+		private bool mStaticDirty = true;
+		
 		[NonSerialized]
 		private PointData[,] mPointData;
 		
@@ -158,6 +174,7 @@ namespace OpenVP.Core {
 		private void CreatePointDataArray() {
 			this.mPointData = new PointData[this.mXResolution,
 			                                this.mYResolution];
+			this.mStaticDirty = true;
 		}
 		
 		private void InitializeScriptObjects() {
@@ -181,8 +198,11 @@ namespace OpenVP.Core {
 			this.mVertexScript.TargetObject = this.mScriptHost;
 			
 			this.mNeedInit = true;
+			this.mStaticDirty = true;
 			
 			this.mInitScript.MadeDirty += this.OnInitMadeDirty;
+			this.mFrameScript.MadeDirty += this.OnOtherMadeDirty;
+			this.mVertexScript.MadeDirty += this.OnOtherMadeDirty;
 			
 			this.mTexture = new TextureHandle();
 			this.CreatePointDataArray();
@@ -190,6 +210,11 @@ namespace OpenVP.Core {
 		
 		private void OnInitMadeDirty(object o, EventArgs e) {
 			this.mNeedInit = true;
+			this.mStaticDirty = true;
+		}
+		
+		private void OnOtherMadeDirty(object o, EventArgs e) {
+			this.mStaticDirty = true;
 		}
 		
 		private static bool RunScript(UserScript script, string type) {
@@ -214,10 +239,12 @@ namespace OpenVP.Core {
 				RunScript(this.InitScript, "initialization");
 			}
 			
-			RunScript(this.FrameScript, "frame");
-			
-			if (controller.BeatDetector.IsBeat)
-				RunScript(this.BeatScript, "beat");
+			if (!this.mStatic || this.mStaticDirty) {
+				RunScript(this.FrameScript, "frame");
+				
+				if (controller.BeatDetector.IsBeat)
+					RunScript(this.BeatScript, "beat");
+			}
 		}
 		
 		public override void RenderFrame(Controller controller) {
@@ -247,37 +274,41 @@ namespace OpenVP.Core {
 			
 			PointData pd;
 			
-			for (int yi = 0; yi < this.YResolution; yi++) {
-				for (int xi = 0; xi < this.XResolution; xi++) {
-					this.mScriptHost.XI = (float) xi / (this.XResolution - 1);
-					this.mScriptHost.YI = (float) yi / (this.YResolution - 1);
-					this.mScriptHost.X = this.mScriptHost.XI;
-					this.mScriptHost.Y = this.mScriptHost.YI;
-					
-					float xp = this.mScriptHost.X * 2 - 1;
-					float yp = this.mScriptHost.Y * 2 - 1;
-					
-					this.mScriptHost.D = (float) Math.Sqrt((xp * xp) + (yp * yp));
-					this.mScriptHost.R = (float) Math.Atan2(yp, xp);
-					
-					if (!RunScript(this.VertexScript, "vertex")) {
-						// Force breaking out of the outer loop too.
-						yi = this.YResolution;
-						break;
+			if (!this.mStatic || this.mStaticDirty) {
+				for (int yi = 0; yi < this.YResolution; yi++) {
+					for (int xi = 0; xi < this.XResolution; xi++) {
+						this.mScriptHost.XI = (float) xi / (this.XResolution - 1);
+						this.mScriptHost.YI = (float) yi / (this.YResolution - 1);
+						this.mScriptHost.X = this.mScriptHost.XI;
+						this.mScriptHost.Y = this.mScriptHost.YI;
+						
+						float xp = this.mScriptHost.X * 2 - 1;
+						float yp = this.mScriptHost.Y * 2 - 1;
+						
+						this.mScriptHost.D = (float) Math.Sqrt((xp * xp) + (yp * yp));
+						this.mScriptHost.R = (float) Math.Atan2(yp, xp);
+						
+						if (!RunScript(this.VertexScript, "vertex")) {
+							// Force breaking out of the outer loop too.
+							yi = this.YResolution;
+							break;
+						}
+						
+						if (this.Rectangular) {
+							pd.XOffset = this.mScriptHost.X;
+							pd.YOffset = this.mScriptHost.Y;
+						} else {
+							pd.XOffset = (this.mScriptHost.D * (float) Math.Cos(this.mScriptHost.R) + 1) / 2;
+							pd.YOffset = (this.mScriptHost.D * (float) Math.Sin(this.mScriptHost.R) + 1) / 2;
+						}
+						
+						pd.Alpha = this.mScriptHost.Alpha;
+						
+						this.mPointData[xi, yi] = pd;
 					}
-					
-					if (this.Rectangular) {
-						pd.XOffset = this.mScriptHost.X;
-						pd.YOffset = this.mScriptHost.Y;
-					} else {
-						pd.XOffset = (this.mScriptHost.D * (float) Math.Cos(this.mScriptHost.R) + 1) / 2;
-						pd.YOffset = (this.mScriptHost.D * (float) Math.Sin(this.mScriptHost.R) + 1) / 2;
-					}
-					
-					pd.Alpha = this.mScriptHost.Alpha;
-					
-					this.mPointData[xi, yi] = pd;
 				}
+				
+				this.mStaticDirty = false;
 			}
 			
 			Gl.glColor4f(1, 1, 1, 1);

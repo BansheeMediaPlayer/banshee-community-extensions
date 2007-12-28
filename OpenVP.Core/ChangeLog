@@ -1,3 +1,7 @@
+2007-12-28  Chris Howie <me@chrishowie.com> 
+
+	* DynamicMovement.cs: Added Static property.
+
 2007-12-21  Chris Howie <me@chrishowie.com> 
 
 	* TextureHandle.cs: Added TextureHandle class.
