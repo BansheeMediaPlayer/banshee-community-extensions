@@ -39,6 +39,48 @@ namespace OpenVP.GtkGui {
         
         private Gtk.Label label1;
         
+        private Gtk.HBox hbox1;
+        
+        private Gtk.Frame frame1;
+        
+        private Gtk.Alignment GtkAlignment4;
+        
+        private Gtk.VBox vbox2;
+        
+        private Gtk.HButtonBox hbuttonbox3;
+        
+        private Gtk.Button KeybindAddButton;
+        
+        private Gtk.Button KeybindRemoveButton;
+        
+        private Gtk.ScrolledWindow GtkScrolledWindow1;
+        
+        private Gtk.TreeView KeybindList;
+        
+        private Gtk.Label GtkLabel6;
+        
+        private Gtk.VBox vbox4;
+        
+        private Gtk.Frame frame2;
+        
+        private Gtk.Alignment GtkAlignment9;
+        
+        private Gtk.Label GtkLabel7;
+        
+        private Gtk.Frame frame3;
+        
+        private Gtk.Alignment GtkAlignment8;
+        
+        private Gtk.Table table1;
+        
+        private Gtk.ToggleButton KeybindEventCheck;
+        
+        private Gtk.Alignment KeyEntryAlign;
+        
+        private Gtk.Label label4;
+        
+        private Gtk.Label GtkLabel10;
+        
         private Gtk.Label label2;
         
         protected virtual void Build() {
@@ -50,7 +92,7 @@ namespace OpenVP.GtkGui {
             this.notebook1 = new Gtk.Notebook();
             this.notebook1.CanFocus = true;
             this.notebook1.Name = "notebook1";
-            this.notebook1.CurrentPage = 0;
+            this.notebook1.CurrentPage = 1;
             // Container child notebook1.Gtk.Notebook+NotebookChild
             this.hpaned1 = new Gtk.HPaned();
             this.hpaned1.CanFocus = true;
@@ -62,7 +104,6 @@ namespace OpenVP.GtkGui {
             this.vbox1.Spacing = 6;
             // Container child vbox1.Gtk.Box+BoxChild
             this.hbuttonbox1 = new Gtk.HButtonBox();
-            this.hbuttonbox1.Name = "hbuttonbox1";
             this.hbuttonbox1.Homogeneous = true;
             this.hbuttonbox1.Spacing = 6;
             // Container child hbuttonbox1.Gtk.ButtonBox+ButtonBoxChild
@@ -157,14 +198,167 @@ namespace OpenVP.GtkGui {
             this.label1.LabelProp = Mono.Unix.Catalog.GetString("Effects");
             this.notebook1.SetTabLabel(this.hpaned1, this.label1);
             this.label1.ShowAll();
+            // Container child notebook1.Gtk.Notebook+NotebookChild
+            this.hbox1 = new Gtk.HBox();
+            this.hbox1.Name = "hbox1";
+            this.hbox1.Spacing = 6;
+            // Container child hbox1.Gtk.Box+BoxChild
+            this.frame1 = new Gtk.Frame();
+            this.frame1.Name = "frame1";
+            this.frame1.ShadowType = ((Gtk.ShadowType)(0));
+            // Container child frame1.Gtk.Container+ContainerChild
+            this.GtkAlignment4 = new Gtk.Alignment(0F, 0F, 1F, 1F);
+            this.GtkAlignment4.Name = "GtkAlignment4";
+            this.GtkAlignment4.LeftPadding = ((uint)(12));
+            // Container child GtkAlignment4.Gtk.Container+ContainerChild
+            this.vbox2 = new Gtk.VBox();
+            this.vbox2.Name = "vbox2";
+            this.vbox2.Spacing = 6;
+            // Container child vbox2.Gtk.Box+BoxChild
+            this.hbuttonbox3 = new Gtk.HButtonBox();
+            this.hbuttonbox3.Name = "hbuttonbox3";
+            this.hbuttonbox3.Spacing = 6;
+            // Container child hbuttonbox3.Gtk.ButtonBox+ButtonBoxChild
+            this.KeybindAddButton = new Gtk.Button();
+            this.KeybindAddButton.CanFocus = true;
+            this.KeybindAddButton.Name = "KeybindAddButton";
+            this.KeybindAddButton.UseStock = true;
+            this.KeybindAddButton.UseUnderline = true;
+            this.KeybindAddButton.Label = "gtk-add";
+            this.hbuttonbox3.Add(this.KeybindAddButton);
+            Gtk.ButtonBox.ButtonBoxChild w12 = ((Gtk.ButtonBox.ButtonBoxChild)(this.hbuttonbox3[this.KeybindAddButton]));
+            w12.Expand = false;
+            w12.Fill = false;
+            // Container child hbuttonbox3.Gtk.ButtonBox+ButtonBoxChild
+            this.KeybindRemoveButton = new Gtk.Button();
+            this.KeybindRemoveButton.CanFocus = true;
+            this.KeybindRemoveButton.Name = "KeybindRemoveButton";
+            this.KeybindRemoveButton.UseStock = true;
+            this.KeybindRemoveButton.UseUnderline = true;
+            this.KeybindRemoveButton.Label = "gtk-remove";
+            this.hbuttonbox3.Add(this.KeybindRemoveButton);
+            Gtk.ButtonBox.ButtonBoxChild w13 = ((Gtk.ButtonBox.ButtonBoxChild)(this.hbuttonbox3[this.KeybindRemoveButton]));
+            w13.Position = 1;
+            w13.Expand = false;
+            w13.Fill = false;
+            this.vbox2.Add(this.hbuttonbox3);
+            Gtk.Box.BoxChild w14 = ((Gtk.Box.BoxChild)(this.vbox2[this.hbuttonbox3]));
+            w14.Position = 0;
+            w14.Expand = false;
+            w14.Fill = false;
+            // Container child vbox2.Gtk.Box+BoxChild
+            this.GtkScrolledWindow1 = new Gtk.ScrolledWindow();
+            this.GtkScrolledWindow1.Name = "GtkScrolledWindow1";
+            this.GtkScrolledWindow1.ShadowType = ((Gtk.ShadowType)(1));
+            // Container child GtkScrolledWindow1.Gtk.Container+ContainerChild
+            this.KeybindList = new Gtk.TreeView();
+            this.KeybindList.CanFocus = true;
+            this.KeybindList.Name = "KeybindList";
+            this.KeybindList.HeadersClickable = true;
+            this.GtkScrolledWindow1.Add(this.KeybindList);
+            this.vbox2.Add(this.GtkScrolledWindow1);
+            Gtk.Box.BoxChild w16 = ((Gtk.Box.BoxChild)(this.vbox2[this.GtkScrolledWindow1]));
+            w16.Position = 1;
+            this.GtkAlignment4.Add(this.vbox2);
+            this.frame1.Add(this.GtkAlignment4);
+            this.GtkLabel6 = new Gtk.Label();
+            this.GtkLabel6.Name = "GtkLabel6";
+            this.GtkLabel6.LabelProp = Mono.Unix.Catalog.GetString("<b>Bound keys</b>");
+            this.GtkLabel6.UseMarkup = true;
+            this.frame1.LabelWidget = this.GtkLabel6;
+            this.hbox1.Add(this.frame1);
+            Gtk.Box.BoxChild w19 = ((Gtk.Box.BoxChild)(this.hbox1[this.frame1]));
+            w19.Position = 0;
+            w19.Expand = false;
+            w19.Fill = false;
+            // Container child hbox1.Gtk.Box+BoxChild
+            this.vbox4 = new Gtk.VBox();
+            this.vbox4.Name = "vbox4";
+            this.vbox4.Spacing = 6;
+            // Container child vbox4.Gtk.Box+BoxChild
+            this.frame2 = new Gtk.Frame();
+            this.frame2.Name = "frame2";
+            this.frame2.ShadowType = ((Gtk.ShadowType)(0));
+            // Container child frame2.Gtk.Container+ContainerChild
+            this.GtkAlignment9 = new Gtk.Alignment(0F, 0F, 1F, 1F);
+            this.GtkAlignment9.Name = "GtkAlignment9";
+            this.GtkAlignment9.LeftPadding = ((uint)(12));
+            this.frame2.Add(this.GtkAlignment9);
+            this.GtkLabel7 = new Gtk.Label();
+            this.GtkLabel7.Name = "GtkLabel7";
+            this.GtkLabel7.LabelProp = Mono.Unix.Catalog.GetString("<b>Script</b>");
+            this.GtkLabel7.UseMarkup = true;
+            this.frame2.LabelWidget = this.GtkLabel7;
+            this.vbox4.Add(this.frame2);
+            Gtk.Box.BoxChild w21 = ((Gtk.Box.BoxChild)(this.vbox4[this.frame2]));
+            w21.Position = 0;
+            // Container child vbox4.Gtk.Box+BoxChild
+            this.frame3 = new Gtk.Frame();
+            this.frame3.Name = "frame3";
+            this.frame3.ShadowType = ((Gtk.ShadowType)(0));
+            // Container child frame3.Gtk.Container+ContainerChild
+            this.GtkAlignment8 = new Gtk.Alignment(0F, 0F, 1F, 1F);
+            this.GtkAlignment8.Name = "GtkAlignment8";
+            this.GtkAlignment8.LeftPadding = ((uint)(12));
+            // Container child GtkAlignment8.Gtk.Container+ContainerChild
+            this.table1 = new Gtk.Table(((uint)(2)), ((uint)(2)), false);
+            this.table1.Name = "table1";
+            this.table1.RowSpacing = ((uint)(6));
+            this.table1.ColumnSpacing = ((uint)(6));
+            // Container child table1.Gtk.Table+TableChild
+            this.KeybindEventCheck = new Gtk.ToggleButton();
+            this.KeybindEventCheck.CanFocus = true;
+            this.KeybindEventCheck.Name = "KeybindEventCheck";
+            this.KeybindEventCheck.UseUnderline = true;
+            this.KeybindEventCheck.Active = true;
+            this.KeybindEventCheck.Label = Mono.Unix.Catalog.GetString("On press");
+            this.table1.Add(this.KeybindEventCheck);
+            Gtk.Table.TableChild w22 = ((Gtk.Table.TableChild)(this.table1[this.KeybindEventCheck]));
+            w22.TopAttach = ((uint)(1));
+            w22.BottomAttach = ((uint)(2));
+            w22.LeftAttach = ((uint)(1));
+            w22.RightAttach = ((uint)(2));
+            w22.YOptions = ((Gtk.AttachOptions)(4));
+            // Container child table1.Gtk.Table+TableChild
+            this.KeyEntryAlign = new Gtk.Alignment(0.5F, 0.5F, 1F, 1F);
+            this.KeyEntryAlign.Name = "KeyEntryAlign";
+            this.table1.Add(this.KeyEntryAlign);
+            Gtk.Table.TableChild w23 = ((Gtk.Table.TableChild)(this.table1[this.KeyEntryAlign]));
+            w23.LeftAttach = ((uint)(1));
+            w23.RightAttach = ((uint)(2));
+            w23.XOptions = ((Gtk.AttachOptions)(4));
+            w23.YOptions = ((Gtk.AttachOptions)(4));
+            // Container child table1.Gtk.Table+TableChild
+            this.label4 = new Gtk.Label();
+            this.label4.Name = "label4";
+            this.label4.LabelProp = Mono.Unix.Catalog.GetString("Key:");
+            this.table1.Add(this.label4);
+            Gtk.Table.TableChild w24 = ((Gtk.Table.TableChild)(this.table1[this.label4]));
+            w24.XOptions = ((Gtk.AttachOptions)(4));
+            w24.YOptions = ((Gtk.AttachOptions)(4));
+            this.GtkAlignment8.Add(this.table1);
+            this.frame3.Add(this.GtkAlignment8);
+            this.GtkLabel10 = new Gtk.Label();
+            this.GtkLabel10.Name = "GtkLabel10";
+            this.GtkLabel10.LabelProp = Mono.Unix.Catalog.GetString("<b>Trigger</b>");
+            this.GtkLabel10.UseMarkup = true;
+            this.frame3.LabelWidget = this.GtkLabel10;
+            this.vbox4.Add(this.frame3);
+            Gtk.Box.BoxChild w27 = ((Gtk.Box.BoxChild)(this.vbox4[this.frame3]));
+            w27.Position = 1;
+            w27.Expand = false;
+            w27.Fill = false;
+            this.hbox1.Add(this.vbox4);
+            Gtk.Box.BoxChild w28 = ((Gtk.Box.BoxChild)(this.hbox1[this.vbox4]));
+            w28.Position = 1;
+            this.notebook1.Add(this.hbox1);
+            Gtk.Notebook.NotebookChild w29 = ((Gtk.Notebook.NotebookChild)(this.notebook1[this.hbox1]));
+            w29.Position = 1;
             // Notebook tab
-            Gtk.Label w12 = new Gtk.Label();
-            w12.Visible = true;
-            this.notebook1.Add(w12);
             this.label2 = new Gtk.Label();
             this.label2.Name = "label2";
             this.label2.LabelProp = Mono.Unix.Catalog.GetString("Keybindings");
-            this.notebook1.SetTabLabel(w12, this.label2);
+            this.notebook1.SetTabLabel(this.hbox1, this.label2);
             this.label2.ShowAll();
             this.Add(this.notebook1);
             if ((this.Child != null)) {
@@ -175,6 +369,7 @@ namespace OpenVP.GtkGui {
             this.RemoveEffect.Clicked += new System.EventHandler(this.OnRemoveEffectClicked);
             this.UpButton.Clicked += new System.EventHandler(this.OnUpButtonClicked);
             this.DownButton.Clicked += new System.EventHandler(this.OnDownButtonClicked);
+            this.KeybindEventCheck.Toggled += new System.EventHandler(this.OnKeybindEventCheckToggled);
         }
     }
 }

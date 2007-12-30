@@ -30,7 +30,7 @@ namespace OpenVP {
 	/// if it is being used as the main IRenderer.
 	/// </remarks>
 	[Serializable]
-	public class LinearPreset : IRenderer, IDisposable {
+	public class LinearPreset : IRenderer, IDisposable, IPreset {
 		private List<Effect> mEffects = new List<Effect>();
 		
 		/// <value>
@@ -99,6 +99,24 @@ namespace OpenVP {
 		public void Dispose() {
 			foreach (Effect i in this.mEffects)
 				i.Dispose();
+		}
+		
+		/// <summary>
+		/// Returns an effect by name.
+		/// </summary>
+		/// <param name="name">
+		/// The effect name to find.
+		/// </param>
+		/// <returns>
+		/// The effect with the specified name, or null if no such effect was
+		/// found.
+		/// </returns>
+		public Effect GetEffect(string name) {
+			foreach (Effect i in this.mEffects)
+				if (i.Name == name)
+					return i;
+			
+			return null;
 		}
 	}
 }

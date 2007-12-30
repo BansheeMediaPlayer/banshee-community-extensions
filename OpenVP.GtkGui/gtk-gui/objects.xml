@@ -1,16 +1,12 @@
 <objects>
-  <object type="OpenVP.GtkGui.LinearPresetEditor" palette-category="OpenVP.GtkGui" allow-children="false" base-type="Gtk.Bin">
-    <itemgroups />
-    <signals />
-  </object>
-  <object type="OpenVP.GtkGui.MemberEditor" palette-category="OpenVP.GtkGui" allow-children="false" base-type="Gtk.Bin">
-    <itemgroups />
-    <signals>
-      <itemgroup label="MemberEditor Signals">
-        <signal name="MadeDirty" />
-        <signal name="MadeClean" />
-        <signal name="Applied" />
+  <object type="OpenVP.GtkGui.KeyEntry" palette-category="OpenVP.GtkGui" allow-children="false" base-type="Gtk.Entry">
+    <itemgroups>
+      <itemgroup label="KeyEntry Properties">
+        <property name="AltDown" />
+        <property name="ControlDown" />
+        <property name="ShiftDown" />
       </itemgroup>
-    </signals>
+    </itemgroups>
+    <signals />
   </object>
 </objects>

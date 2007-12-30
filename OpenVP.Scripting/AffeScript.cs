@@ -25,7 +25,7 @@ using Cdh.Affe;
 
 namespace OpenVP.Scripting {
 	[Serializable]
-	public class AffeScript : UserScript, IDeserializationCallback {
+	public class AffeScript : UserScript {
 		[NonSerialized]
 		private AffeCompiler mCompiler = null;
 		
@@ -38,7 +38,6 @@ namespace OpenVP.Scripting {
 			}
 		}
 		
-		[NonSerialized]
 		private object mTargetObject = null;
 		
 		public object TargetObject {

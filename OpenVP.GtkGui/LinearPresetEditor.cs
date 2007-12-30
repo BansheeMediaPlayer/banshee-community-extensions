@@ -38,6 +38,10 @@ namespace OpenVP.GtkGui {
 			                             new TreeCellDataFunc(EffectFunc));
 			this.EffectList.Model = this.mEffectStore;
 			this.EffectList.Selection.Changed += this.OnSelectionChanged;
+			
+			KeyEntry ent = new KeyEntry();
+			this.KeyEntryAlign.Add(ent);
+			ent.Show();
 		}
 		
 		private void OnSelectionChanged(object o, EventArgs e) {
@@ -194,6 +198,11 @@ namespace OpenVP.GtkGui {
 		
 		protected virtual void OnDownButtonClicked(object sender, System.EventArgs e) {
 			this.MoveSelectedEffect(1);
+		}
+
+		protected virtual void OnKeybindEventCheckToggled (object sender, System.EventArgs e) {
+			this.KeybindEventCheck.Label = this.KeybindEventCheck.Active ?
+				"On press" : "On release";
 		}
 	}
 }

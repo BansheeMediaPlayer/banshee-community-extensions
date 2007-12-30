@@ -1,3 +1,7 @@
+2007-12-30  Chris Howie <me@chrishowie.com> 
+
+	* AffeScript.cs: Removed NonSerializedAttribute from mTargetObject.
+
 2007-12-23  Chris Howie <me@chrishowie.com> 
 
 	* UserScript.cs: Added NonSerializedAttribute to UserScript.mCallWrapper.

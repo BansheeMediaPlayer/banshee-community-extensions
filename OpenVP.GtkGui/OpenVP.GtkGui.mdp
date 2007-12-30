@@ -38,6 +38,7 @@
     <File name="MemberEditors/NumericEditor.cs" subtype="Code" buildaction="Compile" />
     <File name="MemberEditors/ColorEditor.cs" subtype="Code" buildaction="Compile" />
     <File name="MemberEditors/ScriptEditor.cs" subtype="Code" buildaction="Compile" />
+    <File name="KeyEntry.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -51,13 +52,13 @@
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Runtime.Serialization.Formatters.Soap, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <ProjectReference type="Project" localcopy="True" refto="OpenVP.Scripting" />
+    <ProjectReference type="Gac" localcopy="True" refto="Tao.Sdl, Version=1.2.12.0, Culture=neutral, PublicKeyToken=9c7a200e36c0094e" />
   </References>
-  <GtkDesignInfo gtkVersion="2.10.2">
+  <GtkDesignInfo isWidgetLibrary="True" gtkVersion="2.10.2">
     <ExportedWidgets>
-      <Widget>OpenVP.GtkGui.LinearPresetEditor</Widget>
       <Widget>OpenVP.GtkGui.EffectEditor</Widget>
-      <Widget>OpenVP.GtkGui.MemberEditor</Widget>
       <Widget>OpenVP.GtkGui.TestWidget</Widget>
+      <Widget>OpenVP.GtkGui.KeyEntry</Widget>
     </ExportedWidgets>
   </GtkDesignInfo>
 </Project>

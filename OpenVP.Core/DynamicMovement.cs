@@ -351,7 +351,8 @@ namespace OpenVP.Core {
 			public float Alpha;
 		}
 		
-		private class ScriptHost {
+		[Serializable]
+		private class ScriptHost : ISerializable {
 			[AffeBound]
 			public ScriptState State = new ScriptState();
 			
@@ -375,6 +376,17 @@ namespace OpenVP.Core {
 			
 			[AffeBound("r")]
 			public float R = 0;
+			
+			void ISerializable.GetObjectData(SerializationInfo info,
+			                                 StreamingContext context) {
+			}
+			
+			protected ScriptHost(SerializationInfo info,
+			                     StreamingContext context) {
+			}
+			
+			public ScriptHost() {
+			}
 		}
 	}
 }

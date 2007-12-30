@@ -201,7 +201,8 @@ namespace OpenVP.Core {
 			}
 		}
 		
-		private class ScriptHost {    
+		[Serializable]
+		private class ScriptHost : ISerializable {
 			[AffeBound]
 			public ScriptState State = new ScriptState();
 			
@@ -255,6 +256,17 @@ namespace OpenVP.Core {
 			
 			[AffeBound("linewidth")]
 			public float LineWidth = 1;
+			
+			void ISerializable.GetObjectData(SerializationInfo info,
+			                                 StreamingContext context) {
+			}
+			
+			protected ScriptHost(SerializationInfo info,
+			                     StreamingContext context) {
+			}
+			
+			public ScriptHost() {
+			}
 		}
 	}
 }
