@@ -54,7 +54,11 @@ namespace OpenVP.Scripting {
 		
 		public ScriptCall Call {
 			get {
-				this.Compile();
+				try {
+					this.Compile();
+				} catch (ScriptCompileException) {
+					// Ignore compile errors here and silently return null.
+				}
 				
 				return this.mCall;
 			}
@@ -74,24 +78,31 @@ namespace OpenVP.Scripting {
 		}
 		
 		public void Run() {
-			this.Call();
+			if (this.Call != null)
+				this.Call();
+		}
+		
+		public void Run(object sender, EventArgs args) {
+			this.Run();
 		}
 		
 		protected abstract ScriptCall CompileScript();
 		
 		public void Compile() {
-			if (!this.mDirty)
-				return;
-			
-			this.Recompile();
+			if (this.mDirty)
+				this.Recompile();
 		}
 		
 		public void Recompile() {
-			this.mDirty = false;
 			this.mCall = this.CompileScript();
+			this.mDirty = false;
 		}
 		
 		void IDeserializationCallback.OnDeserialization(object sender) {
+			this.OnDeserialization(sender);
+		}
+		
+		protected virtual void OnDeserialization(object sender) {
 			this.mDirty = true;
 			this.mCall = null;
 			

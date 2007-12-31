@@ -1,5 +1,9 @@
 2007-12-30  Chris Howie <me@chrishowie.com> 
 
+	* DynamicMovement.cs: Set mStaticDirty when Rectangular is set.
+
+2007-12-30  Chris Howie <me@chrishowie.com> 
+
 	* DynamicMovement.cs, SuperScope.cs: Made ScriptHost serializable, and added
 	  a no-op ISerializable implementation.
 

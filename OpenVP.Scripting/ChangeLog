@@ -1,5 +1,17 @@
 2007-12-30  Chris Howie <me@chrishowie.com> 
 
+	* UserScript.cs: The Call getter will now catch any compilation exception to
+	  provide consistent behaivor; it should return null whenever the script
+	  didn't properly compile.  Run() now does nothing if the compiled call is
+	  null instead of throwing an exception.  Added Run overload matching the
+	  System.EventHandler signature for simpler tying to events (e.g.
+	  keybindings).  Added protected virtual implementation of
+	  OnDeserialization so that subclasses can override it.
+	* AffeScript.cs: Create an AffeCompiler using the type of the serialized
+	  target object by default during deserialization.
+
+2007-12-30  Chris Howie <me@chrishowie.com> 
+
 	* AffeScript.cs: Removed NonSerializedAttribute from mTargetObject.
 
 2007-12-23  Chris Howie <me@chrishowie.com> 

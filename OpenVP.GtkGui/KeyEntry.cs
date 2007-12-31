@@ -267,8 +267,6 @@ namespace OpenVP.GtkGui {
 		}
 		
 		protected override bool OnKeyPressEvent(Gdk.EventKey evnt) {
-			Console.WriteLine(evnt.State.ToString());
-			
 			if (mKeyToSDLK.ContainsKey(evnt.Key)) {
 				this.mKey = evnt.Key;
 				

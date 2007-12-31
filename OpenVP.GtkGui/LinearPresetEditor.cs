@@ -27,6 +27,8 @@ namespace OpenVP.GtkGui {
 		
 		private ListStore mEffectStore = new ListStore(typeof(Effect));
 		
+		private KeyEntry KeybindKeyEntry;
+		
 		public LinearPresetEditor(LinearPreset preset) {
 			this.Build();
 			
@@ -39,9 +41,9 @@ namespace OpenVP.GtkGui {
 			this.EffectList.Model = this.mEffectStore;
 			this.EffectList.Selection.Changed += this.OnSelectionChanged;
 			
-			KeyEntry ent = new KeyEntry();
-			this.KeyEntryAlign.Add(ent);
-			ent.Show();
+			this.KeybindKeyEntry = new KeyEntry();
+			this.KeyEntryAlign.Add(this.KeybindKeyEntry);
+			this.KeybindKeyEntry.Show();
 		}
 		
 		private void OnSelectionChanged(object o, EventArgs e) {

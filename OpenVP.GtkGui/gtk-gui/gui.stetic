@@ -544,8 +544,9 @@
                     <property name="Size">2</property>
                     <property name="LayoutStyle">End</property>
                     <child>
-                      <widget class="Gtk.Button" id="button1033">
+                      <widget class="Gtk.Button" id="KeybindRevertButton">
                         <property name="MemberName" />
+                        <property name="Sensitive">False</property>
                         <property name="CanFocus">True</property>
                         <property name="UseStock">True</property>
                         <property name="Type">StockItem</property>
@@ -558,8 +559,9 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="Gtk.Button" id="button1034">
+                      <widget class="Gtk.Button" id="KeybindApplyButton">
                         <property name="MemberName" />
+                        <property name="Sensitive">False</property>
                         <property name="CanFocus">True</property>
                         <property name="UseStock">True</property>
                         <property name="Type">StockItem</property>

@@ -141,6 +141,7 @@ namespace OpenVP.Core {
 			}
 			set {
 				this.mRectangular = value;
+				this.mStaticDirty = true;
 			}
 		}
 		

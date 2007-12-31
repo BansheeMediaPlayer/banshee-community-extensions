@@ -1,5 +1,11 @@
 2007-12-30  Chris Howie <me@chrishowie.com> 
 
+	* gtk-gui/OpenVP.GtkGui.LinearPresetEditor.cs, gtk-gui/gui.stetic,
+	  LinearPresetEditor.cs: More preparation for keybinding implementation.
+	* KeyEntry.cs: Remove debugging code.
+
+2007-12-30  Chris Howie <me@chrishowie.com> 
+
 	* OpenVP.GtkGui.mdp, gtk-gui/OpenVP.GtkGui.LinearPresetEditor.cs,
 	  gtk-gui/objects.xml, gtk-gui/gui.stetic, LinearPresetEditor.cs,
 	  KeyEntry.cs: Beginnings of keybinding interface.

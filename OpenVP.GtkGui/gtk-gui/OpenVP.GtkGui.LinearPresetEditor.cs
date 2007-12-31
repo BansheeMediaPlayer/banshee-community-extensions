@@ -81,6 +81,12 @@ namespace OpenVP.GtkGui {
         
         private Gtk.Label GtkLabel10;
         
+        private Gtk.HButtonBox hbuttonbox4;
+        
+        private Gtk.Button KeybindRevertButton;
+        
+        private Gtk.Button KeybindApplyButton;
+        
         private Gtk.Label label2;
         
         protected virtual void Build() {
@@ -348,12 +354,47 @@ namespace OpenVP.GtkGui {
             w27.Position = 1;
             w27.Expand = false;
             w27.Fill = false;
-            this.hbox1.Add(this.vbox4);
-            Gtk.Box.BoxChild w28 = ((Gtk.Box.BoxChild)(this.hbox1[this.vbox4]));
-            w28.Position = 1;
-            this.notebook1.Add(this.hbox1);
-            Gtk.Notebook.NotebookChild w29 = ((Gtk.Notebook.NotebookChild)(this.notebook1[this.hbox1]));
+            // Container child vbox4.Gtk.Box+BoxChild
+            this.hbuttonbox4 = new Gtk.HButtonBox();
+            this.hbuttonbox4.Name = "hbuttonbox4";
+            this.hbuttonbox4.Spacing = 6;
+            this.hbuttonbox4.LayoutStyle = ((Gtk.ButtonBoxStyle)(4));
+            // Container child hbuttonbox4.Gtk.ButtonBox+ButtonBoxChild
+            this.KeybindRevertButton = new Gtk.Button();
+            this.KeybindRevertButton.Sensitive = false;
+            this.KeybindRevertButton.CanFocus = true;
+            this.KeybindRevertButton.Name = "KeybindRevertButton";
+            this.KeybindRevertButton.UseStock = true;
+            this.KeybindRevertButton.UseUnderline = true;
+            this.KeybindRevertButton.Label = "gtk-revert-to-saved";
+            this.hbuttonbox4.Add(this.KeybindRevertButton);
+            Gtk.ButtonBox.ButtonBoxChild w28 = ((Gtk.ButtonBox.ButtonBoxChild)(this.hbuttonbox4[this.KeybindRevertButton]));
+            w28.Expand = false;
+            w28.Fill = false;
+            // Container child hbuttonbox4.Gtk.ButtonBox+ButtonBoxChild
+            this.KeybindApplyButton = new Gtk.Button();
+            this.KeybindApplyButton.Sensitive = false;
+            this.KeybindApplyButton.CanFocus = true;
+            this.KeybindApplyButton.Name = "KeybindApplyButton";
+            this.KeybindApplyButton.UseStock = true;
+            this.KeybindApplyButton.UseUnderline = true;
+            this.KeybindApplyButton.Label = "gtk-apply";
+            this.hbuttonbox4.Add(this.KeybindApplyButton);
+            Gtk.ButtonBox.ButtonBoxChild w29 = ((Gtk.ButtonBox.ButtonBoxChild)(this.hbuttonbox4[this.KeybindApplyButton]));
             w29.Position = 1;
+            w29.Expand = false;
+            w29.Fill = false;
+            this.vbox4.Add(this.hbuttonbox4);
+            Gtk.Box.BoxChild w30 = ((Gtk.Box.BoxChild)(this.vbox4[this.hbuttonbox4]));
+            w30.Position = 2;
+            w30.Expand = false;
+            w30.Fill = false;
+            this.hbox1.Add(this.vbox4);
+            Gtk.Box.BoxChild w31 = ((Gtk.Box.BoxChild)(this.hbox1[this.vbox4]));
+            w31.Position = 1;
+            this.notebook1.Add(this.hbox1);
+            Gtk.Notebook.NotebookChild w32 = ((Gtk.Notebook.NotebookChild)(this.notebook1[this.hbox1]));
+            w32.Position = 1;
             // Notebook tab
             this.label2 = new Gtk.Label();
             this.label2.Name = "label2";

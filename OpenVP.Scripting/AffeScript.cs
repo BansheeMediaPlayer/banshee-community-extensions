@@ -75,5 +75,18 @@ namespace OpenVP.Scripting {
 			return (ScriptCall) dm.CreateDelegate(typeof(ScriptCall),
 			                                      this.mTargetObject);
 		}
+		
+		protected virtual void SetupCompiler() {
+			if (this.mTargetObject != null)
+				this.mCompiler = new AffeCompiler(this.mTargetObject.GetType());
+			else
+				this.mCompiler = null;
+		}
+		
+		protected override void OnDeserialization(object sender) {
+			base.OnDeserialization(sender);
+			
+			this.SetupCompiler();
+		}
 	}
 }
