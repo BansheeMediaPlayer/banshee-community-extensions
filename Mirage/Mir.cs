@@ -2,7 +2,7 @@
  * Mirage - High Performance Music Similarity and Automatic Playlist Generator
  * http://hop.at/mirage
  * 
- * Copyright (C) 2007 Dominik Schnitzer <dominik@schnitzer.at>
+ * Copyright (C) 2007-2008 Dominik Schnitzer <dominik@schnitzer.at>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,97 +29,108 @@ using System.Collections.Generic;
 namespace Mirage
 {
 
+	public class Mir
+	{
+	    static int samplingrate = 11025;
+	    static int windowsize = 512;
+	    static int melcoefficients = 36;
+	    static int mfcccoefficients = 20;
+	    static int secondstoanalyze = 120;
+	    static int secondstoskip = 15;
+	    
+	    static Mfcc mfcc = new Mfcc(windowsize, samplingrate, melcoefficients, mfcccoefficients);
+	    static AudioDecoder ad = new AudioDecoder(samplingrate, secondstoanalyze, secondstoskip, windowsize);
+	    
+	    public static void CancelAnalyze()
+	    {
+	        ad.CancelDecode();
+	    }
 
-public class Mir
-{
-    private static int samplingrate = 11025;
-    private static int windowsize = 512;
-    
-    public static Mfcc mfcc = new Mfcc(windowsize, samplingrate, 36, 20);
-    public static AudioDecoder ad = new AudioDecoder(samplingrate, 135, windowsize);
-    
-    public static void CancelAnalyze()
-    {
-        ad.CancelDecode();
-    }
+	    public static Scms Analyze(string file)
+	    {
+	        Timer t = new Timer();
+	        t.Start();
+	        
+	        Matrix stftdata;
+			try {
+	        	stftdata = ad.Decode(file);
+	        	if (stftdata == null)
+	        		return null;
+	        } catch (AudioDecoderErrorException) {
+	        	return null;
+	        } catch (AudioDecoderCanceledException) {
+	        	return null;
+	        }
 
-    public static Scms Analyze(string file)
-    {
-        Timer t = new Timer();
-        t.Start();
+	        Matrix mfccdata = mfcc.Apply(stftdata);
+	        Scms scms = Scms.GetScms(mfccdata);
+	        
+	        Dbg.WriteLine("Mirage: Total Execution Time: " + t.Stop() + "ms");
+	        
+	        return scms;
+	    }
 
-        Matrix stft1 = ad.Decode(file);
-        if (stft1 == null)
-            return null;
-        Matrix mfcc1 = mfcc.Apply(stft1);
-        Scms scms = Scms.GetScms(mfcc1);
-        
-        Dbg.WriteLine("Mirage: Total Execution Time: " + t.Stop() + "ms");
-        
-        return scms;
-    }
-
-    public static int[] SimilarTracks(int[] id, int[] exclude, Db db)
-    {
-        // Get Seed-Song SCMS
-        Scms[] seedScms = new Scms[id.Length];
-        for (int i = 0; i < seedScms.Length; i++) {
-            seedScms[i] = db.GetTrack(id[i]);
-        }
-        
-        // Get all tracks from the DB except the seedSongs
-        IDataReader r = db.GetTracks(exclude);
-        Hashtable ht = new Hashtable();
-        Scms[] scmss = new Scms[100];
-        int[] mapping = new int[100];
-        int read = 1;
-        float d;
-        float dcur;
-        float count;
-        
-        Timer t = new Timer();
-        t.Start();
-        
-        while (read > 0) {
-            
-            read = db.GetNextTracks(ref r, ref scmss, ref mapping, 100);
-            for (int i = 0; i < read; i++) {
-                
-                d = 0;
-                count = 0;
-                for (int j = 0; j < seedScms.Length; j++) {
-                    dcur = seedScms[j].Distance(scmss[i]);
-                    
-                    // FIXME: Negative numbers indicate faulty scms models..
-                    if (dcur > 0) {
-                        d += dcur;
-                        count++;
-                    } else {
-                        Dbg.WriteLine("Mirage: Faulty SCMS id=" + mapping[i] + "d=" + d);
-                        d = 0;
-                        break;
-                    }
-                }
-                
-                if (d > 0) {
-                    ht.Add(mapping[i], d/count);
-                }
-            }
-            
-        }
-        
-        float[] items = new float[ht.Count];
-        int[] keys = new int[ht.Keys.Count];
-        
-        ht.Keys.CopyTo(keys, 0);
-        ht.Values.CopyTo(items, 0);
-        
-        Array.Sort(items, keys);
-        
-        Dbg.WriteLine("Mirage: playlist in: " + t.Stop() + "ms");
-        
-        return keys;
-    }
-}
+	    public static int[] SimilarTracks(int[] id, int[] exclude, Db db)
+	    {
+	        // Get Seed-Song SCMS
+	        Scms[] seedScms = new Scms[id.Length];
+	        for (int i = 0; i < seedScms.Length; i++) {
+	            seedScms[i] = db.GetTrack(id[i]);
+	        }
+	        
+	        // Get all tracks from the DB except the seedSongs
+	        IDataReader r = db.GetTracks(exclude);
+	        Hashtable ht = new Hashtable();
+	        Scms[] scmss = new Scms[100];
+	        int[] mapping = new int[100];
+	        int read = 1;
+	        float d;
+	        float dcur;
+	        float count;
+	        
+	        Timer t = new Timer();
+	        t.Start();
+	        
+	        while (read > 0) {
+	            
+	            read = db.GetNextTracks(ref r, ref scmss, ref mapping, 100);
+	            for (int i = 0; i < read; i++) {
+	                
+	                d = 0;
+	                count = 0;
+	                for (int j = 0; j < seedScms.Length; j++) {
+	                    dcur = seedScms[j].Distance(scmss[i]);
+	                    
+	                    // Possible negative numbers indicate faulty scms models..
+	                    if (dcur >= 0) {
+	                        d += dcur;
+	                        count++;
+	                    } else {
+	                        Dbg.WriteLine("Mirage: Faulty SCMS id=" + mapping[i] + "d=" + d);
+	                        d = 0;
+	                        break;
+	                    }
+	                }
+	                
+	                if (d >= 0) {
+	                    ht.Add(mapping[i], d/count);
+	                }
+	            }
+	            
+	        }
+	        
+	        float[] items = new float[ht.Count];
+	        int[] keys = new int[ht.Keys.Count];
+	        
+	        ht.Keys.CopyTo(keys, 0);
+	        ht.Values.CopyTo(items, 0);
+	        
+	        Array.Sort(items, keys);
+	        
+	        Dbg.WriteLine("Mirage: playlist in: " + t.Stop() + "ms");
+	        
+	        return keys;
+	    }
+	}
 
 }

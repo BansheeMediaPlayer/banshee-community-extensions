@@ -72,6 +72,7 @@ struct MirageAudio {
 };
 
 #define SRC_BUFFERLENGTH 4096
+#define SKIP_SEC 15
 
 clock_t start;
 clock_t end;

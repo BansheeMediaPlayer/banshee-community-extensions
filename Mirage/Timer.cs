@@ -2,7 +2,7 @@
  * Mirage - High Performance Music Similarity and Automatic Playlist Generator
  * http://hop.at/mirage
  * 
- * Copyright (C) 2007 Dominik Schnitzer <dominik@schnitzer.at>
+ * Copyright (C) 2007-2008 Dominik Schnitzer <dominik@schnitzer.at>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

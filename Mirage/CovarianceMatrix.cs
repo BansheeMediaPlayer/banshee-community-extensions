@@ -2,7 +2,7 @@
  * Mirage - High Performance Music Similarity and Automatic Playlist Generator
  * http://hop.at/mirage
  * 
- * Copyright (C) 2007 Dominik Schnitzer <dominik@schnitzer.at>
+ * Copyright (C) 2007-2008 Dominik Schnitzer <dominik@schnitzer.at>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,37 +26,37 @@ using System;
 namespace Mirage
 {
     
-[Serializable]
-public class CovarianceMatrix
-{
-    
-    public float[] d;
-    public int dim;
-    
-    /// create a symmetric square matrix
-    public CovarianceMatrix(int dim)
+    [Serializable]
+    public class CovarianceMatrix
     {
-        this.dim = dim;
-        int length = (dim * dim + dim) / 2;
-        d = new float[length];
-    }
-
-    /// create a symmetric square matrix using an existing Matrix
-    public CovarianceMatrix(Matrix m)
-    {
-        this.dim = m.rows;
-        int length = (dim * dim + dim) / 2; 
-        d = new float[length];
         
-        int l = 0;
-        for (int i = 0; i < m.rows; i++) {
-            for (int j = i; j < m.columns; j++) {
-                d[l] = m.d[i, j];
-                l++;
+        public float[] d;
+        public int dim;
+        
+        /// create a symmetric square matrix
+        public CovarianceMatrix(int dim)
+        {
+            this.dim = dim;
+            int length = (dim * dim + dim) / 2;
+            d = new float[length];
+        }
+
+        /// create a symmetric square matrix from an existing Matrix
+        public CovarianceMatrix(Matrix m)
+        {
+            this.dim = m.rows;
+            int length = (dim * dim + dim) / 2; 
+            d = new float[length];
+            
+            int l = 0;
+            for (int i = 0; i < m.rows; i++) {
+                for (int j = i; j < m.columns; j++) {
+                    d[l] = m.d[i, j];
+                    l++;
+                }
             }
         }
-    }
 
-}
+    }
 
 }

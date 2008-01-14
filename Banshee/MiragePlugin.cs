@@ -106,7 +106,18 @@ namespace Banshee.Plugins.Mirage
         {
             Catalog.Init("Mirage", Config.LocaleDir);
 
-            db = new Db();
+            string xdgcachedir = Environment.GetEnvironmentVariable("XDG_CACHE_HOME");
+            if (xdgcachedir == null) {
+                xdgcachedir = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + 
+                    "/.cache";
+            }
+            string dbdir = xdgcachedir + "/banshee-mirage";
+            if (!Directory.Exists(dbdir)) {
+                Directory.CreateDirectory(dbdir);
+            }
+            string dbfile = dbdir + "/mirage.db";
+
+            db = new Db(dbfile);
 
             jobsScheduled = 0;
             jobQueue = new Queue();
@@ -130,7 +141,7 @@ namespace Banshee.Plugins.Mirage
             Globals.Library.TrackRemoved += OnLibraryTrackRemoved;
             
             continuousPlaylist =
-                    new ContinuousGeneratorSource("Playlist Generator", new Db());
+                    new ContinuousGeneratorSource("Playlist Generator", new Db(dbfile));
             LibrarySource.Instance.AddChildSource(continuousPlaylist);
 
             if (!Globals.UIManager.IsInitialized) {
