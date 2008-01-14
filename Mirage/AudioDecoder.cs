@@ -29,16 +29,10 @@ namespace Mirage
 
     public class AudioDecoderErrorException : Exception
     {
-        public AudioDecoderErrorException() : base()
-        {
-        }
     }
 
     public class AudioDecoderCanceledException : Exception
     {
-        public AudioDecoderCanceledException() : base()
-        {
-        }
     }
 
     public class AudioDecoder

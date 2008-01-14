@@ -2,7 +2,7 @@
  * Mirage - High Performance Music Similarity and Automatic Playlist Generator
  * http://hop.at/mirage
  * 
- * Copyright (C) 2007 Dominik Schnitzer <dominik@schnitzer.at>
+ * Copyright (C) 2007-2008 Dominik Schnitzer <dominik@schnitzer.at>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -28,19 +28,36 @@ using System.Diagnostics;
 namespace Mirage
 {
 
-public class Dbg
-{
-    [Conditional("DEBUG")]
-    public static void WriteLine(String l)
-    {
-        Console.WriteLine(l);
-    }
+	public class Dbg
+	{
+	    [Conditional("DEBUG")]
+	    public static void WriteLine(String l)
+	    {
+	        Console.WriteLine(l);
+	    }
 
-    [Conditional("DEBUG")]
-    public static void Write(String l)
+	    [Conditional("DEBUG")]
+	    public static void Write(String l)
+	    {
+	        Console.Write(l);
+	    }
+	}
+	
+    public class DbgTimer
     {
-        Console.Write(l);
-    }
-}
+        long start;
+        
+		[Conditional("DEBUG")]
+        public void Start()
+        {
+            start = Environment.TickCount;
+        }
+
+		[Conditional("DEBUG")]
+        public void Stop(ref long stop)
+        {
+        	stop = Environment.TickCount - start; 
+        }
+    }	
     
 }

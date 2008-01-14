@@ -28,44 +28,47 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Mirage
 {
+	public class ScmsImpossibleException : Exception
+	{
+	}
     
 	[Serializable]
 	public class Scms
 	{
-	    public Vector mean = null;
-	    public CovarianceMatrix cov = null;
-	    public CovarianceMatrix icov = null;
+	    Vector mean = null;
+	    CovarianceMatrix cov = null;
+	    CovarianceMatrix icov = null;
 
-	    
-	    public Scms()
-	    {
-	    }
-	    
 	    public static Scms GetScms(Matrix mfcc)
 	    {
-	        Timer t = new Timer();
+	        DbgTimer t = new DbgTimer();
 	        t.Start();
 	        
 	        Scms s = new Scms();
 	        
+	        // Mean
 	        s.mean = mfcc.Mean();
+
+			// Covariance
 	        Matrix fullCov = mfcc.Covariance(s.mean);
-	        
-	        Matrix fullIcov = fullCov.Inverse();
-	        if (fullIcov == null)
-	            return null;
-	        
-	        s.cov = new CovarianceMatrix(fullCov);
-	        
+        	s.cov = new CovarianceMatrix(fullCov);
 	        for (int i = 0; i < s.cov.dim; i++) {
 	            for (int j = i+1; j < s.cov.dim; j++) {
 	                s.cov.d[i*s.cov.dim+j-(i*i+i)/2] *= 2;
 	            }
 	        }
-
-	        s.icov = new CovarianceMatrix(fullIcov);
 	        
-	        Dbg.WriteLine("Mirage: scms created in: " + t.Stop() + "ms");
+	        // Inverse Covariance
+	        try {
+        		Matrix fullIcov = fullCov.Inverse();
+        		s.icov = new CovarianceMatrix(fullIcov);
+	        } catch (MatrixSingularException) {
+	        	throw new ScmsImpossibleException();
+	        }
+	        
+	        long stop = 0;
+	        t.Stop(ref stop);
+	        Dbg.WriteLine("Mirage: scms created in: " + stop + "ms");
 	        
 	        return s;
 	    }

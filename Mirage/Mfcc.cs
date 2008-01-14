@@ -29,6 +29,10 @@ using System.Reflection;
 namespace Mirage
 {
 
+	public class MfccFailedException : Exception
+	{
+	}
+
 	public class Mfcc
 	{
 
@@ -40,18 +44,16 @@ namespace Mirage
 	        Assembly assem = this.GetType().Assembly;
 	        
 	        // Load the DCT
-	        dct =
-	            Matrix.Load(assem.GetManifestResourceStream("dct.filter"));
+	        dct = Matrix.Load(assem.GetManifestResourceStream("dct.filter"));
 	            
 	        // Load the MFCC filters from the filter File.
-	        filterWeights =
-	            Matrix.Load(assem.GetManifestResourceStream("filterweights.filter"));
+	        filterWeights = Matrix.Load(assem.GetManifestResourceStream("filterweights.filter"));
 	    }
 	    
 	    public Matrix Apply(Matrix m)
 	    {
 
-	        Timer t = new Timer();
+	        DbgTimer t = new DbgTimer();
 	        t.Start();
 
 	        Matrix mel = new Matrix(filterWeights.rows, m.columns);
@@ -97,11 +99,18 @@ namespace Mirage
 	            }
 	        }
 	        
-	        Matrix mfcc = dct.Multiply(mel);
-	        
-	        Dbg.WriteLine("Mirage: mfcc Execution Time: " + t.Stop() + "ms");
-	        
-	        return mfcc;
+	        try {
+		        Matrix mfcc = dct.Multiply(mel);
+		        
+		        long stop = 0;
+		        t.Stop(ref stop);
+		        Dbg.WriteLine("Mirage: mfcc Execution Time: " + stop + "ms");
+		        
+		        return mfcc;
+		        
+		    } catch (MatrixDimensionMismatchException) {
+		    	throw new MfccFailedException();
+		    }
 	    }
 	    
 	}

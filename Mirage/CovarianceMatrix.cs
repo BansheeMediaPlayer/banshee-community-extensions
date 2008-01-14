@@ -33,7 +33,7 @@ namespace Mirage
         public float[] d;
         public int dim;
         
-        /// create a symmetric square matrix
+        // create a symmetric square matrix
         public CovarianceMatrix(int dim)
         {
             this.dim = dim;
@@ -41,7 +41,7 @@ namespace Mirage
             d = new float[length];
         }
 
-        /// create a symmetric square matrix from an existing Matrix
+        // create a symmetric square matrix from an existing Matrix
         public CovarianceMatrix(Matrix m)
         {
             this.dim = m.rows;

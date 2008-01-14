@@ -13,7 +13,6 @@ SOURCES = \
 	Mfcc.cs \
 	Mir.cs \
 	Scms.cs \
-	Timer.cs \
 	Vector.cs \
 	AssemblyInfo.cs
 

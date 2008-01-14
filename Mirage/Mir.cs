@@ -48,26 +48,30 @@ namespace Mirage
 
 	    public static Scms Analyze(string file)
 	    {
-	        Timer t = new Timer();
-	        t.Start();
 	        
-	        Matrix stftdata;
 			try {
-	        	stftdata = ad.Decode(file);
-	        	if (stftdata == null)
-	        		return null;
+		        DbgTimer t = new DbgTimer();
+		        t.Start();
+		        
+	        	Matrix stftdata = ad.Decode(file);
+		        Matrix mfccdata = mfcc.Apply(stftdata);
+		        Scms scms = Scms.GetScms(mfccdata);
+	        
+				long stop = 0;
+				t.Stop(ref stop);
+		        Dbg.WriteLine("Mirage: Total Execution Time: " + stop + "ms");
+		        
+		        return scms;
+		        
 	        } catch (AudioDecoderErrorException) {
 	        	return null;
 	        } catch (AudioDecoderCanceledException) {
 	        	return null;
+	        } catch (MfccFailedException) {
+	        	return null;
+	        } catch (ScmsImpossibleException) {
+	        	return null;
 	        }
-
-	        Matrix mfccdata = mfcc.Apply(stftdata);
-	        Scms scms = Scms.GetScms(mfccdata);
-	        
-	        Dbg.WriteLine("Mirage: Total Execution Time: " + t.Stop() + "ms");
-	        
-	        return scms;
 	    }
 
 	    public static int[] SimilarTracks(int[] id, int[] exclude, Db db)
@@ -79,7 +83,6 @@ namespace Mirage
 	        }
 	        
 	        // Get all tracks from the DB except the seedSongs
-	        IDataReader r = db.GetTracks(exclude);
 	        Hashtable ht = new Hashtable();
 	        Scms[] scmss = new Scms[100];
 	        int[] mapping = new int[100];
@@ -88,9 +91,10 @@ namespace Mirage
 	        float dcur;
 	        float count;
 	        
-	        Timer t = new Timer();
+	        DbgTimer t = new DbgTimer();
 	        t.Start();
 	        
+	        IDataReader r = db.GetTracks(exclude);
 	        while (read > 0) {
 	            
 	            read = db.GetNextTracks(ref r, ref scmss, ref mapping, 100);
@@ -118,6 +122,7 @@ namespace Mirage
 	            }
 	            
 	        }
+	        db.GetTracksFinished();
 	        
 	        float[] items = new float[ht.Count];
 	        int[] keys = new int[ht.Keys.Count];
@@ -127,7 +132,9 @@ namespace Mirage
 	        
 	        Array.Sort(items, keys);
 	        
-	        Dbg.WriteLine("Mirage: playlist in: " + t.Stop() + "ms");
+	        long stop = 0;
+	        t.Stop(ref stop);
+	        Dbg.WriteLine("Mirage: playlist in: " + stop + "ms");
 	        
 	        return keys;
 	    }

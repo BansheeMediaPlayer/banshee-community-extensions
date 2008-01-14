@@ -26,11 +26,12 @@ using System.IO;
 namespace Mirage
 {
 
-	public class MatrixException : Exception
+	public class MatrixDimensionMismatchException : Exception
 	{
-	    public MatrixException(string error) : base(error)
-	    {
-	    }
+	}
+
+	public class MatrixSingularException : Exception
+	{
 	}
 
 	[Serializable]
@@ -52,25 +53,23 @@ namespace Mirage
 	    public Matrix Multiply(Matrix m2)
 	    {
 	        if (columns != m2.rows) {
-	            throw new MatrixException("Can not multiply matrices if dimensions"
-	                    + "do not match");
+	            throw new MatrixDimensionMismatchException();
 	        }
 	        
-	        Matrix m1 = this;
-	        Matrix m3 = new Matrix(m1.rows, m2.columns);
+	        Matrix m3 = new Matrix(this.rows, m2.columns);
 
 	        unsafe {
 	            int idx;
-	            int m1rows = m1.rows;
+	            int m1rows = this.rows;
 	            int m2columns = m2.columns;
 	            int m3columns = m3.columns;
-	            int m1columns = m1.columns;
+	            int m1columns = this.columns;
 	            int i;
 	            int j;
 	            int k;
 	            int im1columns;
 
-	            fixed (float* m1d = m1.d, m2d = m2.d, m3d = m3.d) {
+	            fixed (float* m1d = this.d, m2d = m2.d, m3d = m3.d) {
 	            
 	                for (i = 0; i < m1rows; i++) {
 	            
@@ -88,7 +87,6 @@ namespace Mirage
 	        return m3;
 	    }
 	    
-
 	    public Vector Mean()
 	    {
 	        Vector mean = new Vector(rows);
@@ -100,19 +98,18 @@ namespace Mirage
 	        
 	        return mean;
 	    }
-	    
 
 	    public void Print()
 	    {
 	        Print(rows, columns);
 	    }
 	    
-
 	    public void Print(int rows, int columns)
 	    {
 	        System.Console.WriteLine("Rows: " + this.rows +
 	            " Columns: " + this.columns);
 	        System.Console.WriteLine("[");
+	        
 	        for (int i = 0; i < rows; i++) {
 	            for (int j = 0; j < columns; j++) {
 	                System.Console.Write(d[i, j] + " ");
@@ -128,33 +125,19 @@ namespace Mirage
 	        PrintTurn(rows, columns);
 	    }
 	    
-
 	    public void PrintTurn(int rows, int columns)
 	    {
 	        System.Console.WriteLine("Rows: " + this.rows +
 	            " Columns: " + this.columns);
 	        System.Console.WriteLine("[");
-	        float[] max = new float[rows];
-	        float[] min = new float[rows];
+	        
 	        for (int i = 0; i < columns; i++) {
 	            for (int j = 0; j < rows; j++) {
 	                System.Console.Write(d[j, i] + " ");
-	                if (d[j, i] > max[j]) {
-	                    max[j] = d[j, i];
-	                }
-	                if (d[j, i] < min[j]) {
-	                    min[j] = d[j, i];
-	                }
-	                
 	            }
 	            System.Console.WriteLine(";");
 	        }
 	        System.Console.WriteLine("]");
-	        
-	        for (int i = 0; i < max.Length; i++) {
-	            System.Console.WriteLine("max=" + max[i] + " min=" + min[i]);
-	        }
-	        
 	    }
 
 	    public Matrix Covariance(Vector mean)
@@ -220,12 +203,13 @@ namespace Mirage
 	        return m;
 	    }
 
-	    /* Gauss-Jordan routine, Numerical Recipes. */
-	    public Matrix Inverse()
-	    {
-	        decimal[,] e = new decimal[rows+1, columns+1];
-	        for (int i = 1; i <= rows; i++) {
-	            e[i,i] = 1;
+	    // Gauss-Jordan routine to invert a matrix
+	    // decimal precision
+		public Matrix Inverse()
+		{
+		    decimal[,] e = new decimal[rows+1, columns+1];
+		    for (int i = 1; i <= rows; i++) {
+		        e[i,i] = 1;
 	        }
 	        decimal[,] m = new decimal[rows+1, columns+1];
 	        for (int i = 1; i <= rows; i++) {
@@ -235,11 +219,6 @@ namespace Mirage
 	        }
 	        
 	        GaussJordan(ref m, rows, ref e, rows);
-	        
-	        // in case of error
-	        if (m == null)
-	            return null;
-	        
 	        Matrix inv = new Matrix(rows, columns);
 	        
 	        for (int i = 1; i <= rows; i++) {
@@ -249,7 +228,6 @@ namespace Mirage
 	        }
 	        
 	        return inv;
-	        
 	    }
 
 	    private void GaussJordan(ref decimal[,] a, int n, ref decimal[,] b, int m)
@@ -276,9 +254,8 @@ namespace Mirage
 	                        icol=k;
 	                    }
 	                    } else if (ipiv[k] > 1) {
-	                        //Console.WriteLine("gaussj: Singular Matrix-1");
-	                        a = null;
-	                        return;
+	                    	Dbg.WriteLine("Mirage: Gauss/Jordan Singular Matrix (1)");
+	                    	throw new MatrixSingularException();
 	                    }
 	                }
 	            }
@@ -300,9 +277,8 @@ namespace Mirage
 	            indxr[i] = irow;
 	            indxc[i] = icol;
 	            if (a[icol,icol] == 0) {
-	                //Console.WriteLine("gaussj: Singular Matrix-2");
-	                a = null;
-	                return;
+                   	Dbg.WriteLine("Mirage: Gauss/Jordan Singular Matrix (2)");
+                   	throw new MatrixSingularException();
 	            }
 	            
 	            pivinv = 1 / a[icol,icol];

@@ -26,16 +26,28 @@ using Mono.Data.SqliteClient;
 using System.IO;
 using System;
 using System.Collections;
+using System.Threading;
+using System.Text;
 
 namespace Mirage
 {
+	public class DbFailureException : Exception
+	{
+	}
+
+	public class DbTrackNotFoundException : Exception
+	{
+	}
 
     public class Db
     {
         IDbConnection dbcon;
+        Mutex dblock;
 
         public Db(string dbfile)
         {
+        	dblock = new Mutex();
+        	
 			string sqlite = string.Format("URI=file:{0},version=3", dbfile);
             Dbg.WriteLine("Mirage: Open DB - " + sqlite);
             dbcon = (IDbConnection) new SqliteConnection(sqlite);
@@ -53,14 +65,14 @@ namespace Mirage
             dbcon.Close();
         }
 
-        public int AddTrack(int trackid, Scms scms)
+        public void AddTrack(int trackid, Scms scms)
         {
+        	// lock db mutex
+        	dblock.WaitOne();
+        	
             IDbDataParameter dbparam = new SqliteParameter("@scms", DbType.Binary);
             dbparam.Value = scms.ToBytes();
-            IDbCommand dbcmd;
-            lock (dbcon) {
-                dbcmd = dbcon.CreateCommand();
-            }
+            IDbCommand dbcmd = dbcon.CreateCommand();
             dbcmd.CommandText = "INSERT INTO mirage (trackid, scms) " +
                     "VALUES (" + trackid + ", @scms)";
             dbcmd.Parameters.Add(dbparam);
@@ -68,99 +80,75 @@ namespace Mirage
             try {
                 dbcmd.ExecuteNonQuery();
             } catch (SqliteExecutionException) {
-                return -1;
+                throw new DbFailureException();
+            } finally {
+            	// unlock db mutex
+            	dblock.ReleaseMutex();
             }
-            
-            return trackid;
         }
         
-        public int RemoveTrack(int trackid)
+        public void RemoveTrack(int trackid)
         {
-            IDbCommand dbcmd;
-            lock (dbcon) {
-                dbcmd = dbcon.CreateCommand();
-            }
-            dbcmd.CommandText = "DELETE FROM mirage WHERE trackid="+trackid;
+        	// lock db mutex
+            dblock.WaitOne();
+            
+            IDbCommand dbcmd = dbcon.CreateCommand();
+            dbcmd.CommandText = "DELETE FROM mirage WHERE trackid=" + trackid;
             
             try {
                 dbcmd.ExecuteNonQuery();
             } catch (SqliteExecutionException) {
-                return -1;
-            }
-            
-            return trackid;
+                throw new DbFailureException();
+			} finally {
+				// unlock db mutex
+				dblock.ReleaseMutex();
+			}
         }
 
         public Scms GetTrack(int trackid)
         {
-            IDbCommand dbcmd;
-            lock (dbcon) {
-                dbcmd = dbcon.CreateCommand();
-            }
-            dbcmd.CommandText = "SELECT scms FROM mirage " +
-                    "WHERE trackid = " + trackid;
+        	// lock db mutex
+        	dblock.WaitOne();
+        	
+            IDbCommand dbcmd = dbcon.CreateCommand();
+            dbcmd.CommandText = "SELECT scms FROM mirage WHERE trackid=" + trackid;
             IDataReader reader = dbcmd.ExecuteReader();
             if (!reader.Read()) {
-                return null;
+            	// unlock db mutex
+            	dblock.ReleaseMutex();
+                throw new DbTrackNotFoundException();
             }
             
             byte[] buf = (byte[]) reader.GetValue(0);
             reader.Close();
             
+            // unlock db mutex
+            dblock.ReleaseMutex();
+            
             return Scms.FromBytes(buf);
         }
         
-        public IDataReader GetTracks(int[] trackId)
+        public IDataReader GetTracks(int[] excludeId)
         {
-            IDbCommand dbcmd;
-            lock (dbcon) {
-                dbcmd = dbcon.CreateCommand();
-            }
+        	// lock db mutex
+        	dblock.WaitOne();
+        	
+        	IDbCommand dbcmd = dbcon.CreateCommand();
             
-            String trackSql = "";
-            if ((trackId != null) && (trackId.Length > 0)) {
-                trackSql = trackId[0].ToString();
+            StringBuilder trackSql = new StringBuilder("SELECT scms, trackid FROM mirage WHERE trackid NOT in (");
+            if ((excludeId != null) && (excludeId.Length > 0)) {
+                trackSql.Append(excludeId[0].ToString());
             
-                for (int i = 1; i < trackId.Length; i++) {
-                    trackSql = trackSql + ", " + trackId[i];
+                for (int i = 1; i < excludeId.Length; i++) {
+                    trackSql.Append(", " + excludeId[i]);
                 }
             }
-            
-            dbcmd.CommandText = "SELECT scms, trackid FROM mirage " +
-                    "WHERE trackid NOT in (" + trackSql + ")";
-            Console.WriteLine(dbcmd.CommandText);
+            trackSql.Append(")");
+            dbcmd.CommandText = trackSql.ToString();
 
             return dbcmd.ExecuteReader();
         }
-        
-        public int[] GetTrackIds()
-        {
-            IDbCommand dbcmd;
-            lock (dbcon) {
-                dbcmd = dbcon.CreateCommand();
-            }
 
-            dbcmd.CommandText = "SELECT trackid FROM mirage";
-            IDataReader reader = dbcmd.ExecuteReader();
-            
-            ArrayList tracks = new ArrayList();
-            
-            while (reader.Read()) {
-                tracks.Add(reader.GetInt32(0));
-            }
-            reader.Close();
-            
-            int[] tracksInt = new int[tracks.Count];
-            IEnumerator e = tracks.GetEnumerator();
-            int i = 0;
-            while (e.MoveNext()) { 
-                tracksInt[i] = (int)e.Current;
-                i++;
-            }
-            return tracksInt;
-            
-        }
-        
         public int GetNextTracks(ref IDataReader tracksIterator, ref Scms[] tracks,
                 ref int[] mapping, int len)
         {
@@ -179,20 +167,59 @@ namespace Mirage
             
             return i;
         }
+        
+		public void GetTracksFinished()
+		{
+            // unlock db mutex
+            dblock.ReleaseMutex();
+		}
+        
+        public int[] GetAllTrackIds()
+        {
+        	// lock db mutex
+        	dblock.WaitOne();
+        	
+            IDbCommand dbcmd = dbcon.CreateCommand();
+            dbcmd.CommandText = "SELECT trackid FROM mirage";
+            IDataReader reader = dbcmd.ExecuteReader();
+            
+            ArrayList tracks = new ArrayList();
+            
+            while (reader.Read()) {
+                tracks.Add(reader.GetInt32(0));
+            }
+            reader.Close();
 
+           	// unlock db mutex
+            dblock.ReleaseMutex();
+            
+            int[] tracksInt = new int[tracks.Count];
+            IEnumerator e = tracks.GetEnumerator();
+            int i = 0;
+            while (e.MoveNext()) { 
+                tracksInt[i] = (int)e.Current;
+                i++;
+            }
+            
+            return tracksInt;
+        }
+        
         public void Reset()
         {
-            IDbCommand dbcmd;
-            lock (dbcon) {
-                dbcmd = dbcon.CreateCommand();
-            }
+        	// lock db mutex
+        	dblock.WaitOne();
+        	
+            IDbCommand dbcmd = dbcon.CreateCommand();
 
             dbcmd.CommandText = "DELETE FROM mirage";
 
             try {
                 dbcmd.ExecuteNonQuery();
             } catch (SqliteExecutionException) {
-                return;
+            	throw new DbFailureException();
+            } finally {
+	        	// unlock db mutex
+            	dblock.ReleaseMutex();
             }
         }
         
