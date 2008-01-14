@@ -46,13 +46,14 @@ class MainClass
 //
 		Console.WriteLine("Distance = " + song1.Distance(song2));
 		
-		Mirage.Timer t = new Mirage.Timer();
+		DbgTimer t = new DbgTimer();
 		t.Start();
 		int runs = 100000;
 		for (int i = 0; i < runs; i++) {
 			song1.Distance(song2);
 		}
-		long l = t.Stop();
+		long l = 0;
+        t.Stop(ref l);
 		Dbg.WriteLine("Distance Computation: " + runs + " times - " + l + "ms; " +
 			(double)l/(double)runs + "ms per comparison");
 	}
