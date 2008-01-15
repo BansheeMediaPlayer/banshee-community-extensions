@@ -105,6 +105,30 @@ namespace Mirage
 			}
         }
 
+        public void RemoveTracks(int[] trackids)
+        {
+        	// lock db mutex
+            dblock.WaitOne();
+            
+            IDbCommand dbcmd = dbcon.CreateCommand();
+            StringBuilder removeSql = new StringBuilder("DELETE FROM mirage WHERE trackid IN (");
+            removeSql.Append(trackids[0].ToString());
+            for (int i = 1; i < trackids.Length; i++) {
+                removeSql.Append("," + trackids[i]);
+            }
+            removeSql.Append(")");
+            dbcmd.CommandText = removeSql.ToString();
+            
+            try {
+                dbcmd.ExecuteNonQuery();
+            } catch (SqliteExecutionException) {
+                throw new DbFailureException();
+			} finally {
+				// unlock db mutex
+				dblock.ReleaseMutex();
+			}
+        }
+
         public Scms GetTrack(int trackid)
         {
         	// lock db mutex

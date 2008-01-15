@@ -29,9 +29,11 @@ using Banshee.Configuration;
 using Banshee.Widgets;
 
 using System;
+using System.IO;
 using System.Collections;
 using System.Threading;
 using System.Data;
+using System.Text;
 
 using Mono.Unix;
 
@@ -161,7 +163,10 @@ namespace Banshee.Plugins.Mirage
             lock(jobQueue) {
                 jobQueue.Clear();
             }
-            Mir.CancelAnalyze();
+            try {
+                Mir.CancelAnalyze();
+            } catch (Exception) {
+            }
 
             LibrarySource.Instance.RemoveChildSource(continuousPlaylist);
 
@@ -276,22 +281,26 @@ namespace Banshee.Plugins.Mirage
                 }
 
                 if (track.Uri.IsLocalPath) {
-                    int status = -1;
-                    Dbg.WriteLine("Mirage: processing " + track.TrackId + "/" + track.Artist + "/" + track.Title);
+                    int status = 0;
+                    try {
+                        Dbg.WriteLine("Mirage: processing " + track.TrackId + "/" + track.Artist + "/" + track.Title);
 
-                    userEvent.Message = String.Format("{0} - {1}", track.Artist, track.Title);
-                    Scms scms = Mir.Analyze(track.Uri.LocalPath);
-                    if (scms != null) {
-                        status = 0;
+                        userEvent.Message = String.Format("{0} - {1}", track.Artist, track.Title);
+                        Scms scms = Mir.Analyze(track.Uri.LocalPath);
                         db.AddTrack(track.TrackId, scms);
+                    } catch (DbFailureException) {
+                        status = -2;
+                    } catch (MirAnalysisImpossibleException) {
+                        status = -1;
+                    } finally {
+                        // Banshee user event
+                        userEvent.Progress = 1 - (double)queueLength/(double)jobsScheduled;
+
+                        Globals.Library.Db.Execute("INSERT INTO MirageProcessed"
+                                + " (TrackID, Status) VALUES (" + track.TrackId + ", "
+                                + status + ")");
                     }
 
-                    // Banshee user event
-                    userEvent.Progress = 1 - (double)queueLength/(double)jobsScheduled;
-
-                    Globals.Library.Db.Execute("INSERT INTO MirageProcessed"
-                            + " (TrackID, Status) VALUES (" + track.TrackId + ", "
-                            + status + ")");
                 }
 
             } while (jobQueue.Count > 0);
@@ -369,14 +378,20 @@ namespace Banshee.Plugins.Mirage
                 lock(jobQueue) {
                     jobQueue.Clear();
                 }
-                Mir.CancelAnalyze();
-                Globals.Library.Db.Execute("DELETE FROM MirageProcessed");
-                db.Reset();
 
-                md = new MessageDialog(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
-                        Catalog.GetString("Mirage was reset. Your music will have to be re-analyzed to use Mirage again."));
-                md.Run();
-                md.Destroy();
+                try {
+                    Mir.CancelAnalyze();
+                    Globals.Library.Db.Execute("DELETE FROM MirageProcessed");
+                    db.Reset();
+
+                    md = new MessageDialog(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
+                            Catalog.GetString("Mirage was reset. Your music will have to be re-analyzed to use Mirage again."));
+                    md.Run();
+                    md.Destroy();
+                } catch (Exception) {
+                    Dbg.WriteLine("Mirage: Error resetting Mirage.");
+                }
+
             }
 
         }
@@ -401,11 +416,25 @@ namespace Banshee.Plugins.Mirage
         private void OnLibraryTrackRemoved(object o, LibraryTrackRemovedArgs args)
         {
             Dbg.WriteLine("Mirage: Deleted track.");
+
+            int[] trackids = new int[args.Tracks.Count];
+            int i = 0;
             foreach(TrackInfo track in args.Tracks) {
-                db.RemoveTrack(track.TrackId);
-                Globals.Library.Db.Execute("DELETE FROM MirageProcessed"
-                    + " WHERE TrackID = " + track.TrackId);
+                trackids[i] = track.TrackId;
+                i++;
             }
+            try {
+                db.RemoveTracks(trackids);
+            } catch (Exception) {
+            }
+
+            StringBuilder removeSql = new StringBuilder("DELETE FROM MirageProcessed WHERE TrackID IN (");
+            removeSql.Append(trackids[0].ToString());
+            for (i = 1; i < trackids.Length; i++) {
+                removeSql.Append("," + trackids[i]);
+            }
+            removeSql.Append(")");
+            Globals.Library.Db.Execute(removeSql.ToString());
         }
 
         private void OnUserEventCancelRequested(object o, EventArgs args)

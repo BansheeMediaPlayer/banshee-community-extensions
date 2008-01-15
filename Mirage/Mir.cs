@@ -28,6 +28,9 @@ using System.Collections.Generic;
 
 namespace Mirage
 {
+    public class MirAnalysisImpossibleException : Exception
+    {
+    }
 
 	public class Mir
 	{
@@ -64,14 +67,16 @@ namespace Mirage
 		        return scms;
 		        
 	        } catch (AudioDecoderErrorException) {
-	        	return null;
+                throw new MirAnalysisImpossibleException();
 	        } catch (AudioDecoderCanceledException) {
-	        	return null;
+                throw new MirAnalysisImpossibleException();
 	        } catch (MfccFailedException) {
-	        	return null;
+                throw new MirAnalysisImpossibleException();
 	        } catch (ScmsImpossibleException) {
-	        	return null;
-	        }
+                throw new MirAnalysisImpossibleException();
+	        } catch (Exception) {
+                throw new MirAnalysisImpossibleException();
+            }
 	    }
 
 	    public static int[] SimilarTracks(int[] id, int[] exclude, Db db)

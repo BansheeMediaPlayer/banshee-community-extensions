@@ -218,8 +218,12 @@ namespace Banshee.Plugins.Mirage
             public void Compute()
             {
                 int[] playlist;
-                playlist = Mir.SimilarTracks(trackId, excludeTrackId, db);
-                play(playlist, length);
+                try {
+                    playlist = Mir.SimilarTracks(trackId, excludeTrackId, db);
+                    play(playlist, length);
+                } catch (MirAnalysisImpossibleException) {
+                    Dbg.WriteLine("Mirage: ERROR. Impossible to compute playlist");
+                }
             }
         }
         
