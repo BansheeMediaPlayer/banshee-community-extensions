@@ -1,3 +1,9 @@
+2008-01-17  Chris Howie <me@chrishowie.com> 
+
+	* NullPlayerData.cs, UDPPlayerData.cs: Track API changes to PlayerData
+	  class.
+	* PlayerData.cs: Merge Update and UpdateWait.
+
 2007-12-30  Chris Howie <me@chrishowie.com> 
 
 	* IPreset.cs, OpenVP.mdp: Added IPreset interface.

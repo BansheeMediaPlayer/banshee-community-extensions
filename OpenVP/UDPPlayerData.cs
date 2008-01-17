@@ -187,36 +187,6 @@ namespace OpenVP {
 			Buffer.BlockCopy(message, 4 + bytelength, data[1], 0, bytelength);
 		}
 		
-		/// <summary>
-		/// Attempts to update the player data.
-		/// </summary>
-		/// <returns>
-		/// True if and only if the data was updated.
-		/// </returns>
-		/// <remarks>
-		/// If this method returns false, it is guaranteed that no data on the
-		/// object will have changed.
-		/// </remarks>
-		public override bool Update() {
-			while (this.mClient.Available != 0) {
-				IPEndPoint remote = new IPEndPoint(IPAddress.Any, 0);
-				
-				byte[] data = this.mClient.Receive(ref remote);
-				
-				MessageType type;
-				if (this.GetMessageType(data, out type)) {
-					if (type == MessageType.SliceComplete) {
-						this.ProcessLazyUpdateQueue();
-						return true;
-					}
-					
-					this.mLazyUpdateQueue.Enqueue(data);
-				}
-			}
-			
-			return false;
-		}
-		
 		private void ProcessLazyUpdateQueue() {
 			while (this.mLazyUpdateQueue.Count != 0)
 				this.ProcessUpdate(this.mLazyUpdateQueue.Dequeue());
@@ -225,9 +195,7 @@ namespace OpenVP {
 		/// <summary>
 		/// Updates the player data, blocking until successful.
 		/// </summary>
-		public override void UpdateWait() {
-			this.ProcessLazyUpdateQueue();
-			
+		public override bool Update(int timeout) {
 			byte[] data;
 			
 			MessageType type;
@@ -237,22 +205,27 @@ namespace OpenVP {
 			for (;;) {
 				IPEndPoint remote = new IPEndPoint(IPAddress.Any, 0);
 				
-				socket.Clear();
-				while (!socket.Contains(this.mClient.Client)) {
-					socket.Add(this.mClient.Client);
-					
-					Socket.Select(socket, null, null, 100000);
-				}
+				socket.Add(this.mClient.Client);
+				Socket.Select(socket, null, null, timeout * 1000);
+				
+				if (!socket.Contains(this.mClient.Client))
+					break;
 				
 				data = this.mClient.Receive(ref remote);
 				
 				if (this.GetMessageType(data, out type)) {
-					if (type == MessageType.SliceComplete)
-						break;
+					if (type == MessageType.SliceComplete) {
+						this.ProcessLazyUpdateQueue();
+						return true;
+					}
 					
-					this.ProcessUpdate(data);
+					this.mLazyUpdateQueue.Enqueue(data);
 				}
-			};
+				
+				socket.Clear();
+			}
+			
+			return false;
 		}
 		
 		private void GetCenter(float[][] data, float[] output) {

@@ -152,14 +152,7 @@ namespace OpenVP.GtkGui {
 					// NullPlayerData carries the potential for infinite loops, so
 					// just skip updating altogether if it's what we're using.
 					if (!(this.mController.PlayerData is NullPlayerData)) {
-						bool updated;
-						
-						if (this.mRequireDataUpdate) {
-							this.mController.PlayerData.UpdateWait();
-							updated = true;
-						} else {
-							updated = this.mController.PlayerData.Update();
-						}
+						bool updated = this.mController.PlayerData.Update(this.mRequireDataUpdate ? -1 : 0);
 						
 						if (updated) {
 							// We test mAllowMultipleUpdates every time since there is
@@ -167,7 +160,7 @@ namespace OpenVP.GtkGui {
 							// time allows the user to break the loop by disabling the
 							// option.
 							while (this.mAllowMultipleUpdates &&
-							       this.mController.PlayerData.Update());
+							       this.mController.PlayerData.Update(0));
 						}
 					}
 					
@@ -318,7 +311,8 @@ namespace OpenVP.GtkGui {
 						
 						try {
 							o = new SoapFormatter().Deserialize(file);
-						} catch (Exception) {
+						} catch (Exception ex) {
+							Console.WriteLine(ex.ToString());
 							o = null;
 						}
 					}

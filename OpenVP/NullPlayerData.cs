@@ -90,22 +90,20 @@ namespace OpenVP {
 		}
 		
 		/// <summary>
-		/// Returns true.
-		/// </summary>
-		/// <returns>
-		/// True.
-		/// </returns>
-		/// <remarks>
-		/// Loops that try to consume all possible updates will never terminate.
-		/// </remarks>
-		public override bool Update() {
-			return true;
-		}
-		
-		/// <summary>
 		/// Does nothing.
 		/// </summary>
-		public override void UpdateWait() {
+		/// <returns>
+		/// True if timeout is nonzero.
+		/// </returns>
+		/// <remarks>
+		/// True is returned if timeout is nonzero so that applications that are
+		/// blocking for an update will be released as soon as possible.  False
+		/// is returned if timeout is zero so that applications trying to
+		/// consume all available updates before entering a render loop will not
+		/// loop infinitely.
+		/// </remarks>
+		public override bool Update(int timeout) {
+			return timeout != 0;
 		}
 		
 		/// <value>

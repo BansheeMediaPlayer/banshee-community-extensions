@@ -53,7 +53,7 @@ namespace Test {
 			};
 			
 			while (run) {
-				udp.UpdateWait();
+				udp.Update(-1);
 				c.DrawFrame();
 			}
 			

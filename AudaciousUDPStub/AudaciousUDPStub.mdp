@@ -4,13 +4,13 @@
       <Output directory="../build" output="AudaciousUDPStub" />
       <Build debugmode="True" target="SharedLibrary" />
       <Execution runwithwarnings="True" consolepause="True" />
-      <CodeGeneration WarningLevel="Normal" WarningsAsErrors="False" OptimizationLevel="0" ExtraCompilerArguments="" ExtraLinkerArguments="" DefineSymbols="DEBUG MONODEVELOP" ctype="CCompilationParameters" />
+      <CodeGeneration WarningLevel="All" WarningsAsErrors="False" OptimizationLevel="0" ExtraCompilerArguments="" ExtraLinkerArguments="" DefineSymbols="DEBUG MONODEVELOP" ctype="CCompilationParameters" />
     </Configuration>
     <Configuration name="Release" ctype="CProjectConfiguration">
       <Output directory="../build" output="AudaciousUDPStub" />
       <Build debugmode="False" target="SharedLibrary" />
       <Execution runwithwarnings="True" consolepause="True" />
-      <CodeGeneration WarningLevel="Normal" WarningsAsErrors="False" OptimizationLevel="3" ExtraCompilerArguments="" ExtraLinkerArguments="" DefineSymbols="MONODEVELOP" ctype="CCompilationParameters" />
+      <CodeGeneration WarningLevel="All" WarningsAsErrors="False" OptimizationLevel="3" ExtraCompilerArguments="" ExtraLinkerArguments="" DefineSymbols="MONODEVELOP" ctype="CCompilationParameters" />
     </Configuration>
   </Configurations>
   <Contents>

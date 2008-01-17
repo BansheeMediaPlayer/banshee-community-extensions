@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <audacious/plugin.h>
-#include <audacious/beepctrl.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -36,39 +35,27 @@
 
 static void openvp_init(void);
 static void openvp_cleanup(void);
-static void openvp_about(void);
-static void openvp_configure(void);
-static void openvp_playback_start(void);
 static void openvp_playback_stop(void);
 static void openvp_render_freq(gint16 freq_data[2][256]);
 static void openvp_render_pcm(gint16 freq_data[2][512]);
 
 // Callback functions
-VisPlugin openvp_vtable = {
-	0,	// Handle, filled in by Audacious
-	0,	// Filename, filled in by Audacious
+static VisPlugin openvp_vtable = {
+	.description = "OpenVP UDP stub",
 
-	0,	// Session ID
-	"OpenVP UDP stub",	// description
+	.num_pcm_chs_wanted = 2,
+	.num_freq_chs_wanted = 2,
 
-	2,	// # of PCM channels for render_pcm()
-	2,	// # of freq channels wanted for render_freq()
-
-	openvp_init,		// Called when plugin is enabled
-	openvp_cleanup,	// Called when plugin is disabled
-	openvp_about,		// Show the about box
-	openvp_configure,	// Show the configure box
-	0,		// Called to disable plugin, filled in by Audacious
-	openvp_playback_start,// Called when playback starts
-	openvp_playback_stop,	// Called when playback stops
-	openvp_render_pcm,		// Render the PCM data, must return quickly
-	openvp_render_freq	// Render the freq data, must return quickly
+	.init = openvp_init,
+	.cleanup = openvp_cleanup,
+	.playback_stop = openvp_playback_stop,
+	.render_pcm = openvp_render_pcm,
+	.render_freq = openvp_render_freq
 };
 
-// Audacious entry point
-VisPlugin *get_vplugin_info() {
-	return &openvp_vtable;
-}
+static VisPlugin *openvp_list[] = { &openvp_vtable, NULL };
+
+SIMPLE_VISUAL_PLUGIN(openvp, openvp_list);
 
 static int socket_ = -1;
 static struct sockaddr_in destAddr_;
@@ -136,15 +123,6 @@ static void openvp_cleanup() {
 	}
 }
 
-static void openvp_about() {
-}
-
-static void openvp_configure() {
-}
-
-static void openvp_playback_start() {
-}
-
 static void openvp_playback_stop() {
 	openvp_zero_vis();
 }
@@ -170,11 +148,18 @@ static void openvp_send_position() {
 		float position;
 	} out;
 	
+	Playlist *playlist;
+	int pos;
+	
 	if (socket_ == -1)
 		return;
 	
+	playlist = aud_playlist_get_active();
+	
+	pos = aud_playlist_get_position(playlist);
+	
 	out.type = PositionUpdate;
-	out.position = (float) xmms_remote_get_output_time(openvp_vtable.xmms_session) / 1000;
+	out.position = (float) audacious_drct_get_time() / 1000;
 	
 	sendto(socket_, (void *) &out, sizeof(out), 0,
 		(struct sockaddr *) &destAddr_, sizeof(destAddr_));
@@ -191,16 +176,19 @@ static void openvp_send_title() {
 	int pos;
 	int outlen;
 	char *title;
+	Playlist *playlist;
 	
 	if (socket_ == -1)
 		return;
 	
-	pos = xmms_remote_get_playlist_pos(openvp_vtable.xmms_session);
+	playlist = aud_playlist_get_active();
+	
+	pos = aud_playlist_get_position(playlist);
 	
 	if (pos == -1) {
 		title = "";
 	} else {
-		title = xmms_remote_get_playlist_title(openvp_vtable.xmms_session, pos);
+		title = aud_playlist_get_songtitle(playlist, pos);
 		
 		if (title == NULL)
 			title = "";

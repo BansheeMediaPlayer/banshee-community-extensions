@@ -135,18 +135,13 @@ namespace OpenVP {
 		public void GetSpectrum(float[] left, float[] right) {
 			this.GetSpectrum(new float[][] { left, right });
 		}
-		
-		/// <summary>
-		/// Requests that the player data be updated before the call returns.
-		/// </summary>
-		/// <remarks>
-		/// This call will block if there is no updated data available.
-		/// </remarks>
-		public abstract void UpdateWait();
-		
 		/// <summary>
 		/// Requests that the player data be updated.
 		/// </summary>
+		/// <param name="timeout">
+		/// The time to wait for an update in milliseconds.  If negative, the
+		/// call should block until an update is read.
+		/// </param>
 		/// <returns>
 		/// True if the player data was updated, false otherwise.
 		/// </returns>
@@ -154,7 +149,7 @@ namespace OpenVP {
 		/// This method should return as quickly as possible, whether updated
 		/// data was fetched or not.
 		/// </remarks>
-		public abstract bool Update();
+		public abstract bool Update(int timeout);
 		
 		/// <summary>
 		/// The current position of the song in fractional seconds.
