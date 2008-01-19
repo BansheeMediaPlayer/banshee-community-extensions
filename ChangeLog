@@ -1,5 +1,11 @@
 2008-01-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	Version 0.3.1 released.
+
+	* configure.ac: Bump version to 0.3.1.
+
+2008-01-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* build/gconf-schema-rules: Display an error when gconf-schema-extractor is
 	  not found.
 
