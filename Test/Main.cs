@@ -31,16 +31,18 @@ namespace Test {
 			
 			Controller c = new Controller();
 			
-			LinearPreset preset = new LinearPreset();
+//			LinearPreset preset = new LinearPreset();
+//			
+//			ClearScreen clear = new ClearScreen();
+//			clear.ClearColor = new Color(0, 0, 0, 0.3f);
+//			
+//			preset.Effects.Add(clear);
+//			Scope s = new Scope();
+//			preset.Effects.Add(s);
+//			s.Color = new Color(0, 1, 0);
+//			s.Circular = true;
 			
-			ClearScreen clear = new ClearScreen();
-			clear.ClearColor = new Color(0, 0, 0, 0.3f);
-			
-			preset.Effects.Add(clear);
-			Scope s = new Scope();
-			preset.Effects.Add(s);
-			s.Color = new Color(0, 1, 0);
-			s.Circular = true;
+			TestTimedPreset preset = new TestTimedPreset();
 			
 			c.Renderer = preset;
 			c.Initialize();
@@ -106,6 +108,39 @@ namespace Test {
 			Gl.glEnd();
 			
 			Gl.glPopMatrix();
+		}
+	}
+	
+	public class TestTimedPreset : TimedPresetBase {
+		public TestTimedPreset() {
+			this.mClear.ClearColor = new Color(0, 0, 0, 0.075f);
+			this.mScope.Circular = true;
+		}
+		
+		private ClearScreen mClear = new ClearScreen();
+		
+		private Scope mScope = new Scope();
+		
+		[Scene(0)]
+		protected void MainScene(Controller controller) {
+			this.mClear.Render(controller);
+			this.mScope.Render(controller);
+		}
+		
+		[Event(0)]
+		protected void MakeRed(Controller controller) {
+			this.mScope.Color = new Color(1, 0, 0);
+		}
+		
+		[Event(5)]
+		protected void MakeGreen(Controller controller) {
+			this.mScope.Color = new Color(0, 1, 0);
+		}
+		
+		[Event(10)]
+		protected void MakeBlue(Controller controller) {
+			this.mScope.Color = new Color(0, 0, 1);
+			this.mScope.LineWidth = 3;
 		}
 	}
 }
