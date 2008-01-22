@@ -139,7 +139,34 @@ namespace OpenVP {
 		
 		private void Construct() {
 			this.mTimeline = new List<TimedPresetEvent>(this.GetTimedEvents());
+			this.mTimeline.Sort();
+		}
+		
+		/// <summary>
+		/// Add a single preset event to the timeline.
+		/// </summary>
+		/// <param name="ev">
+		/// A <see cref="TimedPresetEvent"/>.
+		/// </param>
+		/// <remarks>
+		/// When adding multiple events, <see cref="TimedPresetBase.AddEvents"/>
+		/// will be more efficient.
+		/// </remarks>
+		protected void AddEvent(TimedPresetEvent ev) {
+			this.mTimeline.Add(ev);
 			
+			// TODO: Make this more efficient by inserting at the right place.
+			this.mTimeline.Sort();
+		}
+		
+		/// <summary>
+		/// Add multiple events to the timeline.
+		/// </summary>
+		/// <param name="evs">
+		/// A source of events.
+		/// </param>
+		protected void AddEvents(IEnumerable<TimedPresetEvent> evs) {
+			this.mTimeline.AddRange(evs);
 			this.mTimeline.Sort();
 		}
 		
