@@ -68,6 +68,20 @@ namespace OpenVP.Core {
 			}
 		}
 		
+		private bool mFrequency = false;
+		
+		[Browsable(true), DisplayName("Frequency"), Category("Display"),
+		 Description("Whether to draw the scope using PCM (off) or frequency (on) data."),
+		 DefaultValue(false)]
+		public bool Frequency {
+			get {
+				return this.mFrequency;
+			}
+			set {
+				this.mFrequency = value;
+			}
+		}
+		
 		public Scope() {
 		}
 		
@@ -75,9 +89,15 @@ namespace OpenVP.Core {
 		}
 		
 		public override void RenderFrame(Controller controller) {
-			float[] pcm = new float[controller.PlayerData.NativePCMLength];
+			float[] data;
 			
-			controller.PlayerData.GetPCM(pcm);
+			if (this.mFrequency) {
+				data = new float[controller.PlayerData.NativeSpectrumLength];
+				controller.PlayerData.GetSpectrum(data);
+			} else {
+				data = new float[controller.PlayerData.NativePCMLength];
+				controller.PlayerData.GetPCM(data);
+			}
 			
 			this.mColor.Use();
 			
@@ -86,12 +106,12 @@ namespace OpenVP.Core {
 			if (this.mCircular) {
 				Gl.glBegin(Gl.GL_LINE_LOOP);
 				
-				double rc = 2 * Math.PI / pcm.Length;
+				double rc = 2 * Math.PI / data.Length;
 				double r = 0;
 				
-				for (int i = 0; i < pcm.Length; i++) {
-					Gl.glVertex2d(Math.Cos(r) * (pcm[i] / 2 + 0.5),
-					              Math.Sin(r) * (pcm[i] / 2 + 0.5));
+				for (int i = 0; i < data.Length; i++) {
+					Gl.glVertex2d(Math.Cos(r) * (data[i] / 2 + 0.5),
+					              Math.Sin(r) * (data[i] / 2 + 0.5));
 					r += rc;
 				}
 				
@@ -105,8 +125,8 @@ namespace OpenVP.Core {
 				
 				Gl.glBegin(Gl.GL_LINE_STRIP);
 				
-				for (int i = 0; i < pcm.Length; i++) {
-					Gl.glVertex2f((float) i / (pcm.Length - 1), pcm[i]);
+				for (int i = 0; i < data.Length; i++) {
+					Gl.glVertex2f((float) i / (data.Length - 1), data[i]);
 				}
 				
 				Gl.glEnd();
