@@ -1,5 +1,9 @@
 2008-03-21  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	Version 0.3.2 released. Works only with banshee 0.13.2 and below. 
+
+2008-03-21  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* src/AlarmPlugin.cs, src/Alarm.cs, src/AlarmConfigDialog.cs: Fix alarm time
 	  reset.
 
