@@ -23,6 +23,7 @@ namespace Banshee.Plugins.Alarm
                 while(true)
                 {
                     int delay = (int)TimeUntilAlarm().TotalMilliseconds;
+                    bool thread_interrupted = false;
                     
                     try
                     {
@@ -30,13 +31,14 @@ namespace Banshee.Plugins.Alarm
                     }
                     catch(ThreadInterruptedException)
                     {
-                          LogCore.Instance.PushDebug("Alarm Plugin: sleep interrupted", "");
+                        LogCore.Instance.PushDebug("Alarm Plugin: sleep interrupted", "");
+                        thread_interrupted = true;
                     }
                     
-                    if (plugin.alarmTimeChanged)
+                    if (thread_interrupted)
                     {
                         // The alarm time was changed, we don't play and go back to sleep
-                        plugin.alarmTimeChanged = false;
+                        thread_interrupted = false;
                     }
                     else
                     {

@@ -1,5 +1,10 @@
 2008-03-21  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* src/AlarmPlugin.cs, src/Alarm.cs, src/AlarmConfigDialog.cs: Fix alarm time
+	  reset.
+
+2008-03-21  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* src/Alarm.cs: Do not crash when the Alarm thread is interrupted.
 	* configure.ac: Update to version 0.3.2
 

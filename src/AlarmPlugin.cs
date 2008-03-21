@@ -54,7 +54,6 @@ namespace Banshee.Plugins.Alarm
         public Window alarmDialog;
         public int timervalue;
         uint sleep_timer_id;
-        public bool alarmTimeChanged = false;
 
         protected override void PluginInitialize()
         {
