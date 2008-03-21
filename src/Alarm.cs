@@ -23,7 +23,15 @@ namespace Banshee.Plugins.Alarm
                 while(true)
                 {
                     int delay = (int)TimeUntilAlarm().TotalMilliseconds;
-                    Thread.Sleep(delay);
+                    
+                    try
+                    {
+                        Thread.Sleep(delay);
+                    }
+                    catch(ThreadInterruptedException)
+                    {
+                          LogCore.Instance.PushDebug("Alarm Plugin: sleep interrupted", "");
+                    }
                     
                     if (plugin.alarmTimeChanged)
                     {
