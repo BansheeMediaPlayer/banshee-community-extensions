@@ -5,26 +5,24 @@ using GConf;
 using Mono.Unix;
 
 using Banshee.Base;
-using Banshee.Widgets;
 
-namespace Banshee.Plugins.Alarm 
+namespace Banshee.AlarmClock
 {
     public class AlarmConfigDialog : Dialog
     {
-        private AlarmPlugin plugin;
+        private AlarmClockService plugin;
         private SpinButton spbHour;
         private SpinButton spbMinute;
         private CheckButton isEnabled;
         
-        public AlarmConfigDialog(AlarmPlugin plugin) : base()
+        public AlarmConfigDialog(AlarmClockService plugin) : base()
         {
             this.plugin = plugin;
             
             Title = "Alarm";
             WidthRequest = 250;
             HeightRequest = 150;
-            IconThemeUtils.SetWindowIcon(this);
-
+            
             BuildWidget();
             ShowAll();
         }

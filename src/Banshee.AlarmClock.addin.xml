@@ -1,0 +1,15 @@
+<Addin  id="Banshee.AlarmClock"
+        name="Alarm and Sleep Timer"
+        description="Gives Banshee alarm clock type functions."
+        url="http://code.google.com/p/banshee-unofficial-plugins/"
+        version="0.4">
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.AlarmClock.AlarmClockService"/>
+  </Extension>
+  
+</Addin>

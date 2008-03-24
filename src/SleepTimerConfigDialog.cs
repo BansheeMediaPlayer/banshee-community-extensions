@@ -4,18 +4,21 @@ using Mono.Unix;
 
 using Banshee.Base;
 
-namespace Banshee.Plugins.Alarm 
+namespace Banshee.AlarmClock 
 {
     public class SleepTimerConfigDialog : Dialog
     {
-        AlarmPlugin plugin;
+        AlarmClockService plugin;
         
-        public SleepTimerConfigDialog(AlarmPlugin plugin) : base()
+        private SpinButton sleepHour;
+        private SpinButton sleepMin;        
+        
+        public SleepTimerConfigDialog(AlarmClockService plugin) : base()
         {
             this.plugin = plugin;
             
             Title = Catalog.GetString("Sleep Timer");
-            IconThemeUtils.SetWindowIcon(this);
+            //IconThemeUtils.SetWindowIcon(this);
             WidthRequest = 250;
             HeightRequest = 150;
             VBox.Spacing = 10;
@@ -27,12 +30,14 @@ namespace Banshee.Plugins.Alarm
         
         private void BuildWidget()
         {
+            sleepHour = new SpinButton(0,23,1);
+            sleepMin  = new SpinButton(0,59,1);
             
-            plugin.sleepHour.Value = (int) plugin.timervalue / 60 ;
-            plugin.sleepMin.Value = plugin.timervalue - (plugin.sleepHour.Value * 60);
+            sleepHour.Value = (int) plugin.GetSleepTimer() / 60 ;
+            sleepMin.Value = plugin.GetSleepTimer() - (sleepHour.Value * 60);
 
-            plugin.sleepHour.WidthChars = 2;
-            plugin.sleepMin.WidthChars  = 2;
+            sleepHour.WidthChars = 2;
+            sleepMin.WidthChars  = 2;
 
             Label prefix    = new Label(Catalog.GetString("Sleep Timer :"));
             Label separator = new Label(":");
@@ -45,9 +50,9 @@ namespace Banshee.Plugins.Alarm
             HBox topbox     = new HBox(false, 10);
 
             topbox.PackStart(prefix);
-            topbox.PackStart(plugin.sleepHour);
+            topbox.PackStart(sleepHour);
             topbox.PackStart(separator);
-            topbox.PackStart(plugin.sleepMin);
+            topbox.PackStart(sleepMin);
 
             this.AddActionWidget(OK, 0);
 
@@ -56,13 +61,14 @@ namespace Banshee.Plugins.Alarm
         }
         
         private void OnSleepTimerDialogDestroy(object o, DeleteEventArgs a){
-            plugin.SetSleepTimer();
+            //plugin.SetSleepTimer();
         }
 
         public void OnSleepTimerOK(object o, EventArgs a)
         {
+            int timervalue = (int)sleepHour.Value * 60 + (int)sleepMin.Value;
+            plugin.SetSleepTimer(timervalue);
             this.Destroy();
-            plugin.SetSleepTimer();
         }
     }
 }

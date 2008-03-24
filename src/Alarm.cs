@@ -2,16 +2,18 @@ using System;
 using System.Threading;
 using System.Diagnostics;
 
+using Hyena;
 using Banshee.Base;
 using Banshee.MediaEngine;
+using Banshee.ServiceStack;
 
-namespace Banshee.Plugins.Alarm
+namespace Banshee.AlarmClock
 {
     public class AlarmThread
     {
-        private AlarmPlugin plugin;
+        private AlarmClockService plugin;
 
-        public AlarmThread(AlarmPlugin plugin)
+        public AlarmThread(AlarmClockService plugin)
         {
             this.plugin = plugin;
         }
@@ -31,7 +33,7 @@ namespace Banshee.Plugins.Alarm
                     }
                     catch(ThreadInterruptedException)
                     {
-                        LogCore.Instance.PushDebug("Alarm Plugin: sleep interrupted", "");
+                        Log.Debug("Alarm Plugin: sleep interrupted", "");
                         thread_interrupted = true;
                     }
                     
@@ -48,25 +50,26 @@ namespace Banshee.Plugins.Alarm
             }
             catch (ThreadAbortException)
             {
-                LogCore.Instance.PushDebug("Alarm Plugin: Alarm main loop aborted", "");
+                Log.Debug("Alarm Plugin: Alarm main loop aborted", "");
             }
         }
 
         private void StartPlaying()
         {
-            if (PlayerEngineCore.CurrentState == PlayerEngineState.Playing)
+            if (ServiceManager.PlayerEngine.CurrentState == PlayerEngineState.Playing)
             {
                 return;
             }
 
-            LogCore.Instance.PushDebug("Alarm Plugin: Start playing ", "");
+            Log.Debug("Alarm Plugin: Start playing ", "");
 
             if (this.plugin.FadeDuration > 0) {
-                PlayerEngineCore.Volume = plugin.FadeStartVolume;
+                ServiceManager.PlayerEngine.Volume = plugin.FadeStartVolume;
                 new VolumeFade(plugin.FadeStartVolume, plugin.FadeEndVolume, plugin.FadeDuration);
             }
-            // PlayerEngineCore.Play() only works if we're paused in a track
-            Globals.ActionManager["PlayPauseAction"].Activate();
+            // PlayerEngineCore.Play() only worked if we were paused in a track
+            // TODO : Check if it now works OK.
+            ServiceManager.PlayerEngine.Play();
             
             if(plugin.AlarmCommand != null && plugin.AlarmCommand.Trim() != "")
                 Process.Start(plugin.AlarmCommand);
@@ -83,7 +86,7 @@ namespace Banshee.Plugins.Alarm
                 alarmTime = alarmTime.AddDays(1);
                 delay = alarmTime - now;
             }
-            LogCore.Instance.PushDebug("Time until alarm is " + delay.ToString(), "");
+            Log.Debug("Time until alarm is " + delay.ToString(), "");
             return delay;
         }
     }

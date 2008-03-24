@@ -4,20 +4,19 @@ using GConf;
 using Mono.Unix;
 
 using Banshee.Base;
-using Banshee.Widgets;
 
-namespace Banshee.Plugins.Alarm 
+namespace Banshee.AlarmClock 
 {
     public class ConfigurationWidget : VBox
     {
-        private AlarmPlugin plugin;
+        private AlarmClockService plugin;
         private Entry command_entry;
         private VScale fade_start;
         private VScale fade_end;
         private SpinButton fade_duration;
         int volumeSliderHeight = 120;
 
-        public ConfigurationWidget(AlarmPlugin plugin) : base()
+        public ConfigurationWidget(AlarmClockService plugin) : base()
         {
             this.plugin = plugin;
             BuildWidget();

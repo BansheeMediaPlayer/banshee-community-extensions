@@ -1,10 +1,12 @@
 using System;
 using System.Threading;
 
+using Hyena;
 using Banshee.Base;
 using Banshee.MediaEngine;
+using Banshee.ServiceStack;
 
-namespace Banshee.Plugins.Alarm
+namespace Banshee.AlarmClock
 {
     public class VolumeFade
     {
@@ -24,7 +26,7 @@ namespace Banshee.Plugins.Alarm
         
         private bool VolumeFadeTick(){
             if(curVolume == endVolume){
-                LogCore.Instance.PushDebug("Volume Fade: Done.","");
+                Log.Debug("Volume Fade: Done.","");
                 return false;
             }
             
@@ -33,10 +35,10 @@ namespace Banshee.Plugins.Alarm
             else
                 curVolume--;
             
-            PlayerEngineCore.Volume = curVolume;
-            LogCore.Instance.PushDebug("Volume Fade: Fading a notch...",
+            ServiceManager.PlayerEngine.Volume = curVolume;
+            Log.Debug("Volume Fade: Fading a notch...",
                     String.Format("Vol={0}, curVol={1}, End={2}, inc={3}, TickTime={4}ms",
-                        PlayerEngineCore.Volume,
+                        ServiceManager.PlayerEngine.Volume,
                         curVolume,
                         endVolume,
                         increment,

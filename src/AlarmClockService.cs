@@ -1,72 +1,68 @@
+//
+// AlarmClockService.cs
+//
+// Authors:
+//   Bertrand Lorentz <bertrand.lorentz@gmail.com>
+//   Patrick van Staveren  <trick@vanstaveren.us>
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+
 using System;
 using System.Threading;
-using Mono.Unix;
 using Gtk;
- 
+using Mono.Unix;
+
+using Hyena;
 using Banshee.Base;
 using Banshee.MediaEngine;
+using Banshee.ServiceStack;
+using Banshee.Gui;
 
-public static class PluginModuleEntry
+namespace Banshee.AlarmClock
 {
-    public static Type [] GetTypes()
+    public class AlarmClockService : IExtensionService, IDisposable
     {
-        return new Type [] {
-            typeof(Banshee.Plugins.Alarm.AlarmPlugin)
-        };
-    }
-}
-
-namespace Banshee.Plugins.Alarm
-{
-    public class AlarmPlugin : Banshee.Plugins.Plugin
-    {
-        private ActionGroup actions;
-        private uint ui_manager_id;
-        
-        protected override string ConfigurationName { get { return "Alarm"; } }
-        public override string DisplayName { get { return Catalog.GetString("Alarm & Sleep Timer"); } }
-
-        public override string Description {
-            get {
-                return Catalog.GetString(
-                    "Gives Banshee alarm clock type functions.  Provides an alarm " +
-                    "which can start playback at a predefined time, " +
-                    "and allows you to set a sleep timer to pause playback after a set delay."
-                );
-            }
-        }
-
-        public override string [] Authors {
-            get {
-                return new string [] {
-                    "Bertrand Lorentz\n" +
-                    "Patrick van Staveren"
-                };
-            }
-        }
-
-        // --------------------------------------------------------------- //
-
         public Thread alarmThread;
-        private static AlarmPlugin thePlugin;
-        public SpinButton sleepHour = new SpinButton(0,23,1);
-        public SpinButton sleepMin  = new SpinButton(0,59,1);
-        public Window alarmDialog;
-        public int timervalue;
+        private static AlarmClockService theService;
+        private ActionGroup actions;
+        private InterfaceActionService action_service;
+        private uint ui_manager_id;
         uint sleep_timer_id;
-
-        protected override void PluginInitialize()
+        private int sleep_timer_value;
+        
+        public AlarmClockService()
         {
-            LogCore.Instance.PushDebug("Initializing Alarm Plugin", "");
+        }
+        
+        void IExtensionService.Initialize ()
+        {
+            Log.Debug("Initializing Alarm Plugin", "");
 
-            AlarmPlugin.thePlugin = this;
-            ThreadStart alarmThreadStart = new ThreadStart(AlarmPlugin.DoWait);
+            AlarmClockService.theService = this;            
+            ThreadStart alarmThreadStart = new ThreadStart(AlarmClockService.DoWait);
             alarmThread = new Thread(alarmThreadStart);
             alarmThread.Start();
-        }
-
-        protected override void InterfaceInitialize()
-        {
+            
+            action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
+            
             actions = new ActionGroup("Alarm");
             
             actions.Add(new ActionEntry [] {
@@ -79,33 +75,28 @@ namespace Banshee.Plugins.Alarm
                     Catalog.GetString("Set the alarm time"), OnSetAlarm)
             });
             
-            Globals.ActionManager.UI.InsertActionGroup(actions, 3);
-            ui_manager_id = Globals.ActionManager.UI.AddUiFromResource("AlarmMenu.xml");
+            action_service.UIManager.InsertActionGroup(actions, 3);
+            ui_manager_id = action_service.UIManager.AddUiFromResource("AlarmMenu.xml");
         }
-
-        protected override void PluginDispose()
+        
+        public void Dispose ()
         {
-            LogCore.Instance.PushDebug("Disposing Alarm Plugin", "");
-            Globals.ActionManager.UI.RemoveUi(ui_manager_id);
-            Globals.ActionManager.UI.RemoveActionGroup(actions);
+            Log.Debug("Disposing Alarm Plugin", "");
+            action_service.UIManager.RemoveUi(ui_manager_id);
+            action_service.UIManager.RemoveActionGroup(actions);
             actions = null;
             
-            if(sleep_timer_id > 0){
+            if(sleep_timer_id > 0) {
                 GLib.Source.Remove(sleep_timer_id);
-                LogCore.Instance.PushDebug("Disabling old sleep timer", "");
+                Log.Debug("Disabling old sleep timer", "");
             }
             alarmThread.Abort();
         }
-
-        public override Gtk.Widget GetConfigurationWidget()
-        {
-            return new ConfigurationWidget(this);
-        }
-        
+            
         public static void DoWait()
         {
-            LogCore.Instance.PushDebug("Alarm thread started", "");
-            AlarmThread theAlarm = new AlarmThread(AlarmPlugin.thePlugin);
+            Log.Debug("Alarm thread started", "");
+            AlarmThread theAlarm = new AlarmThread(AlarmClockService.theService);
             theAlarm.MainLoop();
         }
 
@@ -118,35 +109,40 @@ namespace Banshee.Plugins.Alarm
         {
             if(sleep_timer_id > 0){
                 GLib.Source.Remove(sleep_timer_id);
-                LogCore.Instance.PushDebug("Disabling old sleep timer", "");
+                Log.Debug("Disabling old sleep timer", "");
             }
             new SleepTimerConfigDialog(this);
         }
-           
-        public void SetSleepTimer()
+        
+        public int GetSleepTimer()
         {
-            timervalue = sleepHour.ValueAsInt * 60 + sleepMin.ValueAsInt;
+            return this.sleep_timer_value;
+        }
+        
+        public void SetSleepTimer(int timervalue)
+        {
             if(timervalue != 0) {
-                LogCore.Instance.PushDebug(String.Format("Sleep Timer set to {0}", timervalue), "");
+                Log.Debug(String.Format("Sleep Timer set to {0}", timervalue), "");
                 sleep_timer_id = GLib.Timeout.Add((uint) timervalue * 60 * 1000, onSleepTimerActivate);
             }
+            this.sleep_timer_value = timervalue;
         }
 
         public bool onSleepTimerActivate()
         {
-            if(PlayerEngineCore.CurrentState == PlayerEngineState.Playing){
-                LogCore.Instance.PushDebug("Sleep Timer has gone off.  Fading out till end of song.", "");
-                new VolumeFade(PlayerEngineCore.Volume, 0,
-                        (ushort) (PlayerEngineCore.Length - PlayerEngineCore.Position));
-                GLib.Timeout.Add((PlayerEngineCore.Length - PlayerEngineCore.Position) * 1000, delegate{
-                    LogCore.Instance.PushDebug("Sleep Timer: Pausing.", "");
-                    PlayerEngineCore.Pause();
+            if(ServiceManager.PlayerEngine.CurrentState == PlayerEngineState.Playing){
+                Log.Debug("Sleep Timer has gone off.  Fading out till end of song.", "");
+                new VolumeFade(ServiceManager.PlayerEngine.Volume, 0,
+                        (ushort) (ServiceManager.PlayerEngine.Length - ServiceManager.PlayerEngine.Position));
+                GLib.Timeout.Add((ServiceManager.PlayerEngine.Length - ServiceManager.PlayerEngine.Position) * 1000, delegate{
+                    Log.Debug("Sleep Timer: Pausing.", "");
+                    ServiceManager.PlayerEngine.Pause();
                     return false;
                     }
                 );
                 
             }else{
-                LogCore.Instance.PushDebug("Sleep Timer has gone off, but we're not playing.  Refusing to pause.", "");
+                Log.Debug("Sleep Timer has gone off, but we're not playing.  Refusing to pause.", "");
             }
             return(false);
         }
@@ -257,5 +253,9 @@ namespace Banshee.Plugins.Alarm
             }
         }
         #endregion
+            
+        string IService.ServiceName {
+            get { return "AlarmClockService"; }
+        }
     }
 }

@@ -1,3 +1,12 @@
+2008-03-24  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* src/ConfigurationWidget.cs, src/AlarmPlugin.cs, src/Alarm.cs,
+	  src/SleepTimerConfigDialog.cs, src/GConfSchemas.cs,
+	  src/AlarmConfigDialog.cs, src/Makefile.am,
+	  src/Banshee.AlarmClock.addin.xml, src/VolumeFade.cs,
+	  src/AlarmClockService.cs, build/gconf-schema-rules, configure.ac,
+	  alarm.mdp: Port to Mono.Addins and the new banshee codebase.
+
 2008-03-21  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	Version 0.3.2 released. Works only with banshee 0.13.2 and below. 

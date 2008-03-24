@@ -4,7 +4,7 @@ using System;
 using Banshee.Base;
 using Banshee.Configuration;
 
-namespace Banshee.Plugins.Alarm
+namespace Banshee.AlarmClock
 {
     public static class GConfSchemas
     {
