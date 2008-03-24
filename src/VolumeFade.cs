@@ -26,7 +26,7 @@ namespace Banshee.AlarmClock
         
         private bool VolumeFadeTick(){
             if(curVolume == endVolume){
-                Log.Debug("Volume Fade: Done.","");
+                Log.Debug("Volume Fade: Done.");
                 return false;
             }
             

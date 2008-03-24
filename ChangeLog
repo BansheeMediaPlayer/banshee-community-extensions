@@ -1,5 +1,14 @@
 2008-03-24  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* src/Makefile.am, build/gconf-schema-rules, build/build.mk, autogen.sh,
+	  alarm.mdp: Improve build system.
+	* src/Alarm.cs, src/VolumeFade.cs: Clean up logs.
+	* src/AlarmClockService.cs, src/AlarmMenu.xml, src/ConfigurationDialog.cs,
+	  src/ConfigurationWidget.cs: Convert the configuration stuff to a dialog,
+	  and add it to the menu.
+
+2008-03-24  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* src/ConfigurationWidget.cs, src/AlarmPlugin.cs, src/Alarm.cs,
 	  src/SleepTimerConfigDialog.cs, src/GConfSchemas.cs,
 	  src/AlarmConfigDialog.cs, src/Makefile.am,

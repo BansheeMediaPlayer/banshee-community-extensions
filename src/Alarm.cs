@@ -33,7 +33,7 @@ namespace Banshee.AlarmClock
                     }
                     catch(ThreadInterruptedException)
                     {
-                        Log.Debug("Alarm Plugin: sleep interrupted", "");
+                        Log.Debug("Alarm Plugin: sleep interrupted");
                         thread_interrupted = true;
                     }
                     
@@ -50,7 +50,7 @@ namespace Banshee.AlarmClock
             }
             catch (ThreadAbortException)
             {
-                Log.Debug("Alarm Plugin: Alarm main loop aborted", "");
+                Log.Debug("Alarm Plugin: Alarm main loop aborted");
             }
         }
 
@@ -61,7 +61,7 @@ namespace Banshee.AlarmClock
                 return;
             }
 
-            Log.Debug("Alarm Plugin: Start playing ", "");
+            Log.Debug("Alarm Plugin: Start playing ");
 
             if (this.plugin.FadeDuration > 0) {
                 ServiceManager.PlayerEngine.Volume = plugin.FadeStartVolume;
@@ -86,7 +86,7 @@ namespace Banshee.AlarmClock
                 alarmTime = alarmTime.AddDays(1);
                 delay = alarmTime - now;
             }
-            Log.Debug("Time until alarm is " + delay.ToString(), "");
+            Log.Debug("Time until alarm is " + delay.ToString());
             return delay;
         }
     }

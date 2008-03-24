@@ -4,7 +4,7 @@ schema_DATA = $(schema_in_files:.schemas.in=.schemas)
 
 GCONF_SCHEMA_EXTRACTOR = $(banshee_libdir)/banshee-1/gconf-schema-extractor.exe
 
-$(srcdir)/$(ASSEMBLY_GCONF_SCHEMA): $(ASSEMBLY)
+$(srcdir)/$(ASSEMBLY_GCONF_SCHEMA): $(ASSEMBLY_FILE)
 	if test -w $@ -o \( ! -e $@ -a -w $(srcdir) \); then \
 		$(MONO) $(GCONF_SCHEMA_EXTRACTOR) $< $(srcdir)/$@; \
 	fi

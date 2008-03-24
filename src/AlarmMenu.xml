@@ -1,8 +1,12 @@
 <ui>
     <menubar name="MainMenu">
         <menu name="ToolsMenu" action="ToolsMenuAction">
-            <menuitem name="SetSleepTimer" action="SetSleepTimerAction" />
-            <menuitem name="SetAlarm" action="SetAlarmAction" />
+            <menu name="AlarmClock" action="AlarmClockAction">
+                <menuitem name="SetSleepTimer" action="SetSleepTimerAction" />
+                <menuitem name="SetAlarm" action="SetAlarmAction" />
+                <separator />
+                <menuitem name="AlarmClockConfigure" action="AlarmClockConfigureAction" />
+            </menu>
         </menu>
     </menubar>
 </ui>

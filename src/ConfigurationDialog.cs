@@ -7,7 +7,7 @@ using Banshee.Base;
 
 namespace Banshee.AlarmClock 
 {
-    public class ConfigurationWidget : VBox
+    public class ConfigurationDialog : Gtk.Dialog
     {
         private AlarmClockService plugin;
         private Entry command_entry;
@@ -16,14 +16,14 @@ namespace Banshee.AlarmClock
         private SpinButton fade_duration;
         int volumeSliderHeight = 120;
 
-        public ConfigurationWidget(AlarmClockService plugin) : base()
+        public ConfigurationDialog(AlarmClockService plugin) : base()
         {
             this.plugin = plugin;
-            BuildWidget();
-        }
 
-        private void BuildWidget()
-        {
+            Title = Catalog.GetString ("Alarm Clock configuration");
+            HasSeparator = false;
+            BorderWidth = 5;
+            
             fade_start = new VScale(0, 100, 1);
             fade_start.Inverted = true;
             fade_start.HeightRequest = volumeSliderHeight;
@@ -63,6 +63,7 @@ namespace Banshee.AlarmClock
 
             Frame alarm_fade_frame = new Frame(Catalog.GetString("Fade-In Adjustment"));
             alarm_fade_frame.Add(fade_big_box);
+            alarm_fade_frame.ShowAll();
 
             HBox command_box = new HBox();
             command_box.PackStart(new Label(Catalog.GetString("Command:")), false, false, 3);
@@ -71,31 +72,13 @@ namespace Banshee.AlarmClock
             
             Frame alarm_misc_frame = new Frame(Catalog.GetString("Command To Execute:"));
             alarm_misc_frame.Add(command_box);
+            alarm_misc_frame.ShowAll();
 
-            VBox alarm_configs = new VBox();
-            alarm_configs.PackStart(alarm_fade_frame, false, false, 3);
-            alarm_configs.PackStart(alarm_misc_frame, false, false, 3);
+            VBox.PackStart(alarm_fade_frame, false, false, 3);
+            VBox.PackStart(alarm_misc_frame, false, false, 3);
             
-            VBox alarm_frame = new VBox();
-            Label alarm_frame_label = new Label(Catalog.GetString("<big><b>Alarm Configuration</b></big>"));
-            alarm_frame_label.UseMarkup = true;
-            alarm_frame_label.Xalign = 0.0f;
-            alarm_frame.PackStart(alarm_frame_label, false, false, 3);
-            alarm_frame.PackStart(alarm_configs);
+            AddButton (Stock.Close, ResponseType.Close);
             
-            /*VBox sleep_frame = new VBox();
-            Label sleep_frame_label = new Label("<big><b>Sleep Timer Configuration</b></big>");
-            sleep_frame_label.UseMarkup = true;
-            sleep_frame_label.Xalign = 0.0f;
-            
-            sleep_frame.PackStart(sleep_frame_label, false, false, 3);
-            Label no_options_avail = new Label ("No configuration options available.");
-            no_options_avail.Xalign = 0.0f;
-            sleep_frame.PackStart(no_options_avail, true, true, 3);*/
-            
-            PackStart(alarm_frame, false, false, 3);
-            //PackStart(sleep_frame, false, false, 3);
-
             // initialize values
             command_entry.Text = plugin.AlarmCommand;
             fade_start.Value = plugin.FadeStartVolume;
@@ -107,8 +90,6 @@ namespace Banshee.AlarmClock
             fade_start.ValueChanged += new EventHandler(FadeStartVolume_Changed);
             fade_end.ValueChanged += new EventHandler(FadeEndVolume_Changed);
             fade_duration.ValueChanged += new EventHandler(FadeDuration_Changed);
-
-            ShowAll();
         }
 
         private void AlarmCommand_Changed(object source, System.EventArgs args) {

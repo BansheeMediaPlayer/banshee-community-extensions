@@ -28,7 +28,6 @@
     <File name="TODO" subtype="Code" buildaction="Nothing" />
     <File name="src/VolumeFade.cs" subtype="Code" buildaction="Compile" />
     <File name="src/SleepTimerConfigDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="src/ConfigurationWidget.cs" subtype="Code" buildaction="Compile" />
     <File name="src/AlarmConfigDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="src/AssemblyInfo.cs.in" subtype="Code" buildaction="Compile" />
     <File name="build" subtype="Directory" buildaction="Compile" />
@@ -45,6 +44,8 @@
     <File name="build/m4/shamrock/programs.m4" subtype="Code" buildaction="Nothing" />
     <File name="src/AlarmClockService.cs" subtype="Code" buildaction="Compile" />
     <File name="src/Banshee.AlarmClock.addin.xml" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="src/ConfigurationDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="build/build.mk" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
