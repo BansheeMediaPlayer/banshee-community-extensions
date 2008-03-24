@@ -27,5 +27,5 @@ include $(top_srcdir)/build/gconf-schema-rules
 EXTRA_DIST = $(SOURCES_BUILD) $(RESOURCES_EXPANDED) $(ASSEMBLY_GCONF_SCHEMA)
 
 CLEANFILES = $(OUTPUT_FILES) *.dll *.mdb *.exe
-DISTCLEANFILES = *.pidb
+DISTCLEANFILES = *.pidb $(schema_DATA)
 MAINTAINERCLEANFILES = Makefile.in

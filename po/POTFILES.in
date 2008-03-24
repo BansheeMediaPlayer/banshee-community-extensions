@@ -1,5 +1,5 @@
 src/banshee-plugin-alarm.schemas.in
+src/AlarmClockService.cs
 src/AlarmConfigDialog.cs
-src/AlarmPlugin.cs
-src/ConfigurationWidget.cs
+src/ConfigurationDialog.cs
 src/SleepTimerConfigDialog.cs

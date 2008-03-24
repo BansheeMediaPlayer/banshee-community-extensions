@@ -1,5 +1,9 @@
 2008-03-24  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* build/build.mk: Fix make distcheck.
+
+2008-03-24  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* src/Alarm.cs: Use TogglePlaying() to start playing.
 
 2008-03-24  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
