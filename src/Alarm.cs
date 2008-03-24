@@ -67,9 +67,9 @@ namespace Banshee.AlarmClock
                 ServiceManager.PlayerEngine.Volume = plugin.FadeStartVolume;
                 new VolumeFade(plugin.FadeStartVolume, plugin.FadeEndVolume, plugin.FadeDuration);
             }
-            // PlayerEngineCore.Play() only worked if we were paused in a track
-            // TODO : Check if it now works OK.
-            ServiceManager.PlayerEngine.Play();
+            // PlayerEngine.Play() only works if we are paused in a track
+            // PlayerEngine.TogglePlaying() starts the first track if we're not paused in a track
+            ServiceManager.PlayerEngine.TogglePlaying();
             
             if(plugin.AlarmCommand != null && plugin.AlarmCommand.Trim() != "")
                 Process.Start(plugin.AlarmCommand);
