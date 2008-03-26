@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using Gtk;
-using GConf;
 using Mono.Unix;
 
 using Banshee.Base;

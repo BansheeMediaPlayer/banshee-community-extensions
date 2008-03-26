@@ -1,3 +1,10 @@
+2008-03-26  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* src/AlarmConfigDialog.cs, src/ConfigurationDialog.cs: Remove useless GConf
+	  reference.
+	* configure.ac: Use the new pkg-config files from banshee 0.98.2. Comment
+	  out the PLUGINDIR stuff for now.
+
 2008-03-24  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* build/build.mk: Fix make distcheck.
