@@ -115,9 +115,6 @@ namespace OpenVP.Core {
 			}
 		}
 		
-		[NonSerialized]
-		private TextureHandle mTexture = null;
-		
 		private bool mWrap = true;
 		
 		[Browsable(true), DisplayName("Wrap"), Category("Miscellaneous"),
@@ -205,7 +202,6 @@ namespace OpenVP.Core {
 			this.mFrameScript.MadeDirty += this.OnOtherMadeDirty;
 			this.mVertexScript.MadeDirty += this.OnOtherMadeDirty;
 			
-			this.mTexture = new TextureHandle();
 			this.CreatePointDataArray();
 		}
 		
@@ -341,7 +337,53 @@ namespace OpenVP.Core {
 		}
 		
 		public override void Dispose() {
-			this.mTexture.Dispose();
+			if (mHasTextureRef) {
+				DestroyTextureHandle();
+				mHasTextureRef = false;
+				
+				GC.SuppressFinalize(this);
+			}
+		}
+		
+		~DynamicMovement() {
+			this.Dispose();
+		}
+		
+		[NonSerialized]
+		private bool mHasTextureRef = false;
+		
+		private TextureHandle mTexture {
+			get {
+				if (!this.mHasTextureRef) {
+					GC.ReRegisterForFinalize(this);
+					
+					InitTextureHandle();
+					this.mHasTextureRef = true;
+				}
+				
+				return mTextureHandle;
+			}
+		}
+		
+		private static TextureHandle mTextureHandle = null;
+		
+		private static int mTextureRefs = 0;
+		
+		private static void InitTextureHandle() {
+			if (mTextureHandle == null)
+				mTextureHandle = new TextureHandle();
+			
+			mTextureRefs++;
+		}
+		
+		private static void DestroyTextureHandle() {
+			if (mTextureRefs <= 0)
+				return;
+			
+			if (--mTextureRefs == 0) {
+				mTextureHandle.Dispose();
+				mTextureHandle = null;
+			}
 		}
 		
 		private struct PointData {
