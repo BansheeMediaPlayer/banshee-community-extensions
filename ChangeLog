@@ -1,3 +1,10 @@
+2008-03-29  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* README: Update to match the current UI.
+	* TODO: Remove deprecated item.
+	* COPYING: Add copyright notice.
+	* autogen.sh: Remove useless libtool stuff.
+
 2008-03-26  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* src/AlarmConfigDialog.cs, src/ConfigurationDialog.cs: Remove useless GConf

@@ -6,7 +6,6 @@ Global:
 
 Sleep Timer:
     * Evaluate sleep timer fade out - is this what we want?  It fades out till the end of track, and then pauses.
-    * Split some stuff into other files - make Plugin.cs shorter
 
 Alarm:
     * Have different alarm times for each day of the week. Who wants to wake up early on Sunday mornings ?
