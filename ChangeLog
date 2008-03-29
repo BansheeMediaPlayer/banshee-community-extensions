@@ -1,8 +1,6 @@
 2008-03-29  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
-	* AUTHORS: Update my e-mail address.
-	* README: Update description.
-	* autogen.sh: Change package name.
+	Version 0.4.0 released. Works only with banshee 0.98.2 and above. 
 
 2008-03-29  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
