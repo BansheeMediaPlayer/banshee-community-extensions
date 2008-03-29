@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKG_NAME="banshee-alarm-plugin"
+PKG_NAME="banshee-alarm-extension"
 
 function error () {
 	echo "Error: $1" 1>&2

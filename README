@@ -1,9 +1,9 @@
-Alarm & Sleep Timer plugin
---------------------------
+Alarm & Sleep Timer extension
+-----------------------------
 
 ABOUT:
 =================
-This is a relatively simple plugin, which allows the user to set an alarm time, and a sleep time.
+This is a relatively simple extension to the Banshee media player, which allows the user to set an alarm time, and a sleep time.
 
 FEATURES:
 =================
