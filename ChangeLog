@@ -1,5 +1,10 @@
 2008-03-29  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* Makefile.am, build/build.mk: Clean-up.
+	* src/Makefile.am: Change assembly name to Banshee.AlarmClock.
+
+2008-03-29  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* README: Update to match the current UI.
 	* TODO: Remove deprecated item.
 	* COPYING: Add copyright notice.

@@ -7,9 +7,6 @@ RESOURCES_BUILD = $(foreach resource, $(RESOURCES_EXPANDED), \
 
 ASSEMBLY_FILE = $(ASSEMBLY).dll
 
-plugindir = $(PLUGINDIR)
-plugin_SCRIPTS = $(ASSEMBLY) $(ASSEMBLY).mdb
-
 OUTPUT_FILES = \
 	$(ASSEMBLY_FILE) \
 	$(ASSEMBLY_FILE).mdb

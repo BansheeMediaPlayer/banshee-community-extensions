@@ -1,21 +1,23 @@
-SUBDIRS =   \
-    build   \
-    po      \
+SUBDIRS = \
+    build \
+    po \
     src
 
-EXTRA_DIST =            \
+EXTRA_DIST = \
 	intltool-extract.in \
-	intltool-merge.in   \
-	intltool-update.in
+	intltool-merge.in \
+	intltool-update.in \
+	mkinstalldirs \
+	AUTHORS
 
 CLEANFILES = \
-	intltool-extract    \
-	intltool-update     \
+	intltool-extract \
+	intltool-update \
 	intltool-merge
 
-DISTCLEANFILES =        \
-	*.bak         \
-	*~            \
+DISTCLEANFILES = \
+	*.bak \
+	*~ \
 	*.pidb
 
 MAINTAINERCLEANFILES = \

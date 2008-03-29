@@ -1,4 +1,4 @@
-ASSEMBLY = Alarm
+ASSEMBLY = Banshee.AlarmClock
 ASSEMBLY_GCONF_SCHEMA = banshee-plugin-alarm.schemas.in
 
 SOURCES = \
