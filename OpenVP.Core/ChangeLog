@@ -1,5 +1,9 @@
 2008-04-01  Chris Howie <me@chrishowie.com> 
 
+	* MovementBase.cs: Fix null-dereference bug.
+
+2008-04-01  Chris Howie <me@chrishowie.com> 
+
 	* MovementBase.cs: Make OnRenderFrame and OnBeat virtual with no
 	  implementation instead of abstract.
 

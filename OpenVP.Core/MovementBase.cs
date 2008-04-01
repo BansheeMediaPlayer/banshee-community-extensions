@@ -234,7 +234,7 @@ namespace OpenVP.Core {
 			}
 		}
 		
-		private static SharedTextureHandle mTextureHandle = null;
+		private static SharedTextureHandle mTextureHandle = new SharedTextureHandle();
 		
 		private struct PointData {
 			public float XOffset;
