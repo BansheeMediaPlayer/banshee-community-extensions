@@ -19,10 +19,14 @@
 //
 
 using System;
+using System.Threading;
+
 using Tao.OpenGl;
 
 namespace OpenVP.Core {
 	public class TextureHandle : IDisposable {
+		private Thread mAllocatedBy = null;
+		
 		private int mTextureId = -1;
 		
 		public int TextureId {
@@ -68,6 +72,8 @@ namespace OpenVP.Core {
 			this.mTextureId = tex[0];
 			this.mHaveTexture = true;
 			
+			this.mAllocatedBy = Thread.CurrentThread;
+			
 			int size = 1;
 			
 			while (size < w)
@@ -86,11 +92,19 @@ namespace OpenVP.Core {
 			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR);
 		}
 		
-		public void Dispose() {
+		public virtual void Dispose() {
 			if (this.mHaveTexture) {
-				Gl.glDeleteTextures(1, new int[] { this.mTextureId });
+				if (this.mAllocatedBy != Thread.CurrentThread) {
+					throw new InvalidOperationException("Texture handle must be disposed of on the same thread it was allocated on.");
+				}
+				
 				this.mHaveTexture = false;
+				Gl.glDeleteTextures(1, new int[] { this.mTextureId });
 			}
+		}
+		
+		~TextureHandle() {
+			this.Dispose();
 		}
 	}
 }

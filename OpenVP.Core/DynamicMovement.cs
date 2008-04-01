@@ -338,10 +338,8 @@ namespace OpenVP.Core {
 		
 		public override void Dispose() {
 			if (mHasTextureRef) {
-				DestroyTextureHandle();
 				mHasTextureRef = false;
-				
-				GC.SuppressFinalize(this);
+				mTextureHandle.RemoveReference();
 			}
 		}
 		
@@ -355,36 +353,16 @@ namespace OpenVP.Core {
 		private TextureHandle mTexture {
 			get {
 				if (!this.mHasTextureRef) {
-					GC.ReRegisterForFinalize(this);
-					
-					InitTextureHandle();
 					this.mHasTextureRef = true;
+					
+					mTextureHandle.AddReference();
 				}
 				
 				return mTextureHandle;
 			}
 		}
 		
-		private static TextureHandle mTextureHandle = null;
-		
-		private static int mTextureRefs = 0;
-		
-		private static void InitTextureHandle() {
-			if (mTextureHandle == null)
-				mTextureHandle = new TextureHandle();
-			
-			mTextureRefs++;
-		}
-		
-		private static void DestroyTextureHandle() {
-			if (mTextureRefs <= 0)
-				return;
-			
-			if (--mTextureRefs == 0) {
-				mTextureHandle.Dispose();
-				mTextureHandle = null;
-			}
-		}
+		private static SharedTextureHandle mTextureHandle = new SharedTextureHandle();
 		
 		private struct PointData {
 			public float XOffset;

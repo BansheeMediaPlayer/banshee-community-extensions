@@ -1,3 +1,15 @@
+2008-04-01  Chris Howie <me@chrishowie.com> 
+
+	* TextureHandle.cs: Prevent deletion of the texture when requested on a
+	  thread other than the one the texture was allocated on.  Add
+	  destructor.
+	* DynamicMovement.cs: Use SharedTextureHandle for the movement texture.
+	* SharedTextureHandle.cs: Add class encapsulating a texture that will
+	  be used by multiple consumers.
+	* MovementBase.cs: Add abstract class that implements movement.  Will
+	  become the base class for DynamicMovement.
+	* OpenVP.Core.mdp: Add MovementBase and SharedTextureHandle classes.
+
 2008-03-27  Chris Howie <me@chrishowie.com> 
 
 	* DynamicMovement.cs: The movement texture is now shared across all
