@@ -1,5 +1,10 @@
 2008-04-01  Chris Howie <me@chrishowie.com> 
 
+	* MovementBase.cs: Make OnRenderFrame and OnBeat virtual with no
+	  implementation instead of abstract.
+
+2008-04-01  Chris Howie <me@chrishowie.com> 
+
 	* TextureHandle.cs: Prevent deletion of the texture when requested on a
 	  thread other than the one the texture was allocated on.  Add
 	  destructor.

@@ -28,9 +28,11 @@ using Tao.OpenGl;
 namespace OpenVP.Core {
 	[Browsable(false)]
 	public abstract class MovementBase : Effect {
-		protected abstract void OnRenderFrame();
+		protected virtual void OnRenderFrame() {
+		}
 		
-		protected abstract void OnBeat();
+		protected virtual void OnBeat() {
+		}
 		
 		protected abstract void PlotVertex(MovementData data);
 		
