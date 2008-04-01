@@ -28,14 +28,6 @@ using Tao.OpenGl;
 namespace OpenVP.Core {
 	[Browsable(false)]
 	public abstract class MovementBase : Effect {
-		protected virtual void OnRenderFrame() {
-		}
-		
-		protected virtual void OnBeat() {
-		}
-		
-		protected abstract void PlotVertex(MovementData data);
-		
 		private int mXResolution = 16;
 		
 		[Browsable(true), DisplayName("X"), Category("Grid resolution"),
@@ -104,11 +96,23 @@ namespace OpenVP.Core {
 		[NonSerialized]
 		private PointData[,] mPointData;
 		
+		public MovementBase() {
+			this.CreatePointDataArray();
+		}
+		
 		private void CreatePointDataArray() {
 			this.mPointData = new PointData[this.mXResolution,
 			                                this.mYResolution];
 			this.mStaticDirty = true;
 		}
+		
+		protected virtual void OnRenderFrame() {
+		}
+		
+		protected virtual void OnBeat() {
+		}
+		
+		protected abstract void PlotVertex(MovementData data);
 		
 		public override void NextFrame(Controller controller) {
 			if (!this.mStatic || this.mStaticDirty) {
@@ -194,6 +198,8 @@ namespace OpenVP.Core {
 			Gl.glEnd();
 			
 			Gl.glPopAttrib();
+			
+			Gl.glPopMatrix();
 		}
 		
 		private void RenderVertex(int x, int y) {
@@ -274,7 +280,7 @@ namespace OpenVP.Core {
 				set { this.mY = value; }
 			}
 			
-			private float mAlpha;
+			private float mAlpha = 1;
 			
 			public float Alpha {
 				get { return this.mAlpha; }

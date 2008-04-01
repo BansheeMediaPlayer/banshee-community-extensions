@@ -323,6 +323,8 @@ namespace OpenVP.Core {
 			Gl.glEnd();
 			
 			Gl.glPopAttrib();
+			
+			Gl.glPopMatrix();
 		}
 		
 		private void RenderVertex(int x, int y) {

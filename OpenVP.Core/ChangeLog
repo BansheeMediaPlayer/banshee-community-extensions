@@ -1,5 +1,11 @@
 2008-04-01  Chris Howie <me@chrishowie.com> 
 
+	* DynamicMovement.cs: Add missing matrix pop.
+	* MovementBase.cs: Properly allocate point data array on construction. 
+	  Add missing matrix pop.  Initialize MovementData.mAlpha to 1.
+
+2008-04-01  Chris Howie <me@chrishowie.com> 
+
 	* MovementBase.cs: Fix null-dereference bug.
 
 2008-04-01  Chris Howie <me@chrishowie.com> 
