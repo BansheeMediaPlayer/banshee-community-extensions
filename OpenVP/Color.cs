@@ -140,5 +140,64 @@ namespace OpenVP {
 		public void Use() {
 			Gl.glColor4f(this.mRed, this.mGreen, this.mBlue, this.mAlpha);
 		}
+		
+		/// <summary>
+		/// Create a Color struct from an HSL tuple.
+		/// </summary>
+		/// <param name="h">
+		/// Hue.
+		/// </param>
+		/// <param name="s">
+		/// Saturation.
+		/// </param>
+		/// <param name="l">
+		/// Luminance.
+		/// </param>
+		/// <returns>
+		/// The Color struct representing the specified HSL tuple.
+		/// </returns>
+		public static Color FromHSL(float h, float s, float l) {
+			byte r, g, b;
+			
+			if (s == 0) {
+				unchecked {
+					r = (byte) (l * 255);
+					g = (byte) (l * 255);
+					b = (byte) (l * 255);
+				}
+			} else {
+				float temp2;
+				if (l < 0.5)
+					temp2 = l * (1 + s);
+				else
+					temp2 = (l + s) - (l * s);
+				
+				float temp1 = 2 * l - temp2;
+				
+				h /= 360;
+				
+				r = HSLPart2(temp1, temp2, h + 1/3f);
+				g = HSLPart2(temp1, temp2, h);
+				b = HSLPart2(temp1, temp2, h - 1/3f);
+			}
+			
+			return new Color((float) r / 255, (float) g / 255, (float) b / 255);
+		}
+		
+		private static byte HSLPart2(float temp1, float temp2, float temp3) {
+			if (temp3 < 0)
+				temp3 += 1;
+			else if (temp3 > 1)
+				temp3 -= 1;
+			
+			if (temp3 < 1/6f)
+				temp1 = (temp1 + (temp2 - temp1) * 6 * temp3);
+			else if (temp3 < 1/2f)
+				temp1 = temp2;
+			else if (temp3 < 2/3f)
+				temp1 = (temp1 + ((temp2 - temp1) * (2/3f - temp3) * 6));
+			
+			return unchecked((byte) (255 * temp1));
+		}
 	}
 }
