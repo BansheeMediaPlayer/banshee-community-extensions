@@ -1,5 +1,11 @@
 2008-04-09  Chris Howie <me@chrishowie.com> 
 
+	* Laser.cs, OpenVP.Core.mdp: Finish Laser port and add some new
+	  properties.
+	* BurstScope.cs: Remove some unused code.
+
+2008-04-09  Chris Howie <me@chrishowie.com> 
+
 	* DynamicMovement.cs, MovementBase.cs, ClearScreen.cs, SuperScope.cs,
 	  Scope.cs, Buffer.cs: Track move from System.ComponentModel to
 	  OpenVP.Metadata.

@@ -1,94 +1,194 @@
-/*
- * Kaffeeklatsch core: Core effects for the Kaffeeklatsch Visualization Platform.
- * Copyright (C) 2006  Chris Howie
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
+// Laser.cs
+//
+//  Copyright (C) 2008 Chris Howie
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+
+// This file is a port of Kaffeeklatsch's Laser class to OpenVP.
 
 using System;
-using System.Drawing;
-using Kaffeeklatsch.Platform;
+using System.Runtime.Serialization;
 using Tao.OpenGl;
+using OpenVP.Metadata;
 
-namespace Kaffeeklatsch.Core {
-	[EffectTitle("Laser")]
-	public class Laser : BaseEffect {
-		[Option] public float Width = 0.01f;
-		[Option] public bool Random = false;
-		[Option("Color")] public GlColor DrawColor = new GlColor(0, 255, 0);
-		[Option] public uint Count = 50;
-		[Option] public float MaxSpeed = 2f;
+namespace OpenVP.Core {
+	[Serializable, Browsable(true), DisplayName("Laser"), Category("Render"),
+	 Description("Draws lasers from the center of the screen.")]
+	public class Laser : Effect, IDeserializationCallback {
+		private float mWidth = 0.01f;
 		
-		private double[] Angle = new double[0];
-		private double[] Speed = new double[0];
+		[Browsable(true), DisplayName("Width"), Category("Display"),
+		 Description("Width of each laser beam."), Range(0, 2)]
+		public float Width {
+			get { return this.mWidth; }
+			set { this.mWidth = value; }
+		}
 		
-		private Random R = new Random();
+		private bool mRandom = false;
 		
-		[Trigger]
+		[Browsable(true), DisplayName("Random"), Category("Movement"),
+		 Description("Whether lasers will rotate (off) or move randomly (on).")]
+		public bool Random {
+			get { return this.mRandom; }
+			set { this.mRandom = value; }
+		}
+		
+		private Color mStartColor = new Color(0, 1, 0);
+		
+		[Browsable(true), DisplayName("Start Color"), Category("Display"),
+		 Description("Laser beam color.")]
+		public Color StartColor {
+			get { return this.mStartColor; }
+			set { this.mStartColor = value; }
+		}
+		
+		private Color mEndColor = new Color(0, 1, 0, 0.5f);
+		
+		[Browsable(true), DisplayName("End Color"), Category("Display"),
+		 Description("Laser beam color."), Follows("StartColor")]
+		public Color EndColor {
+			get { return this.mEndColor; }
+			set { this.mEndColor = value; }
+		}
+		
+		private uint mCount = 50;
+		
+		[Browsable(true), DisplayName("Count"), Category("Display"),
+		 Description("Number of laser beams.")]
+		public uint Count {
+			get { return this.mCount; }
+			set {
+				this.mCount = value;
+				this.mNeedRebuild = true;
+			}
+		}
+		
+		private float mMaxSpeed = 2;
+		
+		[Browsable(true), DisplayName("Maximum speed"), Category("Movement"),
+		 Description("Maximum rotation speed."), Follows("MinSpeed")]
+		public float MaxSpeed {
+			get { return this.mMaxSpeed; }
+			set {
+				this.mMaxSpeed = value;
+				this.mNeedRebuild = true;
+			}
+		}
+		
+		private float mMinSpeed = 0.5f;
+		
+		[Browsable(true), DisplayName("Minimum speed"), Category("Movement"),
+		 Description("Maximum rotation speed.")]
+		public float MinSpeed {
+			get { return this.mMinSpeed; }
+			set {
+				this.mMinSpeed = value;
+				this.mNeedRebuild = true;
+			}
+		}
+		
+		[NonSerialized]
+		private double[] Angle = null;
+		
+		[NonSerialized]
+		private double[] Speed = null;
+		
+		private static Random R = new Random();
+		
+		[NonSerialized]
+		private bool mNeedRebuild = true;
+		
+		private static readonly float SQRT2 = (float) Math.Sqrt(2);
+		
 		public void Randomize() {
-			Angle = new double[0];
+			this.mNeedRebuild = true;
 			this.BuildLists();
 		}
 		
+		void IDeserializationCallback.OnDeserialization(object sender) {
+			this.mNeedRebuild = true;
+		}
+		
 		private void BuildLists() {
-			if (Angle.Length == Count)
+			if (!this.mNeedRebuild)
 				return;
 			
-			lock (this.OptionLock) {
-				Angle = new double[Count];
-				Speed = new double[Count];
-			}
+			this.mNeedRebuild = false;
+			
+			Angle = new double[Count];
+			Speed = new double[Count];
+			
+			float srange = this.mMaxSpeed - this.mMinSpeed;
 			
 			for (int i = 0; i < Angle.Length; i++) {
 				Angle[i] = R.NextDouble() * 360;
-				Speed[i] = (R.NextDouble() * MaxSpeed * 2) - MaxSpeed;
+				
+				int dir = R.Next(2) == 0 ? 1 : -1;
+				
+				double speed;
+				if (this.mMaxSpeed == this.mMinSpeed)
+					speed = this.mMaxSpeed;
+				else
+					speed = R.NextDouble() * srange + this.MinSpeed;
+				
+				speed *= dir;
+				
+				Speed[i] = speed;
 			}
 		}
 		
-		protected override void NextFrame() {
+		public override void NextFrame(Controller controller) {
 			this.BuildLists();
 			
 			for (int i = 0; i < Angle.Length; i++)
 				Angle[i] += Speed[i];
 		}
 		
-		protected override void RenderImpl(VizData d) {
-			Gl.glDisable(Gl.GL_DEPTH_TEST);
+		public override void RenderFrame(Controller controller) {
 			Gl.glMatrixMode(Gl.GL_MODELVIEW);
 			Gl.glPushMatrix();
+			
 			{
-				Glu.gluLookAt(0, 0, 1, 0, 0, 0, 0, 1, 0);
-				
-				Gl.glColor3fv(DrawColor.Vector3);
-				
 				for (int i = 0; i < Angle.Length; i++) {
 					Gl.glPushMatrix();
 					
 					Gl.glRotated(Random ? (R.NextDouble() * 360) : Angle[i], 0, 0, 1);
 					
 					if (Width == 0f) {
+						Gl.glLineWidth(1f);
+						
 						Gl.glBegin(Gl.GL_LINES);
+						
+						this.mStartColor.Use();
 						Gl.glVertex2i(0, 0);
-						Gl.glVertex2i(0, 2);
+						
+						this.mEndColor.Use();
+						Gl.glVertex2f(0, SQRT2);
+						
 						Gl.glEnd();
 					} else {
 						Gl.glBegin(Gl.GL_POLYGON);
+						
+						this.mStartColor.Use();
 						Gl.glVertex2i(0, 0);
-						Gl.glVertex2f(-Width, 2);
-						Gl.glVertex2i(0, 2);
-						Gl.glVertex2f(Width, 2);
+						
+						this.mEndColor.Use();
+						Gl.glVertex2f(-Width, SQRT2);
+						Gl.glVertex2f(Width, SQRT2);
+						
 						Gl.glEnd();
 					}
 					
@@ -97,7 +197,6 @@ namespace Kaffeeklatsch.Core {
 			}
 			
 			Gl.glPopMatrix();
-			Gl.glEnable(Gl.GL_DEPTH_TEST);
 		}
 	}
 }

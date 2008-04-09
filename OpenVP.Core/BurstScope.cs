@@ -182,10 +182,8 @@ namespace Kaffeeklatsch.Core {
 			
 			controller.PlayerData.GetPCM(pcm);
 			
-			//Gl.glDisable(Gl.GL_DEPTH_TEST);
 			Gl.glMatrixMode(Gl.GL_MODELVIEW);
 			Gl.glPushMatrix();
-			//Glu.gluLookAt(0, 0, 1.5, 0, 0, 0, 0, 1, 0);
 			
 			if (mRotate != 0)
 				Gl.glRotatef(Angle * mRotate, 0, 0, 1);
