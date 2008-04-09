@@ -20,7 +20,7 @@
 
 using System;
 
-namespace OpenVP {
+namespace OpenVP.Metadata {
 	/// <summary>
 	/// Specifies the range of acceptable values for numeric members.
 	/// </summary>

@@ -19,9 +19,9 @@
 //
 
 using System;
-using System.ComponentModel;
 using System.Runtime.Serialization;
 using OpenVP.Scripting;
+using OpenVP.Metadata;
 using Cdh.Affe;
 using Tao.OpenGl;
 

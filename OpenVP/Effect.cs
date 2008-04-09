@@ -19,7 +19,8 @@
 //
 
 using System;
-using System.ComponentModel;
+
+using OpenVP.Metadata;
 
 namespace OpenVP {
 	/// <summary>
@@ -30,7 +31,7 @@ namespace OpenVP {
 	/// possible with OpenGL may be performed by an effect.</para>
 	/// <para>If the effect is intended to be used from a designer interface
 	/// it should have a
-	/// <see cref="System.ComponentModel.DisplayNameAttribute"/>.</para>
+	/// <see cref="OpenVP.Metadata.DisplayNameAttribute"/>.</para>
 	/// <para>If an effect is not serializable, a GUI designer may refuse to use
 	/// it since it would not be able to save the effect settings.</para>
 	/// </remarks>
@@ -44,7 +45,7 @@ namespace OpenVP {
 		/// </param>
 		/// <returns>
 		/// The title of the effect.  If the type has a
-		/// <see cref="System.ComponentModel.DisplayNameAttribute"/> then it
+		/// <see cref="OpenVP.Metadata.DisplayNameAttribute"/> then it
 		/// will be used to determine the title, otherwise the name of the
 		/// runtime type will be used.
 		/// </returns>

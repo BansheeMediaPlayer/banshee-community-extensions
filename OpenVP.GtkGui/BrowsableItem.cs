@@ -20,8 +20,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Reflection;
+
+using OpenVP.Metadata;
 
 namespace OpenVP.GtkGui {
 	public class BrowsableItem<T> where T : MemberInfo {

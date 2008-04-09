@@ -39,6 +39,7 @@
     <File name="MemberEditors/ColorEditor.cs" subtype="Code" buildaction="Compile" />
     <File name="MemberEditors/ScriptEditor.cs" subtype="Code" buildaction="Compile" />
     <File name="KeyEntry.cs" subtype="Code" buildaction="Compile" />
+    <File name="MemberEditors/EnumEditor.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />

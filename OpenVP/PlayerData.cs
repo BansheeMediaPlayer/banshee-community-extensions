@@ -19,7 +19,8 @@
 //
 
 using System;
-using System.ComponentModel;
+
+using OpenVP.Metadata;
 
 namespace OpenVP {
 	/// <summary>

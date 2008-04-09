@@ -115,14 +115,19 @@ namespace OpenVP.GtkGui {
 			if (!mEditorMap.TryGetValue(info.PropertyType, out editor)) {
 				editor = null;
 				
-				// Look for subclasses/interfaces.
-				foreach (KeyValuePair<Type, Type> i in mEditorMap) {
-					if (i.Key.IsValueType)
-						continue;
-					
-					if (i.Key.IsAssignableFrom(info.PropertyType)) {
-						editor = i.Value;
-						break;
+				// Is it an enum?
+				if (info.PropertyType.IsEnum) {
+					editor = typeof(EnumEditor);
+				} else {
+					// Look for subclasses/interfaces.
+					foreach (KeyValuePair<Type, Type> i in mEditorMap) {
+						if (i.Key.IsValueType)
+							continue;
+						
+						if (i.Key.IsAssignableFrom(info.PropertyType)) {
+							editor = i.Value;
+							break;
+						}
 					}
 				}
 				

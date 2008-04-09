@@ -19,11 +19,11 @@
 //
 
 using System;
-using System.ComponentModel;
 using System.Runtime.Serialization;
 using Tao.OpenGl;
 using Cdh.Affe;
 using OpenVP.Scripting;
+using OpenVP.Metadata;
 
 namespace OpenVP.Core {
 	[Serializable, DisplayName("Dynamic movement"), Category("Transform"),

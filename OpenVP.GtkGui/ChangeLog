@@ -1,3 +1,13 @@
+2008-04-09  Chris Howie <me@chrishowie.com> 
+
+	* OpenVP.GtkGui.mdp, MemberEditors/EnumEditor.cs, MemberEditor.cs: Add
+	  EnumEditor, a MemberEditor for handling enum types.
+	* MemberEditors/NumericEditor.cs: Track movement of RangeAttribute into
+	  the new OpenVP.Metadata namespace.
+	* BrowsableItem.cs: Track move from System.ComponentModel to
+	  OpenVP.Metadata.
+	* BrowsableEditor.cs: Remove unused imported namespace.
+
 2008-01-17  Chris Howie <me@chrishowie.com> 
 
 	* MainWindow.cs: Track API changes to PlayerData class.

@@ -1,3 +1,16 @@
+2008-04-09  Chris Howie <me@chrishowie.com> 
+
+	* DynamicMovement.cs, MovementBase.cs, ClearScreen.cs, SuperScope.cs,
+	  Scope.cs, Buffer.cs: Track move from System.ComponentModel to
+	  OpenVP.Metadata.
+	* Laser.cs: Copy Kaffeeklatsch's Laser effect, which is not yet ported
+	  (build disabled).
+	* OpenVP.Core.mdp: Port Kaffeeklatsch's FountainScope effect to OpenVP
+	  and call it BurstScope.  Copy Kaffeeklatsch's Laser effect, which
+	  is not yet ported (build disabled).
+	* BurstScope.cs: Port Kaffeeklatsch's FountainScope effect to OpenVP
+	  and call it BurstScope.
+
 2008-04-01  Chris Howie <me@chrishowie.com> 
 
 	* DynamicMovement.cs: Add missing matrix pop.

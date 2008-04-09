@@ -19,9 +19,10 @@
 //
 
 using System;
-using System.ComponentModel;
 
 using Tao.OpenGl;
+
+using OpenVP.Metadata;
 
 namespace OpenVP.Core {
 	[Serializable, Browsable(true), DisplayName("Basic scope"),

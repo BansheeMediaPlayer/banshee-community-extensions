@@ -19,8 +19,9 @@
 //
 
 using System;
-using System.ComponentModel;
 using Tao.OpenGl;
+
+using OpenVP.Metadata;
 
 namespace OpenVP.Core {
 	[Serializable, DisplayName("Buffer load/save"), Category("Miscellaneous"),

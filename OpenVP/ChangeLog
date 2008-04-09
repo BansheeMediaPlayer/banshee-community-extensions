@@ -1,3 +1,23 @@
+2008-04-09  Chris Howie <me@chrishowie.com> 
+
+	* Metadata, Metadata/CategoryAttribute.cs,
+	  Metadata/BrowsableAttribute.cs, Metadata/DefaultValueAttribute.cs,
+	  Metadata/DescriptionAttribute.cs, Metadata/DisplayNameAttribute.cs:
+	  Create new OpenVP.Metadata namespace to obsolete the use of broken
+	  System.ComponentModel attributes, and create source-compatible
+	  replacements for the used attributes.
+	* Metadata/RangeAttribute.cs, RangeAttribute.cs: Move RangeAttribute
+	  into the new OpenVP.Metadata namespace.
+	* Metadata/FollowsAttribute.cs, FollowsAttribute.cs: Move
+	  FollowsAttribute into the new OpenVP.Metadata namespace.
+	* OpenVP.mdp: Create new OpenVP.Metadata namespace to obsolete the use
+	  of broken System.ComponentModel attributes, and create
+	  source-compatible replacements for the used attributes.  Move
+	  FollowsAttribute into the new OpenVP.Metadata namespace.  Move
+	  RangeAttribute into the new OpenVP.Metadata namespace.
+	* PlayerData.cs, Effect.cs, UDPPlayerData.cs: Track move from
+	  System.ComponentModel to OpenVP.Metadata.
+
 2008-04-03  Chris Howie <me@chrishowie.com> 
 
 	* Color.cs: Copy FromHSL method from Kaffeeklatsch's GlColor struct.

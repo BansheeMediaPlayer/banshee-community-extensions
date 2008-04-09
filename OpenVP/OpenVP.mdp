@@ -26,10 +26,16 @@
     <File name="IBeatDetector.cs" subtype="Code" buildaction="Compile" />
     <File name="NullPlayerData.cs" subtype="Code" buildaction="Compile" />
     <File name="Registry.cs" subtype="Code" buildaction="Compile" />
-    <File name="RangeAttribute.cs" subtype="Code" buildaction="Compile" />
-    <File name="FollowsAttribute.cs" subtype="Code" buildaction="Compile" />
     <File name="IPreset.cs" subtype="Code" buildaction="Compile" />
     <File name="TimedPresetBase.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata" subtype="Directory" buildaction="Compile" />
+    <File name="Metadata/RangeAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata/BrowsableAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata/DisplayNameAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata/DefaultValueAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata/CategoryAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata/DescriptionAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata/FollowsAttribute.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />

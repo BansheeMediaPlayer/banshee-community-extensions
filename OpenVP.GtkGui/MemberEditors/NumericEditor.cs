@@ -22,6 +22,8 @@ using System;
 using System.Reflection;
 using Gtk;
 
+using OpenVP.Metadata;
+
 namespace OpenVP.GtkGui.MemberEditors {
 	public class NumericEditor : MemberEditor {
 		private SpinButton mSpin;

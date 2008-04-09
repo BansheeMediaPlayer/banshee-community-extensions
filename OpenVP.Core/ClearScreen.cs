@@ -19,8 +19,8 @@
 //
 
 using System;
-using System.ComponentModel;
 using OpenVP;
+using OpenVP.Metadata;
 using Tao.OpenGl;
 
 namespace OpenVP.Core {

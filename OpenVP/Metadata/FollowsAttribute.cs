@@ -20,7 +20,7 @@
 
 using System;
 
-namespace OpenVP {
+namespace OpenVP.Metadata {
 	/// <summary>
 	/// Specifies that the member or class this attribute is applied to should
 	/// be displayed after a specific class or member.
