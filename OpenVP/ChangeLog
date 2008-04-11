@@ -1,3 +1,8 @@
+2008-04-11  Chris Howie <me@chrishowie.com> 
+
+	* Metadata/AuthorAttribute.cs, OpenVP.mdp: Add AuthorAttribute class
+	  for specifying author credits.
+
 2008-04-09  Chris Howie <me@chrishowie.com> 
 
 	* Metadata, Metadata/CategoryAttribute.cs,

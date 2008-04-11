@@ -27,7 +27,8 @@ using OpenVP.Metadata;
 
 namespace OpenVP.Core {
 	[Serializable, DisplayName("Dynamic movement"), Category("Transform"),
-	 Description("Applies a movement function to the buffer.")]
+	 Description("Applies a movement function to the buffer."),
+	 Author("Chris Howie")]
 	public class DynamicMovement : Effect, IDeserializationCallback {
 		private AffeScript mInitScript = new AffeScript();
 		

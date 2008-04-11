@@ -1,3 +1,11 @@
+2008-04-11  Chris Howie <me@chrishowie.com> 
+
+	* EffectSelectorDialog.cs,
+	  gtk-gui/OpenVP.GtkGui.EffectSelectorDialog.cs, gtk-gui/gui.stetic:
+	  Add info panel that is displayed when an effect is selected.
+	* BrowsableItem.cs: Check for AuthorAttribute and store the value if
+	  present.
+
 2008-04-09  Chris Howie <me@chrishowie.com> 
 
 	* OpenVP.GtkGui.mdp, MemberEditors/EnumEditor.cs, MemberEditor.cs: Add

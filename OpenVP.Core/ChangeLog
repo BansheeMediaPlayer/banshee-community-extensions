@@ -1,3 +1,17 @@
+2008-04-11  Chris Howie <me@chrishowie.com> 
+
+	* DynamicMovement.cs, ClearScreen.cs, SuperScope.cs, Scope.cs,
+	  Buffer.cs: Add AuthorAttribute.
+	* MovementBase.cs: Add missing SerializableAttribute.  Remove metadata
+	  from properties and make them protected, since subclasses may not
+	  want these exposed in the designer (e.g. the new Mirror effect). 
+	  Add protected MakeStaticDirty method to allow subclasses to notify
+	  MovementBase that the static movement data needs to be recomputed.
+	* Laser.cs: Add AuthorAttribute.  Change default end color.
+	* OpenVP.Core.mdp, Mirror.cs: Add Mirror effect.
+	* BurstScope.cs: Add AuthorAttribute.  Multiply final ray alpha by the
+	  alpha of the selected color.
+
 2008-04-09  Chris Howie <me@chrishowie.com> 
 
 	* Laser.cs, OpenVP.Core.mdp: Finish Laser port and add some new

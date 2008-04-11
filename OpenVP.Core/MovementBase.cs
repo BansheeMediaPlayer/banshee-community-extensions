@@ -26,14 +26,11 @@ using OpenVP.Metadata;
 using Tao.OpenGl;
 
 namespace OpenVP.Core {
-	[Browsable(false)]
+	[Serializable, Browsable(false)]
 	public abstract class MovementBase : Effect {
 		private int mXResolution = 16;
 		
-		[Browsable(true), DisplayName("X"), Category("Grid resolution"),
-		 Range(2, 512),
-		 Description("The number of verticies along the X axis.")]
-		public int XResolution {
+		protected virtual int XResolution {
 			get {
 				return this.mXResolution;
 			}
@@ -48,10 +45,7 @@ namespace OpenVP.Core {
 		
 		private int mYResolution = 16;
 		
-		[Browsable(true), DisplayName("Y"), Category("Grid resolution"),
-		 Range(2, 512),
-		 Description("The number of verticies along the Y axis.")]
-		public int YResolution {
+		protected virtual int YResolution {
 			get {
 				return this.mYResolution;
 			}
@@ -66,9 +60,7 @@ namespace OpenVP.Core {
 		
 		private bool mWrap = true;
 		
-		[Browsable(true), DisplayName("Wrap"), Category("Miscellaneous"),
-		 Description("Whether to wrap when vertices are moved off the screen.")]
-		public bool Wrap {
+		protected virtual bool Wrap {
 			get {
 				return this.mWrap;
 			}
@@ -79,9 +71,7 @@ namespace OpenVP.Core {
 		
 		private bool mStatic = false;
 		
-		[Browsable(true), DisplayName("Static motion"), Category("Miscellaneous"),
-		 Description("Whether the motion can change over time (off) or is static (on).")]
-		public bool Static {
+		protected virtual bool Static {
 			get {
 				return this.mStatic;
 			}
@@ -103,6 +93,10 @@ namespace OpenVP.Core {
 		private void CreatePointDataArray() {
 			this.mPointData = new PointData[this.mXResolution,
 			                                this.mYResolution];
+			this.mStaticDirty = true;
+		}
+		
+		protected void MakeStaticDirty() {
 			this.mStaticDirty = true;
 		}
 		

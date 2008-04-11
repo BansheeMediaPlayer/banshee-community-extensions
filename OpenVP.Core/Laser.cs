@@ -26,7 +26,8 @@ using OpenVP.Metadata;
 
 namespace OpenVP.Core {
 	[Serializable, Browsable(true), DisplayName("Laser"), Category("Render"),
-	 Description("Draws lasers from the center of the screen.")]
+	 Description("Draws lasers from the center of the screen."),
+	 Author("Chris Howie")]
 	public class Laser : Effect, IDeserializationCallback {
 		private float mWidth = 0.01f;
 		
@@ -55,7 +56,7 @@ namespace OpenVP.Core {
 			set { this.mStartColor = value; }
 		}
 		
-		private Color mEndColor = new Color(0, 1, 0, 0.5f);
+		private Color mEndColor = new Color(0, 1, 0, 0);
 		
 		[Browsable(true), DisplayName("End Color"), Category("Display"),
 		 Description("Laser beam color."), Follows("StartColor")]

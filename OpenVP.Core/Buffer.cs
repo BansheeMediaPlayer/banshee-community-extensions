@@ -25,7 +25,8 @@ using OpenVP.Metadata;
 
 namespace OpenVP.Core {
 	[Serializable, DisplayName("Buffer load/save"), Category("Miscellaneous"),
-	 Description("Load a buffer to the screen or save the screen to a buffer.")]
+	 Description("Load a buffer to the screen or save the screen to a buffer."),
+	 Author("Chris Howie")]
 	public class Buffer : Effect {
 		private const int BufferCount = 16;
 		

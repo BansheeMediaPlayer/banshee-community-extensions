@@ -34,7 +34,8 @@ using Tao.OpenGl;
 
 namespace Kaffeeklatsch.Core {
 	[Serializable, Browsable(true), DisplayName("Burst Scope"),
-	 Category("Render"), Description("A sunburst-like scope.")]
+	 Category("Render"), Description("A sunburst-like scope."),
+	 Author("Chris Howie")]
 	public class BurstScope : Effect, IDeserializationCallback {
 		public enum ColorMode : byte {
 			[DisplayName("Use selected color")] Normal,
@@ -244,14 +245,12 @@ namespace Kaffeeklatsch.Core {
 							break;
 					}
 					
-					cl.Alpha = (1 - Dots[i].Distance) * Dots[i].Alpha;
+					cl.Alpha = (1 - Dots[i].Distance) * Dots[i].Alpha * this.Color.Alpha;
 					
 					cl.Use();
 					Gl.glBegin(Gl.GL_POLYGON);
 					Gl.glVertex2f(- w,  block);
 					Gl.glVertex2f(  w,  block);
-					//Gl.glVertex2f( pw, 0);
-					//Gl.glVertex2f(-pw, 0);
 					Gl.glVertex2f( w/3, 0);
 					Gl.glVertex2f(-w/3, 0);
 					Gl.glEnd();
@@ -261,7 +260,6 @@ namespace Kaffeeklatsch.Core {
 			}
 			
 			Gl.glPopMatrix();
-			//Gl.glEnable(Gl.GL_DEPTH_TEST);
 		}
 	}
 }

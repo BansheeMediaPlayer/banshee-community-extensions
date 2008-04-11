@@ -17,6 +17,20 @@ namespace OpenVP.GtkGui {
         
         private Gtk.TreeView EffectList;
         
+        private Gtk.Table EffectInfoTable;
+        
+        private Gtk.Label AuthorLabel;
+        
+        private Gtk.Label DescriptionLabel;
+        
+        private Gtk.Label EffectLabel;
+        
+        private Gtk.Label label1;
+        
+        private Gtk.Label label2;
+        
+        private Gtk.Label label3;
+        
         private Gtk.Button buttonCancel;
         
         private Gtk.Button buttonOk;
@@ -33,6 +47,7 @@ namespace OpenVP.GtkGui {
             // Internal child OpenVP.GtkGui.EffectSelectorDialog.VBox
             Gtk.VBox w1 = this.VBox;
             w1.Name = "dialog1_VBox";
+            w1.Spacing = 6;
             w1.BorderWidth = ((uint)(2));
             // Container child dialog1_VBox.Gtk.Box+BoxChild
             this.GtkScrolledWindow = new Gtk.ScrolledWindow();
@@ -48,12 +63,93 @@ namespace OpenVP.GtkGui {
             w1.Add(this.GtkScrolledWindow);
             Gtk.Box.BoxChild w3 = ((Gtk.Box.BoxChild)(w1[this.GtkScrolledWindow]));
             w3.Position = 0;
+            // Container child dialog1_VBox.Gtk.Box+BoxChild
+            this.EffectInfoTable = new Gtk.Table(((uint)(3)), ((uint)(2)), false);
+            this.EffectInfoTable.Name = "EffectInfoTable";
+            this.EffectInfoTable.RowSpacing = ((uint)(6));
+            this.EffectInfoTable.ColumnSpacing = ((uint)(6));
+            // Container child EffectInfoTable.Gtk.Table+TableChild
+            this.AuthorLabel = new Gtk.Label();
+            this.AuthorLabel.Name = "AuthorLabel";
+            this.AuthorLabel.Xalign = 0F;
+            this.AuthorLabel.LabelProp = "";
+            this.AuthorLabel.Selectable = true;
+            this.EffectInfoTable.Add(this.AuthorLabel);
+            Gtk.Table.TableChild w4 = ((Gtk.Table.TableChild)(this.EffectInfoTable[this.AuthorLabel]));
+            w4.TopAttach = ((uint)(2));
+            w4.BottomAttach = ((uint)(3));
+            w4.LeftAttach = ((uint)(1));
+            w4.RightAttach = ((uint)(2));
+            w4.YOptions = ((Gtk.AttachOptions)(4));
+            // Container child EffectInfoTable.Gtk.Table+TableChild
+            this.DescriptionLabel = new Gtk.Label();
+            this.DescriptionLabel.Name = "DescriptionLabel";
+            this.DescriptionLabel.Xalign = 0F;
+            this.DescriptionLabel.LabelProp = "";
+            this.DescriptionLabel.Selectable = true;
+            this.EffectInfoTable.Add(this.DescriptionLabel);
+            Gtk.Table.TableChild w5 = ((Gtk.Table.TableChild)(this.EffectInfoTable[this.DescriptionLabel]));
+            w5.TopAttach = ((uint)(1));
+            w5.BottomAttach = ((uint)(2));
+            w5.LeftAttach = ((uint)(1));
+            w5.RightAttach = ((uint)(2));
+            w5.YOptions = ((Gtk.AttachOptions)(4));
+            // Container child EffectInfoTable.Gtk.Table+TableChild
+            this.EffectLabel = new Gtk.Label();
+            this.EffectLabel.Name = "EffectLabel";
+            this.EffectLabel.Xalign = 0F;
+            this.EffectLabel.LabelProp = "";
+            this.EffectLabel.Selectable = true;
+            this.EffectInfoTable.Add(this.EffectLabel);
+            Gtk.Table.TableChild w6 = ((Gtk.Table.TableChild)(this.EffectInfoTable[this.EffectLabel]));
+            w6.LeftAttach = ((uint)(1));
+            w6.RightAttach = ((uint)(2));
+            w6.YOptions = ((Gtk.AttachOptions)(4));
+            // Container child EffectInfoTable.Gtk.Table+TableChild
+            this.label1 = new Gtk.Label();
+            this.label1.Name = "label1";
+            this.label1.Xalign = 1F;
+            this.label1.LabelProp = Mono.Unix.Catalog.GetString("<b>Author:</b>");
+            this.label1.UseMarkup = true;
+            this.EffectInfoTable.Add(this.label1);
+            Gtk.Table.TableChild w7 = ((Gtk.Table.TableChild)(this.EffectInfoTable[this.label1]));
+            w7.TopAttach = ((uint)(2));
+            w7.BottomAttach = ((uint)(3));
+            w7.XOptions = ((Gtk.AttachOptions)(4));
+            w7.YOptions = ((Gtk.AttachOptions)(4));
+            // Container child EffectInfoTable.Gtk.Table+TableChild
+            this.label2 = new Gtk.Label();
+            this.label2.Name = "label2";
+            this.label2.Xalign = 1F;
+            this.label2.LabelProp = Mono.Unix.Catalog.GetString("<b>Effect:</b>");
+            this.label2.UseMarkup = true;
+            this.EffectInfoTable.Add(this.label2);
+            Gtk.Table.TableChild w8 = ((Gtk.Table.TableChild)(this.EffectInfoTable[this.label2]));
+            w8.XOptions = ((Gtk.AttachOptions)(4));
+            w8.YOptions = ((Gtk.AttachOptions)(4));
+            // Container child EffectInfoTable.Gtk.Table+TableChild
+            this.label3 = new Gtk.Label();
+            this.label3.Name = "label3";
+            this.label3.Xalign = 1F;
+            this.label3.LabelProp = Mono.Unix.Catalog.GetString("<b>Description:</b>");
+            this.label3.UseMarkup = true;
+            this.EffectInfoTable.Add(this.label3);
+            Gtk.Table.TableChild w9 = ((Gtk.Table.TableChild)(this.EffectInfoTable[this.label3]));
+            w9.TopAttach = ((uint)(1));
+            w9.BottomAttach = ((uint)(2));
+            w9.XOptions = ((Gtk.AttachOptions)(4));
+            w9.YOptions = ((Gtk.AttachOptions)(4));
+            w1.Add(this.EffectInfoTable);
+            Gtk.Box.BoxChild w10 = ((Gtk.Box.BoxChild)(w1[this.EffectInfoTable]));
+            w10.Position = 1;
+            w10.Expand = false;
+            w10.Fill = false;
             // Internal child OpenVP.GtkGui.EffectSelectorDialog.ActionArea
-            Gtk.HButtonBox w4 = this.ActionArea;
-            w4.Name = "dialog1_ActionArea";
-            w4.Spacing = 6;
-            w4.BorderWidth = ((uint)(5));
-            w4.LayoutStyle = ((Gtk.ButtonBoxStyle)(4));
+            Gtk.HButtonBox w11 = this.ActionArea;
+            w11.Name = "dialog1_ActionArea";
+            w11.Spacing = 6;
+            w11.BorderWidth = ((uint)(5));
+            w11.LayoutStyle = ((Gtk.ButtonBoxStyle)(4));
             // Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
             this.buttonCancel = new Gtk.Button();
             this.buttonCancel.CanDefault = true;
@@ -63,9 +159,9 @@ namespace OpenVP.GtkGui {
             this.buttonCancel.UseUnderline = true;
             this.buttonCancel.Label = "gtk-cancel";
             this.AddActionWidget(this.buttonCancel, -6);
-            Gtk.ButtonBox.ButtonBoxChild w5 = ((Gtk.ButtonBox.ButtonBoxChild)(w4[this.buttonCancel]));
-            w5.Expand = false;
-            w5.Fill = false;
+            Gtk.ButtonBox.ButtonBoxChild w12 = ((Gtk.ButtonBox.ButtonBoxChild)(w11[this.buttonCancel]));
+            w12.Expand = false;
+            w12.Fill = false;
             // Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
             this.buttonOk = new Gtk.Button();
             this.buttonOk.Sensitive = false;
@@ -76,15 +172,16 @@ namespace OpenVP.GtkGui {
             this.buttonOk.UseUnderline = true;
             this.buttonOk.Label = "gtk-ok";
             this.AddActionWidget(this.buttonOk, -5);
-            Gtk.ButtonBox.ButtonBoxChild w6 = ((Gtk.ButtonBox.ButtonBoxChild)(w4[this.buttonOk]));
-            w6.Position = 1;
-            w6.Expand = false;
-            w6.Fill = false;
+            Gtk.ButtonBox.ButtonBoxChild w13 = ((Gtk.ButtonBox.ButtonBoxChild)(w11[this.buttonOk]));
+            w13.Position = 1;
+            w13.Expand = false;
+            w13.Fill = false;
             if ((this.Child != null)) {
                 this.Child.ShowAll();
             }
-            this.DefaultWidth = 400;
-            this.DefaultHeight = 300;
+            this.DefaultWidth = 509;
+            this.DefaultHeight = 426;
+            this.EffectInfoTable.Hide();
             this.Show();
             this.EffectList.RowActivated += new Gtk.RowActivatedHandler(this.OnEffectListRowActivated);
         }

@@ -30,12 +30,11 @@ namespace OpenVP.GtkGui {
 		
 		public Type SelectedEffect {
 			get {
-				TreeIter i;
+				EffectEntry effect;
+				if (this.GetSelectedEffectEntry(out effect))
+					return effect.Item;
 				
-				if (!this.EffectList.Selection.GetSelected(out i))
-					return null;
-				
-				return ((EffectEntry) this.mEffectStore.GetValue(i, 0)).Item;
+				return null;
 			}
 		}
 		
@@ -52,14 +51,35 @@ namespace OpenVP.GtkGui {
 			this.EffectList.ExpandAll();
 		}
 		
-		private void OnSelectionChanged(object o, EventArgs e) {
-			TreeIter i;
-			bool valid;
+		private bool GetSelectedEffectEntry(out EffectEntry entry) {
+			entry = null;
 			
-			if (!this.EffectList.Selection.GetSelected(out i)) {
-				valid = false;
+			TreeIter i;
+			
+			if (!this.EffectList.Selection.GetSelected(out i))
+				return false;
+			
+			entry = this.mEffectStore.GetValue(i, 0) as EffectEntry;
+			
+			return entry != null;
+		}
+		
+		private void OnSelectionChanged(object o, EventArgs e) {
+			EffectEntry effect;
+			bool valid = this.GetSelectedEffectEntry(out effect);
+			
+			if (valid) {
+				this.EffectLabel.Text = effect.DisplayName;
+				this.DescriptionLabel.Text = effect.Description;
+				this.AuthorLabel.Text = effect.Author;
+				
+				this.EffectInfoTable.Show();
 			} else {
-				valid = this.mEffectStore.GetValue(i, 0) is EffectEntry;
+				this.EffectInfoTable.Hide();
+				
+				this.EffectLabel.Markup = "";
+				this.DescriptionLabel.Markup = "";
+				this.AuthorLabel.Markup = "";
 			}
 			
 			this.buttonOk.Sensitive = valid;

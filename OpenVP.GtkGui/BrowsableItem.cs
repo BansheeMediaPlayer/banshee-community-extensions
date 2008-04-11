@@ -36,6 +36,8 @@ namespace OpenVP.GtkGui {
 		
 		public readonly string Follows;
 		
+		public readonly string Author;
+		
 		private BrowsableItem(T item) {
 			this.Item = item;
 			
@@ -66,6 +68,13 @@ namespace OpenVP.GtkGui {
 				this.Follows = follows.Follows;
 			else
 				this.Follows = null;
+			
+			AuthorAttribute author = Util.GetAttribute<AuthorAttribute>(item, false);
+			
+			if (author != null)
+				this.Author = author.Author;
+			else
+				this.Author = null;
 		}
 		
 		public static BrowsableItem<T> Create(T item) {

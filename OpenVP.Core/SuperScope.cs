@@ -27,7 +27,8 @@ using Tao.OpenGl;
 
 namespace OpenVP.Core {
 	[Serializable, Browsable(true), DisplayName("SuperScope"),
-	 Category("Render"), Description("Powerful scriptable scope.")]
+	 Category("Render"), Description("Powerful scriptable scope."),
+	 Author("Chris Howie")]
 	public class SuperScope : Effect, IDeserializationCallback {
 		private AffeScript mInitScript = new AffeScript();
 		
