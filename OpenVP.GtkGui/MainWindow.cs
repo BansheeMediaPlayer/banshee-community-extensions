@@ -131,7 +131,7 @@ namespace OpenVP.GtkGui {
 			wh.WaitOne();
 		}
 		
-		private void Quit() {
+		public void Quit() {
 			this.mLoopRunning = false;
 			this.mUpdaterThread.Abort();
 			

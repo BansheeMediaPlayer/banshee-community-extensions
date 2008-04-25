@@ -1,3 +1,10 @@
+2008-04-24  Chris Howie <me@chrishowie.com> 
+
+	* MainWindow.cs: Make Quit a public method to allow embedding
+	  applications to tell the UI to bail.
+	* MemberEditors/BooleanEditor.cs: Use the no-arg CheckButton
+	  constructor to improve the visual appearance of the widget.
+
 2008-04-11  Chris Howie <me@chrishowie.com> 
 
 	* EffectSelectorDialog.cs,

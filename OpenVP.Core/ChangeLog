@@ -1,3 +1,8 @@
+2008-04-24  Chris Howie <me@chrishowie.com> 
+
+	* BurstScope.cs: Allow random ray speed between a minimum and maximum,
+	  to avoid the appearance of circles.
+
 2008-04-11  Chris Howie <me@chrishowie.com> 
 
 	* DynamicMovement.cs, ClearScreen.cs, SuperScope.cs, Scope.cs,

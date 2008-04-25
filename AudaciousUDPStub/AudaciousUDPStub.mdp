@@ -19,6 +19,6 @@
   </Contents>
   <compiler ctype="GccCompiler" />
   <Packages>
-    <ProjectPackage file="audacious" name="audacious" IsProject="False" />
+    <Package file="audacious" name="audacious" IsProject="False" />
   </Packages>
 </Project>

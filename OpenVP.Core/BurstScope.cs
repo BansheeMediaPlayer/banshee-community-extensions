@@ -87,15 +87,26 @@ namespace Kaffeeklatsch.Core {
 			set { this.mSensitivity = value; }
 		}
 		
-		private float mRaySpeed = 0.05f;
+		private float mMinRaySpeed = 0.05f;
 		
-		[Browsable(true), DisplayName("Ray speed"), Category("Behavior"),
-		 Description("Speed of each ray's expansion."),
+		[Browsable(true), DisplayName("Minimum speed"), Category("Behavior"),
+		 Description("Minimum speed of ray expansion."),
 		 Range(0.001, 1)]
-		public float RaySpeed {
-			get { return this.mRaySpeed; }
+		public float MinRaySpeed {
+			get { return this.mMinRaySpeed; }
 			// TODO: Validate.
-			set { this.mRaySpeed = value; }
+			set { this.mMinRaySpeed = value; }
+		}
+		
+		private float mMaxRaySpeed = 0.10f;
+		
+		[Browsable(true), DisplayName("Maximum speed"), Category("Behavior"),
+		 Description("Maximum speed of ray expansion."),
+		 Range(0.001, 1), Follows("MinRaySpeed")]
+		public float MaxRaySpeed {
+			get { return this.mMaxRaySpeed; }
+			// TODO: Validate.
+			set { this.mMaxRaySpeed = value; }
 		}
 		
 		private int mRotateSpeed = 5;
@@ -144,6 +155,7 @@ namespace Kaffeeklatsch.Core {
 		
 		private struct Dot {
 			public float Distance;
+			public float Speed;
 			public float MaxD;
 			public float Rotation;
 			public float RotationSpeed;
@@ -160,7 +172,7 @@ namespace Kaffeeklatsch.Core {
 		public override void NextFrame(Controller controller) {
 			for (int i = 0; i < mRays; i++) {
 				if (Dots[i].Drawing) {
-					Dots[i].Distance += this.mRaySpeed * Dots[i].MaxD;
+					Dots[i].Distance += Dots[i].Speed * Dots[i].MaxD;
 					if (Dots[i].Distance >= Dots[i].MaxD)
 						Dots[i].Drawing = false;
 					else {
@@ -198,6 +210,8 @@ namespace Kaffeeklatsch.Core {
 					Dots[i].Alpha = Dots[i].MaxD = Math.Abs(pcm[i]);
 					Dots[i].Color = Color.FromHSL((float) Rand.NextDouble() * 360, 1, 0.5f);
 					Dots[i].Pcm = pcm[i];
+					Dots[i].Speed = (float) Math.Max(Rand.NextDouble() * (this.mMaxRaySpeed - this.mMinRaySpeed)
+					                                 + this.mMinRaySpeed, 0.001f);
 				} else if (Dots[i].Drawing && (pcm[i] > Dots[i].Pcm)) {
 					Dots[i].Pcm = pcm[i];
 					Dots[i].Alpha = Dots[i].MaxD = Math.Abs(pcm[i]);

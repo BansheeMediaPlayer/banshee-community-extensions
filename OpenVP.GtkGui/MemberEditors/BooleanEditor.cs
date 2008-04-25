@@ -27,7 +27,7 @@ namespace OpenVP.GtkGui.MemberEditors {
 		private CheckButton mCheck;
 		
 		public BooleanEditor(object @object, PropertyInfo info) : base(@object, info) {
-			this.mCheck = new CheckButton("");
+			this.mCheck = new CheckButton();
 			this.mCheck.Show();
 			this.Add(this.mCheck);
 			
