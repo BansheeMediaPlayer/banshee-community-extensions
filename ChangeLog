@@ -1,3 +1,7 @@
+2008-05-04  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* src/Banshee.AlarmClock.addin.xml: Add missing addin dependency.
+
 2008-05-01  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* src/Banshee.AlarmClock.addin.xml: Update addin metadata.
