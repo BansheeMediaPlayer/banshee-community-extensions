@@ -56,7 +56,7 @@ namespace Banshee.AlarmClock
 
         private void StartPlaying()
         {
-            if (ServiceManager.PlayerEngine.CurrentState == PlayerEngineState.Playing)
+            if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing)
             {
                 return;
             }

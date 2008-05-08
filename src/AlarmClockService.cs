@@ -138,7 +138,7 @@ namespace Banshee.AlarmClock
 
         public bool onSleepTimerActivate()
         {
-            if(ServiceManager.PlayerEngine.CurrentState == PlayerEngineState.Playing){
+            if(ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing){
                 Log.Debug("Sleep Timer has gone off.  Fading out till end of song.");
                 new VolumeFade(ServiceManager.PlayerEngine.Volume, 0,
                         (ushort) (ServiceManager.PlayerEngine.Length - ServiceManager.PlayerEngine.Position));
