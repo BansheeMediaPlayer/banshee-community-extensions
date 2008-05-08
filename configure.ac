@@ -1,4 +1,4 @@
-AC_INIT([banshee-alarm-extension], [0.4.0])
+AC_INIT([banshee-alarm-extension], [0.4.1])
 AC_CONFIG_SRCDIR([README])
 
 AC_CANONICAL_TARGET

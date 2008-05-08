@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Addin
     id="Banshee.AlarmClock"
-    version="0.4"
+    version="0.4.1"
     copyright="© Bertrand Lorentz, Patrick van Staveren. Licensed under the MIT X11 license."
     name="Alarm and Sleep Timer"
     description="Gives Banshee alarm clock type functions."

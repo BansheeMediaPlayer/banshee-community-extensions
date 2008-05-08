@@ -1,5 +1,9 @@
 2008-05-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* src/Banshee.AlarmClock.addin.xml, configure.ac: Update version.
+
+2008-05-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* src/Alarm.cs, src/AlarmClockService.cs: Update to new PlayerEngine API.
 
 2008-05-04  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
