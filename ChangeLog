@@ -1,5 +1,9 @@
 2008-05-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	Version 0.4.1 released. Works only with banshee 0.99.1 and above. 
+
+2008-05-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* src/Banshee.AlarmClock.addin.xml, configure.ac: Update version.
 
 2008-05-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
