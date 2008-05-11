@@ -1,3 +1,7 @@
+2008-05-11  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* configure.ac: Fix banshee version dependency.
+
 2008-05-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	Version 0.4.1 released. Works only with banshee 0.99.1 and above. 

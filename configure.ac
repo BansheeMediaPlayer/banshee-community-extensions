@@ -18,7 +18,7 @@ MCS_FLAGS="-debug"
 AC_SUBST(MCS_FLAGS)
 
 dnl Banshee deps
-PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 0.98.2)
+PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 0.99.1)
 AC_SUBST(BANSHEE_LIBS)
 
 dnl Path to the banshee installation, to find the the gconf-schema-extractor.exe tool
