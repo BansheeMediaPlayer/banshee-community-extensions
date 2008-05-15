@@ -1,9 +1,0 @@
-<ui>
-    <menubar name="MainMenu">
-        <menu name="ViewMenu" action="ViewMenuAction">
-            <placeholder name="ViewMenuAdditions">
-                 <menuitem name="ShowLyrics" action="ShowLyricsAction" />
-            </placeholder> 
-        </menu>
-    </menubar>
-</ui>
