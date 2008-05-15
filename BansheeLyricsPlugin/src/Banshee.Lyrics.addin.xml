@@ -1,0 +1,15 @@
+<Addin  id="Banshee.Lyrics"
+        name="Lyrics"
+        description=""
+        url=""
+        version="">
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.Plugins.Lyrics.LyricsPlugin"/>
+  </Extension>
+  
+</Addin>
