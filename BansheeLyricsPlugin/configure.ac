@@ -7,6 +7,10 @@ AM_MAINTAINER_MODE
 
 #AC_PROG_INTLTOOL([0.23])
 
+SHAMROCK_EXPAND_LIBDIR
+SHAMROCK_EXPAND_BINDIR
+SHAMROCK_EXPAND_DATADIR
+
 slicelocaledir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(slicelocaledir)
 
@@ -30,20 +34,15 @@ dnl pkg-config
 #fi
 
 
-
-PKG_CHECK_MODULES([GTK_SHARP], [gtk-sharp-2.0 >= 2.0])
+dnl package checks, common for all configs
 PKG_CHECK_MODULES([BANSHEE_1_SERVICES], [banshee-1-services])
-PKG_CHECK_MODULES([BANSHEE_1_CORE], [banshee-1-core])
 PKG_CHECK_MODULES([BANSHEE_1_THICKCLIENT], [banshee-1-thickclient])
-PKG_CHECK_MODULES([GCONF_SHARP], [gconf-sharp-2.0 >= 2.0])
+PKG_CHECK_MODULES([BANSHEE_1_CORE], [banshee-1-core])
+PKG_CHECK_MODULES([GCONF_SHARP_20], [gconf-sharp-2.0])
 PKG_CHECK_MODULES([GTKHTML_SHARP_314], [gtkhtml-sharp-3.14])
-AC_SUBST(GTK_SHARP_LIBS)
-AC_SUBST(BANSHEE_1_SERVICES_LIBS)
-AC_SUBST(BANSHEE_1_CORE_FLAGS)
-AC_SUBST(BANSHEE_1_CORE_LIBS)
-AC_SUBST(BANSHEE_1_THICKCLIENT_LIBS)
-AC_SUBST(GCONF_SHARP_LIBS)
-AC_SUBST(GTKHTML_SHARP_LIBS)
+PKG_CHECK_MODULES([GTK_SHARP_20], [gtk-sharp-2.0])
+
+dnl package checks, per config
 
 AC_ARG_ENABLE(user-plugin, AS_HELP_STRING([--enable-user-plugin],[Install plugin into user-level Banshee plugins directory instead of the Banshee system plugins directory]), , enable_user_plugin="no")
 
