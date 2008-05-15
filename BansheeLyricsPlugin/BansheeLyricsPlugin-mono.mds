@@ -1,0 +1,18 @@
+<Combine name="BansheeLyricsPlugin" fileversion="2.0">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="CombineConfiguration">
+      <Entry build="True" name="BansheeLyricsPlugin" configuration="Debug" />
+    </Configuration>
+    <Configuration name="Release" ctype="CombineConfiguration">
+      <Entry build="True" name="BansheeLyricsPlugin" configuration="Release" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="BansheeLyricsPlugin" single="True">
+    <Execute type="None" entry="BansheeLyricsPlugin" />
+    <Execute type="None" entry="Packages" />
+    <Execute type="None" entry="BansheeLyricsPlugin-monoTranslation" />
+  </StartMode>
+  <Entries>
+    <Entry filename="src/BansheeLyricsPlugin-mono.mdp" />
+  </Entries>
+</Combine>
