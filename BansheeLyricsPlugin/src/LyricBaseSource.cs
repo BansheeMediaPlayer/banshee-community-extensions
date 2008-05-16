@@ -51,7 +51,7 @@ public abstract class LyricBaseSource
 			request.Proxy = pm.getProxy(url);
 		}
 
-		request.Timeout = 6000;
+		request.Timeout = 5000;
     HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
     if(response.ContentLength == 0) {
