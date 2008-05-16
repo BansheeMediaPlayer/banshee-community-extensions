@@ -1,13 +1,13 @@
 <Project name="BansheeLyricsPlugin" fileversion="2.0" DefaultNamespace="Banshee.Plugins.Lyrics" newfilesearch="OnLoadAutoInsert" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
-      <Output directory="." assemblyKeyFile="." assembly="Banshee.Lryics" />
+      <Output directory="." assemblyKeyFile="." assembly="Banshee.Lyrics" />
       <Build debugmode="True" target="Library" />
       <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
       <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" definesymbols="DEBUG" generatexmldocumentation="False" additionalargs="-resource:./LyricsMenu.xml,LyricsMenu.xml" ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release" ctype="DotNetProjectConfiguration">
-      <Output directory="." assembly="Banshee.Lryics" />
+      <Output directory="." assembly="Banshee.Lyrics" />
       <Build debugmode="False" target="Library" />
       <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
       <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />

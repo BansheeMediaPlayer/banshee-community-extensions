@@ -46,17 +46,13 @@ namespace Banshee.Plugins.Lyrics {
             this.vbox1 = new Gtk.VBox();
             this.vbox1.Name = "vbox1";
             // Container child vbox1.Gtk.Box+BoxChild
-            this.lyricsheader = new Banshee.Plugins.Lyrics.LyricsHeader();
-            this.lyricsheader.Events = ((Gdk.EventMask)(256));
-            this.lyricsheader.Name = "lyricsheader";
+            this.lyricsheader = null;
             this.vbox1.Add(this.lyricsheader);
             Gtk.Box.BoxChild w1 = ((Gtk.Box.BoxChild)(this.vbox1[this.lyricsheader]));
             w1.Position = 0;
             w1.Expand = false;
             // Container child vbox1.Gtk.Box+BoxChild
-            this.lyricsBrowser = new Banshee.Plugins.Lyrics.LyricsBrowser();
-            this.lyricsBrowser.Events = ((Gdk.EventMask)(256));
-            this.lyricsBrowser.Name = "lyricsBrowser";
+            this.lyricsBrowser = null;
             this.vbox1.Add(this.lyricsBrowser);
             Gtk.Box.BoxChild w2 = ((Gtk.Box.BoxChild)(this.vbox1[this.lyricsBrowser]));
             w2.Position = 1;
