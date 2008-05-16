@@ -32,14 +32,6 @@ RESOURCES = \
 
 RESOURCES_BUILD = $(foreach resource,$(RESOURCES),$(addprefix -resource:,$(resource)))
 
-EXTRAS = \
-	bin/Debug/BansheeLyricsPlugin-mono.dll.mdb \
-	bin/Debug/Lyrics.dll.mdb \
-	AssemblyInfo.cs.in \
-	BansheeLyricsPlugin-mono.userprefs \
-	BansheeLyricsPlugin-mono.usertasks \
-	bin/Debug/Banshee.Lyrics.dll.mdb 
-
 REFERENCES =  \
 	System.Web \
 	$(GTKHTML_SHARP_314_LIBS) \
