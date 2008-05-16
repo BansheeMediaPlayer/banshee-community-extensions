@@ -5,9 +5,7 @@
     <target-gtk-version>2.12.0</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="libstetic, Version=0.0.0.0, Culture=neutral" />
-    <widget-library name="MonoDevelop.Ide, Version=1.0.0.0, Culture=neutral" />
-    <widget-library name="../bin/Debug/Banshee.Lyrics.dll" internal="true" />
+    <widget-library name="../Banshee.Lyrics.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="Banshee.Plugins.Lyrics.LyricsBrowser" design-size="427 376">
     <property name="MemberName" />
@@ -87,8 +85,8 @@
     <property name="Resizable">False</property>
     <property name="AllowGrow">False</property>
     <property name="AllowShrink">True</property>
-    <property name="DefaultWidth">400</property>
-    <property name="DefaultHeight">450</property>
+    <property name="DefaultWidth">380</property>
+    <property name="DefaultHeight">465</property>
     <child>
       <widget class="Gtk.VBox" id="vbox2">
         <property name="MemberName" />

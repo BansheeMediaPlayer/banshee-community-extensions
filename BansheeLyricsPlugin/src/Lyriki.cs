@@ -34,7 +34,7 @@ public class Lyriki : Banshee.Plugins.Lyrics.LyricBaseSource
 		string lyric=null;
         string html=ReadPageContent(Url);
 		//regular expression
-        Regex r = new Regex ("<div class='lyricbox' >(.*)</div>",
+        Regex r = new Regex ("<div class='lyricbox' >(.*)<div style=\"clear:both;\">",
                              RegexOptions.Multiline|RegexOptions.IgnoreCase |
                              RegexOptions.Singleline);
     	if (r.IsMatch (html)) {

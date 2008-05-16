@@ -20,8 +20,8 @@ namespace Banshee.Plugins.Lyrics
 	public partial class LyricsWindow : Gtk.Window
 	{
 		
-		private const int WIDTH		= 385;
-		private const int HEIGHT	= 430;
+		private const int WIDTH		= 350;
+		private const int HEIGHT	= 435;
 		public LyricsWindow() : base(Gtk.WindowType.Toplevel)
 		{
 			this.Build();
