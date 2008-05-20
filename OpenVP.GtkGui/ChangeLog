@@ -1,3 +1,14 @@
+2008-05-20  Chris Howie <me@chrishowie.com> 
+
+	* MainWindow.cs, MemberEditors/EnumEditor.cs,
+	  MemberEditors/ScriptEditor.cs, MemberEditors/StringEditor.cs,
+	  MemberEditors/ColorEditor.cs, MemberEditors/BooleanEditor.cs,
+	  MemberEditors/UnknownEditor.cs, MemberEditors/NumericEditor.cs,
+	  EffectSelectorDialog.cs, Util.cs, MemberEditor.cs,
+	  BrowsableItem.cs, LinearPresetEditor.cs, Main.cs,
+	  BrowsableEditor.cs, KeyEntry.cs: Change license from GPLv2 to
+	  LGPLv3.
+
 2008-04-24  Chris Howie <me@chrishowie.com> 
 
 	* MainWindow.cs: Make Quit a public method to allow embedding

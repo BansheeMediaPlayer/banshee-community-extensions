@@ -1,3 +1,9 @@
+2008-05-20  Chris Howie <me@chrishowie.com> 
+
+	* AssemblyInfo.cs, ScriptCompileException.cs, UserScript.cs,
+	  AffeScript.cs, ScriptingEnvironment.cs: Change license from GPLv2
+	  to LGPLv3.
+
 2007-12-30  Chris Howie <me@chrishowie.com> 
 
 	* UserScript.cs: The Call getter will now catch any compilation exception to

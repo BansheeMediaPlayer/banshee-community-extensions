@@ -1,3 +1,14 @@
+2008-05-20  Chris Howie <me@chrishowie.com> 
+
+	* IPreset.cs, Metadata/RangeAttribute.cs,
+	  Metadata/CategoryAttribute.cs, Metadata/BrowsableAttribute.cs,
+	  Metadata/DefaultValueAttribute.cs, Metadata/AuthorAttribute.cs,
+	  Metadata/DescriptionAttribute.cs, Metadata/FollowsAttribute.cs,
+	  Metadata/DisplayNameAttribute.cs, Color.cs, IBeatDetector.cs,
+	  IRenderer.cs, TimedPresetBase.cs, NullPlayerData.cs, Controller.cs,
+	  PlayerData.cs, Effect.cs, LinearPreset.cs, UDPPlayerData.cs,
+	  KeyboardEvent.cs, Registry.cs: Change license from GPLv2 to LGPLv3.
+
 2008-04-11  Chris Howie <me@chrishowie.com> 
 
 	* Metadata/AuthorAttribute.cs, OpenVP.mdp: Add AuthorAttribute class

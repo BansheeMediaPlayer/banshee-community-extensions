@@ -1,3 +1,7 @@
+2008-05-20  Chris Howie <me@chrishowie.com> 
+
+	* AudaciousUDPStub.c: Change license from GPLv2 to LGPLv3.
+
 2008-04-24  Chris Howie <me@chrishowie.com> 
 
 	* AudaciousUDPStub.mdp: New MD build.

@@ -1,3 +1,10 @@
+2008-05-20  Chris Howie <me@chrishowie.com> 
+
+	* TextureHandle.cs, DynamicMovement.cs, SharedTextureHandle.cs,
+	  MovementBase.cs, ClearScreen.cs, Laser.cs, SuperScope.cs,
+	  Buffer.cs, BurstScope.cs, Scope.cs, Mirror.cs: Change license from
+	  GPLv2 to LGPLv3.
+
 2008-04-24  Chris Howie <me@chrishowie.com> 
 
 	* BurstScope.cs: Allow random ray speed between a minimum and maximum,
