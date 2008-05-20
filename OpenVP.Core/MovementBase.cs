@@ -90,13 +90,6 @@ namespace OpenVP.Core {
 			this.CreatePointDataArray();
 		}
 		
-		protected override void OnDeserialization(object sender) {
-            base.OnDeserialization(sender);
-            
-            this.mStaticDirty = true;
-			this.CreatePointDataArray();
-		}
-		
 		private void CreatePointDataArray() {
 			this.mPointData = new PointData[this.mXResolution,
 			                                this.mYResolution];
@@ -115,7 +108,7 @@ namespace OpenVP.Core {
 		
 		protected abstract void PlotVertex(MovementData data);
 		
-		public override void NextFrame(IController controller) {
+		public override void NextFrame(Controller controller) {
 			if (!this.mStatic || this.mStaticDirty) {
 				this.OnRenderFrame();
 				
@@ -124,7 +117,7 @@ namespace OpenVP.Core {
 			}
 		}
 		
-		public override void RenderFrame(IController controller) {
+		public override void RenderFrame(Controller controller) {
 			Gl.glMatrixMode(Gl.GL_PROJECTION);
 			Gl.glPushMatrix();
 			Gl.glLoadIdentity();
@@ -134,8 +127,8 @@ namespace OpenVP.Core {
 			Gl.glDisable(Gl.GL_DEPTH_TEST);
 			Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_DECAL);
 			
-			this.mTexture.SetTextureSize(controller.Width,
-			                             controller.Height);
+			this.mTexture.SetTextureSize(controller.WindowWidth,
+			                             controller.WindowHeight);
 			
 			Gl.glBindTexture(Gl.GL_TEXTURE_2D, this.mTexture.TextureId);
 			
@@ -146,7 +139,8 @@ namespace OpenVP.Core {
 			                   this.Wrap ? Gl.GL_REPEAT : Gl.GL_CLAMP);
 			
 			Gl.glCopyTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB, 0, 0,
-			                    controller.Width, controller.Height, 0);
+			                    controller.WindowWidth, controller.WindowHeight,
+			                    0);
 			
 			PointData pd;
 			

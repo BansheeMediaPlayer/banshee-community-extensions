@@ -73,7 +73,7 @@ namespace OpenVP {
 		/// <remarks>
 		/// This method matches the signature required for
 		/// <see cref="KeyboardEventHandler"/> so that it may be used directly
-		/// to handle <see cref="IController.KeyboardEvent"/>.
+		/// to handle <see cref="Controller.Keyboard"/>.
 		/// </remarks>
 		public void HandleKeyboard(object sender, KeyboardEventArgs args) {
 			KeyboardEventHandler handler;
@@ -86,9 +86,9 @@ namespace OpenVP {
 		/// Renders the effect list.
 		/// </summary>
 		/// <param name="controller">
-		/// A <see cref="IController"/>.
+		/// A <see cref="Controller"/>.
 		/// </param>
-		public void Render(IController controller) {
+		public void Render(Controller controller) {
 			foreach (Effect i in this.mEffects)
 				i.Render(controller);
 		}

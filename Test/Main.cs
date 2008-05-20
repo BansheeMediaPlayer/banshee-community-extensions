@@ -29,7 +29,7 @@ namespace Test {
 		public static void Main(string[] args) {
 			UDPPlayerData udp = new UDPPlayerData();
 			
-			SDLController c = new SDLController();
+			Controller c = new Controller();
 			
 //			LinearPreset preset = new LinearPreset();
 //			
@@ -50,13 +50,13 @@ namespace Test {
 			
 			bool run = true;
 			
-			c.Closed += delegate {
+			c.WindowClosed += delegate {
 				run = false;
 			};
 			
 			while (run) {
 				udp.Update(-1);
-				c.RenderFrame();
+				c.DrawFrame();
 			}
 			
 			c.Destroy();
@@ -71,11 +71,11 @@ namespace Test {
 		[NonSerialized]
 		private float[] mPcm = new float[512];
 		
-		public override void NextFrame(IController controller) {
+		public override void NextFrame(Controller controller) {
 			this.mR += 1;
 		}
 		
-		public override void RenderFrame(IController controller) {
+		public override void RenderFrame(Controller controller) {
 			Gl.glMatrixMode(Gl.GL_PROJECTION);
 			Gl.glPushMatrix();
 			
@@ -122,23 +122,23 @@ namespace Test {
 		private Scope mScope = new Scope();
 		
 		[Scene(0)]
-		protected void MainScene(IController controller) {
+		protected void MainScene(Controller controller) {
 			this.mClear.Render(controller);
 			this.mScope.Render(controller);
 		}
 		
 		[Event(0)]
-		protected void MakeRed(IController controller) {
+		protected void MakeRed(Controller controller) {
 			this.mScope.Color = new Color(1, 0, 0);
 		}
 		
 		[Event(5)]
-		protected void MakeGreen(IController controller) {
+		protected void MakeGreen(Controller controller) {
 			this.mScope.Color = new Color(0, 1, 0);
 		}
 		
 		[Event(10)]
-		protected void MakeBlue(IController controller) {
+		protected void MakeBlue(Controller controller) {
 			this.mScope.Color = new Color(0, 0, 1);
 			this.mScope.LineWidth = 3;
 		}

@@ -87,10 +87,10 @@ namespace OpenVP.Core {
 		public Scope() {
 		}
 		
-		public override void NextFrame(IController controller) {
+		public override void NextFrame(Controller controller) {
 		}
 		
-		public override void RenderFrame(IController controller) {
+		public override void RenderFrame(Controller controller) {
 			float[] data;
 			
 			if (this.mFrequency) {

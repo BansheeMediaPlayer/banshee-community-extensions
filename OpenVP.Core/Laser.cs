@@ -29,7 +29,7 @@ namespace OpenVP.Core {
 	[Serializable, Browsable(true), DisplayName("Laser"), Category("Render"),
 	 Description("Draws lasers from the center of the screen."),
 	 Author("Chris Howie")]
-	public class Laser : Effect {
+	public class Laser : Effect, IDeserializationCallback {
 		private float mWidth = 0.01f;
 		
 		[Browsable(true), DisplayName("Width"), Category("Display"),
@@ -120,9 +120,7 @@ namespace OpenVP.Core {
 			this.BuildLists();
 		}
 		
-		protected override void OnDeserialization(object sender) {
-            base.OnDeserialization(sender);
-            
+		void IDeserializationCallback.OnDeserialization(object sender) {
 			this.mNeedRebuild = true;
 		}
 		
@@ -154,14 +152,14 @@ namespace OpenVP.Core {
 			}
 		}
 		
-		public override void NextFrame(IController controller) {
+		public override void NextFrame(Controller controller) {
 			this.BuildLists();
 			
 			for (int i = 0; i < Angle.Length; i++)
 				Angle[i] += Speed[i];
 		}
 		
-		public override void RenderFrame(IController controller) {
+		public override void RenderFrame(Controller controller) {
 			Gl.glMatrixMode(Gl.GL_MODELVIEW);
 			Gl.glPushMatrix();
 			

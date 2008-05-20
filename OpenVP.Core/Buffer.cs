@@ -64,25 +64,25 @@ namespace OpenVP.Core {
 		public Buffer() {
 		}
 		
-		private void InitTextures(IController controller) {
+		private void InitTextures(Controller controller) {
 			if (mTextures == null) {
 				mTextures = new TextureHandle[BufferCount];
 				for (int i = 0; i < mTextures.Length; i++)
-					mTextures[i] = new TextureHandle(controller.Width,
-					                                 controller.Height);
+					mTextures[i] = new TextureHandle(controller.WindowWidth,
+					                                 controller.WindowHeight);
 				
 				return;
 			}
 			
 			foreach (TextureHandle i in mTextures)
-				i.SetTextureSize(controller.Width,
-				                 controller.Height);
+				i.SetTextureSize(controller.WindowWidth,
+				                 controller.WindowHeight);
 		}
 		
-		public override void NextFrame(IController controller) {
+		public override void NextFrame(Controller controller) {
 		}
 		
-		public override void RenderFrame(IController controller) {
+		public override void RenderFrame(Controller controller) {
 			this.InitTextures(controller);
 			
 			TextureHandle texture = mTextures[this.mBufferId - 1];
@@ -92,8 +92,8 @@ namespace OpenVP.Core {
 			Gl.glDisable(Gl.GL_DEPTH_TEST);
 			Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_DECAL);
 			
-			texture.SetTextureSize(controller.Width,
-			                       controller.Height);
+			texture.SetTextureSize(controller.WindowWidth,
+			                       controller.WindowHeight);
 			
 			Gl.glBindTexture(Gl.GL_TEXTURE_2D, texture.TextureId);
 			
@@ -122,8 +122,8 @@ namespace OpenVP.Core {
 				Gl.glEnd();
 			} else {
 				Gl.glCopyTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB, 0, 0,
-				                    controller.Width,
-				                    controller.Height, 0);
+				                    controller.WindowWidth,
+				                    controller.WindowHeight, 0);
 			}
 			
 			Gl.glPopAttrib();
