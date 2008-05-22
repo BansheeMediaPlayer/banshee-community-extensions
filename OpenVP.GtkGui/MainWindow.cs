@@ -39,9 +39,9 @@ namespace OpenVP.GtkGui {
 			}
 		}
 		
-		private Controller mController;
+		private SDLController mController;
 		
-		public Controller Controller {
+		public SDLController Controller {
 			get {
 				return this.mController;
 			}
@@ -88,8 +88,8 @@ namespace OpenVP.GtkGui {
 			
 			Build();
 			
-			this.mController = new Controller();
-			this.mController.WindowClosed += delegate {
+			this.mController = new SDLController();
+			this.mController.Closed += delegate {
 				this.Quit();
 			};
 			this.mController.PlayerData = new UDPPlayerData();
@@ -191,7 +191,7 @@ namespace OpenVP.GtkGui {
 					} while (!this.mUpdateSync.WaitOne(100, false));
 					
 					lock (this.mRenderLock) {
-						this.mController.DrawFrame();
+						this.mController.RenderFrame();
 					}
 					
 					this.mRenderSync.Set();

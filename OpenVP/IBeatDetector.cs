@@ -34,13 +34,13 @@ namespace OpenVP {
 		/// Requests that the detector process the next slice of data.
 		/// </summary>
 		/// <param name="controller">
-		/// The <see cref="Controller"/>.
+		/// The <see cref="IController"/>.
 		/// </param>
 		/// <remarks>
 		/// This method is free to use whatever technique it would like to check
-		/// for a beat.  It may use <see cref="Controller.PlayerData"/>, user
+		/// for a beat.  It may use <see cref="IController.PlayerData"/>, user
 		/// input, or anything else.
 		/// </remarks>
-		void Update(Controller controller);
+		void Update(IController controller);
 	}
 }

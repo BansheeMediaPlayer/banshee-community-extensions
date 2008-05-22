@@ -1,3 +1,20 @@
+2008-05-22  Chris Howie <me@chrishowie.com> 
+
+	* IBeatDetector.cs, IRenderer.cs, TimedPresetBase.cs,
+	  NullPlayerData.cs, LinearPreset.cs: Track API changes.
+	* OpenVP.mdp: Add new IController interface to allow consumers of the
+	  framework to implement their own controller if necessary or
+	  desired.  Rename Controller to SDLController.
+	* Controller.cs, SDLController.cs: Rename Controller to SDLController. 
+	  Implemented new IController interface.
+	* Effect.cs: Track API changes.  Implement IDeserializationCallback and
+	  provide empty virtual method to simplify deserialization when more
+	  than one class in an object's heirarchy needs to perform
+	  initialization post-deserialization.
+	* IController.cs: Add new IController interface to allow consumers of
+	  the framework to implement their own controller if necessary or
+	  desired.
+
 2008-05-20  Chris Howie <me@chrishowie.com> 
 
 	* IPreset.cs, Metadata/RangeAttribute.cs,

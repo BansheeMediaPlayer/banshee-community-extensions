@@ -115,7 +115,7 @@ namespace OpenVP {
 			}
 		}
 		
-		void IBeatDetector.Update(Controller controller) {
+		void IBeatDetector.Update(IController controller) {
 		}
 	}
 }

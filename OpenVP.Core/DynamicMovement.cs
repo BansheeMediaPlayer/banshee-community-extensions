@@ -29,7 +29,7 @@ namespace OpenVP.Core {
 	[Serializable, DisplayName("Dynamic movement"), Category("Transform"),
 	 Description("Applies a movement function to the buffer."),
 	 Author("Chris Howie")]
-	public class DynamicMovement : Effect, IDeserializationCallback {
+	public class DynamicMovement : Effect {
 		private AffeScript mInitScript = new AffeScript();
 		
 		[Browsable(true), DisplayName("Init"),
@@ -166,7 +166,9 @@ namespace OpenVP.Core {
 			this.InitializeScriptObjects();
 		}
 		
-		void IDeserializationCallback.OnDeserialization(object sender) {
+		protected override void OnDeserialization(object sender) {
+            base.OnDeserialization(sender);
+            
 			this.InitializeScriptObjects();
 		}
 		
@@ -231,7 +233,7 @@ namespace OpenVP.Core {
 			return true;
 		}
 		
-		public override void NextFrame(Controller controller) {
+		public override void NextFrame(IController controller) {
 			if (this.mNeedInit) {
 				this.mNeedInit = false;
 				RunScript(this.InitScript, "initialization");
@@ -245,7 +247,7 @@ namespace OpenVP.Core {
 			}
 		}
 		
-		public override void RenderFrame(Controller controller) {
+		public override void RenderFrame(IController controller) {
 			Gl.glMatrixMode(Gl.GL_PROJECTION);
 			Gl.glPushMatrix();
 			Gl.glLoadIdentity();
@@ -255,8 +257,8 @@ namespace OpenVP.Core {
 			Gl.glDisable(Gl.GL_DEPTH_TEST);
 			Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_DECAL);
 			
-			this.mTexture.SetTextureSize(controller.WindowWidth,
-			                             controller.WindowHeight);
+			this.mTexture.SetTextureSize(controller.Width,
+			                             controller.Height);
 			
 			Gl.glBindTexture(Gl.GL_TEXTURE_2D, this.mTexture.TextureId);
 			
@@ -267,8 +269,7 @@ namespace OpenVP.Core {
 			                   this.Wrap ? Gl.GL_REPEAT : Gl.GL_CLAMP);
 			
 			Gl.glCopyTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB, 0, 0,
-			                    controller.WindowWidth, controller.WindowHeight,
-			                    0);
+			                    controller.Width, controller.Height, 0);
 			
 			PointData pd;
 			

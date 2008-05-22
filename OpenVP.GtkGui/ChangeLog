@@ -1,3 +1,7 @@
+2008-05-22  Chris Howie <me@chrishowie.com> 
+
+	* MainWindow.cs: Track API changes.
+
 2008-05-20  Chris Howie <me@chrishowie.com> 
 
 	* MainWindow.cs, MemberEditors/EnumEditor.cs,

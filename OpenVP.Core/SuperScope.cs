@@ -29,7 +29,7 @@ namespace OpenVP.Core {
 	[Serializable, Browsable(true), DisplayName("SuperScope"),
 	 Category("Render"), Description("Powerful scriptable scope."),
 	 Author("Chris Howie")]
-	public class SuperScope : Effect, IDeserializationCallback {
+	public class SuperScope : Effect {
 		private AffeScript mInitScript = new AffeScript();
 		
 		[Browsable(true), DisplayName("Init"),
@@ -87,7 +87,9 @@ namespace OpenVP.Core {
 			this.InitializeScriptObjects();
 		}
 		
-		void IDeserializationCallback.OnDeserialization(object sender) {
+        protected override void OnDeserialization(object sender) {
+            base.OnDeserialization(sender);
+            
 			this.InitializeScriptObjects();
 		}
 		
@@ -136,16 +138,16 @@ namespace OpenVP.Core {
 			return true;
 		}
 		
-		private void UpdateVariables(Controller c) {
-			this.mScriptHost.Width = c.WindowWidth;
-			this.mScriptHost.Height = c.WindowHeight;
+		private void UpdateVariables(IController c) {
+			this.mScriptHost.Width = c.Width;
+			this.mScriptHost.Height = c.Height;
 			
 			this.mScriptHost.Beat = c.BeatDetector.IsBeat ? 1 : 0;
 			
 			this.mScriptHost.NativeN = c.PlayerData.NativePCMLength;
 		}
 		
-		public override void NextFrame(Controller controller) {
+		public override void NextFrame(IController controller) {
 			if (this.mNeedInit) {
 				this.mNeedInit = false;
 				
@@ -169,7 +171,7 @@ namespace OpenVP.Core {
 				this.mScopeData = new float[length];
 		}
 		
-		public override void RenderFrame(Controller controller) {
+		public override void RenderFrame(IController controller) {
 			int points = unchecked((int) this.mScriptHost.NumPoints);
 			
 			if (points <= 0)
