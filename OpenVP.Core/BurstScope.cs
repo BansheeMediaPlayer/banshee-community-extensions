@@ -37,7 +37,7 @@ namespace Kaffeeklatsch.Core {
 	[Serializable, Browsable(true), DisplayName("Burst Scope"),
 	 Category("Render"), Description("A sunburst-like scope."),
 	 Author("Chris Howie")]
-	public class BurstScope : Effect, IDeserializationCallback {
+	public class BurstScope : Effect {
 		public enum ColorMode : byte {
 			[DisplayName("Use selected color")] Normal,
 			[DisplayName("Rainbow")] Rainbow,
@@ -166,11 +166,13 @@ namespace Kaffeeklatsch.Core {
 			public float Pcm;
 		}
 		
-		void IDeserializationCallback.OnDeserialization(object sender) {
+		protected override void OnDeserialization(object sender) {
+            base.OnDeserialization(sender);
+            
 			this.Dots = new Dot[1024];
 		}
 		
-		public override void NextFrame(Controller controller) {
+		public override void NextFrame(IController controller) {
 			for (int i = 0; i < mRays; i++) {
 				if (Dots[i].Drawing) {
 					Dots[i].Distance += Dots[i].Speed * Dots[i].MaxD;
@@ -191,7 +193,7 @@ namespace Kaffeeklatsch.Core {
 			}
 		}
 		
-		public override void RenderFrame (Controller controller) {
+		public override void RenderFrame (IController controller) {
 			float[] pcm = new float[controller.PlayerData.NativePCMLength];
 			
 			controller.PlayerData.GetPCM(pcm);

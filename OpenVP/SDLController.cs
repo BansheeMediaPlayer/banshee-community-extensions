@@ -1,4 +1,4 @@
-// Controller.cs
+// SDLController.cs
 //
 //  Copyright (C) 2007-2008 Chris Howie
 //
@@ -25,18 +25,18 @@ using Tao.OpenGl;
 
 namespace OpenVP {
 	/// <summary>
-	/// OpenVP controller.
+	/// OpenVP SDL controller.
 	/// </summary>
 	/// <remarks>
 	/// The controller is responsible for setting up the OpenGL
 	/// context and raising events.
 	/// </remarks>
-	public class Controller : IDisposable {
+	public class SDLController : IController {
 		private IRenderer mRenderer = null;
 		
 		/// <value>
 		/// The object that will be rendered when
-		/// <see cref="OpenVP.Controller.DrawFrame"/> is called.
+		/// <see cref="OpenVP.IController.RenderFrame"/> is called.
 		/// </value>
 		public IRenderer Renderer {
 			get {
@@ -117,25 +117,25 @@ namespace OpenVP {
 			}
 		}
 		
-		private int mWindowWidth;
+		private int mWidth;
 		
 		/// <value>
 		/// The width of the render window in pixels.
 		/// </value>
-		public int WindowWidth {
+		public int Width {
 			get {
-				return this.mWindowWidth;
+				return this.mWidth;
 			}
 		}
 		
-		private int mWindowHeight;
+		private int mHeight;
 		
 		/// <value>
 		/// The height of the render window in pixels.
 		/// </value>
-		public int WindowHeight {
+		public int Height {
 			get {
-				return this.mWindowHeight;
+				return this.mHeight;
 			}
 		}
 		
@@ -148,18 +148,18 @@ namespace OpenVP {
 		/// is desired, the consumer of this class must attach an event handler
 		/// that will close the output window and/or application manually.
 		/// </remarks>
-		public event EventHandler WindowClosed;
+		public event EventHandler Closed;
 		
 		/// <summary>
 		/// Fired when the end user presses or releases a key in the output
 		/// window.
 		/// </summary>
-		public event KeyboardEventHandler Keyboard;
+		public event KeyboardEventHandler KeyboardEvent;
 		
 		/// <summary>
 		/// Creates a new controller.
 		/// </summary>
-		public Controller() {
+		public SDLController() {
 			NullPlayerData data = new NullPlayerData();
 			
 			this.mPlayerData = data;
@@ -176,15 +176,24 @@ namespace OpenVP {
 				this.SdlThrow();
 		}
 		
-		private void SetVideoMode(int w, int h) {
+        /// <summary>
+        /// Resizes the output window.
+        /// </summary>
+        /// <param name="w">
+        /// The new width in pixels.
+        /// </param>
+        /// <param name="h">
+        /// The new height in pixels.
+        /// </param>
+		public void Resize(int w, int h) {
 			IntPtr surface = Sdl.SDL_SetVideoMode(w, h, 24, Sdl.SDL_OPENGL |
 			                                      Sdl.SDL_RESIZABLE);
 			
 			if (surface == IntPtr.Zero)
 				this.SdlThrow();
 			
-			this.mWindowWidth = w;
-			this.mWindowHeight = h;
+			this.mWidth = w;
+			this.mHeight = h;
 			
 			Gl.glViewport(0, 0, w, h);
 			
@@ -203,7 +212,7 @@ namespace OpenVP {
 			
 			this.SdlTry(Sdl.SDL_GL_SetAttribute(Sdl.SDL_GL_DOUBLEBUFFER, 1));
 			
-			this.SetVideoMode(800, 600);
+			this.Resize(800, 600);
 			
 			Sdl.SDL_WM_SetCaption(this.mWindowTitle, this.mWindowTitle);
 			
@@ -235,35 +244,39 @@ namespace OpenVP {
 		
 		/// <summary>
 		/// Renders one frame of output using
-		/// <see cref="OpenVP.Controller.Renderer"/>.
+		/// <see cref="OpenVP.SDLController.Renderer"/>.
 		/// </summary>
 		/// <remarks>
 		/// Any pending events are raised synchronously during this call.
 		/// </remarks>
-		public void DrawFrame() {
+		public void RenderFrame() {
 			Sdl.SDL_Event ev;
+            EventHandler eh;
+            KeyboardEventHandler keh;
 			
 			while (Sdl.SDL_PollEvent(out ev) != 0) {
 				switch (ev.type) {
 				case Sdl.SDL_VIDEORESIZE:
-					this.SetVideoMode(ev.resize.w, ev.resize.h);
+					this.Resize(ev.resize.w, ev.resize.h);
 					break;
 					
 				case Sdl.SDL_QUIT:
-					if (this.WindowClosed != null)
-						this.WindowClosed(this, EventArgs.Empty);
+                    eh = this.Closed;
+					if (eh != null)
+						eh(this, EventArgs.Empty);
 					break;
 					
 				case Sdl.SDL_KEYDOWN:
 				case Sdl.SDL_KEYUP:
-					if (this.Keyboard == null)
+                    keh = this.KeyboardEvent;
+					if (keh == null)
 						break;
 					
 					Sdl.SDL_keysym sym = ev.key.keysym;
 					
-					this.Keyboard(this, new KeyboardEventArgs(ev.key.state == Sdl.SDL_RELEASED,
-					                                          sym.sym, sym.mod,
-					                                          (char) sym.unicode));
+					keh(this, new KeyboardEventArgs(ev.key.state == Sdl.SDL_RELEASED,
+					                                sym.sym, sym.mod,
+					                                (char) sym.unicode));
 					
 					break;
 				}

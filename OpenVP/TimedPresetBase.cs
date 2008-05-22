@@ -182,7 +182,7 @@ namespace OpenVP {
 				
 				ParameterInfo[] ps = i.GetParameters();
 				
-				if (ps.Length != 1 || ps[0].ParameterType != typeof(Controller))
+				if (ps.Length != 1 || ps[0].ParameterType != typeof(IController))
 					throw new InvalidOperationException("Method tagged as a timeline event does not have the correct signature: " +
 					                                    i.DeclaringType.FullName + ":" + i.Name);
 				
@@ -195,7 +195,7 @@ namespace OpenVP {
 			}
 		}
 		
-		private void SyncCurrent(Controller controller) {
+		private void SyncCurrent(IController controller) {
 			if (this.mTimeline.Count <= this.mCurrentPosition) {
 				// If the list isn't empty then something bad happened.
 				if (this.mTimeline.Count != 0)
@@ -235,7 +235,7 @@ namespace OpenVP {
 		/// <param name="controller">
 		/// The controller.
 		/// </param>
-		public void Render(Controller controller) {
+		public void Render(IController controller) {
 			if (this.mResetBeat)
 				this.mIsBeat = false;
 			
@@ -262,16 +262,16 @@ namespace OpenVP {
 		/// 
 		/// <para>This implementation does nothing.</para>
 		/// </remarks>
-		protected virtual void OnRender(Controller controller) {
+		protected virtual void OnRender(IController controller) {
 		}
 		
-		void IBeatDetector.Update(Controller controller) {
+		void IBeatDetector.Update(IController controller) {
 		}
 		
 		/// <summary>
 		/// Signature of methods to be used as event and scene callbacks.
 		/// </summary>
-		public delegate void TimedPresetCallback(Controller controller);
+		public delegate void TimedPresetCallback(IController controller);
 		
 		/// <summary>
 		/// Timed event type.

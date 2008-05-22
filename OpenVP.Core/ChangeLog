@@ -1,3 +1,10 @@
+2008-05-22  Chris Howie <me@chrishowie.com> 
+
+	* DynamicMovement.cs, ClearScreen.cs, Laser.cs, SuperScope.cs,
+	  Buffer.cs, BurstScope.cs, Scope.cs: Track API changes.
+	* MovementBase.cs: Track API changes.  Fix bug that would cause
+	  deserialized objects to crash when rendered.
+
 2008-05-20  Chris Howie <me@chrishowie.com> 
 
 	* TextureHandle.cs, DynamicMovement.cs, SharedTextureHandle.cs,

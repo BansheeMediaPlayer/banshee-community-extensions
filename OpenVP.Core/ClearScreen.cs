@@ -44,10 +44,10 @@ namespace OpenVP.Core {
 		public ClearScreen() {
 		}
 		
-		public override void NextFrame(Controller controller) {
+		public override void NextFrame(IController controller) {
 		}
 		
-		public override void RenderFrame(Controller controller) {
+		public override void RenderFrame(IController controller) {
 			this.ClearColor.Use();
 			
 			Gl.glMatrixMode(Gl.GL_PROJECTION);

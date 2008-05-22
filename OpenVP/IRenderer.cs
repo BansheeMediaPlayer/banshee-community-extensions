@@ -30,8 +30,8 @@ namespace OpenVP {
 		/// Renders one frame.
 		/// </summary>
 		/// <param name="controller">
-		/// The <see cref="Controller"/>.
+		/// The <see cref="IController"/>.
 		/// </param>
-		void Render(Controller controller);
+		void Render(IController controller);
 	}
 }

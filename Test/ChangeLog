@@ -1,3 +1,7 @@
+2008-05-22  Chris Howie <me@chrishowie.com> 
+
+	* Main.cs: Track API changes.
+
 2008-05-20  Chris Howie <me@chrishowie.com> 
 
 	* Main.cs: Change license from GPLv2 to LGPLv3.

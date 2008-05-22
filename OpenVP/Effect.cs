@@ -19,6 +19,7 @@
 //
 
 using System;
+using System.Runtime.Serialization;
 
 using OpenVP.Metadata;
 
@@ -36,7 +37,7 @@ namespace OpenVP {
 	/// it since it would not be able to save the effect settings.</para>
 	/// </remarks>
 	[Serializable]
-	public abstract class Effect : IRenderer, IDisposable {
+	public abstract class Effect : IRenderer, IDisposable, IDeserializationCallback {
 		/// <summary>
 		/// Returns the display name of an effect type.
 		/// </summary>
@@ -108,34 +109,34 @@ namespace OpenVP {
 		/// Compute any information required to render the next frame.
 		/// </summary>
 		/// <param name="controller">
-		/// The <see cref="Controller"/>.
+		/// The <see cref="IController"/>.
 		/// </param>
 		/// <remarks>
 		/// This method is always called each frame, before any call to
 		/// <see cref="OpenVP.Effect.RenderFrame"/>.
 		/// </remarks>
-		public abstract void NextFrame(Controller controller);
+		public abstract void NextFrame(IController controller);
 		
 		/// <summary>
 		/// Render the next frame.
 		/// </summary>
 		/// <param name="controller">
-		/// The <see cref="Controller"/>.
+		/// The <see cref="IController"/>.
 		/// </param>
 		/// <remarks>
 		/// If <see cref="OpenVP.Effect.Enabled"/> is <c>false</c>, this method
 		/// will not be called.  Otherwise it will be called immediately after
 		/// a call to <see cref="OpenVP.Effect.NextFrame"/>.
 		/// </remarks>
-		public abstract void RenderFrame(Controller controller);
+		public abstract void RenderFrame(IController controller);
 		
 		/// <summary>
 		/// Renders this effect.
 		/// </summary>
 		/// <param name="controller">
-		/// The <see cref="Controller"/>.
+		/// The <see cref="IController"/>.
 		/// </param>
-		public void Render(Controller controller) {
+		public void Render(IController controller) {
 			this.NextFrame(controller);
 			
 			if (this.mEnabled)
@@ -152,5 +153,24 @@ namespace OpenVP {
 		/// </remarks>
 		public virtual void Dispose() {
 		}
+        
+        void IDeserializationCallback.OnDeserialization(object sender) {
+            this.OnDeserialization(sender);
+        }
+        
+        /// <summary>
+        /// Called during deserialization.
+        /// </summary>
+        /// <param name="sender">
+        /// Event sender.
+        /// </param>
+        /// <remarks>
+        /// Subclasses can override this method to perform any needed
+        /// initialization after object deserialization.  If this method is
+        /// overridden, the base implementation must always be called first to
+        /// allow superclasses to initialize themselves too.
+        /// </remarks>
+        protected virtual void OnDeserialization(object sender) {
+        }
 	}
 }
