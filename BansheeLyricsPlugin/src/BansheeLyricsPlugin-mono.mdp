@@ -4,7 +4,7 @@
       <Output directory="." assemblyKeyFile="." assembly="Banshee.Lyrics" />
       <Build debugmode="True" target="Library" />
       <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
-      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" definesymbols="DEBUG" generatexmldocumentation="False" additionalargs="-resource:./LyricsMenu.xml,LyricsMenu.xml" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" definesymbols="DEBUG" generatexmldocumentation="False" additionalargs="-resource:./LyricsMenu.xml,LyricsMenu.xml -resource:./Banshee.Lyrics.addin.xml,Banshee.Lyrics.addin.xml" ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release" ctype="DotNetProjectConfiguration">
       <Output directory="." assembly="Banshee.Lyrics" />
@@ -42,7 +42,6 @@
     <File name="BansheeLyricsPlugin-mono.usertasks" subtype="Code" buildaction="Nothing" />
     <File name="LyricsMenu.xml" subtype="Code" buildaction="Nothing" />
     <File name="gtk-gui/Banshee.Plugins.Lyrics.LyricsHeader.cs" subtype="Code" buildaction="Compile" />
-    <File name="Banshee.Lyrics.dll.mdb" subtype="Code" buildaction="Nothing" />
     <File name="Lyrics.dll.mdb" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>

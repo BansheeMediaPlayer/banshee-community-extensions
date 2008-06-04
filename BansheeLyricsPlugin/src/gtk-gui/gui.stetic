@@ -85,8 +85,8 @@
     <property name="Resizable">False</property>
     <property name="AllowGrow">False</property>
     <property name="AllowShrink">True</property>
-    <property name="DefaultWidth">380</property>
-    <property name="DefaultHeight">465</property>
+    <property name="DefaultWidth">415</property>
+    <property name="DefaultHeight">435</property>
     <child>
       <widget class="Gtk.VBox" id="vbox2">
         <property name="MemberName" />

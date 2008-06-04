@@ -63,8 +63,8 @@ namespace Banshee.Plugins.Lyrics
 		{
 			Pixbuf pixbuf_image = null;
 			string cover = "";
-			if(CoverArtSpec.CoverExists(ServiceManager.PlayerEngine.CurrentTrack.ArtistAlbumId)){
-				cover = CoverArtSpec.GetPath(ServiceManager.PlayerEngine.CurrentTrack.ArtistAlbumId);
+			if(CoverArtSpec.CoverExists(ServiceManager.PlayerEngine.CurrentTrack.ArtworkId)){
+				cover = CoverArtSpec.GetPath(ServiceManager.PlayerEngine.CurrentTrack.ArtworkId);
 				pixbuf_image = new Pixbuf(cover);
 			}
 			else{
@@ -73,7 +73,7 @@ namespace Banshee.Plugins.Lyrics
 			
 			return pixbuf_image;
 		}
-		
+
 		public static Banshee.Networking.NetworkDetect GetNetworkDetect()
 		{
 			return Banshee.Networking.NetworkDetect.Instance;

@@ -1,5 +1,5 @@
 MCS_FLAGS = -debug /r:System.Web 
-ASSEMBLY_COMPILER_FLAGS =  -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -resource:./LyricsMenu.xml,LyricsMenu.xml  "-define:DEBUG"
+ASSEMBLY_COMPILER_FLAGS =  -noconfig -codepage:utf8 -warn:4 -optimize+ -debug
 CUSTOM_MCS_FLAGS = $(MCS_FLAGS) \
 	-unsafe
 ASSEMBLY = Banshee.Lyrics.dll
@@ -28,31 +28,32 @@ SOURCES = \
 RESOURCES = \
 	gtk-gui/gui.stetic \
         gtk-gui/objects.xml \
-        Banshee.Lyrics.addin.xml
-
-RESOURCES_BUILD = $(foreach resource,$(RESOURCES),$(addprefix -resource:,$(resource)))
+        Banshee.Lyrics.addin.xml \
+	LyricsMenu.xml
 
 REFERENCES =  \
 	System.Web \
 	$(GTKHTML_SHARP_314_LIBS) \
 	$(GCONF_SHARP_20_LIBS) \
-	$(GTK_SHARP_20_LIBS) \
-	$(BANSHEE_1_CORE_LIBS) \
-	$(BANSHEE_1_SERVICES_LIBS) \
 	$(BANSHEE_1_THICKCLIENT_LIBS)
 
 BUILD_REFERENCES = $(foreach ref, $(REFERENCES), $(if $(filter -pkg:%, $(ref)), $(ref), $(if $(filter -r:%, $(ref)), $(ref), -r:$(ref))))
 
+SOURCES_BUILD = $(addprefix $(srcdir)/, $(SOURCES))
+
+RESOURCES_EXPANDED = $(addprefix $(srcdir)/, $(RESOURCES))
+RESOURCES_BUILD = $(foreach resource, $(RESOURCES_EXPANDED), \
+	-resource:$(resource),$(notdir $(resource)))
 
 plugindir = $(PLUGINDIR)
 plugin_SCRIPTS = $(ASSEMBLY)
 
 all: $(ASSEMBLY)
 
-$(ASSEMBLY): $(SOURCES) $(RESOURCES)
-	$(MCS) $(MCS_FLAGS) $(CUSTOM_MCS_FLAGS) $(ASSEMBLY_COMPILER_FLAGS)  -out:$(ASSEMBLY) -target:library $(BANSHEE_LIBS) $(SOURCES) $(RESOURCES_BUILD) $(BUILD_REFERENCES);
+$(ASSEMBLY): $(SOURCES_BUILD) $(RESOURCES_EXPANDED)
+	$(MCS) $(MCS_FLAGS) $(CUSTOM_MCS_FLAGS) $(ASSEMBLY_COMPILER_FLAGS)  -out:$(ASSEMBLY) -target:library $(BANSHEE_LIBS) $(SOURCES_BUILD) $(RESOURCES_BUILD) $(BUILD_REFERENCES)
 
-EXTRA_DIST = $(SOURCES)
+EXTRA_DIST = $(SOURCES_BUILD) $(RESOURCES_EXPANDED)
 CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb
 DISTCLEANFILES = Makefile.in
 

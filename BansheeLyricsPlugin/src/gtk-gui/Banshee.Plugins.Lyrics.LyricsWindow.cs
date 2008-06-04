@@ -35,8 +35,8 @@ namespace Banshee.Plugins.Lyrics {
             this.Resizable = false;
             this.AllowGrow = false;
             this.AllowShrink = true;
-            this.DefaultWidth = 370;
-            this.DefaultHeight = 450;
+            this.DefaultWidth = 415;
+            this.DefaultHeight = 435;
             // Container child Banshee.Plugins.Lyrics.LyricsWindow.Gtk.Container+ContainerChild
             this.vbox2 = new Gtk.VBox();
             this.vbox2.Name = "vbox2";
