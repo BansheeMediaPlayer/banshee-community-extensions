@@ -9,6 +9,7 @@ using Banshee.Gui;
 using Banshee.ServiceStack;
 using Banshee.Sources;
 using Banshee.Sources.Gui;
+using Gdk;
 using Gtk;
 using System;
 using System.Collections.Generic;
@@ -67,8 +68,10 @@ namespace Magnatune
 		}
 
 		public RadioSource() : base("Magnatune", "Magnatune", 200)
-		{ 
-			Properties.SetString("Icon.Name", "magnatune");
+		{
+			Pixbuf icon = new Pixbuf(System.Reflection.Assembly.GetExecutingAssembly()
+			                         .GetManifestResourceStream("simple_icon.png"));
+			Properties.Set<Pixbuf>("Icon.Pixbuf_22", icon.ScaleSimple(22, 22, InterpType.Bilinear));
 			Properties.Set<ISourceContents>("Nereid.SourceContents", new RadioSourceContents());
 			Properties.Set<bool>("Nereid.SourceContents.HeaderVisible", false);
 			
