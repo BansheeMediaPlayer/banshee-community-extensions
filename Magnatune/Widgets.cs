@@ -3,9 +3,11 @@
 //
 // Widgets based upon LastfmSourceContents
 
+using Banshee.Streaming;
 using Banshee.Widgets;
 using Gtk;
 using System;
+using System.Collections.Generic;
 
 namespace Magnatune
 {
@@ -13,9 +15,12 @@ namespace Magnatune
     {
         private Label title;
 		private TileView tile_view;
+		
+		private Dictionary<string, Genre> genre_map;
 
         public TitledList (string title_str) : base ()
         {
+			genre_map = new Dictionary<string, Genre>();
             title = new Label ();
             title.Xalign = 0;
             title.Ellipsize = Pango.EllipsizeMode.End;
@@ -29,7 +34,7 @@ namespace Magnatune
                 title.ModifyFg (StateType.Normal, Style.Text (StateType.Normal));
             };
 			
-			tile_view = new TileView(1);
+			tile_view = new TileView(2);
 			PackStart(tile_view, true, true, 0);
 			tile_view.Show();
 			
@@ -41,39 +46,38 @@ namespace Magnatune
 		
 		public void SetList()
 		{
+			List<Genre> genres = RadioSource.GetGenres();
+			genre_map.Clear();
 			tile_view.ClearWidgets();
-			MenuTile tile = new MenuTile();
-			tile.PrimaryText = "Ambient";
-			tile.SecondaryText = "space, drone, loops: find a new reality";
-			tile.ButtonPressEvent += TestAmbient;
-			tile_view.AddWidget(tile);
-			
-			tile = new MenuTile();
-			tile.PrimaryText = "Classical";
-			tile.SecondaryText = "baroque, renaissance, medieval, contemporary, minimalism";
-			tile.ButtonPressEvent += TestAmbient;
-			tile_view.AddWidget(tile);
-			
-			tile = new MenuTile();
-			tile.PrimaryText = "Electronica";
-			tile.SecondaryText = "ambient, IDM, industrial, trance, goa, and 5 zillion more sub-genres";
-			tile.ButtonPressEvent += TestAmbient;
-			tile_view.AddWidget(tile);
+			foreach (Genre genre in genres)
+			{
+				MenuTile tile = new MenuTile();
+				tile.PrimaryText = genre.Title;
+				genre_map.Add(genre.Title, genre);
+				tile.SecondaryText = genre.Description;
+				tile.ButtonPressEvent += PlayGenre;
+				tile_view.AddWidget(tile);
+			}
 			tile_view.ShowAll();
 		}
 		
-		private void TestAmbient(object sender, EventArgs e)
+		private void PlayGenre(object sender, ButtonPressEventArgs args)
 		{
-			Banshee.Base.SafeUri uri = new Banshee.Base.SafeUri("http://magnatune.com/genres/m3u/ambient.m3u");
-			Banshee.Streaming.RadioTrackInfo rti = new Banshee.Streaming.RadioTrackInfo(uri);
-			try
+			MenuTile tile = sender as MenuTile;
+			Genre g = genre_map[tile.PrimaryText];
+			string type = RadioSource.MembershipTypeSchema.Get();
+			RadioTrackInfo rti;
+			if (type != "")
 			{
-				rti.Play();
+				string user = RadioSource.UsernameSchema.Get();
+				string pass = RadioSource.PasswordSchema.Get();
+				rti = new RadioTrackInfo(g.GetM3uUri(type, user, pass));
 			}
-			catch (Exception ex)
+			else
 			{
-				Hyena.Log.Error("Exception: " + ex.ToString());
+				rti = new RadioTrackInfo(g.GetM3uUri());
 			}
+			rti.Play();
 		}
     }
 }

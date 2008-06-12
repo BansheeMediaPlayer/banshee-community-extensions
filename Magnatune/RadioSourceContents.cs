@@ -50,7 +50,7 @@ namespace Magnatune
 			                 .GetManifestResourceStream("logo_color_large.gif"));
 			logo = new Image(logo_pix);
 			
-			// attempt to auto-scale logo
+			// auto-scale logo
 			SizeAllocated += delegate (object o, SizeAllocatedArgs args) {
 				int width = args.Allocation.Width - 50;
 				logo.FromPixbuf = logo_pix.ScaleSimple(width, (int)((float)width / 6.3f), 
@@ -61,7 +61,6 @@ namespace Magnatune
 			
 			genres = new TitledList("Genres");
 			main_box.PackStart(genres, false, false, 0);
-			genres.SetList();
 
             AddWithFrame (viewport);
             ShowAll ();
@@ -73,9 +72,16 @@ namespace Magnatune
             if (radio == null) {
                 return false;
             }
+			
+			UpdateGenres();
 
             return true;
         }
+		
+		public void UpdateGenres()
+		{
+			genres.SetList();
+		}
 
         public ISource Source {
             get { return radio; }
@@ -92,8 +98,8 @@ namespace Magnatune
 
         public void Refresh ()
         {
-            if (genres != null) 
-				genres.SetList();
+			if (genres != null) 
+				UpdateGenres();
         }
 	}
 }
