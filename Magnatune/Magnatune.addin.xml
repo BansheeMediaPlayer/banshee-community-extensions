@@ -4,10 +4,10 @@
     version="1.0"
     compatVersion="1.0"
     copyright="© 2008 Max Battcher. Licensed under the MIT X11 license."
-    name=""
-    category=""
+    name="Magnatune for Banshee"
+    category="User Interface"
     description="Magnatune for Banshee"
-    author=""
+    author="Max Battcher"
     url="http://magnatune.code.worldmaker.net/"
     defaultEnabled="true">
 
