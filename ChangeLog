@@ -1,5 +1,10 @@
 2008-06-25  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* Mirage/res/Makefile.am, Banshee/res/Makefile.am: Remove files that are now
+	  useless.
+
+2008-06-25  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* AUTHORS: Adding myself
 	* Banshee/Banshee.Plugins.Mirage.addin.xml: Add Mono.Addins metadata.
 	* Banshee/PlaylistGeneratorView.cs, Banshee/PlaylistModel.cs,
