@@ -1,8 +1,5 @@
-SUBDIRS = res
-
-MCS_FLAGS= -noconfig -debug -codepage:utf8 -unsafe -warn:4 -d:DEBUG
-
-ASSEMBLY = Mirage.dll
+ASSEMBLY = Mirage
+TARGET = library
 
 SOURCES = \
 	AudioDecoder.cs \
@@ -13,31 +10,10 @@ SOURCES = \
 	Mfcc.cs \
 	Mir.cs \
 	Scms.cs \
-	Vector.cs \
-	AssemblyInfo.cs
+	Vector.cs
 
 RESOURCES = \
-	-resource:res/dct.filter \
-	-resource:res/filterweights.filter 
+	res/dct.filter \
+	res/filterweights.filter 
 
-REFERENCES =  \
-	-r:Mono.Posix \
-	-r:Mono.Data \
-	-r:Mono.Data.SqliteClient \
-	-r:System.Data \
-	-r:System
-
-all: $(ASSEMBLY)
-
-$(ASSEMBLY) $(ASSEMBLY).mdb: $(SOURCES)
-	$(MCS) $(MCS_FLAGS) -out:$(ASSEMBLY) $(RESOURCES) $(REFERENCES) -target:library $(BANSHEE_LIBS) $(SOURCES)
-
-EXTRA_DIST = \
-	$(SOURCES)
-
-CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb
-DISTCLEANFILES = *.mdb
-MAINTAINERCLEANFILES = Makefile.in
-
-miragedir = $(BANSHEE_LIBDIR)
-mirage_SCRIPTS = $(ASSEMBLY) $(ASSEMBLY).mdb
+include $(top_srcdir)/build/build.mk

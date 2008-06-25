@@ -22,12 +22,6 @@
 
 using Gtk;
 
-using Banshee.Base;
-using Banshee.Kernel;
-using Banshee.Sources;
-using Banshee.Configuration;
-using Banshee.Widgets;
-
 using System;
 using System.IO;
 using System.Collections;
@@ -37,24 +31,18 @@ using System.Text;
 
 using Mono.Unix;
 
+using Hyena;
+using Banshee.Collection.Database;
+using Banshee.Configuration;
+using Banshee.ServiceStack;
+using Banshee.Sources;
+using Banshee.Gui;
+
 using Mirage;
-
-
-public static class PluginModuleEntry
-{
-    public static Type [] GetTypes()
-    {
-        return new Type [] {
-            typeof(Banshee.Plugins.Mirage.MiragePlugin)
-        };
-    }
-}
-
 
 namespace Banshee.Plugins.Mirage
 {
-
-    public class MiragePlugin : Banshee.Plugins.Plugin
+    public class MiragePlugin : IExtensionService, IDisposable
     {
         Db db;
         ContinuousGeneratorSource continuousPlaylist;
@@ -70,42 +58,14 @@ namespace Banshee.Plugins.Mirage
         Thread scanThread;
 
         ActionGroup actions;
-        ActiveUserEvent userEvent;
         uint uiManagerId;
         
-        protected override string ConfigurationName {
-            get {
-                return "Mirage";
-            }
-        }
+        InterfaceActionService action_service;
         
-        public override string DisplayName
+        void IExtensionService.Initialize ()
         {
-            get {
-                return Catalog.GetString("Automatic Playlist Generator");
-            }
-        }
-
-        public override string Description
-        {
-            get {
-                return String.Format ("{0}\n\n{1}",
-                    Catalog.GetString ("Drag a song on the automatic playlist generator, "+
-                            "Mirage will then try to automatically generate a playlist of "+
-                            "similar songs.\nMirage only looks at the audio signal!"),
-                    "http://hop.at/mirage/");
-            }
-        }
-
-        public override string [] Authors
-        {
-            get {
-                return new string [] { "Dominik Schnitzer" };
-            }
-        }
-        
-        protected override void PluginInitialize()
-        {
+            action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
+            
             Catalog.Init("Mirage", Config.LocaleDir);
 
             string xdgcachedir = Environment.GetEnvironmentVariable("XDG_CACHE_HOME");
@@ -131,33 +91,54 @@ namespace Banshee.Plugins.Mirage
             processingMutex = new object();
             processing = false;
 
-            Globals.Library.Db.Execute(
+            ServiceManager.DbConnection.Execute(
                     "CREATE TABLE IF NOT EXISTS MirageProcessed"
                     + " (TrackID INTEGER PRIMARY KEY, Status INTEGER)");
 
-            if(Globals.Library.IsLoaded) {
-                OnLibraryReloaded(null, EventArgs.Empty);
-            } else {
-                Globals.Library.Reloaded += OnLibraryReloaded;
-            }
-            Globals.Library.TrackRemoved += OnLibraryTrackRemoved;
+            InstallInterfaceActions();
             
-            continuousPlaylist =
-                    new ContinuousGeneratorSource("Playlist Generator", new Db(dbfile));
-            LibrarySource.Instance.AddChildSource(continuousPlaylist);
-
-            if (!Globals.UIManager.IsInitialized) {
-                Globals.UIManager.Initialized += OnInterfaceInitialized;
-            } else {
-                OnInterfaceInitialized(null, null);
+            if (!ServiceStartup ()) {
+                ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
+            }
+            
+            Log.Debug("Mirage: Initialized");
+        }
+        
+        private void OnSourceAdded (SourceAddedArgs args)
+        {
+            if (ServiceStartup ()) {
+                ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
             }
         }
         
-        protected override void PluginDispose()
+        private bool ServiceStartup ()
         {
-            Globals.Library.Reloaded -= OnLibraryReloaded;
-            Globals.Library.TrackAdded -= OnLibraryTrackAdded;
-            Globals.Library.TrackRemoved -= OnLibraryTrackRemoved;
+            if (ServiceManager.SourceManager.MusicLibrary == null)
+                return false;
+            
+            if (continuousPlaylist == null) {
+                ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
+
+                ServiceManager.SourceManager.MusicLibrary.TracksAdded += OnLibraryTracksAdded;
+                ServiceManager.SourceManager.MusicLibrary.TracksDeleted += OnLibraryTracksDeleted;
+                
+                continuousPlaylist = new ContinuousGeneratorSource("Playlist Generator", db);
+                
+                Log.Debug("Mirage: add source");
+                lock (ServiceManager.SourceManager.MusicLibrary.Children) {
+                    ServiceManager.SourceManager.MusicLibrary.AddChildSource(continuousPlaylist);
+                }
+                //Log.Debug("Mirage: scan library");
+                //ScanLibrary();
+            }
+            
+            return true;
+        }
+        
+        public void Dispose ()
+        {
+            ServiceManager.SourceManager.MusicLibrary.TracksAdded -= OnLibraryTracksAdded;
+            ServiceManager.SourceManager.MusicLibrary.TracksDeleted -= OnLibraryTracksDeleted;
 
             // cancel analysis, everything
             lock(jobQueue) {
@@ -168,15 +149,10 @@ namespace Banshee.Plugins.Mirage
             } catch (Exception) {
             }
 
-            LibrarySource.Instance.RemoveChildSource(continuousPlaylist);
+            ServiceManager.SourceManager.MusicLibrary.RemoveChildSource(continuousPlaylist);
 
-            Globals.ActionManager.UI.RemoveUi(uiManagerId);
-            Globals.ActionManager.UI.RemoveActionGroup(actions);
-        }
-
-        private void OnInterfaceInitialized(object o, EventArgs args)
-        {
-            ScanLibrary();
+            action_service.UIManager.RemoveUi(uiManagerId);
+            action_service.UIManager.RemoveActionGroup(actions);
         }
 
         private void ScanLibrary()
@@ -189,26 +165,29 @@ namespace Banshee.Plugins.Mirage
 
         private void ScanLibraryThread()
         {
-            Dbg.WriteLine("Mirage: Scanning library for tracks to update");
-
-            // TODO: Eliminate this...
-            System.Threading.Thread.Sleep(5000);
-
+            Log.Debug("Mirage: Scanning library for tracks to update");
+            
             String query;
             if (rescanFailed) {
-                query = "SELECT TrackID FROM Tracks WHERE TrackID NOT IN"
-                    + " (SELECT Tracks.TrackID FROM MirageProcessed, Tracks"
-                    + " WHERE (Tracks.TrackID = MirageProcessed.TrackID) AND"
-                    + " (MirageProcessed.Status = 0))"
-                    + " ORDER BY Rating DESC, NumberOfPlays DESC";
+                query = String.Format(
+                    @"SELECT TrackID FROM CoreTracks 
+                        WHERE PrimarySourceID = {0} AND TrackID NOT IN
+                            (SELECT CoreTracks.TrackID FROM MirageProcessed, CoreTracks
+                                WHERE CoreTracks.TrackID = MirageProcessed.TrackID AND
+                                    MirageProcessed.Status = 0)
+                        ORDER BY Rating DESC, PlayCount DESC",
+                    ServiceManager.SourceManager.MusicLibrary.DbId);
             } else {
-                query = "SELECT TrackID FROM Tracks WHERE TrackID NOT IN"
-                    + " (SELECT Tracks.TrackID FROM MirageProcessed, Tracks"
-                    + " WHERE (Tracks.TrackID = MirageProcessed.TrackID))"
-                    + " ORDER BY Rating DESC, NumberOfPlays DESC";
+                query = String.Format(
+                    @"SELECT TrackID FROM CoreTracks 
+                        WHERE PrimarySourceID = {0} AND TrackID NOT IN
+                            (SELECT CoreTracks.TrackID FROM MirageProcessed, CoreTracks
+                                WHERE CoreTracks.TrackID = MirageProcessed.TrackID)
+                        ORDER BY Rating DESC, PlayCount DESC",
+                    ServiceManager.SourceManager.MusicLibrary.DbId);
             }
 
-            IDataReader reader = Globals.Library.Db.Query(query);
+            IDataReader reader = ServiceManager.DbConnection.Query(query);
 
             lock(jobQueue) {
                 jobsScheduled = 0;
@@ -220,7 +199,7 @@ namespace Banshee.Plugins.Mirage
             }
 
             reader.Dispose();
-            Dbg.WriteLine("Mirage: Done scanning library");
+            Log.Debug("Mirage: Done scanning library");
 
             ProcessQueue();
         }
@@ -254,38 +233,37 @@ namespace Banshee.Plugins.Mirage
                 }
             }
 
-            // Banshee user event
-            userEvent = new ActiveUserEvent("Mirage");
-            userEvent.Header = Catalog.GetString("Mirage: Analyzing Songs");
-            userEvent.CancelMessage = Catalog.GetString(
+            // Banshee user job
+            UserJob userJob = new UserJob("Mirage", Catalog.GetString("Mirage: Analyzing Songs"), "audio-x-generic");
+            userJob.CancelMessage = Catalog.GetString(
                 "Are you sure you want to stop Mirage. "
                 + "Automatic Playlist Generation will only work for the tracks which are already analyzed. "
                 + "The operation can be resumed at any time from the <i>Tools</i> menu.");
-            userEvent.Icon = IconThemeUtils.LoadIcon(22, "audio-x-generic");
-            userEvent.CancelRequested += OnUserEventCancelRequested;
-            userEvent.Progress = 0;
+            userJob.CanCancel = true;
+            userJob.Progress = 0;
+            userJob.Register();
 
-            do {
+             while (jobQueue.Count > 0 && !userJob.IsCancelRequested) {
                 lock(jobQueue) {
                     trackId = (int)jobQueue.Dequeue();
                     queueLength = jobQueue.Count;
                 }
 
-                TrackInfo track = Globals.Library.GetTrack(trackId);
+                DatabaseTrackInfo track = DatabaseTrackInfo.Provider.FetchSingle(trackId);
 
                 if (track == null) {
                     lock (processingMutex) {
                         processing = false;
                     }
-                    return;
+                    break;
                 }
 
-                if (track.Uri.IsLocalPath) {
+                if (track.Uri != null && track.Uri.IsLocalPath) {
                     int status = 0;
                     try {
-                        Dbg.WriteLine("Mirage: processing " + track.TrackId + "/" + track.Artist + "/" + track.Title);
+                        Log.DebugFormat ("Mirage: processing {0}/{1}/{2}", track.TrackId, track.ArtistName, track.TrackTitle);
 
-                        userEvent.Message = String.Format("{0} - {1}", track.Artist, track.Title);
+                        userJob.Status = String.Format("{0} - {1}", track.ArtistName, track.TrackTitle);
                         Scms scms = Mir.Analyze(track.Uri.LocalPath);
                         db.AddTrack(track.TrackId, scms);
                     } catch (DbFailureException) {
@@ -293,34 +271,23 @@ namespace Banshee.Plugins.Mirage
                     } catch (MirAnalysisImpossibleException) {
                         status = -1;
                     } finally {
-                        // Banshee user event
-                        userEvent.Progress = 1 - (double)queueLength/(double)jobsScheduled;
+                        // Banshee user job
+                        userJob.Progress = 1 - (double)queueLength/(double)jobsScheduled;
 
-                        Globals.Library.Db.Execute("INSERT INTO MirageProcessed"
+                        ServiceManager.DbConnection.Execute("INSERT INTO MirageProcessed"
                                 + " (TrackID, Status) VALUES (" + track.TrackId + ", "
                                 + status + ")");
                     }
-
                 }
-
-            } while (jobQueue.Count > 0);
+            }
 
             jobsScheduled = 0;
-
-            if (userEvent != null) {
-                userEvent.CancelRequested -= OnUserEventCancelRequested;
-                userEvent.Dispose();
-                userEvent = null;
-            }
+            jobQueue.Clear();
+            userJob.Finish();
 
             lock (processingMutex) {
                 processing = false;
             }
-        }
-
-        protected override void InterfaceInitialize()
-        {
-            InstallInterfaceActions();
         }
 
         private void InstallInterfaceActions()
@@ -345,15 +312,15 @@ namespace Banshee.Plugins.Mirage
                         OnMirageResetHandler),
                     });
 
-            Globals.ActionManager.UI.InsertActionGroup(actions, 0);
-            uiManagerId = Globals.ActionManager.UI.AddUiFromResource("MirageMenu.xml");
+            action_service.UIManager.InsertActionGroup(actions, 0);
+            uiManagerId = action_service.UIManager.AddUiFromResource("MirageMenu.xml");
         }
 
         private void OnMirageRescanMusicHandler(object sender, EventArgs args)
         {
             if (((jobThread == null) && (scanThread == null)) ||
                 (!jobThread.IsAlive && !scanThread.IsAlive)) {
-                Dbg.WriteLine("Mirage: Rescan");
+                Log.Debug("Mirage: Rescan");
                 rescanFailed = true;
                 ScanLibrary();
             }
@@ -362,26 +329,17 @@ namespace Banshee.Plugins.Mirage
         private void OnMirageResetHandler(object sender, EventArgs args)
         {
             MessageDialog md = new MessageDialog (null, DialogFlags.Modal, MessageType.Question,
-                    ButtonsType.Cancel, Catalog.GetString("Do you really want to reset the Mirage Automatic Playlist Generation Plugin. "+
+                    ButtonsType.Cancel, Catalog.GetString("Do you really want to reset the Mirage Automatic Playlist Generation Extension ? " +
                     "All extracted information will be lost. Your music will have to be re-analyzed to use Mirage again."));
             md.AddButton(Catalog.GetString("Reset Mirage"), ResponseType.Yes);
             ResponseType result = (ResponseType)md.Run();
             md.Destroy();
 
             if (result == ResponseType.Yes) {
-                Dbg.WriteLine("Mirage: Reset");
-                if (userEvent != null) {
-                    userEvent.CancelRequested -= OnUserEventCancelRequested;
-                    userEvent.Dispose();
-                    userEvent = null;
-                }
-                lock(jobQueue) {
-                    jobQueue.Clear();
-                }
-
+                Log.Debug("Mirage: Reset");
                 try {
                     Mir.CancelAnalyze();
-                    Globals.Library.Db.Execute("DELETE FROM MirageProcessed");
+                    ServiceManager.DbConnection.Execute("DELETE FROM MirageProcessed");
                     db.Reset();
 
                     md = new MessageDialog(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
@@ -389,37 +347,26 @@ namespace Banshee.Plugins.Mirage
                     md.Run();
                     md.Destroy();
                 } catch (Exception) {
-                    Dbg.WriteLine("Mirage: Error resetting Mirage.");
+                    Log.Warning("Mirage: Error resetting Mirage.");
                 }
-
             }
 
         }
 
-        private void OnLibraryReloaded(object o, EventArgs args)
+        private void OnLibraryTracksAdded(object o, TrackEventArgs args)
         {
-            Globals.Library.TrackAdded += OnLibraryTrackAdded;
+            // We have to scan the library to process new tracks
+            ScanLibrary();
         }
 
-        private void OnLibraryTrackAdded(object o, LibraryTrackAddedArgs args)
+        private void OnLibraryTracksDeleted(object o, TrackEventArgs args)
         {
-            lock(jobQueue) {
-                jobQueue.Enqueue(args.Track.TrackId);
-                jobsScheduled++;
-            }
-            if (((jobThread == null) && (scanThread == null)) ||
-                (!jobThread.IsAlive && !scanThread.IsAlive)) {
-                ProcessQueue();
-            }
-        }
+            Log.Debug("Mirage: Deleted track.");
 
-        private void OnLibraryTrackRemoved(object o, LibraryTrackRemovedArgs args)
-        {
-            Dbg.WriteLine("Mirage: Deleted track.");
-
-            int[] trackids = new int[args.Tracks.Count];
+            // TODO clean up deleted tracks
+/*            int[] trackids = new int[args.Tracks.Count];
             int i = 0;
-            foreach(TrackInfo track in args.Tracks) {
+            foreach(DatabaseTrackInfo track in args.Tracks) {
                 trackids[i] = track.TrackId;
                 i++;
             }
@@ -434,28 +381,11 @@ namespace Banshee.Plugins.Mirage
                 removeSql.Append("," + trackids[i]);
             }
             removeSql.Append(")");
-            Globals.Library.Db.Execute(removeSql.ToString());
+            Globals.Library.Db.Execute(removeSql.ToString());*/
         }
 
-        private void OnUserEventCancelRequested(object o, EventArgs args)
-        {
-            if (userEvent != null) {
-                userEvent.CancelRequested -= OnUserEventCancelRequested;
-                userEvent.Dispose();
-                userEvent = null;
-            }
-
-            lock(jobQueue) {
-                jobQueue.Clear();
-            }
+        string IService.ServiceName {
+            get { return "MirageService"; }
         }
-
-        public static readonly SchemaEntry<bool> EnabledSchema = new SchemaEntry<bool>(
-            "plugins.mirage", "enabled",
-            true,
-            "Plugin enabled",
-            "Playlist Generation plugin enabled"
-        );
-
     }
 }

@@ -1,5 +1,37 @@
 2008-06-25  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* AUTHORS: Adding myself
+	* Banshee/Banshee.Plugins.Mirage.addin.xml: Add Mono.Addins metadata.
+	* Banshee/PlaylistGeneratorView.cs, Banshee/PlaylistModel.cs,
+	  Banshee/TrackView.Columns, Banshee/TrackView.Columns/AlbumColumn.cs,
+	  Banshee/TrackView.Columns/ArtistColumn.cs,
+	  Banshee/TrackView.Columns/DateAddedColumn.cs,
+	  Banshee/TrackView.Columns/DurationColumn.cs,
+	  Banshee/TrackView.Columns/GenreColumn.cs,
+	  Banshee/TrackView.Columns/LastPlayedColumn.cs,
+	  Banshee/TrackView.Columns/PlayCountColumn.cs,
+	  Banshee/TrackView.Columns/RatingColumn.cs,
+	  Banshee/TrackView.Columns/TitleColumn.cs,
+	  Banshee/TrackView.Columns/TrackNumberColumn.cs,
+	  Banshee/TrackView.Columns/TrackViewColumn.cs,
+	  Banshee/TrackView.Columns/UriColumn.cs,
+	  Banshee/TrackView.Columns/YearColumn.cs: Remove obsolete stuff.
+	* Banshee/SimilarityCalculator.cs: Put the SimilarityCalculator in its own
+	  file.
+	* Test/AssemblyInfo.cs.in: Add file, to make build system happy.
+	* Banshee/ContinuousGeneratorSource.cs, Banshee/MiragePlugin.cs,
+	  Banshee/PlaylistGeneratorSource.cs: Major changes to make it work with
+	  the new banshee.
+	* build, build/build.mk: Add file included by Makefile.am.
+	* Banshee/Makefile.am, Mirage/Makefile.am, Test/Makefile.am: Update the
+	  automake stuff. Use the common build.mk file. "make distcheck" should
+	  work now.
+	* libmirageaudio/Makefile.am: Use the proper variable from configure.
+	* configure.ac: Rework banshee path detection and fix "make distcheck".
+	  Version updated to 0.3.0.
+
+2008-06-25  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* Banshee/AssemblyInfo.cs.in: Use "Extension".
 
 2007-10-04 12:43  Dominik Schnitzer <dominik@schnitzer.at>

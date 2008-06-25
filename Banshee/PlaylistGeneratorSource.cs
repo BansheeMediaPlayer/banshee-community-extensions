@@ -25,30 +25,29 @@ using System.Data;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using Banshee;
-using Banshee.Base;
+
+using Hyena;
+using Banshee.Collection;
+using Banshee.Collection.Database;
+using Banshee.PlaybackController;
+using Banshee.ServiceStack;
 using Banshee.Sources;
-using Banshee.Plugins;
 using Mirage;
 using Mono.Unix;
 using Gtk;
 
 
-using System.Data.Sql;
-
 namespace Banshee.Plugins.Mirage
 {
-    public class PlaylistGeneratorSource : Banshee.Sources.ChildSource
+    public class PlaylistGeneratorSource : Source, ITrackModelSource, IDisposable, IBasicPlaybackController
     {
-        protected List<TrackInfo> tracks = new List<TrackInfo>();
-        public static List<TrackInfo> seeds = new List<TrackInfo>();
-        protected List<TrackInfo> tracksOverride = new List<TrackInfo>();
+        protected List<DatabaseTrackInfo> tracks = new List<DatabaseTrackInfo>();
+        public static List<DatabaseTrackInfo> seeds = new List<DatabaseTrackInfo>();
+        protected List<DatabaseTrackInfo> tracksOverride = new List<DatabaseTrackInfo>();
         
         protected Db db;
-        
-        protected HBox uiContainer;
-        protected PlaylistGeneratorView playlistView;
-        private Label statusLabel = new Label();
+
+        protected MemoryTrackListModel track_model;
         
         public override int Count {
             get {
@@ -56,20 +55,29 @@ namespace Banshee.Plugins.Mirage
             }
         }
         
-        public override object TracksMutex {
-            get {
-                return ((IList)tracks).SyncRoot;
+        private int current_track = 0;
+        public TrackInfo CurrentTrack {
+            get { return GetTrack (current_track); }
+            set {
+                int i = track_model.IndexOf (value);
+                if (i != -1)
+                    current_track = i;
             }
         }
-
+        
+        protected override string TypeUniqueId {
+            get { return "Mirage"; }
+        }
+        
         public PlaylistGeneratorSource(string name, Db db)
-                : base(name, 100)
+                : base("mirage-playlist-generator", name, 100)
         {
             this.db = db;
-
-            Gtk.Application.Invoke(delegate {
-                BuildInterface();
-            });
+            track_model = new MemoryTrackListModel ();
+        }
+        
+        public void Dispose ()
+        {
         }
         
         public void OnLinkButtonClicked(object o, EventArgs e)
@@ -77,59 +85,13 @@ namespace Banshee.Plugins.Mirage
             Gnome.Url.Show(((LinkButton)o).Uri);
         }
         
-        public void SetStatusLabelText(string text)
-        {
-            Gtk.Application.Invoke(delegate {
-                lock(statusLabel) {
-                    statusLabel.Text = text;
-                }
-            });
-        }
-        
-        private void BuildInterface()
-        {
-            
-            ScrolledWindow view_scroll = new ScrolledWindow();
-            view_scroll.HscrollbarPolicy = PolicyType.Automatic;
-            view_scroll.VscrollbarPolicy = PolicyType.Automatic;
-            view_scroll.ShadowType = ShadowType.In;
-
-            playlistView = new PlaylistGeneratorView(this);
-            view_scroll.Add(playlistView);
-            VBox vb = new VBox(false, 2);
-            vb.PackStart(view_scroll, true, true, 0);
-            
-            HBox hbex = new HBox(false, 4);
-            Label l1 = new Label("<b>"+Catalog.GetString("Status:") +"</b> ");
-            l1.UseMarkup = true;
-            hbex.PackStart(l1, false, false, 0);
-            statusLabel.Text = Catalog.GetString("Ready. Drag a song on the Playlist Generator to start!");
-            hbex.PackStart(statusLabel, false, false, 0);
-            hbex.PackStart(new HBox(), true, true, 0);
-            
-/*            LinkButton lb1 = new LinkButton("http://hop.at/mirage/", "");
-            lb1.Clicked += OnLinkButtonClicked;
-            lb1.Image = new Image(null, "mirage.png");
-            hbex.PackStart(lb1, false, false, 0);*/
-            
-            LinkButton lb2 = new LinkButton("http://www.cp.jku.at/?miragelink", "");
-            lb2.Image = new Image(null, "cp.png");
-            lb2.Clicked += OnLinkButtonClicked;
-            hbex.PackStart(lb2, false, false, 0);
-            
-            vb.PackStart(hbex, false, true, 0);
-            
-            uiContainer = new HBox();
-            uiContainer.PackStart(vb, true, true, 0);
-            uiContainer.ShowAll();
-        }
-
-        public override void Commit ()
+        public virtual void Update ()
         {
             int[] trackId;
             
+            Log.Debug("Mirage: PlaylistGeneratorSource.Update");
             // Add seed tracks 
-            lock(TracksMutex) {
+            lock(tracks) {
                 tracks.Clear();
                 tracks.AddRange(tracksOverride);
                 seeds.Clear();
@@ -138,11 +100,10 @@ namespace Banshee.Plugins.Mirage
 
                 // maintain the seed track order
                 Gtk.Application.Invoke(delegate {
-                    playlistView.Clear();
+                    track_model.Clear();
                     for (int i = 0; i < tracks.Count; i++) {
-                        playlistView.AddTrack(tracks[i], i);
+                        track_model.Add(tracks[i]);
                     }
-                    playlistView.QueueDraw();
                     OnUpdated();
                 });
 
@@ -155,7 +116,7 @@ namespace Banshee.Plugins.Mirage
             SimilarityCalculator sc =
                     new SimilarityCalculator(trackId, trackId, db,
                             UpdatePlaylist, 5);
-            SetStatusLabelText(Catalog.GetString("Generating the playlist..."));
+            SetStatus(Catalog.GetString("Generating the playlist..."), false);
             Thread similarityCalculatorThread =
                     new Thread(new ThreadStart(sc.Compute));
             similarityCalculatorThread.Start();
@@ -164,14 +125,13 @@ namespace Banshee.Plugins.Mirage
         protected void UpdatePlaylist(int[] playlist, int length)
         {
             Gtk.Application.Invoke(delegate {
-                lock(TracksMutex) {
+                lock(tracks) {
                     int sameArtistCount = 0;
                     int i = 0;
                     int pi = 0;
                     while ((i < Math.Min(playlist.Length, length)) && (pi < playlist.Length)) {
-                        TrackInfo track = Globals.Library.GetTrack(playlist[pi]);
-                        bool sameArtist = track.Artist.Equals(seeds[seeds.Count-1].Artist,
-                            StringComparison.CurrentCultureIgnoreCase);
+                        DatabaseTrackInfo track = DatabaseTrackInfo.Provider.FetchSingle(playlist[pi]);
+                        bool sameArtist = track.Artist.Equals(seeds[seeds.Count-1].Artist);
                         pi++;
                         
                         if (sameArtist)
@@ -183,92 +143,148 @@ namespace Banshee.Plugins.Mirage
                             i++;
                             
                         tracks.Add(track);
-                        playlistView.AddTrack(track, tracks.Count);
+                        track_model.Add(track);
                     }
-                    SetStatusLabelText(Catalog.GetString("Playlist ready."));
+                    SetStatus(Catalog.GetString("Playlist ready."), false, false, null);
                 }
                 
-                playlistView.QueueDraw();
                 OnUpdated();
+                HideStatus();
             });
             
         }
         
-        public delegate void Playlist(int[] playlist, int length);
-    
+        public delegate void UpdatePlaylistDelegate(int[] playlist, int length);
 
-        public class SimilarityCalculator {
-        
-            int[] trackId;
-            int[] excludeTrackId;
-            Playlist play;
-            int length;
-            Db db;
-            
-            public SimilarityCalculator(int[] trackId, int[] excludeTrackId,
-                    Db db, Playlist playlist, int length)
-            {
-                this.trackId = trackId;
-                this.play = playlist;
-                this.length = length;
-                this.excludeTrackId = excludeTrackId;
-                this.db = db;
-            }
-            
-            public void Compute()
-            {
-                int[] playlist;
-                try {
-                    playlist = Mir.SimilarTracks(trackId, excludeTrackId, db);
-                    play(playlist, length);
-                } catch (MirAnalysisImpossibleException) {
-                    Dbg.WriteLine("Mirage: ERROR. Impossible to compute playlist");
-                }
-            }
-        }
-        
-
-        public override void ShowPropertiesDialog()
-        {
-            // Show Properties
-        }
-
-        public override void Reorder(TrackInfo track, int position)
+        public void Reorder(DatabaseTrackInfo track, int position)
         {
             // Reorder Tracks
         }
 
-        public override void AddTrack(TrackInfo track)
+        public void AddTrack(DatabaseTrackInfo track)
         {
-            if(track is LibraryTrackInfo) {
-                lock(TracksMutex) {
-                    tracksOverride.Add(track);
-                }
+            lock(tracks) {
+                Log.DebugFormat("Adding track {0}", track.TrackTitle);
+                tracksOverride.Add(track);
             }
-            OnTrackAdded(track);
+            OnUpdated();
         }
         
-        public override Gtk.Widget ViewWidget {
-            get {
-                return uiContainer;
+        public override bool AcceptsInputFromSource (Source source)
+        {
+            return source == Parent || 
+                (source.Parent == Parent || Parent == null || (source.Parent == null && !(source is PrimarySource)));
+        }
+        
+        public override SourceMergeType SupportedMergeTypes {
+            get { return SourceMergeType.ModelSelection; }
+        }
+        
+        public override void MergeSourceInput (Source source, SourceMergeType mergeType)
+        {
+            Log.Debug("Mirage: MergeSourceInput");
+            TrackListModel model = (source as ITrackModelSource).TrackModel;
+            Hyena.Collections.Selection selection = model.Selection;
+            if (selection.Count == 0)
+                return;
+
+            Log.Debug("Mirage: MergeSourceInput 2");
+            foreach (DatabaseTrackInfo ti in model.SelectedItems) {
+                AddTrack (ti);
+            }
+
+            Update();
+            //DatabaseTrackInfo ti = (source as ITrackModelSource).TrackModel[0] as DatabaseTrackInfo;
+            //AddTrack (ti);
+        }
+
+        
+#region ITrackModelSource Implementation
+
+        public TrackListModel TrackModel {
+            get { return track_model; }
+        }
+
+        public AlbumListModel AlbumModel {
+            get { return null; }
+        }
+
+        public ArtistListModel ArtistModel {
+            get { return null; }
+        }
+        
+        public System.Collections.Generic.IEnumerable<Banshee.Collection.Database.IFilterListModel> FilterModels {
+            get { yield break; }
+        }
+        
+        public bool HasDependencies {
+            get { return false; }
+        }
+
+        public void Reload ()
+        {
+            track_model.Reload ();
+        }
+
+        public void RemoveSelectedTracks ()
+        {
+        }
+
+        public void DeleteSelectedTracks ()
+        {
+            throw new Exception ("Should not call DeleteSelectedTracks on PlaylistGeneratorSource");
+        }
+
+        public bool CanAddTracks {
+            get { return true; }
+        }
+
+        public bool CanRemoveTracks {
+            get { return false; }
+        }
+
+        public bool CanDeleteTracks {
+            get { return false; }
+        }
+
+        public bool ConfirmRemoveTracks {
+            get { return false; }
+        }
+        
+        public bool ShowBrowser {
+            get { return false; }
+        }
+
+#endregion
+
+#region IBasicPlaybackController
+
+        void IBasicPlaybackController.First ()
+        {
+            ((IBasicPlaybackController)this).Next (false);
+        }
+        
+        void IBasicPlaybackController.Next (bool restart)
+        {
+            TrackInfo next = NextTrack;
+            if (next != null) {
+                ServiceManager.PlayerEngine.OpenPlay (next);
             }
         }
         
-        public override bool AcceptsInput {
-            get {
-                return true;
-            }
+        void IBasicPlaybackController.Previous (bool restart)
+        {
+        }
+        
+#endregion
+
+        public TrackInfo NextTrack {
+            get { return GetTrack (current_track + 1); }
         }
 
-        public static Image icon = new Image(null, "source-mirage.png");
-
-        public override Gdk.Pixbuf Icon {
-            get {
-                return icon.Pixbuf;
-            }
+        private TrackInfo GetTrack (int track_num) {
+            return (track_num > track_model.Count - 1) ? null : track_model[track_num];
         }
-
 
     }
-    
 }

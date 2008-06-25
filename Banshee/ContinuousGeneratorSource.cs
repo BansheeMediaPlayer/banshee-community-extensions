@@ -26,10 +26,13 @@ using System.Data;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+
+using Hyena;
 using Banshee;
-using Banshee.Base;
-using Banshee.Sources;
-using Banshee.Plugins;
+using Banshee.Collection;
+using Banshee.Collection.Database;
+using Banshee.ServiceStack;
+using Banshee.Gui;
 using Mirage;
 using Mono.Unix;
 using Gtk;
@@ -40,102 +43,63 @@ namespace Banshee.Plugins.Mirage
 {
     public class ContinuousGeneratorSource : PlaylistGeneratorSource
     {
-        TrackInfo processed;
-        protected List<TrackInfo> skipped = new List<TrackInfo>();
+        DatabaseTrackInfo processed;
+        protected List<DatabaseTrackInfo> skipped = new List<DatabaseTrackInfo>();
     
         public ContinuousGeneratorSource(string name, Db db)
                 : base(name, db)
         {
-            PlayerEngineCore.EventChanged += OnPlayerEngineEventChanged;
             processed = null;
-            Globals.ActionManager["NextAction"].Activated += OnNextPrevAction;
-            Globals.ActionManager["PreviousAction"].Activated += OnNextPrevAction;
+            
+            Properties.SetString ("Icon.Name", "source-mirage");
+            
+            InterfaceActionService action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
+            action_service.PlaybackActions["NextAction"].Activated += OnNextPrevAction;
+            action_service.PlaybackActions["PreviousAction"].Activated += OnNextPrevAction;
+            
+            ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEvent, 
+                                                      PlayerEvent.StartOfStream | 
+                                                      PlayerEvent.Iterate);
         }
 
         public void OnNextPrevAction(object o, EventArgs e)
         {
-            skipped.Add(PlayerEngineCore.CurrentTrack);
+            skipped.Add(ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo);
         }
-        
-
-        public override void Commit()
-        {
-            int[] trackId;
-            
-            lock(TracksMutex) {
-
-                // add the seed tracks
-                tracks.Clear();
-                tracks.AddRange(tracksOverride);
-                seeds.Clear();
-                seeds.AddRange(tracksOverride);
-                tracksOverride.Clear();
-
-                // maintain the seed track order
-                Gtk.Application.Invoke(delegate {
-                    playlistView.Clear();
-                    for (int i = 0; i < tracks.Count; i++) {
-                        playlistView.AddTrack(tracks[i], i);
-                    }
-                    playlistView.QueueDraw();
-                    OnUpdated();
-                });
-                
-                // start looking for similar songs
-                trackId = new int[tracks.Count];
-                for (int i = 0; i < tracks.Count; i++) {
-                    trackId[i] = tracks[i].TrackId;
-                }
-                
-                // set processed track, to omit duble computation
-                processed = seeds[0];
-            }
-                
-            // to start, compute the 5 most similar songs to the seed
-            SimilarityCalculator sc =
-                    new SimilarityCalculator(trackId, trackId,
-                            db, UpdatePlaylist, 5);
-            Thread similarityCalculatorThread =
-                    new Thread(new ThreadStart(sc.Compute));
-            similarityCalculatorThread.Start();
-        }
-        
         
         protected void NewPlaylist(int[] playlist, int length)
         {
             Gtk.Application.Invoke(delegate {
-                List<TrackInfo> rm = new List<TrackInfo>();
+                List<DatabaseTrackInfo> rm = new List<DatabaseTrackInfo>();
 
-                lock(TracksMutex) {
+                lock(tracks) {
                     // remove tracks
-                    foreach (TrackInfo t in tracks) {
+                    foreach (DatabaseTrackInfo t in tracks) {
                         
-                        bool noRemove = false;
+                        bool keepTrack = false;
                         for (int j = 0; j < seeds.Count; j++) {
                             if (seeds[j] == t) {
-                                noRemove = true;
-                                playlistView.AddTrack(t, 0);
+                                keepTrack = true;
                                 break;
                             }
                         }
                         
-                        if (!noRemove) {
+                        if (!keepTrack) {
                             rm.Add(t);
                         }
                     }
                     
-                    foreach (TrackInfo t in rm) {
+                    foreach (DatabaseTrackInfo t in rm) {
                         tracks.Remove(t);
-                        playlistView.RemoveTrack(t);
+                        track_model.Remove(t);
                     }
 
                     int sameArtistCount = 0;
                     int i = 0;
                     int pi = 0;
                     while ((i < Math.Min(playlist.Length, length)) && (pi < playlist.Length)) {
-                        TrackInfo track = Globals.Library.GetTrack(playlist[pi]);
-                        bool sameArtist = track.Artist.Equals(seeds[seeds.Count-1].Artist,
-                            StringComparison.CurrentCultureIgnoreCase);
+                        DatabaseTrackInfo track = DatabaseTrackInfo.Provider.FetchSingle(playlist[pi]);
+                        bool sameArtist = (String.Compare(track.Artist.Name, seeds[seeds.Count-1].Artist.Name, true) == 0);
                         pi++;
                         
                         if (sameArtist)
@@ -147,18 +111,19 @@ namespace Banshee.Plugins.Mirage
                             i++;
                             
                         tracks.Add(track);
-                        playlistView.AddTrack(track, tracks.Count);
+                        track_model.Add(track);
                     }
-                    SetStatusLabelText("Playlist ready.");
+                    SetStatus(Catalog.GetString("Playlist ready."), false);
+                    track_model.Reload ();
                 }
                 
-                playlistView.QueueDraw();
                 OnUpdated();
+                HideStatus();
             });
         }
         
-        private void SimilarTracks(List<TrackInfo> tracks,
-                List<TrackInfo> exclude)
+        private void SimilarTracks(List<DatabaseTrackInfo> tracks,
+                List<DatabaseTrackInfo> exclude)
         {
             int[] trackId = new int[tracks.Count];
             for (int i = 0; i < tracks.Count; i++) {
@@ -178,34 +143,38 @@ namespace Banshee.Plugins.Mirage
             similarityCalculatorThread.Start();
         }
         
-        private void OnPlayerEngineEventChanged(object o,
-                PlayerEngineEventArgs args)
+        private void OnPlayerEvent(PlayerEventArgs args)
         {
-            if (SourceManager.ActiveSource != this) {
+            if (ServiceManager.SourceManager.ActiveSource != this) {
                 return;
             }
             
             switch (args.Event) {
-                case PlayerEngineEvent.Iterate:
+                case PlayerEvent.StartOfStream:
+                    if (CurrentTrack != ServiceManager.PlayerEngine.CurrentTrack) {
+                        CurrentTrack = ServiceManager.PlayerEngine.CurrentTrack;
+                    }
+                    break;
+                case PlayerEvent.Iterate:
                 
                     // if more than 60% of a track is played, use this track as
                     // a seed song for the next track.
-                    if ((processed != PlayerEngineCore.CurrentTrack) &&
-                            (PlayerEngineCore.Position
-                                    > PlayerEngineCore.Length * 0.6)) {
+                    if ((processed != ServiceManager.PlayerEngine.CurrentTrack) &&
+                            (ServiceManager.PlayerEngine.Position
+                                    > ServiceManager.PlayerEngine.Length * 0.6)) {
 
-                        processed = PlayerEngineCore.CurrentTrack;
-                        lock(TracksMutex) {   
+                        processed = ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo;
+                        lock(tracks) {   
                             if (!seeds.Contains(processed)) {
-                                // If we're playing another source
                                 if (!tracks.Contains(processed)) {
+                                    // We're playing another source
                                     return;
                                 }
-                                List<TrackInfo> t = new List<TrackInfo>();
+                                List<DatabaseTrackInfo> t = new List<DatabaseTrackInfo>();
                                 t.Add(processed);
                                 seeds.Add(processed);
                                 
-                                List<TrackInfo> skip = new List<TrackInfo>();
+                                List<DatabaseTrackInfo> skip = new List<DatabaseTrackInfo>();
                                 
                                 skip.AddRange(seeds);
                                 if (skipped.Count > 0)

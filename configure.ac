@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.54])
-AC_INIT([Mirage], [0.2.1])
+AC_INIT([Mirage], [0.3.0])
 AM_INIT_AUTOMAKE([foreign])
 
 dnl pkg-config
@@ -29,11 +29,28 @@ AC_SUBST(MCS)
 
 PKG_CHECK_MODULES(GTK_SHARP_20, gtk-sharp-2.0 >= 2.10)
 PKG_CHECK_MODULES(GCONF_SHARP_20, gconf-sharp-2.0)
-PKG_CHECK_MODULES(BANSHEE, banshee)
-BANSHEE_SYSTEM_PLUGINS=`$PKG_CONFIG --variable=systemplugindir banshee`
-AC_SUBST(BANSHEE_SYSTEM_PLUGINS)
-BANSHEE_LIBDIR=`$PKG_CONFIG --variable=libdir banshee`"/banshee"
+PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 0.98.4)
+AC_SUBST(BANSHEE_LIBS)
+
+dnl Banshee Extensions Path
+BANSHEE_LIBDIR=`$PKG_CONFIG --variable=bansheedir banshee-1-core`
+SYSTEM_PLUGINS=`$PKG_CONFIG --variable=bansheedir banshee-1-core`/Extensions
+REL_PLUGINS_DIR=`basename $SYSTEM_PLUGINS`
+REL_BANSHEE_DIR=`echo "$SYSTEM_PLUGINS" | sed -e "s|\/$REL_PLUGINS_DIR||"`
+REL_BANSHEE_DIR=`basename $REL_BANSHEE_DIR`
+REL_PLUGINS_DIR=$REL_BANSHEE_DIR/$REL_PLUGINS_DIR
+
+expanded_libdir=`( case $prefix in NONE) prefix=$ac_default_prefix ;; *) ;; esac
+		   case $exec_prefix in NONE) exec_prefix=$prefix ;; *) ;; esac
+		   eval echo $libdir )`
+		   
+PLUGINDIR=$libdir/$REL_PLUGINS_DIR
+expanded_pluginsdir=$expanded_libdir/$REL_PLUGINS_DIR
+
+AC_SUBST(expanded_libdir)
 AC_SUBST(BANSHEE_LIBDIR)
+AC_SUBST(PLUGINDIR)
+
 
 dnl libmirageaudio
 PKG_CHECK_MODULES(FFTW3F, fftw3f)
@@ -60,14 +77,13 @@ AC_CONFIG_FILES([
 
                  Mirage/Makefile
                  Mirage/AssemblyInfo.cs
-                 Mirage/res/Makefile
-
+                 
                  Banshee/Makefile
                  Banshee/AssemblyInfo.cs
                  Banshee/Config.cs
-                 Banshee/res/Makefile
-
+                 
                  Test/Makefile
+                 Test/AssemblyInfo.cs
 
                  po/Makefile.in
 

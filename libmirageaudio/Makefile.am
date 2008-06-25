@@ -10,7 +10,7 @@ INCLUDES = \
 
 noinst_PROGRAMS = mirageaudiotest
 
-mirageaudiolibdir = $(BANSHEE_LIBDIR)
+mirageaudiolibdir = $(expanded_libdir)
 mirageaudiolib_LTLIBRARIES = libmirageaudio.la
 
 libmirageaudio_la_LDFLAGS = -avoid-version -module
