@@ -25,6 +25,7 @@ using Gtk;
 using System;
 using System.IO;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Data;
 using System.Text;
@@ -363,25 +364,24 @@ namespace Banshee.Plugins.Mirage
         {
             Log.Debug("Mirage: Deleted track.");
 
-            // TODO clean up deleted tracks
-/*            int[] trackids = new int[args.Tracks.Count];
-            int i = 0;
-            foreach(DatabaseTrackInfo track in args.Tracks) {
-                trackids[i] = track.TrackId;
-                i++;
+            IDataReader reader = ServiceManager.DbConnection.Query (
+                @"SELECT TrackID FROM MirageProcessed WHERE TrackID NOT IN 
+                    (SELECT TrackID from CoreTracks WHERE PrimarySourceID = ?)", 
+                ServiceManager.SourceManager.MusicLibrary.DbId);
+            
+            List<int> track_ids = new List<int> ();
+            while(reader.Read()) {
+                track_ids.Add (Convert.ToInt32(reader["TrackID"]));
             }
-            try {
-                db.RemoveTracks(trackids);
-            } catch (Exception) {
+            db.RemoveTracks (track_ids.ToArray());
+            
+            StringBuilder removeSql = new StringBuilder ("DELETE FROM MirageProcessed WHERE TrackID IN (");
+            removeSql.Append (track_ids[0].ToString());
+            for (int i = 1; i < track_ids.Count; i++) {
+                removeSql.AppendFormat(", {0}", track_ids[i]);
             }
-
-            StringBuilder removeSql = new StringBuilder("DELETE FROM MirageProcessed WHERE TrackID IN (");
-            removeSql.Append(trackids[0].ToString());
-            for (i = 1; i < trackids.Length; i++) {
-                removeSql.Append("," + trackids[i]);
-            }
-            removeSql.Append(")");
-            Globals.Library.Db.Execute(removeSql.ToString());*/
+            removeSql.Append (")");
+            ServiceManager.DbConnection.Execute (removeSql.ToString());
         }
 
         string IService.ServiceName {

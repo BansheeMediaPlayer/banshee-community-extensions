@@ -1,5 +1,9 @@
 2008-07-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* Banshee/MiragePlugin.cs: Implement the clean up of deleted tracks.
+
+2008-07-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* Banshee/SimilarityCalculator.cs, Banshee/PlaylistGeneratorSource.cs: Do
 	  not crash if the seed track has not been analyzed, but show an error
 	  message in the source's status.
