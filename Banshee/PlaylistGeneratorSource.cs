@@ -82,11 +82,6 @@ namespace Banshee.Plugins.Mirage
         {
         }
         
-        public void OnLinkButtonClicked(object o, EventArgs e)
-        {
-            Gnome.Url.Show(((LinkButton)o).Uri);
-        }
-        
         public virtual void Update ()
         {
             int[] trackId;

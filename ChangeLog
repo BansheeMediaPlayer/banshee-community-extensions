@@ -1,5 +1,9 @@
 2008-07-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* Banshee/PlaylistGeneratorSource.cs: Remove unused method.
+
+2008-07-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* Banshee/MiragePlugin.cs: Implement the clean up of deleted tracks.
 
 2008-07-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
