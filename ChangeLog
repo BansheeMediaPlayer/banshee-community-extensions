@@ -1,3 +1,9 @@
+2008-07-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/SimilarityCalculator.cs, Banshee/PlaylistGeneratorSource.cs: Do
+	  not crash if the seed track has not been analyzed, but show an error
+	  message in the source's status.
+
 2008-06-25  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* Mirage/res/Makefile.am, Banshee/res/Makefile.am: Remove files that are now

@@ -74,6 +74,8 @@ namespace Banshee.Plugins.Mirage
         {
             this.db = db;
             track_model = new MemoryTrackListModel ();
+            
+            SetStatus (Catalog.GetString("Ready. Drag a song on the Playlist Generator to start!"), false, false, null);
         }
         
         public void Dispose ()
@@ -125,6 +127,11 @@ namespace Banshee.Plugins.Mirage
         protected void UpdatePlaylist(int[] playlist, int length)
         {
             Gtk.Application.Invoke(delegate {
+                if (playlist == null) {
+                    SetStatus(Catalog.GetString("Error building playlist."), true);
+                    return;
+                }
+                
                 lock(tracks) {
                     int sameArtistCount = 0;
                     int i = 0;

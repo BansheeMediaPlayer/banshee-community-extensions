@@ -22,6 +22,7 @@
 
 using System;
 
+using Hyena;
 using Mirage;
 
 namespace Banshee.Plugins.Mirage
@@ -50,8 +51,9 @@ namespace Banshee.Plugins.Mirage
             try {
                 playlist = Mir.SimilarTracks(trackId, excludeTrackId, db);
                 play(playlist, length);
-            } catch (MirAnalysisImpossibleException) {
-                Dbg.WriteLine("Mirage: ERROR. Impossible to compute playlist");
+            } catch (DbTrackNotFoundException) {
+                Log.Error ("Mirage: ERROR. Track not found in Mirage DB");
+                play(null, 0);
             }
         }
     }
