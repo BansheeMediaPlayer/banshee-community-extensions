@@ -125,7 +125,6 @@ namespace Banshee.Plugins.Mirage
                 
                 continuousPlaylist = new ContinuousGeneratorSource("Playlist Generator", db);
                 
-                Log.Debug("Mirage: add source");
                 lock (ServiceManager.SourceManager.MusicLibrary.Children) {
                     ServiceManager.SourceManager.MusicLibrary.AddChildSource(continuousPlaylist);
                 }
@@ -142,7 +141,7 @@ namespace Banshee.Plugins.Mirage
             ServiceManager.SourceManager.MusicLibrary.TracksDeleted -= OnLibraryTracksDeleted;
 
             // cancel analysis, everything
-            lock(jobQueue) {
+            lock (jobQueue) {
                 jobQueue.Clear();
             }
             try {
@@ -190,7 +189,7 @@ namespace Banshee.Plugins.Mirage
 
             IDataReader reader = ServiceManager.DbConnection.Query(query);
 
-            lock(jobQueue) {
+            lock (jobQueue) {
                 jobsScheduled = 0;
                 while(reader.Read()) {
                     int trackId = Convert.ToInt32(reader["TrackID"]);
@@ -225,7 +224,7 @@ namespace Banshee.Plugins.Mirage
         {
             int trackId = 0;
             int queueLength = 0;
-            lock(jobQueue) {
+            lock (jobQueue) {
                 if (jobQueue.Count <= 0) {
                     lock (processingMutex) {
                         processing = false;
@@ -245,7 +244,7 @@ namespace Banshee.Plugins.Mirage
             userJob.Register();
 
              while (jobQueue.Count > 0 && !userJob.IsCancelRequested) {
-                lock(jobQueue) {
+                lock (jobQueue) {
                     trackId = (int)jobQueue.Dequeue();
                     queueLength = jobQueue.Count;
                 }

@@ -41,7 +41,6 @@ namespace Banshee.Plugins.Mirage
 {
     public class PlaylistGeneratorSource : Source, ITrackModelSource, IDisposable, IBasicPlaybackController
     {
-        protected List<DatabaseTrackInfo> tracks = new List<DatabaseTrackInfo>();
         public static List<DatabaseTrackInfo> seeds = new List<DatabaseTrackInfo>();
         protected List<DatabaseTrackInfo> tracksOverride = new List<DatabaseTrackInfo>();
         
@@ -51,7 +50,7 @@ namespace Banshee.Plugins.Mirage
         
         public override int Count {
             get {
-                return tracks.Count;
+                return track_model.Count;
             }
         }
         
@@ -86,28 +85,26 @@ namespace Banshee.Plugins.Mirage
         {
             int[] trackId;
             
-            Log.Debug("Mirage: PlaylistGeneratorSource.Update");
             // Add seed tracks 
-            lock(tracks) {
-                tracks.Clear();
-                tracks.AddRange(tracksOverride);
+            lock (track_model) {
                 seeds.Clear();
                 seeds.AddRange(tracksOverride);
+                
+                List<DatabaseTrackInfo> input_tracks = new List<DatabaseTrackInfo>();
+                input_tracks.AddRange(tracksOverride);
                 tracksOverride.Clear();
-
+                
                 // maintain the seed track order
-                Gtk.Application.Invoke(delegate {
-                    track_model.Clear();
-                    for (int i = 0; i < tracks.Count; i++) {
-                        track_model.Add(tracks[i]);
-                    }
-                    OnUpdated();
-                });
-
+                track_model.Clear();
+                for (int i = 0; i < input_tracks.Count; i++) {
+                    track_model.Add(input_tracks[i]);
+                }
+                OnUpdated();
+                
                 // initialize the similarity computation
-                trackId = new int[tracks.Count];
-                for (int i = 0; i < tracks.Count; i++) {
-                    trackId[i] = tracks[i].TrackId;
+                trackId = new int[track_model.Count];
+                for (int i = 0; i < track_model.Count; i++) {
+                    trackId[i] = (track_model[i] as DatabaseTrackInfo).TrackId;
                 }
             }
             SimilarityCalculator sc =
@@ -127,7 +124,7 @@ namespace Banshee.Plugins.Mirage
                     return;
                 }
                 
-                lock(tracks) {
+                lock (track_model) {
                     int sameArtistCount = 0;
                     int i = 0;
                     int pi = 0;
@@ -143,8 +140,7 @@ namespace Banshee.Plugins.Mirage
                             continue;
                         } else
                             i++;
-                            
-                        tracks.Add(track);
+                        
                         track_model.Add(track);
                     }
                     SetStatus(Catalog.GetString("Playlist ready."), false, false, null);
@@ -165,8 +161,7 @@ namespace Banshee.Plugins.Mirage
 
         public void AddTrack(DatabaseTrackInfo track)
         {
-            lock(tracks) {
-                Log.DebugFormat("Adding track {0}", track.TrackTitle);
+            lock (track_model) {
                 tracksOverride.Add(track);
             }
             OnUpdated();
@@ -184,20 +179,16 @@ namespace Banshee.Plugins.Mirage
         
         public override void MergeSourceInput (Source source, SourceMergeType mergeType)
         {
-            Log.Debug("Mirage: MergeSourceInput");
             TrackListModel model = (source as ITrackModelSource).TrackModel;
             Hyena.Collections.Selection selection = model.Selection;
             if (selection.Count == 0)
                 return;
 
-            Log.Debug("Mirage: MergeSourceInput 2");
             foreach (DatabaseTrackInfo ti in model.SelectedItems) {
                 AddTrack (ti);
             }
 
             Update();
-            //DatabaseTrackInfo ti = (source as ITrackModelSource).TrackModel[0] as DatabaseTrackInfo;
-            //AddTrack (ti);
         }
 
         

@@ -72,10 +72,9 @@ namespace Banshee.Plugins.Mirage
             Gtk.Application.Invoke(delegate {
                 List<DatabaseTrackInfo> rm = new List<DatabaseTrackInfo>();
 
-                lock(tracks) {
-                    // remove tracks
-                    foreach (DatabaseTrackInfo t in tracks) {
-                        
+                lock (track_model) {
+                    // remove tracks, except seeds
+                    foreach (DatabaseTrackInfo t in track_model) {
                         bool keepTrack = false;
                         for (int j = 0; j < seeds.Count; j++) {
                             if (seeds[j] == t) {
@@ -90,7 +89,6 @@ namespace Banshee.Plugins.Mirage
                     }
                     
                     foreach (DatabaseTrackInfo t in rm) {
-                        tracks.Remove(t);
                         track_model.Remove(t);
                     }
 
@@ -110,7 +108,6 @@ namespace Banshee.Plugins.Mirage
                         } else
                             i++;
                             
-                        tracks.Add(track);
                         track_model.Add(track);
                     }
                     SetStatus(Catalog.GetString("Playlist ready."), false);
@@ -156,7 +153,6 @@ namespace Banshee.Plugins.Mirage
                     }
                     break;
                 case PlayerEvent.Iterate:
-                
                     // if more than 60% of a track is played, use this track as
                     // a seed song for the next track.
                     if ((processed != ServiceManager.PlayerEngine.CurrentTrack) &&
@@ -164,9 +160,9 @@ namespace Banshee.Plugins.Mirage
                                     > ServiceManager.PlayerEngine.Length * 0.6)) {
 
                         processed = ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo;
-                        lock(tracks) {   
+                        lock (track_model) {   
                             if (!seeds.Contains(processed)) {
-                                if (!tracks.Contains(processed)) {
+                                if (!track_model.Contains(processed)) {
                                     // We're playing another source
                                     return;
                                 }

@@ -1,5 +1,11 @@
 2008-07-27  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* Banshee/ContinuousGeneratorSource.cs, Banshee/MiragePlugin.cs,
+	  Banshee/PlaylistGeneratorSource.cs: Remove the tracks list, as it was
+	  redundant with the track_model. A bit of code clean up.
+
+2008-07-27  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* Banshee/MiragePlugin.cs: Fix the SQL error when re-processing a track that
 	  was already in MirageProcessed. Some code formatting fixes.
 
