@@ -141,6 +141,8 @@ namespace Banshee.Plugins.Mirage
                         } else
                             i++;
                         
+                        // FIXME : If this is not set, it causes crashes
+                        track.CacheEntryId = 0;
                         track_model.Add(track);
                     }
                     SetStatus(Catalog.GetString("Playlist ready."), false, false, null);

@@ -1,5 +1,11 @@
 2008-07-27  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* Banshee/ContinuousGeneratorSource.cs, Banshee/PlaylistGeneratorSource.cs:
+	  Ugly fix to avoid crashes. It's because we are using DatabaseTrackInfo
+	  objects but not in a DatabaseSource, so we're not using the cache.
+
+2008-07-27  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* Banshee/ContinuousGeneratorSource.cs, Banshee/MiragePlugin.cs,
 	  Banshee/PlaylistGeneratorSource.cs: Remove the tracks list, as it was
 	  redundant with the track_model. A bit of code clean up.
