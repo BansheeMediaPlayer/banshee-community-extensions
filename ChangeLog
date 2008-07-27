@@ -1,3 +1,8 @@
+2008-07-27  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/MiragePlugin.cs: Fix the SQL error when re-processing a track that
+	  was already in MirageProcessed. Some code formatting fixes.
+
 2008-07-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* Banshee/PlaylistGeneratorSource.cs: Remove unused method.

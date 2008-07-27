@@ -237,9 +237,9 @@ namespace Banshee.Plugins.Mirage
             // Banshee user job
             UserJob userJob = new UserJob("Mirage", Catalog.GetString("Mirage: Analyzing Songs"), "audio-x-generic");
             userJob.CancelMessage = Catalog.GetString(
-                "Are you sure you want to stop Mirage. "
-                + "Automatic Playlist Generation will only work for the tracks which are already analyzed. "
-                + "The operation can be resumed at any time from the <i>Tools</i> menu.");
+                "Are you sure you want to stop Mirage ? " + 
+                "Automatic Playlist Generation will only work for the tracks which are already analyzed. " + 
+                "The operation can be resumed at any time from the <i>Tools</i> menu.");
             userJob.CanCancel = true;
             userJob.Progress = 0;
             userJob.Register();
@@ -273,11 +273,12 @@ namespace Banshee.Plugins.Mirage
                         status = -1;
                     } finally {
                         // Banshee user job
-                        userJob.Progress = 1 - (double)queueLength/(double)jobsScheduled;
+                        userJob.Progress = 1 - (double)queueLength / (double)jobsScheduled;
 
-                        ServiceManager.DbConnection.Execute("INSERT INTO MirageProcessed"
-                                + " (TrackID, Status) VALUES (" + track.TrackId + ", "
-                                + status + ")");
+                        ServiceManager.DbConnection.Execute (
+                            @"DELETE FROM MirageProcessed WHERE TrackID = ?; 
+                            INSERT INTO MirageProcessed (TrackID, Status) VALUES (?, ?)", 
+                            track.TrackId, track.TrackId, status);
                     }
                 }
             }
