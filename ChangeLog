@@ -1,3 +1,7 @@
+2008-07-28  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* configure.ac: Require banshee 1.2 or above.
+
 2008-07-27  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* Banshee/ContinuousGeneratorSource.cs, Banshee/PlaylistGeneratorSource.cs:
