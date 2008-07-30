@@ -1,3 +1,7 @@
+2008-07-30  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Test/Makefile.am: Do not install Test.exe.
+
 2008-07-28  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* configure.ac: Require banshee 1.2 or above.
