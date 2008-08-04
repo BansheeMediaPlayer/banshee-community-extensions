@@ -1,5 +1,9 @@
 2008-08-04  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	Mirage 0.3 released.
+
+2008-08-04  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* README: Update and spelling fix.
 	* Banshee/Banshee.Plugins.Mirage.addin.xml: Fix version, add author.
 	* NEWS: Update for 0.3.
