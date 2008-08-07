@@ -1,3 +1,9 @@
+2008-08-07  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* configure.ac: Bump version.
+	* libmirageaudio/gst-mirageaudio.c: Do not hang if a track cannot be
+	  processed. Fix a small memory leak.
+
 2008-08-04  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	Mirage 0.3 released.

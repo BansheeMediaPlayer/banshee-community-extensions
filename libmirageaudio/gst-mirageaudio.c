@@ -281,7 +281,7 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
     g_signal_connect(dec, "new-decoded-pad", G_CALLBACK(mirageaudio_cb_newpad), ma);
     gst_bin_add_many(GST_BIN(ma->pipeline), ma->src, dec, NULL);
     gst_element_link(ma->src, dec);
-
+    
     // audio conversion
     ma->audio = gst_bin_new("audio");
 
@@ -321,8 +321,9 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
     gst_bin_add(GST_BIN(ma->pipeline), ma->audio);
 
     // Get sampling rate of audio file
+    GstClockTime max_wait = 1 * GST_SECOND;
     if (gst_element_set_state(ma->pipeline, GST_STATE_PAUSED) == GST_STATE_CHANGE_ASYNC) {
-        gst_element_get_state(ma->pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
+        gst_element_get_state(ma->pipeline, NULL, NULL, max_wait);
     }
 
     GstPad *pad = gst_element_get_pad(ma->sink, "sink");
@@ -450,6 +451,8 @@ mirageaudio_destroy(MirageAudio *ma)
     // libsamplerate
     free(ma->src_data.data_out);
     src_delete(ma->src_state);
+    
+    g_mutex_free(ma->decoding_mutex);
 
     // common
     free(ma->out);
