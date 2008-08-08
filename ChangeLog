@@ -1,3 +1,8 @@
+2008-08-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* build/build.mk, libmirageaudio/Makefile.am: Allow parallel build with make
+	  -j2. Thanks to Nick for the report.
+
 2008-08-07  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* configure.ac: Bump version.

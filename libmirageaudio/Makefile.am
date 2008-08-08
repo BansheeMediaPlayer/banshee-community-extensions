@@ -27,7 +27,7 @@ libmirageaudio_la_LIBADD = \
 mirageaudiotest_SOURCES = \
 	mirageaudiotest.c
 mirageaudiotest_LDADD = \
-	-lmirageaudio
+	libmirageaudio.la
 
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = $(libmirageaudio_la_SOURCES)
