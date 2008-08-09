@@ -113,6 +113,8 @@ namespace Banshee.Plugins.Mirage
                         track_model.Add(track);
                     }
                     SetStatus(Catalog.GetString("Playlist ready."), false);
+                    // We need to reset the current track because its index has changed 
+                    CurrentTrack = ServiceManager.PlayerEngine.CurrentTrack;
                     track_model.Reload ();
                 }
                 
