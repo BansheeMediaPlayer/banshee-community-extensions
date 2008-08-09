@@ -1,5 +1,10 @@
 2008-08-09  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* Banshee/PlaylistGeneratorSource.cs: Make the "previous" button work (Issue
+	  #7).
+
+2008-08-09  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* Banshee/ContinuousGeneratorSource.cs: Reset the current track after the
 	  playlist has been modified, so that the next track will be the right one
 	  (Issue #5).

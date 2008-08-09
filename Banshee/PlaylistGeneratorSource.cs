@@ -269,6 +269,10 @@ namespace Banshee.Plugins.Mirage
         
         void IBasicPlaybackController.Previous (bool restart)
         {
+            TrackInfo previous = GetTrack (current_track - 1);
+            if (previous != null) {
+                ServiceManager.PlayerEngine.OpenPlay (previous);
+            }
         }
         
 #endregion
