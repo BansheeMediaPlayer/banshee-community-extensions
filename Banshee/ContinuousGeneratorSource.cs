@@ -155,37 +155,44 @@ namespace Banshee.Plugins.Mirage
                     if (CurrentTrack != ServiceManager.PlayerEngine.CurrentTrack) {
                         CurrentTrack = ServiceManager.PlayerEngine.CurrentTrack;
                     }
+                    if (NextTrack == null) {
+                        // We're at the last track in the playlist, we need new tracks
+                        Refresh ();
+                    }
                     break;
                 case PlayerEvent.Iterate:
                     // if more than 60% of a track is played, use this track as
-                    // a seed song for the next track.
+                    // a seed song for the next tracks.
                     if ((processed != ServiceManager.PlayerEngine.CurrentTrack) &&
-                            (ServiceManager.PlayerEngine.Position
-                                    > ServiceManager.PlayerEngine.Length * 0.6)) {
-
-                        processed = ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo;
-                        lock (track_model) {   
-                            if (!seeds.Contains(processed)) {
-                                if (!track_model.Contains(processed)) {
-                                    // We're playing another source
-                                    return;
-                                }
-                                List<DatabaseTrackInfo> t = new List<DatabaseTrackInfo>();
-                                t.Add(processed);
-                                seeds.Add(processed);
-                                
-                                List<DatabaseTrackInfo> skip = new List<DatabaseTrackInfo>();
-                                
-                                skip.AddRange(seeds);
-                                if (skipped.Count > 0)
-                                    skip.AddRange(skipped);
-                                SimilarTracks(t, skip);
-                            }
-                        }
+                            (ServiceManager.PlayerEngine.Position > 
+                             ServiceManager.PlayerEngine.Length * 0.6)) {
+                        Refresh ();
                     }
                     break;
             }
         }
 
+        private void Refresh ()
+        {
+            processed = ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo;
+            lock (track_model) {   
+                if (!seeds.Contains(processed)) {
+                    if (!track_model.Contains(processed)) {
+                        // We're playing another source
+                        return;
+                    }
+                    List<DatabaseTrackInfo> t = new List<DatabaseTrackInfo>();
+                    t.Add(processed);
+                    seeds.Add(processed);
+                    
+                    List<DatabaseTrackInfo> skip = new List<DatabaseTrackInfo>();
+                    
+                    skip.AddRange(seeds);
+                    if (skipped.Count > 0)
+                        skip.AddRange(skipped);
+                    SimilarTracks(t, skip);
+                }
+            }
+        }
     }
 }
