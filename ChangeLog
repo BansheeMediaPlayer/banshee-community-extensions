@@ -1,3 +1,8 @@
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* Test, OpenVP.GtkGui, AudaciousUDPStub, OpenVP.mds: Remove projects
+	  not needed for the branch.
+
 2007-12-18  Chris Howie <me@chrishowie.com> 
 
 	* contrib/Cdh.Affe.dll: Update Affe.
