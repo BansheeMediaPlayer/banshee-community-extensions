@@ -1,5 +1,9 @@
 2008-08-21  Chris Howie <cdhowie@gmail.com> 
 
+	* contrib, contrib/Cdh.Affe.dll: Remove Cdh.Affe blob.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
 	* Cdh.Affe.Tests, OpenVP.mds, Cdh.Affe: Import Cdh.Affe into the build
 	  tree.
 

@@ -1,5 +1,9 @@
 2008-08-21  Chris Howie <cdhowie@gmail.com> 
 
+	* OpenVP.Core.mdp: Switch dependency from Cdh.Affe blob to the project.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
 	* AssemblyInfo.cs: Set assembly version.
 
 2008-05-22  Chris Howie <me@chrishowie.com> 

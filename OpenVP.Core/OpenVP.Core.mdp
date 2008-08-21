@@ -34,6 +34,6 @@
     <ProjectReference type="Gac" localcopy="True" refto="Tao.FreeGlut, Version=2.4.0.1, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d" />
     <ProjectReference type="Project" localcopy="True" refto="OpenVP" />
     <ProjectReference type="Project" localcopy="True" refto="OpenVP.Scripting" />
-    <ProjectReference type="Assembly" localcopy="True" refto="../contrib/Cdh.Affe.dll" />
+    <ProjectReference type="Project" localcopy="True" refto="Cdh.Affe" />
   </References>
 </Project>
