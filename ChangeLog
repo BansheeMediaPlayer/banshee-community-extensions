@@ -1,5 +1,10 @@
 2008-08-21  Chris Howie <cdhowie@gmail.com> 
 
+	* Cdh.Affe.Tests, OpenVP.mds, Cdh.Affe: Import Cdh.Affe into the build
+	  tree.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
 	* Test, OpenVP.GtkGui, AudaciousUDPStub, OpenVP.mds: Remove projects
 	  not needed for the branch.
 

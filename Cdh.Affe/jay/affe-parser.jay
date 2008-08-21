@@ -1,0 +1,509 @@
+// Cdh.Affe: Affe language compiler.
+// Copyright (C) 2007  Chris Howie
+// 
+// This library is free software; you can redistribute it and/or
+// Modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// Version 2.1 of the License, or (at your option) any later version.
+// 
+// This library is distributed in the hope that it will be useful,
+// But WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+%{
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
+
+using Cdh.Affe.Tree;
+
+namespace Cdh.Affe {
+	public class AffeParser {
+		public static int yacc_verbose_flag;
+		
+		private Lexer lexer;
+		
+		internal Lexer Lexer {
+			get {
+				return this.lexer;
+			}
+		}
+		
+		public AffeParser(Lexer l) {
+			this.lexer = l;
+		}
+		
+		public Block Parse() {
+			return (Block) yyparse(this.lexer);
+		}
+		
+		private T Loc<T>(int i, T n) where T : Node {
+			n.SourceLocation = i;
+			return n;
+		}
+		
+		private T Loc<T>(object o, T n) where T : Node {
+			n.SourceLocation = ((Node) o).SourceLocation;
+			return n;
+		}
+		
+		private T Loc<T>(TokenLocation l, T n) where T : Node {
+			n.SourceLocation = l.Location;
+			return n;
+		}
+%}
+
+%token NONE
+%token EOF
+%token ERROR
+
+%token IDENTIFIER
+%token INTEGER
+%token FLOAT
+%token STRING
+
+%token SEMI ";"
+%token ASSIGN "="
+%token ADD "+"
+%token MINUS "-"
+%token DIVIDE "/"
+%token MULTIPLY "*"
+%token OR "|"
+%token AND "&"
+%token MOD "%"
+%token NOT "!"
+
+%token LT "<"
+%token GT ">"
+%token LTE "<="
+%token GTE ">="
+%token EQ "=="
+%token NE "!="
+%token BOR "||"
+%token BAND "&&"
+
+%token LPAREN "("
+%token RPAREN ")"
+%token LBRACE "{"
+%token RBRACE "}"
+%token COMMA ","
+%token PERIOD "."
+%token DOLLAR "$"
+%token QUESTION "?"
+%token COLON ":"
+%token LBRACKET "["
+%token RBRACKET "]"
+
+%token BREAK
+%token CONTINUE
+%token IF
+%token ELSE
+%token RETURN
+%token WHILE
+
+%token TRUE
+%token FALSE
+%token NULL
+
+%token COMMENT
+
+%right ASSIGN
+%left ADD MINUS DIVIDE MULTIPLY OR AND MOD
+
+%start body
+%%
+
+body
+	: opt_statements EOF
+	{
+		$$ = new Block((List<Statement>) $1);
+	}
+	;
+
+opt_statements
+	:
+	{
+		$$ = new List<Statement>();
+	}
+	| statements
+	;
+
+statements
+	: statement
+	{
+		List<Statement> list = new List<Statement>();
+		list.Add((Statement) $1);
+		$$ = list;
+	}
+	| statements statement
+	{
+		((List<Statement>) $1).Add((Statement) $2);
+		$$ = $1;
+	}
+	;
+
+statement
+	: assignment SEMI
+	{
+		$$ = $1;
+	}
+	| call SEMI
+	{
+		$$ = Loc($1, new CallStatement((CallExpression) $1));
+	}
+	| call_invokation_expression SEMI
+	{
+		$$ = Loc($1, new CallInvokationStatement((CallInvokationExpression) $1));
+	}
+	| conditional
+	| while_loop
+	| BREAK SEMI
+	{
+		$$ = Loc((int) $1, new BreakStatement());
+	}
+	| variable_declaration SEMI
+	{
+		$$ = $1;
+	}
+	| CONTINUE SEMI
+	{
+		$$ = Loc((int) $1, new ContinueStatement());
+	}
+	| RETURN SEMI
+	{
+		$$ = Loc((int) $1, new ReturnStatement());
+	}
+	;
+
+while_loop
+	: WHILE LPAREN expression RPAREN statement_block
+	{
+		$$ = Loc((int) $1, new WhileLoop((Expression) $3, (Block) $5));
+	}
+	;
+
+statement_block
+	: statement
+	{
+		List<Statement> list = new List<Statement>();
+		list.Add((Statement) $1);
+		$$ = new Block(list);
+	}
+	| LBRACE opt_statements RBRACE
+	{
+		$$ = new Block((List<Statement>) $2);
+	}
+	;
+
+conditional
+	: IF LPAREN expression RPAREN statement_block
+	{
+		$$ = Loc((int) $1, new If((Expression) $3, (Block) $5));
+	}
+	| IF LPAREN expression RPAREN statement_block ELSE statement_block
+	{
+		$$ = Loc((int) $1, new IfElse((Expression) $3, (Block) $5, (Block) $7));
+	}
+	;
+
+assignment
+	: lvalue ASSIGN expression
+	{
+		$$ = Loc((int) $2, new Assignment((Lvalue) $1, (Expression) $3));
+	}
+	;
+
+lvalue
+	: data_invokation_expression
+	| indexed_expression
+	| identifier
+	{
+		$$ = new IdentifierExpression((Identifier) $1);
+	}
+	;
+
+variable_declaration
+	: identifier identifier ASSIGN expression
+	{
+		$$ = Loc((int) $3, new VariableDeclaration((Identifier) $1,
+			(Identifier) $2, (Expression) $4));
+	}
+	| identifier NOT identifier
+	{
+		$$ = Loc((int) $2, new PersistentVariableDeclaration((Identifier) $1,
+			(Identifier) $3));
+	}
+	;
+
+identifier
+	: IDENTIFIER
+	{
+		TokenLocation l = (TokenLocation) $1;
+		
+		$$ = Loc(l, new Identifier((string) l.Value));
+	}
+	;
+
+expression
+	: conditional_expression
+	;
+
+conditional_expression
+	: boolean_or_expression
+	| boolean_or_expression QUESTION expression COLON expression
+	{
+		$$ = Loc((int) $2, new TernaryConditionalExpression(
+			(Expression) $1, (Expression) $3, (Expression) $5));
+	}
+	;
+
+boolean_or_expression
+	: boolean_and_expression
+	| boolean_or_expression BOR boolean_and_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Bor,
+			(Expression) $1, (Expression) $3));
+	}
+	;
+
+boolean_and_expression
+	: or_expression
+	| boolean_and_expression BAND or_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Band,
+			(Expression) $1, (Expression) $3));
+	}
+	;
+
+or_expression
+	: and_expression
+	| or_expression OR and_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Or, (Expression) $1,
+			(Expression) $3));
+	}
+	;
+
+and_expression
+	: eq_expression
+	| and_expression AND eq_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.And, (Expression) $1,
+			(Expression) $3));
+	}
+	;
+
+eq_expression
+	: rel_expression
+	| eq_expression EQ rel_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Eq, (Expression) $1,
+			(Expression) $3));
+	}
+	| eq_expression NE rel_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Ne, (Expression) $1,
+			(Expression) $3));
+	}
+	;
+
+rel_expression
+	: add_expression
+	| rel_expression LT add_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Lt, (Expression) $1,
+			(Expression) $3));
+	}
+	| rel_expression GT add_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Gt, (Expression) $1,
+			(Expression) $3));
+	}
+	| rel_expression LTE add_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Lte, (Expression) $1,
+			(Expression) $3));
+	}
+	| rel_expression GTE add_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Gte, (Expression) $1,
+			(Expression) $3));
+	}
+	;
+
+add_expression
+	: mult_expression
+	| add_expression ADD mult_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Add, (Expression) $1,
+			(Expression) $3));
+	}
+	| add_expression MINUS mult_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Minus,
+			(Expression) $1, (Expression) $3));
+	}
+	;
+
+mult_expression
+	: unary_expression
+	| mult_expression MULTIPLY unary_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Multiply,
+			(Expression) $1, (Expression) $3));
+	}
+	| mult_expression DIVIDE unary_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Divide,
+			(Expression) $1, (Expression) $3));
+	}
+	| mult_expression MOD unary_expression
+	{
+		$$ = Loc((int) $2, new OperatorExpression(Operator.Mod, (Expression) $1,
+			(Expression) $3));
+	}
+	;
+
+unary_expression
+	: indexed_expression
+	| MINUS unary_expression
+	{
+		$$ = Loc((int) $1, new UnaryExpression(Operator.Neg, (Expression) $2));
+	}
+	| NOT unary_expression
+	{
+		$$ = Loc((int) $1, new UnaryExpression(Operator.Not, (Expression) $2));
+	}
+	| LPAREN identifier RPAREN unary_expression
+	{
+		$$ = Loc((int) $1, new CastExpression((Expression) $4, (Identifier) $2));
+	}
+	| LPAREN identifier RPAREN
+	{
+		// This is a hack to make sure that something like (v) doesn't
+		// generate a parsing exception.
+		$$ = Loc($2, new IdentifierExpression((Identifier) $2));
+	}
+	;
+
+indexed_expression
+	: invokation_expression
+	| indexed_expression LBRACKET arguments RBRACKET
+	{
+		$$ = Loc((int) $2, new IndexedExpression((Expression) $1,
+			(List<Expression>) $3));
+	}
+	;
+
+invokation_expression
+	: value_expression
+	| call_invokation_expression
+	| data_invokation_expression
+	;
+
+data_invokation_expression
+	: invokation_expression PERIOD identifier
+	{
+		$$ = Loc((int) $2, new DataInvokationExpression((Expression) $1,
+			(Identifier) $3));
+	}
+	| invokation_expression DOLLAR identifier
+	{
+		$$ = Loc((int) $2, new LateBoundDataInvokationExpression(
+			(Expression) $1, (Identifier) $3));
+	}
+	;
+
+call_invokation_expression
+	: invokation_expression PERIOD identifier LPAREN opt_arguments RPAREN
+	{
+		$$ = Loc((int) $2, new CallInvokationExpression((Expression) $1,
+			(Identifier) $3, (List<Expression>) $5));
+	}
+	| invokation_expression DOLLAR identifier LPAREN opt_arguments RPAREN
+	{
+		$$ = Loc((int) $2, new LateBoundCallInvokationExpression(
+			(Expression) $1, (Identifier) $3, (List<Expression>) $5));
+	}
+	;
+
+value_expression
+	: identifier
+	{
+		$$ = Loc($1, new IdentifierExpression((Identifier) $1));
+	}
+	| FLOAT
+	{
+		TokenLocation l = (TokenLocation) $1;
+		
+		$$ = Loc(l, new FloatExpression((float) l.Value));
+	}
+	| INTEGER
+	{
+		TokenLocation l = (TokenLocation) $1;
+		
+		$$ = Loc(l, new IntegerExpression((int) l.Value));
+	}
+	| STRING
+	{
+		TokenLocation l = (TokenLocation) $1;
+		
+		$$ = Loc(l, new StringExpression((string) l.Value));
+	}
+	| TRUE
+	{
+		$$ = new BooleanExpression(true);
+	}
+	| FALSE
+	{
+		$$ = new BooleanExpression(false);
+	}
+	| NULL
+	{
+		$$ = new NullExpression();
+	}
+	| call
+	| LPAREN expression RPAREN
+	{
+		$$ = $2;
+	}
+	;
+
+call
+	: identifier LPAREN opt_arguments RPAREN
+	{
+		$$ = Loc((int) $2, new CallExpression((Identifier) $1,
+			(List<Expression>) $3));
+	}
+	;
+
+opt_arguments
+	:
+	{
+		$$ = new List<Expression>();
+	}
+	| arguments
+	;
+
+arguments
+	: expression
+	{
+		List<Expression> list = new List<Expression>();
+		list.Add((Expression) $1);
+		$$ = list;
+	}
+	| arguments COMMA expression
+	{
+		((List<Expression>) $1).Add((Expression) $3);
+		$$ = $1;
+	}
+	;
+
+%%
+}
