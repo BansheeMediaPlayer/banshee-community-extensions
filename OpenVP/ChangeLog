@@ -1,3 +1,9 @@
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* Metadata/AuthorAttribute.cs: Add XML documentation (from r57 on
+	  trunk).
+	* AssemblyInfo.cs: Set assembly version.
+
 2008-05-22  Chris Howie <me@chrishowie.com> 
 
 	* IBeatDetector.cs, IRenderer.cs, TimedPresetBase.cs,

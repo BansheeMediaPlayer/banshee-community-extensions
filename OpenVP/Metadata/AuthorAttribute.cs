@@ -21,13 +21,31 @@
 using System;
 
 namespace OpenVP {
+	/// <summary>
+	/// Specifies the author of a preset.
+	/// </summary>
+	/// <remarks>
+	/// This attribute can be used by visual preset selectors to display
+	/// authorship information.
+	/// </remarks>
 	public class AuthorAttribute : Attribute {
 		private string mAuthor;
-		
+
+		/// <value>
+		/// The author of the preset.  Author strings should be in the form
+		/// "Firstname Lastname &lt;email@address&gt;".  Separate multiple
+		/// authors with commas.
+		/// </value>
 		public string Author {
 			get { return this.mAuthor; }
 		}
-		
+
+		/// <summary>
+		/// Create an AuthorAttribute.
+		/// </summary>
+		/// <param name="author">
+		/// Preset authors.  See <see cref="AuthorAttribute.Author"/> for formatting.
+		/// </param>
 		public AuthorAttribute(string author) {
 			this.mAuthor = author;
 		}

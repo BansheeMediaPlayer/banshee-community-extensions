@@ -1,3 +1,7 @@
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* AssemblyInfo.cs: Set assembly version.
+
 2008-05-20  Chris Howie <me@chrishowie.com> 
 
 	* AssemblyInfo.cs, ScriptCompileException.cs, UserScript.cs,
