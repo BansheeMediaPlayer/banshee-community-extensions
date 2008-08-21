@@ -1,5 +1,9 @@
 2008-08-21  Chris Howie <cdhowie@gmail.com> 
 
+	* OpenVP.mdp: Tweak project options.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
 	* Metadata/AuthorAttribute.cs: Add XML documentation (from r57 on
 	  trunk).
 	* AssemblyInfo.cs: Set assembly version.

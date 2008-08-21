@@ -1,5 +1,9 @@
 2008-08-21  Chris Howie <cdhowie@gmail.com> 
 
+	* OpenVP.Scripting.mdp: Tweak project options.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
 	* OpenVP.Scripting.mdp: Switch dependency from Cdh.Affe blob to the
 	  project.
 

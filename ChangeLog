@@ -1,5 +1,9 @@
 2008-08-21  Chris Howie <cdhowie@gmail.com> 
 
+	* OpenVP.mds: Tweak project options.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
 	* contrib, contrib/Cdh.Affe.dll: Remove Cdh.Affe blob.
 
 2008-08-21  Chris Howie <cdhowie@gmail.com> 

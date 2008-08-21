@@ -1,5 +1,9 @@
 2008-08-21  Chris Howie <cdhowie@gmail.com> 
 
+	* Cdh.Affe.mdp: Tweak project options.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
 	* affe-parser.cs, AssemblyInfo.cs, prebuild.sh, AffeCompiler.cs,
 	  SymbolTable.cs, jay, jay/skeleton.cs, jay/affe-parser.jay,
 	  Lexer.cs, Tree.cs, ScriptState.cs, Symbol.cs, Cdh.Affe.mdp,

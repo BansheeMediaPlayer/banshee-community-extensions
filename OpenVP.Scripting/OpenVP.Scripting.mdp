@@ -1,4 +1,4 @@
-<Project name="OpenVP.Scripting" fileversion="2.0" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
+<Project name="OpenVP.Scripting" fileversion="2.0" language="C#" UseParentDirectoryAsNamespace="True" DefaultNamespace="OpenVP.Scripting" clr-version="Net_2_0" ctype="DotNetProject">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
       <Output directory="../build" assembly="OpenVP.Scripting" />

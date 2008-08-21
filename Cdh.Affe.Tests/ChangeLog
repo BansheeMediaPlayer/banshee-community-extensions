@@ -1,5 +1,9 @@
 2008-08-21  Chris Howie <cdhowie@gmail.com> 
 
+	* Cdh.Affe.Tests.mdp: Tweak project options.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
 	* AssemblyInfo.cs, Tests.cs, Main.cs, Cdh.Affe.Tests.mdp, ChangeLog:
 	  Import Cdh.Affe into the build tree.
 
