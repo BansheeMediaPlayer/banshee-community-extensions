@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.OpenVP"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="© 2008 Chris Howie. Licensed under the MIT X11 license."
+    name="OpenVP Visualizer"
+    category="Visualizations"
+    description="Draws patterns to your music using the Open Visualization Platform."
+    author="Chris Howie"
+    url="http://www.chrishowie.com/"
+    defaultEnabled="true">
+
+  <Runtime>
+  	<Import assembly="Banshee.OpenVP.dll" />
+  </Runtime>
+  
+  <Dependencies>
+    <Addin id="Banshee.Core" version="1.0"/>
+    <Addin id="Banshee.Services" version="1.0"/>
+  </Dependencies>
+
+  <!-- <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.OpenVP.OpenVPService"/>
+  </Extension> -->
+
+  <Extension path="/Banshee/SourceManager/Source">
+    <Source class="Banshee.OpenVP.OpenVPSource" />
+  </Extension>
+
+  <ExtensionPoint path="/Banshee/OpenVP/Visualization">
+  	<ExtensionNode name="Visualization" type="Banshee.OpenVP.VisualizationExtensionNode" />
+  </ExtensionPoint>
+
+  <Extension path="/Banshee/OpenVP/Visualization">
+  	<Visualization type="Banshee.OpenVP.Visualizations.SimpleScope" label="Simple scope" />
+  </Extension>
+</Addin>
