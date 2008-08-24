@@ -34,5 +34,6 @@
 
   <Extension path="/Banshee/OpenVP/Visualization">
   	<Visualization type="Banshee.OpenVP.Visualizations.SimpleScope" label="Simple scope" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.Inferno" label="Inferno" />
   </Extension>
 </Addin>

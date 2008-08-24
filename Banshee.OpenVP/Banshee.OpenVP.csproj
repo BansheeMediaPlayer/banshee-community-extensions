@@ -19,7 +19,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <AssemblyName>Banshee.OpenVP</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -28,7 +27,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <AssemblyName>Banshee.OpenVP</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -63,6 +61,7 @@
     <Compile Include="OpenVPSource.cs" />
     <Compile Include="Banshee.OpenVP.Visualizations\SimpleScope.cs" />
     <Compile Include="Gtk\GLWidget.cs" />
+    <Compile Include="Banshee.OpenVP.Visualizations\Inferno.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="resources\Banshee.OpenVP.addin.xml" />

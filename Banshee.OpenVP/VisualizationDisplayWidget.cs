@@ -77,6 +77,9 @@ namespace Banshee.OpenVP
 
 			if (args.Change == ExtensionChange.Add) {
 				this.visualizationStore.AppendValues(node);
+				
+				if (this.visualizationStore.IterNChildren() == 1)
+					this.visualizationList.Active = 0;
 			} else {
 				TreeIter i;
 
@@ -110,7 +113,6 @@ namespace Banshee.OpenVP
 		
 		private void RenderLoop()
 		{
-			Console.WriteLine("entering main loop");
 			this.playerData = new BansheePlayerData(ServiceManager.PlayerEngine.ActiveEngine);
 
 			this.renderLock.Set();
@@ -126,7 +128,6 @@ namespace Banshee.OpenVP
 				}
 			}
 			
-			Console.WriteLine("disposing player data");
 			lock (this.cleanupLock) {
 				this.haveDataSlice = false;
 				
@@ -262,8 +263,9 @@ namespace Banshee.OpenVP
 
 			lock (this.cleanupLock) {
 				IRenderer r = this.renderer;
-				if (r != null && this.haveDataSlice) {
-					r.Render(this);
+				if (r != null) {
+					if (this.haveDataSlice)
+						r.Render(this);
 				} else {
 					gl.glClearColor(0, 0, 0, 1);
 					gl.glClear(gl.GL_COLOR_BUFFER_BIT);
