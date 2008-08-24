@@ -29,6 +29,7 @@
     <File name="AffeCompiler.cs" subtype="Code" buildaction="Compile" />
     <File name="jay/affe-parser.jay" subtype="Code" buildaction="Nothing" />
     <File name="ScriptState.cs" subtype="Code" buildaction="Compile" />
+    <File name="jay/skeleton.cs" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />

@@ -93,7 +93,6 @@ namespace OpenVP.Core {
 		protected override void OnDeserialization(object sender) {
             base.OnDeserialization(sender);
             
-            this.mStaticDirty = true;
 			this.CreatePointDataArray();
 		}
 		

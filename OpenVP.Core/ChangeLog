@@ -1,3 +1,8 @@
+2008-08-24  Chris Howie <cdhowie@gmail.com> 
+
+	* MovementBase.cs, ScopeBase.cs, OpenVP.Core.mdp: Merge r65 with 0.0.1
+	  branch.
+
 2008-08-21  Chris Howie <cdhowie@gmail.com> 
 
 	* OpenVP.Core.mdp: Tweak project options.

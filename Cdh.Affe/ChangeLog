@@ -1,3 +1,7 @@
+2008-08-24  Chris Howie <cdhowie@gmail.com> 
+
+	* Cdh.Affe.mdp: Add jay/skeleton.cs with compilation disabled.
+
 2008-08-21  Chris Howie <cdhowie@gmail.com> 
 
 	* Cdh.Affe.mdp: Tweak project options.
