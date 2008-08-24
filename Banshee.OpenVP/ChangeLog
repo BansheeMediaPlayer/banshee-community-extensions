@@ -1,5 +1,11 @@
 2008-08-24  Chris Howie <cdhowie@gmail.com> 
 
+	* resources/Banshee.OpenVP.addin.xml, Banshee.OpenVP.csproj,
+	  Banshee.OpenVP.Visualizations/SpectrumAnalyzer.cs: Add simple
+	  spectrum analyzer visualization.
+
+2008-08-24  Chris Howie <cdhowie@gmail.com> 
+
 	* VisualizationDisplayWidget.cs: Automatically select the first
 	  visualization available.  Remove debugging console writes.  Don't
 	  clear the screen if no data slice is available on redraw but there
