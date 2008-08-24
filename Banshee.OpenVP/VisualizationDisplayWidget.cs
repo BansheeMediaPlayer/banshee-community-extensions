@@ -25,7 +25,9 @@ namespace Banshee.OpenVP
 
 		private GLWidget glWidget = null;
 
-		private Queue<ThreadStart> glCallQueue = new Queue<ThreadStart>();
+		private ManualResetEvent renderLock = new ManualResetEvent(false);
+
+		private object cleanupLock = new object();
 		
 		public VisualizationDisplayWidget()
 		{
@@ -39,10 +41,24 @@ namespace Banshee.OpenVP
 
 			this.glWidget = new GLWidget();
 			this.glWidget.DoubleBuffered = true;
+			this.glWidget.Render += this.OnRender;
+			this.glWidget.SizeAllocated += this.OnGlSizeAllocated;
 			this.glWidget.Show();
+			
 			this.glAlignment.Add(this.glWidget);
 
-			this.glWidget.Realized += this.InitGL;
+			this.glWidget.Realized += delegate {
+				if (!this.loopRunning) {
+					this.loopRunning = true;
+					new Thread(this.RenderLoop).Start();
+				}
+
+				this.ConnectVisualization();
+			};
+
+			this.glWidget.Unrealized += delegate {
+				this.DisposeRenderer();
+			};
 			
 			AddinManager.AddExtensionNodeHandler("/Banshee/OpenVP/Visualization", this.OnVisualizationChanged);
 		}
@@ -75,46 +91,48 @@ namespace Banshee.OpenVP
 			}
 		}
 
-		protected override void OnSizeAllocated (Rectangle allocation)
+		private void OnGlSizeAllocated (object o, SizeAllocatedArgs args)
 		{
-			base.OnSizeAllocated (allocation);
-
+			Rectangle allocation = args.Allocation;
+			
 			((IController) this).Resize(allocation.Width, allocation.Height);
 		}
 
-		private void InitGL(object o, EventArgs e)
+		private void OnRender(object o, EventArgs e)
 		{
-			new Thread(this.RenderLoop).Start();
+			((IController) this).RenderFrame();
+			this.renderLock.Set();
 		}
 
-		private bool loopRunning = true;
+		private bool loopRunning = false;
+
+		private bool haveDataSlice = false;
 		
 		private void RenderLoop()
 		{
-			Thread.Sleep(1000);
-			
+			Console.WriteLine("entering main loop");
 			this.playerData = new BansheePlayerData(ServiceManager.PlayerEngine.ActiveEngine);
 
-			this.glWidget.MakeCurrent();
+			this.renderLock.Set();
 
-			gl.glShadeModel(gl.GL_SMOOTH);
-			gl.glEnable(gl.GL_LINE_SMOOTH);
-			gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST);
-
-			gl.glEnable(gl.GL_BLEND);
-			gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA);
+			this.haveDataSlice = false;
 			
 			while (this.loopRunning) {
-				lock (this.glCallQueue) {
-					while (this.glCallQueue.Count > 1)
-						this.glCallQueue.Dequeue()();
+				if (this.renderLock.WaitOne(500, false) && this.playerData.Update(500)) {
+					this.haveDataSlice = true;
+					this.renderLock.Reset();
+					
+					Banshee.Base.ThreadAssist.ProxyToMain(this.glWidget.QueueDraw);
 				}
-				
-				if (this.playerData.Update(500))
-				    ((IController) this).RenderFrame();
 			}
-
-			this.DisposeRenderer();
+			
+			Console.WriteLine("disposing player data");
+			lock (this.cleanupLock) {
+				this.haveDataSlice = false;
+				
+				this.playerData.Dispose();
+				this.playerData = null;
+			}
 		}
 
 		protected override void OnDestroyed ()
@@ -122,11 +140,16 @@ namespace Banshee.OpenVP
 			base.OnDestroyed ();
 
 			this.loopRunning = false;
-		}
 
+			this.DisposeRenderer();
+		}
 
 		protected virtual void OnVisualizationListChanged (object sender, System.EventArgs e)
 		{
+			this.ConnectVisualization();
+		}
+
+		private void ConnectVisualization() {
 			TreeIter i;
 
 			this.DisposeRenderer();
@@ -179,6 +202,8 @@ namespace Banshee.OpenVP
 
 		private int width;
 
+		private bool needsResize = true;
+
 		private BansheePlayerData playerData = null;
 
 		int IController.Height {
@@ -204,8 +229,10 @@ namespace Banshee.OpenVP
 			set { this.renderer = value; }
 		}
 
+		private IBeatDetector beatDetector = new NullPlayerData();
+
 		IBeatDetector IController.BeatDetector {
-			get { return null; }
+			get { return this.beatDetector; }
 		}
 
 		PlayerData IController.PlayerData {
@@ -214,34 +241,43 @@ namespace Banshee.OpenVP
 		
 		void IController.RenderFrame()
 		{
-			if (this.GdkWindow == null)
-				return;
+			gl.glShadeModel(gl.GL_SMOOTH);
+			gl.glEnable(gl.GL_LINE_SMOOTH);
+			gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST);
 
-			Console.WriteLine("rendering");
-			IRenderer r = this.renderer;
-			if (r != null)
-				r.Render(this);
+			gl.glEnable(gl.GL_BLEND);
+			gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA);
+
+			if (this.needsResize) {
+				this.needsResize = false;
+				
+				gl.glViewport(0, 0, width, height);
+	
+				gl.glMatrixMode(gl.GL_PROJECTION);
+				gl.glLoadIdentity();
+				
+				gl.glMatrixMode(gl.GL_MODELVIEW);
+				gl.glLoadIdentity();
+			}
+
+			lock (this.cleanupLock) {
+				IRenderer r = this.renderer;
+				if (r != null && this.haveDataSlice) {
+					r.Render(this);
+				} else {
+					gl.glClearColor(0, 0, 0, 1);
+					gl.glClear(gl.GL_COLOR_BUFFER_BIT);
+				}
+			}
 
 			gl.glFlush();
-			this.glWidget.SwapBuffers();
 		}
 
 		void IController.Resize(int width, int height)
 		{
 			this.width = width;
 			this.height = height;
-
-			lock (this.glCallQueue) {
-				this.glCallQueue.Enqueue(delegate {
-					gl.glViewport(0, 0, width, height);
-		
-					gl.glMatrixMode(gl.GL_PROJECTION);
-					gl.glLoadIdentity();
-					
-					gl.glMatrixMode(gl.GL_MODELVIEW);
-					gl.glLoadIdentity();
-				});
-			}
+			this.needsResize = true;
 		}
 #endregion
 	}

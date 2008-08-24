@@ -1,0 +1,12 @@
+2008-08-24  Chris Howie <cdhowie@gmail.com> 
+
+	* VisualizationDisplayWidget.cs: Switch to a single-threaded GL model. 
+	  Rendering now happens on the GTK mainloop thread.  Added
+	  NullPlayerData as a beat detector.
+	* Gtk/GLWidget.cs: Re-enable built-in expose event handler contents and
+	  fix OnRender to store the handler instead of catching NRE (aside
+	  from being inefficient, this could discard NREs thrown by the event
+	  handler).
+	* ChangeLog: Add change logs.
+	* Banshee.OpenVP.Visualizations/SimpleScope.cs: Enable mirror.
+

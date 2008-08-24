@@ -29,7 +29,7 @@ namespace Banshee.OpenVP.Visualizations
 
 			Mirror mirror = new Mirror();
 
-			//this.Effects.Add(mirror);
+			this.Effects.Add(mirror);
 		}
 	}
 }

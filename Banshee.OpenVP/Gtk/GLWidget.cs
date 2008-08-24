@@ -266,23 +266,21 @@ namespace Gtk
 
 		void HandleExposeEvent(object o, ExposeEventArgs args)
 		{
-			//MakeCurrent();
+			MakeCurrent();
 
-			//OnRender();
+			OnRender();
 
-			//SwapBuffers();
+			SwapBuffers();
 		}
 		
 		public event EventHandler Render;
 		public virtual void OnRender()
 		{
-			if( Render != null )
+			EventHandler render = Render;
+			
+			if( render != null )
 			{
-				try
-				{
-					Render(this, EventArgs.Empty);
-				}
-				catch( NullReferenceException ) { }
+				render(this, EventArgs.Empty);
 			}
 		}
 		
