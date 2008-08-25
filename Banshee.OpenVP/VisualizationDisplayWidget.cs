@@ -104,7 +104,6 @@ namespace Banshee.OpenVP
         private void OnRender(object o, EventArgs e)
         {
             ((IController) this).RenderFrame();
-            this.renderLock.Set();
         }
 
         private bool loopRunning = false;
@@ -264,8 +263,12 @@ namespace Banshee.OpenVP
             lock (this.cleanupLock) {
                 IRenderer r = this.renderer;
                 if (r != null) {
-                    if (this.haveDataSlice)
+                    if (this.haveDataSlice) {
                         r.Render(this);
+                        
+                        this.haveDataSlice = false;
+                        this.renderLock.Set();
+                    }
                 } else {
                     gl.glClearColor(0, 0, 0, 1);
                     gl.glClear(gl.GL_COLOR_BUFFER_BIT);

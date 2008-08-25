@@ -1,5 +1,9 @@
 2008-08-25  Chris Howie <cdhowie@gmail.com> 
 
+	* VisualizationDisplayWidget.cs: Fix render loop issue.
+
+2008-08-25  Chris Howie <cdhowie@gmail.com> 
+
 	* VisualizationDisplayWidget.cs, BansheePlayerData.cs, Gtk/GLWidget.cs,
 	  VisualizationExtensionNode.cs, OpenVPSource.cs,
 	  Banshee.OpenVP.Visualizations/Inferno.cs,
