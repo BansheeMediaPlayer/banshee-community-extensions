@@ -11,20 +11,20 @@ using OpenVP.Core;
 
 namespace Banshee.OpenVP.Visualizations
 {
-	public class SimpleScope : LinearPreset
-	{
-		public SimpleScope()
-		{
-			ClearScreen clear = new ClearScreen();
-			clear.ClearColor = new Color(0, 0, 0, 0.075f);
+    public class SimpleScope : LinearPreset
+    {
+        public SimpleScope()
+        {
+            ClearScreen clear = new ClearScreen();
+            clear.ClearColor = new Color(0, 0, 0, 0.075f);
 
-			this.Effects.Add(clear);
+            this.Effects.Add(clear);
 
-			Scope scope = new Scope();
-			scope.Color = new Color(0.25f, 0.5f, 1, 1);
-			scope.LineWidth = 3;
+            Scope scope = new Scope();
+            scope.Color = new Color(0.25f, 0.5f, 1, 1);
+            scope.LineWidth = 3;
 
-			this.Effects.Add(scope);
-		}
-	}
+            this.Effects.Add(scope);
+        }
+    }
 }

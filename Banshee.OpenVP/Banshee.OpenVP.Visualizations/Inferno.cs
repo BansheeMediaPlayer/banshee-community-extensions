@@ -11,61 +11,61 @@ using gl = Tao.OpenGl.Gl;
 
 namespace Banshee.OpenVP.Visualizations
 {
-	public class Inferno : LinearPreset
-	{
-		public Inferno()
-		{
-			ClearScreen clear = new ClearScreen();
-			clear.ClearColor = new Color(0, 0, 0, 0.075f);
-			this.Effects.Add(clear);
+    public class Inferno : LinearPreset
+    {
+        public Inferno()
+        {
+            ClearScreen clear = new ClearScreen();
+            clear.ClearColor = new Color(0, 0, 0, 0.075f);
+            this.Effects.Add(clear);
 
-			InfernoMovement movement = new InfernoMovement();
-			this.Effects.Add(movement);
+            InfernoMovement movement = new InfernoMovement();
+            this.Effects.Add(movement);
 
-			InfernoScope scope = new InfernoScope();
-			this.Effects.Add(scope);
-		}
+            InfernoScope scope = new InfernoScope();
+            this.Effects.Add(scope);
+        }
 
-		private class InfernoScope : ScopeBase
-		{
-			public InfernoScope()
-			{
-				this.LineWidth = 5;
-				this.Vertices = 512;
-			}
-			
-			protected override void PlotVertex(ScopeData data)
-			{
-				float r = data.FractionalI * 2 * (float) Math.PI;
+        private class InfernoScope : ScopeBase
+        {
+            public InfernoScope()
+            {
+                this.LineWidth = 5;
+                this.Vertices = 512;
+            }
+            
+            protected override void PlotVertex(ScopeData data)
+            {
+                float r = data.FractionalI * 2 * (float) Math.PI;
 
-				float v = data.Value * 0.75f;
+                float v = data.Value * 0.75f;
 
-				data.X = (float) Math.Sin(r) * v;
-				data.Y = (float) Math.Cos(r) * v;
+                data.X = (float) Math.Sin(r) * v;
+                data.Y = (float) Math.Cos(r) * v;
 
-				data.Red = 1;
-				data.Green = Math.Abs(data.Value);
-				data.Blue = 0;
-			}
-		}
+                data.Red = 1;
+                data.Green = Math.Abs(data.Value);
+                data.Blue = 0;
+            }
+        }
 
-		private class InfernoMovement : MovementBase
-		{
-			public InfernoMovement()
-			{
-				this.XResolution = 32;
-				this.YResolution = 32;
-			}
-			
-			private static Random rand = new Random();
-			
-			protected override void PlotVertex(MovementData data)
-			{
-				data.Method = MovementMethod.Polar;
+        private class InfernoMovement : MovementBase
+        {
+            public InfernoMovement()
+            {
+                this.XResolution = 32;
+                this.YResolution = 32;
+            }
+            
+            private static Random rand = new Random();
+            
+            protected override void PlotVertex(MovementData data)
+            {
+                data.Method = MovementMethod.Polar;
 
-				data.Distance -= (float) (rand.NextDouble() * 0.03);
-				data.Rotation += (float) (rand.NextDouble() * 0.025 - 0.0125);
-			}
-		}
-	}
+                data.Distance -= (float) (rand.NextDouble() * 0.03);
+                data.Rotation += (float) (rand.NextDouble() * 0.025 - 0.0125);
+            }
+        }
+    }
 }

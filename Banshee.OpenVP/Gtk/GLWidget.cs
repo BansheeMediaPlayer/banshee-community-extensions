@@ -21,7 +21,7 @@ using Gtk;
 
 namespace Gtk
 {
-	[System.ComponentModel.ToolboxItem(true)]
+    [System.ComponentModel.ToolboxItem(true)]
     public class GLWidget : DrawingArea, IDisposable
     {
         static PlatformID platformID = System.Environment.OSVersion.Platform;
@@ -46,7 +46,7 @@ namespace Gtk
             get { return alphaBits; }
             set { alphaBits = value; }
         }
-	
+
         byte depthBits = 32;
         public byte DepthBits
         {
@@ -68,28 +68,28 @@ namespace Gtk
         }
 
         Gdk.Visual visual = null;
-        static GLWidget globalSharedContextWidget = null;	
+        static GLWidget globalSharedContextWidget = null;
         GLWidget sharedContextWidget;
-		
+
         public GLWidget()
-			 : this(null)
+             : this(null)
         {
-			if( globalSharedContextWidget == null)
-			{
-				globalSharedContextWidget = this;
-			}
-			else
-			{
-				sharedContextWidget = globalSharedContextWidget;
-			}
+            if( globalSharedContextWidget == null)
+            {
+                globalSharedContextWidget = this;
+            }
+            else
+            {
+                sharedContextWidget = globalSharedContextWidget;
+            }
         }
 
         public GLWidget(GLWidget sharedContextWidget)
         {
             base.DoubleBuffered = false;
             Realized += new EventHandler(HandleRealized);
-			ExposeEvent += new ExposeEventHandler(HandleExposeEvent);
-			
+            ExposeEvent += new ExposeEventHandler(HandleExposeEvent);
+            
             this.sharedContextWidget = sharedContextWidget;
         }
 
@@ -264,26 +264,26 @@ namespace Gtk
             }
         }
 
-		void HandleExposeEvent(object o, ExposeEventArgs args)
-		{
-			MakeCurrent();
+        void HandleExposeEvent(object o, ExposeEventArgs args)
+        {
+            MakeCurrent();
 
-			OnRender();
+            OnRender();
 
-			SwapBuffers();
-		}
-		
-		public event EventHandler Render;
-		public virtual void OnRender()
-		{
-			EventHandler render = Render;
-			
-			if( render != null )
-			{
-				render(this, EventArgs.Empty);
-			}
-		}
-		
+            SwapBuffers();
+        }
+        
+        public event EventHandler Render;
+        public virtual void OnRender()
+        {
+            EventHandler render = Render;
+            
+            if( render != null )
+            {
+                render(this, EventArgs.Empty);
+            }
+        }
+        
         public bool MakeCurrent()
         {
             switch (platformID)
@@ -399,9 +399,9 @@ namespace Gtk
 
         #region X
 
-		const string linux_libgl_name = "libGL.so.1";
-		const string linux_libx11_name = "libX11.so.6";
-		const string linux_libgdk_x11_name = "libgdk-x11-2.0.so.0";
+        const string linux_libgl_name = "libGL.so.1";
+        const string linux_libx11_name = "libX11.so.6";
+        const string linux_libgdk_x11_name = "libgdk-x11-2.0.so.0";
 
         [SuppressUnmanagedCodeSecurity, DllImport(linux_libx11_name)]
         static extern void XFree(IntPtr handle);
@@ -435,7 +435,7 @@ namespace Gtk
 
         [SuppressUnmanagedCodeSecurity, DllImport(linux_libgdk_x11_name)]
         static extern IntPtr gdk_x11_screen_lookup_visual(IntPtr screen, uint xvisualid);
-		
+
         const int GLX_NONE = 0;
         const int GLX_USE_GL = 1;
         const int GLX_BUFFER_SIZE = 2;

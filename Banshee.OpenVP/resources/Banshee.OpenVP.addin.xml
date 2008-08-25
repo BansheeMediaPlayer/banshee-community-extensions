@@ -20,10 +20,6 @@
     <Addin id="Banshee.Services" version="1.0"/>
   </Dependencies>
 
-  <!-- <Extension path="/Banshee/ServiceManager/Service">
-    <Service class="Banshee.OpenVP.OpenVPService"/>
-  </Extension> -->
-
   <Extension path="/Banshee/SourceManager/Source">
     <Source class="Banshee.OpenVP.OpenVPSource" />
   </Extension>

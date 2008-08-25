@@ -10,33 +10,33 @@ using OpenVP;
 
 namespace Banshee.OpenVP
 {
-	public class VisualizationExtensionNode : ExtensionNode
-	{
-		[NodeAttribute]
-		private string type = null;
+    public class VisualizationExtensionNode : ExtensionNode
+    {
+        [NodeAttribute]
+        private string type = null;
 
-		[NodeAttribute]
-		private string label = null;
+        [NodeAttribute]
+        private string label = null;
 
-		private Type typeObject = null;
+        private Type typeObject = null;
 
-		public Type Type {
-			get {
-				if (this.typeObject == null) {
-					this.typeObject = this.Addin.GetType(this.type, true);
-				}
+        public Type Type {
+            get {
+                if (this.typeObject == null) {
+                    this.typeObject = this.Addin.GetType(this.type, true);
+                }
 
-				return this.typeObject;
-			}
-		}
+                return this.typeObject;
+            }
+        }
 
-		public string Label {
-			get { return this.label; }
-		}
+        public string Label {
+            get { return this.label; }
+        }
 
-		public IRenderer CreateObject()
-		{
-			return (IRenderer) Activator.CreateInstance(this.Type);
-		}
-	}
+        public IRenderer CreateObject()
+        {
+            return (IRenderer) Activator.CreateInstance(this.Type);
+        }
+    }
 }

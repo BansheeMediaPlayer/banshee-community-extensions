@@ -53,7 +53,6 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BansheePlayerData.cs" />
-    <Compile Include="OpenVPService.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="VisualizationDisplayWidget.cs" />
     <Compile Include="gtk-gui\Banshee.OpenVP.VisualizationDisplayWidget.cs" />

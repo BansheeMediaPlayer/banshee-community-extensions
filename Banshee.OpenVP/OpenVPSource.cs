@@ -12,32 +12,32 @@ using Mono.Unix;
 
 namespace Banshee.OpenVP
 {
-	public class OpenVPSource : Source, IDisposable
-	{
-		private VisualizationDisplayWidget visualizationDisplay = null;
-		
-		protected override string TypeUniqueId {
-			get { return "openvp"; }
-		}
+    public class OpenVPSource : Source, IDisposable
+    {
+        private VisualizationDisplayWidget visualizationDisplay = null;
+        
+        protected override string TypeUniqueId {
+            get { return "openvp"; }
+        }
 
-		public OpenVPSource() : base("openvp", Catalog.GetString("Visualization"), 10)
-		{
-			this.visualizationDisplay = new VisualizationDisplayWidget();
-			
-			this.Properties.SetString("Icon.Name", "applications-multimedia");
-			this.Properties.Set<bool>("Nereid.SourceContents.HeaderVisible", false);
-			this.Properties.Set<ISourceContents>("Nereid.SourceContents", this.visualizationDisplay);
+        public OpenVPSource() : base("openvp", Catalog.GetString("Visualization"), 10)
+        {
+            this.visualizationDisplay = new VisualizationDisplayWidget();
+            
+            this.Properties.SetString("Icon.Name", "applications-multimedia");
+            this.Properties.Set<bool>("Nereid.SourceContents.HeaderVisible", false);
+            this.Properties.Set<ISourceContents>("Nereid.SourceContents", this.visualizationDisplay);
 
-			ServiceManager.SourceManager.AddSource(this);
-		}
+            ServiceManager.SourceManager.AddSource(this);
+        }
 
-		public void Dispose()
-		{
-			if (this.visualizationDisplay != null) {
-				this.visualizationDisplay.Destroy();
-				this.visualizationDisplay.Dispose();
-				this.visualizationDisplay = null;
-			}
-		}
-	}
+        public void Dispose()
+        {
+            if (this.visualizationDisplay != null) {
+                this.visualizationDisplay.Destroy();
+                this.visualizationDisplay.Dispose();
+                this.visualizationDisplay = null;
+            }
+        }
+    }
 }
