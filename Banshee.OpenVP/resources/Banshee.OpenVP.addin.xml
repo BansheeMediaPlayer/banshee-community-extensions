@@ -35,6 +35,7 @@
   <Extension path="/Banshee/OpenVP/Visualization">
   	<Visualization type="Banshee.OpenVP.Visualizations.SimpleScope" label="Simple scope" />
   	<Visualization type="Banshee.OpenVP.Visualizations.SpectrumAnalyzer" label="Spectrum analyzer" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.Grid" label="Grid" />
   	<Visualization type="Banshee.OpenVP.Visualizations.Inferno" label="Inferno" />
   </Extension>
 </Addin>

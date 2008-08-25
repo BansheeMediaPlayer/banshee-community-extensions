@@ -128,35 +128,57 @@ namespace Banshee.OpenVP
 			
 			return false;
 		}
-		
-		public override void GetPCM (float[][] channels) {
-			float[][] data = this.CurrentDataSlice.PCMData;
+
+		private static void Downmix (float[] center, float[] left, float[] right)
+		{
+			float[] target;
 			
-			int count = Math.Min(channels.Length, data.Length);
+			if (center.Length == left.Length)
+				target = center;
+			else
+				target = new float[left.Length];
 			
-			// TODO: Handle channels.Length == 1 && data.Length == 2 (stereo mixing)
+			for (int i = 0; i < center.Length; i++)
+				center[i] = (left[i] + right[i]) / 2;
+
+			if (center.Length != left.Length)
+				Interpolate(target, center);
+		}
+
+		private static void GetData (float[][] output, float[][] input)
+		{
+			// Assume this is a request for downmix of stereo.
+			if (output.Length == 1 && input.Length >= 2) {
+				Downmix(output[0], input[0], input[1]);
+				return;
+			}
+
+			// Duplicate data if they request stereo data but we don't have it.
+			if (output.Length == 2 && input.Length == 1) {
+				Interpolate(input[0], output[0]);
+				Interpolate(input[0], output[1]);
+				return;
+			}
+			
+			int count = Math.Min(output.Length, input.Length);
+			
 			for (int i = 0; i < count; i++) {
-				Interpolate(data[i], channels[i]);
+				Interpolate(input[i], output[i]);
 			}
 			
-			for (int i = count; i < channels.Length; i++) {
-				Array.Clear(channels[i], 0, channels[i].Length);
+			for (int i = count; i < output.Length; i++) {
+				Array.Clear(output[i], 0, output[i].Length);
 			}
+		}
+		
+		public override void GetPCM (float[][] channels)
+		{
+			GetData(channels, this.CurrentDataSlice.PCMData);
 		}
 		
 		public override void GetSpectrum (float[][] channels)
 		{
-            float[][] data = this.CurrentDataSlice.SpectrumData;
-            
-            int count = Math.Min(channels.Length, data.Length);
-            
-			for (int i = 0; i < count; i++) {
-				Interpolate(data[i], channels[i]);
-			}
-			
-			for (int i = count; i < channels.Length; i++) {
-				Array.Clear(channels[i], 0, channels[i].Length);
-			}
+			GetData(channels, this.CurrentDataSlice.SpectrumData);
 		}
 		
 		private class DataSlice {

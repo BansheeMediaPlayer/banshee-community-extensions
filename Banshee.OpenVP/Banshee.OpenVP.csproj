@@ -63,6 +63,7 @@
     <Compile Include="Gtk\GLWidget.cs" />
     <Compile Include="Banshee.OpenVP.Visualizations\Inferno.cs" />
     <Compile Include="Banshee.OpenVP.Visualizations\SpectrumAnalyzer.cs" />
+    <Compile Include="Banshee.OpenVP.Visualizations\Grid.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="resources\Banshee.OpenVP.addin.xml" />

@@ -1,5 +1,12 @@
 2008-08-25  Chris Howie <cdhowie@gmail.com> 
 
+	* BansheePlayerData.cs: Add stereo->mono and mono->stereo conversions. 
+	  Removed some duplicated code.
+	* resources/Banshee.OpenVP.addin.xml, Banshee.OpenVP.csproj,
+	  Banshee.OpenVP.Visualizations/Grid.cs: Add Grid visualization.
+
+2008-08-25  Chris Howie <cdhowie@gmail.com> 
+
 	* Banshee.OpenVP.Visualizations/SpectrumAnalyzer.cs: Tweak spectrum
 	  analyzer.
 
