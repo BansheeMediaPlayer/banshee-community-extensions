@@ -1,3 +1,8 @@
+2008-08-25  Chris Howie <cdhowie@gmail.com> 
+
+	* Banshee.OpenVP.Visualizations/SpectrumAnalyzer.cs: Tweak spectrum
+	  analyzer.
+
 2008-08-24  Chris Howie <cdhowie@gmail.com> 
 
 	* resources/Banshee.OpenVP.addin.xml, Banshee.OpenVP.csproj,
