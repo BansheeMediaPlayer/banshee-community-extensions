@@ -34,8 +34,8 @@ namespace Mirage
 
 	public class Mir
 	{
-	    static int samplingrate = 11025;
-	    static int windowsize = 512;
+	    static int samplingrate = 22050;
+	    static int windowsize = 1024;
 	    static int melcoefficients = 36;
 	    static int mfcccoefficients = 20;
 	    static int secondstoanalyze = 120;
