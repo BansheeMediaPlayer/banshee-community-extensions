@@ -108,7 +108,9 @@ namespace Gtk
 
                 case PlatformID.Unix:
                 default:
-                    glXDestroyContext(gdk_x11_display_get_xdisplay(visual.Screen.Display.Handle), renderingContextHandle);
+                    if (visual != null) {
+                        glXDestroyContext(gdk_x11_display_get_xdisplay(visual.Screen.Display.Handle), renderingContextHandle);
+                    }
                     break;
             }
         }

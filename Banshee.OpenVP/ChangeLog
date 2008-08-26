@@ -1,3 +1,8 @@
+2008-08-26  Chris Howie <cdhowie@gmail.com> 
+
+	* Gtk/GLWidget.cs: Check if GLWidget.visual is null before calling
+	  glXDestroyContext.  (Fixes issue 2.)
+
 2008-08-25  Chris Howie <cdhowie@gmail.com> 
 
 	* VisualizationDisplayWidget.cs: Fix render loop issue.
