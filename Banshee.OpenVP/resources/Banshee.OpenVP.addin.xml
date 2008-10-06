@@ -33,5 +33,6 @@
   	<Visualization type="Banshee.OpenVP.Visualizations.SpectrumAnalyzer" label="Spectrum analyzer" />
   	<Visualization type="Banshee.OpenVP.Visualizations.Grid" label="Grid" />
   	<Visualization type="Banshee.OpenVP.Visualizations.Inferno" label="Inferno" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.GlassWall" label="Glass wall" />
   </Extension>
 </Addin>

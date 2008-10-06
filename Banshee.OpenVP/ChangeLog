@@ -1,3 +1,9 @@
+2008-10-06  Chris Howie <cdhowie@gmail.com> 
+
+	* resources/Banshee.OpenVP.addin.xml, Banshee.OpenVP.csproj,
+	  Banshee.OpenVP.Visualizations/GlassWall.cs: Add Glass Wall
+	  visualization.
+
 2008-08-26  Chris Howie <cdhowie@gmail.com> 
 
 	* Gtk/GLWidget.cs: Check if GLWidget.visual is null before calling
