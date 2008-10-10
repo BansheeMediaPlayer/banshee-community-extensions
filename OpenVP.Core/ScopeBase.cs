@@ -82,8 +82,8 @@ namespace OpenVP.Core {
 		public override void RenderFrame(IController controller) {
 			int points = this.Vertices;
 			
-			if (points <= 0)
-				return;
+			if (points <= 1)
+				points = controller.PlayerData.NativePCMLength;
 			
 			this.EnsureDataArrayLength(points);
 			controller.PlayerData.GetPCM(this.mScopeData);

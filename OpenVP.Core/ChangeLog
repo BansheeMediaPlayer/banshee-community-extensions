@@ -1,3 +1,7 @@
+2008-10-10  Chris Howie <me@chrishowie.com> 
+
+	* ScopeBase.cs: Copy r77 from trunk.
+
 2008-08-24  Chris Howie <cdhowie@gmail.com> 
 
 	* MovementBase.cs, ScopeBase.cs, OpenVP.Core.mdp: Merge r65 with 0.0.1
