@@ -35,5 +35,17 @@ namespace Banshee.OpenVP
                 this.visualizationDisplay = null;
             }
         }
+
+        public override void Activate()
+        {
+            this.visualizationDisplay.SourceActivated();
+            base.Activate();
+        }
+
+        public override void Deactivate()
+        {
+            this.visualizationDisplay.SourceDeactivated();
+            base.Deactivate();
+        }
     }
 }

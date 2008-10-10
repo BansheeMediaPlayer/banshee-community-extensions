@@ -1,5 +1,14 @@
 2008-10-10  Chris Howie <me@chrishowie.com> 
 
+	* VisualizationDisplayWidget.cs, OpenVPSource.cs: Set the
+	  BansheePlayerData instance inactive when the source isn't active.
+	* BansheePlayerData.cs: Allow source to be set inactive when not in use
+	  so the GStreamer backend can disable the visualization pipeline.
+	* Banshee.OpenVP.Visualizations/SpectrumAnalyzer.cs: Use the native
+	  spectrum length instead of 512.
+
+2008-10-10  Chris Howie <me@chrishowie.com> 
+
 	* BansheePlayerData.cs: Fix typo bug causing stereo downmixing to a
 	  non-native length to return all zeros.
 	* OpenVPSource.cs: Track change to Banshee API.

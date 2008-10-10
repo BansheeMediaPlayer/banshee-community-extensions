@@ -40,6 +40,23 @@ namespace Banshee.OpenVP
         private ManualResetEvent mDataAvailableEvent = new ManualResetEvent(false);
         
         private static readonly TimeSpan SkipThreshold = TimeSpan.FromSeconds(6 / 60);
+
+        private bool active = false;
+
+        public bool Active {
+            get { return this.active; }
+            set {
+                if (value == this.active)
+                    return;
+
+                if (value)
+                    ((IVisualizationDataSource) this.mSource).DataAvailable += this.OnDataAvailable;
+                else
+                    ((IVisualizationDataSource) this.mSource).DataAvailable -= this.OnDataAvailable;
+
+                this.active = value;
+            }
+        }
         
         private DataSlice CurrentDataSlice {
             get {
@@ -51,14 +68,11 @@ namespace Banshee.OpenVP
         }
         
         public BansheePlayerData(PlayerEngine source) {
-            IVisualizationDataSource dsource = source as IVisualizationDataSource;
-            
-            if (dsource == null)
+            if (!(source is IVisualizationDataSource))
                 throw new ArgumentException("source is not an IVisualizationDataSource");
             
             this.mSource = source;
-            
-            dsource.DataAvailable += this.OnDataAvailable;
+            this.Active = true;
         }
         
         private void OnDataAvailable(float[][] data, float[][] spectrum) {
@@ -80,7 +94,7 @@ namespace Banshee.OpenVP
         }
         
         public void Dispose() {
-            ((IVisualizationDataSource) this.mSource).DataAvailable -= this.OnDataAvailable;
+            this.Active = false;
             this.mSource = null;
         }
         

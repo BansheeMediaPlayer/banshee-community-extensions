@@ -173,6 +173,16 @@ namespace Banshee.OpenVP
             }
         }
 
+        internal void SourceActivated()
+        {
+            this.playerData.Active = true;
+        }
+
+        internal void SourceDeactivated()
+        {
+            this.playerData.Active = false;
+        }
+
 #region ISourceContents
         private ISource source;
         

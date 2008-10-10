@@ -12,21 +12,32 @@ namespace Banshee.OpenVP.Visualizations
 {
     public class SpectrumAnalyzer : IRenderer
     {
-        private const int FREQUENCY_COUNT = 512;
+        private int spectrumLength = -1;
+        
+        private float spacing;
 
-        private const float SPACING = 2f / FREQUENCY_COUNT;
+        private float[] spectrum;
 
-        private float[] spectrum = new float[FREQUENCY_COUNT];
-
-        private float[] newspec = new float[FREQUENCY_COUNT];
+        private float[] newspec;
         
         public SpectrumAnalyzer()
         {
         }
 
+        private void UpdateSpectrumLength(int length)
+        {
+            if (this.spectrumLength == length)
+                return;
+
+            this.spacing = 2f / length;
+            this.spectrum = new float[length];
+            this.newspec = new float[length];
+            this.spectrumLength = length;
+        }
+
         private void MergeSpectrum()
         {
-            for (int i = 0; i < FREQUENCY_COUNT; i++) {
+            for (int i = 0; i < this.spectrumLength; i++) {
                 this.spectrum[i] = Math.Max(this.newspec[i], this.spectrum[i] / 1.25f);
             }
         }
@@ -36,16 +47,17 @@ namespace Banshee.OpenVP.Visualizations
             gl.glClearColor(0, 0, 0, 1);
             gl.glClear(gl.GL_COLOR_BUFFER_BIT);
 
+            this.UpdateSpectrumLength(controller.PlayerData.NativeSpectrumLength);
             controller.PlayerData.GetSpectrum(this.newspec);
             this.MergeSpectrum();
             
             gl.glBegin(gl.GL_QUADS);
             
-            for (int i = 0; i < FREQUENCY_COUNT; i++) {
+            for (int i = 0; i < this.spectrumLength; i++) {
                 Color color = Color.FromHSL(120 * (1 - this.spectrum[i]), 1, 0.5f);
                 
-                float x1 = -1 + SPACING * i;
-                float x2 = -1 + SPACING * (i + 1);
+                float x1 = -1 + this.spacing * i;
+                float x2 = -1 + this.spacing * (i + 1);
 
                 float v = this.spectrum[i] * 2 - 1;
 
