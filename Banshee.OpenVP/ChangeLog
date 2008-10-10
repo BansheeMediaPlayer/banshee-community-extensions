@@ -1,3 +1,11 @@
+2008-10-10  Chris Howie <me@chrishowie.com> 
+
+	* BansheePlayerData.cs: Fix typo bug causing stereo downmixing to a
+	  non-native length to return all zeros.
+	* OpenVPSource.cs: Track change to Banshee API.
+	* Banshee.OpenVP.Visualizations/Inferno.cs,
+	  Banshee.OpenVP.Visualizations/Grid.cs: Use native PCM data length.
+
 2008-10-06  Chris Howie <cdhowie@gmail.com> 
 
 	* resources/Banshee.OpenVP.addin.xml, Banshee.OpenVP.csproj,

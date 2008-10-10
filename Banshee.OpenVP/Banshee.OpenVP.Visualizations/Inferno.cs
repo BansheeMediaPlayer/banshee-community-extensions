@@ -31,7 +31,6 @@ namespace Banshee.OpenVP.Visualizations
             public InfernoScope()
             {
                 this.LineWidth = 5;
-                this.Vertices = 512;
             }
             
             protected override void PlotVertex(ScopeData data)

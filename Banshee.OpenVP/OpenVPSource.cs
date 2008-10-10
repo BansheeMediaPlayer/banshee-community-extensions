@@ -15,12 +15,8 @@ namespace Banshee.OpenVP
     public class OpenVPSource : Source, IDisposable
     {
         private VisualizationDisplayWidget visualizationDisplay = null;
-        
-        protected override string TypeUniqueId {
-            get { return "openvp"; }
-        }
 
-        public OpenVPSource() : base("openvp", Catalog.GetString("Visualization"), 10)
+        public OpenVPSource() : base("openvp", Catalog.GetString("Visualization"), 10, "openvp")
         {
             this.visualizationDisplay = new VisualizationDisplayWidget();
             

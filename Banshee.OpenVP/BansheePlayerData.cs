@@ -139,7 +139,7 @@ namespace Banshee.OpenVP
                 target = new float[left.Length];
             
             for (int i = 0; i < center.Length; i++)
-                center[i] = (left[i] + right[i]) / 2;
+                target[i] = (left[i] + right[i]) / 2;
 
             if (center.Length != left.Length)
                 Interpolate(target, center);

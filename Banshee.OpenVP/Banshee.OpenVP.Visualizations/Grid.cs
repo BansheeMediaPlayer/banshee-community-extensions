@@ -36,11 +36,6 @@ namespace Banshee.OpenVP.Visualizations
         private class GridScope : ScopeBase
         {
             private static readonly Random rand = new Random();
-            
-            public GridScope()
-            {
-                this.Vertices = 512;
-            }
 
             private float dx = 0;
 
