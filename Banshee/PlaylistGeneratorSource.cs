@@ -64,13 +64,10 @@ namespace Banshee.Plugins.Mirage
             }
         }
         
-        protected override string TypeUniqueId {
-            get { return "Mirage"; }
-        }
-        
         public PlaylistGeneratorSource(string name, Db db)
                 : base("mirage-playlist-generator", name, 100)
         {
+            TypeUniqueId = "Mirage";
             this.db = db;
             track_model = new MemoryTrackListModel ();
             
@@ -250,29 +247,35 @@ namespace Banshee.Plugins.Mirage
             get { return false; }
         }
 
+        public bool Indexable {
+            get { return false; }
+        }
+
 #endregion
 
 #region IBasicPlaybackController
 
-        void IBasicPlaybackController.First ()
+        bool IBasicPlaybackController.First ()
         {
-            ((IBasicPlaybackController)this).Next (false);
+            return ((IBasicPlaybackController)this).Next (false);
         }
         
-        void IBasicPlaybackController.Next (bool restart)
+        bool IBasicPlaybackController.Next (bool restart)
         {
             TrackInfo next = NextTrack;
             if (next != null) {
                 ServiceManager.PlayerEngine.OpenPlay (next);
             }
+            return true;
         }
         
-        void IBasicPlaybackController.Previous (bool restart)
+        bool IBasicPlaybackController.Previous (bool restart)
         {
             TrackInfo previous = GetTrack (current_track - 1);
             if (previous != null) {
                 ServiceManager.PlayerEngine.OpenPlay (previous);
             }
+            return true;
         }
         
 #endregion
