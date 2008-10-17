@@ -1,0 +1,6 @@
+<ui>
+    <popup name="PlaylistContextMenu">
+        <menuitem action="ClearPlaylistAction"></menuitem>
+        <menuitem action="ClearPlaylistOnQuitAction"></menuitem>
+    </popup>
+</ui>

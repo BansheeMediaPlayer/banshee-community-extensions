@@ -2,7 +2,6 @@ ASSEMBLY = Banshee.Mirage
 TARGET = library
 
 SOURCES = \
-	ContinuousGeneratorSource.cs \
 	MiragePlugin.cs \
 	PlaylistGeneratorSource.cs \
 	SimilarityCalculator.cs \
@@ -12,6 +11,7 @@ RESOURCES = \
 	res/cp.png \
 	res/source-mirage.png \
 	res/MirageMenu.xml \
+	res/GlobalUI.xml \
 	Banshee.Plugins.Mirage.addin.xml
 
 REFERENCES =  \

@@ -1,3 +1,20 @@
+2008-10-17  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	This commit brings a big code reorganisation in Banshee/ and makes the 
+	Mirage source a PlaylistSource.
+
+	* Banshee/ContinuousGeneratorSource.cs: Merged into
+	  PlaylistGeneratorSource.
+	* Banshee/SimilarityCalculator.cs, Banshee/Config.cs.in: Change the
+	  namespace.
+	* Banshee/Banshee.Plugins.Mirage.addin.xml: The extension is now
+	  enabled by default.
+	* Banshee/MiragePlugin.cs, Banshee/PlaylistGeneratorSource.cs: The two
+	  playlist classes are merged into one, and it's now a
+	  PlaylistSource.
+	* Banshee/res/GlobalUI.xml: Context menu items.
+	* Banshee/Makefile.am: File addition and deletion.
+
 2008-10-14  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* Banshee/PlaylistGeneratorSource.cs: Update to compile with banshee

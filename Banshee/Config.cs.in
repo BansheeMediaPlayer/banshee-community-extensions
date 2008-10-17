@@ -22,39 +22,36 @@
 
 using System;
 
-namespace Banshee.Plugins.Mirage
+namespace Banshee.Mirage
 {
-
-
-public class Config
-{
-    public static string Version
+    public class Config
     {
-        get {
-            return "@VERSION@";
+        public static string Version
+        {
+            get {
+                return "@VERSION@";
+            }
+        }
+
+        public static string Prefix
+        {
+            get {
+                return "@prefix@";
+            }
+        }
+
+        public static string SysConfDir
+        {
+            get {
+                return "@sysconfdir@";
+            }
+        }
+
+        public static string LocaleDir
+        {
+            get {
+                return "@prefix@/share/locale";
+            }
         }
     }
-
-    public static string Prefix
-    {
-        get {
-            return "@prefix@";
-        }
-    }
-
-    public static string SysConfDir
-    {
-        get {
-            return "@sysconfdir@";
-        }
-    }
-
-    public static string LocaleDir
-    {
-        get {
-            return "@prefix@/share/locale";
-        }
-    }
-}
-
 }

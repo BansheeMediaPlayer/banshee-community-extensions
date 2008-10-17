@@ -41,12 +41,12 @@ using Banshee.Gui;
 
 using Mirage;
 
-namespace Banshee.Plugins.Mirage
+namespace Banshee.Mirage
 {
     public class MiragePlugin : IExtensionService, IDisposable
     {
         Db db;
-        ContinuousGeneratorSource continuousPlaylist;
+        PlaylistGeneratorSource continuousPlaylist;
 
         Queue jobQueue;
         Thread jobThread;
@@ -102,7 +102,7 @@ namespace Banshee.Plugins.Mirage
                 ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
             }
             
-            Log.Debug("Mirage: Initialized");
+            Log.Debug("Mirage - Initialized");
         }
         
         private void OnSourceAdded (SourceAddedArgs args)
@@ -123,12 +123,8 @@ namespace Banshee.Plugins.Mirage
                 ServiceManager.SourceManager.MusicLibrary.TracksAdded += OnLibraryTracksAdded;
                 ServiceManager.SourceManager.MusicLibrary.TracksDeleted += OnLibraryTracksDeleted;
                 
-                continuousPlaylist = new ContinuousGeneratorSource("Playlist Generator", db);
-                
-                lock (ServiceManager.SourceManager.MusicLibrary.Children) {
-                    ServiceManager.SourceManager.MusicLibrary.AddChildSource(continuousPlaylist);
-                }
-                //Log.Debug("Mirage: scan library");
+                continuousPlaylist = new PlaylistGeneratorSource(db);
+                ServiceManager.SourceManager.AddSource (continuousPlaylist);
                 //ScanLibrary();
             }
             
@@ -165,7 +161,7 @@ namespace Banshee.Plugins.Mirage
 
         private void ScanLibraryThread()
         {
-            Log.Debug("Mirage: Scanning library for tracks to update");
+            Log.Debug("Mirage - Scanning library for tracks to update");
             
             String query;
             if (rescanFailed) {
@@ -199,7 +195,7 @@ namespace Banshee.Plugins.Mirage
             }
 
             reader.Dispose();
-            Log.Debug("Mirage: Done scanning library");
+            Log.Debug("Mirage - Done scanning library");
 
             ProcessQueue();
         }
@@ -261,7 +257,7 @@ namespace Banshee.Plugins.Mirage
                 if (track.Uri != null && track.Uri.IsLocalPath) {
                     int status = 0;
                     try {
-                        Log.DebugFormat ("Mirage: processing {0}/{1}/{2}", track.TrackId, track.ArtistName, track.TrackTitle);
+                        Log.DebugFormat ("Mirage - Processing {0}-{1}-{2}", track.TrackId, track.ArtistName, track.TrackTitle);
 
                         userJob.Status = String.Format("{0} - {1}", track.ArtistName, track.TrackTitle);
                         Scms scms = Mir.Analyze(track.Uri.LocalPath);
@@ -321,7 +317,7 @@ namespace Banshee.Plugins.Mirage
         {
             if (((jobThread == null) && (scanThread == null)) ||
                 (!jobThread.IsAlive && !scanThread.IsAlive)) {
-                Log.Debug("Mirage: Rescan");
+                Log.Debug("Mirage - Rescan");
                 rescanFailed = true;
                 ScanLibrary();
             }
@@ -337,7 +333,6 @@ namespace Banshee.Plugins.Mirage
             md.Destroy();
 
             if (result == ResponseType.Yes) {
-                Log.Debug("Mirage: Reset");
                 try {
                     Mir.CancelAnalyze();
                     ServiceManager.DbConnection.Execute("DELETE FROM MirageProcessed");
@@ -348,7 +343,7 @@ namespace Banshee.Plugins.Mirage
                     md.Run();
                     md.Destroy();
                 } catch (Exception) {
-                    Log.Warning("Mirage: Error resetting Mirage.");
+                    Log.Warning("Mirage - Error resetting Mirage.");
                 }
             }
 
@@ -362,8 +357,6 @@ namespace Banshee.Plugins.Mirage
 
         private void OnLibraryTracksDeleted(object o, TrackEventArgs args)
         {
-            Log.Debug("Mirage: Deleted track.");
-
             IDataReader reader = ServiceManager.DbConnection.Query (
                 @"SELECT TrackID FROM MirageProcessed WHERE TrackID NOT IN 
                     (SELECT TrackID from CoreTracks WHERE PrimarySourceID = ?)", 
@@ -387,5 +380,13 @@ namespace Banshee.Plugins.Mirage
         string IService.ServiceName {
             get { return "MirageService"; }
         }
+        
+        public static readonly SchemaEntry<bool> ClearOnQuitSchema = new SchemaEntry<bool> (
+            "plugins.mirage", "clear_on_quit",
+            false,
+            "Clear on Quit",
+            "Clear the playlist when quitting"
+        );
+
     }
 }

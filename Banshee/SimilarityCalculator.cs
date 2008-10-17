@@ -25,7 +25,7 @@ using System;
 using Hyena;
 using Mirage;
 
-namespace Banshee.Plugins.Mirage
+namespace Banshee.Mirage
 {
     public class SimilarityCalculator
     {

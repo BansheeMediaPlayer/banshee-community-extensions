@@ -25,95 +25,138 @@ using System.Data;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-
-using Hyena;
-using Banshee.Collection;
-using Banshee.Collection.Database;
-using Banshee.PlaybackController;
-using Banshee.ServiceStack;
-using Banshee.Sources;
-using Mirage;
 using Mono.Unix;
 using Gtk;
 
+using Hyena;
+using Hyena.Data.Sqlite;
+using Banshee.Collection;
+using Banshee.Collection.Database;
+using Banshee.Gui;
+using Banshee.MediaEngine;
+using Banshee.PlaybackController;
+using Banshee.Playlist;
+using Banshee.ServiceStack;
+using Banshee.Sources;
+using Mirage;
 
-namespace Banshee.Plugins.Mirage
+namespace Banshee.Mirage
 {
-    public class PlaylistGeneratorSource : Source, ITrackModelSource, IDisposable, IBasicPlaybackController
+    public class PlaylistGeneratorSource : PlaylistSource, IBasicPlaybackController, IDisposable
     {
+        private static string playlist_name = "Playlist Generator";
+
         public static List<DatabaseTrackInfo> seeds = new List<DatabaseTrackInfo>();
         protected List<DatabaseTrackInfo> tracksOverride = new List<DatabaseTrackInfo>();
-        
+        protected List<DatabaseTrackInfo> skipped = new List<DatabaseTrackInfo>();
+        protected DatabaseTrackInfo processed;
         protected Db db;
 
-        protected MemoryTrackListModel track_model;
-        
-        public override int Count {
-            get {
-                return track_model.Count;
-            }
-        }
-        
         private int current_track = 0;
         public TrackInfo CurrentTrack {
             get { return GetTrack (current_track); }
             set {
-                int i = track_model.IndexOf (value);
-                if (i != -1)
+                int i = DatabaseTrackModel.IndexOf (value);
+                if (i != -1) {
                     current_track = i;
+                }
             }
         }
-        
-        public PlaylistGeneratorSource(string name, Db db)
-                : base("mirage-playlist-generator", name, 100)
+
+        public PlaylistGeneratorSource(Db db)
+                : base(Catalog.GetString ("Playlist Generator"), null)
         {
             TypeUniqueId = "Mirage";
-            this.db = db;
-            track_model = new MemoryTrackListModel ();
+            BindToDatabase ();
+            Initialize ();
+            AfterInitialized ();
             
-            SetStatus (Catalog.GetString("Ready. Drag a song on the Playlist Generator to start!"), false, false, null);
+            this.db = db;
+            processed = null;
+            
+            Order = 20;
+            Properties.SetString ("Icon.Name", "source-mirage");
+            
+            ((DatabaseTrackListModel)TrackModel).ForcedSortQuery = "CorePlaylistEntries.ViewOrder ASC, CorePlaylistEntries.EntryID ASC";
+            
+            InterfaceActionService action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
+            
+            /*action_service.TrackActions.Add (new ActionEntry [] {
+                new ActionEntry ("AddToPlayQueueAction", Stock.Add,
+                    Catalog.GetString ("Add to Play Queue"), "q",
+                    Catalog.GetString ("Append selected songs to the play queue"),
+                    OnAddToPlayQueue)
+            });*/
+            
+            action_service.GlobalActions.AddImportant (
+                new ActionEntry ("ClearPlaylistAction", Stock.Clear,
+                    Catalog.GetString ("Clear"), null,
+                    Catalog.GetString ("Remove all tracks from the play queue"),
+                    OnClearPlaylist)
+            );
+            
+            action_service.GlobalActions.Add (new ToggleActionEntry [] {
+                new ToggleActionEntry ("ClearPlaylistOnQuitAction", null, 
+                                       Catalog.GetString ("Clear on Quit"), null, 
+                                       Catalog.GetString ("Clear the play queue when quitting"), 
+                                       OnClearPlaylistOnQuit, 
+                                       MiragePlugin.ClearOnQuitSchema.Get ())
+            });
+            
+            action_service.UIManager.AddUiFromResource ("GlobalUI.xml");
+            Properties.SetString ("GtkActionPath", "/PlaylistContextMenu");
+                    
+            action_service.PlaybackActions["NextAction"].Activated += OnNextPrevAction;
+            action_service.PlaybackActions["PreviousAction"].Activated += OnNextPrevAction;
+            
+            ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEvent, 
+                                                      PlayerEvent.StartOfStream | 
+                                                      PlayerEvent.Iterate);
+            
+            Reload ();
+            
+            if (Count == 0) {
+                SetStatus (Catalog.GetString ("Ready. Drag a song on the Playlist Generator to start!"), false, false, null);
+            }
         }
         
         public void Dispose ()
         {
         }
         
-        public virtual void Update ()
+        private void BindToDatabase ()
         {
-            int[] trackId;
+            int result = ServiceManager.DbConnection.Query<int> (
+                "SELECT PlaylistID FROM CorePlaylists WHERE Special = 1 AND Name = ? LIMIT 1",
+                playlist_name
+            );
             
-            // Add seed tracks 
-            lock (track_model) {
-                seeds.Clear();
-                seeds.AddRange(tracksOverride);
-                
-                List<DatabaseTrackInfo> input_tracks = new List<DatabaseTrackInfo>();
-                input_tracks.AddRange(tracksOverride);
-                tracksOverride.Clear();
-                
-                // maintain the seed track order
-                track_model.Clear();
-                for (int i = 0; i < input_tracks.Count; i++) {
-                    track_model.Add(input_tracks[i]);
-                }
-                OnUpdated();
-                
-                // initialize the similarity computation
-                trackId = new int[track_model.Count];
-                for (int i = 0; i < track_model.Count; i++) {
-                    trackId[i] = (track_model[i] as DatabaseTrackInfo).TrackId;
-                }
+            if (result != 0) {
+                DbId = result;
+            } else {
+                DbId = ServiceManager.DbConnection.Execute (new HyenaSqliteCommand (@"
+                    INSERT INTO CorePlaylists (PlaylistID, Name, SortColumn, SortType, Special) 
+                    VALUES (NULL, ?, -1, 0, 1)", playlist_name));
             }
-            SimilarityCalculator sc =
-                    new SimilarityCalculator(trackId, trackId, db,
-                            UpdatePlaylist, 5);
-            SetStatus(Catalog.GetString("Generating the playlist..."), false);
-            Thread similarityCalculatorThread =
-                    new Thread(new ThreadStart(sc.Compute));
-            similarityCalculatorThread.Start();
         }
         
-        protected void UpdatePlaylist(int[] playlist, int length)
+        public void FillPlaylist ()
+        {
+            // Add seed tracks 
+            lock (TrackModel) {
+                seeds.Clear();
+                seeds.AddRange (tracksOverride);
+                
+                tracksOverride.Clear();
+                
+                OnUpdated();
+            }
+            SimilarTracks (seeds, seeds);
+        }
+        
+        public delegate void UpdatePlaylistDelegate(int[] playlist, int length);
+
+        protected void UpdatePlaylist (int[] playlist, int length)
         {
             Gtk.Application.Invoke(delegate {
                 if (playlist == null) {
@@ -121,7 +164,8 @@ namespace Banshee.Plugins.Mirage
                     return;
                 }
                 
-                lock (track_model) {
+                lock (DatabaseTrackModel) {
+                    RemoveTrackRange (DatabaseTrackModel, new Hyena.Collections.RangeCollection.Range (current_track + 1, Count - current_track));
                     int sameArtistCount = 0;
                     int i = 0;
                     int pi = 0;
@@ -138,9 +182,7 @@ namespace Banshee.Plugins.Mirage
                         } else
                             i++;
                         
-                        // FIXME : If this is not set, it causes crashes
-                        track.CacheEntryId = 0;
-                        track_model.Add(track);
+                        AddTrack(track);
                     }
                     SetStatus(Catalog.GetString("Playlist ready."), false, false, null);
                 }
@@ -148,22 +190,19 @@ namespace Banshee.Plugins.Mirage
                 OnUpdated();
                 HideStatus();
             });
-            
         }
         
-        public delegate void UpdatePlaylistDelegate(int[] playlist, int length);
-
-        public void Reorder(DatabaseTrackInfo track, int position)
+        /*public void Reorder(DatabaseTrackInfo track, int position)
         {
             // Reorder Tracks
-        }
+        }*/
 
-        public void AddTrack(DatabaseTrackInfo track)
+        protected override void AddTrack(DatabaseTrackInfo track)
         {
-            lock (track_model) {
+            lock (DatabaseTrackModel) {
                 tracksOverride.Add(track);
             }
-            OnUpdated();
+            base.AddTrack (track);
         }
         
         public override bool AcceptsInputFromSource (Source source)
@@ -178,115 +217,168 @@ namespace Banshee.Plugins.Mirage
         
         public override void MergeSourceInput (Source source, SourceMergeType mergeType)
         {
-            TrackListModel model = (source as ITrackModelSource).TrackModel;
-            Hyena.Collections.Selection selection = model.Selection;
-            if (selection.Count == 0)
-                return;
+            bool was_empty = (Count == 0);
+            base.MergeSourceInput (source, mergeType);
 
-            foreach (DatabaseTrackInfo ti in model.SelectedItems) {
-                AddTrack (ti);
+            if (was_empty) {
+                for (int i = 0; i < TrackModel.Count; i++) {
+                    tracksOverride.Add ((DatabaseTrackInfo)TrackModel[i]);
+                }
+                FillPlaylist ();
+            }
+        }
+        
+        /*private void OnAddToPlayQueue (object o, EventArgs args)
+        {
+            AddSelectedTracks (ServiceManager.SourceManager.ActiveSource);
+        }*/
+        
+        private void OnClearPlaylist (object o, EventArgs args)
+        {
+            current_track = 0;
+            RemoveTrackRange ((DatabaseTrackListModel)TrackModel, new Hyena.Collections.RangeCollection.Range (0, Count));
+            tracksOverride.Clear ();
+            Reload ();
+        }
+        
+        private void OnClearPlaylistOnQuit (object o, EventArgs args)
+        {
+            InterfaceActionService uia_service = ServiceManager.Get<InterfaceActionService> ();
+            if (uia_service == null) {
+                return;
+            }
+            
+            ToggleAction action = (ToggleAction)uia_service.GlobalActions["ClearPlayQueueOnQuitAction"];
+            MiragePlugin.ClearOnQuitSchema.Set (action.Active);
+        }
+
+        public void OnNextPrevAction(object o, EventArgs e)
+        {
+            skipped.Add(ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo);
+        }
+        
+        private void Refresh ()
+        {
+            processed = ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo;
+            
+            foreach (DatabaseTrackInfo seed in seeds) {
+                if (processed.TrackId == seed.TrackId) {
+                    return;
+                }
+            }
+                
+            lock (DatabaseTrackModel) {
+                if (DatabaseTrackModel.IndexOf(processed) < 0) {
+                    // We're playing another source
+                    return;
+                }
+                seeds.Add(processed);
+                
+                List<DatabaseTrackInfo> skip = new List<DatabaseTrackInfo>();
+                
+                skip.AddRange(seeds);
+                if (skipped.Count > 0)
+                    skip.AddRange(skipped);
+
+                SimilarTracks(seeds, skip);
+            }
+        }
+
+        private void SimilarTracks(List<DatabaseTrackInfo> tracks,
+                List<DatabaseTrackInfo> exclude)
+        {
+            int[] trackIds = new int[tracks.Count];
+            for (int i = 0; i < tracks.Count; i++) {
+                Log.DebugFormat ("Mirage - Looking for similars to {0}-{1}", tracks[i].TrackId, tracks[i].TrackTitle);
+                trackIds[i] = tracks[i].TrackId;
             }
 
-            Update();
+            int[] excludeTrackIds = new int[exclude.Count];
+            for (int i = 0; i < exclude.Count; i++) {
+                Log.DebugFormat ("Mirage - Excluding {0}-{1}", exclude[i].TrackId, exclude[i].TrackTitle);
+                excludeTrackIds[i] = exclude[i].TrackId;
+            }
+
+            SimilarityCalculator sc =
+                    new SimilarityCalculator(trackIds, excludeTrackIds,
+                            db, UpdatePlaylist, 5);
+            Thread similarityCalculatorThread =
+                    new Thread(new ThreadStart(sc.Compute));
+            similarityCalculatorThread.Start();
         }
 
-        
-#region ITrackModelSource Implementation
-
-        public TrackListModel TrackModel {
-            get { return track_model; }
-        }
-
-        public AlbumListModel AlbumModel {
-            get { return null; }
-        }
-
-        public ArtistListModel ArtistModel {
-            get { return null; }
-        }
-        
-        public System.Collections.Generic.IEnumerable<Banshee.Collection.Database.IFilterListModel> FilterModels {
-            get { yield break; }
-        }
-        
-        public bool HasDependencies {
-            get { return false; }
-        }
-
-        public void Reload ()
+        private void OnPlayerEvent(PlayerEventArgs args)
         {
-            track_model.Reload ();
+            if (ServiceManager.SourceManager.ActiveSource != this) {
+                return;
+            }
+            
+            switch (args.Event) {
+                case PlayerEvent.StartOfStream:
+                    if (CurrentTrack != ServiceManager.PlayerEngine.CurrentTrack) {
+                        CurrentTrack = ServiceManager.PlayerEngine.CurrentTrack;
+                    }
+                    if (NextTrack == null) {
+                        // We're at the last track in the playlist, we need new tracks
+                        Refresh ();
+                    }
+                    break;
+                case PlayerEvent.Iterate:
+                    // if more than 60% of a track is played, use this track as
+                    // a seed song for the next tracks.
+                    if ((processed != ServiceManager.PlayerEngine.CurrentTrack) &&
+                            (ServiceManager.PlayerEngine.Position > 
+                             ServiceManager.PlayerEngine.Length * 0.6)) {
+                        Refresh ();
+                    }
+                    break;
+            }
         }
-
-        public void RemoveSelectedTracks ()
-        {
-        }
-
-        public void DeleteSelectedTracks ()
-        {
-            throw new Exception ("Should not call DeleteSelectedTracks on PlaylistGeneratorSource");
-        }
-
-        public bool CanAddTracks {
-            get { return true; }
-        }
-
-        public bool CanRemoveTracks {
-            get { return false; }
-        }
-
-        public bool CanDeleteTracks {
-            get { return false; }
-        }
-
-        public bool ConfirmRemoveTracks {
-            get { return false; }
-        }
-        
-        public bool ShowBrowser {
-            get { return false; }
-        }
-
-        public bool Indexable {
-            get { return false; }
-        }
-
-#endregion
-
-#region IBasicPlaybackController
 
         bool IBasicPlaybackController.First ()
         {
             return ((IBasicPlaybackController)this).Next (false);
         }
-        
+
         bool IBasicPlaybackController.Next (bool restart)
         {
-            TrackInfo next = NextTrack;
-            if (next != null) {
-                ServiceManager.PlayerEngine.OpenPlay (next);
+            // We get the next track before removing the current one
+            DatabaseTrackInfo next_track = NextTrack;
+            if (processed != ServiceManager.PlayerEngine.CurrentTrack) {
+                RemovePlayingTrack ();
             }
+            current_track++;
+            ServiceManager.PlayerEngine.OpenPlay (next_track);
             return true;
         }
-        
+
         bool IBasicPlaybackController.Previous (bool restart)
         {
-            TrackInfo previous = GetTrack (current_track - 1);
+            TrackInfo previous = GetTrack (--current_track);
             if (previous != null) {
                 ServiceManager.PlayerEngine.OpenPlay (previous);
             }
             return true;
         }
         
-#endregion
-
-        public TrackInfo NextTrack {
+        private void RemovePlayingTrack ()
+        {
+            DatabaseTrackInfo playing_track = GetTrack (current_track);
+            if (playing_track != null) {
+                RemoveTrack (playing_track);
+            }
+        }
+        
+        public DatabaseTrackInfo NextTrack {
             get { return GetTrack (current_track + 1); }
         }
 
-        private TrackInfo GetTrack (int track_num) {
-            return (track_num > track_model.Count - 1) ? null : track_model[track_num];
+        private DatabaseTrackInfo GetTrack (int track_num) {
+            return (track_num > DatabaseTrackModel.Count - 1) ? null : (DatabaseTrackInfo)DatabaseTrackModel[track_num];
         }
 
+        public override bool ShowBrowser {
+            get { return false; }
+        }
     }
 }
