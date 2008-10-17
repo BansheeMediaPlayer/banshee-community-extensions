@@ -9,6 +9,7 @@ SOURCES = \
 	Matrix.cs \
 	Mfcc.cs \
 	Mir.cs \
+	MirageDbMigrator.cs \
 	Scms.cs \
 	Vector.cs
 

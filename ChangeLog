@@ -1,5 +1,13 @@
 2008-10-17  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* Mirage/Dbg.cs: Handle format strings in the debug output.
+	* Mirage/MirageDbMigrator.cs, Mirage/Db.cs, Mirage/Makefile.am: Handle
+	  database migration, with a lot of borrowing from the banshee code.
+	* Banshee/SimilarityCalculator.cs, Banshee/MiragePlugin.cs,
+	  Banshee/PlaylistGeneratorSource.cs: Update copyright.
+
+2008-10-17  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	This commit brings a big code reorganisation in Banshee/ and makes the 
 	Mirage source a PlaylistSource.
 
