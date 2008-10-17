@@ -254,7 +254,7 @@ namespace Mirage
 	                        icol=k;
 	                    }
 	                    } else if (ipiv[k] > 1) {
-	                    	Dbg.WriteLine("Mirage: Gauss/Jordan Singular Matrix (1)");
+	                    	Dbg.WriteLine("Mirage - Gauss/Jordan Singular Matrix (1)");
 	                    	throw new MatrixSingularException();
 	                    }
 	                }
@@ -277,7 +277,7 @@ namespace Mirage
 	            indxr[i] = irow;
 	            indxc[i] = icol;
 	            if (a[icol,icol] == 0) {
-                   	Dbg.WriteLine("Mirage: Gauss/Jordan Singular Matrix (2)");
+                   	Dbg.WriteLine("Mirage - Gauss/Jordan Singular Matrix (2)");
                    	throw new MatrixSingularException();
 	            }
 	            

@@ -62,7 +62,7 @@ namespace Mirage
 	        
 				long stop = 0;
 				t.Stop(ref stop);
-		        Dbg.WriteLine("Mirage: Total Execution Time: " + stop + "ms");
+		        Dbg.WriteLine("Mirage - Total Execution Time: {0}ms", stop);
 		        
 		        return scms;
 		        
@@ -115,7 +115,7 @@ namespace Mirage
 	                        d += dcur;
 	                        count++;
 	                    } else {
-	                        Dbg.WriteLine("Mirage: Faulty SCMS id=" + mapping[i] + "d=" + d);
+	                        Dbg.WriteLine("Mirage - Faulty SCMS id={0} d={1}", mapping[i], d);
 	                        d = 0;
 	                        break;
 	                    }
@@ -139,7 +139,7 @@ namespace Mirage
 	        
 	        long stop = 0;
 	        t.Stop(ref stop);
-	        Dbg.WriteLine("Mirage: playlist in: " + stop + "ms");
+	        Dbg.WriteLine("Mirage - playlist in: {0}ms", stop);
 	        
 	        return keys;
 	    }

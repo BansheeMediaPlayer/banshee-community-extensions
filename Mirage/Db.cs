@@ -51,7 +51,7 @@ namespace Mirage
             dblock = new Mutex();
             
             string sqlite = string.Format("URI=file:{0},version=3", dbfile);
-            Dbg.WriteLine("Mirage: Open DB - " + sqlite);
+            Dbg.WriteLine("Mirage - Open DB - {0}", sqlite);
             dbcon = (IDbConnection) new SqliteConnection(sqlite);
             dbcon.Open();
             

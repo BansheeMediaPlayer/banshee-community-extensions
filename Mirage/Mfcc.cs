@@ -104,7 +104,7 @@ namespace Mirage
 		        
 		        long stop = 0;
 		        t.Stop(ref stop);
-		        Dbg.WriteLine("Mirage: mfcc Execution Time: " + stop + "ms");
+		        Dbg.WriteLine("Mirage - mfcc Execution Time: {0}ms", stop);
 		        
 		        return mfcc;
 		        

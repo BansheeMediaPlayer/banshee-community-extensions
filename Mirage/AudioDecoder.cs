@@ -92,7 +92,7 @@ namespace Mirage
                 copyframes = framesrequested;
             }
 
-            Dbg.WriteLine("Mirage: decoded frames="+frames+",size="+size);
+            Dbg.WriteLine("Mirage - decoded frames={0},size={1}", frames, size);
 
             Matrix stft = new Matrix(size, copyframes);
             unsafe {

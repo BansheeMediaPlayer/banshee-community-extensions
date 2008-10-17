@@ -68,7 +68,7 @@ namespace Mirage
 	        
 	        long stop = 0;
 	        t.Stop(ref stop);
-	        Dbg.WriteLine("Mirage: scms created in: " + stop + "ms");
+	        Dbg.WriteLine("Mirage - scms created in: {0}ms", stop);
 	        
 	        return s;
 	    }

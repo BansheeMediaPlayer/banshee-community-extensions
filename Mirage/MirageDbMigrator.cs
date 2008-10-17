@@ -71,11 +71,11 @@ namespace Mirage
                     InnerMigrate ();
                     Execute ("COMMIT");
                 } else {
-                    Dbg.WriteLine ("Database version {0} is up to date", DatabaseVersion);
+                    Dbg.WriteLine ("Mirage - Database version {0} is up to date", DatabaseVersion);
                 }
             } catch (Exception e) {
                 Dbg.WriteLine (e.ToString());
-                Dbg.WriteLine ("Rolling back database migration");
+                Dbg.WriteLine ("Mirage - Rolling back database migration");
                 Execute ("ROLLBACK");
                 throw;
             }
@@ -87,7 +87,7 @@ namespace Mirage
             bool terminate = false;
             bool ran_migration_step = false;
             
-            Dbg.WriteLine ("Migrating from database version {0} to {1}", DatabaseVersion, CURRENT_VERSION);
+            Dbg.WriteLine ("Mirage - Migrating from database version {0} to {1}", DatabaseVersion, CURRENT_VERSION);
             for (int i = DatabaseVersion + 1; i <= CURRENT_VERSION; i++) {
                 foreach (MethodInfo method in methods) {
                     foreach (DatabaseVersionAttribute attr in method.GetCustomAttributes (

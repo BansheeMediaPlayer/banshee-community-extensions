@@ -1,5 +1,11 @@
 2008-10-17  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* Mirage/MirageDbMigrator.cs, Mirage/Matrix.cs, Mirage/Db.cs,
+	  Mirage/Scms.cs, Mirage/AudioDecoder.cs, Mirage/Mir.cs,
+	  Mirage/Mfcc.cs: Use format strings in the debug output.
+
+2008-10-17  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* Mirage/Dbg.cs: Handle format strings in the debug output.
 	* Mirage/MirageDbMigrator.cs, Mirage/Db.cs, Mirage/Makefile.am: Handle
 	  database migration, with a lot of borrowing from the banshee code.
