@@ -82,7 +82,7 @@ namespace Banshee.Mirage
             string dbfile = dbdir + "/mirage.db";
 
             db = new Db(dbfile);
-
+            
             jobsScheduled = 0;
             jobQueue = new Queue();
             rescanFailed = false;
@@ -96,7 +96,11 @@ namespace Banshee.Mirage
             ServiceManager.DbConnection.Execute(
                     "CREATE TABLE IF NOT EXISTS MirageProcessed"
                     + " (TrackID INTEGER PRIMARY KEY, Status INTEGER)");
-
+            
+            if (db.WasReset) {
+                ResetMirageProcessed();
+            }
+            
             InstallInterfaceActions();
             
             if (!ServiceStartup ()) {
@@ -292,7 +296,6 @@ namespace Banshee.Mirage
         {
             actions = new ActionGroup("Mirage Playlist Generator");
 
-            // Pixbufs in 'PodcastPixbufs' should be registered with the StockManager and used here.
             actions.Add(new ActionEntry [] {
                     new ActionEntry ("MirageAction", null,
                         Catalog.GetString ("Mirage Playlist Generator"), null,
@@ -336,7 +339,7 @@ namespace Banshee.Mirage
             if (result == ResponseType.Yes) {
                 try {
                     Mir.CancelAnalyze();
-                    ServiceManager.DbConnection.Execute("DELETE FROM MirageProcessed");
+                    ResetMirageProcessed();
                     db.Reset();
 
                     md = new MessageDialog(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
@@ -376,6 +379,11 @@ namespace Banshee.Mirage
             }
             removeSql.Append (")");
             ServiceManager.DbConnection.Execute (removeSql.ToString());
+        }
+        
+        private void ResetMirageProcessed()
+        {
+            ServiceManager.DbConnection.Execute("DELETE FROM MirageProcessed");
         }
 
         string IService.ServiceName {

@@ -1,3 +1,9 @@
+2008-10-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Mirage/MirageDbMigrator.cs, Mirage/Db.cs, Banshee/MiragePlugin.cs:
+	  Add and use the WasReset property so that the extension knows when
+	  the mirage database has been emptied.
+
 2008-10-17  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* Mirage/MirageDbMigrator.cs, Mirage/Matrix.cs, Mirage/Db.cs,

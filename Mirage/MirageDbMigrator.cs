@@ -41,11 +41,11 @@ namespace Mirage
 
         protected const int CURRENT_VERSION = 1;
         
-        private Db connection;
+        private Db mirage_db;
         
         public MirageDbMigrator(Db connection)
         {
-            this.connection = connection;
+            this.mirage_db = connection;
         }
         
 #region Migration driver
@@ -118,7 +118,7 @@ namespace Mirage
         
         protected bool TableExists(string tableName)
         {
-            int result = Convert.ToInt32 (connection.ExecuteScalar (String.Format (
+            int result = Convert.ToInt32 (mirage_db.ExecuteScalar (String.Format (
                 "SELECT COUNT(*) FROM sqlite_master WHERE Type='table' AND Name='{0}'",
                 tableName)));
             
@@ -127,7 +127,7 @@ namespace Mirage
         
         protected void Execute(string query)
         {
-            connection.Execute (query);
+            mirage_db.Execute (query);
         }
             
         protected int DatabaseVersion {
@@ -136,7 +136,7 @@ namespace Mirage
                     return 0;
                 }
                 
-                return Convert.ToInt32 (connection.ExecuteScalar ("SELECT Value FROM MirageConfiguration WHERE Key = 'DatabaseVersion'"));
+                return Convert.ToInt32 (mirage_db.ExecuteScalar ("SELECT Value FROM MirageConfiguration WHERE Key = 'DatabaseVersion'"));
             }
         }
 #endregion
@@ -149,6 +149,7 @@ namespace Mirage
         private bool Migrate_1 ()
         {
             InitializeFreshDatabase ();
+            mirage_db.was_reset = true;
             
             return false;
         }

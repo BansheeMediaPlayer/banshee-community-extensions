@@ -45,6 +45,7 @@ namespace Mirage
         IDbConnection dbcon;
         Mutex dblock;
         MirageDbMigrator migrator;
+        internal bool was_reset = false;
 
         public Db(string dbfile)
         {
@@ -62,6 +63,10 @@ namespace Mirage
         ~Db()
         {
             dbcon.Close();
+        }
+        
+        public bool WasReset {
+            get { return was_reset; }
         }
         
         public void Execute (string command_str)
