@@ -1,5 +1,10 @@
 2008-10-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* configure.ac: Update required banshee version. Should have done that
+	  earlier.
+
+2008-10-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* Banshee/PlaylistGeneratorSource.cs: Make the error message a bit more
 	  informative.
 

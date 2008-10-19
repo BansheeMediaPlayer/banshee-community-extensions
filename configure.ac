@@ -29,7 +29,7 @@ AC_SUBST(MCS)
 
 PKG_CHECK_MODULES(GTK_SHARP_20, gtk-sharp-2.0 >= 2.10)
 PKG_CHECK_MODULES(GCONF_SHARP_20, gconf-sharp-2.0)
-PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.2.0)
+PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.3.2)
 AC_SUBST(BANSHEE_LIBS)
 
 dnl Banshee Extensions Path
