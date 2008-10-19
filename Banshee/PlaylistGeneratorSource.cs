@@ -161,7 +161,7 @@ namespace Banshee.Mirage
         {
             Gtk.Application.Invoke(delegate {
                 if (playlist == null) {
-                    SetStatus(Catalog.GetString("Error building playlist."), true);
+                    SetStatus(Catalog.GetString("Error building playlist. You might need to rescan your music collection."), true);
                     return;
                 }
                 

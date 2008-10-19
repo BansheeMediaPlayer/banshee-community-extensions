@@ -1,5 +1,10 @@
 2008-10-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* Banshee/PlaylistGeneratorSource.cs: Make the error message a bit more
+	  informative.
+
+2008-10-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* Mirage/MirageDbMigrator.cs, Mirage/Db.cs, Banshee/MiragePlugin.cs:
 	  Add and use the WasReset property so that the extension knows when
 	  the mirage database has been emptied.
