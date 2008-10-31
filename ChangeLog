@@ -1,3 +1,8 @@
+2008-10-31  Dominik Schnitzer <dominik@schnitzer.at>
+	* Mirage/AudioDecoder.cs: Implement the FrameSelection method, this should
+	  improve the quality of the song models. Feature extraction also got faster
+	  by ~300ms on my machine. Work in progress.
+
 2008-10-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* configure.ac: Update required banshee version. Should have done that

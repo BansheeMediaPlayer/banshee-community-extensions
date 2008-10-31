@@ -22,6 +22,7 @@
 
 
 using System;
+using System.Collections;
 using System.Runtime.InteropServices;
 
 namespace Mirage
@@ -33,6 +34,30 @@ namespace Mirage
 
     public class AudioDecoderCanceledException : Exception
     {
+    }
+
+    public class FrameSelectorSort : IComparer
+    {
+        float[] energyidx;
+
+        FrameSelectorSort(ref float[] frameselection)
+        {
+            energyidx = frameselection;
+        }
+        
+        int IComparer.Compare(Object x, Object y)
+        {
+            float X = framepower[(int)x];
+            float Y = framepower[(int)y];
+
+            if (X < Y) {
+                return -1;
+            } else if (X > Y) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
     }
 
     public class AudioDecoder
@@ -50,16 +75,9 @@ namespace Mirage
         static extern void mirageaudio_canceldecode(IntPtr ma);
 
         IntPtr ma;
-        int seconds;
-        int rate;
-        int winsize;
 
         public AudioDecoder(int rate, int seconds, int skipseconds, int winsize)
         {
-            this.seconds = seconds;
-            this.rate = rate;
-            this.winsize = winsize;
-
             ma = mirageaudio_initialize(rate, seconds+2*skipseconds, winsize);
         }
 
@@ -80,31 +98,38 @@ namespace Mirage
             else if ((frames <= 0) || (size <= 0))
                 throw new AudioDecoderErrorException();
 
-            int framesrequested = (int)Math.Floor((seconds * rate) / (double)winsize);
-            int startframe;
-            int copyframes;
-
-            if (frames <= framesrequested) {
-                startframe = 0;
-                copyframes = frames;
-            } else {
-                startframe = frames / 2 - (framesrequested / 2);
-                copyframes = framesrequested;
-            }
-
             Dbg.WriteLine("Mirage - decoded frames={0},size={1}", frames, size);
 
+            // Sort the frames by total energy (frame selection)
+            float[] frameselection = new float[frames];
+            int [] framepos = new int[frames];
+            unsafe {
+                float* stft_unsafe = (float*)data;
+                for (int j = 0; j < frames; j++) {
+                    frameselection[j] = 0;
+                    framepos[j] = j;
+                    for (int i = 0; i < size; i++) {
+                        frameselection[j] += stft_unsafe[i*frames+j];
+                    }
+                }
+            }
+            Array.Sort(framepos, frameselection);
+
+            // Save the high energy frames to the Matrix 
+            int copyframes = frames / 2;
             Matrix stft = new Matrix(size, copyframes);
+
             unsafe {
                 float* stft_unsafe = (float*)data;
                 fixed (float* stftd = stft.d) {
-                    for (int i = 0; i < size; i++) {
-                        for (int j = 0; j < copyframes; j++) {
-                            stftd[i*copyframes+j] = stft_unsafe[i*frames+j+startframe];
+                    for (int j = 0; j < copyframes; j++) {
+                        for (int i = 0; i < size; i++) {
+                            stftd[i*copyframes+j] = stft_unsafe[i*frames+framepos[copyframes+j]];
                         }
                     }
                 }
             }
+
 
             return stft;
         }
