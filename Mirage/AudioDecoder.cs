@@ -38,17 +38,17 @@ namespace Mirage
 
     public class FrameSelectorSort : IComparer
     {
-        float[] energyidx;
+        float[] idx;
 
         FrameSelectorSort(ref float[] frameselection)
         {
-            energyidx = frameselection;
+            idx = frameselection;
         }
         
         int IComparer.Compare(Object x, Object y)
         {
-            float X = framepower[(int)x];
-            float Y = framepower[(int)y];
+            float X = idx[(int)x];
+            float Y = idx[(int)y];
 
             if (X < Y) {
                 return -1;
