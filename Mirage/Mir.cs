@@ -111,7 +111,7 @@ namespace Mirage
                             count++;
                         } else {
                             Dbg.WriteLine("Mirage - Faulty SCMS id={0} d={1}", mapping[i], d);
-                            d = 0;
+                            d = float.MaxValue;
                             break;
                         }
                     }

@@ -1,4 +1,9 @@
 2008-11-05  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Mirage/Mir.cs: skip faulty models for the playlist
+
+2008-11-05  Dominik Schnitzer <dominik@schnitzer.at>
+
 	* Test/Main.cs: Modify the Testcase
 	* Mirage/Matrix.cs: Remove tabs, unsafe {} changes
 	* Mirage/Scms.cs: Faster distance computations, remove tabs
@@ -8,6 +13,7 @@
 	* libmirageaudio/gst-mirageaudio.c: Fix memory leaks with gstreamer.
 
 2008-10-31  Dominik Schnitzer <dominik@schnitzer.at>
+
 	* Mirage/AudioDecoder.cs: Implement the FrameSelection method, this should
 	  improve the quality of the song models. Feature extraction also got faster
 	  by ~300ms on my machine. Work in progress.
