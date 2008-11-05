@@ -1,5 +1,9 @@
 2008-11-05  Dominik Schnitzer <dominik@schnitzer.at>
 
+	* Mirage/Mir.cs: Array.Sort is no c++ partial_sort()
+
+2008-11-05  Dominik Schnitzer <dominik@schnitzer.at>
+
 	* Mirage/Mir.cs, Banshee/SimilarityCalculator.cs: Truncate the playlist to
 	the given length, so the Banshee UI does not hang with large collections. 
 

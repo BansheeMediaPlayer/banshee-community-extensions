@@ -130,7 +130,7 @@ namespace Mirage
             ht.Keys.CopyTo(keys, 0);
             ht.Values.CopyTo(items, 0);
             
-            Array.Sort(items, keys, 0, length);
+            Array.Sort(items, keys);
             Array.Resize(ref keys, length);
             
             long stop = 0;
