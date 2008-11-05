@@ -29,90 +29,85 @@ using System.Reflection;
 namespace Mirage
 {
 
-	public class MfccFailedException : Exception
-	{
-	}
+    public class MfccFailedException : Exception
+    {
+    }
 
-	public class Mfcc
-	{
+    public class Mfcc
+    {
 
-	    Matrix filterWeights;
-	    Matrix dct;
-	    
-	    public Mfcc(int winsize, int srate, int filters, int cc)
-	    {
-	        Assembly assem = this.GetType().Assembly;
-	        
-	        // Load the DCT
-	        dct = Matrix.Load(assem.GetManifestResourceStream("dct.filter"));
-	            
-	        // Load the MFCC filters from the filter File.
-	        filterWeights = Matrix.Load(assem.GetManifestResourceStream("filterweights.filter"));
-	    }
-	    
-	    public Matrix Apply(Matrix m)
-	    {
+        Matrix filterWeights;
+        Matrix dct;
+        
+        public Mfcc(int winsize, int srate, int filters, int cc)
+        {
+            Assembly assem = this.GetType().Assembly;
+            
+            // Load the DCT
+            dct = Matrix.Load(assem.GetManifestResourceStream("dct.filter"));
+                
+            // Load the MFCC filters from the filter File.
+            filterWeights = Matrix.Load(assem.GetManifestResourceStream("filterweights.filter"));
+        }
+        
+        public Matrix Apply(ref Matrix m)
+        {
 
-	        DbgTimer t = new DbgTimer();
-	        t.Start();
+            DbgTimer t = new DbgTimer();
+            t.Start();
 
-	        Matrix mel = new Matrix(filterWeights.rows, m.columns);
-	        
-	        /* Performance optimization of ...
+            Matrix mel = new Matrix(filterWeights.rows, m.columns);
+            
+            /* Performance optimization of ...
 
-	        mel = filterWeights.Multiply(m);
-	        for (int i = 0; i < mel.rows; i++) {
-	            for (int j = 0; j < mel.columns; j++) {
-	                mel.d[i, j] = (mel.d[i, j] < 1.0f ?
-	                                0 : (float)(10.0 * Math.Log10(mel.d[i, j])));
-	            }
-	        }*/
-	        
-	        unsafe {
+            mel = filterWeights.Multiply(m);
+            for (int i = 0; i < mel.rows; i++) {
+                for (int j = 0; j < mel.columns; j++) {
+                    mel.d[i, j] = (mel.d[i, j] < 1.0f ?
+                                    0 : (float)(10.0 * Math.Log10(mel.d[i, j])));
+                }
+            }*/
+            
+            unsafe {
 
-	            int mc = m.columns;
-	            int mr = m.rows;
-	            int melcolumns = mel.columns;
-	            int fwc = filterWeights.columns;
-	            int fwr = filterWeights.rows;
-	            int idx;
-	            int i;
-	            int k;
-	            int j;
-	            int kfwc;
-	            
-	            fixed (float* md = m.d, fwd = filterWeights.d, meld = mel.d) {
-	                for (i = 0; i < mc; i++) {
-	                    for (k = 0; k < fwr; k++) {
-	                        idx = k*melcolumns + i;
-	                        kfwc = k*fwc;
+                int mc = m.columns;
+                int mr = m.rows;
+                int melcolumns = mel.columns;
+                int fwc = filterWeights.columns;
+                int fwr = filterWeights.rows;
+                
+                fixed (float* md = m.d, fwd = filterWeights.d, meld = mel.d) {
+                    for (int i = 0; i < mc; i++) {
+                        for (int k = 0; k < fwr; k++) {
+                            int idx = k*melcolumns + i;
+                            int kfwc = k*fwc;
 
-	                        for (j = 0; j < mr; j++) {
-	                            meld[idx] += fwd[kfwc + j] * md[j*mc + i];
-	                        }
+                            for (int j = 0; j < mr; j++) {
+                                meld[idx] += fwd[kfwc + j] * md[j*mc + i];
+                            }
 
-	                        meld[idx] = (meld[idx] < 1.0f ?
-	                                0 : (float)(10.0 * Math.Log10(meld[idx])));
-	                    }
-	                    
-	                }
-	            }
-	        }
-	        
-	        try {
-		        Matrix mfcc = dct.Multiply(mel);
-		        
-		        long stop = 0;
-		        t.Stop(ref stop);
-		        Dbg.WriteLine("Mirage - mfcc Execution Time: {0}ms", stop);
-		        
-		        return mfcc;
-		        
-		    } catch (MatrixDimensionMismatchException) {
-		    	throw new MfccFailedException();
-		    }
-	    }
-	    
-	}
+                            meld[idx] = (meld[idx] < 1.0f ?
+                                    0 : (float)(10.0 * Math.Log10(meld[idx])));
+                        }
+                        
+                    }
+                }
+            }
+            
+            try {
+                Matrix mfcc = dct.Multiply(mel);
+                
+                long stop = 0;
+                t.Stop(ref stop);
+                Dbg.WriteLine("Mirage - mfcc Execution Time: {0}ms", stop);
+                
+                return mfcc;
+                
+            } catch (MatrixDimensionMismatchException) {
+                throw new MfccFailedException();
+            }
+        }
+        
+    }
 
 }

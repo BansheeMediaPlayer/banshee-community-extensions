@@ -37,13 +37,10 @@ class MainClass
         mirageaudio_initgst();
         Scms song1 = null;
         Scms song2 = null;
-//        for (int i = 0; i < 1000; i++) {
-            Mirage.Mir.Analyze("/media/MUSIC/magnatune/world/yakshi/yakshi/1-sierra.mp3");
-            song1 = Mirage.Mir.Analyze("/media/MUSIC/smalleval/Pop/Britney Spears - Crazy.mp3");
-            song2 = Mirage.Mir.Analyze("/media/MUSIC/smalleval/Pop/Britney Spears - Lucky.mp3");
-		    Mirage.Mir.Analyze("/media/MUSIC/smalleval/Eurodance/Doki Doki - Too Fast For Love.mp3");
-//        }
-//
+        for (int i = 0; i < 100000; i++) {
+            Mirage.Mir.Analyze("/home/music/bo2/Folk/Nikola Jankov/A Master On Klarinet/Seeing Off.mp3");
+        }
+        /*
 		Console.WriteLine("Distance = " + song1.Distance(song2));
 		
 		DbgTimer t = new DbgTimer();
@@ -56,6 +53,7 @@ class MainClass
         t.Stop(ref l);
 		Dbg.WriteLine("Distance Computation: " + runs + " times - " + l + "ms; " +
 			(double)l/(double)runs + "ms per comparison");
+            */
 	}
 	
 

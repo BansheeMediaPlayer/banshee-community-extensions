@@ -39,8 +39,6 @@ struct MirageAudio {
     // Gstreamer
     GstElement *pipeline;
     GstElement *audio;
-    GstElement *src;
-    GstElement *sink;
 
     gint rate;
     gint filerate;
@@ -117,6 +115,7 @@ mirageaudio_cb_newpad(GstElement *decodebin, GstPad *pad, gboolean last, MirageA
 
     // link
     gst_pad_link(pad, audiopad);
+    gst_object_unref(audiopad);
 }
 
 static void
@@ -198,7 +197,8 @@ mirageaudio_cb_have_data(GstElement *element, GstBuffer *buffer, GstPad *pad, Mi
 
                 if (ma->curhop == ma->hops) {
                     GstBus *bus = gst_pipeline_get_bus(GST_PIPELINE(ma->pipeline));
-                    gst_bus_post(bus, gst_message_new_eos(GST_OBJECT(ma->pipeline)));
+                    GstMessage* eosmsg = gst_message_new_eos(GST_OBJECT(ma->pipeline));
+                    gst_bus_post(bus, eosmsg);
                     g_print("libmirageaudio: EOS Message sent\n");
                     gst_object_unref(bus);
                     ma->quit = TRUE;
@@ -267,6 +267,8 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
     GstElement *cfilt_float;
     GstElement *cfilt_resample;
     GstElement *dec;
+    GstElement *src;
+    GstElement *sink;
     GstElement *audioresample;
     GstElement *audioconvert;
 
@@ -274,23 +276,23 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
     ma->pipeline = gst_pipeline_new("pipeline");
 
     // decoder
-    ma->src = gst_element_factory_make("filesrc", "source");
-    g_object_set(G_OBJECT(ma->src), "location", file, NULL);
+    src = gst_element_factory_make("filesrc", "source");
+    g_object_set(G_OBJECT(src), "location", file, NULL);
     dec = gst_element_factory_make("decodebin", "decoder");
     g_signal_connect(dec, "new-decoded-pad", G_CALLBACK(mirageaudio_cb_newpad), ma);
-    gst_bin_add_many(GST_BIN(ma->pipeline), ma->src, dec, NULL);
-    gst_element_link(ma->src, dec);
-    
+    gst_bin_add_many(GST_BIN(ma->pipeline), src, dec, NULL);
+    gst_element_link(src, dec);
+
     // audio conversion
     ma->audio = gst_bin_new("audio");
 
     audioconvert = gst_element_factory_make("audioconvert", "conv");
-
     filter_float = gst_caps_new_simple("audio/x-raw-float",
          "width", G_TYPE_INT, 32,
          NULL);
     cfilt_float = gst_element_factory_make("capsfilter", "cfilt_float");
     g_object_set(G_OBJECT(cfilt_float), "caps", filter_float, NULL);
+    gst_caps_unref(filter_float);
 
     audioresample = gst_element_factory_make("audioresample", "resample");
 
@@ -299,18 +301,20 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
           NULL);
     cfilt_resample = gst_element_factory_make("capsfilter", "cfilt_resample");
     g_object_set(G_OBJECT(cfilt_resample), "caps", filter_resample, NULL);
+    gst_caps_unref(filter_resample);
 
-    ma->sink = gst_element_factory_make("fakesink", "sink");
-    g_object_set(G_OBJECT(ma->sink), "signal-handoffs", TRUE, NULL);
-    g_signal_connect(ma->sink, "handoff", G_CALLBACK(mirageaudio_cb_have_data), ma);
+    sink = gst_element_factory_make("fakesink", "sink");
+    g_object_set(G_OBJECT(sink), "signal-handoffs", TRUE, NULL);
+    g_signal_connect(sink, "handoff", G_CALLBACK(mirageaudio_cb_have_data), ma);
+    
 
     gst_bin_add_many(GST_BIN(ma->audio),
             audioconvert, audioresample,
             cfilt_resample, cfilt_float,
-            ma->sink, NULL);
+            sink, NULL);
     gst_element_link_many(audioconvert, cfilt_float,
            audioresample, cfilt_resample,
-           ma->sink, NULL);
+           sink, NULL);
 
     audiopad = gst_element_get_pad(audioconvert, "sink");
     gst_element_add_pad(ma->audio,
@@ -321,20 +325,24 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
 
     // Get sampling rate of audio file
     GstClockTime max_wait = 1 * GST_SECOND;
+    if (gst_element_set_state(ma->pipeline, GST_STATE_READY) == GST_STATE_CHANGE_ASYNC) {
+        gst_element_get_state(ma->pipeline, NULL, NULL, max_wait);
+    }
     if (gst_element_set_state(ma->pipeline, GST_STATE_PAUSED) == GST_STATE_CHANGE_ASYNC) {
         gst_element_get_state(ma->pipeline, NULL, NULL, max_wait);
     }
 
-    GstPad *pad = gst_element_get_pad(ma->sink, "sink");
+    GstPad *pad = gst_element_get_pad(sink, "sink");
     GstCaps *caps = gst_pad_get_negotiated_caps(pad);
     if (GST_IS_CAPS(caps)) {
         GstStructure *str = gst_caps_get_structure(caps, 0);
         gst_structure_get_int(str, "rate", &ma->filerate);
+
     } else {
         ma->filerate = -1;
     }
+    gst_caps_unref(caps);
     gst_object_unref(pad);
-
 }
 
 float*
@@ -366,8 +374,6 @@ mirageaudio_decode(MirageAudio *ma, const gchar *file, int *frames, int* size, i
         return NULL;
     }
 
-
-
     // libsamplerate initialization
     ma->src_data.src_ratio = (double)ma->rate/(double)ma->filerate;
     ma->src_data.input_frames = 0;
@@ -379,11 +385,14 @@ mirageaudio_decode(MirageAudio *ma, const gchar *file, int *frames, int* size, i
     gst_element_set_state(ma->pipeline, GST_STATE_PLAYING);
     g_print("libmirageaudio: decoding %s\n", file);
 
+
     bus = gst_pipeline_get_bus(GST_PIPELINE(ma->pipeline));
     gboolean decoding = TRUE;
     *ret = 0;
     while (decoding) {
-        GstMessage* message = gst_bus_poll(bus, GST_MESSAGE_ANY, -1);
+        GstMessage* message = gst_bus_timed_pop_filtered(bus, GST_MSECOND*100,
+                GST_MESSAGE_ERROR | GST_MESSAGE_EOS);
+
         if (message == NULL)
             continue;
 
@@ -410,9 +419,11 @@ mirageaudio_decode(MirageAudio *ma, const gchar *file, int *frames, int* size, i
             default:
                 break;
         }
+        gst_message_unref(message);
     }
     gst_object_unref(bus);
-    
+
+
     g_mutex_lock(ma->decoding_mutex);
 
     // Gstreamer cleanup
@@ -478,7 +489,8 @@ mirageaudio_canceldecode(MirageAudio *ma)
             g_mutex_lock(ma->decoding_mutex);
 
             GstBus *bus = gst_pipeline_get_bus(GST_PIPELINE(ma->pipeline));
-            gst_bus_post(bus, gst_message_new_eos(GST_OBJECT(ma->pipeline)));
+            GstMessage* eosmsg = gst_message_new_eos(GST_OBJECT(ma->pipeline));
+            gst_bus_post(bus, eosmsg);
             g_print("libmirageaudio: EOS Message sent\n");
             gst_object_unref(bus);
 

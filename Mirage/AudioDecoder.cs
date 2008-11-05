@@ -76,9 +76,9 @@ namespace Mirage
 
         IntPtr ma;
 
-        public AudioDecoder(int rate, int seconds, int skipseconds, int winsize)
+        public AudioDecoder(int rate, int seconds, int winsize)
         {
-            ma = mirageaudio_initialize(rate, seconds+2*skipseconds, winsize);
+            ma = mirageaudio_initialize(rate, seconds, winsize);
         }
 
         public Matrix Decode(string file)
@@ -129,7 +129,6 @@ namespace Mirage
                     }
                 }
             }
-
 
             return stft;
         }
