@@ -71,7 +71,7 @@ namespace Mirage
             }
         }
 
-        public static int[] SimilarTracks(int[] id, int[] exclude, Db db)
+        public static int[] SimilarTracks(int[] id, int[] exclude, Db db, int length)
         {
             // Get Seed-Song SCMS
             Scms[] seedScms = new Scms[id.Length];
@@ -130,7 +130,8 @@ namespace Mirage
             ht.Keys.CopyTo(keys, 0);
             ht.Values.CopyTo(items, 0);
             
-            Array.Sort(items, keys);
+            Array.Sort(items, keys, 0, length);
+            Array.Resize(ref keys, length);
             
             long stop = 0;
             t.Stop(ref stop);

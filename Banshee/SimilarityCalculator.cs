@@ -50,7 +50,7 @@ namespace Banshee.Mirage
         {
             int[] playlist;
             try {
-                playlist = Mir.SimilarTracks(trackId, excludeTrackId, db);
+                playlist = Mir.SimilarTracks(trackId, excludeTrackId, db, length);
                 play(playlist, length);
             } catch (DbTrackNotFoundException) {
                 Log.Error ("Mirage: ERROR. Track not found in Mirage DB");
