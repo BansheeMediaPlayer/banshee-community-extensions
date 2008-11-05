@@ -24,6 +24,14 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Data;
+using System.Collections.Generic;
+
+using Banshee.Base;
+using Banshee.Database;
+using Banshee.ServiceStack;
+using Banshee.Sources;
+using Banshee.Collection.Indexer;
 
 using Mirage;
 
@@ -35,11 +43,9 @@ class MainClass
 	private static void Test()
 	{
         mirageaudio_initgst();
-        Scms song1 = null;
-        Scms song2 = null;
-        for (int i = 0; i < 100000; i++) {
-            Mirage.Mir.Analyze("/home/music/bo2/Folk/Nikola Jankov/A Master On Klarinet/Seeing Off.mp3");
-        }
+
+        Scms song1 = Mirage.Mir.Analyze("/home/music/bo2/Folk/Nikola Jankov/A Master On Klarinet/Seeing Off.mp3");
+
         /*
 		Console.WriteLine("Distance = " + song1.Distance(song2));
 		
@@ -56,10 +62,79 @@ class MainClass
             */
 	}
 	
+	private static void GenreClassification()
+	{
+		// Position of the Genre of the filename seperated by '/' 
+		int genrePos = 5;
+		
+		// Location of the mirage database
+		string mirageDb = "/home/aeneas/.cache/banshee-mirage/mirage.db";
+		
+		ThreadAssist.InitializeMainThread ();
+		
+		ServiceManager.Initialize ();
+		ServiceManager.RegisterService<DBusServiceManager> ();
+		ServiceManager.RegisterService<BansheeDbConnection> ();
+		ServiceManager.RegisterService<SourceManager> ();
+		ServiceManager.RegisterService<CollectionIndexerService> ();
+		ServiceManager.Run ();
+		
+		String query = String.Format(@"SELECT TrackID, Uri FROM CoreTracks");
+		ServiceManager.DbConnection.Query(query);
+		
+		IDataReader reader = ServiceManager.DbConnection.Query(query);
+		
+		Dictionary<int, string> ht = new Dictionary<int,string>();
+		
+		while (reader.Read()) {
+			int trackId = Convert.ToInt32(reader["TrackID"]);
+			Uri uri = new Uri((string)reader["Uri"]);
+			
+			string filename = Uri.UnescapeDataString(uri.PathAndQuery);  
+			ht[trackId] = filename;
+		}
+		
+		Db db = new Db(mirageDb);
+		
+		int hit = 0;
+			
+		foreach (int trackId in ht.Keys) {
+			string[] s = ht[trackId].Split('/');
+			string seedGenre = s[genrePos];
+			
+			int[] seeds = new int[1];
+			seeds[0] = trackId;
+			int[] exclude = new int[1];
+			exclude[0] = trackId;
+			try {
+				int[] similar = Mirage.Mir.SimilarTracks(seeds, exclude, db, 1);
+				System.Console.Out.WriteLine("SEED: TrackId: {0}, Genre: {1}", trackId, seedGenre);
+				
+				int simId = similar[0];
+				string simFile = ht[simId];
+				string[] s2 = simFile.Split('/');
+				string simGenre = s2[genrePos];
+				
+				if (simGenre.Equals(seedGenre)) {
+					hit++;
+				}
+				
+				System.Console.Out.WriteLine("SIMILAR: trackID: {0}, Genre: {1}", simId, simGenre);
+			} catch (DbTrackNotFoundException) {
+				System.Console.Out.WriteLine("track Not found");
+			}
+		}
+		
+		Console.Out.WriteLine("Genre Classification Accuracy: {0}%", ((double)hit/(double)ht.Count)*100);
+		
+	}
+
+
 
 	public static void Main(string[] args)
 	{
-		Test();
+//		Test();
+		GenreClassification();
 	}
 	
 }
