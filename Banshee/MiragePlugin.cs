@@ -150,7 +150,10 @@ namespace Banshee.Mirage
             } catch (Exception) {
             }
 
-            ServiceManager.SourceManager.MusicLibrary.RemoveChildSource(continuousPlaylist);
+            if (continuousPlaylist != null) {
+                continuousPlaylist.Dispose ();
+                ServiceManager.SourceManager.MusicLibrary.RemoveChildSource(continuousPlaylist);
+            }
 
             action_service.UIManager.RemoveUi(uiManagerId);
             action_service.UIManager.RemoveActionGroup(actions);

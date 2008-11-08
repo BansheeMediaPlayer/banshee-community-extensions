@@ -52,6 +52,8 @@ namespace Banshee.Mirage
         protected List<DatabaseTrackInfo> skipped = new List<DatabaseTrackInfo>();
         protected DatabaseTrackInfo processed;
         protected Db db;
+        InterfaceActionService action_service;
+        uint ui_id;
 
         private int current_track = 0;
         public TrackInfo CurrentTrack {
@@ -80,7 +82,7 @@ namespace Banshee.Mirage
             
             ((DatabaseTrackListModel)TrackModel).ForcedSortQuery = "CorePlaylistEntries.ViewOrder ASC, CorePlaylistEntries.EntryID ASC";
             
-            InterfaceActionService action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
+            action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
             
             /*action_service.TrackActions.Add (new ActionEntry [] {
                 new ActionEntry ("AddToPlayQueueAction", Stock.Add,
@@ -90,21 +92,21 @@ namespace Banshee.Mirage
             });*/
             
             action_service.GlobalActions.AddImportant (
-                new ActionEntry ("ClearPlaylistAction", Stock.Clear,
+                new ActionEntry ("ClearMiragePlaylistAction", Stock.Clear,
                     Catalog.GetString ("Clear"), null,
                     Catalog.GetString ("Remove all tracks from the play queue"),
                     OnClearPlaylist)
             );
             
             action_service.GlobalActions.Add (new ToggleActionEntry [] {
-                new ToggleActionEntry ("ClearPlaylistOnQuitAction", null, 
+                new ToggleActionEntry ("ClearMiragePlaylistOnQuitAction", null, 
                                        Catalog.GetString ("Clear on Quit"), null, 
                                        Catalog.GetString ("Clear the play queue when quitting"), 
                                        OnClearPlaylistOnQuit, 
                                        MiragePlugin.ClearOnQuitSchema.Get ())
             });
             
-            action_service.UIManager.AddUiFromResource ("GlobalUI.xml");
+            ui_id = action_service.UIManager.AddUiFromResource ("GlobalUI.xml");
             Properties.SetString ("GtkActionPath", "/PlaylistContextMenu");
                     
             action_service.PlaybackActions["NextAction"].Activated += OnNextPrevAction;
@@ -123,6 +125,13 @@ namespace Banshee.Mirage
         
         public void Dispose ()
         {
+            action_service.UIManager.RemoveUi (ui_id);
+            action_service.GlobalActions.Remove ("ClearMiragePlaylistAction");
+            action_service.GlobalActions.Remove ("ClearMiragePlaylistOnQuitAction");
+            
+            if (MiragePlugin.ClearOnQuitSchema.Get ()) {
+                Clear ();
+            }
         }
         
         private void BindToDatabase ()
@@ -234,12 +243,17 @@ namespace Banshee.Mirage
             AddSelectedTracks (ServiceManager.SourceManager.ActiveSource);
         }*/
         
-        private void OnClearPlaylist (object o, EventArgs args)
+        private void Clear ()
         {
             current_track = 0;
             RemoveTrackRange ((DatabaseTrackListModel)TrackModel, new Hyena.Collections.RangeCollection.Range (0, Count));
             tracksOverride.Clear ();
             Reload ();
+        }
+
+        private void OnClearPlaylist (object o, EventArgs args)
+        {
+            Clear ();
         }
         
         private void OnClearPlaylistOnQuit (object o, EventArgs args)
@@ -249,7 +263,7 @@ namespace Banshee.Mirage
                 return;
             }
             
-            ToggleAction action = (ToggleAction)uia_service.GlobalActions["ClearPlayQueueOnQuitAction"];
+            ToggleAction action = (ToggleAction)uia_service.GlobalActions["ClearMiragePlaylistOnQuitAction"];
             MiragePlugin.ClearOnQuitSchema.Set (action.Active);
         }
 
