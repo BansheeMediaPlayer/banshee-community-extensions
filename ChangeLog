@@ -1,5 +1,10 @@
 2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* build/gconf-schema-rules, configure.ac: Make the GConf dependency
+	  optionnal.
+
+2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* configure.ac: Update dependencies and bump version.
 	* autogen.sh: Remove useless calls to glib-gettextize.
 

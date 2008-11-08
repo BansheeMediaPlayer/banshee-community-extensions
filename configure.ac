@@ -1,7 +1,9 @@
 AC_INIT([banshee-alarm-extension], [0.4.2])
 AC_CONFIG_SRCDIR([README])
 
-AC_CANONICAL_TARGET
+AC_SUBST([ACLOCAL_AMFLAGS], ["-I build/m4/shamrock \${ACLOCAL_FLAGS}"])
+
+AC_CANONICAL_SYSTEM
 AC_PREREQ(2.13)
 AM_INIT_AUTOMAKE
 
@@ -50,9 +52,19 @@ fi
 AC_SUBST(expanded_libdir)
 AC_SUBST(PLUGINDIR)
 
-dnl GConf
-AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
-AM_GCONF_SOURCE_2
+dnl GNOME (optionnal)
+AC_ARG_ENABLE(gnome, 
+	AC_HELP_STRING([--disable-gnome], 
+		[Disable GNOME support]), 
+	, enable_gnome="yes")
+if test "x$enable_gnome" = "xyes"; then
+	AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
+	AM_GCONF_SOURCE_2
+	AM_CONDITIONAL(ENABLE_GNOME, true)
+else
+	AM_CONDITIONAL(GCONF_SCHEMAS_INSTALL, false)
+	AM_CONDITIONAL(ENABLE_GNOME, false)
+fi
 
 dnl Internationalization support
 SHAMROCK_CONFIGURE_I18N(banshee-alarm-plugin)

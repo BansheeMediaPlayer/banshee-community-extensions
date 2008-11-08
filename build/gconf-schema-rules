@@ -4,6 +4,7 @@ schema_DATA = $(schema_in_files:.schemas.in=.schemas)
 
 GCONF_SCHEMA_EXTRACTOR = $(banshee_libdir)/gconf-schema-extractor.exe
 
+if GCONF_SCHEMAS_INSTALL
 $(srcdir)/$(ASSEMBLY_GCONF_SCHEMA): $(ASSEMBLY_FILE)
 	if test -w $@ -o \( ! -e $@ -a -w $(srcdir) \); then \
 		$(MONO) $(GCONF_SCHEMA_EXTRACTOR) $< $(srcdir)/$@; \
@@ -11,7 +12,6 @@ $(srcdir)/$(ASSEMBLY_GCONF_SCHEMA): $(ASSEMBLY_FILE)
 
 @INTLTOOL_SCHEMAS_RULE@
 
-if GCONF_SCHEMAS_INSTALL
 install-data-local:
 	if [ -z "$(DESTDIR)" ]; then \
 		GCONF_CONFIG_SOURCE="" $(GCONFTOOL) --makefile-install-rule $(schema_DATA); \
