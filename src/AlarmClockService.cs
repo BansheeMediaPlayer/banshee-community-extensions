@@ -166,14 +166,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return GConfSchemas.IsEnabled.Get ();
+                    return ConfigurationSchema.IsEnabled.Get ();
                 } catch {
                     return false;
                 }
             }
 
             set {
-                GConfSchemas.IsEnabled.Set (value);
+                ConfigurationSchema.IsEnabled.Set (value);
             }
         }
 
@@ -181,14 +181,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return (ushort)GConfSchemas.AlarmHour.Get ();
+                    return (ushort)ConfigurationSchema.AlarmHour.Get ();
                 } catch {
                     return 0;
                 }
             }
 
             set {
-                GConfSchemas.AlarmHour.Set (value);
+                ConfigurationSchema.AlarmHour.Set (value);
             }
         }
 
@@ -196,14 +196,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return (ushort)GConfSchemas.AlarmMinute.Get ();
+                    return (ushort)ConfigurationSchema.AlarmMinute.Get ();
                 } catch {
                     return 0;
                 }
             }
 
             set {
-                GConfSchemas.AlarmMinute.Set (value);
+                ConfigurationSchema.AlarmMinute.Set (value);
             }
         }
 
@@ -211,14 +211,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return GConfSchemas.AlarmCommand.Get ();
+                    return ConfigurationSchema.AlarmCommand.Get ();
                 } catch {
                     return null;
                 }
             }
 
             set {
-                GConfSchemas.AlarmCommand.Set (value);
+                ConfigurationSchema.AlarmCommand.Set (value);
             }
         }
 
@@ -226,14 +226,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return (ushort)GConfSchemas.FadeStartVolume.Get ();
+                    return (ushort)ConfigurationSchema.FadeStartVolume.Get ();
                 } catch {
                     return 0;
                 }
             }
 
             set {
-                GConfSchemas.FadeStartVolume.Set (value);
+                ConfigurationSchema.FadeStartVolume.Set (value);
             }
         }
 
@@ -241,14 +241,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return (ushort)GConfSchemas.FadeEndVolume.Get ();
+                    return (ushort)ConfigurationSchema.FadeEndVolume.Get ();
                 } catch {
                     return 100;
                 }
             }
 
             set {
-                GConfSchemas.FadeEndVolume.Set (value);
+                ConfigurationSchema.FadeEndVolume.Set (value);
             }
         }
 
@@ -256,14 +256,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return (ushort)GConfSchemas.FadeDuration.Get ();
+                    return (ushort)ConfigurationSchema.FadeDuration.Get ();
                 } catch {
                     return 0;
                 }
             }
 
             set {
-                GConfSchemas.FadeDuration.Set (value);
+                ConfigurationSchema.FadeDuration.Set (value);
             }
         }
         #endregion

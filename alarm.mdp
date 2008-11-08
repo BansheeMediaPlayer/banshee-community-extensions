@@ -4,13 +4,13 @@
       <Output directory="src" assembly="Alarm" />
       <Build debugmode="True" target="Library" />
       <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
-      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release" ctype="DotNetProjectConfiguration">
       <Output directory="src" assembly="Alarm" />
       <Build debugmode="False" target="Library" />
       <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
-      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
   </Configurations>
   <Contents>
@@ -33,7 +33,7 @@
     <File name="build" subtype="Directory" buildaction="Compile" />
     <File name="build/Makefile.am" subtype="Code" buildaction="Compile" />
     <File name="build/gconf-schema-rules" subtype="Code" buildaction="Compile" />
-    <File name="src/GConfSchemas.cs" subtype="Code" buildaction="Compile" />
+    <File name="src/ConfigurationSchema.cs" subtype="Code" buildaction="Compile" />
     <File name="po/POTFILES.in" subtype="Code" buildaction="Nothing" />
     <File name="src/AlarmMenu.xml" subtype="Code" buildaction="EmbedAsResource" />
     <File name="po/ChangeLog" subtype="Code" buildaction="Nothing" />

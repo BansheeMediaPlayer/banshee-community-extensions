@@ -6,7 +6,7 @@ SOURCES = \
 	AlarmClockService.cs \
 	AlarmConfigDialog.cs \
 	ConfigurationDialog.cs \
-	GConfSchemas.cs \
+	ConfigurationSchema.cs \
 	SleepTimerConfigDialog.cs \
 	VolumeFade.cs
 

@@ -1,5 +1,11 @@
 2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* src/GConfSchemas.cs, src/Makefile.am, src/ConfigurationSchema.cs,
+	  src/AlarmClockService.cs, alarm.mdp: Rename GConfSchemas to
+	  ConfigurationSchema.
+
+2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* build/gconf-schema-rules, configure.ac: Make the GConf dependency
 	  optionnal.
 
