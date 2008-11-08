@@ -1,5 +1,9 @@
 2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* NEWS: Update for upcoming release.
+
+2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* Banshee/MiragePlugin.cs, Banshee/PlaylistGeneratorSource.cs,
 	  Banshee/res/GlobalUI.xml: Make the "Clear on quit" option not crash
 	  and actually work. Properly remove the actions when the extension
