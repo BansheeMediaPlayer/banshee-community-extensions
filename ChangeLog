@@ -1,3 +1,7 @@
+2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Mirage/MirageDbMigrator.cs: Update database version, to reset it.
+
 2008-11-05  Dominik Schnitzer <dominik@schnitzer.at>
 
 	* Test/Main.cs: Automatic genre classification test program. Ran the
