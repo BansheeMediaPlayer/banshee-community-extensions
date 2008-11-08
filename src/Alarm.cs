@@ -20,9 +20,9 @@ namespace Banshee.AlarmClock
         public void MainLoop()
         {
             try {
-                while(true) {
+                bool thread_interrupted = false;
+                while (true) {
                     int delay = (int)TimeUntilAlarm().TotalMilliseconds;
-                    bool thread_interrupted = false;
                     
                     try {
                         Thread.Sleep(delay);
@@ -34,7 +34,7 @@ namespace Banshee.AlarmClock
                     if (thread_interrupted) {
                         // The alarm time was changed, we don't play and go back to sleep
                         thread_interrupted = false;
-                    } else {
+                    } else if (plugin.AlarmEnabled) {
                         StartPlaying();
                     }
                 }

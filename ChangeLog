@@ -1,5 +1,10 @@
 2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* src/Alarm.cs: Do not start playing if the alarm is not enabled.
+	* src/AlarmClockService.cs: Some more code cleanup.
+
+2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* src/GConfSchemas.cs, src/Makefile.am, src/ConfigurationSchema.cs,
 	  src/AlarmClockService.cs, alarm.mdp: Rename GConfSchemas to
 	  ConfigurationSchema.

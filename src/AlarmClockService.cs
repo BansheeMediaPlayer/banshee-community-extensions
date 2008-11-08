@@ -153,7 +153,7 @@ namespace Banshee.AlarmClock
             }
             return false;
         }
-            
+
         private void OnConfigure (object o, EventArgs args)
         {
             ConfigurationDialog dialog = new ConfigurationDialog (this);
@@ -164,107 +164,44 @@ namespace Banshee.AlarmClock
         #region Configuration properties
         internal bool AlarmEnabled
         {
-            get {
-                try {
-                    return ConfigurationSchema.IsEnabled.Get ();
-                } catch {
-                    return false;
-                }
-            }
-
-            set {
-                ConfigurationSchema.IsEnabled.Set (value);
-            }
+            get { return ConfigurationSchema.IsEnabled.Get (); }
+            set { ConfigurationSchema.IsEnabled.Set (value); }
         }
 
         internal ushort AlarmHour
         {
-            get {
-                try {
-                    return (ushort)ConfigurationSchema.AlarmHour.Get ();
-                } catch {
-                    return 0;
-                }
-            }
-
-            set {
-                ConfigurationSchema.AlarmHour.Set (value);
-            }
+            get { return (ushort)ConfigurationSchema.AlarmHour.Get (); }
+            set { ConfigurationSchema.AlarmHour.Set (value); }
         }
 
         internal ushort AlarmMinute
         {
-            get {
-                try {
-                    return (ushort)ConfigurationSchema.AlarmMinute.Get ();
-                } catch {
-                    return 0;
-                }
-            }
-
-            set {
-                ConfigurationSchema.AlarmMinute.Set (value);
-            }
+            get { return (ushort)ConfigurationSchema.AlarmMinute.Get (); }
+            set { ConfigurationSchema.AlarmMinute.Set (value); }
         }
 
         internal string AlarmCommand
         {
-            get {
-                try {
-                    return ConfigurationSchema.AlarmCommand.Get ();
-                } catch {
-                    return null;
-                }
-            }
-
-            set {
-                ConfigurationSchema.AlarmCommand.Set (value);
-            }
+            get { return ConfigurationSchema.AlarmCommand.Get (); }
+            set { ConfigurationSchema.AlarmCommand.Set (value); }
         }
 
         internal ushort FadeStartVolume
         {
-            get {
-                try {
-                    return (ushort)ConfigurationSchema.FadeStartVolume.Get ();
-                } catch {
-                    return 0;
-                }
-            }
-
-            set {
-                ConfigurationSchema.FadeStartVolume.Set (value);
-            }
+            get { return (ushort)ConfigurationSchema.FadeStartVolume.Get (); }
+            set { ConfigurationSchema.FadeStartVolume.Set (value); }
         }
 
         internal ushort FadeEndVolume
         {
-            get {
-                try {
-                    return (ushort)ConfigurationSchema.FadeEndVolume.Get ();
-                } catch {
-                    return 100;
-                }
-            }
-
-            set {
-                ConfigurationSchema.FadeEndVolume.Set (value);
-            }
+            get { return (ushort)ConfigurationSchema.FadeEndVolume.Get (); }
+            set { ConfigurationSchema.FadeEndVolume.Set (value); }
         }
 
         internal ushort FadeDuration
         {
-            get {
-                try {
-                    return (ushort)ConfigurationSchema.FadeDuration.Get ();
-                } catch {
-                    return 0;
-                }
-            }
-
-            set {
-                ConfigurationSchema.FadeDuration.Set (value);
-            }
+            get { return (ushort)ConfigurationSchema.FadeDuration.Get (); }
+            set { ConfigurationSchema.FadeDuration.Set (value); }
         }
         #endregion
             
