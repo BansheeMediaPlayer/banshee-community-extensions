@@ -1,5 +1,10 @@
 2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* configure.ac: Update dependencies and bump version.
+	* autogen.sh: Remove useless calls to glib-gettextize.
+
+2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* src/Alarm.cs, src/SleepTimerConfigDialog.cs, src/AssemblyInfo.cs.in,
 	  src/AlarmConfigDialog.cs, src/VolumeFade.cs,
 	  src/ConfigurationDialog.cs, src/AlarmClockService.cs: Improve code

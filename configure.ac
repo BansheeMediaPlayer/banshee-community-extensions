@@ -1,4 +1,4 @@
-AC_INIT([banshee-alarm-extension], [0.4.1])
+AC_INIT([banshee-alarm-extension], [0.4.2])
 AC_CONFIG_SRCDIR([README])
 
 AC_CANONICAL_TARGET
@@ -10,7 +10,7 @@ AM_MAINTAINER_MODE
 IT_PROG_INTLTOOL([0.35.0])
 
 dnl Mono programs
-SHAMROCK_CHECK_MONO_MODULE(1.2.2)
+SHAMROCK_CHECK_MONO_MODULE(1.2.5)
 SHAMROCK_FIND_MONO_2_0_COMPILER
 SHAMROCK_FIND_MONO_RUNTIME
 
@@ -18,7 +18,7 @@ MCS_FLAGS="-debug"
 AC_SUBST(MCS_FLAGS)
 
 dnl Banshee deps
-PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 0.99.1)
+PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.0)
 AC_SUBST(BANSHEE_LIBS)
 
 dnl Path to the banshee installation, to find the the gconf-schema-extractor.exe tool
