@@ -14,7 +14,7 @@ namespace Banshee.AlarmClock
         private SpinButton spbMinute;
         private CheckButton isEnabled;
         
-        public AlarmConfigDialog(AlarmClockService plugin) : base()
+        public AlarmConfigDialog (AlarmClockService plugin) : base ()
         {
             this.plugin = plugin;
             
@@ -22,34 +22,34 @@ namespace Banshee.AlarmClock
             WidthRequest = 250;
             HeightRequest = 150;
             
-            BuildWidget();
-            ShowAll();
+            BuildWidget ();
+            ShowAll ();
         }
 
-        private void BuildWidget()
+        private void BuildWidget ()
         {
-            spbHour = new SpinButton(0, 23, 1);
+            spbHour = new SpinButton (0, 23, 1);
             spbHour.WidthChars = 2;
-            spbMinute = new SpinButton(0, 59, 1);
+            spbMinute = new SpinButton (0, 59, 1);
             spbMinute.WidthChars = 2;
 
-            isEnabled = new CheckButton(Catalog.GetString("Enable Alarm"));
+            isEnabled = new CheckButton (Catalog.GetString ("Enable Alarm"));
 
-            HBox time_box = new HBox();
-            time_box.PackStart(new Label(Catalog.GetString("Set Time: ")));
-            time_box.PackStart(spbHour);
-            time_box.PackStart(new Label(" : "));
-            time_box.PackStart(spbMinute);
+            HBox time_box = new HBox ();
+            time_box.PackStart (new Label (Catalog.GetString ("Set Time: ")));
+            time_box.PackStart (spbHour);
+            time_box.PackStart (new Label (" : "));
+            time_box.PackStart (spbMinute);
 
-            VBox time_box_outer = new VBox(false, 10);
-            time_box_outer.PackStart(isEnabled);
-            time_box_outer.PackStart(time_box);
+            VBox time_box_outer = new VBox (false, 10);
+            time_box_outer.PackStart (isEnabled);
+            time_box_outer.PackStart (time_box);
 
-            Button OK = new Button(Gtk.Stock.Ok);
-            OK.Clicked += new EventHandler(OnOKClicked);
+            Button OK = new Button (Gtk.Stock.Ok);
+            OK.Clicked += new EventHandler (OnOKClicked);
 
-            this.AddActionWidget(OK, 0);
-            this.VBox.PackStart(time_box_outer, true, false, 6);
+            this.AddActionWidget (OK, 0);
+            this.VBox.PackStart (time_box_outer, true, false, 6);
 
             #region Initialize with current values
             spbHour.Value = plugin.AlarmHour;
@@ -57,26 +57,30 @@ namespace Banshee.AlarmClock
             isEnabled.Active = plugin.AlarmEnabled;
             #endregion
 
-            isEnabled.Toggled += new EventHandler(AlarmEnabled_Changed);
-            spbHour.ValueChanged += new EventHandler(AlarmHour_Changed);
-            spbMinute.ValueChanged += new EventHandler(AlarmMinute_Changed);
+            isEnabled.Toggled += new EventHandler (AlarmEnabled_Changed);
+            spbHour.ValueChanged += new EventHandler (AlarmHour_Changed);
+            spbMinute.ValueChanged += new EventHandler (AlarmMinute_Changed);
         }
 
-        private void OnOKClicked(object o, EventArgs e) {
+        private void OnOKClicked (object o, EventArgs e)
+        {
             // The alarm thread has to be re-initialized to take into account the new alarm time
-            this.plugin.alarmThread.Interrupt();
-            this.Destroy();
+            this.plugin.alarmThread.Interrupt ();
+            this.Destroy ();
         }
 
-        private void AlarmEnabled_Changed(object source, System.EventArgs args) {
+        private void AlarmEnabled_Changed (object source, System.EventArgs args)
+        {
             plugin.AlarmEnabled = isEnabled.Active;
         }
 
-        private void AlarmHour_Changed(object source, System.EventArgs args) {
+        private void AlarmHour_Changed (object source, System.EventArgs args)
+        {
             plugin.AlarmHour = (ushort) spbHour.Value;
         }
 
-        private void AlarmMinute_Changed(object source, System.EventArgs args) {
+        private void AlarmMinute_Changed (object source, System.EventArgs args)
+        {
             plugin.AlarmMinute = (ushort) spbMinute.Value;
         }
     }

@@ -1,3 +1,10 @@
+2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* src/Alarm.cs, src/SleepTimerConfigDialog.cs, src/AssemblyInfo.cs.in,
+	  src/AlarmConfigDialog.cs, src/VolumeFade.cs,
+	  src/ConfigurationDialog.cs, src/AlarmClockService.cs: Improve code
+	  formatting and some other cosmetic stuff.
+
 2008-05-11  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* configure.ac: Fix banshee version dependency.

@@ -1,6 +1,5 @@
 using System;
 using System.Threading;
-using System.Diagnostics;
 
 using Hyena;
 using Banshee.Base;
@@ -20,44 +19,33 @@ namespace Banshee.AlarmClock
 
         public void MainLoop()
         {
-            try
-            {
-                while(true)
-                {
+            try {
+                while(true) {
                     int delay = (int)TimeUntilAlarm().TotalMilliseconds;
                     bool thread_interrupted = false;
                     
-                    try
-                    {
+                    try {
                         Thread.Sleep(delay);
-                    }
-                    catch(ThreadInterruptedException)
-                    {
+                    } catch(ThreadInterruptedException) {
                         Log.Debug("Alarm Plugin: sleep interrupted");
                         thread_interrupted = true;
                     }
                     
-                    if (thread_interrupted)
-                    {
+                    if (thread_interrupted) {
                         // The alarm time was changed, we don't play and go back to sleep
                         thread_interrupted = false;
-                    }
-                    else
-                    {
+                    } else {
                         StartPlaying();
                     }
                 }
-            }
-            catch (ThreadAbortException)
-            {
+            } catch (ThreadAbortException) {
                 Log.Debug("Alarm Plugin: Alarm main loop aborted");
             }
         }
 
         private void StartPlaying()
         {
-            if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing)
-            {
+            if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing) {
                 return;
             }
 
@@ -71,8 +59,9 @@ namespace Banshee.AlarmClock
             // PlayerEngine.TogglePlaying() starts the first track if we're not paused in a track
             ServiceManager.PlayerEngine.TogglePlaying();
             
-            if(plugin.AlarmCommand != null && plugin.AlarmCommand.Trim() != "")
-                Process.Start(plugin.AlarmCommand);
+            if (!String.IsNullOrEmpty (plugin.AlarmCommand)) {
+                System.Diagnostics.Process.Start(plugin.AlarmCommand);
+            }
         }
         
         private TimeSpan TimeUntilAlarm()
@@ -81,8 +70,7 @@ namespace Banshee.AlarmClock
             DateTime alarmTime = new DateTime(now.Year, now.Month, now.Day, plugin.AlarmHour, plugin.AlarmMinute, 0);
             
             TimeSpan delay = alarmTime - now;
-            if (delay < TimeSpan.Zero)
-            {
+            if (delay < TimeSpan.Zero) {
                 alarmTime = alarmTime.AddDays(1);
                 delay = alarmTime - now;
             }

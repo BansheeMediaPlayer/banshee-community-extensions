@@ -23,58 +23,58 @@ namespace Banshee.AlarmClock
             HasSeparator = false;
             BorderWidth = 5;
             
-            fade_start = new VScale(0, 100, 1);
+            fade_start = new VScale (0, 100, 1);
             fade_start.Inverted = true;
             fade_start.HeightRequest = volumeSliderHeight;
-            fade_end = new VScale(0, 100, 1);
+            fade_end = new VScale (0, 100, 1);
             fade_end.Inverted = true;
             fade_end.HeightRequest = volumeSliderHeight;
-            fade_duration = new SpinButton(0, 65535, 1);
+            fade_duration = new SpinButton (0, 65535, 1);
             fade_duration.WidthChars = 6;
 
-            VBox fade_big_box = new VBox();
+            VBox fade_big_box = new VBox ();
 
-            VBox fade_start_box = new VBox();
-            fade_start_box.PackEnd(new Label(Catalog.GetString("Start")));
-            fade_start_box.PackStart(fade_start, false, false, 3);
+            VBox fade_start_box = new VBox ();
+            fade_start_box.PackEnd (new Label (Catalog.GetString ("Start")));
+            fade_start_box.PackStart (fade_start, false, false, 3);
 
-            VBox fade_end_box = new VBox();
-            fade_end_box.PackEnd(new Label(Catalog.GetString("End")));
-            fade_end_box.PackStart(fade_end, false, false, 3);
+            VBox fade_end_box = new VBox ();
+            fade_end_box.PackEnd (new Label (Catalog.GetString ("End")));
+            fade_end_box.PackStart (fade_end, false, false, 3);
 
-            HBox fade_box_group = new HBox();
-            fade_box_group.PackStart(fade_start_box);
-            fade_box_group.PackStart(fade_end_box);
+            HBox fade_box_group = new HBox ();
+            fade_box_group.PackStart (fade_start_box);
+            fade_box_group.PackStart (fade_end_box);
 
-            Label volume_label = new Label(Catalog.GetString("<b>Volume</b>"));
+            Label volume_label = new Label (Catalog.GetString ("<b>Volume</b>"));
             volume_label.UseMarkup = true;
-            fade_big_box.PackStart(volume_label, false, true, 3);
-            fade_big_box.PackStart(fade_box_group);
-            Label duration_label = new Label("Duration:");
-            Label duration_seconds_label = new Label(Catalog.GetString(" <i>(seconds)</i>"));
+            fade_big_box.PackStart (volume_label, false, true, 3);
+            fade_big_box.PackStart (fade_box_group);
+            Label duration_label = new Label (Catalog.GetString ("Duration:"));
+            Label duration_seconds_label = new Label (Catalog.GetString (" <i>(seconds)</i>"));
             duration_label.UseMarkup = true;
             duration_seconds_label.UseMarkup = true;
-            HBox duration_box = new HBox();
-            duration_box.PackStart(duration_label, false, false, 3);
-            duration_box.PackStart(fade_duration, false, false, 3);
-            duration_box.PackStart(duration_seconds_label, false, true, 3);
-            fade_big_box.PackStart(duration_box);
+            HBox duration_box = new HBox ();
+            duration_box.PackStart (duration_label, false, false, 3);
+            duration_box.PackStart (fade_duration, false, false, 3);
+            duration_box.PackStart (duration_seconds_label, false, true, 3);
+            fade_big_box.PackStart (duration_box);
 
-            Frame alarm_fade_frame = new Frame(Catalog.GetString("Fade-In Adjustment"));
-            alarm_fade_frame.Add(fade_big_box);
-            alarm_fade_frame.ShowAll();
+            Frame alarm_fade_frame = new Frame (Catalog.GetString ("Fade-In Adjustment"));
+            alarm_fade_frame.Add (fade_big_box);
+            alarm_fade_frame.ShowAll ();
 
-            HBox command_box = new HBox();
-            command_box.PackStart(new Label(Catalog.GetString("Command:")), false, false, 3);
-            command_entry = new Entry();
-            command_box.PackStart(command_entry, true, true, 3);
+            HBox command_box = new HBox ();
+            command_box.PackStart (new Label (Catalog.GetString ("Command:")), false, false, 3);
+            command_entry = new Entry ();
+            command_box.PackStart (command_entry, true, true, 3);
             
-            Frame alarm_misc_frame = new Frame(Catalog.GetString("Command To Execute:"));
-            alarm_misc_frame.Add(command_box);
-            alarm_misc_frame.ShowAll();
+            Frame alarm_misc_frame = new Frame (Catalog.GetString ("Command To Execute:"));
+            alarm_misc_frame.Add (command_box);
+            alarm_misc_frame.ShowAll ();
 
-            VBox.PackStart(alarm_fade_frame, false, false, 3);
-            VBox.PackStart(alarm_misc_frame, false, false, 3);
+            VBox.PackStart (alarm_fade_frame, false, false, 3);
+            VBox.PackStart (alarm_misc_frame, false, false, 3);
             
             AddButton (Stock.Close, ResponseType.Close);
             
@@ -85,27 +85,30 @@ namespace Banshee.AlarmClock
             fade_duration.Value = plugin.FadeDuration;
             
             // attach change handlers
-            command_entry.Changed += new EventHandler(AlarmCommand_Changed);
-            fade_start.ValueChanged += new EventHandler(FadeStartVolume_Changed);
-            fade_end.ValueChanged += new EventHandler(FadeEndVolume_Changed);
-            fade_duration.ValueChanged += new EventHandler(FadeDuration_Changed);
+            command_entry.Changed += new EventHandler (AlarmCommand_Changed);
+            fade_start.ValueChanged += new EventHandler (FadeStartVolume_Changed);
+            fade_end.ValueChanged += new EventHandler (FadeEndVolume_Changed);
+            fade_duration.ValueChanged += new EventHandler (FadeDuration_Changed);
         }
 
-        private void AlarmCommand_Changed(object source, System.EventArgs args) {
+        private void AlarmCommand_Changed (object source, System.EventArgs args)
+        {
             plugin.AlarmCommand = command_entry.Text;
         }
 
-        private void FadeStartVolume_Changed(object source, System.EventArgs args) {
+        private void FadeStartVolume_Changed (object source, System.EventArgs args)
+        {
             plugin.FadeStartVolume = (ushort) fade_start.Value;
         }
 
-        private void FadeEndVolume_Changed(object source, System.EventArgs args) {
+        private void FadeEndVolume_Changed (object source, System.EventArgs args)
+        {
             plugin.FadeEndVolume = (ushort) fade_end.Value;
         }
 
-        private void FadeDuration_Changed(object source, System.EventArgs args) {
+        private void FadeDuration_Changed (object source, System.EventArgs args)
+        {
             plugin.FadeDuration = (ushort) fade_duration.Value;
         }
-
     }
 }

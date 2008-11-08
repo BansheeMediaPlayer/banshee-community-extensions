@@ -48,74 +48,73 @@ namespace Banshee.AlarmClock
         uint sleep_timer_id;
         private int sleep_timer_value;
         
-        public AlarmClockService()
-        {
-        }
+        public AlarmClockService ()
+        {}
         
         void IExtensionService.Initialize ()
         {
             Log.Debug("Initializing Alarm Plugin");
 
             AlarmClockService.theService = this;            
-            ThreadStart alarmThreadStart = new ThreadStart(AlarmClockService.DoWait);
-            alarmThread = new Thread(alarmThreadStart);
-            alarmThread.Start();
+            ThreadStart alarmThreadStart = new ThreadStart (AlarmClockService.DoWait);
+            alarmThread = new Thread (alarmThreadStart);
+            alarmThread.Start ();
             
             action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
             
-            actions = new ActionGroup("AlarmClock");
+            actions = new ActionGroup ("AlarmClock");
             
-            actions.Add(new ActionEntry [] {
-                new ActionEntry("AlarmClockAction", null,
-                    Catalog.GetString("Alarm Clock"), null,
+            actions.Add (new ActionEntry [] {
+                new ActionEntry ("AlarmClockAction", null,
+                    Catalog.GetString ("Alarm Clock"), null,
                     null, null),
                 
-                new ActionEntry("SetSleepTimerAction", null,
-                    Catalog.GetString("Sleep Timer..."), null,
-                    Catalog.GetString("Set the sleep timer value"), OnSetSleepTimer),
+                new ActionEntry ("SetSleepTimerAction", null,
+                    Catalog.GetString ("Sleep Timer..."), null,
+                    Catalog.GetString ("Set the sleep timer value"), OnSetSleepTimer),
                 
-                new ActionEntry("SetAlarmAction", null,
-                    Catalog.GetString("Alarm..."), null,
-                    Catalog.GetString("Set the alarm time"), OnSetAlarm),
+                new ActionEntry ("SetAlarmAction", null,
+                    Catalog.GetString ("Alarm..."), null,
+                    Catalog.GetString ("Set the alarm time"), OnSetAlarm),
                 
                 new ActionEntry ("AlarmClockConfigureAction", Stock.Properties,
                     Catalog.GetString ("_Configure..."), null,
                     Catalog.GetString ("Configure the Alarm Clock plugin"), OnConfigure)
             });
             
-            action_service.UIManager.InsertActionGroup(actions, 0);
-            ui_manager_id = action_service.UIManager.AddUiFromResource("AlarmMenu.xml");
+            action_service.UIManager.InsertActionGroup (actions, 0);
+            ui_manager_id = action_service.UIManager.AddUiFromResource ("AlarmMenu.xml");
         }
         
         public void Dispose ()
         {
-            Log.Debug("Disposing Alarm Plugin");
-            action_service.UIManager.RemoveUi(ui_manager_id);
-            action_service.UIManager.RemoveActionGroup(actions);
+            Log.Debug ("Disposing Alarm Plugin");
+            action_service.UIManager.RemoveUi (ui_manager_id);
+            action_service.UIManager.RemoveActionGroup (actions);
             actions = null;
             
-            if(sleep_timer_id > 0) {
-                GLib.Source.Remove(sleep_timer_id);
-                Log.Debug("Disabling old sleep timer");
+            if (sleep_timer_id > 0) {
+                GLib.Source.Remove (sleep_timer_id);
+                Log.Debug ("Disabling old sleep timer");
             }
-            alarmThread.Abort();
+            alarmThread.Abort ();
         }
             
-        public static void DoWait()
+        public static void DoWait ()
         {
-            Log.Debug("Alarm thread started");
-            AlarmThread theAlarm = new AlarmThread(AlarmClockService.theService);
-            theAlarm.MainLoop();
+            Log.Debug ("Alarm thread started");
+            AlarmThread theAlarm = new AlarmThread (AlarmClockService.theService);
+            theAlarm.MainLoop ();
         }
 
-        protected void OnSetAlarm(object o, EventArgs a)
+        protected void OnSetAlarm (object o, EventArgs a)
         {
-            new AlarmConfigDialog(this);
+            new AlarmConfigDialog (this);
         }
 
-        protected void OnSetSleepTimer(object o, EventArgs a)
+        protected void OnSetSleepTimer (object o, EventArgs a)
         {
-            if(sleep_timer_id > 0){
+            if (sleep_timer_id > 0) {
                 GLib.Source.Remove(sleep_timer_id);
                 Log.Debug("Disabling old sleep timer");
             }
@@ -129,30 +128,30 @@ namespace Banshee.AlarmClock
         
         public void SetSleepTimer(int timervalue)
         {
-            if(timervalue != 0) {
-                Log.Debug(String.Format("Sleep Timer set to {0}", timervalue));
-                sleep_timer_id = GLib.Timeout.Add((uint) timervalue * 60 * 1000, onSleepTimerActivate);
+            if (timervalue != 0) {
+                Log.DebugFormat ("Sleep Timer set to {0}", timervalue);
+                sleep_timer_id = GLib.Timeout.Add ((uint) timervalue * 60 * 1000, onSleepTimerActivate);
             }
             this.sleep_timer_value = timervalue;
         }
 
-        public bool onSleepTimerActivate()
+        public bool onSleepTimerActivate ()
         {
-            if(ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing){
-                Log.Debug("Sleep Timer has gone off.  Fading out till end of song.");
-                new VolumeFade(ServiceManager.PlayerEngine.Volume, 0,
+            if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing) {
+                Log.Debug ("Sleep Timer has gone off.  Fading out till end of song.");
+                new VolumeFade (ServiceManager.PlayerEngine.Volume, 0,
                         (ushort) (ServiceManager.PlayerEngine.Length - ServiceManager.PlayerEngine.Position));
-                GLib.Timeout.Add((ServiceManager.PlayerEngine.Length - ServiceManager.PlayerEngine.Position) * 1000, delegate{
-                    Log.Debug("Sleep Timer: Pausing.");
-                    ServiceManager.PlayerEngine.Pause();
-                    return false;
+                GLib.Timeout.Add ((ServiceManager.PlayerEngine.Length - ServiceManager.PlayerEngine.Position) * 1000, 
+                    delegate {
+                        Log.Debug ("Sleep Timer: Pausing.");
+                        ServiceManager.PlayerEngine.Pause ();
+                        return false;
                     }
                 );
-                
-            }else{
-                Log.Debug("Sleep Timer has gone off, but we're not playing.  Refusing to pause.");
+            } else {
+                Log.Debug ("Sleep Timer has gone off, but we're not playing.  Refusing to pause.");
             }
-            return(false);
+            return false;
         }
             
         private void OnConfigure (object o, EventArgs args)
@@ -167,14 +166,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return GConfSchemas.IsEnabled.Get();
+                    return GConfSchemas.IsEnabled.Get ();
                 } catch {
                     return false;
                 }
             }
 
             set {
-                GConfSchemas.IsEnabled.Set(value);
+                GConfSchemas.IsEnabled.Set (value);
             }
         }
 
@@ -182,14 +181,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return (ushort)GConfSchemas.AlarmHour.Get();
+                    return (ushort)GConfSchemas.AlarmHour.Get ();
                 } catch {
                     return 0;
                 }
             }
 
             set {
-                GConfSchemas.AlarmHour.Set(value);
+                GConfSchemas.AlarmHour.Set (value);
             }
         }
 
@@ -197,14 +196,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return (ushort)GConfSchemas.AlarmMinute.Get();
+                    return (ushort)GConfSchemas.AlarmMinute.Get ();
                 } catch {
                     return 0;
                 }
             }
 
             set {
-                GConfSchemas.AlarmMinute.Set(value);
+                GConfSchemas.AlarmMinute.Set (value);
             }
         }
 
@@ -212,14 +211,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return GConfSchemas.AlarmCommand.Get();
+                    return GConfSchemas.AlarmCommand.Get ();
                 } catch {
                     return null;
                 }
             }
 
             set {
-                GConfSchemas.AlarmCommand.Set(value);
+                GConfSchemas.AlarmCommand.Set (value);
             }
         }
 
@@ -227,14 +226,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return (ushort)GConfSchemas.FadeStartVolume.Get();
+                    return (ushort)GConfSchemas.FadeStartVolume.Get ();
                 } catch {
                     return 0;
                 }
             }
 
             set {
-                GConfSchemas.FadeStartVolume.Set(value);
+                GConfSchemas.FadeStartVolume.Set (value);
             }
         }
 
@@ -242,14 +241,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return (ushort)GConfSchemas.FadeEndVolume.Get();
+                    return (ushort)GConfSchemas.FadeEndVolume.Get ();
                 } catch {
                     return 100;
+                }
             }
-        }
 
             set {
-                GConfSchemas.FadeEndVolume.Set(value);
+                GConfSchemas.FadeEndVolume.Set (value);
             }
         }
 
@@ -257,14 +256,14 @@ namespace Banshee.AlarmClock
         {
             get {
                 try {
-                    return (ushort)GConfSchemas.FadeDuration.Get();
+                    return (ushort)GConfSchemas.FadeDuration.Get ();
                 } catch {
                     return 0;
                 }
             }
 
             set {
-                GConfSchemas.FadeDuration.Set(value);
+                GConfSchemas.FadeDuration.Set (value);
             }
         }
         #endregion
