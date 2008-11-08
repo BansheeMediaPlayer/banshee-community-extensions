@@ -1,3 +1,7 @@
+2008-05-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	Version 0.4.2 released. 
+
 2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* src/Alarm.cs: Do not start playing if the alarm is not enabled.
