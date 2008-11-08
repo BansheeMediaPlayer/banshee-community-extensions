@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.54])
-AC_INIT([Mirage], [0.3.1])
+AC_INIT([Mirage], [0.4.0])
 AM_INIT_AUTOMAKE([foreign])
 
 dnl pkg-config
@@ -11,7 +11,6 @@ fi
 
 AC_PROG_INSTALL
 
-AM_PROG_LIBTOOL
 AC_PROG_LIBTOOL
 
 IT_PROG_INTLTOOL([0.35.0])
@@ -27,8 +26,6 @@ fi
 MCS=gmcs
 AC_SUBST(MCS)
 
-PKG_CHECK_MODULES(GTK_SHARP_20, gtk-sharp-2.0 >= 2.10)
-PKG_CHECK_MODULES(GCONF_SHARP_20, gconf-sharp-2.0)
 PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.3.2)
 AC_SUBST(BANSHEE_LIBS)
 
@@ -83,8 +80,7 @@ AC_CONFIG_FILES([
                  Banshee/Config.cs
                  
                  Test/Makefile
-                 Test/AssemblyInfo.cs
-
+                 
                  po/Makefile.in
 
                  Makefile

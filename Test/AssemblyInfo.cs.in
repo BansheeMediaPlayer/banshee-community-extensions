@@ -1,9 +1,0 @@
-using System.Reflection;
-using System.Runtime.CompilerServices;
-
-[assembly: AssemblyTitle("mirage-test")]
-[assembly: AssemblyDescription("Test program for the Mirage library")]
-[assembly: AssemblyVersion("@VERSION@")]
-[assembly: AssemblyDelaySign(false)]
-[assembly: AssemblyKeyFile("")]
-

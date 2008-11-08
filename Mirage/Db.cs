@@ -273,6 +273,7 @@ namespace Mirage
 
             try {
                 dbcmd.ExecuteNonQuery();
+                was_reset = true;
             } catch (SqliteExecutionException) {
                 throw new DbFailureException();
             } finally {

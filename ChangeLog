@@ -1,5 +1,12 @@
 2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
+	* Mirage/Db.cs: Set the was_reset flag when the database is reset.
+	* Test/Makefile.am, Test/AssemblyInfo.cs.in, configure.ac,
+	  build/build.mk, Banshee/Makefile.am: Several build clean-ups. Bump
+	  version to 0.4.0.
+
+2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
 	* Mirage/MirageDbMigrator.cs: Update database version, to reset it.
 
 2008-11-05  Dominik Schnitzer <dominik@schnitzer.at>
