@@ -373,15 +373,18 @@ namespace Banshee.Mirage
             while(reader.Read()) {
                 track_ids.Add (Convert.ToInt32(reader["TrackID"]));
             }
-            db.RemoveTracks (track_ids.ToArray());
             
-            StringBuilder removeSql = new StringBuilder ("DELETE FROM MirageProcessed WHERE TrackID IN (");
-            removeSql.Append (track_ids[0].ToString());
-            for (int i = 1; i < track_ids.Count; i++) {
-                removeSql.AppendFormat(", {0}", track_ids[i]);
+            if (track_ids.Count > 0) {
+                db.RemoveTracks (track_ids.ToArray());
+                
+                StringBuilder removeSql = new StringBuilder ("DELETE FROM MirageProcessed WHERE TrackID IN (");
+                removeSql.Append (track_ids[0].ToString());
+                for (int i = 1; i < track_ids.Count; i++) {
+                    removeSql.AppendFormat(", {0}", track_ids[i]);
+                }
+                removeSql.Append (")");
+                ServiceManager.DbConnection.Execute (removeSql.ToString());
             }
-            removeSql.Append (")");
-            ServiceManager.DbConnection.Execute (removeSql.ToString());
         }
         
         private void ResetMirageProcessed()
