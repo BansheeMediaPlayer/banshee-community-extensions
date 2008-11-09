@@ -1,3 +1,8 @@
+2008-11-09  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/PlaylistGeneratorSource.cs: Select proper range to remove all
+	  tracks after the current one.
+
 2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* NEWS: Update for upcoming release.

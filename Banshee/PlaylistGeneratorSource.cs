@@ -175,7 +175,7 @@ namespace Banshee.Mirage
                 }
                 
                 lock (DatabaseTrackModel) {
-                    RemoveTrackRange (DatabaseTrackModel, new Hyena.Collections.RangeCollection.Range (current_track + 1, Count - current_track));
+                    RemoveTrackRange (DatabaseTrackModel, new Hyena.Collections.RangeCollection.Range (current_track + 1, Count - 1));
                     int sameArtistCount = 0;
                     int i = 0;
                     int pi = 0;
