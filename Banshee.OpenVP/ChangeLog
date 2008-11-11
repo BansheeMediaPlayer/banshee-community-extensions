@@ -1,3 +1,9 @@
+2008-11-11  Chris Howie  <cdhowie@gmail.com>
+
+	* VisualizationDisplayWidget.cs: Fix race condition causing NRE.
+
+	* Banshee.OpenVP.csproj: Track latest Banshee libraries.
+
 2008-10-10  Chris Howie <me@chrishowie.com> 
 
 	* VisualizationDisplayWidget.cs, OpenVPSource.cs: Set the

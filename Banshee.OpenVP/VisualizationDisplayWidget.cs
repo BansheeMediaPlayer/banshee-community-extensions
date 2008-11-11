@@ -47,6 +47,8 @@ namespace Banshee.OpenVP
             
             this.glAlignment.Add(this.glWidget);
 
+            this.playerData = new BansheePlayerData(ServiceManager.PlayerEngine.ActiveEngine);
+
             this.glWidget.Realized += delegate {
                 if (!this.loopRunning) {
                     this.loopRunning = true;
@@ -112,8 +114,6 @@ namespace Banshee.OpenVP
         
         private void RenderLoop()
         {
-            this.playerData = new BansheePlayerData(ServiceManager.PlayerEngine.ActiveEngine);
-
             this.renderLock.Set();
 
             this.haveDataSlice = false;
