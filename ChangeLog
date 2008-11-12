@@ -1,3 +1,7 @@
+2008-11-10  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	Mirage 0.4 released.
+
 2008-11-09  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* Banshee/MiragePlugin.cs: Fix a crash when a file not analyzed was
