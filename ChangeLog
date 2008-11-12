@@ -1,3 +1,9 @@
+2008-11-12  Chris Howie  <me@chrishowie.com>
+
+	* Banshee.OpenVP.sln:
+	* Banshee.OpenVP.Visualizations: Split off Banshee.OpenVP.Visualizations
+	to its own assembly.
+
 2008-08-24  Chris Howie <cdhowie@gmail.com> 
 
 	* ChangeLog: Add change logs.

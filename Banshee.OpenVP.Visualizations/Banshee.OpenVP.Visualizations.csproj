@@ -4,10 +4,10 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
-    <ProjectGuid>{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AssemblyName>Banshee.OpenVP</AssemblyName>
     <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Banshee.OpenVP.Visualizations</AssemblyName>
     <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -30,19 +30,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Banshee.Core, Version=1.4.0.0, Culture=neutral" />
-    <Reference Include="Banshee.Services, Version=1.4.0.0, Culture=neutral" />
     <Reference Include="OpenVP, Version=0.0.1.0, Culture=neutral" />
     <Reference Include="OpenVP.Core, Version=0.0.1.0, Culture=neutral" />
-    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Mono.Posix" />
-    <Reference Include="Mono.Addins, Version=0.3.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="Banshee.ThickClient, Version=1.4.0.0, Culture=neutral" />
     <Reference Include="Tao.OpenGl, Version=2.1.0.7, Culture=neutral, PublicKeyToken=1ca010269a4501ef" />
-    <Reference Include="Tao.FreeGlut, Version=2.4.0.1, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="GlassWall.cs" />
+    <Compile Include="Grid.cs" />
+    <Compile Include="Inferno.cs" />
+    <Compile Include="SimpleScope.cs" />
+    <Compile Include="SpectrumAnalyzer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="resources/" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="resources\Banshee.OpenVP.Visualizations.addin.xml" />
+  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
@@ -50,23 +56,4 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="BansheePlayerData.cs" />
-    <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="VisualizationDisplayWidget.cs" />
-    <Compile Include="gtk-gui\Banshee.OpenVP.VisualizationDisplayWidget.cs" />
-    <Compile Include="VisualizationExtensionNode.cs" />
-    <Compile Include="OpenVPSource.cs" />
-    <Compile Include="Gtk\GLWidget.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="resources\Banshee.OpenVP.addin.xml" />
-    <EmbeddedResource Include="resources\greenflower.ovpb" />
-    <EmbeddedResource Include="resources\inferno.ovpb" />
-    <EmbeddedResource Include="resources\stargrid.ovpb" />
-    <EmbeddedResource Include="gtk-gui\gui.stetic">
-      <LogicalName>gui.stetic</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
 </Project>

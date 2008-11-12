@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.OpenVP", "Banshee.OpenVP\Banshee.OpenVP.csproj", "{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.OpenVP", "Banshee.OpenVP.Visualizations\Banshee.OpenVP.Visualizations.csproj", "{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,14 @@ Global
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}.Release|Any CPU.Build.0 = Release|Any CPU
+		{187FABD0-BF27-4B13-B6B2-CB131FC0F094}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{187FABD0-BF27-4B13-B6B2-CB131FC0F094}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{187FABD0-BF27-4B13-B6B2-CB131FC0F094}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{187FABD0-BF27-4B13-B6B2-CB131FC0F094}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		name = Banshee.OpenVP

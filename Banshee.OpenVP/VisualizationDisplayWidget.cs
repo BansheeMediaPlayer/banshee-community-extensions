@@ -48,6 +48,7 @@ namespace Banshee.OpenVP
             this.glAlignment.Add(this.glWidget);
 
             this.playerData = new BansheePlayerData(ServiceManager.PlayerEngine.ActiveEngine);
+            this.playerData.Active = false;
 
             this.glWidget.Realized += delegate {
                 if (!this.loopRunning) {

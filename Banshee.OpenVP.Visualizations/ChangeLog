@@ -1,0 +1,13 @@
+2008-11-12  Chris Howie  <me@chrishowie.com>
+
+	* Grid.cs:
+	* resources:
+	* Inferno.cs:
+	* GlassWall.cs:
+	* SimpleScope.cs:
+	* AssemblyInfo.cs:
+	* SpectrumAnalyzer.cs:
+	* Banshee.OpenVP.Visualizations.csproj:
+	* resources/Banshee.OpenVP.Visualizations.addin.xml: Split off
+	Banshee.OpenVP.Visualizations to its own assembly.
+

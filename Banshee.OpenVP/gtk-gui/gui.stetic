@@ -5,7 +5,7 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../bin/Debug/Banshee.OpenVP.dll" internal="true" />
+    <widget-library name="../../build/Banshee.OpenVP.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="Banshee.OpenVP.VisualizationDisplayWidget" design-size="601 305">
     <property name="MemberName" />

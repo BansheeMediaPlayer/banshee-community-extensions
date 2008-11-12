@@ -1,3 +1,20 @@
+2008-11-12  Chris Howie  <me@chrishowie.com>
+
+	* Banshee.OpenVP.csproj:
+	* Banshee.OpenVP.Visualizations:
+	* resources/Banshee.OpenVP.addin.xml:
+	* Banshee.OpenVP.Visualizations/Grid.cs:
+	* Banshee.OpenVP.Visualizations/Inferno.cs:
+	* Banshee.OpenVP.Visualizations/GlassWall.cs:
+	* Banshee.OpenVP.Visualizations/SimpleScope.cs:
+	* Banshee.OpenVP.Visualizations/SpectrumAnalyzer.cs: Split off
+	Banshee.OpenVP.Visualizations to its own assembly.
+
+	* VisualizationDisplayWidget.cs: Make the data source inactive by
+	default so it's not using CPU until the source is activated.
+
+	* OpenVPSource.cs: Fix NRE disabling extension.
+
 2008-11-11  Chris Howie  <cdhowie@gmail.com>
 
 	* VisualizationDisplayWidget.cs: Fix race condition causing NRE.
