@@ -44,9 +44,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="resources/" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="resources\Banshee.OpenVP.Visualizations.addin.xml" />
   </ItemGroup>
   <ProjectExtensions>
