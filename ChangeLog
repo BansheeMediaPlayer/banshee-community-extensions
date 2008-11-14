@@ -1,3 +1,7 @@
+2008-11-14  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* configure.ac: Update minimum gstreamer version to 0.10.15.
+
 2008-11-10  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	Mirage 0.4 released.
