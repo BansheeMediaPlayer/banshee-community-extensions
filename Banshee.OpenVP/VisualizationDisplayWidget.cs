@@ -28,6 +28,8 @@ namespace Banshee.OpenVP
         private ManualResetEvent renderLock = new ManualResetEvent(false);
 
         private object cleanupLock = new object();
+
+        private Thread RenderThread;
         
         public VisualizationDisplayWidget()
         {
@@ -53,7 +55,8 @@ namespace Banshee.OpenVP
             this.glWidget.Realized += delegate {
                 if (!this.loopRunning) {
                     this.loopRunning = true;
-                    new Thread(this.RenderLoop).Start();
+                    this.RenderThread = new Thread(this.RenderLoop);
+                    this.RenderThread.Start();
                 }
 
                 this.ConnectVisualization();
@@ -141,6 +144,7 @@ namespace Banshee.OpenVP
             base.OnDestroyed ();
 
             this.loopRunning = false;
+            this.RenderThread.Join();
 
             this.DisposeRenderer();
         }

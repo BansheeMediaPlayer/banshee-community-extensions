@@ -1,3 +1,8 @@
+2008-11-17  Chris Howie  <cdhowie@gmail.com>
+
+	* VisualizationDisplayWidget.cs: Join with render thread on destruction
+	to prevent a race that could potentially segfault Banshee.
+
 2008-11-12  Chris Howie  <me@chrishowie.com>
 
 	* Banshee.OpenVP.csproj:
