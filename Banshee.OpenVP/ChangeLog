@@ -1,5 +1,11 @@
 2008-11-17  Chris Howie  <cdhowie@gmail.com>
 
+	* VisualizationDisplayWidget.cs: Fixes NRE when the widget is destroyed
+	before being realized.  Fixes issue 6.  Thanks to bertrand.lorentz
+	for the patch.
+
+2008-11-17  Chris Howie  <cdhowie@gmail.com>
+
 	* VisualizationDisplayWidget.cs: Join with render thread on destruction
 	to prevent a race that could potentially segfault Banshee.
 

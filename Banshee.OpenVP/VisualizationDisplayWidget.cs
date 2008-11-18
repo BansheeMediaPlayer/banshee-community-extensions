@@ -144,7 +144,9 @@ namespace Banshee.OpenVP
             base.OnDestroyed ();
 
             this.loopRunning = false;
-            this.RenderThread.Join();
+            if (this.RenderThread != null) {
+                this.RenderThread.Join();
+            }
 
             this.DisposeRenderer();
         }
