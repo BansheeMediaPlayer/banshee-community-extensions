@@ -1,4 +1,9 @@
-2008-05-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+2008-11-25  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* build/m4/shamrock/programs.m4: Do actually bail if a program is not
+	  found.
+
+2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	Version 0.4.2 released. 
 
