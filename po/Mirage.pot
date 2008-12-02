@@ -1,25 +1,25 @@
-# German translation of Mirage.
-# Copyright (C) 2007 THE Mirage'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the Mirage package.
-# Dominik Schnitzer <dominik@schnitzer.at>, 2007.
-# , fuzzy
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Mirage 0.4\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-02 11:20+0100\n"
-"PO-Revision-Date: 2007-09-28 17:20+0200\n"
-"Last-Translator: Dominik Schnitzer <dominik@schnitzer.at>\n"
-"Language-Team: German <gnome-de@gnome.org>\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Banshee user job
 #: ../Banshee/MiragePlugin.cs:238
 msgid "Mirage: Analyzing Songs"
-msgstr "Mirage: Analysiere Lieder"
+msgstr ""
 
 #: ../Banshee/MiragePlugin.cs:240
 msgid ""
@@ -27,39 +27,32 @@ msgid ""
 "only work for the tracks which are already analyzed. The operation can be "
 "resumed at any time from the <i>Tools</i> menu."
 msgstr ""
-"Wollen Sie Mirage tatsächlich abbrechen? Das automatische erzeugen von "
-"Playlists wird nur für Lieder funktionieren die schon analysiert wurden. Der "
-"Analyseprozess kann jederzeit wieder aufgenommen werden. Verwenden Sie dazu "
-"das <i>Tools</i> Menü in Banshee."
 
 #: ../Banshee/MiragePlugin.cs:301
 msgid "Mirage Playlist Generator"
-msgstr "Mirage Playlist Generator"
+msgstr ""
 
 #: ../Banshee/MiragePlugin.cs:302
 msgid "Manage the Mirage plugin"
-msgstr "Verwaltung des Mirage Plugins"
+msgstr ""
 
 #: ../Banshee/MiragePlugin.cs:305
 msgid "Rescan the Music Collection"
-msgstr "Musiksammlung neu scannen"
+msgstr ""
 
 #: ../Banshee/MiragePlugin.cs:306
 msgid "Rescans the Music Collection for new Songs"
 msgstr ""
-"Scannt die Musiksammlung nach neuen Liedern und analysiert diese mit Mirage."
 
 #: ../Banshee/MiragePlugin.cs:310 ../Banshee/MiragePlugin.cs:335
 msgid "Reset Mirage"
-msgstr "Mirage zurücksetzen"
+msgstr ""
 
 #: ../Banshee/MiragePlugin.cs:311
 msgid ""
 "Resets the Mirage Playlist Generation Plugin. All songs have to be analyzed "
 "again to use Automatic Playlist Generation."
 msgstr ""
-"Setzt Mirage zurück. Alle Lieder müssen nochmals analysiert werden um wieder "
-"automatisch Playlisten mit Mirage generieren zu können."
 
 #: ../Banshee/MiragePlugin.cs:333
 msgid ""
@@ -67,49 +60,41 @@ msgid ""
 "Extension? All extracted information will be lost. Your music will have to "
 "be re-analyzed to use Mirage again."
 msgstr ""
-"Wollen Sie den Mirage Playlist Generator tatsächlich zurücksetzen? Alle "
-"vorher extrahierte extrahierte Information geht verloren. Ihre Musiksammlung "
-"muss neu analysiert werden um Mirage wieder zu verwenden."
 
 #: ../Banshee/MiragePlugin.cs:346
 msgid ""
 "Mirage was reset. Your music will have to be re-analyzed to use Mirage again."
 msgstr ""
-"Mirage wurde zurückgesetzt. Ihre Musiksammlung muss reanalysiert werden um "
-"Mirage wieder zu verwenden."
 
 #: ../Banshee/PlaylistGeneratorSource.cs:68
 msgid "Playlist Generator"
-msgstr "Playlist Generator"
+msgstr ""
 
 #: ../Banshee/PlaylistGeneratorSource.cs:94
 msgid "Clear"
-msgstr "Löschen"
+msgstr ""
 
 #: ../Banshee/PlaylistGeneratorSource.cs:95
 msgid "Remove all tracks from the play queue"
-msgstr "Alle Lieder aus der Playliste entfernen"
+msgstr ""
 
 #: ../Banshee/PlaylistGeneratorSource.cs:101
 msgid "Clear on Quit"
-msgstr "Beim Beenden löschen"
+msgstr ""
 
 #: ../Banshee/PlaylistGeneratorSource.cs:102
 msgid "Clear the play queue when quitting"
-msgstr "Löscht die Playliste beim Beenden"
+msgstr ""
 
 #: ../Banshee/PlaylistGeneratorSource.cs:120
 msgid "Ready. Drag a song on the Playlist Generator to start!"
 msgstr ""
-"Bereit. Ziehen Sie eine Lied auf den Playlist Generator um zu beginnen!"
 
 #: ../Banshee/PlaylistGeneratorSource.cs:164
 msgid ""
 "Error building playlist. You might need to rescan your music collection."
 msgstr ""
-"Fehler beim erstellen der Playliste. Sie müssen ihre Musiksammlung neu "
-"scannen."
 
 #: ../Banshee/PlaylistGeneratorSource.cs:188
 msgid "Playlist ready."
-msgstr "Die Playliste wurde erzeugt."
+msgstr ""

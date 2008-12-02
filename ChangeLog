@@ -1,3 +1,11 @@
+2008-12-02  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* po/it.po, po/LINGUAS: Add Italian translation. Thanks to Gianvito
+	Cavasoli <janvitus@ubuntu-it.org> for the translation.
+	* po/de.po, po/Mirage.pot: Update the German translation.
+	* Banshee/MiragePlugin.cs: Remove spaces before "?" ("Hello ?" ->
+	"Hello?") in two strings.
+
 2008-11-14  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* configure.ac: Update minimum gstreamer version to 0.10.15.
