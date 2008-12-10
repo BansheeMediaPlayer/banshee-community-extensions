@@ -56,27 +56,27 @@ namespace Banshee.Plugins.Lyrics {
             // Container child hbox1.Gtk.Box+BoxChild
             this.vbox3 = new Gtk.VBox();
             this.vbox3.Name = "vbox3";
-            this.vbox3.Spacing = 1;
+            this.vbox3.Spacing = -11;
             // Container child vbox3.Gtk.Box+BoxChild
             this.lblTitle = new Gtk.Label();
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Xalign = 0F;
-            this.lblTitle.LabelProp = "";
+            this.lblTitle.LabelProp = Mono.Unix.Catalog.GetString("fff");
             this.lblTitle.UseMarkup = true;
             this.vbox3.Add(this.lblTitle);
             Gtk.Box.BoxChild w3 = ((Gtk.Box.BoxChild)(this.vbox3[this.lblTitle]));
             w3.Position = 0;
-            w3.Padding = ((uint)(2));
+            w3.Padding = ((uint)(5));
             // Container child vbox3.Gtk.Box+BoxChild
             this.lblAlbum_Artist = new Gtk.Label();
             this.lblAlbum_Artist.Name = "lblAlbum_Artist";
             this.lblAlbum_Artist.Xalign = 0F;
-            this.lblAlbum_Artist.LabelProp = "";
+            this.lblAlbum_Artist.LabelProp = Mono.Unix.Catalog.GetString("ffffff");
             this.lblAlbum_Artist.UseMarkup = true;
             this.vbox3.Add(this.lblAlbum_Artist);
             Gtk.Box.BoxChild w4 = ((Gtk.Box.BoxChild)(this.vbox3[this.lblAlbum_Artist]));
             w4.Position = 1;
-            w4.Padding = ((uint)(2));
+            w4.Padding = ((uint)(6));
             this.hbox1.Add(this.vbox3);
             Gtk.Box.BoxChild w5 = ((Gtk.Box.BoxChild)(this.hbox1[this.vbox3]));
             w5.Position = 1;

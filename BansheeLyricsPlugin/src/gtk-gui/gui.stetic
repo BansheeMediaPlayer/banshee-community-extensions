@@ -189,31 +189,31 @@
         <child>
           <widget class="Gtk.VBox" id="vbox3">
             <property name="MemberName" />
-            <property name="Spacing">1</property>
+            <property name="Spacing">-11</property>
             <child>
               <widget class="Gtk.Label" id="lblTitle">
                 <property name="MemberName" />
                 <property name="Xalign">0</property>
-                <property name="LabelProp" translatable="yes" />
+                <property name="LabelProp" translatable="yes">fff</property>
                 <property name="UseMarkup">True</property>
               </widget>
               <packing>
                 <property name="Position">0</property>
                 <property name="AutoSize">False</property>
-                <property name="Padding">2</property>
+                <property name="Padding">5</property>
               </packing>
             </child>
             <child>
               <widget class="Gtk.Label" id="lblAlbum_Artist">
                 <property name="MemberName" />
                 <property name="Xalign">0</property>
-                <property name="LabelProp" translatable="yes" />
+                <property name="LabelProp" translatable="yes">ffffff</property>
                 <property name="UseMarkup">True</property>
               </widget>
               <packing>
                 <property name="Position">1</property>
                 <property name="AutoSize">False</property>
-                <property name="Padding">2</property>
+                <property name="Padding">6</property>
               </packing>
             </child>
           </widget>

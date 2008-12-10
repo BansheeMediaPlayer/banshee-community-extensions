@@ -82,7 +82,7 @@ namespace Banshee.Plugins.Lyrics
 				return Lyric;
 			}
 			//check if the netowrk is up
-			if(!BansheeWidgets.GetNetworkDetect().Connected){
+			if(!BansheeWidgets.GetNetwork().Connected){
 				Lyric= Constants.no_network_string;
 				return Lyric;
 			}
@@ -109,7 +109,6 @@ namespace Banshee.Plugins.Lyrics
 		private string GetLyrics(string Url)
 		{
 			string result;
-			
 			if (Url == null)
 				return null;
 
@@ -126,7 +125,7 @@ namespace Banshee.Plugins.Lyrics
 		private string RefreshLyrics(string artist,string title)
 		{
 			//refresh impossible when network is down
-			if(!BansheeWidgets.GetNetworkDetect().Connected)
+			if(!BansheeWidgets.GetNetwork().Connected)
 				return null;
 			
 			LyricsCache.DeleteLyric(artist,title);

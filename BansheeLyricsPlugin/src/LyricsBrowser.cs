@@ -35,8 +35,8 @@ namespace Banshee.Plugins.Lyrics
 			InitComponents();
 		}
 		
-		private void InitComponents(){
-			
+		private void InitComponents()
+		{			
 			trackInfo = new SavedTrackInfo();
 			
 			buttonSave.Clicked			+= new EventHandler(OnSave);
@@ -48,8 +48,8 @@ namespace Banshee.Plugins.Lyrics
 			SwitchTo(Constants.HTML_MODE);
 		}
 		
-		private void InitHtmlBrowser(){
-			
+		private void InitHtmlBrowser()
+		{			
 			htmlBrowser = new HTML();
 			htmlBrowser.AllowSelection(true);
 			htmlBrowser.Editable=false;
@@ -69,7 +69,8 @@ namespace Banshee.Plugins.Lyrics
 
 		public void SwitchTo(int mode)
 		{
-			if (mode == Constants.HTML_MODE){
+			if (mode == Constants.HTML_MODE)
+			{
 				Constants.current_mode=mode;
 			
 				dialog1_ActionArea.HideAll();
@@ -81,7 +82,8 @@ namespace Banshee.Plugins.Lyrics
 				this.lyricsScrollPane.ResizeChildren();
 				textBrowser.Hide();
 				htmlBrowser.Show();
-			}else{
+			}else
+			{
 				Constants.current_mode	= mode;
 				
 				trackInfo.saved_artist	= trackInfo.artist;
@@ -147,7 +149,6 @@ namespace Banshee.Plugins.Lyrics
 		
 		void OnLinkClicked (object obj, LinkClickedArgs args)
 		{
-			
 			Console.WriteLine(args.Url);
 			
 			if(args.Url == Constants.add_href_changed){
@@ -160,7 +161,6 @@ namespace Banshee.Plugins.Lyrics
 
 		void OnRefresh(object sender, EventArgs args)
 		{
-		
 				if (trackInfo.artist==null || trackInfo.title == null)
 					return;
 
@@ -193,8 +193,8 @@ namespace Banshee.Plugins.Lyrics
 				//create
 				Menu menu = new Menu();
 										
-				ImageMenuItem refreshItem		= new ImageMenuItem(Stock.Refresh,null);
-				ImageMenuItem copyItem 			= new ImageMenuItem(Stock.Copy, null);
+				ImageMenuItem refreshItem	= new ImageMenuItem(Stock.Refresh,null);
+				ImageMenuItem copyItem 		= new ImageMenuItem(Stock.Copy, null);
 				ImageMenuItem selectAllItem	= new ImageMenuItem(Stock.SelectAll,null);
 				
 				//handle activate event

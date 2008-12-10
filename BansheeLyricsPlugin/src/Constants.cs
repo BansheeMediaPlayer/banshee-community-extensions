@@ -74,9 +74,9 @@ namespace Banshee.Plugins.Lyrics
 			return pixbuf_image;
 		}
 
-		public static Banshee.Networking.NetworkDetect GetNetworkDetect()
+		public static Banshee.Networking.Network GetNetwork()
 		{
-			return Banshee.Networking.NetworkDetect.Instance;
+			return ServiceManager.Get<Network> ();;
 		}
 	}
 	
