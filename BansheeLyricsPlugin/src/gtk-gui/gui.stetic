@@ -160,7 +160,7 @@
     <child>
       <widget class="Gtk.HBox" id="hbox1">
         <property name="MemberName" />
-        <property name="Spacing">9</property>
+        <property name="Spacing">7</property>
         <property name="BorderWidth">6</property>
         <child>
           <widget class="Gtk.VBox" id="vbox1">
@@ -194,7 +194,6 @@
               <widget class="Gtk.Label" id="lblTitle">
                 <property name="MemberName" />
                 <property name="Xalign">0</property>
-                <property name="LabelProp" translatable="yes">fff</property>
                 <property name="UseMarkup">True</property>
               </widget>
               <packing>
@@ -207,7 +206,6 @@
               <widget class="Gtk.Label" id="lblAlbum_Artist">
                 <property name="MemberName" />
                 <property name="Xalign">0</property>
-                <property name="LabelProp" translatable="yes">ffffff</property>
                 <property name="UseMarkup">True</property>
               </widget>
               <packing>
