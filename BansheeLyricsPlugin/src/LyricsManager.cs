@@ -164,7 +164,7 @@ namespace Banshee.Plugins.Lyrics
 				
 			if (foundAt!=null && LyricFound(result)){
 				base_url=foundAt.Url;
-				result=string.Format ("{0} <br><br>Powered by {1} ({2})",result, foundAt.Name, foundAt.Url);
+				result=string.Format ("{0} <br><br>",result) + foundAt.GetCredits();
 			}
 			
 			//ok return

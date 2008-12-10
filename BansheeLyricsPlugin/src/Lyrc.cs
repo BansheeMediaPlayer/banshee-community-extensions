@@ -131,9 +131,8 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
     }
     public override string GetCredits ()
     {
-        return string.Format("Powered by {0} (<a href=\"{1}\">{2}</a>)",
+        return string.Format("Powered by {0} ({1})",
                              "Lyrc",
-                             "http://lyrc.com.ar",
                              "http://lyrc.com.ar");
     }
     }

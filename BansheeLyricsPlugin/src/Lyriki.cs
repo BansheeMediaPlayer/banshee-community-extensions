@@ -8,12 +8,12 @@ namespace Banshee.Plugins.Lyrics
 {
 public class Lyriki : Banshee.Plugins.Lyrics.LyricBaseSource
 {
-	private string lyricURL="http://www.lyricwiki.org";
+	private string lyricURL="http://lyricwiki.org";
 	//private string lyric_not_found="Unable to find Lyrics. <br> Suggestions :";
 	public Lyriki(){
 			can_add=false;
 	}
-	public override string Name { get { return "<LyricWiki> www.lyricwiki.org"; }}
+	public override string Name { get { return "<LyricWiki> lyricwiki.org"; }}
     public override string Url { get { return lyricURL; }}
         
 	private string ReadPageContent(String Url){
@@ -54,18 +54,28 @@ public class Lyriki : Banshee.Plugins.Lyrics.LyricBaseSource
     {
        	string url = string.Format(lyricURL +"/{0}:{1}",System.Web.HttpUtility.UrlEncode(artist),
 			                       System.Web.HttpUtility.UrlEncode(title));
+		
+		string new_url = lyricURL + "/";
+		string relative_url = (url.Replace("+","_")).Replace(lyricURL+"/","");
+		string[] splitted_string =  relative_url.Split('_');
+		Console.WriteLine(relative_url);
+		/*make first character of each word upper*/
+		for (int i = 0 ; i < splitted_string.Length ; i++)
+		{
+			Console.WriteLine(splitted_string[i]);
+			char[] temp = splitted_string[i].ToCharArray();
+			new_url += temp[0].ToString().ToUpper() +  splitted_string[i].Substring(1, splitted_string[i].Length - 1) +"_";
+		}
+		new_url = new_url.Substring(0,new_url.Length - 1);
 		//obtain the lyric from the given url
-    	string lyric= GetLyrics(url.Replace("+","_"));
+    	string lyric= GetLyrics(new_url);
 		
 		return lyric;
     }
 
     public override string GetCredits ()
     {
-        return string.Format("Powered by {0} (<a href=\"{1}\">{2}</a>)",
-                             this.Name,
-                             this.Url,
-                             this.Url);
+        return string.Format("Powered by {0} ({1})","LyricWiki",this.Url);
     }
     }
 }

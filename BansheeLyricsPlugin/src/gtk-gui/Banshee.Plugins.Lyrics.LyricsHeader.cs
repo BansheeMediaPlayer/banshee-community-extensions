@@ -33,7 +33,7 @@ namespace Banshee.Plugins.Lyrics {
             // Container child Banshee.Plugins.Lyrics.LyricsHeader.Gtk.Container+ContainerChild
             this.hbox1 = new Gtk.HBox();
             this.hbox1.Name = "hbox1";
-            this.hbox1.Spacing = 5;
+            this.hbox1.Spacing = 7;
             this.hbox1.BorderWidth = ((uint)(6));
             // Container child hbox1.Gtk.Box+BoxChild
             this.vbox1 = new Gtk.VBox();

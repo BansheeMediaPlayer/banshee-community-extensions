@@ -71,10 +71,7 @@ public class AutoLyrics : Banshee.Plugins.Lyrics.LyricBaseSource
     }
     public override string GetCredits ()
     {
-        return string.Format("Powered by {0} (<a href=\"{1}\">{2}</a>)",
-                             "Autolyrics",
-                             "http://www.autolyrics.com",
-                             "http://www.autolyrics.com");
+      return string.Format("Powered by {0} ({1})","AutoLyrics",this.Url);
     }
     }
 }

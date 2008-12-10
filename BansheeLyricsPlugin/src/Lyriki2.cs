@@ -106,9 +106,8 @@ public override void AddLyrics(string artist,string title,string album, string y
     }
     public override string GetCredits ()
     {
-        return string.Format("Powered by {0} (<a href=\"{1}\">{2}</a>)",
-                             this.Name,
-                             this.Url,
+        return string.Format("Powered by {0} ({1})",
+                             "Lyriki",
                              this.Url);
     }
   }
