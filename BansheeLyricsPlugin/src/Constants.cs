@@ -93,7 +93,7 @@ namespace Banshee.Plugins.Lyrics
 		public static int	 INSERT_MODE		    = 1;
 		
 		public static string lyric_action			= "ShowLyricsAction";
-		public static string find_error_string		= Catalog.GetString("Unable to find Lyrics : ");
+		public static string find_error_string		= Catalog.GetString("<b>Lyric not found</b>");
 		public static string download_error_string	= Catalog.GetString("Error downloading lyric...");
 		public static string suggestion_error_string= Catalog.GetString("Error downloading suggestions...");
 		public static string loading_string 		= Catalog.GetString("Loading lyric...");

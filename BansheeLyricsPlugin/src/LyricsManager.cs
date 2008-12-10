@@ -181,7 +181,7 @@ namespace Banshee.Plugins.Lyrics
 			
 			//there are some suggestions
 			suggestions=string.Format ("{0} <br><br>Powered by {1} ({2})",suggestions, lyrc_server.Name, lyrc_server.Url);
-			return Constants.find_error_string + "<br><br><a href=\""+Constants.add_href_changed+"\">"+ Constants.add_lyric_string +"</a><br><br>" + Catalog.GetString("Suggestions:") + suggestions;
+			return Constants.find_error_string + "<br><a href=\""+Constants.add_href_changed+"\">"+ Constants.add_lyric_string +"</a><br><br>" + Catalog.GetString("Suggestions:") + suggestions;
 		}
 		
 		

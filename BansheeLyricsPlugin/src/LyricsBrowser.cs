@@ -130,7 +130,7 @@ namespace Banshee.Plugins.Lyrics
 		{
 			string lyric = LyricsManager.Instance.Lyric;
 			if (lyric==null)
-				lyric = Constants.download_error_string + "<br><br><a href=\""+Constants.add_href_changed+"\">"+ Constants.add_lyric_string;
+				lyric = Constants.download_error_string + "<br><a href=\""+Constants.add_href_changed+"\">"+ Constants.add_lyric_string;
 				
 			LoadFromString(lyric);
 		}

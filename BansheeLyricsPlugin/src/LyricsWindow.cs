@@ -50,7 +50,7 @@ namespace Banshee.Plugins.Lyrics
 			this.Title = BansheeWidgets.CurrentTrack.GetTitle();
 			
 			if (BansheeWidgets.CurrentTrack.GetArtist()!=null && !BansheeWidgets.CurrentTrack.GetArtist().Equals("") )
-				this.Title +=  " " + lbl_artist + " " + BansheeWidgets.CurrentTrack.GetArtist();
+				this.Title +=  " " + Constants.lbl_artist + " " + BansheeWidgets.CurrentTrack.GetArtist();
 			
 			UpdateHeader();
 			UpdateBrowser();
