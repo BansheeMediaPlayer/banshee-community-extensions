@@ -14,7 +14,7 @@ namespace Banshee.Plugins.Lyrics
 	
 	public partial class LyricsHeader : Gtk.Bin
 	{
-		private const  int	 size 			= 38;
+		private const  int	 size = 38;
 		private Pixbuf 		 pixbuf_image;
 		private string 		 hex_blend;
 		

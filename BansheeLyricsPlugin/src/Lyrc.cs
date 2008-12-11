@@ -12,16 +12,22 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
 	private string lyricURL="http://lyrc.com.ar/en/";
 	
 	private string suggestion=null;
-	public Lyrc(){
-			can_add=true;
-	}
+	
 	public override string Name { get { return "<Lyrc> www.lyrc.com.ar"; }}
     public override string Url { get { return lyricURL; }}                 
-	private string ReadPageContent(String url){
+	
+	public Lyrc()
+	{
+		can_add=true;
+	}
+	
+	private string ReadPageContent(String url)
+	{
 		//use always absolute url
         if (!url.Contains(lyricURL))
             url=lyricURL+url;
-        Console.WriteLine("loading url: "+url);
+    
+		Console.WriteLine("loading url: "+url);
         string html=null;
         try{
             html = base.GetSource(url);
@@ -31,7 +37,9 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
         }
 		return html;
 	}
-	private string ParseSuggestions(string toparse_html){
+	
+	private string ParseSuggestions(string toparse_html)
+	{
 			string parsed_html=null;
 			Regex r1 = new Regex ("Suggestions :(.*)If none is your song",
                                   RegexOptions.Multiline|RegexOptions.IgnoreCase |
@@ -42,7 +50,9 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
 			}
 			return parsed_html;
 	}
-	public override string GetSuggestions(string artist,string title){
+	
+	public override string GetSuggestions(string artist,string title)
+	{
 		string lyrics=null;
 		if (suggestion!=null)
 				return suggestion;
@@ -58,7 +68,8 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
 		return lyrics;
 	}
 			
-    public override string GetLyrics(String url){
+    public override string GetLyrics(String url)
+	{
         //use always absolute url
         string lyrics=null;
         string html=ReadPageContent(url);
@@ -88,7 +99,9 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
                          );
     	return GetLyrics(url);
     }
-	public override void AddLyrics(string artist,string title,string album, string year,string lyric){
+	
+	public override void AddLyrics(string artist,string title,string album, string year,string lyric)
+	{
 			// Create a request using a URL that can receive a post. 
             WebRequest request = WebRequest.Create ("http://www.lyrc.com.ar/en/add/add.php");
             // Set the Method property of the request to POST.
@@ -129,11 +142,10 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
             dataStream.Close ();
             response.Close ();
     }
+	
     public override string GetCredits ()
     {
-        return string.Format("Powered by {0} ({1})",
-                             "Lyrc",
-                             "http://lyrc.com.ar");
+        return string.Format("Powered by {0} ({1})","Lyrc",this.Url);
     }
     }
 }
