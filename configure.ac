@@ -23,8 +23,6 @@ AC_PATH_PROG(GMCS, gmcs, no)
 if test "x$GMCS" = "xno"; then
         AC_MSG_ERROR([gmcs Not found])
 fi
-MCS=gmcs
-AC_SUBST(MCS)
 
 PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.3.2)
 AC_SUBST(BANSHEE_LIBS)

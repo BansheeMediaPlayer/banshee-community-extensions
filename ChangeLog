@@ -1,3 +1,10 @@
+2008-12-23  Full Name  <Email Address>
+
+	* configure.ac:
+	* build/build.mk:
+	* Test/Makefile.am: Respect GMCS variable passed to configure. Patch by
+	Iain Lane, from the debian package.
+
 2008-12-02  Dominik Schnitzer <dominik@schnitzer.at>
 
 	* po/it.po, po/LINGUAS: Add Italian translation. Thanks to Gianvito
