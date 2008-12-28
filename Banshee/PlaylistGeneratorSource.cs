@@ -26,7 +26,7 @@ using System.Data;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using Mono.Unix;
+using Mono.Addins;
 using Gtk;
 
 using Hyena;
@@ -66,8 +66,8 @@ namespace Banshee.Mirage
             }
         }
 
-        public PlaylistGeneratorSource(Db db)
-                : base(Catalog.GetString ("Playlist Generator"), null)
+        public PlaylistGeneratorSource (Db db)
+                : base (AddinManager.CurrentLocalizer.GetString ("Playlist Generator"), null)
         {
             TypeUniqueId = "Mirage";
             BindToDatabase ();
@@ -86,22 +86,22 @@ namespace Banshee.Mirage
             
             /*action_service.TrackActions.Add (new ActionEntry [] {
                 new ActionEntry ("AddToPlayQueueAction", Stock.Add,
-                    Catalog.GetString ("Add to Play Queue"), "q",
-                    Catalog.GetString ("Append selected songs to the play queue"),
+                    AddinManager.CurrentLocalizer.GetString ("Add to Play Queue"), "q",
+                    AddinManager.CurrentLocalizer.GetString ("Append selected songs to the play queue"),
                     OnAddToPlayQueue)
             });*/
             
             action_service.GlobalActions.AddImportant (
                 new ActionEntry ("ClearMiragePlaylistAction", Stock.Clear,
-                    Catalog.GetString ("Clear"), null,
-                    Catalog.GetString ("Remove all tracks from the play queue"),
+                    AddinManager.CurrentLocalizer.GetString ("Clear"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Remove all tracks from the play queue"),
                     OnClearPlaylist)
             );
             
             action_service.GlobalActions.Add (new ToggleActionEntry [] {
                 new ToggleActionEntry ("ClearMiragePlaylistOnQuitAction", null, 
-                                       Catalog.GetString ("Clear on Quit"), null, 
-                                       Catalog.GetString ("Clear the play queue when quitting"), 
+                                       AddinManager.CurrentLocalizer.GetString ("Clear on Quit"), null, 
+                                       AddinManager.CurrentLocalizer.GetString ("Clear the play queue when quitting"), 
                                        OnClearPlaylistOnQuit, 
                                        MiragePlugin.ClearOnQuitSchema.Get ())
             });
@@ -119,7 +119,7 @@ namespace Banshee.Mirage
             Reload ();
             
             if (Count == 0) {
-                SetStatus (Catalog.GetString ("Ready. Drag a song on the Playlist Generator to start!"), false, false, null);
+                SetStatus (AddinManager.CurrentLocalizer.GetString ("Ready. Drag a song on the Playlist Generator to start!"), false, false, null);
             }
         }
         
@@ -170,7 +170,7 @@ namespace Banshee.Mirage
         {
             Gtk.Application.Invoke(delegate {
                 if (playlist == null) {
-                    SetStatus(Catalog.GetString("Error building playlist. You might need to rescan your music collection."), true);
+                    SetStatus (AddinManager.CurrentLocalizer.GetString ("Error building playlist. You might need to rescan your music collection."), true);
                     return;
                 }
                 
@@ -194,7 +194,7 @@ namespace Banshee.Mirage
                         
                         AddTrack(track);
                     }
-                    SetStatus(Catalog.GetString("Playlist ready."), false, false, null);
+                    SetStatus (AddinManager.CurrentLocalizer.GetString ("Playlist ready."), false, false, null);
                 }
                 
                 OnUpdated();

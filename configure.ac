@@ -75,7 +75,7 @@ AC_CONFIG_FILES([
                  
                  Banshee/Makefile
                  Banshee/AssemblyInfo.cs
-                 Banshee/Config.cs
+                 Banshee/Banshee.Plugins.Mirage.addin.xml
                  
                  Test/Makefile
                  

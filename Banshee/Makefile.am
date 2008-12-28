@@ -4,8 +4,7 @@ TARGET = library
 SOURCES = \
 	MiragePlugin.cs \
 	PlaylistGeneratorSource.cs \
-	SimilarityCalculator.cs \
-	Config.cs
+	SimilarityCalculator.cs
 
 RESOURCES = \
 	res/cp.png \

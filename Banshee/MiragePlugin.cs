@@ -31,7 +31,7 @@ using System.Threading;
 using System.Data;
 using System.Text;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Hyena;
 using Banshee.Collection.Database;
@@ -68,8 +68,6 @@ namespace Banshee.Mirage
         {
             action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
             
-            Catalog.Init("Mirage", Config.LocaleDir);
-
             string xdgcachedir = Environment.GetEnvironmentVariable("XDG_CACHE_HOME");
             if (xdgcachedir == null) {
                 xdgcachedir = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + 
@@ -238,16 +236,16 @@ namespace Banshee.Mirage
             }
 
             // Banshee user job
-            UserJob userJob = new UserJob("Mirage", Catalog.GetString("Mirage: Analyzing Songs"), "audio-x-generic");
-            userJob.CancelMessage = Catalog.GetString(
-                "Are you sure you want to stop Mirage? " + 
-                "Automatic Playlist Generation will only work for the tracks which are already analyzed. " + 
-                "The operation can be resumed at any time from the <i>Tools</i> menu.");
+            UserJob userJob = new UserJob("Mirage", AddinManager.CurrentLocalizer.GetString ("Mirage: Analyzing Songs"), "audio-x-generic");
+            userJob.CancelMessage = AddinManager.CurrentLocalizer.GetString (
+                @"Are you sure you want to stop Mirage? 
+                Automatic Playlist Generation will only work for the tracks which are already analyzed. 
+                The operation can be resumed at any time from the <i>Tools</i> menu.");
             userJob.CanCancel = true;
             userJob.Progress = 0;
             userJob.Register();
 
-             while (jobQueue.Count > 0 && !userJob.IsCancelRequested) {
+            while (jobQueue.Count > 0 && !userJob.IsCancelRequested) {
                 lock (jobQueue) {
                     trackId = (int)jobQueue.Dequeue();
                     queueLength = jobQueue.Count;
@@ -301,17 +299,17 @@ namespace Banshee.Mirage
 
             actions.Add(new ActionEntry [] {
                     new ActionEntry ("MirageAction", null,
-                        Catalog.GetString ("Mirage Playlist Generator"), null,
-                        Catalog.GetString ("Manage the Mirage plugin"), null),
+                        AddinManager.CurrentLocalizer.GetString ("Mirage Playlist Generator"), null,
+                        AddinManager.CurrentLocalizer.GetString ("Manage the Mirage plugin"), null),
 
                     new ActionEntry("MirageRescanMusicAction", Stock.Refresh,
-                        Catalog.GetString("Rescan the Music Collection"), null,
-                        Catalog.GetString("Rescans the Music Collection for new Songs"),
+                        AddinManager.CurrentLocalizer.GetString ("Rescan the Music Collection"), null,
+                        AddinManager.CurrentLocalizer.GetString ("Rescans the Music Collection for new Songs"),
                         OnMirageRescanMusicHandler),
 
                     new ActionEntry("MirageResetAction", Stock.Clear,
-                        Catalog.GetString("Reset Mirage"), null,
-                        Catalog.GetString("Resets the Mirage Playlist Generation Plugin. "+
+                        AddinManager.CurrentLocalizer.GetString ("Reset Mirage"), null,
+                        AddinManager.CurrentLocalizer.GetString ("Resets the Mirage Playlist Generation Plugin. "+
                             "All songs have to be analyzed again to use Automatic Playlist Generation."),
                         OnMirageResetHandler),
                     });
@@ -333,9 +331,9 @@ namespace Banshee.Mirage
         private void OnMirageResetHandler(object sender, EventArgs args)
         {
             MessageDialog md = new MessageDialog (null, DialogFlags.Modal, MessageType.Question,
-                    ButtonsType.Cancel, Catalog.GetString("Do you really want to reset the Mirage Automatic Playlist Generation Extension? " +
-                    "All extracted information will be lost. Your music will have to be re-analyzed to use Mirage again."));
-            md.AddButton(Catalog.GetString("Reset Mirage"), ResponseType.Yes);
+                    ButtonsType.Cancel, AddinManager.CurrentLocalizer.GetString (@"Do you really want to reset the Mirage Automatic Playlist Generation Extension? 
+                    All extracted information will be lost. Your music will have to be re-analyzed to use Mirage again."));
+            md.AddButton (AddinManager.CurrentLocalizer.GetString ("Reset Mirage"), ResponseType.Yes);
             ResponseType result = (ResponseType)md.Run();
             md.Destroy();
 
@@ -346,7 +344,7 @@ namespace Banshee.Mirage
                     db.Reset();
 
                     md = new MessageDialog(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
-                            Catalog.GetString("Mirage was reset. Your music will have to be re-analyzed to use Mirage again."));
+                            AddinManager.CurrentLocalizer.GetString ("Mirage was reset. Your music will have to be re-analyzed to use Mirage again."));
                     md.Run();
                     md.Destroy();
                 } catch (Exception) {

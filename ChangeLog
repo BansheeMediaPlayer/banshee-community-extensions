@@ -1,3 +1,16 @@
+2008-12-28  Full Name  <Email Address>
+
+	* configure.ac:
+	* Banshee/MiragePlugin.cs:
+	* Banshee/PlaylistGeneratorSource.cs:
+	* Banshee/Banshee.Plugins.Mirage.addin.xml:
+	* Banshee/Banshee.Plugins.Mirage.addin.xml.in: Use the localization
+	through Mono.Addins, doing it directly breaks banshee's translations
+	(Issue #27).
+
+	* Banshee/Makefile.am:
+	* Banshee/Config.cs.in: Remove the Config class that is now useless.
+
 2008-12-23  Full Name  <Email Address>
 
 	* configure.ac:
