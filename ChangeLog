@@ -1,3 +1,7 @@
+2009-01-04  Full Name  <Email Address>
+
+	* configure.ac: Remove useless macro.
+
 2008-11-25  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	* build/m4/shamrock/programs.m4: Do actually bail if a program is not
