@@ -39,7 +39,11 @@ namespace Banshee.OpenVP
         
         private ManualResetEvent mDataAvailableEvent = new ManualResetEvent(false);
         
-        private static readonly TimeSpan SkipThreshold = TimeSpan.FromSeconds(6 / 60);
+        private static readonly TimeSpan SkipThreshold = TimeSpan.FromSeconds(6.0 / 60.0);
+
+        private static readonly TimeSpan SliceStride = TimeSpan.FromSeconds(1.0 / 60.0);
+
+        private DateTime mLastSlice = DateTime.MinValue;
 
         private bool active = false;
 
@@ -76,15 +80,29 @@ namespace Banshee.OpenVP
         }
         
         private void OnDataAvailable(float[][] data, float[][] spectrum) {
-            // Assume there is a backlog if over 10 slices are in the queue.
-            // Let the visualizer catch up.
-            if (this.mDataQueue.Count >= 10)
+            // Assume there is a backlog if 5 seconds are in the queue.  This
+            // is reasonable since some codec decoders give us large chunks all
+            // at once.
+            if (this.mDataQueue.Count >= 60 * 5)
                 return;
+
+            // Due to large chunk issue explained above, we need to adjust the
+            // timestamps a bit.  If the last slice we looked at was more than
+            // 1/60 of a second ago, then we can use the current time as the
+            // timestamp.  Otherwise use the last slice timestamp + 1/60 of a
+            // second.  This keeps the slice-dropping algorithm from throwing
+            // out most of the slices as old.
+            DateTime stamp = DateTime.Now;
+            DateTime expected = this.mLastSlice + SliceStride;
+            
+            if (stamp < expected)
+                stamp = expected;
             
             DataSlice slice = new DataSlice((float) this.mSource.Position / 1000,
                                             this.mSource.CurrentTrack.DisplayTrackTitle,
-                                            data,
-                                            spectrum);
+                                            data, spectrum, stamp);
+
+            this.mLastSlice = stamp;
             
             lock (this.mDataQueue) {
                 this.mDataQueue.Enqueue(slice);
@@ -206,13 +224,14 @@ namespace Banshee.OpenVP
             
             public readonly DateTime Timestamp;
             
-            public DataSlice(float position, string title, float[][] pcm, float[][] spectrum) {
+            public DataSlice(float position, string title, float[][] pcm,
+                             float[][] spectrum, DateTime timestamp) {
                 this.SongPosition = position;
                 this.SongTitle = title;
                 this.PCMData = pcm;
                 this.SpectrumData = spectrum;
                 
-                this.Timestamp = DateTime.Now;
+                this.Timestamp = timestamp;
             }
         }
     }

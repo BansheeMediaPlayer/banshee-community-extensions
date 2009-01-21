@@ -1,3 +1,9 @@
+2009-01-21  Chris Howie  <me@chrishowie.com>
+
+	* BansheePlayerData.cs: Improve the slice-dropping algorithm to cope
+	with codecs that give us huge chunks of audio data (about 1/10 of a
+	second at once was enough to confuse it).
+
 2008-11-17  Chris Howie  <cdhowie@gmail.com>
 
 	* VisualizationDisplayWidget.cs: Fixes NRE when the widget is destroyed

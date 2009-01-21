@@ -25,5 +25,7 @@
   	<Visualization type="Banshee.OpenVP.Visualizations.Grid" label="Grid" />
   	<Visualization type="Banshee.OpenVP.Visualizations.Inferno" label="Inferno" />
   	<Visualization type="Banshee.OpenVP.Visualizations.GlassWall" label="Glass wall" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.Voiceprint" label="Voiceprint" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.MirrorVoiceprint" label="Mirrored Voiceprint" />
   </Extension>
 </Addin>

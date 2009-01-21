@@ -41,6 +41,7 @@
     <Compile Include="Inferno.cs" />
     <Compile Include="SimpleScope.cs" />
     <Compile Include="SpectrumAnalyzer.cs" />
+    <Compile Include="Voiceprint.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

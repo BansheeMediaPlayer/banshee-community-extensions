@@ -1,3 +1,10 @@
+2009-01-21  Chris Howie  <me@chrishowie.com>
+
+	* Voiceprint.cs:
+	* Banshee.OpenVP.Visualizations.csproj:
+	* resources/Banshee.OpenVP.Visualizations.addin.xml: Add Voiceprint
+	visualizations.
+
 2008-11-12  Chris Howie  <me@chrishowie.com>
 
 	* Grid.cs:
