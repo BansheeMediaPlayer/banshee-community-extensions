@@ -16,7 +16,7 @@ namespace Banshee.OpenVP.Visualizations
         public Inferno()
         {
             ClearScreen clear = new ClearScreen();
-            clear.ClearColor = new Color(0, 0, 0, 0.075f);
+            clear.ClearColor = new Color(0, 0, 0, 0.035f);
             this.Effects.Add(clear);
 
             InfernoMovement movement = new InfernoMovement();
@@ -24,9 +24,9 @@ namespace Banshee.OpenVP.Visualizations
 
             Laser laser = new Laser();
             laser.Count = 50;
-            laser.StartColor = new Color(0, 0, 0, 0.0f);
-            laser.EndColor = new Color(0, 0, 0, 0.4f);
-            laser.MaxSpeed = 2;
+            laser.StartColor = new Color(0, 0, 0, 0.01f);
+            laser.EndColor = new Color(0, 0, 0, 0.2f);
+            laser.MaxSpeed = 2.5f;
             laser.MinSpeed = 0.5f;
             laser.Random = false;
             laser.Width = 0.05f;
@@ -53,7 +53,7 @@ namespace Banshee.OpenVP.Visualizations
                 data.Y = (float) Math.Cos(r) * v;
 
                 data.Red = 1;
-                data.Green = Math.Abs(data.Value);
+                data.Green = Math.Min(Math.Abs(data.Value), 0.5f);
                 data.Blue = 0;
             }
         }
