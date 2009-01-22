@@ -22,6 +22,16 @@ namespace Banshee.OpenVP.Visualizations
             InfernoMovement movement = new InfernoMovement();
             this.Effects.Add(movement);
 
+            Laser laser = new Laser();
+            laser.Count = 50;
+            laser.StartColor = new Color(0, 0, 0, 0.0f);
+            laser.EndColor = new Color(0, 0, 0, 0.4f);
+            laser.MaxSpeed = 2;
+            laser.MinSpeed = 0.5f;
+            laser.Random = false;
+            laser.Width = 0.05f;
+            this.Effects.Add(laser);
+
             InfernoScope scope = new InfernoScope();
             this.Effects.Add(scope);
         }
@@ -37,7 +47,7 @@ namespace Banshee.OpenVP.Visualizations
             {
                 float r = data.FractionalI * 2 * (float) Math.PI;
 
-                float v = data.Value * 0.75f;
+                float v = Math.Abs(data.Value) * 0.75f;
 
                 data.X = (float) Math.Sin(r) * v;
                 data.Y = (float) Math.Cos(r) * v;
