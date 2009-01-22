@@ -1,3 +1,7 @@
+2009-01-22  Chris Howie  <me@chrishowie.com>
+
+	* BansheePlayerData.cs: Tweak slice-dropping measurements.
+
 2009-01-21  Chris Howie  <me@chrishowie.com>
 
 	* BansheePlayerData.cs: Improve the slice-dropping algorithm to cope

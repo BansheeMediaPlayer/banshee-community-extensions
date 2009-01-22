@@ -39,9 +39,9 @@ namespace Banshee.OpenVP
         
         private ManualResetEvent mDataAvailableEvent = new ManualResetEvent(false);
         
-        private static readonly TimeSpan SkipThreshold = TimeSpan.FromSeconds(6.0 / 60.0);
+        private static readonly TimeSpan SkipThreshold = TimeSpan.FromSeconds(2.0 / 60.0);
 
-        private static readonly TimeSpan SliceStride = TimeSpan.FromSeconds(1.0 / 60.0);
+        private static readonly TimeSpan SliceStride = TimeSpan.FromSeconds(0.9 / 60.0);
 
         private DateTime mLastSlice = DateTime.MinValue;
 
