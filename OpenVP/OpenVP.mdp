@@ -1,4 +1,4 @@
-<Project name="OpenVP" fileversion="2.0" language="C#" UseParentDirectoryAsNamespace="True" DefaultNamespace="OpenVP" clr-version="Net_2_0" ctype="DotNetProject">
+<Project name="OpenVP" fileversion="2.0" language="C#" UseParentDirectoryAsNamespace="True" DefaultNamespace="OpenVP" clr-version="Net_2_0" targetFramework="2.0" ctype="DotNetProject">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
       <Output directory="../build" assemblyKeyFile="." assembly="OpenVP" />
@@ -45,5 +45,13 @@
     <ProjectReference type="Gac" localcopy="True" refto="Tao.OpenGl, Version=2.1.0.7, Culture=neutral, PublicKeyToken=1ca010269a4501ef" />
     <ProjectReference type="Gac" localcopy="True" refto="Tao.Sdl, Version=1.2.12.0, Culture=neutral, PublicKeyToken=9c7a200e36c0094e" />
   </References>
-  <GtkDesignInfo gtkVersion="2.12.1" />
+  <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="True" RelativeMakefileName="Makefile.am" SyncReferences="True" IsAutotoolsProject="True" RelativeConfigureInPath="..">
+    <BuildFilesVar Sync="True" Name="FILES" />
+    <DeployFilesVar />
+    <ResourcesVar Sync="True" Name="RESOURCES" />
+    <OthersVar />
+    <GacRefVar Sync="True" Name="REFERENCES" />
+    <AsmRefVar Sync="True" Name="REFERENCES" />
+    <ProjectRefVar Sync="True" Name="REFERENCES" />
+  </MonoDevelop.Autotools.MakefileInfo>
 </Project>

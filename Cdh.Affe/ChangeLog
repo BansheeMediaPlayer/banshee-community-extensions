@@ -1,3 +1,10 @@
+2009-01-23  Chris Howie  <me@chrishowie.com>
+
+	* Makefile.am:
+	* Makefile.in:
+	* Cdh.Affe.mdp:
+	* cdh.affe.pc.in: Commit build system for branch.
+
 2008-08-24  Chris Howie <cdhowie@gmail.com> 
 
 	* Cdh.Affe.mdp: Add jay/skeleton.cs with compilation disabled.

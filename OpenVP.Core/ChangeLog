@@ -1,3 +1,10 @@
+2009-01-23  Chris Howie  <me@chrishowie.com>
+
+	* Makefile.am:
+	* Makefile.in:
+	* OpenVP.Core.mdp:
+	* openvp.core.pc.in: Commit build system for branch.
+
 2008-10-10  Chris Howie <me@chrishowie.com> 
 
 	* ScopeBase.cs: Copy r77 from trunk.

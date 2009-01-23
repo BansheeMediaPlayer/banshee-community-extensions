@@ -1,3 +1,10 @@
+2009-01-23  Chris Howie  <me@chrishowie.com>
+
+	* OpenVP.mdp:
+	* Makefile.am:
+	* Makefile.in:
+	* openvp.pc.in: Commit build system for branch.
+
 2008-08-21  Chris Howie <cdhowie@gmail.com> 
 
 	* OpenVP.mdp: Tweak project options.

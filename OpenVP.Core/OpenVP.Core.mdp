@@ -1,4 +1,4 @@
-<Project name="OpenVP.Core" fileversion="2.0" language="C#" UseParentDirectoryAsNamespace="True" DefaultNamespace="OpenVP.Core" clr-version="Net_2_0" ctype="DotNetProject">
+<Project name="OpenVP.Core" fileversion="2.0" language="C#" UseParentDirectoryAsNamespace="True" DefaultNamespace="OpenVP.Core" clr-version="Net_2_0" targetFramework="2.0" ctype="DotNetProject">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
       <Output directory="../build" assembly="OpenVP.Core" />
@@ -37,4 +37,13 @@
     <ProjectReference type="Project" localcopy="True" refto="OpenVP.Scripting" />
     <ProjectReference type="Project" localcopy="True" refto="Cdh.Affe" />
   </References>
+  <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="True" RelativeMakefileName="Makefile.am" SyncReferences="True" IsAutotoolsProject="True" RelativeConfigureInPath="..">
+    <BuildFilesVar Sync="True" Name="FILES" />
+    <DeployFilesVar />
+    <ResourcesVar Sync="True" Name="RESOURCES" />
+    <OthersVar />
+    <GacRefVar Sync="True" Name="REFERENCES" />
+    <AsmRefVar Sync="True" Name="REFERENCES" />
+    <ProjectRefVar Sync="True" Name="REFERENCES" />
+  </MonoDevelop.Autotools.MakefileInfo>
 </Project>

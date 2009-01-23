@@ -1,0 +1,6 @@
+Name: OpenVP.Scripting
+Description: OpenVP.Scripting
+Version: 
+
+Requires: 
+Libs: -r:@expanded_libdir@/@PACKAGE@/OpenVP.Scripting.dll

@@ -1,0 +1,6 @@
+Name: OpenVP
+Description: OpenVP
+Version: 
+
+Requires: 
+Libs: -r:@expanded_libdir@/@PACKAGE@/OpenVP.dll

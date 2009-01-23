@@ -1,0 +1,6 @@
+Name: OpenVP.Core
+Description: OpenVP.Core
+Version: 
+
+Requires: 
+Libs: -r:@expanded_libdir@/@PACKAGE@/OpenVP.Core.dll
