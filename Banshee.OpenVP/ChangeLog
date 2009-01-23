@@ -1,5 +1,12 @@
 2009-01-23  Chris Howie  <me@chrishowie.com>
 
+	* Makefile.am:
+	* Makefile.in:
+	* banshee.openvp.pc.in:
+	* Banshee.OpenVP.csproj: Commit build system.
+
+2009-01-23  Chris Howie  <me@chrishowie.com>
+
 	* Banshee.OpenVP.csproj: Rolling back some changes in r96.  Looks like
 	Gabriel accidentally turned on Makefile integration with these
 	projects without actually committing any build system.

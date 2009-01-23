@@ -1,0 +1,6 @@
+Name: Banshee.OpenVP.Visualizations
+Description: Banshee.OpenVP.Visualizations
+Version: 0.1
+
+Requires: 
+Libs: -r:@expanded_libdir@/@PACKAGE@/Banshee.OpenVP.Visualizations.dll
