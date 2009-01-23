@@ -32,8 +32,6 @@
     <Reference Include="System" />
     <Reference Include="Banshee.Core, Version=1.4.0.1, Culture=neutral" />
     <Reference Include="Banshee.Services, Version=1.4.0.1, Culture=neutral" />
-    <Reference Include="OpenVP, Version=0.0.1.0, Culture=neutral" />
-    <Reference Include="OpenVP.Core, Version=0.0.1.0, Culture=neutral" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Mono.Posix" />
@@ -41,21 +39,14 @@
     <Reference Include="Banshee.ThickClient, Version=1.4.0.1, Culture=neutral" />
     <Reference Include="Tao.OpenGl, Version=2.1.0.7, Culture=neutral, PublicKeyToken=1ca010269a4501ef" />
     <Reference Include="Tao.FreeGlut, Version=2.4.0.1, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d" />
+    <Reference Include="OpenVP, Version=0.0.1.0, Culture=neutral" />
+    <Reference Include="OpenVP.Core, Version=0.0.1.0, Culture=neutral" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
         <GtkDesignInfo />
-        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" SyncReferences="true" IsAutotoolsProject="true" RelativeConfigureInPath="..">
-          <BuildFilesVar Sync="true" Name="FILES" />
-          <DeployFilesVar />
-          <ResourcesVar Sync="true" Name="RESOURCES" />
-          <OthersVar />
-          <GacRefVar Sync="true" Name="REFERENCES" />
-          <AsmRefVar Sync="true" Name="REFERENCES" />
-          <ProjectRefVar Sync="true" Name="REFERENCES" />
-        </MonoDevelop.Autotools.MakefileInfo>
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>

@@ -1,3 +1,9 @@
+2009-01-23  Chris Howie  <me@chrishowie.com>
+
+	* Banshee.OpenVP.csproj: Rolling back some changes in r96.  Looks like
+	Gabriel accidentally turned on Makefile integration with these
+	projects without actually committing any build system.
+
 2009-01-22  Chris Howie  <me@chrishowie.com>
 
 	* BansheePlayerData.cs: Tweak slice-dropping measurements.
