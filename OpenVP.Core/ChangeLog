@@ -1,3 +1,10 @@
+2009-01-27  Chris Howie  <me@chrishowie.com>
+
+	* Makefile.am:
+	* Makefile.in: Build system sync.
+
+	* BurstScope.cs: Rename namespace accidentally left over from the port.
+
 2009-01-23  Chris Howie  <me@chrishowie.com>
 
 	* Makefile.am:

@@ -46,9 +46,9 @@ RESGEN=resgen2
 	
 all: $(ASSEMBLY) $(PROGRAMFILES) 
 
-FILES = \
-	Main.cs \
+FILES =  \
 	AssemblyInfo.cs \
+	Main.cs \
 	Tests.cs 
 
 DATA_FILES = 
@@ -58,8 +58,9 @@ RESOURCES =
 EXTRAS = 
 
 REFERENCES =  \
-	System \
-	$(NUNIT_LIBS)
+	../build/Cdh.Affe.dll \
+	-pkg:nunit \
+	System
 
 DLL_REFERENCES = 
 

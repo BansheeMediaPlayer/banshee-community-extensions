@@ -49,12 +49,12 @@ RESGEN=resgen2
 	
 all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
 
-FILES = \
-	AssemblyInfo.cs \
-	UserScript.cs \
-	ScriptingEnvironment.cs \
+FILES =  \
 	AffeScript.cs \
-	ScriptCompileException.cs 
+	AssemblyInfo.cs \
+	ScriptCompileException.cs \
+	ScriptingEnvironment.cs \
+	UserScript.cs 
 
 DATA_FILES = 
 
@@ -64,6 +64,7 @@ EXTRAS = \
 	openvp.scripting.pc.in 
 
 REFERENCES =  \
+	../build/Cdh.Affe.dll \
 	System
 
 DLL_REFERENCES = 

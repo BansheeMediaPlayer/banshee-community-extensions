@@ -44,15 +44,15 @@ RESGEN=resgen2
 	
 all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
 
-FILES = \
-	AssemblyInfo.cs \
-	SymbolTable.cs \
-	Symbol.cs \
-	Tree.cs \
-	Lexer.cs \
-	affe-parser.cs \
+FILES =  \
 	AffeCompiler.cs \
-	ScriptState.cs 
+	affe-parser.cs \
+	AssemblyInfo.cs \
+	Lexer.cs \
+	ScriptState.cs \
+	Symbol.cs \
+	SymbolTable.cs \
+	Tree.cs 
 
 DATA_FILES = 
 
@@ -63,8 +63,7 @@ EXTRAS = \
 	jay/affe-parser.jay \
 	cdh.affe.pc.in 
 
-REFERENCES =  \
-	System
+REFERENCES = System
 
 DLL_REFERENCES = 
 

@@ -1,3 +1,7 @@
+2009-01-27  Chris Howie  <me@chrishowie.com>
+
+	* Makefile.am: Build system sync.
+
 2009-01-23  Chris Howie  <me@chrishowie.com>
 
 	* OpenVP.mdp:

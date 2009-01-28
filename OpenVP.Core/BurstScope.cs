@@ -33,7 +33,7 @@ using OpenVP.Metadata;
 
 using Tao.OpenGl;
 
-namespace Kaffeeklatsch.Core {
+namespace OpenVP.Core {
 	[Serializable, Browsable(true), DisplayName("Burst Scope"),
 	 Category("Render"), Description("A sunburst-like scope."),
 	 Author("Chris Howie")]

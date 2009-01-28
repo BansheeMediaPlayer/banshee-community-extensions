@@ -59,20 +59,20 @@ RESGEN=resgen2
 	
 all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
 
-FILES = \
+FILES =  \
 	AssemblyInfo.cs \
-	ClearScreen.cs \
-	Scope.cs \
-	SuperScope.cs \
-	DynamicMovement.cs \
 	Buffer.cs \
-	TextureHandle.cs \
-	MovementBase.cs \
-	SharedTextureHandle.cs \
 	BurstScope.cs \
+	ClearScreen.cs \
+	DynamicMovement.cs \
 	Laser.cs \
 	Mirror.cs \
-	ScopeBase.cs 
+	MovementBase.cs \
+	Scope.cs \
+	ScopeBase.cs \
+	SharedTextureHandle.cs \
+	SuperScope.cs \
+	TextureHandle.cs 
 
 DATA_FILES = 
 
@@ -82,10 +82,13 @@ EXTRAS = \
 	openvp.core.pc.in 
 
 REFERENCES =  \
-	System \
+	../build/Cdh.Affe.dll \
+	../build/OpenVP.dll \
+	../build/OpenVP.Scripting.dll \
 	Mono.Posix \
-	$(TAO_OPENGL_LIBS) \
-	$(TAO_FREEGLUT_LIBS)
+	-pkg:tao-freeglut \
+	-pkg:tao-opengl \
+	System
 
 DLL_REFERENCES = 
 

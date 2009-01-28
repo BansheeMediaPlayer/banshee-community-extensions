@@ -44,30 +44,30 @@ RESGEN=resgen2
 	
 all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
 
-FILES = \
+FILES =  \
 	AssemblyInfo.cs \
-	SDLController.cs \
-	IRenderer.cs \
-	PlayerData.cs \
+	Color.cs \
 	Effect.cs \
+	IBeatDetector.cs \
+	IController.cs \
+	IPreset.cs \
+	IRenderer.cs \
 	KeyboardEvent.cs \
 	LinearPreset.cs \
-	Color.cs \
-	UDPPlayerData.cs \
-	IBeatDetector.cs \
-	NullPlayerData.cs \
-	Registry.cs \
-	IPreset.cs \
-	TimedPresetBase.cs \
-	Metadata/RangeAttribute.cs \
-	Metadata/BrowsableAttribute.cs \
-	Metadata/DisplayNameAttribute.cs \
-	Metadata/DefaultValueAttribute.cs \
-	Metadata/CategoryAttribute.cs \
-	Metadata/DescriptionAttribute.cs \
-	Metadata/FollowsAttribute.cs \
 	Metadata/AuthorAttribute.cs \
-	IController.cs 
+	Metadata/BrowsableAttribute.cs \
+	Metadata/CategoryAttribute.cs \
+	Metadata/DefaultValueAttribute.cs \
+	Metadata/DescriptionAttribute.cs \
+	Metadata/DisplayNameAttribute.cs \
+	Metadata/FollowsAttribute.cs \
+	Metadata/RangeAttribute.cs \
+	NullPlayerData.cs \
+	PlayerData.cs \
+	Registry.cs \
+	SDLController.cs \
+	TimedPresetBase.cs \
+	UDPPlayerData.cs 
 
 DATA_FILES = 
 
@@ -77,10 +77,10 @@ EXTRAS = \
 	openvp.pc.in 
 
 REFERENCES =  \
-	System \
-	$(TAO_FREEGLUT_LIBS) \
-	$(TAO_OPENGL_LIBS) \
-	$(TAO_SDL_LIBS)
+	-pkg:tao-freeglut \
+	-pkg:tao-opengl \
+	-pkg:tao-sdl \
+	System
 
 DLL_REFERENCES = 
 
