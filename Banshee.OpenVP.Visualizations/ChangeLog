@@ -1,3 +1,11 @@
+2009-01-27  Chris Howie  <me@chrishowie.com>
+
+	* Core.cs:
+	* GreenFlower.cs:
+	* Banshee.OpenVP.Visualizations.csproj:
+	* resources/Banshee.OpenVP.Visualizations.addin.xml: Added two new
+	visualizations.
+
 2009-01-23  Chris Howie  <me@chrishowie.com>
 
 	* Makefile.am:

@@ -42,16 +42,11 @@
     <Compile Include="SimpleScope.cs" />
     <Compile Include="SpectrumAnalyzer.cs" />
     <Compile Include="Voiceprint.cs" />
+    <Compile Include="Core.cs" />
+    <Compile Include="GreenFlower.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="resources\Banshee.OpenVP.Visualizations.addin.xml" />
   </ItemGroup>
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties>
-        <GtkDesignInfo />
-      </Properties>
-    </MonoDevelop>
-  </ProjectExtensions>
 </Project>
