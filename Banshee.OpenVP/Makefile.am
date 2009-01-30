@@ -44,40 +44,40 @@ RESGEN=resgen2
 	
 all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
 
-FILES = \
+FILES =  \
 	AssemblyInfo.cs \
 	BansheePlayerData.cs \
-	gtk-gui/generated.cs \
-	VisualizationDisplayWidget.cs \
+	Gtk/GLWidget.cs \
 	gtk-gui/Banshee.OpenVP.VisualizationDisplayWidget.cs \
-	VisualizationExtensionNode.cs \
+	gtk-gui/generated.cs \
 	OpenVPSource.cs \
-	Gtk/GLWidget.cs 
+	VisualizationDisplayWidget.cs \
+	VisualizationExtensionNode.cs 
 
 DATA_FILES = 
 
-RESOURCES = \
+RESOURCES =  \
+	gtk-gui/gui.stetic \
 	resources/Banshee.OpenVP.addin.xml,resources.Banshee.OpenVP.addin.xml \
 	resources/greenflower.ovpb,resources.greenflower.ovpb \
 	resources/inferno.ovpb,resources.inferno.ovpb \
-	resources/stargrid.ovpb,resources.stargrid.ovpb \
-	gtk-gui/gui.stetic 
+	resources/stargrid.ovpb,resources.stargrid.ovpb 
 
 EXTRAS = \
 	banshee.openvp.pc.in 
 
 REFERENCES =  \
-	System \
-	$(GTK_SHARP_20_LIBS) \
 	Mono.Posix \
-	$(TAO_OPENGL_LIBS) \
-	$(TAO_FREEGLUT_LIBS) \
-	$(OPENVP_LIBS) \
-	$(OPENVPCORE_LIBS) \
-	$(BANSHEE_1_CORE_LIBS) \
-	$(BANSHEE_1_SERVICES_LIBS) \
-	$(BANSHEE_1_THICKCLIENT_LIBS) \
-	$(MONO_ADDINS_LIBS)
+	-pkg:banshee-1-core \
+	-pkg:banshee-1-services \
+	-pkg:banshee-1-thickclient \
+	-pkg:gtk-sharp-2.0 \
+	-pkg:mono-addins \
+	-pkg:openvp \
+	-pkg:openvp.core \
+	-pkg:tao-freeglut \
+	-pkg:tao-opengl \
+	System
 
 DLL_REFERENCES = 
 

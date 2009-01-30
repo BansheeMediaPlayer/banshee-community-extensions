@@ -140,14 +140,13 @@ namespace Banshee.OpenVP
             
             if (this.mDataQueue.Count > 0) {
                 lock (this.mDataQueue) {
-                    DataSlice slice = this.mDataQueue.Dequeue();
+                    DataSlice slice;
                     
                     // Check if we're behind.  If so, dequeue everything to
                     // try and catch up.
-                    if (now - slice.Timestamp > SkipThreshold) {
-                        while (this.mDataQueue.Count > 1)
-                            slice = this.mDataQueue.Dequeue();
-                    }
+                    do {
+                        slice = this.mDataQueue.Dequeue();
+                    } while (now - slice.Timestamp > SkipThreshold && this.mDataQueue.Count > 0);
                     
                     this.mData = slice;
                     

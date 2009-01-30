@@ -44,9 +44,11 @@ RESGEN=resgen2
 	
 all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
 
-FILES = \
+FILES =  \
 	AssemblyInfo.cs \
+	Core.cs \
 	GlassWall.cs \
+	GreenFlower.cs \
 	Grid.cs \
 	Inferno.cs \
 	SimpleScope.cs \
@@ -55,17 +57,16 @@ FILES = \
 
 DATA_FILES = 
 
-RESOURCES = \
-	resources/Banshee.OpenVP.Visualizations.addin.xml,resources.Banshee.OpenVP.Visualizations.addin.xml 
+RESOURCES = resources/Banshee.OpenVP.Visualizations.addin.xml,resources.Banshee.OpenVP.Visualizations.addin.xml 
 
 EXTRAS = \
 	banshee.openvp.visualizations.pc.in 
 
 REFERENCES =  \
-	System \
-	$(OPENVP_LIBS) \
-	$(OPENVPCORE_LIBS) \
-	$(TAO_OPENGL_LIBS)
+	-pkg:openvp \
+	-pkg:openvp.core \
+	-pkg:tao-opengl \
+	System
 
 DLL_REFERENCES = 
 

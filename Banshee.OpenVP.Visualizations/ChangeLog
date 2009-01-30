@@ -1,3 +1,8 @@
+2009-01-30  Chris Howie  <cdhowie@gmail.com>
+
+	* Makefile.am:
+	* Banshee.OpenVP.Visualizations.csproj: Fix makefile integration.
+
 2009-01-27  Chris Howie  <me@chrishowie.com>
 
 	* Core.cs:
