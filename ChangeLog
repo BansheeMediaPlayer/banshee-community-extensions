@@ -1,9 +1,15 @@
 2009-01-30  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
+	* ChangeLog: Fix my identification info.
+
+	* configure.ac: Version bump
+
+2009-01-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>
+
 	* Banshee/Banshee.Plugins.Mirage.addin.xml.in: Let configure set the
 	version automatically and remove compatVersion attribute.
 
-2008-12-28  Full Name  <Email Address>
+2008-12-28  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
 	* configure.ac:
 	* Banshee/MiragePlugin.cs:
@@ -16,7 +22,7 @@
 	* Banshee/Makefile.am:
 	* Banshee/Config.cs.in: Remove the Config class that is now useless.
 
-2008-12-23  Full Name  <Email Address>
+2008-12-23  Bertrand Lorentz <bertrand.lorentz@gmail.com>
 
 	* configure.ac:
 	* build/build.mk:
