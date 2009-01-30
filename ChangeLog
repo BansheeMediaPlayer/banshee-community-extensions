@@ -1,5 +1,10 @@
 2009-01-30  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
+	* configure.ac: Use mirage instead of Mirage for the language files
+	name.
+
+2009-01-30  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
 	* ChangeLog: Fix my identification info.
 
 	* configure.ac: Version bump
