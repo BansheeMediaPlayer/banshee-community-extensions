@@ -1,3 +1,8 @@
+2009-01-30  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/Banshee.Plugins.Mirage.addin.xml.in: Let configure set the
+	version automatically and remove compatVersion attribute.
+
 2008-12-28  Full Name  <Email Address>
 
 	* configure.ac:

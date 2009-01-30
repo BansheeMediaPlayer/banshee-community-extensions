@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Addin 
     id="Banshee.Mirage"
-    version="0.3"
-    compatVersion="0.3"
+    version="@VERSION@"
     copyright="© 2007 Dominik Schnitzer. Licensed under the GPL license."
     name="Mirage Automatic Playlist Generator"
     category=""
