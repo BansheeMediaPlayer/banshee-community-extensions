@@ -427,10 +427,6 @@ namespace Banshee.OpenVP
                     this.renderWidth = w;
                     this.renderHeight = h;
                 }
-                
-                Console.WriteLine("widget:{0}x{1} render:{2}x{3}",
-                                  this.widgetWidth, this.widgetHeight,
-                                  this.renderWidth, this.renderHeight);
             } else {
                 this.ResizeToRenderSize();
             }

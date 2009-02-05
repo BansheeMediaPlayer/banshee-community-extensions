@@ -1,5 +1,9 @@
 2009-02-04  Chris Howie  <me@chrishowie.com>
 
+	* VisualizationDisplayWidget.cs: Remove debugging code.
+
+2009-02-04  Chris Howie  <me@chrishowie.com>
+
 	* Gtk/GLWidget.cs: Don't create a new OpenGL context every
 	time the widget is realized.
 
