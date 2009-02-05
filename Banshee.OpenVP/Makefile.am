@@ -58,10 +58,7 @@ DATA_FILES =
 
 RESOURCES =  \
 	gtk-gui/gui.stetic \
-	resources/Banshee.OpenVP.addin.xml,resources.Banshee.OpenVP.addin.xml \
-	resources/greenflower.ovpb,resources.greenflower.ovpb \
-	resources/inferno.ovpb,resources.inferno.ovpb \
-	resources/stargrid.ovpb,resources.stargrid.ovpb 
+	resources/Banshee.OpenVP.addin.xml,resources.Banshee.OpenVP.addin.xml 
 
 EXTRAS = \
 	banshee.openvp.pc.in 

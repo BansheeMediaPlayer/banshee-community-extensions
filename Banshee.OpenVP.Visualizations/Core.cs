@@ -102,7 +102,7 @@ namespace Banshee.OpenVP.Visualizations
                 base.RenderFrame(controller);
             }
 
-            protected override void PlotVertex(ScopeBase.ScopeData data)
+            protected override void PlotVertex(ScopeData data)
             {
                 data.X = 2 * data.FractionalI - 1;
                 data.Y = data.Value;
@@ -129,7 +129,7 @@ namespace Banshee.OpenVP.Visualizations
                 rr += 0.05f;
             }
 
-            protected override void PlotVertex (MovementBase.MovementData data)
+            protected override void PlotVertex (MovementData data)
             {
                 data.Method = MovementMethod.Polar;
                 data.Rotation = (float) Math.Cos(data.Rotation * 4 - rr / 4) + rr;

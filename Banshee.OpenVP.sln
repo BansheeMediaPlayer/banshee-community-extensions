@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.OpenVP", "Banshee.OpenVP\Banshee.OpenVP.csproj", "{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.OpenVP", "Banshee.OpenVP.Visualizations\Banshee.OpenVP.Visualizations.csproj", "{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.OpenVP.Visualizations", "Banshee.OpenVP.Visualizations\Banshee.OpenVP.Visualizations.csproj", "{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,5 +28,11 @@ Global
 		name = Banshee.OpenVP
 		version = 0.1
 		StartupItem = Banshee.OpenVP\Banshee.OpenVP.csproj
+		Policies = $0
+		$0.ChangeLogPolicy = $1
+		$1.UpdateMode = Nearest
+		$1.MessageStyle = $2
+		$2.LineAlign = 0
+		$1.inheritsSet = Mono
 	EndGlobalSection
 EndGlobal

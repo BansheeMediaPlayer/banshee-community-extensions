@@ -117,6 +117,9 @@ namespace Gtk
 
         void HandleRealized(object sender, EventArgs eventArgs)
         {
+            if (renderingContextHandle.Handle != IntPtr.Zero)
+                return;
+            
             switch (platformID)
             {
                 case PlatformID.Win32NT:

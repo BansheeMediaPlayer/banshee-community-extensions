@@ -1,3 +1,7 @@
+2009-02-04  Chris Howie  <me@chrishowie.com>
+
+	* Banshee.OpenVP.sln: Re-enable ChangeLog integration.
+
 2009-01-23  Chris Howie  <me@chrishowie.com>
 
 	* missing:

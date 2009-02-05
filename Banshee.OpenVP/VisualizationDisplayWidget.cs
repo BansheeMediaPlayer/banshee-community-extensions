@@ -14,7 +14,8 @@ using Mono.Addins;
 using Gdk;
 using Gtk;
 using OpenVP;
-using gl = Tao.OpenGl.Gl;
+using OpenVP.Core;
+using Tao.OpenGl;
 
 namespace Banshee.OpenVP
 {
@@ -149,6 +150,9 @@ namespace Banshee.OpenVP
             }
 
             this.DisposeRenderer();
+            
+            this.glWidget.Dispose();
+            this.glWidget.Destroy();
         }
 
         protected virtual void OnVisualizationListChanged (object sender, System.EventArgs e)
@@ -190,6 +194,12 @@ namespace Banshee.OpenVP
             this.playerData.Active = false;
         }
 
+        protected virtual void OnHalfResolutionCheckboxToggled(object sender, System.EventArgs e)
+        {
+            this.halfResolution = this.HalfResolutionCheckbox.Active;
+            this.needsResize = true;
+        }
+
 #region ISourceContents
         private ISource source;
         
@@ -214,21 +224,29 @@ namespace Banshee.OpenVP
 
 #region IController
         private IRenderer renderer = null;
+        
+        private int widgetHeight;
+        
+        private int widgetWidth;
 
-        private int height;
+        private int renderHeight;
 
-        private int width;
+        private int renderWidth;
 
         private bool needsResize = true;
+        
+        private bool halfResolution = false;
 
         private BansheePlayerData playerData = null;
+        
+        private TextureHandle resizeTexture = null;
 
         int IController.Height {
-            get { return this.height; }
+            get { return this.renderHeight; }
         }
 
         int IController.Width {
-            get { return this.width; }
+            get { return this.renderWidth; }
         }
         
         event EventHandler IController.Closed {
@@ -256,49 +274,199 @@ namespace Banshee.OpenVP
             get { return this.playerData; }
         }
         
+        private static int NearestPowerOfTwo(int v)
+        {
+            if (v < 0)
+                throw new ArgumentOutOfRangeException("v < 0");
+            
+            if (v == 0)
+                return v;
+            
+            int power = 0;
+            
+            while (v > 0) {
+                power++;
+                v >>= 1;
+            }
+            
+            return 1 << (power - 1);
+        }
+        
+        private void ResizeToWidgetSize()
+        {
+            if (this.renderWidth == this.widgetWidth &&
+                this.renderHeight == this.widgetHeight) {
+                if (this.resizeTexture != null) {
+                    this.resizeTexture.Dispose();
+                    this.resizeTexture = null;
+                }
+                
+                return;
+            }
+            
+            if (this.resizeTexture == null)
+                this.resizeTexture = new TextureHandle();
+            
+            this.resizeTexture.SetTextureSize(this.renderWidth, this.renderHeight);
+            
+            Gl.glPushAttrib(Gl.GL_ENABLE_BIT);
+            Gl.glDisable(Gl.GL_DEPTH_TEST);
+            Gl.glEnable(Gl.GL_TEXTURE_2D);
+            
+            Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_DECAL);
+            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP);
+            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP);
+
+            Gl.glBindTexture(Gl.GL_TEXTURE_2D, this.resizeTexture.TextureId);
+            Gl.glCopyTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB, 0, 0,
+                                this.renderWidth, this.renderHeight, 0);
+            
+            Gl.glViewport(0, 0, this.widgetWidth, this.widgetHeight);
+                        
+            Gl.glMatrixMode(Gl.GL_PROJECTION);
+            Gl.glLoadIdentity();
+			
+            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Gl.glLoadIdentity();
+            
+            Gl.glColor4f(1, 1, 1, 1);
+            
+            Gl.glBegin(Gl.GL_QUADS);
+            
+            Gl.glTexCoord2f( 0,  0);
+            Gl.glVertex2f(  -1, -1);
+            
+            Gl.glTexCoord2f( 0,  1);
+            Gl.glVertex2f(  -1,  1);
+            
+            Gl.glTexCoord2f( 1,  1);
+            Gl.glVertex2f(   1,  1);
+            
+            Gl.glTexCoord2f( 1,  0);
+            Gl.glVertex2f(   1, -1);
+            
+            Gl.glEnd();
+            
+            Gl.glPopAttrib();
+        }
+        
+        private void ResizeToRenderSize()
+        {
+            if (this.renderWidth == this.widgetWidth &&
+                this.renderHeight == this.widgetHeight)
+                return;
+            
+            if (this.resizeTexture == null)
+                return;
+            
+            Gl.glPushAttrib(Gl.GL_ENABLE_BIT);
+            Gl.glDisable(Gl.GL_DEPTH_TEST);
+            Gl.glEnable(Gl.GL_TEXTURE_2D);
+            Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_DECAL);
+            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP);
+            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP);
+
+            Gl.glBindTexture(Gl.GL_TEXTURE_2D, this.resizeTexture.TextureId);
+            
+            Gl.glViewport(0, 0, this.renderWidth, this.renderHeight);
+                        
+            Gl.glMatrixMode(Gl.GL_PROJECTION);
+            Gl.glLoadIdentity();
+			
+            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Gl.glLoadIdentity();
+            
+            Gl.glColor4f(1, 1, 1, 1);
+            
+            Gl.glBegin(Gl.GL_QUADS);
+            
+            Gl.glTexCoord2f( 0,  0);
+            Gl.glVertex2f(  -1, -1);
+            
+            Gl.glTexCoord2f( 0,  1);
+            Gl.glVertex2f(  -1,  1);
+            
+            Gl.glTexCoord2f( 1,  1);
+            Gl.glVertex2f(   1,  1);
+            
+            Gl.glTexCoord2f( 1,  0);
+            Gl.glVertex2f(   1, -1);
+            
+            Gl.glEnd();
+            
+            Gl.glPopAttrib();
+        }
+        
         void IController.RenderFrame()
         {
-            gl.glShadeModel(gl.GL_SMOOTH);
-            gl.glEnable(gl.GL_LINE_SMOOTH);
-            gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST);
+            Gl.glShadeModel(Gl.GL_SMOOTH);
+            Gl.glEnable(Gl.GL_LINE_SMOOTH);
+            Gl.glHint(Gl.GL_LINE_SMOOTH_HINT, Gl.GL_NICEST);
 
-            gl.glEnable(gl.GL_BLEND);
-            gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA);
+            Gl.glEnable(Gl.GL_BLEND);
+            Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
 
             if (this.needsResize) {
+                Gl.glClearColor(0, 0, 0, 1);
+                Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
+                
                 this.needsResize = false;
                 
-                gl.glViewport(0, 0, width, height);
-    
-                gl.glMatrixMode(gl.GL_PROJECTION);
-                gl.glLoadIdentity();
+                int w = this.widgetWidth;
+                int h = this.widgetHeight;
                 
-                gl.glMatrixMode(gl.GL_MODELVIEW);
-                gl.glLoadIdentity();
+                if (this.halfResolution) {
+                    w >>= 1;
+                    h >>= 1;
+                }
+                
+                if (!Gl.IsExtensionSupported("GL_ARB_texture_non_power_of_two")) {
+                    this.renderWidth = NearestPowerOfTwo(w);
+                    this.renderHeight = NearestPowerOfTwo(h);
+                } else {
+                    this.renderWidth = w;
+                    this.renderHeight = h;
+                }
+                
+                Console.WriteLine("widget:{0}x{1} render:{2}x{3}",
+                                  this.widgetWidth, this.widgetHeight,
+                                  this.renderWidth, this.renderHeight);
+            } else {
+                this.ResizeToRenderSize();
             }
 
             lock (this.cleanupLock) {
                 IRenderer r = this.renderer;
                 if (r != null) {
                     if (this.haveDataSlice) {
+                        Gl.glViewport(0, 0, this.renderWidth, this.renderHeight);
+                        
+                        Gl.glMatrixMode(Gl.GL_PROJECTION);
+		                Gl.glLoadIdentity();
+						
+		                Gl.glMatrixMode(Gl.GL_MODELVIEW);
+		                Gl.glLoadIdentity();
+                        
                         r.Render(this);
                         
                         this.haveDataSlice = false;
                         this.renderLock.Set();
+                        
+                        this.ResizeToWidgetSize();
                     }
                 } else {
-                    gl.glClearColor(0, 0, 0, 1);
-                    gl.glClear(gl.GL_COLOR_BUFFER_BIT);
+                    Gl.glClearColor(0, 0, 0, 1);
+                    Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
                 }
             }
 
-            gl.glFlush();
+            Gl.glFlush();
         }
 
         void IController.Resize(int width, int height)
         {
-            this.width = width;
-            this.height = height;
+            this.widgetWidth = width;
+            this.widgetHeight = height;
             this.needsResize = true;
         }
 #endregion

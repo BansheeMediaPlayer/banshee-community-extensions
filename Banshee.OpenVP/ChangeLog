@@ -1,3 +1,26 @@
+2009-02-04  Chris Howie  <me@chrishowie.com>
+
+	* Gtk/GLWidget.cs: Don't create a new OpenGL context every
+	time the widget is realized.
+
+	* Makefile.am:
+	* Makefile.in:
+	* Banshee.OpenVP.csproj:
+	* resources/inferno.ovpb:
+	* resources/stargrid.ovpb:
+	* resources/greenflower.ovpb: Remove some unused serialized
+	visualizations.
+
+	* gtk-gui/gui.stetic:
+	* gtk-gui/Banshee.OpenVP.VisualizationDisplayWidget.cs: Add
+	"Half resolution" checkbox that will halve the width and
+	height of the rendering viewport.
+
+	* VisualizationDisplayWidget.cs: Add "Half resolution"
+	checkbox that will halve the width and height of the rendering
+	viewport. Add workaround for OpenGL implementations that don't
+	provide GL_ARB_texture_non_power_of_two.
+
 2009-01-30  Chris Howie  <cdhowie@gmail.com>
 
 	* gtk-gui/gui.stetic:
