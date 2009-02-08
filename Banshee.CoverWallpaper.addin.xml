@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Addin 
     id="Banshee.CoverWallpaper"
-    version="1.0"
+    version="0.1"
     compatVersion="1.0"
     copyright="© 2009 David Corrales under the MIT X11 license."
     name="Cover Art Wallpaper"
     category="User Interface"
     description="Displays the current album cover art as the wallpaper."
     author="David Corrales"
-    url="http://banshee-project.org/"
+    url="http://code.google.com/p/banshee-unofficial-plugins/"
     defaultEnabled="true">
 
   <Dependencies>

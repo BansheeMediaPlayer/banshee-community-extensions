@@ -1,5 +1,11 @@
 2009-02-08  David Corrales  <corrales.david@gmail.com>
 
+	* Banshee.CoverWallpaper.addin.xml: Set plugin version to 0.1
+	  and change the URL to point to the unofficial banshee
+	  plugins website.
+
+2009-02-08  David Corrales  <corrales.david@gmail.com>
+
 	* Banshee.CoverWallpaper/CoverWallpaperService.cs: Changed an
 	  error to be recorded via the Hyena log, instead of the
 	  console.
