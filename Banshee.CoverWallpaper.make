@@ -35,8 +35,7 @@ SATELLITE_ASSEMBLY_NAME=$(notdir $(basename $(ASSEMBLY))).resources.dll
 PROGRAMFILES = \
 	$(BANSHEE_COVERWALLPAPER_DLL_MDB)  
 
-LINUX_PKGCONFIG = \
-	$(BANSHEE_COVERWALLPAPER_PC)  
+LINUX_PKGCONFIG =
 
 
 RESGEN=resgen2
@@ -51,8 +50,7 @@ DATA_FILES =
 RESOURCES = \
 	Banshee.CoverWallpaper.addin.xml 
 
-EXTRAS = \
-	banshee.coverwallpaper.pc.in 
+EXTRAS = 
 
 REFERENCES =  \
 	$(GCONF_SHARP_20_LIBS) \
@@ -67,10 +65,6 @@ DLL_REFERENCES =
 CLEANFILES = $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
 
 include $(top_srcdir)/Makefile.include
-
-BANSHEE_COVERWALLPAPER_PC = $(BUILD_DIR)/banshee.coverwallpaper.pc
-
-$(eval $(call emit-deploy-wrapper,BANSHEE_COVERWALLPAPER_PC,banshee.coverwallpaper.pc))
 
 
 $(eval $(call emit_resgen_targets))

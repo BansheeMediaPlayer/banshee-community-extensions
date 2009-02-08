@@ -50,13 +50,33 @@ PKG_CHECK_MODULES([BANSHEE_1_THICKCLIENT], [banshee-1-thickclient])
 PKG_CHECK_MODULES([BANSHEE_1_CORE], [banshee-1-core])
 PKG_CHECK_MODULES([BANSHEE_1_SERVICES], [banshee-1-services])
 
-dnl package checks, per config
+AC_ARG_ENABLE(user-extension, AC_HELP_STRING([--enable-user-extension], [Install extension into user-level Banshee extensions directory instead of the Banshee system extensions directory]), , enable_user_extension="no")
 
+dnl Banshee Extensions Path
+SYSTEM_PLUGINS=`$PKG_CONFIG --variable=bansheedir banshee-1-core`/Extensions
+REL_PLUGINS_DIR=`basename $SYSTEM_PLUGINS`
+REL_BANSHEE_DIR=`echo "$SYSTEM_PLUGINS" | sed -e "s|\/$REL_PLUGINS_DIR||"`
+REL_BANSHEE_DIR=`basename $REL_BANSHEE_DIR`
+REL_PLUGINS_DIR=$REL_BANSHEE_DIR/$REL_PLUGINS_DIR
+
+EXTENSION_DIR=$libdir/$REL_PLUGINS_DIR
+expanded_pluginsdir=$expanded_libdir/$REL_PLUGINS_DIR
+
+if test "x$enable_user_extension" = "xyes"; then
+ 	EXTENSION_DIR=${XDG_CONFIG_HOME:-~/.config}/banshee-1/addins
+	EXTENSION_DIR=`echo "$EXTENSION_DIR" | sed -e "s|\~|$HOME|"`
+	expanded_pluginsdir=$EXTENSION_DIR
+fi
+
+AC_SUBST(EXTENSION_DIR)
 
 AC_CONFIG_FILES([
-banshee.coverwallpaper.pc
 Makefile
 
 ])
 
 AC_OUTPUT
+
+echo "
+Extension will be installed in ${expanded_pluginsdir}
+";

@@ -1,3 +1,12 @@
+2009-02-08  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* configure.ac:
+	* Makefile.include: Install to the banshee system-wide extension
+	directory by default, or to the user directory if the
+	--enable-user-extension configure option is used.
+
+	* Banshee.CoverWallpaper.make: Remove references to the pc file.
+
 2009-02-08  David Corrales  <corrales.david@gmail.com>
 
 	* Banshee.CoverWallpaper.addin.xml: Set plugin version to 0.1
