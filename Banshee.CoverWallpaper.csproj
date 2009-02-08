@@ -45,7 +45,9 @@
     <Reference Include="Banshee.ThickClient, Version=1.4.0.0, Culture=neutral" />
     <Reference Include="System.Data" />
     <Reference Include="System" />
-    <Reference Include="Hyena, Version=1.4.0.0, Culture=neutral" />
+    <Reference Include="Hyena, Version=1.4.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.CoverWallpaper\CoverWallpaperService.cs" />
@@ -57,7 +59,7 @@
           <TextStylePolicy FileWidth="120" TabWidth="4" TabsToSpaces="True" NoTabsAfterNonTabs="False" RemoveTrailingWhitespace="False" />
           <ChangeLogPolicy UpdateMode="ProjectRoot" VcsIntegration="RequireEntry" inheritsSet="Mono" />
         </Policies>
-        <Deployment.LinuxDeployData />
+        <Deployment.LinuxDeployData generatePcFile="false" />
         <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile.am" IsAutotoolsProject="true" RelativeConfigureInPath=".">
           <BuildFilesVar />
           <DeployFilesVar />
