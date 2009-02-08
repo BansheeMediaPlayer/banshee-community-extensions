@@ -129,7 +129,7 @@ namespace Banshee.CoverWallpaper
                 if (filename != string.Empty)
                     gClient.Set(GCONF_BACKGROUND_PATH, filename);
             } catch (Exception ex) {
-                Console.WriteLine(ex.Message);
+                Hyena.Log.Error(ex.Message);
                 //TODO: handle this exception
             }
         }
