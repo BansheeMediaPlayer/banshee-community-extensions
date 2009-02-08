@@ -38,7 +38,7 @@ DIE=0
         DIE=1
 }
 
-(grep "^AM_PROG_LIBTOOL" $CONFIGURE >/dev/null) && {
+(grep "^AC_PROG_LIBTOOL" $CONFIGURE >/dev/null) && {
   ($LIBTOOL --version) < /dev/null > /dev/null 2>&1 || {
     echo
     echo "**Error**: You must have \`libtool' installed to compile $PROJECT."
@@ -66,7 +66,7 @@ case $CC in
 *xlc | *xlc\ * | *lcc | *lcc\ *) am_opt=--include-deps;;
 esac
 
-(grep "^AM_PROG_LIBTOOL" $CONFIGURE >/dev/null) && {
+(grep "^AC_PROG_LIBTOOL" $CONFIGURE >/dev/null) && {
     echo "Running $LIBTOOLIZE ..."
     $LIBTOOLIZE --force --copy
 }

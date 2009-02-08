@@ -1,3 +1,8 @@
+2009-02-08  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* autogen.sh: Properly detect when libtool and libtoolize are needed.
+	Should fix compilation issues with recent libtool versions.
+
 2009-01-30  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
 	* configure.ac: Use mirage instead of Mirage for the language files
