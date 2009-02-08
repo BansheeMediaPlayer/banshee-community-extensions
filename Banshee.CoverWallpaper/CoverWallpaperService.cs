@@ -45,12 +45,12 @@ namespace Banshee.CoverWallpaper
         private bool disposed;
         private TrackInfo current_track;
         private Gdk.Pixbuf image;
-		
-		private static GConf.Client gClient;
-		private static string GCONF_BACKGROUND_PATH = "/desktop/gnome/background/picture_filename";
+
+        private static GConf.Client gClient;
+        private static string GCONF_BACKGROUND_PATH = "/desktop/gnome/background/picture_filename";
         private static string albumWallpaper = 
-			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/banshee-1/banshee-wallpaper.png";
-		private string userWallpaper = "";
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/banshee-1/banshee-wallpaper.png";
+        private string userWallpaper = "";
         private string lastAlbum = "";
         
         public CoverWallpaperService () {}
@@ -64,15 +64,15 @@ namespace Banshee.CoverWallpaper
             ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEvent,
                PlayerEvent.StartOfStream |
                PlayerEvent.TrackInfoUpdated);
-			
-			// capture the current wallpaper to reestablish when exiting or in albums with no art
+
+            // capture the current wallpaper to reestablish when exiting or in albums with no art
             gClient = new GConf.Client();
-			try {
-				userWallpaper = (string) gClient.Get(GCONF_BACKGROUND_PATH);
-			} catch (GConf.NoSuchKeyException ex) {
-				Console.WriteLine(ex.Message);
-				//TODO: handle this exception (shouldn't happen though)
-			}
+            try {
+                userWallpaper = (string) gClient.Get(GCONF_BACKGROUND_PATH);
+            } catch (GConf.NoSuchKeyException ex) {
+                Hyena.Log.Error(ex.Message);
+                //TODO: handle this exception (shouldn't happen though)
+            }
         }
         
         public void Dispose ()
@@ -86,9 +86,8 @@ namespace Banshee.CoverWallpaper
                 current_track = null;
                 image = null;
             
-				// reestablish the user wallpaper
-				SetWallpaper(userWallpaper);
-				
+                // reestablish the user wallpaper
+                SetWallpaper(userWallpaper);
                 disposed = true;
             });
         }
@@ -138,12 +137,5 @@ namespace Banshee.CoverWallpaper
         string IService.ServiceName {
             get { return "CoverWallpaperService"; }
         }
-        
-        public static readonly SchemaEntry<bool> EnabledSchema = new SchemaEntry<bool> (
-            "plugins.cover_wallpaper", "enabled",
-            true,
-            "Plugin enabled",
-            "Cover wallpaper plugin enabled"
-        );
     }
 }

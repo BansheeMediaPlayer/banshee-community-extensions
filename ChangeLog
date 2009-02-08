@@ -1,3 +1,9 @@
+2009-02-08  David Corrales  <corrales.david@gmail.com>
+
+	* Banshee.CoverWallpaper/CoverWallpaperService.cs: Change tabs
+	  for spaces and remove the Schema property since it's
+	  unnecesary.
+
 2009-02-08  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
 	* Banshee.CoverWallpaper/CoverWallpaperService.cs: Simplify the
