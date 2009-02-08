@@ -1,0 +1,5 @@
+2009-02-08  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee.CoverWallpaper/CoverWallpaperService.cs: Simplify the
+	initialization sequence, and remove an unused field.
+

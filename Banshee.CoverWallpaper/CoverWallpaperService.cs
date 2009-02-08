@@ -41,7 +41,6 @@ namespace Banshee.CoverWallpaper
 {
     public class CoverWallpaperService : IExtensionService
     {
-        private InterfaceActionService action_service;
         private ArtworkManager artwork_manager_service;
         private bool disposed;
         private TrackInfo current_track;
@@ -58,31 +57,8 @@ namespace Banshee.CoverWallpaper
         
         void IExtensionService.Initialize ()
         {  
-            action_service = ServiceManager.Get<InterfaceActionService> ();
             artwork_manager_service = ServiceManager.Get<ArtworkManager> ();
             
-            if (!ServiceStartup ())
-                ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
-        }
-        
-        private void OnSourceAdded (SourceAddedArgs args)
-        {
-            if (ServiceStartup ())
-                ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
-        }
-        
-        private bool ServiceStartup ()
-        {
-            if (action_service == null || ServiceManager.SourceManager.MusicLibrary == null)
-                return false;
-            
-            Initialize ();
-            
-            return true;
-        }
-        
-        private void Initialize ()
-        {            
             Banshee.Base.ThreadAssist.AssertInMainThread ();
             
             ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEvent,
@@ -106,7 +82,6 @@ namespace Banshee.CoverWallpaper
 
             Banshee.Base.ThreadAssist.ProxyToMain (delegate {
                 ServiceManager.PlayerEngine.DisconnectEvent (OnPlayerEvent);
-                action_service = null;
                 artwork_manager_service = null;
                 current_track = null;
                 image = null;
