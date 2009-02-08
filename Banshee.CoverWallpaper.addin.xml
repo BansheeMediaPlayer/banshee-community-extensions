@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.CoverWallpaper"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="© 2009 David Corrales under the MIT X11 license."
+    name="Cover Art Wallpaper"
+    category="User Interface"
+    description="Displays the current album cover art as the wallpaper."
+    author="David Corrales"
+    url="http://banshee-project.org/"
+    defaultEnabled="true">
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+    <Service name="InterfaceActionService"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.CoverWallpaper.CoverWallpaperService"/>
+  </Extension>
+</Addin>

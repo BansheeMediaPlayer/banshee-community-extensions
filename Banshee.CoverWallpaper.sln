@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.CoverWallpaper", "Banshee.CoverWallpaper.csproj", "{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		name = Banshee.CoverWallpaper
+		version = 0.1
+		StartupItem = Banshee.CoverWallpaper.csproj
+	EndGlobalSection
+EndGlobal
