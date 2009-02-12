@@ -1,3 +1,11 @@
+2009-02-12  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Test/Makefile.am:
+	* Mirage/Makefile.am:
+	* Banshee/Makefile.am: Add the specific references that are needed.
+
+	* build/build.mk: Do not automatically reference the banshee libs.
+
 2009-02-08  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
 	* autogen.sh: Properly detect when libtool and libtoolize are needed.

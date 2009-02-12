@@ -4,6 +4,7 @@ TARGET = exe
 SOURCES = Main.cs
 
 REFERENCES =  \
+	$(BANSHEE_LIBS) \
 	-r:../Mirage/Mirage.dll
 
 SOURCES_BUILD = $(addprefix $(srcdir)/, $(SOURCES))
@@ -20,7 +21,7 @@ OUTPUT_FILES = \
 test: $(ASSEMBLY_FILE)
 
 $(ASSEMBLY_FILE): $(SOURCES_BUILD) $(RESOURCES_EXPANDED)
-	$(GMCS) $(MCS_FLAGS) -out:$@ -target:$(TARGET) $(REFERENCES) $(BANSHEE_LIBS) $(SOURCES_BUILD)
+	$(GMCS) $(MCS_FLAGS) -out:$@ -target:$(TARGET) $(REFERENCES) $(SOURCES_BUILD)
 
 CLEANFILES = $(OUTPUT_FILES) *.dll *.mdb *.exe
 DISTCLEANFILES = *.pidb

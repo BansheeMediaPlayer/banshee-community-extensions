@@ -14,6 +14,7 @@ RESOURCES = \
 	Banshee.Plugins.Mirage.addin.xml
 
 REFERENCES =  \
+	$(BANSHEE_LIBS) \
 	-r:../Mirage/Mirage.dll
 
 include $(top_srcdir)/build/build.mk

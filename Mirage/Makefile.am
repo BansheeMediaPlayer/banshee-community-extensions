@@ -17,4 +17,9 @@ RESOURCES = \
 	res/dct.filter \
 	res/filterweights.filter 
 
+REFERENCES =  \
+	-r:System \
+	-r:System.Data \
+	-r:Mono.Data.SqliteClient
+
 include $(top_srcdir)/build/build.mk
