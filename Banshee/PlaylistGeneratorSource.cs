@@ -103,7 +103,7 @@ namespace Banshee.Mirage
                                        AddinManager.CurrentLocalizer.GetString ("Clear on Quit"), null, 
                                        AddinManager.CurrentLocalizer.GetString ("Clear the play queue when quitting"), 
                                        OnClearPlaylistOnQuit, 
-                                       MiragePlugin.ClearOnQuitSchema.Get ())
+                                       MirageConfiguration.ClearOnQuitSchema.Get ())
             });
             
             ui_id = action_service.UIManager.AddUiFromResource ("GlobalUI.xml");
@@ -129,7 +129,7 @@ namespace Banshee.Mirage
             action_service.GlobalActions.Remove ("ClearMiragePlaylistAction");
             action_service.GlobalActions.Remove ("ClearMiragePlaylistOnQuitAction");
             
-            if (MiragePlugin.ClearOnQuitSchema.Get ()) {
+            if (MirageConfiguration.ClearOnQuitSchema.Get ()) {
                 Clear ();
             }
         }
@@ -164,9 +164,9 @@ namespace Banshee.Mirage
             SimilarTracks (seeds, seeds);
         }
         
-        public delegate void UpdatePlaylistDelegate(int[] playlist, int length);
+        public delegate void UpdatePlaylistDelegate(int[] playlist);
 
-        protected void UpdatePlaylist (int[] playlist, int length)
+        protected void UpdatePlaylist (int[] playlist)
         {
             Gtk.Application.Invoke(delegate {
                 if (playlist == null) {
@@ -174,12 +174,13 @@ namespace Banshee.Mirage
                     return;
                 }
                 
+                int length_wanted = MirageConfiguration.PlaylistLength.Get ();
                 lock (DatabaseTrackModel) {
                     RemoveTrackRange (DatabaseTrackModel, new Hyena.Collections.RangeCollection.Range (current_track + 1, Count - 1));
                     int sameArtistCount = 0;
                     int i = 0;
                     int pi = 0;
-                    while ((i < Math.Min(playlist.Length, length)) && (pi < playlist.Length)) {
+                    while ((i < Math.Min(playlist.Length, length_wanted)) && (pi < playlist.Length)) {
                         DatabaseTrackInfo track = DatabaseTrackInfo.Provider.FetchSingle(playlist[pi]);
                         bool sameArtist = track.Artist.Equals(seeds[seeds.Count-1].Artist);
                         pi++;
@@ -187,7 +188,8 @@ namespace Banshee.Mirage
                         if (sameArtist)
                             sameArtistCount++;
                         
-                        if (sameArtist && (sameArtistCount > 0.5*length)) {
+                        // We don't want more than half of the tracks by the same artist
+                        if (sameArtist && (sameArtistCount > 0.5*length_wanted)) {
                             continue;
                         } else
                             i++;
@@ -265,7 +267,7 @@ namespace Banshee.Mirage
             }
             
             ToggleAction action = (ToggleAction)uia_service.GlobalActions["ClearMiragePlaylistOnQuitAction"];
-            MiragePlugin.ClearOnQuitSchema.Set (action.Active);
+            MirageConfiguration.ClearOnQuitSchema.Set (action.Active);
         }
 
         public void OnNextPrevAction (object o, EventArgs e)
@@ -334,11 +336,8 @@ namespace Banshee.Mirage
                 excludeTrackIds[i] = exclude[i].TrackId;
             }
 
-            SimilarityCalculator sc =
-                    new SimilarityCalculator(trackIds, excludeTrackIds,
-                            db, UpdatePlaylist, 5);
-            Thread similarityCalculatorThread =
-                    new Thread(new ThreadStart(sc.Compute));
+            SimilarityCalculator sc = new SimilarityCalculator(trackIds, excludeTrackIds, db, UpdatePlaylist);
+            Thread similarityCalculatorThread = new Thread(new ThreadStart(sc.Compute));
             similarityCalculatorThread.Start();
         }
 

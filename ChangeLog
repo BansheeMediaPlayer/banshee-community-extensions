@@ -1,5 +1,23 @@
 2009-02-14  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
+	* Mirage/Mir.cs: Add a parameter to the SimilarTracks method
+	to ignore tracks whose distance to the seeds is below this
+	threshold. Inspired by a patch by Wade Menard.
+
+	* Banshee/Makefile.am:
+	* Banshee/MiragePlugin.cs:
+	* Banshee/MirageConfiguration.cs: Move configuration to its
+	own file.
+
+	* Banshee/SimilarityCalculator.cs: Use the playlist length and
+	distance ceiling values from the configuration. Rename the
+	delegate for clarity.
+
+	* Banshee/PlaylistGeneratorSource.cs: Use MirageConfiguration,
+	and make the playlist length configurable.
+
+2009-02-14  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
 	* Banshee/PlaylistGeneratorSource.cs: Exclude tracks that are
 	removed manually. Patch from Wade Menard, with some
 	modifications by me (Issue #22).

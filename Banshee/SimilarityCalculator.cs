@@ -32,17 +32,15 @@ namespace Banshee.Mirage
     {
         int[] trackId;
         int[] excludeTrackId;
-        PlaylistGeneratorSource.UpdatePlaylistDelegate play;
-        int length;
+        PlaylistGeneratorSource.UpdatePlaylistDelegate play_delegate;
         Db db;
         
         public SimilarityCalculator(int[] trackId, int[] excludeTrackId,
-                Db db, PlaylistGeneratorSource.UpdatePlaylistDelegate playlist, int length)
+                Db db, PlaylistGeneratorSource.UpdatePlaylistDelegate playlist_delegate)
         {
             this.trackId = trackId;
-            this.play = playlist;
-            this.length = length;
             this.excludeTrackId = excludeTrackId;
+            this.play_delegate = playlist_delegate;
             this.db = db;
         }
         
@@ -50,11 +48,16 @@ namespace Banshee.Mirage
         {
             int[] playlist;
             try {
-                playlist = Mir.SimilarTracks(trackId, excludeTrackId, db, length*4);
-                play(playlist, length);
+                // We generate a longer playlist because some tracks might be thrown away later
+                int generated_length = 4 * MirageConfiguration.PlaylistLength.Get ();
+                float distceiling = float.Parse (MirageConfiguration.DistanceCeiling.Get ());
+                Log.DebugFormat ("Distance ceiling is {0}", distceiling);
+                playlist = Mir.SimilarTracks(trackId, excludeTrackId, db, generated_length, 
+                                             distceiling);
+                play_delegate(playlist);
             } catch (DbTrackNotFoundException) {
                 Log.Error ("Mirage: ERROR. Track not found in Mirage DB");
-                play(null, 0);
+                play_delegate(null);
             }
         }
     }

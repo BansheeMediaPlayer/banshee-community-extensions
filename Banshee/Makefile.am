@@ -2,6 +2,7 @@ ASSEMBLY = Banshee.Mirage
 TARGET = library
 
 SOURCES = \
+	MirageConfiguration.cs \
 	MiragePlugin.cs \
 	PlaylistGeneratorSource.cs \
 	SimilarityCalculator.cs

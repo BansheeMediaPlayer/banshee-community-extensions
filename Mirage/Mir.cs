@@ -73,6 +73,11 @@ namespace Mirage
 
         public static int[] SimilarTracks(int[] id, int[] exclude, Db db, int length)
         {
+            return SimilarTracks(id, exclude, db, length, 0);
+        }
+        
+        public static int[] SimilarTracks(int[] id, int[] exclude, Db db, int length, float distceiling)
+        {
             // Get Seed-Song SCMS
             Scms[] seedScms = new Scms[id.Length];
             for (int i = 0; i < seedScms.Length; i++) {
@@ -96,10 +101,8 @@ namespace Mirage
             
             IDataReader r = db.GetTracks(exclude);
             while (read > 0) {
-                
                 read = db.GetNextTracks(ref r, ref scmss, ref mapping, 100);
                 for (int i = 0; i < read; i++) {
-                    
                     d = 0;
                     count = 0;
                     for (int j = 0; j < seedScms.Length; j++) {
@@ -116,11 +119,14 @@ namespace Mirage
                         }
                     }
                     
-                    if (d >= 0) {
+                    // Exclude track if it's too close to the seeds
+                    if (d >= distceiling) {
                         ht.Add(mapping[i], d/count);
                     }
+                    else {
+                        Dbg.WriteLine("Mirage - ignoring {0}", mapping[i]);
+                    }
                 }
-                
             }
             db.GetTracksFinished();
             

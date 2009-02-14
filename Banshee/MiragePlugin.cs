@@ -35,7 +35,6 @@ using Mono.Addins;
 
 using Hyena;
 using Banshee.Collection.Database;
-using Banshee.Configuration;
 using Banshee.ServiceStack;
 using Banshee.Sources;
 using Banshee.Gui;
@@ -393,13 +392,5 @@ namespace Banshee.Mirage
         string IService.ServiceName {
             get { return "MirageService"; }
         }
-        
-        public static readonly SchemaEntry<bool> ClearOnQuitSchema = new SchemaEntry<bool> (
-            "plugins.mirage", "clear_on_quit",
-            false,
-            "Clear on Quit",
-            "Clear the playlist when quitting"
-        );
-
     }
 }
