@@ -108,7 +108,7 @@ namespace Banshee.Mirage
             
             ui_id = action_service.UIManager.AddUiFromResource ("GlobalUI.xml");
             Properties.SetString ("GtkActionPath", "/PlaylistContextMenu");
-                    
+            
             action_service.PlaybackActions["NextAction"].Activated += OnNextPrevAction;
             action_service.PlaybackActions["PreviousAction"].Activated += OnNextPrevAction;
             
@@ -247,6 +247,7 @@ namespace Banshee.Mirage
         {
             current_track = 0;
             RemoveTrackRange ((DatabaseTrackListModel)TrackModel, new Hyena.Collections.RangeCollection.Range (0, Count));
+            skipped.Clear ();
             tracksOverride.Clear ();
             Reload ();
         }
@@ -267,11 +268,30 @@ namespace Banshee.Mirage
             MiragePlugin.ClearOnQuitSchema.Set (action.Active);
         }
 
-        public void OnNextPrevAction(object o, EventArgs e)
+        public void OnNextPrevAction (object o, EventArgs e)
         {
             skipped.Add(ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo);
         }
-        
+
+        protected override void OnTracksRemoved ()
+        {
+            if (ServiceManager.SourceManager.ActiveSource != this) {
+                return;
+            }
+
+            // add removed tracks to exclude list
+            foreach (int track_id in TrackModel.Selection) {
+                DatabaseTrackInfo ti = (DatabaseTrackInfo)DatabaseTrackModel[track_id];
+
+                if (!skipped.Exists( delegate (DatabaseTrackInfo t) { return t.TrackId == ti.TrackId; })) {
+                    Log.DebugFormat ("Mirage - Adding {0}-{1} to exclude list",
+                        ti.TrackId, ti.TrackTitle);
+                    skipped.Add (ti);
+                }
+            }
+            Reload ();
+        }
+       
         private void Refresh ()
         {
             processed = ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo;

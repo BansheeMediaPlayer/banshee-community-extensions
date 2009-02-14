@@ -1,3 +1,9 @@
+2009-02-14  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/PlaylistGeneratorSource.cs: Exclude tracks that are
+	removed manually. Patch from Wade Menard, with some
+	modifications by me (Issue #22).
+
 2009-02-12  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
 	* Test/Makefile.am:
