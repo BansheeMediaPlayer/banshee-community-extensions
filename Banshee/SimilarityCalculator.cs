@@ -50,7 +50,7 @@ namespace Banshee.Mirage
             try {
                 // We generate a longer playlist because some tracks might be thrown away later
                 int generated_length = 4 * MirageConfiguration.PlaylistLength.Get ();
-                float distceiling = float.Parse (MirageConfiguration.DistanceCeiling.Get ());
+                float distceiling = (float)MirageConfiguration.DistanceCeiling.Get ();
                 Log.DebugFormat ("Distance ceiling is {0}", distceiling);
                 playlist = Mir.SimilarTracks(trackId, excludeTrackId, db, generated_length, 
                                              distceiling);

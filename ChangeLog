@@ -1,3 +1,9 @@
+2009-02-16  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/MirageConfiguration.cs:
+	* Banshee/SimilarityCalculator.cs: DistanceCeiling needed to
+	be a SchemaEntry<double> in order to work.
+
 2009-02-14  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
 	* Mirage/Mir.cs: Add a parameter to the SimilarTracks method
