@@ -1,3 +1,11 @@
+2009-02-27  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Mirage/Mfcc.cs: Performance optimization of MFCC computation.
+	MFCCs now take only 10% of the time to compute
+	* Mirage/res/writefilters.m: Include the 0th MFCC coefficient.
+	This will improve the similarity models. ATTENTION: The filters
+	are not yet written to the binary files.
+
 2009-02-16  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
 	* Banshee/MirageConfiguration.cs:

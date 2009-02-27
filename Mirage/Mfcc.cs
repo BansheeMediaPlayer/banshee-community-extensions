@@ -38,6 +38,7 @@ namespace Mirage
 
         Matrix filterWeights;
         Matrix dct;
+		int[,] fwFT;
         
         public Mfcc(int winsize, int srate, int filters, int cc)
         {
@@ -48,6 +49,22 @@ namespace Mirage
                 
             // Load the MFCC filters from the filter File.
             filterWeights = Matrix.Load(assem.GetManifestResourceStream("filterweights.filter"));
+
+			fwFT = new int[filterWeights.rows, 2];
+			for (int i = 0; i < filterWeights.rows; i++) {
+				float last = 0;
+				for (int j = 0; j < filterWeights.columns; j++) {
+					if ((filterWeights.d[i, j] != 0) && (last == 0)) {
+						fwFT[i, 0] = j;
+					} else if ((filterWeights.d[i, j] == 0) && (last != 0)) {
+						fwFT[i, 1] = j;
+					}
+					last = filterWeights.d[i, j];
+				}
+				if (last != 0) {
+					fwFT[i, 1] = filterWeights.columns;
+				}
+			}
         }
         
         public Matrix Apply(ref Matrix m)
@@ -58,20 +75,9 @@ namespace Mirage
 
             Matrix mel = new Matrix(filterWeights.rows, m.columns);
             
-            /* Performance optimization of ...
-
-            mel = filterWeights.Multiply(m);
-            for (int i = 0; i < mel.rows; i++) {
-                for (int j = 0; j < mel.columns; j++) {
-                    mel.d[i, j] = (mel.d[i, j] < 1.0f ?
-                                    0 : (float)(10.0 * Math.Log10(mel.d[i, j])));
-                }
-            }*/
-            
             unsafe {
 
                 int mc = m.columns;
-                int mr = m.rows;
                 int melcolumns = mel.columns;
                 int fwc = filterWeights.columns;
                 int fwr = filterWeights.rows;
@@ -82,7 +88,9 @@ namespace Mirage
                             int idx = k*melcolumns + i;
                             int kfwc = k*fwc;
 
-                            for (int j = 0; j < mr; j++) {
+							// Tthe filter weights matrix is mostly 0.
+							// So only multiply non-zero elements!
+                            for (int j = fwFT[k,0]; j < fwFT[k,1]; j++) {
                                 meld[idx] += fwd[kfwc + j] * md[j*mc + i];
                             }
 
@@ -93,7 +101,7 @@ namespace Mirage
                     }
                 }
             }
-            
+
             try {
                 Matrix mfcc = dct.Multiply(mel);
                 
