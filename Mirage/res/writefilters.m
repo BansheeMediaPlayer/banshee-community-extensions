@@ -35,7 +35,7 @@ for i = 1:numfilters
             triangleh(i).*(up(i)-fft_freq)/(up(i)-ce(i));
 end
 
-dct = 1/sqrt(numfilters/2) * cos((1:(nummfccs))' *...
+dct = 1/sqrt(numfilters/2) * cos((0:(nummfccs-1))' *...
     (2*(0:(numfilters-1))+1) * pi/2/numfilters);
 dct(1,:) = dct(1,:) * sqrt(2)/2;
 
@@ -51,6 +51,6 @@ fwrite(filterweights_f, size(mfcc_filterweights, 2), 'int32');
 fwrite(filterweights_f, mfcc_filterweights', 'float32');
 fclose(filterweights_f);
 
-dct
-
-mfcc_filterweights
+% debugging
+%dct
+%mfcc_filterweights
