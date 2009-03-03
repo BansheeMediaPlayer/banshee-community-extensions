@@ -54,3 +54,7 @@ fclose(filterweights_f);
 % debugging
 %dct
 %mfcc_filterweights
+
+size(dct)
+
+size(mfcc_filterweights)

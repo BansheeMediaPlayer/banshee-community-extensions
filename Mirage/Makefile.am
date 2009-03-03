@@ -3,7 +3,6 @@ TARGET = library
 
 SOURCES = \
 	AudioDecoder.cs \
-	CovarianceMatrix.cs \
 	Db.cs \
 	Dbg.cs \
 	Matrix.cs \

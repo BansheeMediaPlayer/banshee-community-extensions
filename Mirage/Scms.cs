@@ -84,12 +84,22 @@ namespace Mirage
      *  of a song. The distance between two models is computed with the
      *  symmetrized Kullback Leibler Divergence.
      */
-    [Serializable]
     public class Scms
     {
-        private Vector mean = null;
-        private CovarianceMatrix cov = null;
-        private CovarianceMatrix icov = null;
+        private float[] mean;
+        private float[] cov;
+        private float[] icov;
+        private int dim;
+
+        public Scms(int dimension)
+        {
+            dim = dimension;
+            int symDim = (dim * dim + dim) / 2;
+
+            mean = new float[dim];
+            cov = new float[symDim];
+            icov = new float[symDim];
+        }
 
         /** Computes a Scms model from the MFCC representation of a song.
          */
@@ -98,27 +108,34 @@ namespace Mirage
             DbgTimer t = new DbgTimer();
             t.Start();
             
-            Scms s = new Scms();
-            
             // Mean
-            s.mean = mfcc.Mean();
+            Vector m = mfcc.Mean();
 
             // Covariance
-            Matrix fullCov = mfcc.Covariance(s.mean);
-            s.cov = new CovarianceMatrix(fullCov);
-            for (int i = 0; i < s.cov.dim; i++) {
-                for (int j = i+1; j < s.cov.dim; j++) {
-                    s.cov.d[i*s.cov.dim+j-(i*i+i)/2] *= 2;
-                }
-            }
-            
+            Matrix c = mfcc.Covariance(m);
+
             // Inverse Covariance
+            Matrix ic;
             try {
-                Matrix fullIcov = fullCov.Inverse();
-                s.icov = new CovarianceMatrix(fullIcov);
+                ic = c.Inverse();
             } catch (MatrixSingularException) {
                 throw new ScmsImpossibleException();
             }
+
+            // Store the Mean, Covariance, Inverse Covariance in an optimal
+            // format.
+            int dim = m.rows;
+            Scms s = new Scms(dim);
+            int l = 0;
+            for (int i = 0; i < dim; i++) {
+                s.mean[i] = m.d[i, 0];
+                for (int j = i; j < dim; j++) {
+                    s.cov[l] = c.d[i, j];
+                    s.icov[l] = ic.d[i, j];
+                    l++;
+                }
+            }
+
             
             long stop = 0;
             t.Stop(ref stop);
@@ -140,18 +157,28 @@ namespace Mirage
                 int k;
                 int idx = 0;
                 int dim = c.Dimension;
-                int covlen = (dim*(dim+1))/2;
+                int covlen = c.CovarianceLength;
                 float tmp1;
 
-                fixed (float* s1cov = s1.cov.d, s2icov = s2.icov.d,
-                        s1icov = s1.icov.d, s2cov = s2.cov.d,
-                        s1mean = s1.mean.d, s2mean = s2.mean.d,
+                fixed (float* s1cov = s1.cov, s2icov = s2.icov,
+                        s1icov = s1.icov, s2cov = s2.cov,
+                        s1mean = s1.mean, s2mean = s2.mean,
                         mdiff = c.MeanDiff, aicov = c.AddInverseCovariance)
                 {
 
                     for (i = 0; i < covlen; i++) {
-                        val += s1cov[i] * s2icov[i] + s2cov[i] * s1icov[i];
                         aicov[i] = s1icov[i] + s2icov[i];
+                    }
+
+                    for (i = 0; i < dim; i++) {
+                        idx = i*dim - (i*i+i)/2;
+                        val += s1cov[idx+i] * s2icov[idx+i] +
+                            s2cov[idx+i] * s1icov[idx+i];
+
+                        for (k = i+1; k < dim; k++) {
+                            val += 2*s1cov[idx+k] * s2icov[idx+k] +
+                                2*s2cov[idx+k] * s1icov[idx+k];
+                        }
                     }
 
                     for (i = 0; i < dim; i++) {
@@ -177,34 +204,50 @@ namespace Mirage
 
             // FIXME: fix the negative return values
             //val = Math.Max(0.0f, (val/2 - s1.cov.dim));
-            val = val/2 - s1.cov.dim;
+            val = val/4 - c.Dimension/2;
 
             return val;
         }
 
-        /** Serialization of a Scms object to a byte array
+        /** Manual serialization of a Scms object to a byte array
          */
         public byte[] ToBytes()
         {
             MemoryStream stream = new MemoryStream();
-            BinaryFormatter bformatter = new BinaryFormatter();
-            bformatter.Serialize(stream, this);
+            BinaryWriter bw = new BinaryWriter(stream);
+            bw.Write((Int32)dim);
+            for (int i = 0; i < mean.Length; i++) {
+                bw.Write(mean[i]);
+            }
+            for (int i = 0; i < cov.Length; i++) {
+                bw.Write(cov[i]);
+            }
+            for (int i = 0; i < icov.Length; i++) {
+                bw.Write(icov[i]);
+            }
+
             stream.Close();
-            
             return stream.ToArray();
         }
 
-        /** Deserialization of an Scms from a byte array
+        /** Manual deserialization of an Scms from a byte array
          */
-        public static Scms FromBytes(byte[] buf)
+        public static void FromBytes(byte[] buf, ref Scms s)
         {
             MemoryStream stream = new MemoryStream(buf);
-            BinaryFormatter bformatter = new BinaryFormatter();
-            
-            Scms scms = (Scms)bformatter.UnsafeDeserialize(stream, null);
+            BinaryReader br = new BinaryReader(stream);
+            s.dim = br.ReadInt32();
+            for (int i = 0; i < s.mean.Length; i++) {
+                s.mean[i] = br.ReadSingle();
+            }
+            for (int i = 0; i < s.cov.Length; i++) {
+                s.cov[i] = br.ReadSingle();
+            }
+            for (int i = 0; i < s.icov.Length; i++) {
+                s.icov[i] = br.ReadSingle();
+            }
+
             stream.Close();
-            
-            return scms;
         }
     }
 

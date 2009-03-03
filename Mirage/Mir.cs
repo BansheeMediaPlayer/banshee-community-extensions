@@ -78,24 +78,25 @@ namespace Mirage
         
         public static int[] SimilarTracks(int[] id, int[] exclude, Db db, int length, float distceiling)
         {
-            // Get Seed-Song SCMS
-            Scms[] seedScms = new Scms[id.Length];
-            for (int i = 0; i < seedScms.Length; i++) {
-                seedScms[i] = db.GetTrack(id[i]);
-            }
-            
-            // Get all tracks from the DB except the seedSongs
-            Hashtable ht = new Hashtable();
-            Scms[] scmss = new Scms[100];
-            int[] mapping = new int[100];
-            int read = 1;
-            float d;
-            float dcur;
-            float count;
-            
             DbgTimer t = new DbgTimer();
             t.Start();
 
+            // Get Seed-Song SCMS
+            Scms[] seedScms = new Scms[id.Length];
+            for (int i = 0; i < seedScms.Length; i++) {
+                seedScms[i] = new Scms(mfcccoefficients);
+                db.GetTrack(id[i], ref seedScms[i]);
+            }
+
+            // Get all tracks from the DB except the seedSongs
+            Hashtable ht = new Hashtable();
+            Scms[] scmss = new Scms[100];
+            for (int i = 0; i < 100; i++) {
+                scmss[i] = new Scms(mfcccoefficients);
+            }
+            int[] mapping = new int[100];
+            int read = 1;
+            
             // Allocate the Scms Distance cache
             ScmsConfiguration c = new ScmsConfiguration(mfcccoefficients);
             
@@ -103,10 +104,11 @@ namespace Mirage
             while (read > 0) {
                 read = db.GetNextTracks(ref r, ref scmss, ref mapping, 100);
                 for (int i = 0; i < read; i++) {
-                    d = 0;
-                    count = 0;
+
+                    float d = 0;
+                    int count = 0;
                     for (int j = 0; j < seedScms.Length; j++) {
-                        dcur = Scms.Distance(ref seedScms[j], ref scmss[i], ref c);
+                        float dcur = Scms.Distance(ref seedScms[j], ref scmss[i], ref c);
                         
                         // Possible negative numbers indicate faulty scms models..
                         if (dcur >= 0) {
@@ -120,7 +122,7 @@ namespace Mirage
                     }
                     
                     // Exclude track if it's too close to the seeds
-                    if (d >= distceiling) {
+                    if (d > distceiling) {
                         ht.Add(mapping[i], d/count);
                     }
                     else {

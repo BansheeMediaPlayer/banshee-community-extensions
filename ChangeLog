@@ -1,3 +1,13 @@
+2009-03-03  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Mirage/CovarianceMatrix.cs: deleted, no longer needed integrated in
+	Scms.
+	* Mirage/Makefile.am: Remove CovarianceMatrix.cs
+	* Mirage/res/dct.filter, Mirage/res/writefilters.m: Update binary filters.
+	* Mirage/Db.cs: Update to work with the new Scms Object.
+	* Mirage/Scms.cs, Mirage/Mir.cs: Serialization Updates, Update KLD.
+	* Mirage/Mfcc.cs: Indentation fixes
+
 2009-02-27  Dominik Schnitzer <dominik@schnitzer.at>
 
 	* Mirage/Mfcc.cs: Performance optimization of MFCC computation.

@@ -163,7 +163,7 @@ namespace Mirage
             }
         }
 
-        public Scms GetTrack(int trackid)
+        public void GetTrack(int trackid, ref Scms s)
         {
             // lock db mutex
             dblock.WaitOne();
@@ -183,7 +183,7 @@ namespace Mirage
             // unlock db mutex
             dblock.ReleaseMutex();
             
-            return Scms.FromBytes(buf);
+            Scms.FromBytes(buf, ref s);
         }
         
         public IDataReader GetTracks(int[] excludeId)
@@ -202,6 +202,7 @@ namespace Mirage
                 }
             }
             trackSql.Append(")");
+
             dbcmd.CommandText = trackSql.ToString();
 
             return dbcmd.ExecuteReader();
@@ -213,7 +214,7 @@ namespace Mirage
             int i = 0;
 
             while ((i < len) && tracksIterator.Read()) {
-                tracks[i] = Scms.FromBytes((byte[]) tracksIterator.GetValue(0));
+                Scms.FromBytes((byte[]) tracksIterator.GetValue(0), ref tracks[i]);
                 mapping[i] = tracksIterator.GetInt32(1);
                 i++;
             }
