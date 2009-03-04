@@ -48,8 +48,9 @@ namespace Banshee.Mirage
         private static string playlist_name = "Playlist Generator";
 
         public static List<DatabaseTrackInfo> seeds = new List<DatabaseTrackInfo>();
-        protected List<DatabaseTrackInfo> tracksOverride = new List<DatabaseTrackInfo>();
+        protected List<DatabaseTrackInfo> suggested = new List<DatabaseTrackInfo>();
         protected List<DatabaseTrackInfo> skipped = new List<DatabaseTrackInfo>();
+        protected List<DatabaseTrackInfo> played = new List<DatabaseTrackInfo>();
         protected DatabaseTrackInfo processed;
         protected Db db;
         InterfaceActionService action_service;
@@ -109,9 +110,6 @@ namespace Banshee.Mirage
             ui_id = action_service.UIManager.AddUiFromResource ("GlobalUI.xml");
             Properties.SetString ("GtkActionPath", "/PlaylistContextMenu");
             
-            action_service.PlaybackActions["NextAction"].Activated += OnNextPrevAction;
-            action_service.PlaybackActions["PreviousAction"].Activated += OnNextPrevAction;
-            
             ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEvent, 
                                                       PlayerEvent.StartOfStream | 
                                                       PlayerEvent.Iterate);
@@ -150,20 +148,6 @@ namespace Banshee.Mirage
             }
         }
         
-        public void FillPlaylist ()
-        {
-            // Add seed tracks 
-            lock (TrackModel) {
-                seeds.Clear();
-                seeds.AddRange (tracksOverride);
-                
-                tracksOverride.Clear();
-                
-                OnUpdated();
-            }
-            SimilarTracks (seeds, seeds);
-        }
-        
         public delegate void UpdatePlaylistDelegate(int[] playlist);
 
         protected void UpdatePlaylist (int[] playlist)
@@ -180,6 +164,7 @@ namespace Banshee.Mirage
                     int sameArtistCount = 0;
                     int i = 0;
                     int pi = 0;
+                    suggested.Clear();
                     while ((i < Math.Min(playlist.Length, length_wanted)) && (pi < playlist.Length)) {
                         DatabaseTrackInfo track = DatabaseTrackInfo.Provider.FetchSingle(playlist[pi]);
                         bool sameArtist = track.Artist.Equals(seeds[seeds.Count-1].Artist);
@@ -193,12 +178,13 @@ namespace Banshee.Mirage
                             continue;
                         } else
                             i++;
-                        
+                       
+                        suggested.Add(track); 
                         AddTrack(track);
                     }
                     SetStatus (AddinManager.CurrentLocalizer.GetString ("Playlist ready."), false, false, null);
                 }
-                
+
                 OnUpdated();
                 HideStatus();
             });
@@ -209,14 +195,6 @@ namespace Banshee.Mirage
             // Reorder Tracks
         }*/
 
-        protected override void AddTrack(DatabaseTrackInfo track)
-        {
-            lock (DatabaseTrackModel) {
-                tracksOverride.Add(track);
-            }
-            base.AddTrack (track);
-        }
-        
         public override bool AcceptsInputFromSource (Source source)
         {
             return source == Parent || 
@@ -233,10 +211,15 @@ namespace Banshee.Mirage
             base.MergeSourceInput (source, mergeType);
 
             if (was_empty) {
+                seeds.Clear();
                 for (int i = 0; i < TrackModel.Count; i++) {
-                    tracksOverride.Add ((DatabaseTrackInfo)TrackModel[i]);
+                    seeds.Add ((DatabaseTrackInfo)TrackModel[i]);
                 }
-                FillPlaylist ();
+
+                played.Clear();
+                played.AddRange(seeds);
+
+                SimilarTracks (seeds, seeds);
             }
         }
         
@@ -248,9 +231,13 @@ namespace Banshee.Mirage
         private void Clear ()
         {
             current_track = 0;
+
             RemoveTrackRange ((DatabaseTrackListModel)TrackModel, new Hyena.Collections.RangeCollection.Range (0, Count));
+
             skipped.Clear ();
-            tracksOverride.Clear ();
+            played.Clear ();
+            suggested.Clear ();
+
             Reload ();
         }
 
@@ -270,11 +257,6 @@ namespace Banshee.Mirage
             MirageConfiguration.ClearOnQuitSchema.Set (action.Active);
         }
 
-        public void OnNextPrevAction (object o, EventArgs e)
-        {
-            skipped.Add(ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo);
-        }
-
         protected override void OnTracksRemoved ()
         {
             if (ServiceManager.SourceManager.ActiveSource != this) {
@@ -285,7 +267,7 @@ namespace Banshee.Mirage
             foreach (int track_id in TrackModel.Selection) {
                 DatabaseTrackInfo ti = (DatabaseTrackInfo)DatabaseTrackModel[track_id];
 
-                if (!skipped.Exists( delegate (DatabaseTrackInfo t) { return t.TrackId == ti.TrackId; })) {
+                if (!played.Exists( delegate (DatabaseTrackInfo t) { return t.TrackId == ti.TrackId; })) {
                     Log.DebugFormat ("Mirage - Adding {0}-{1} to exclude list",
                         ti.TrackId, ti.TrackTitle);
                     skipped.Add (ti);
@@ -309,11 +291,13 @@ namespace Banshee.Mirage
                     // We're playing another source
                     return;
                 }
+                played.Add(processed);
+
+                seeds.Clear();
                 seeds.Add(processed);
                 
                 List<DatabaseTrackInfo> skip = new List<DatabaseTrackInfo>();
-                
-                skip.AddRange(seeds);
+                skip.AddRange(played);
                 if (skipped.Count > 0)
                     skip.AddRange(skipped);
 
@@ -371,16 +355,23 @@ namespace Banshee.Mirage
 
         bool IBasicPlaybackController.First ()
         {
-            return ((IBasicPlaybackController)this).Next (false);
+            ServiceManager.PlayerEngine.OpenPlay(GetTrack(current_track));
+            return true;
         }
 
         bool IBasicPlaybackController.Next (bool restart)
         {
+            if (ServiceManager.PlayerEngine.CurrentTrack == null) {
+                ServiceManager.PlayerEngine.OpenPlay(GetTrack(current_track));
+                return true;
+            }
+
             // We get the next track before removing the current one
             DatabaseTrackInfo next_track = NextTrack;
             if (processed != ServiceManager.PlayerEngine.CurrentTrack) {
                 RemovePlayingTrack ();
             }
+
             current_track++;
             ServiceManager.PlayerEngine.OpenPlay (next_track);
             return true;
@@ -399,6 +390,9 @@ namespace Banshee.Mirage
         {
             DatabaseTrackInfo playing_track = GetTrack (current_track);
             if (playing_track != null) {
+                skipped.Add(playing_track);
+                Log.DebugFormat ("Mirage - Adding {0}-{1} to exclude list (skipped)",
+                    playing_track.TrackId, playing_track.TrackTitle);
                 RemoveTrack (playing_track);
             }
         }

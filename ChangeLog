@@ -1,3 +1,9 @@
+2009-03-04  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Mirage/MirageDbMigrator.cs: Bump model database version
+	* Banshee/PlaylistGeneratorSource.cs: Fix skipped list, only take last
+	song as a seed song for further playlists
+
 2009-03-03  Dominik Schnitzer <dominik@schnitzer.at>
 
 	* Mirage/CovarianceMatrix.cs: deleted, no longer needed integrated in

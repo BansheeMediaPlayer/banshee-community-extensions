@@ -39,7 +39,7 @@ namespace Mirage
         //       the driver to continue or return false if the step should 
         //       terminate the driver
 
-        protected const int CURRENT_VERSION = 2;
+        protected const int CURRENT_VERSION = 3;
         
         private Db mirage_db;
         
@@ -156,6 +156,14 @@ namespace Mirage
 
         [DatabaseVersion (2)]
         private bool Migrate_2 ()
+        {
+            mirage_db.Reset ();
+            
+            return true;
+        }
+
+        [DatabaseVersion (3)]
+        private bool Migrate_3 ()
         {
             mirage_db.Reset ();
             
