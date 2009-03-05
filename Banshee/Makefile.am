@@ -12,6 +12,7 @@ RESOURCES = \
 	res/source-mirage.png \
 	res/MirageMenu.xml \
 	res/GlobalUI.xml \
+	res/ActiveSourceUI.xml \
 	Banshee.Plugins.Mirage.addin.xml
 
 REFERENCES =  \

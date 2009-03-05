@@ -1,3 +1,10 @@
+2009-03-05  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/res/ActiveSourceUI.xml:
+	* Banshee/Makefile.am:
+	* Banshee/PlaylistGeneratorSource.cs: Add "Clear" and "Save Playlist"
+	button and implementation to the Playlist menu-bar.
+
 2009-03-04  Dominik Schnitzer <dominik@schnitzer.at>
 
 	* Mirage/MirageDbMigrator.cs: Bump model database version

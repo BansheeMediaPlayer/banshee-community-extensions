@@ -98,16 +98,23 @@ namespace Banshee.Mirage
                     AddinManager.CurrentLocalizer.GetString ("Remove all tracks from the play queue"),
                     OnClearPlaylist)
             );
+            action_service.GlobalActions.AddImportant (
+                new ActionEntry ("SaveMiragePlaylistAction", Stock.Add,
+                    AddinManager.CurrentLocalizer.GetString ("Save as Playlist"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Saves the Playlist to your Music Library"),
+                    OnSavePlaylist)
+            );
             
             action_service.GlobalActions.Add (new ToggleActionEntry [] {
                 new ToggleActionEntry ("ClearMiragePlaylistOnQuitAction", null, 
-                                       AddinManager.CurrentLocalizer.GetString ("Clear on Quit"), null, 
-                                       AddinManager.CurrentLocalizer.GetString ("Clear the play queue when quitting"), 
-                                       OnClearPlaylistOnQuit, 
-                                       MirageConfiguration.ClearOnQuitSchema.Get ())
+                    AddinManager.CurrentLocalizer.GetString ("Clear on Quit"), null, 
+                    AddinManager.CurrentLocalizer.GetString ("Clear the play queue when quitting"), 
+                    OnClearPlaylistOnQuit, 
+                    MirageConfiguration.ClearOnQuitSchema.Get ())
             });
             
             ui_id = action_service.UIManager.AddUiFromResource ("GlobalUI.xml");
+            Properties.SetString ("ActiveSourceUIResource", "ActiveSourceUI.xml");
             Properties.SetString ("GtkActionPath", "/PlaylistContextMenu");
             
             ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEvent, 
@@ -255,6 +262,31 @@ namespace Banshee.Mirage
             
             ToggleAction action = (ToggleAction)uia_service.GlobalActions["ClearMiragePlaylistOnQuitAction"];
             MirageConfiguration.ClearOnQuitSchema.Set (action.Active);
+        }
+
+        private class MiragePlaylistSource : PlaylistSource {
+
+            public MiragePlaylistSource() : 
+                base(AddinManager.CurrentLocalizer.GetString ("Mirage Playlist"), ServiceManager.SourceManager.MusicLibrary)
+            {
+            }
+
+            public void AddTracks (DatabaseTrackListModel from)
+            {
+                AddTrackRange(from, new Hyena.Collections.RangeCollection.Range(0, from.Count-1));
+                OnTracksAdded();
+            }
+        }
+
+        private void OnSavePlaylist (object o, EventArgs args)
+        {
+            MiragePlaylistSource playlist = new MiragePlaylistSource ();
+            playlist.Save ();
+            playlist.PrimarySource.AddChildSource (playlist);
+            playlist.AddTracks (DatabaseTrackModel);
+            playlist.NotifyUser ();
+
+            //SourceView.BeginRenameSource (playlist);
         }
 
         protected override void OnTracksRemoved ()
