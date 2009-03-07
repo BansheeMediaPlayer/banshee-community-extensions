@@ -163,10 +163,10 @@ namespace Banshee.Mirage
                     VALUES (NULL, ?, -1, 0, 1)", playlist_name));
             }
         }
-        
-        public delegate void UpdatePlaylistDelegate(int[] playlist);
 
-        protected void UpdatePlaylist (int[] playlist)
+        public delegate void UpdatePlaylistDelegate(int[] playlist, bool append);
+        
+        protected void UpdatePlaylist (int[] playlist, bool append)
         {
             Gtk.Application.Invoke(delegate {
                 if (playlist == null) {
@@ -176,7 +176,13 @@ namespace Banshee.Mirage
                 
                 int length_wanted = MirageConfiguration.PlaylistLength.Get ();
                 lock (DatabaseTrackModel) {
-                    RemoveTrackRange (DatabaseTrackModel, new Hyena.Collections.RangeCollection.Range (current_track + 1, Count - 1));
+
+                    // check if we have to delete the suggested songs, or just
+                    // append
+                    if (!append) {
+                        RemoveTrackRange (DatabaseTrackModel, new Hyena.Collections.RangeCollection.Range (current_track+1, Count-1));
+                    }
+
                     int sameArtistCount = 0;
                     int i = 0;
                     int pi = 0;
@@ -221,8 +227,13 @@ namespace Banshee.Mirage
             get { return SourceMergeType.ModelSelection; }
         }
         
-        public override void MergeSourceInput (Source source, SourceMergeType mergeType)
+        public override void MergeSourceInput (Source from, SourceMergeType mergeType)
         {
+            DatabaseSource source = from as DatabaseSource;
+            if (source == null || !(source.TrackModel is DatabaseTrackListModel)) {
+                return;
+            }
+
             bool was_empty = (Count == 0);
 
             // if playlist is empty start a new one
@@ -236,26 +247,31 @@ namespace Banshee.Mirage
                 played.Clear();
                 played.AddRange(seeds);
 
-                SimilarTracks (seeds, seeds);
+                SimilarTracks (seeds, played, false);
 
             // if playlist is not empty append the songs
             } else {
-                played.AddRange(suggested);
-                base.MergeSourceInput (source, mergeType);
 
                 seeds.Clear();
-                /* find seeds from d&d input
-                for (int i = ; i < TrackModel.Count; i++) {
-                    DatabaseTrackInfo ti = (DatabaseTrackInfo)TrackModel[i];
+                DatabaseTrackListModel tm = (DatabaseTrackListModel)(source.TrackModel);
+                CachedList<DatabaseTrackInfo> cached_list = CachedList<DatabaseTrackInfo>.CreateFromModelSelection (tm);
+                foreach (DatabaseTrackInfo ti in cached_list) {
                     seeds.Add(ti);
                 }
-                */
 
-                List<DatabaseTrackInfo> skip = new List<DatabaseTrackInfo>();
-                skip.AddRange(played);
-                skip.AddRange(skipped);
+                base.MergeSourceInput (source, mergeType);
 
-                SimilarTracks (seeds, skip);
+                // Add the currently suggested songs to the played list, so
+                // they (and all added songs) do not get removed when the
+                // playlist is updated
+                played.AddRange(suggested);
+                played.AddRange(seeds);
+
+                List<DatabaseTrackInfo> exclude = new List<DatabaseTrackInfo>();
+                exclude.AddRange(played);
+                exclude.AddRange(skipped);
+
+                SimilarTracks (seeds, exclude, true);
             }
         }
         
@@ -372,17 +388,16 @@ namespace Banshee.Mirage
                 seeds.Clear();
                 seeds.Add(processed);
                 
-                List<DatabaseTrackInfo> skip = new List<DatabaseTrackInfo>();
-                skip.AddRange(played);
-                if (skipped.Count > 0)
-                    skip.AddRange(skipped);
+                List<DatabaseTrackInfo> exclude = new List<DatabaseTrackInfo>();
+                exclude.AddRange(played);
+                exclude.AddRange(skipped);
 
-                SimilarTracks(seeds, skip);
+                SimilarTracks(seeds, exclude, false);
             }
         }
 
         private void SimilarTracks(List<DatabaseTrackInfo> tracks,
-                List<DatabaseTrackInfo> exclude)
+                List<DatabaseTrackInfo> exclude, bool append)
         {
             int[] trackIds = new int[tracks.Count];
             for (int i = 0; i < tracks.Count; i++) {
@@ -396,7 +411,7 @@ namespace Banshee.Mirage
                 excludeTrackIds[i] = exclude[i].TrackId;
             }
 
-            SimilarityCalculator sc = new SimilarityCalculator(trackIds, excludeTrackIds, db, UpdatePlaylist);
+            SimilarityCalculator sc = new SimilarityCalculator(trackIds, excludeTrackIds, db, UpdatePlaylist, append);
             Thread similarityCalculatorThread = new Thread(new ThreadStart(sc.Compute));
             similarityCalculatorThread.Start();
         }

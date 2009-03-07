@@ -1,5 +1,13 @@
 2009-03-07  Dominik Schnitzer <dominik@schnitzer.at>
 
+	* Banshee/SimilarityCalculator.cs:
+	* Banshee/PlaylistGeneratorSource.cs: Fix issue #28: "more manually added
+	songs are removed and not integrated". Manually added songs are appended
+	to the current playlist, they are added to the "played" list so they are
+	not removed, new suggestions for these songs are computed and appended.
+
+2009-03-07  Dominik Schnitzer <dominik@schnitzer.at>
+
 	* Banshee/MiragePlugin.cs: Add "--mirage-db=" debugging helper. Use the
 	command line parameter if you want Banshee to use a different Mirage
 	database.
