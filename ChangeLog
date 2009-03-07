@@ -1,3 +1,13 @@
+2009-03-07  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/MiragePlugin.cs: Add "--mirage-db=" debugging helper. Use the
+	command line parameter if you want Banshee to use a different Mirage
+	database.
+
+	* Banshee/res/ActiveSourceUI.xml:
+	* Banshee/PlaylistGeneratorSource.cs: Playlist generation fixes. Not
+	finished yet.
+
 2009-03-05  Dominik Schnitzer <dominik@schnitzer.at>
 
 	* Banshee/res/ActiveSourceUI.xml:

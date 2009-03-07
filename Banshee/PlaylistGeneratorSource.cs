@@ -98,10 +98,18 @@ namespace Banshee.Mirage
                     AddinManager.CurrentLocalizer.GetString ("Remove all tracks from the play queue"),
                     OnClearPlaylist)
             );
+            /* TODO: Add Ban Button or "Exclude from Playlists"
+            action_service.GlobalActions.AddImportant (
+                new ActionEntry ("BanFromMiragePlaylistAction", Stock.No,
+                    AddinManager.CurrentLocalizer.GetString ("Ban Song"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Permanently ban the selected song from generated playlists"),
+                    OnBanFromPlaylist)
+            );
+            */
             action_service.GlobalActions.AddImportant (
                 new ActionEntry ("SaveMiragePlaylistAction", Stock.Add,
                     AddinManager.CurrentLocalizer.GetString ("Save as Playlist"), null,
-                    AddinManager.CurrentLocalizer.GetString ("Saves the Playlist to your Music Library"),
+                    AddinManager.CurrentLocalizer.GetString ("Save the Playlist to your Music Library"),
                     OnSavePlaylist)
             );
             
@@ -112,6 +120,7 @@ namespace Banshee.Mirage
                     OnClearPlaylistOnQuit, 
                     MirageConfiguration.ClearOnQuitSchema.Get ())
             });
+
             
             ui_id = action_service.UIManager.AddUiFromResource ("GlobalUI.xml");
             Properties.SetString ("ActiveSourceUIResource", "ActiveSourceUI.xml");
@@ -215,9 +224,10 @@ namespace Banshee.Mirage
         public override void MergeSourceInput (Source source, SourceMergeType mergeType)
         {
             bool was_empty = (Count == 0);
-            base.MergeSourceInput (source, mergeType);
 
+            // if playlist is empty start a new one
             if (was_empty) {
+                base.MergeSourceInput (source, mergeType);
                 seeds.Clear();
                 for (int i = 0; i < TrackModel.Count; i++) {
                     seeds.Add ((DatabaseTrackInfo)TrackModel[i]);
@@ -227,6 +237,25 @@ namespace Banshee.Mirage
                 played.AddRange(seeds);
 
                 SimilarTracks (seeds, seeds);
+
+            // if playlist is not empty append the songs
+            } else {
+                played.AddRange(suggested);
+                base.MergeSourceInput (source, mergeType);
+
+                seeds.Clear();
+                /* find seeds from d&d input
+                for (int i = ; i < TrackModel.Count; i++) {
+                    DatabaseTrackInfo ti = (DatabaseTrackInfo)TrackModel[i];
+                    seeds.Add(ti);
+                }
+                */
+
+                List<DatabaseTrackInfo> skip = new List<DatabaseTrackInfo>();
+                skip.AddRange(played);
+                skip.AddRange(skipped);
+
+                SimilarTracks (seeds, skip);
             }
         }
         
@@ -289,6 +318,12 @@ namespace Banshee.Mirage
             //SourceView.BeginRenameSource (playlist);
         }
 
+        /*
+        private void OnBanFromPlaylist (object o, EventArgs args)
+        {
+        }
+        */
+
         protected override void OnTracksRemoved ()
         {
             if (ServiceManager.SourceManager.ActiveSource != this) {
@@ -306,6 +341,15 @@ namespace Banshee.Mirage
                 }
             }
             Reload ();
+        }
+
+        private bool ContainsTrack(List<DatabaseTrackInfo> tlist, DatabaseTrackInfo ti)
+        {
+            return tlist.Exists(
+                delegate (DatabaseTrackInfo t)
+                {
+                    return t.TrackId == ti.TrackId;
+                });
         }
        
         private void Refresh ()
@@ -376,10 +420,18 @@ namespace Banshee.Mirage
                 case PlayerEvent.Iterate:
                     // if more than 60% of a track is played, use this track as
                     // a seed song for the next tracks.
+                   
                     if ((processed != ServiceManager.PlayerEngine.CurrentTrack) &&
                             (ServiceManager.PlayerEngine.Position > 
                              ServiceManager.PlayerEngine.Length * 0.6)) {
-                        Refresh ();
+
+                        // only refresh if the track was not played yet
+                        if (!ContainsTrack(played, ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo)) {
+                            Refresh ();
+                        } else {
+                            processed = ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo;
+                        }
+
                     }
                     break;
             }
@@ -400,7 +452,8 @@ namespace Banshee.Mirage
 
             // We get the next track before removing the current one
             DatabaseTrackInfo next_track = NextTrack;
-            if (processed != ServiceManager.PlayerEngine.CurrentTrack) {
+            if ((processed != ServiceManager.PlayerEngine.CurrentTrack) &&
+                    (!ContainsTrack(played, ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo))) {
                 RemovePlayingTrack ();
             }
 

@@ -66,19 +66,28 @@ namespace Banshee.Mirage
         void IExtensionService.Initialize ()
         {
             action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
-            
-            string xdgcachedir = Environment.GetEnvironmentVariable("XDG_CACHE_HOME");
-            if (xdgcachedir == null) {
-                xdgcachedir = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + 
-                    "/.cache";
+
+            string dbfile;
+
+            // debugging option: check if we need to load a different database
+            // file.
+            if (Banshee.Base.ApplicationContext.CommandLine.Contains ("mirage-db")) {
+                 dbfile = Banshee.Base.ApplicationContext.CommandLine["mirage-db"];
+            } else {
+                string xdgcachedir = Environment.GetEnvironmentVariable("XDG_CACHE_HOME");
+                if (xdgcachedir == null) {
+                    xdgcachedir = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + 
+                        "/.cache";
+                }
+                string dbdir = xdgcachedir + "/banshee-mirage";
+                if (!Directory.Exists(dbdir)) {
+                    Directory.CreateDirectory(dbdir);
+                }
+                dbfile = dbdir + "/mirage.db";
             }
-            string dbdir = xdgcachedir + "/banshee-mirage";
-            if (!Directory.Exists(dbdir)) {
-                Directory.CreateDirectory(dbdir);
-            }
-            string dbfile = dbdir + "/mirage.db";
 
             db = new Db(dbfile);
+            Log.Debug("Mirage - Database Initialize (dbfile: {0})", dbfile);
             
             jobsScheduled = 0;
             jobQueue = new Queue();

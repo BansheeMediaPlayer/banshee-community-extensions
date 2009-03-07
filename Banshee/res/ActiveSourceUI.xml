@@ -2,6 +2,7 @@
   <toolbar name="HeaderToolbar">
     <placeholder name="SourceActions">
         <toolitem name="MirageClear" action="ClearMiragePlaylistAction" />
+        <!--        <toolitem name="MirageBanFrom" action="BanFromMiragePlaylistAction" />-->
         <toolitem name="MirageSavePlaylist" action="SaveMiragePlaylistAction" />
     </placeholder>
   </toolbar>
