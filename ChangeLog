@@ -1,3 +1,8 @@
+2009-03-08  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/MirageConfiguration.cs: First step towards automatic scanning of
+	the music collection.
+
 2009-03-07  Dominik Schnitzer <dominik@schnitzer.at>
 
 	* Banshee/SimilarityCalculator.cs:
