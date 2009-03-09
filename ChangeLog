@@ -1,5 +1,9 @@
 2009-03-08  Dominik Schnitzer <dominik@schnitzer.at>
 
+	* NEWS: Release Mirage 0.5.
+
+2009-03-08  Dominik Schnitzer <dominik@schnitzer.at>
+
 	* Banshee/MirageConfiguration.cs: First step towards automatic scanning of
 	the music collection.
 

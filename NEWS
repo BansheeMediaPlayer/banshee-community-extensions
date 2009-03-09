@@ -1,3 +1,10 @@
+Mirage 0.5 - March 9, 2009
+   * Much faster song-analysis and playlist generation.
+   * Improved music similarity models.
+   * Integration of new songs in the Mirage playlist queue is now possible.
+   * Many playlist generation bugfixes.
+   * You can now easily save Mirage playlists to your music library.
+
 Mirage 0.4 - November 10, 2008
    * The Mirage playlist now behaves similarly to the play queue.
    * Several improvements to the song analysis.
