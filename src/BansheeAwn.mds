@@ -1,0 +1,17 @@
+<Combine name="BansheeAwn" fileversion="2.0">
+  <Configurations active="Release">
+    <Configuration name="Debug" ctype="CombineConfiguration">
+      <Entry build="True" configuration="Debug" />
+    </Configuration>
+    <Configuration name="Release" ctype="CombineConfiguration">
+      <Entry build="True" configuration="Release" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="Banshee.Awn" single="True">
+    <Execute type="None" entry="Banshee.Awn" />
+  </StartMode>
+  <MonoDevelop.ChangeLogAddIn.ChangeLogInfo policy="UpdateNearestChangeLog" />
+  <Entries>
+    <Entry filename="BansheeAwn.mdp" />
+  </Entries>
+</Combine>
