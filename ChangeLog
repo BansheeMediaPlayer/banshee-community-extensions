@@ -1,3 +1,8 @@
+2009-03-13  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* configure.ac: Use banshee-mirage for naming the translation
+	files, to avoid conflicts.
+
 2009-03-08  Dominik Schnitzer <dominik@schnitzer.at>
 
 	* NEWS: Release Mirage 0.5.
