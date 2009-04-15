@@ -12,6 +12,7 @@ namespace Banshee.Plugins.Lyrics
 {
 public abstract class LyricBaseSource
 {
+	protected string lyricURL;
 	
 	//constructor
 	protected bool can_add=false;
@@ -41,7 +42,22 @@ public abstract class LyricBaseSource
     
 	public virtual string GetCredits () { return ""; }
     
-
+	protected string ReadPageContent(String url)
+	{
+		//use always absolute url
+        if (!url.Contains(lyricURL))
+            url=lyricURL+url;
+    
+        string html=null;
+        try{
+            html = GetSource(url);
+        }catch(Exception e){
+        	Hyena.Log.Debug("Unable to contact server " + lyricURL +": " + e.Message);
+            return Catalog.GetString("Unable to contact server!");
+        }
+		return html;
+	}
+	
     protected string GetSource (string url)
     {
     string source = "";

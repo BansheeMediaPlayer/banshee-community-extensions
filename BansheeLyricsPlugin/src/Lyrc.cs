@@ -9,8 +9,6 @@ namespace Banshee.Plugins.Lyrics
 {
 public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
 {
-	private string lyricURL="http://lyrc.com.ar/en/";
-	
 	private string suggestion=null;
 	
 	public override string Name { get { return "<Lyrc> www.lyrc.com.ar"; }}
@@ -18,24 +16,11 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
 	
 	public Lyrc()
 	{
+		lyricURL = "http://lyrc.com.ar/en/";
 		can_add=true;
 	}
 	
-	private string ReadPageContent(String url)
-	{
-		//use always absolute url
-        if (!url.Contains(lyricURL))
-            url=lyricURL+url;
-    
-        string html=null;
-        try{
-            html = base.GetSource(url);
-        }catch(Exception e){
-        	Console.WriteLine("unable to contact server!"+e.Message);
-            return Catalog.GetString("Unable to contact server!");
-        }
-		return html;
-	}
+	
 	
 	private string ParseSuggestions(string toparse_html)
 	{

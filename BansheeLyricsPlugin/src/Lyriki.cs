@@ -8,29 +8,12 @@ namespace Banshee.Plugins.Lyrics
 {
 public class Lyriki : Banshee.Plugins.Lyrics.LyricBaseSource
 {
-	private string lyricURL="http://lyricwiki.org";
 	public override string Name { get { return "<LyricWiki> lyricwiki.org"; }}
 	public override string Url { get { return lyricURL; }}
 	
 	public Lyriki(){
+		base.lyricURL = "http://lyricwiki.org";
 		can_add=false;
-	}
-	
-        
-	private string ReadPageContent(String Url)
-	{
-		//use always absolute url
-        if (!Url.Contains(lyricURL))
-            Url=lyricURL+Url;
-        
-        string html=null;
-        try{
-            html = base.GetSource(Url);
-         }catch(Exception e){
-        	Console.WriteLine("unable to contact server!"+e.Message);
-            return "Unable to contact server!";
-        }
-		return html;
 	}
 		
     public override string GetLyrics(String Url)

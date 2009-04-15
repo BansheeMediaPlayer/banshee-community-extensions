@@ -13,6 +13,9 @@ using GConf;
 using System.IO;
 using Mono.Unix;
 
+using Banshee.Collection.Gui;
+using Banshee.ServiceStack;
+
 namespace Banshee.Plugins.Lyrics
 {
 public partial class LyricsWindow : Gtk.Window
@@ -61,12 +64,13 @@ public partial class LyricsWindow : Gtk.Window
 		string artist= BansheeWidgets.CurrentTrack.GetArtist();
 		string title = BansheeWidgets.CurrentTrack.GetTitle();
 		string album = BansheeWidgets.CurrentTrack.GetAlbum();
-		Pixbuf cover = null;
-		try {
-			cover = BansheeWidgets.GetCover();
-		}catch(Exception e) {
-			Console.WriteLine(e.Message);
+
+		ArtworkManager art_manager = ServiceManager.Get<ArtworkManager> ();
+		Pixbuf cover = art_manager.LookupPixbuf(BansheeWidgets.CurrentTrack.GetCurrentTrack().ArtworkId);
+		if (cover == null) {
+			cover = Banshee.Gui.IconThemeUtils.LoadIcon (32, "audio-x-generic");
 		}
+		
 		this.lyricsheader.Update(artist, title, album, cover);		
 	}
 	
@@ -85,7 +89,7 @@ public partial class LyricsWindow : Gtk.Window
 		base.Show();
 	}
 	
-	/*begin event handlers*/
+	/*event handlers*/
 	void OnClose(object sender, EventArgs args)
 	{
 		this.Hide();
