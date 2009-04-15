@@ -58,6 +58,7 @@ check_autotool_version pkg-config 0.14.0
 
 run aclocal -I build/m4/shamrock $ACLOCAL_FLAGS
 run autoconf
+run autoheader
 run automake --gnu --add-missing --force --copy \
 	-Wno-portability -Wno-portability
 
