@@ -1,8 +1,8 @@
-AC_INIT([BansheeLyricsPlugin], [0.6])
+AC_INIT
 AC_CONFIG_SRCDIR([README])
 AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE([dist-bzip2 tar-ustar])
+AM_INIT_AUTOMAKE(BansheeLyricsPlugin, 1.0)
 AM_MAINTAINER_MODE
 
 #AC_PROG_INTLTOOL([0.23])
