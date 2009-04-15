@@ -58,7 +58,6 @@ public class Lyriki2 :Banshee.Plugins.Lyrics.LyricBaseSource
        	string url = string.Format(lyricURL +"/{0}:{1}",System.Web.HttpUtility.UrlEncode(base.cleanArtistName(artist)),
 			                       System.Web.HttpUtility.UrlEncode(base.cleanSongTitle(title)));
 		string lyriki_url = lyricURL + "/";
-		
 		/*transform url to match real lyricwiki url form*/
 		string   relative_url    = (url.Replace("+","_")).Replace(lyricURL+"/","");
 		string[] splitted_string =  relative_url.Split('_');
