@@ -52,13 +52,13 @@ namespace Banshee.Plugins.Lyrics
 			
 			if(album == null || album == String.Empty) {
 				this.lblAlbum_Artist.Markup = String.Format(
-                    "<span color=\"{0}\">{1}</span>  {2}",
+                    "<span color=\"{0}\">{1}</span> {2}",
                     hex_blend, 
                     GLib.Markup.EscapeText(Constants.lbl_artist),
                     GLib.Markup.EscapeText(artist));
             } else {
                 this.lblAlbum_Artist.Markup = String.Format(
-                    "<span color=\"{0}\">{1}</span>  {3}  <span color=\"{0}\">{2}</span>  {4}",
+                    "<span color=\"{0}\">{1}</span> {3} <span color=\"{0}\">{2}</span> {4}",
                     hex_blend, 
                     GLib.Markup.EscapeText(Constants.lbl_artist),
                     GLib.Markup.EscapeText(Constants.lbl_album),
