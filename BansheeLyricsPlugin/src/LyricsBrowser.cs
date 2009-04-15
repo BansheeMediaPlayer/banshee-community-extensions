@@ -203,7 +203,9 @@ namespace Banshee.Plugins.Lyrics
 			this.textBrowser.Buffer.Text="";
 			LyricsManager.Instance.AddLyrics(trackInfo.saved_artist,trackInfo.saved_title,lyric);
 			SwitchTo(Constants.HTML_MODE);
-			this.SaveLyricEvent(this,new SaveLyricEventArgs(null));
+			
+			if(this.SaveLyricEvent != null)
+				this.SaveLyricEvent(this,new SaveLyricEventArgs(null));
 		}
 				
 		void OnSelect(object sender, EventArgs args)
