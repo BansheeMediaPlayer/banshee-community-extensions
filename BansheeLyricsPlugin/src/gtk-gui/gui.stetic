@@ -7,6 +7,7 @@
   <import>
     <widget-library name="gtkhtml-sharp, Version=3.16.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="Banshee.ThickClient, Version=1.4.0.0, Culture=neutral" />
+    <widget-library name="Banshee.Widgets, Version=1.4.0.0, Culture=neutral" />
     <widget-library name="../Banshee.Lyrics.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="Banshee.Plugins.Lyrics.LyricsBrowser" design-size="427 376">

@@ -65,16 +65,21 @@ namespace Banshee.Plugins.Lyrics
                     GLib.Markup.EscapeText(artist), 
                     GLib.Markup.EscapeText(album));
             }
-			pixbuf_image	= cover.ScaleSimple(size - 4, size - 4, InterpType.Bilinear);
-			Pixbuf container = new Pixbuf(Gdk.Colorspace.Rgb, true, 8, size, size);
-            Pixbuf container2 = new Pixbuf(Gdk.Colorspace.Rgb, true, 8, size - 2, size - 2);
+			
+			if(cover != null) {
+				pixbuf_image	= cover.ScaleSimple(size - 4, size - 4, InterpType.Bilinear);
+				Pixbuf container = new Pixbuf(Gdk.Colorspace.Rgb, true, 8, size, size);
+				Pixbuf container2 = new Pixbuf(Gdk.Colorspace.Rgb, true, 8, size - 2, size - 2);
             
-            container.Fill(0x00000077);
-            container2.Fill(0xffffff55);
+				container.Fill(0x00000077);
+				container2.Fill(0xffffff55);
             
-            container2.CopyArea(0, 0, container2.Width, container2.Height, container, 1, 1);
-            pixbuf_image.CopyArea(0, 0, pixbuf_image.Width, pixbuf_image.Height, container, 2, 2);            
-			imgArtist.Pixbuf=container;
+				container2.CopyArea(0, 0, container2.Width, container2.Height, container, 1, 1);
+				pixbuf_image.CopyArea(0, 0, pixbuf_image.Width, pixbuf_image.Height, container, 2, 2);            
+				imgArtist.Pixbuf = container;	
+			}else {
+				imgArtist.Pixbuf = null;
+			}
 		}
 		
 		public static Gdk.Color ColorBlend(Gdk.Color a, Gdk.Color b)

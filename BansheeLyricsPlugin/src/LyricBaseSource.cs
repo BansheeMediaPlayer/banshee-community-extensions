@@ -69,7 +69,20 @@ public abstract class LyricBaseSource
     reader.Close();
     return source;
     }
+	
+	public string cleanArtistName(string artist) {
+		if(artist.EndsWith(" ")) {
+			artist = artist.Substring(0,artist.Length-2);
+		}
+		return artist;
+	}
 		
+	public string cleanSongTitle(string songname) {
+		if(songname.EndsWith(" ")) {
+			songname = songname.Substring(0,songname.Length-1);
+		}
+		return songname;
+	}
 	
 		
 	

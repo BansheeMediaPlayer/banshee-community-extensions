@@ -60,8 +60,13 @@ public partial class LyricsWindow : Gtk.Window
 		string artist= BansheeWidgets.CurrentTrack.GetArtist();
 		string title = BansheeWidgets.CurrentTrack.GetTitle();
 		string album = BansheeWidgets.CurrentTrack.GetAlbum();
-		Pixbuf cover = BansheeWidgets.GetCover();
-		this.lyricsheader.Update(artist, title, album, cover);
+		Pixbuf cover = null;
+		try {
+			cover = BansheeWidgets.GetCover();
+		}catch(Exception e) {
+			Console.WriteLine(e.Message);
+		}
+		this.lyricsheader.Update(artist, title, album, cover);		
 	}
 	
 	public void UpdateBrowser()

@@ -60,8 +60,8 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
 		string url = string.Format(
                          "http://lyrc.com.ar/en/tema1en.php" +
                          "?artist={0}&songname={1}",
-                         System.Web.HttpUtility.UrlEncode(artist),
-                         System.Web.HttpUtility.UrlEncode(title)
+                         System.Web.HttpUtility.UrlEncode(base.cleanArtistName(artist)),
+                         System.Web.HttpUtility.UrlEncode(base.cleanSongTitle(title))
                          );
 		string html=ReadPageContent(url);
 		lyrics=ParseSuggestions(html);
@@ -94,8 +94,8 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
        	string url = string.Format(
                          "http://lyrc.com.ar/en/tema1en.php" +
                          "?artist={0}&songname={1}",
-                         System.Web.HttpUtility.UrlEncode(artist),
-                         System.Web.HttpUtility.UrlEncode(title)
+                         System.Web.HttpUtility.UrlEncode(base.cleanArtistName(artist)),
+                         System.Web.HttpUtility.UrlEncode(base.cleanSongTitle(title))
                          );
     	return GetLyrics(url);
     }

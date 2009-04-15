@@ -52,15 +52,15 @@ public class Lyriki : Banshee.Plugins.Lyrics.LyricBaseSource
 		
     public override string GetSuggestions(string artist,string title)
 	{	
-		string url = string.Format(lyricURL + "/{0}:{1}",System.Web.HttpUtility.UrlEncode(artist),
+		string url = string.Format(lyricURL + "/{0}:{1}",System.Web.HttpUtility.UrlEncode(base.cleanArtistName(artist)),
 					                            System.Web.HttpUtility.UrlEncode(BansheeWidgets.CurrentTrack.GetAlbum()));
 		return GetLyrics(url.Replace("+","_"));	
 	}
 		
     public override string GetLyrics(string artist, string title)
     {
-       	string url = string.Format(lyricURL +"/{0}:{1}",System.Web.HttpUtility.UrlEncode(artist),
-			                       System.Web.HttpUtility.UrlEncode(title));
+       	string url = string.Format(lyricURL +"/{0}:{1}",System.Web.HttpUtility.UrlEncode(base.cleanArtistName(artist)),
+			                       System.Web.HttpUtility.UrlEncode(base.cleanSongTitle(title)));
 		string lyricwiki_url = lyricURL + "/";
 		
 		/*transform url to match real lyricwiki url form*/
@@ -69,6 +69,9 @@ public class Lyriki : Banshee.Plugins.Lyrics.LyricBaseSource
 		/*make first character of each word upper*/
 		for (int i = 0 ; i < splitted_string.Length ; i++)
 		{
+			if (splitted_string[i].Length == 0) {
+				continue;
+			}
 			char[] temp = splitted_string[i].ToCharArray();
 			lyricwiki_url += temp[0].ToString().ToUpper() +  splitted_string[i].Substring(1, splitted_string[i].Length - 1) +"_";
 		}
