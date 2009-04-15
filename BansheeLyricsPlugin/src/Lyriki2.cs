@@ -22,7 +22,8 @@ namespace Banshee.Plugins.Lyrics
 public class Lyriki2 :Banshee.Plugins.Lyrics.LyricBaseSource
 {
 	public override string Name { get { return "<Lyriki> www.lyriki.com"; }}
-    public override string Url { get { return lyricURL; }}
+   
+	public override string Url { get { return lyricURL; }}
 	
     public Lyriki2()
 	{

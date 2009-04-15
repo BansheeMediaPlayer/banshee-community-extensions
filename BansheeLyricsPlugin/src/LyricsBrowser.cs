@@ -149,8 +149,6 @@ namespace Banshee.Plugins.Lyrics
 		
 		void OnLinkClicked (object obj, LinkClickedArgs args)
 		{
-			Console.WriteLine(args.Url);
-			
 			if(args.Url == Constants.add_href_changed){
 				this.SwitchTo(Constants.INSERT_MODE);
 			}else{

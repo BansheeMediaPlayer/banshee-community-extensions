@@ -19,17 +19,19 @@ public abstract class LyricBaseSource
 	protected LyricBaseSource(){
 	}
 		
-    public abstract string Name {
+    public abstract string Name 
+	{
         get;
     }
-    public abstract string Url {
-            get;
+    public abstract string Url 
+	{
+        get;
     }
     
     public virtual string GetLyrics(string Url)
-        {
+    {
             return null;
-        }
+    }
     public virtual string GetLyrics(string artist, string title)
     {
         return null;

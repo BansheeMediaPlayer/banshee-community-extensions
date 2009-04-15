@@ -23,11 +23,11 @@ public class LyricsCache {
 	{
 		try{
 			if (File.Exists(filename)){
-				Console.WriteLine("deleting file "+filename);	
+				Hyena.Log.Debug("Deleting cached lyric: " + filename);	
 				File.Delete(filename);
 			}
 		}catch(Exception e){
-	        Console.WriteLine("Unable to delete file: "+e.Message);
+			Hyena.Log.DebugFormat("Unable to delete lyric {0}: {1} ",filename,e.Message);	
 	        //do nothing
 	    }
 	}
@@ -43,7 +43,7 @@ public class LyricsCache {
 			if (File.Exists(filename))
 				return File.ReadAllText(filename);	
 		}catch(Exception e){
-	        Console.WriteLine("Unable to read file: "+filename+"\n"+e.Message);
+	        Hyena.Log.DebugFormat("Unable to read liryc {0}: {1} ",filename,e.Message);
 	        //do nothing
 		}
 		return null;
@@ -63,7 +63,7 @@ public class LyricsCache {
 					File.Delete(old_filename);
 				}
 			}catch(Exception e){
-				Console.WriteLine("problem moving lyrics file:"+old_filename+"  "+e.Message);	
+				Hyena.Log.DebugFormat("Problem moving lyrics file {0}: {1}",old_filename,e.Message);	
 			}	
 		}
 		from_dir=null;
@@ -97,9 +97,9 @@ public class LyricsCache {
 	        stream.Close();
 	        //write the lyrics
 	        File.WriteAllText(filename,lyrics);
-	        Console.WriteLine("lyrics successfull written "+filename);
+	        Hyena.Log.Debug("Lyric successfully written " + filename);
 	    }catch(Exception e){
-	        Console.WriteLine("Unable to save lyrics: "+e.Message);
+	        Hyena.Log.DebugFormat("Unable to save lyric {0}: {1} ",filename,e.Message);
 	    }
 		
 	    return;

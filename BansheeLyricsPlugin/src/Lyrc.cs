@@ -20,8 +20,6 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
 		can_add=true;
 	}
 	
-	
-	
 	private string ParseSuggestions(string toparse_html)
 	{
 			string parsed_html=null;
@@ -67,8 +65,7 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
         	Match m = r.Match(html);
         	lyrics = m.Groups[1].ToString();
 		} else if (ParseSuggestions(html)!=null){
-			    Console.WriteLine("find suggestions");
-				suggestion=ParseSuggestions(html);
+			suggestion=ParseSuggestions(html);
 		}
     	return lyrics;
     }
@@ -111,17 +108,11 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
             dataStream.Close ();
             // Get the response.
             WebResponse response = request.GetResponse ();
-            // Display the status.
-            Console.WriteLine (((HttpWebResponse)response).StatusDescription);
             // Get the stream containing content returned by the server.
             dataStream = response.GetResponseStream ();
             // Open the stream using a StreamReader for easy access.
             StreamReader reader = new StreamReader (dataStream);
-            // Read the content.
-            string responseFromServer = reader.ReadToEnd ();
-            // Display the content.
-            Console.WriteLine (responseFromServer);
-            // Clean up the streams.
+             // Clean up the streams.
             reader.Close ();
             dataStream.Close ();
             response.Close ();

@@ -98,7 +98,6 @@ public class LyricsManager
 				
 		//when the LyricsManager thread are slower don't update the lyric
 		if (LyricOutOfDate(artist,title)){
-				Console.WriteLine("slow thread.");
 				return null;
 		}
 		

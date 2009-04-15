@@ -9,6 +9,7 @@ namespace Banshee.Plugins.Lyrics
 public class Lyriki : Banshee.Plugins.Lyrics.LyricBaseSource
 {
 	public override string Name { get { return "<LyricWiki> lyricwiki.org"; }}
+	
 	public override string Url { get { return lyricURL; }}
 	
 	public Lyriki(){

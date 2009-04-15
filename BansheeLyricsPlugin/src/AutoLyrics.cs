@@ -9,20 +9,24 @@ namespace Banshee.Plugins.Lyrics
 {
 public class AutoLyrics : Banshee.Plugins.Lyrics.LyricBaseSource
 {
-	
 	private string suggestion=null;
+
 	public AutoLyrics(){
 		base.lyricURL = "http://www.autolyrics.com/";
 		can_add=false;
 	}
-	public override string Name { get { return "<Autolyrics> http://www.autolyrics.com/"; }}
-    public override string Url { get { return lyricURL; }}                 
 	
-	public override string GetSuggestions(string artist,string title){
-			return suggestion;
+	public override string Name { get { return "<Autolyrics> http://www.autolyrics.com/"; }}
+    
+	public override string Url { get { return lyricURL; }}                 
+	
+	public override string GetSuggestions(string artist,string title)
+	{
+		return suggestion;
 	}
 			
-    public override string GetLyrics(String url){
+    public override string GetLyrics(String url)
+	{
         //use always absolute url
         string lyrics=null;
         string html=ReadPageContent(url);
@@ -52,12 +56,15 @@ public class AutoLyrics : Banshee.Plugins.Lyrics.LyricBaseSource
                          );
     	return GetLyrics(url);
     }
-	public override void AddLyrics(string artist,string title,string album, string year,string lyric){
+	
+	public override void AddLyrics(string artist,string title,string album, string year,string lyric)
+	{
 	
     }
-    public override string GetCredits ()
+   
+	public override string GetCredits ()
     {
       return string.Format("Powered by {0} ({1})","AutoLyrics",this.Url);
     }
-    }
+   }
 }
