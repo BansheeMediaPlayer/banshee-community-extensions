@@ -42,10 +42,12 @@ public partial class LyricsWindow : Gtk.Window
 			args.RetVal = true;
 		};
 		
-		buttonRefresh.Clicked      += new EventHandler(OnRefresh); 
-		buttonClose.Clicked		   += new EventHandler(OnClose);
-		LyricsPlugin.TextSaveEvent += new TextSaveEventHandler(OnLyricTextSave);
+		buttonRefresh.Clicked        += new EventHandler(OnRefresh); 
+		buttonClose.Clicked	     	 += new EventHandler(OnClose);
 		
+		lyricsBrowser.SaveLyricEvent += new SaveLyricEventHandler(OnLyricSave);
+		lyricsBrowser.ChangeModeEvent+= new ChangeModeEventHandler(OnBrowserChangeMode);
+			
 		lyricsBrowser.HideButtonArea();
 	}
 	
@@ -100,9 +102,17 @@ public partial class LyricsWindow : Gtk.Window
 		lyricsBrowser.OnRefresh(sender,null);
 	}
 			
-	void OnLyricTextSave (object sender, TextSaveEventArgs e)
+	void OnLyricSave (object sender, SaveLyricEventArgs e)
 	{
 		this.Update();
+	}
+	
+	void OnBrowserChangeMode(object sender, ChangeModeEventArgs e) {
+		if (e.mode == Constants.INSERT_MODE) {
+			this.buttonRefresh.Sensitive = false;
+		}else {
+			this.buttonRefresh.Sensitive = true;
+		}
 	}
 }
 }

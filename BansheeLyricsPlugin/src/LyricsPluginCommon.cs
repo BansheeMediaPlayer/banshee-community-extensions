@@ -19,7 +19,6 @@ public partial class LyricsPlugin
 {
 
 	public  static event 	LyricEventHandler	 LyricEvent;
-	public  static event 	TextSaveEventHandler TextSaveEvent;
 	private static 			LyricsWindow 		 dialog;
 	
 	private bool   			enabled = true;
@@ -101,13 +100,6 @@ public partial class LyricsPlugin
 	{
 		if(LyricEvent!=null)
 			LyricEvent(o,e);
-	}
-
-	public static void OnTextSaveEvent(System.Object o,TextSaveEventArgs e)
-	{
-		if(TextSaveEvent!=null){
-			TextSaveEvent(o,e);
-		}
 	}
 
 	private void OnToggleShow(object o, EventArgs args)

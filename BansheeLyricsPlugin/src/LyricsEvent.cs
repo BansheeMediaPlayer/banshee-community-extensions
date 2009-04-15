@@ -9,7 +9,6 @@ using System;
 namespace Banshee.Plugins.Lyrics
 {
 	public delegate void LyricEventHandler(object o, LyricEventArgs e);
-	public delegate void TextSaveEventHandler(object o, TextSaveEventArgs e);
 	
 	public class LyricEventArgs : EventArgs
 	{
@@ -20,15 +19,5 @@ namespace Banshee.Plugins.Lyrics
 		this.lyric=lyric;
 		}    
 
-	}
-	
-	public class TextSaveEventArgs : EventArgs
-	{
-		public readonly string arg;
-
-		public TextSaveEventArgs(string arg)
-		{
-		this.arg=arg;
-		}    
 	}
 }

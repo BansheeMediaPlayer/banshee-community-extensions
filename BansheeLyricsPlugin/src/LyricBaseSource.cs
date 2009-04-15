@@ -54,7 +54,7 @@ public abstract class LyricBaseSource
         try{
             html = GetSource(url);
         }catch(Exception e){
-        	Hyena.Log.Debug("Unable to contact server " + lyricURL +": " + e.Message);
+        	Hyena.Log.DebugFormat("Unable to contact server {0}: {1}",lyricURL,e.Message);
             return Catalog.GetString("Unable to contact server!");
         }
 		return html;

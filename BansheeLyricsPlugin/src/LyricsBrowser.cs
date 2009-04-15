@@ -11,12 +11,36 @@ using System.Threading;
 
 namespace Banshee.Plugins.Lyrics
 {
+	public delegate void SaveLyricEventHandler(object o, SaveLyricEventArgs e);
+	public delegate void ChangeModeEventHandler (object o, ChangeModeEventArgs e);
+
+	public class ChangeModeEventArgs : EventArgs
+	{
+		public readonly int mode;
+
+		public ChangeModeEventArgs(int mode)
+		{
+			this.mode = mode;
+		}    
+	}
+	
+	public class SaveLyricEventArgs : EventArgs
+	{
+		public readonly string arg;
+
+		public SaveLyricEventArgs(string arg)
+		{
+			this.arg=arg;
+		}    
+	}
+	
 	/*used to store current displayed track*/
 	public class SavedTrackInfo
 	{
 		
 		public SavedTrackInfo(){
 		}
+		
 		public string			artist;
 		public string			title;
 		public string			saved_artist;
@@ -24,7 +48,11 @@ namespace Banshee.Plugins.Lyrics
 	}
 	
 	public partial class LyricsBrowser : Gtk.Bin
-	{
+	{	
+
+		public event SaveLyricEventHandler  SaveLyricEvent;
+		public event ChangeModeEventHandler ChangeModeEvent;
+		
 		private 		HTML 				htmlBrowser;
 		private 		TextView			textBrowser;
 		private static	SavedTrackInfo		trackInfo;
@@ -39,7 +67,7 @@ namespace Banshee.Plugins.Lyrics
 		{			
 			trackInfo = new SavedTrackInfo();
 			
-			buttonSave.Clicked			+= new EventHandler(OnSave);
+			buttonSave.Clicked		+= new EventHandler(OnSave);
 			LyricsPlugin.LyricEvent += new LyricEventHandler(OnLyricEvent);
 			
 			InitHtmlBrowser();
@@ -100,6 +128,8 @@ namespace Banshee.Plugins.Lyrics
 				htmlBrowser.Hide();
 				textBrowser.Show();
 			}
+			if(ChangeModeEvent != null)
+				this.ChangeModeEvent(this, new ChangeModeEventArgs(mode));
 		}
 		
 		public void Update(string artist, string title)
@@ -173,7 +203,7 @@ namespace Banshee.Plugins.Lyrics
 			this.textBrowser.Buffer.Text="";
 			LyricsManager.Instance.AddLyrics(trackInfo.saved_artist,trackInfo.saved_title,lyric);
 			SwitchTo(Constants.HTML_MODE);
-			LyricsPlugin.OnTextSaveEvent(this,new TextSaveEventArgs(null));
+			this.SaveLyricEvent(this,new SaveLyricEventArgs(null));
 		}
 				
 		void OnSelect(object sender, EventArgs args)

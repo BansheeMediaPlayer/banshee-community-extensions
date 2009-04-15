@@ -34,7 +34,9 @@ namespace Banshee.Plugins.Lyrics
 			
 			this.Hide();
 		}
-		public void Update (string artist, string title,string album, Pixbuf cover){
+		
+		public void Update (string artist, string title,string album, Pixbuf cover)
+		{
 			if (Constants.current_mode == Constants.INSERT_MODE)
 				return;
 			
