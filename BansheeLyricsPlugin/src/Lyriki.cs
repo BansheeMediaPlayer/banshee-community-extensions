@@ -59,7 +59,6 @@ public class Lyriki : Banshee.Plugins.Lyrics.LyricBaseSource
 			lyricwiki_url += temp[0].ToString().ToUpper() +  splitted_string[i].Substring(1, splitted_string[i].Length - 1) +"_";
 		}
 		lyricwiki_url = lyricwiki_url.Substring(0,lyricwiki_url.Length - 1);
-		
 		//obtain the lyric from the given url
 		return GetLyrics(lyricwiki_url);
     }
