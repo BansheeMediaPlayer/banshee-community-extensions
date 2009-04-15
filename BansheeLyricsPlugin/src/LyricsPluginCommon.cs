@@ -26,8 +26,7 @@ public partial class LyricsPlugin
 	private uint   			ui_manager_id;
 	private ActionGroup 	actions;
 	
-	protected void InitPlugin(){		
-		Mono.Unix.Catalog.Init("banshee", "/usr/share/locale/");
+	protected void InitPlugin(){
 		CreatePluginDir();
 		InitDialog();
 	}

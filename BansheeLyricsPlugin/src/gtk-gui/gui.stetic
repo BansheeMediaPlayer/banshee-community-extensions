@@ -130,8 +130,22 @@
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <property name="BorderWidth">5</property>
-            <property name="Size">1</property>
+            <property name="Size">2</property>
             <property name="LayoutStyle">End</property>
+            <child>
+              <widget class="Gtk.Button" id="buttonRefresh">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="UseStock">True</property>
+                <property name="Type">StockItem</property>
+                <property name="StockId">gtk-refresh</property>
+                <property name="label">gtk-refresh</property>
+              </widget>
+              <packing>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
             <child>
               <widget class="Gtk.Button" id="buttonClose">
                 <property name="MemberName" />
@@ -143,6 +157,7 @@
                 <property name="label">gtk-close</property>
               </widget>
               <packing>
+                <property name="Position">1</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
               </packing>

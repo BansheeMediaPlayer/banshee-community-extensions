@@ -21,8 +21,8 @@ public class AutoLyrics : Banshee.Plugins.Lyrics.LyricBaseSource
 		//use always absolute url
         if (!url.Contains(lyricURL))
             url=lyricURL+url;
-        Console.WriteLine("loading url: "+url);
-        string html=null;
+        
+			string html=null;
         try{
             html = base.GetSource(url);
         }catch(Exception e){

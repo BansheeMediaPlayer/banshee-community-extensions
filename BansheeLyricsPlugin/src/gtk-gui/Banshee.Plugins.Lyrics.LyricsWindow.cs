@@ -23,6 +23,8 @@ namespace Banshee.Plugins.Lyrics {
         
         private Gtk.HButtonBox dialog1_ActionArea1;
         
+        private Gtk.Button buttonRefresh;
+        
         private Gtk.Button buttonClose;
         
         protected virtual void Build() {
@@ -70,6 +72,17 @@ namespace Banshee.Plugins.Lyrics {
             this.dialog1_ActionArea1.BorderWidth = ((uint)(5));
             this.dialog1_ActionArea1.LayoutStyle = ((Gtk.ButtonBoxStyle)(4));
             // Container child dialog1_ActionArea1.Gtk.ButtonBox+ButtonBoxChild
+            this.buttonRefresh = new Gtk.Button();
+            this.buttonRefresh.CanFocus = true;
+            this.buttonRefresh.Name = "buttonRefresh";
+            this.buttonRefresh.UseStock = true;
+            this.buttonRefresh.UseUnderline = true;
+            this.buttonRefresh.Label = "gtk-refresh";
+            this.dialog1_ActionArea1.Add(this.buttonRefresh);
+            Gtk.ButtonBox.ButtonBoxChild w4 = ((Gtk.ButtonBox.ButtonBoxChild)(this.dialog1_ActionArea1[this.buttonRefresh]));
+            w4.Expand = false;
+            w4.Fill = false;
+            // Container child dialog1_ActionArea1.Gtk.ButtonBox+ButtonBoxChild
             this.buttonClose = new Gtk.Button();
             this.buttonClose.CanDefault = true;
             this.buttonClose.CanFocus = true;
@@ -78,14 +91,15 @@ namespace Banshee.Plugins.Lyrics {
             this.buttonClose.UseUnderline = true;
             this.buttonClose.Label = "gtk-close";
             this.dialog1_ActionArea1.Add(this.buttonClose);
-            Gtk.ButtonBox.ButtonBoxChild w4 = ((Gtk.ButtonBox.ButtonBoxChild)(this.dialog1_ActionArea1[this.buttonClose]));
-            w4.Expand = false;
-            w4.Fill = false;
-            this.vbox2.Add(this.dialog1_ActionArea1);
-            Gtk.Box.BoxChild w5 = ((Gtk.Box.BoxChild)(this.vbox2[this.dialog1_ActionArea1]));
+            Gtk.ButtonBox.ButtonBoxChild w5 = ((Gtk.ButtonBox.ButtonBoxChild)(this.dialog1_ActionArea1[this.buttonClose]));
             w5.Position = 1;
             w5.Expand = false;
             w5.Fill = false;
+            this.vbox2.Add(this.dialog1_ActionArea1);
+            Gtk.Box.BoxChild w6 = ((Gtk.Box.BoxChild)(this.vbox2[this.dialog1_ActionArea1]));
+            w6.Position = 1;
+            w6.Expand = false;
+            w6.Fill = false;
             this.Add(this.vbox2);
             if ((this.Child != null)) {
                 this.Child.ShowAll();

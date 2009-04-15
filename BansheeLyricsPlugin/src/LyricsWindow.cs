@@ -39,6 +39,7 @@ public partial class LyricsWindow : Gtk.Window
 			args.RetVal = true;
 		};
 		
+		buttonRefresh.Clicked      += new EventHandler(OnRefresh); 
 		buttonClose.Clicked		   += new EventHandler(OnClose);
 		LyricsPlugin.TextSaveEvent += new TextSaveEventHandler(OnLyricTextSave);
 		
@@ -89,7 +90,12 @@ public partial class LyricsWindow : Gtk.Window
 	{
 		this.Hide();
 	}
-	
+			
+	void OnRefresh(object sender, EventArgs args)
+	{
+		lyricsBrowser.OnRefresh(sender,null);
+	}
+			
 	void OnLyricTextSave (object sender, TextSaveEventArgs e)
 	{
 		this.Update();

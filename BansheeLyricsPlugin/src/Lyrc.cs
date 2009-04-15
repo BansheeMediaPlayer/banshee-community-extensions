@@ -27,7 +27,6 @@ public class Lyrc : Banshee.Plugins.Lyrics.LyricBaseSource
         if (!url.Contains(lyricURL))
             url=lyricURL+url;
     
-		Console.WriteLine("loading url: "+url);
         string html=null;
         try{
             html = base.GetSource(url);

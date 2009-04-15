@@ -159,7 +159,7 @@ namespace Banshee.Plugins.Lyrics
 			}
 		}
 
-		void OnRefresh(object sender, EventArgs args)
+		public void OnRefresh(object sender, EventArgs args)
 		{
 				if (trackInfo.artist==null || trackInfo.title == null)
 					return;

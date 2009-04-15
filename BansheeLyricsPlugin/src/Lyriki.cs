@@ -23,7 +23,6 @@ public class Lyriki : Banshee.Plugins.Lyrics.LyricBaseSource
         if (!Url.Contains(lyricURL))
             Url=lyricURL+Url;
         
-		Console.WriteLine("loading url: "+Url);
         string html=null;
         try{
             html = base.GetSource(Url);
