@@ -37,6 +37,7 @@ public partial class LyricsWindow : Gtk.Window
 		this.WidthRequest=WIDTH;
 		this.WindowPosition=WindowPosition.Center;
 		
+		this.KeyPressEvent += OnKeyPressed;
 		this.DeleteEvent += delegate(object o, DeleteEventArgs args){
 			OnClose(this, null);
 			args.RetVal = true;
@@ -92,6 +93,11 @@ public partial class LyricsWindow : Gtk.Window
 	}
 	
 	/*event handlers*/
+	void OnKeyPressed(object sender,KeyPressEventArgs args) {
+		if(args.Event.Key == Gdk.Key.Escape) {
+			OnClose(this,null);
+		}
+	}
 	void OnClose(object sender, EventArgs args)
 	{
 		this.Hide();
