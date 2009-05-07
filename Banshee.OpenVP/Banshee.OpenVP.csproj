@@ -33,18 +33,38 @@
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Mono.Posix" />
-    <Reference Include="Tao.OpenGl, Version=2.1.0.7, Culture=neutral, PublicKeyToken=1ca010269a4501ef" />
-    <Reference Include="Tao.FreeGlut, Version=2.4.0.1, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d" />
-    <Reference Include="OpenVP, Version=0.0.1.0, Culture=neutral" />
-    <Reference Include="OpenVP.Core, Version=0.0.1.0, Culture=neutral" />
-    <Reference Include="Banshee.Core, Version=1.4.0.0, Culture=neutral" />
-    <Reference Include="Banshee.Services, Version=1.4.0.0, Culture=neutral" />
-    <Reference Include="Banshee.ThickClient, Version=1.4.0.0, Culture=neutral" />
-    <Reference Include="Mono.Addins, Version=0.3.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="Banshee.Widgets, Version=1.4.0.0, Culture=neutral" />
+    <Reference Include="Tao.OpenGl, Version=2.1.0.7, Culture=neutral, PublicKeyToken=1ca010269a4501ef">
+      <Package>tao-opengl-2.1</Package>
+    </Reference>
+    <Reference Include="Tao.FreeGlut, Version=2.4.0.1, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d">
+      <Package>tao-freeglut-2.4</Package>
+    </Reference>
+    <Reference Include="Mono.Addins, Version=0.3.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Package>mono-addins-0.2</Package>
+    </Reference>
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Tao.Platform.X11, Version=1.0.0.0, Culture=neutral, PublicKeyToken=701104b2da67a104" />
+    <Reference Include="Tao.Platform.X11, Version=1.0.0.0, Culture=neutral, PublicKeyToken=701104b2da67a104">
+      <Package>tao-opengl-2.1</Package>
+    </Reference>
+    <Reference Include="OpenVP, Version=0.0.1.0, Culture=neutral, PublicKeyToken=">
+      <Package>openvp</Package>
+    </Reference>
+    <Reference Include="OpenVP.Core, Version=0.0.1.0, Culture=neutral, PublicKeyToken=">
+      <Package>openvp.core</Package>
+    </Reference>
+    <Reference Include="Banshee.Core, Version=1.4.0.0, Culture=neutral, PublicKeyToken=">
+      <Package>banshee-1-core</Package>
+    </Reference>
+    <Reference Include="Banshee.Services, Version=1.4.0.0, Culture=neutral, PublicKeyToken=">
+      <Package>banshee-1-services</Package>
+    </Reference>
+    <Reference Include="Banshee.Widgets, Version=1.4.0.0, Culture=neutral, PublicKeyToken=">
+      <Package>banshee-1-thickclient</Package>
+    </Reference>
+    <Reference Include="Banshee.ThickClient, Version=1.4.0.0, Culture=neutral, PublicKeyToken=">
+      <Package>banshee-1-thickclient</Package>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -54,8 +74,8 @@
     <Compile Include="VisualizationDisplayWidget.cs" />
     <Compile Include="gtk-gui\Banshee.OpenVP.VisualizationDisplayWidget.cs" />
     <Compile Include="VisualizationExtensionNode.cs" />
-    <Compile Include="OpenVPSource.cs" />
     <Compile Include="Gtk\GLWidget.cs" />
+    <Compile Include="OpenVPSourceContentProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="resources\Banshee.OpenVP.addin.xml" />

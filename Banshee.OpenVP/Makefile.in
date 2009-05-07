@@ -190,7 +190,7 @@ FILES = \
 	Gtk/GLWidget.cs \
 	gtk-gui/Banshee.OpenVP.VisualizationDisplayWidget.cs \
 	gtk-gui/generated.cs \
-	OpenVPSource.cs \
+	OpenVPSourceContentProvider.cs \
 	VisualizationDisplayWidget.cs \
 	VisualizationExtensionNode.cs 
 
@@ -208,11 +208,11 @@ REFERENCES = \
 	-pkg:banshee-1-services \
 	-pkg:banshee-1-thickclient \
 	-pkg:gtk-sharp-2.0 \
-	-pkg:mono-addins \
+	-pkg:mono-addins-0.2 \
 	-pkg:openvp \
 	-pkg:openvp.core \
-	-pkg:tao-freeglut \
-	-pkg:tao-opengl \
+	-pkg:tao-freeglut-2.4 \
+	-pkg:tao-opengl-2.1 \
 	System
 
 DLL_REFERENCES = 

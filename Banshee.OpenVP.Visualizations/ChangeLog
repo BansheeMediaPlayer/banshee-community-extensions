@@ -1,3 +1,8 @@
+2009-05-06  Chris Howie  <cdhowie@gmail.com>
+
+	* Makefile.am:
+	* Makefile.in: MD housekeeping.
+
 2009-02-04  Chris Howie  <me@chrishowie.com>
 
 	* Makefile.in: Add Core.cs and GreenFlower.cs to sources list.

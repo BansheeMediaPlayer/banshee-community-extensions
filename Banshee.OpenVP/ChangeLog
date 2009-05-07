@@ -1,3 +1,25 @@
+2009-05-06  Chris Howie  <cdhowie@gmail.com>
+
+	* VisualizationDisplayWidget.cs: Use mapped/unmapped events to
+	determine when to activate/deactivate the BansheePlayerData
+	instance.
+
+	* OpenVPSourceContentProvider.cs: Add
+	OpenVPSourceContentProvider using the new
+	SourceContentProvider model in Banshee to get the visualizer
+	in the Now Playing source display.
+
+	* OpenVPSource.cs: Remove OpenVPSource in favor of
+	OpenVPSourceContentProvider.
+
+	* Makefile.am:
+	* Makefile.in:
+	* gtk-gui/gui.stetic:
+	* Banshee.OpenVP.csproj: MD housekeeping.
+
+	* resources/Banshee.OpenVP.addin.xml: Switch from OpenVPSource
+	to OpenVPSourceContentProvider.
+
 2009-02-04  Chris Howie  <me@chrishowie.com>
 
 	* VisualizationDisplayWidget.cs: Remove debugging code.

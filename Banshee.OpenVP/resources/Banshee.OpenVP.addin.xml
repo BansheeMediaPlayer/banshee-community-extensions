@@ -16,12 +16,11 @@
   </Runtime>
   
   <Dependencies>
-    <Addin id="Banshee.Core" version="1.0"/>
-    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
   </Dependencies>
-
-  <Extension path="/Banshee/SourceManager/Source">
-    <Source class="Banshee.OpenVP.OpenVPSource" />
+  
+  <Extension path="/Banshee/ThickClient/SourceContentProvider">
+  	<Provider class="Banshee.OpenVP.OpenVPSourceContentProvider" />
   </Extension>
 
   <ExtensionPoint path="/Banshee/OpenVP/Visualization">

@@ -66,6 +66,7 @@ REFERENCES =  \
 	-pkg:openvp \
 	-pkg:openvp.core \
 	-pkg:tao-opengl \
+	-pkg:tao-opengl-2.1 \
 	System
 
 DLL_REFERENCES = 

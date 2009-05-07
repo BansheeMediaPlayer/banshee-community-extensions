@@ -154,6 +154,18 @@ namespace Banshee.OpenVP
             this.glWidget.Dispose();
             this.glWidget.Destroy();
         }
+        
+        protected override void OnMapped ()
+        {
+            base.OnMapped ();
+            this.playerData.Active = true;
+        }
+        
+        protected override void OnUnmapped ()
+        {
+            base.OnUnmapped();
+            this.playerData.Active = false;
+        }
 
         protected virtual void OnVisualizationListChanged (object sender, System.EventArgs e)
         {
@@ -182,16 +194,6 @@ namespace Banshee.OpenVP
             if (r != null) {
                 r.Dispose();
             }
-        }
-
-        internal void SourceActivated()
-        {
-            this.playerData.Active = true;
-        }
-
-        internal void SourceDeactivated()
-        {
-            this.playerData.Active = false;
         }
 
         protected virtual void OnHalfResolutionCheckboxToggled(object sender, System.EventArgs e)

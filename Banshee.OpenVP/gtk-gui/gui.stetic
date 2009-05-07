@@ -5,8 +5,8 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="Banshee.ThickClient, Version=1.4.0.0, Culture=neutral" />
-    <widget-library name="Banshee.Widgets, Version=1.4.0.0, Culture=neutral" />
+    <widget-library name="Banshee.Widgets, Version=1.4.0.0, Culture=neutral, PublicKeyToken=" />
+    <widget-library name="Banshee.ThickClient, Version=1.4.0.0, Culture=neutral, PublicKeyToken=" />
     <widget-library name="../../build/Banshee.OpenVP.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="Banshee.OpenVP.VisualizationDisplayWidget" design-size="601 305">
