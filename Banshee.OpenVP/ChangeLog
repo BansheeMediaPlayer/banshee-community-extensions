@@ -1,3 +1,20 @@
+2009-05-07  Chris Howie  <cdhowie@gmail.com>
+
+	* Makefile.am:
+	* Makefile.in:
+	* gtk-gui/gui.stetic:
+	* Banshee.OpenVP.csproj:
+	* gtk-gui/Banshee.OpenVP.VisualizationDisplayWidget.cs: Remove
+	VisualizationDisplayWidget as a Stetic-managed widget. It's
+	simple enough to construct manually now.
+
+	* VisualizationDisplayWidget.cs: Remove unused ISourceContents
+	implementation. Build UI manually now, and build the header
+	extension separately.
+
+	* OpenVPSourceContentProvider.cs: Remove a debugging line and
+	implement ISourceContents.HeaderExtension.
+
 2009-05-06  Chris Howie  <cdhowie@gmail.com>
 
 	* VisualizationDisplayWidget.cs: Use mapped/unmapped events to

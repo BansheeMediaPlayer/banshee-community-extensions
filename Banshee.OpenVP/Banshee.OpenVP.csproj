@@ -72,7 +72,6 @@
     <Compile Include="BansheePlayerData.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="VisualizationDisplayWidget.cs" />
-    <Compile Include="gtk-gui\Banshee.OpenVP.VisualizationDisplayWidget.cs" />
     <Compile Include="VisualizationExtensionNode.cs" />
     <Compile Include="Gtk\GLWidget.cs" />
     <Compile Include="OpenVPSourceContentProvider.cs" />

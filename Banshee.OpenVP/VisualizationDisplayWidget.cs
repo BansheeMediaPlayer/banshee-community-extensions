@@ -19,9 +19,12 @@ using Tao.OpenGl;
 
 namespace Banshee.OpenVP
 {
-    [System.ComponentModel.ToolboxItem(true)]
-    public partial class VisualizationDisplayWidget : Gtk.Bin, ISourceContents, IController
+    public class VisualizationDisplayWidget : Gtk.Bin, IController
     {
+        private HBox headerExtension;
+        private CheckButton halfResolutionCheckbox;
+        private ComboBox visualizationList;
+        
         private ListStore visualizationStore = new ListStore(typeof(VisualizationExtensionNode));
 
         private GLWidget glWidget = null;
@@ -32,9 +35,15 @@ namespace Banshee.OpenVP
 
         private Thread RenderThread;
         
+        public Widget HeaderExtension {
+            get { return headerExtension; }
+        }
+        
         public VisualizationDisplayWidget()
         {
-            this.Build();
+            Stetic.BinContainer.Attach(this);
+            
+            BuildHeaderExtension();
 
             this.visualizationList.Model = this.visualizationStore;
 
@@ -48,7 +57,8 @@ namespace Banshee.OpenVP
             this.glWidget.SizeAllocated += this.OnGlSizeAllocated;
             this.glWidget.Show();
             
-            this.glAlignment.Add(this.glWidget);
+            this.Add(this.glWidget);
+            this.Show();
 
             this.playerData = new BansheePlayerData(ServiceManager.PlayerEngine.ActiveEngine);
             this.playerData.Active = false;
@@ -68,6 +78,22 @@ namespace Banshee.OpenVP
             };
             
             AddinManager.AddExtensionNodeHandler("/Banshee/OpenVP/Visualization", this.OnVisualizationChanged);
+        }
+        
+        private void BuildHeaderExtension()
+        {
+            headerExtension = new HBox(false, 6);
+            
+            halfResolutionCheckbox = new CheckButton("Low resolution");
+            halfResolutionCheckbox.Toggled += OnHalfResolutionCheckboxToggled;
+            
+            visualizationList = new ComboBox();
+            visualizationList.Changed += OnVisualizationListChanged;
+            
+            headerExtension.PackStart(halfResolutionCheckbox, false, false, 0);
+            headerExtension.PackStart(visualizationList, false, false, 0);
+            
+            headerExtension.ShowAll();
         }
 
         private static void VisualizationCellDataFunc(CellLayout layout, CellRenderer r, TreeModel model, TreeIter iter)
@@ -198,31 +224,9 @@ namespace Banshee.OpenVP
 
         protected virtual void OnHalfResolutionCheckboxToggled(object sender, System.EventArgs e)
         {
-            this.halfResolution = this.HalfResolutionCheckbox.Active;
+            this.halfResolution = this.halfResolutionCheckbox.Active;
             this.needsResize = true;
         }
-
-#region ISourceContents
-        private ISource source;
-        
-        Widget ISourceContents.Widget {
-            get { return this; }
-        }
-
-        ISource ISourceContents.Source {
-            get { return this.source; }
-        }
-
-        void ISourceContents.ResetSource()
-        {
-        }
-
-        bool ISourceContents.SetSource(ISource source)
-        {
-            this.source = source;
-            return true;
-        }
-#endregion
 
 #region IController
         private IRenderer renderer = null;

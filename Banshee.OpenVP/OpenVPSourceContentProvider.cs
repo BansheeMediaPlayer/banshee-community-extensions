@@ -33,7 +33,6 @@ namespace Banshee.OpenVP
         
         void IDisposable.Dispose()
         {
-            Console.WriteLine("DISPOSED");
             contents.Destroy();
             contents = null;
         }
@@ -66,6 +65,10 @@ namespace Banshee.OpenVP
         
         public Widget Widget {
             get { return widget; }
+        }
+        
+        public Widget HeaderExtension {
+            get { return widget.HeaderExtension; }
         }
         
         public void Destroy()

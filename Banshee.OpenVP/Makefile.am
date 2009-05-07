@@ -48,7 +48,6 @@ FILES =  \
 	AssemblyInfo.cs \
 	BansheePlayerData.cs \
 	Gtk/GLWidget.cs \
-	gtk-gui/Banshee.OpenVP.VisualizationDisplayWidget.cs \
 	gtk-gui/generated.cs \
 	OpenVPSourceContentProvider.cs \
 	VisualizationDisplayWidget.cs \
