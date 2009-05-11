@@ -1,3 +1,15 @@
+2009-05-11  Chris Howie  <cdhowie@gmail.com>
+
+	* gtk-gui/gui.stetic: Remove
+	Banshee.OpenVP.VisualizationDisplayWidget so MD doesn't
+	regenerate the GUI code no longer used.
+
+	* VisualizationDisplayWidget.cs: Fix minor display issue that
+	shows up when playback is paused and output scaling needs to
+	happen.
+
+	* Banshee.OpenVP.csproj: MD housekeeping.
+
 2009-05-07  Chris Howie  <cdhowie@gmail.com>
 
 	* Makefile.am:

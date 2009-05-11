@@ -53,16 +53,16 @@
     <Reference Include="OpenVP.Core, Version=0.0.1.0, Culture=neutral, PublicKeyToken=">
       <Package>openvp.core</Package>
     </Reference>
-    <Reference Include="Banshee.Core, Version=1.4.0.0, Culture=neutral, PublicKeyToken=">
+    <Reference Include="Banshee.Core, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null">
       <Package>banshee-1-core</Package>
     </Reference>
-    <Reference Include="Banshee.Services, Version=1.4.0.0, Culture=neutral, PublicKeyToken=">
+    <Reference Include="Banshee.Services, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null">
       <Package>banshee-1-services</Package>
     </Reference>
-    <Reference Include="Banshee.Widgets, Version=1.4.0.0, Culture=neutral, PublicKeyToken=">
+    <Reference Include="Banshee.Widgets, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null">
       <Package>banshee-1-thickclient</Package>
     </Reference>
-    <Reference Include="Banshee.ThickClient, Version=1.4.0.0, Culture=neutral, PublicKeyToken=">
+    <Reference Include="Banshee.ThickClient, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null">
       <Package>banshee-1-thickclient</Package>
     </Reference>
   </ItemGroup>

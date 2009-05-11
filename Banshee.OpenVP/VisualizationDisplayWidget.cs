@@ -412,34 +412,34 @@ namespace Banshee.OpenVP
             Gl.glEnable(Gl.GL_BLEND);
             Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
 
-            if (this.needsResize) {
-                Gl.glClearColor(0, 0, 0, 1);
-                Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
-                
-                this.needsResize = false;
-                
-                int w = this.widgetWidth;
-                int h = this.widgetHeight;
-                
-                if (this.halfResolution) {
-                    w >>= 1;
-                    h >>= 1;
-                }
-                
-                if (!Gl.IsExtensionSupported("GL_ARB_texture_non_power_of_two")) {
-                    this.renderWidth = NearestPowerOfTwo(w);
-                    this.renderHeight = NearestPowerOfTwo(h);
-                } else {
-                    this.renderWidth = w;
-                    this.renderHeight = h;
-                }
-            } else {
-                this.ResizeToRenderSize();
-            }
-
             lock (this.cleanupLock) {
                 IRenderer r = this.renderer;
                 if (r != null) {
+		            if (this.needsResize) {
+		                Gl.glClearColor(0, 0, 0, 1);
+		                Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
+		                
+		                this.needsResize = false;
+		                
+		                int w = this.widgetWidth;
+		                int h = this.widgetHeight;
+		                
+		                if (this.halfResolution) {
+		                    w >>= 1;
+		                    h >>= 1;
+		                }
+		                
+		                if (!Gl.IsExtensionSupported("GL_ARB_texture_non_power_of_two")) {
+		                    this.renderWidth = NearestPowerOfTwo(w);
+		                    this.renderHeight = NearestPowerOfTwo(h);
+		                } else {
+		                    this.renderWidth = w;
+		                    this.renderHeight = h;
+		                }
+		            } else {
+		                this.ResizeToRenderSize();
+		            }
+                    
                     if (this.haveDataSlice) {
                         Gl.glViewport(0, 0, this.renderWidth, this.renderHeight);
                         
