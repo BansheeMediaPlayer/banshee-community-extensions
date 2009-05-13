@@ -1,3 +1,15 @@
+2009-05-13  Chris Howie  <cdhowie@gmail.com>
+
+	* AssemblyInfo.cs:
+	* BansheePlayerData.cs:
+	* VisualizationExtensionNode.cs:
+	* VisualizationDisplayWidget.cs:
+	* OpenVPSourceContentProvider.cs: Update license to MIT/X11.
+
+	* Makefile.am:
+	* Makefile.in:
+	* Banshee.OpenVP.csproj: Update mono-addins version.
+
 2009-05-11  Chris Howie  <cdhowie@gmail.com>
 
 	* gtk-gui/gui.stetic: Remove

@@ -39,9 +39,6 @@
     <Reference Include="Tao.FreeGlut, Version=2.4.0.1, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d">
       <Package>tao-freeglut-2.4</Package>
     </Reference>
-    <Reference Include="Mono.Addins, Version=0.3.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <Package>mono-addins-0.2</Package>
-    </Reference>
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Tao.Platform.X11, Version=1.0.0.0, Culture=neutral, PublicKeyToken=701104b2da67a104">
@@ -53,18 +50,19 @@
     <Reference Include="OpenVP.Core, Version=0.0.1.0, Culture=neutral, PublicKeyToken=">
       <Package>openvp.core</Package>
     </Reference>
-    <Reference Include="Banshee.Core, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Banshee.Core, Version=1.4.0.0, Culture=neutral, PublicKeyToken=">
       <Package>banshee-1-core</Package>
     </Reference>
-    <Reference Include="Banshee.Services, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Banshee.Services, Version=1.4.0.0, Culture=neutral, PublicKeyToken=">
       <Package>banshee-1-services</Package>
     </Reference>
-    <Reference Include="Banshee.Widgets, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Banshee.Widgets, Version=1.4.0.0, Culture=neutral, PublicKeyToken=">
       <Package>banshee-1-thickclient</Package>
     </Reference>
-    <Reference Include="Banshee.ThickClient, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Banshee.ThickClient, Version=1.4.0.0, Culture=neutral, PublicKeyToken=">
       <Package>banshee-1-thickclient</Package>
     </Reference>
+    <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

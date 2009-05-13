@@ -30,9 +30,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="OpenVP, Version=0.0.1.0, Culture=neutral" />
-    <Reference Include="OpenVP.Core, Version=0.0.1.0, Culture=neutral" />
-    <Reference Include="Tao.OpenGl, Version=2.1.0.7, Culture=neutral, PublicKeyToken=1ca010269a4501ef" />
+    <Reference Include="Tao.OpenGl, Version=2.1.0.7, Culture=neutral, PublicKeyToken=1ca010269a4501ef">
+      <Package>tao-opengl-2.1</Package>
+    </Reference>
+    <Reference Include="OpenVP, Version=0.0.1.0, Culture=neutral, PublicKeyToken=">
+      <Package>openvp</Package>
+    </Reference>
+    <Reference Include="OpenVP.Core, Version=0.0.1.0, Culture=neutral, PublicKeyToken=">
+      <Package>openvp.core</Package>
+    </Reference>
+    <Reference Include="Tao.Platform.X11, Version=1.0.0.0, Culture=neutral, PublicKeyToken=701104b2da67a104">
+      <Package>tao-opengl</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />

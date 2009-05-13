@@ -68,7 +68,7 @@ REFERENCES =  \
 	-pkg:banshee-1-services \
 	-pkg:banshee-1-thickclient \
 	-pkg:gtk-sharp-2.0 \
-	-pkg:mono-addins-0.2 \
+	-pkg:mono-addins \
 	-pkg:openvp \
 	-pkg:openvp.core \
 	-pkg:tao-freeglut-2.4 \

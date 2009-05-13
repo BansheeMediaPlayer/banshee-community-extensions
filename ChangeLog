@@ -1,3 +1,7 @@
+2009-05-13  Chris Howie  <cdhowie@gmail.com>
+
+	* Banshee.OpenVP.sln: Update license to MIT/X11.
+
 2009-02-04  Chris Howie  <me@chrishowie.com>
 
 	* Banshee.OpenVP.sln: Re-enable ChangeLog integration.

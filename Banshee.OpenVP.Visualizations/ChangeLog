@@ -1,3 +1,17 @@
+2009-05-13  Chris Howie  <cdhowie@gmail.com>
+
+	* Banshee.OpenVP.Visualizations.csproj: MD housekeeping.
+
+	* Grid.cs:
+	* Core.cs:
+	* Inferno.cs:
+	* GlassWall.cs:
+	* Voiceprint.cs:
+	* SimpleScope.cs:
+	* GreenFlower.cs:
+	* AssemblyInfo.cs:
+	* SpectrumAnalyzer.cs: Update license to MIT/X11.
+
 2009-05-06  Chris Howie  <cdhowie@gmail.com>
 
 	* Makefile.am:
