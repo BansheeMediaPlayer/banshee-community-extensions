@@ -59,8 +59,10 @@ namespace Banshee.OpenVP
         
         void IDisposable.Dispose()
         {
-            contents.Destroy();
-            contents = null;
+            if (contents != null) {
+	            contents.Destroy();
+	            contents = null;
+            }
         }
     }
     
