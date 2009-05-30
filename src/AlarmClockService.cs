@@ -5,6 +5,8 @@
 //   Bertrand Lorentz <bertrand.lorentz@gmail.com>
 //   Patrick van Staveren  <trick@vanstaveren.us>
 //
+// Copyright (C) 2008-2009 Bertrand Lorentz and Patrick van Staveren.
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
