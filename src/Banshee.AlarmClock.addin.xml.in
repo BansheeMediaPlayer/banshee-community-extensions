@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Addin
     id="Banshee.AlarmClock"
-    version="0.4.1"
-    copyright="© Bertrand Lorentz, Patrick van Staveren. Licensed under the MIT X11 license."
+    version="@VERSION@"
+    copyright="© 2008 Bertrand Lorentz, Patrick van Staveren. Licensed under the MIT X11 license."
     name="Alarm and Sleep Timer"
     description="Gives Banshee alarm clock type functions."
     author="Bertrand Lorentz, Patrick van Staveren"
     url="http://code.google.com/p/banshee-unofficial-plugins/"
-    defaultEnabled="false">
+    defaultEnabled="true">
 
   <Dependencies>
     <Addin id="Banshee.Services" version="1.0"/>

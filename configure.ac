@@ -74,6 +74,7 @@ AC_CONFIG_FILES([
 	build/Makefile
 	src/Makefile
 	src/AssemblyInfo.cs
+	src/Banshee.AlarmClock.addin.xml
 ])
 AC_OUTPUT
 

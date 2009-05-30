@@ -1,5 +1,11 @@
 2009-05-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>
 
+	* configure.ac, src/Banshee.AlarmClock.addin.xml,
+	  src/Banshee.AlarmClock.addin.xml.in: Have configure
+	  automatically put the version number in the .addin.xml.
+
+2009-05-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>
+
 	* COPYING, src/Alarm.cs, src/VolumeFade.cs,
 	  src/AlarmConfigDialog.cs, src/AlarmClockService.cs,
 	  src/ConfigurationSchema.cs, src/ConfigurationDialog.cs,
