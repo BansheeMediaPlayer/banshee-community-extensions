@@ -30,7 +30,7 @@ AC_DEFUN([_SHAMROCK_CHECK_MONO_GAC_ASSEMBLIES],
 			AC_MSG_RESULT([found])
 		else
 			AC_MSG_RESULT([not found])
-			AC_MSG_ERROR([missing reqired Mono $1 assembly: $asm.dll])
+			AC_MSG_ERROR([missing required Mono $1 assembly: $asm.dll])
 		fi
 	done
 ])

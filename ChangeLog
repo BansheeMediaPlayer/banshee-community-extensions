@@ -1,5 +1,9 @@
 2009-05-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>
 
+	* build/m4/shamrock/mono.m4: Fix typo
+
+2009-05-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>
+
 	* alarm.mdp, alarm.mds, Banshee.AlarmClock.sln,
 	  Banshee.AlarmClock.csproj: Convert solution and project
 	  files to the VisualStudio format. it's now the default for
