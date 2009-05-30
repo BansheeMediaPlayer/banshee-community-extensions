@@ -26,7 +26,7 @@ dnl Path to the banshee installation, to find the the gconf-schema-extractor.exe
 banshee_libdir=`$PKG_CONFIG --variable=bansheedir banshee-1-core`
 AC_SUBST(banshee_libdir)
 
-AC_ARG_ENABLE(user-plugin, AC_HELP_STRING([--enable-user-extension], [Install extension into user-level Banshee extensions directory instead of the Banshee system extensions directory]), , enable_user_plugin="no")
+AC_ARG_ENABLE(user-extension, AC_HELP_STRING([--enable-user-extension], [Install extension into user-level Banshee extensions directory instead of the Banshee system extensions directory]), , enable_user_extension="no")
 
 dnl Banshee Extensions Path
 SYSTEM_PLUGINS=`$PKG_CONFIG --variable=bansheedir banshee-1-core`/Extensions
