@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8850F596-7FD9-4583-A524-BAFEDD1F474C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Alarm</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>src</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <Execution>
+      <Execution clr-version="Net_2_0" />
+    </Execution>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>src</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <Execution>
+      <Execution clr-version="Net_2_0" />
+    </Execution>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="AUTHORS" />
+    <None Include="COPYING" />
+    <None Include="ChangeLog" />
+    <None Include="Makefile.am" />
+    <None Include="NEWS" />
+    <None Include="README" />
+    <None Include="autogen.sh" />
+    <None Include="configure.ac" />
+    <None Include="src\Makefile.am" />
+    <None Include="BUGS" />
+    <None Include="TODO" />
+    <None Include="po\POTFILES.in" />
+    <None Include="po\ChangeLog" />
+    <None Include="po\fr.po" />
+    <None Include="po\LINGUAS" />
+    <None Include="build\m4\shamrock\i18n.m4" />
+    <None Include="build\m4\shamrock\mono.m4" />
+    <None Include="build\m4\shamrock\programs.m4" />
+    <None Include="build\build.mk" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\Alarm.cs" />
+    <Compile Include="src\VolumeFade.cs" />
+    <Compile Include="src\SleepTimerConfigDialog.cs" />
+    <Compile Include="src\AlarmConfigDialog.cs" />
+    <Compile Include="src\AssemblyInfo.cs.in" />
+    <Compile Include="build\Makefile.am" />
+    <Compile Include="build\gconf-schema-rules" />
+    <Compile Include="src\ConfigurationSchema.cs" />
+    <Compile Include="src\AlarmClockService.cs" />
+    <Compile Include="src\ConfigurationDialog.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="build\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="src\AlarmMenu.xml">
+      <LogicalName>AlarmMenu.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Banshee.AlarmClock.addin.xml">
+      <LogicalName>Banshee.AlarmClock.addin.xml</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="gtk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="System" />
+    <Reference Include="Banshee.Core, Version=1.4.0.0, Culture=neutral">
+      <Package>banshee-1-core</Package>
+    </Reference>
+    <Reference Include="Banshee.Services, Version=1.4.0.0, Culture=neutral">
+      <Package>banshee-1-services</Package>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am">
+          <BuildFilesVar />
+          <DeployFilesVar />
+          <ResourcesVar />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>
