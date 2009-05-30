@@ -39,11 +39,9 @@ See the TODO file
 
 SUPPORT:
 =================
-This is an open source project, so please be patient...developers only have so much time on their hands :)
-
-Join us on irc.gnome.org/#banshee - look for trick, the active maintainer
+Join us on irc.gnome.org/#banshee - look for trick or Bertrand
 or join the banshee-list@gnome.org and ask nicely :)
 
 PATCHES:
 =================
-Submit all patches on GNOME Bugzilla at bugzilla.gnome.org, product Banshee, component Plugins.
+Submit all patches on the issue tracker at http://code.google.com/p/banshee-unofficial-plugins/issues.

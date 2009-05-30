@@ -1,10 +1,10 @@
-Bugs can always be reported on the Banshee Bugzilla at http://bugzilla.gnome.org/enter_bug.cgi?product=banshee
-...be sure to check that the bug has not already been filed.  Be sure to file it under the plugins category!
+Bugs can always be reported on the on the issue tracker at http://code.google.com/p/banshee-unofficial-plugins/issues
+...be sure to check that the bug has not already been filed.
 ...be sure that the bug isn't already on this list!
 
 Known bugs:
 	* UI niceness.  We know.
-	* --enable-user-plugin does not work right since we're installing a gconf schema for alarm keys.  anyone know a workaround?
+	* --enable-user-extension does not work right since we're installing a gconf schema for alarm keys.  anyone know a workaround?
     * Sleep dialog:
 		* when opening after it was set before, does not read values from old variable properly.
 			* Should read the difference between set time and dialog open time, and subtract that from the old sleep timer value.
