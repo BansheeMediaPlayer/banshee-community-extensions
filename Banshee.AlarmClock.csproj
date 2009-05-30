@@ -53,6 +53,7 @@
     <None Include="build\m4\shamrock\mono.m4" />
     <None Include="build\m4\shamrock\programs.m4" />
     <None Include="build\build.mk" />
+    <None Include="src\Banshee.AlarmClock.addin.xml.in" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Alarm.cs" />
@@ -70,11 +71,9 @@
     <Folder Include="build\" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="src\Banshee.AlarmClock.addin.xml" />
     <EmbeddedResource Include="src\AlarmMenu.xml">
       <LogicalName>AlarmMenu.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Banshee.AlarmClock.addin.xml">
-      <LogicalName>Banshee.AlarmClock.addin.xml</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

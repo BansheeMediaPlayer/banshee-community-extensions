@@ -1,5 +1,12 @@
 2009-05-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>
 
+	* Banshee.AlarmClock.csproj: Still embed the .addin.xml as a
+	  resource.
+
+	* configure.ac: Bump version to 0.4.3
+
+2009-05-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>
+
 	* configure.ac, src/Banshee.AlarmClock.addin.xml,
 	  src/Banshee.AlarmClock.addin.xml.in: Have configure
 	  automatically put the version number in the .addin.xml.
