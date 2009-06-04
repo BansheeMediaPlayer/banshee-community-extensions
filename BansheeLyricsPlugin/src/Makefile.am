@@ -1,38 +1,35 @@
+ASSEMBLY = Banshee.Lyrics.dll
+TARGET = library
 MCS_FLAGS = -debug /r:System.Web 
 ASSEMBLY_COMPILER_FLAGS =  -noconfig -codepage:utf8 -warn:4 -optimize+ -debug
 CUSTOM_MCS_FLAGS = $(MCS_FLAGS) \
 	-unsafe
-ASSEMBLY = Banshee.Lyrics.dll
 SOURCES = \
- 	gtk-gui/generated.cs \
-        AutoLyrics.cs \
-        LyricBaseSource.cs \
-        CacheOperation.cs \
-        Constants.cs \
-        Lyrc.cs \
-        LyricsManager.cs \
-        LyricsPlugin.cs \
-        Lyriki.cs \
-        Lyriki2.cs \
-        ProxyManager.cs \
-        LyricsWindow.cs \
-        LyricsHeader.cs \
-        gtk-gui/Banshee.Plugins.Lyrics.LyricsBrowser.cs \
-        gtk-gui/Banshee.Plugins.Lyrics.LyricsHeader.cs \
-        gtk-gui/Banshee.Plugins.Lyrics.LyricsWindow.cs \
-        LyricsCache.cs \
-        LyricsBrowser.cs \
-        LyricsPluginCommon.cs \
-        LyricsEvent.cs
+        Banshee.Lyrics/LyricsManager.cs \
+        Banshee.Lyrics/LyricsPlugin.cs \
+        Banshee.Lyrics.Network/ProxyManager.cs \
+	Banshee.Lyrics.Network/HttpUtils.cs \  
+      	Banshee.Lyrics.Sources/Lyrc.cs \
+        Banshee.Lyrics.Sources/AutoLyrics.cs \
+        Banshee.Lyrics.Sources/ILyricSource.cs \
+        Banshee.Lyrics.Sources/LyricWiki.cs \
+        Banshee.Lyrics.Sources/Lyriki.cs \
+        Banshee.Lyrics.Sources/LeosLyrics.cs \
+        Banshee.Lyrics.Sources/LyricWebSource.cs \
+	Banshee.Lyrics.Gui/LyricsWindow.cs \
+        Banshee.Lyrics.Gui/gtk-gui/LyricsBrowser.cs \
+        Banshee.Lyrics.Gui/gtk-gui/generated.cs \
+        Banshee.Lyrics.Gui/gtk-gui/LyricsWindow.cs \
+        Banshee.Lyrics.IO/LyricsCache.cs \
+        Banshee.Lyrics.Gui/LyricsBrowser.cs
 
 RESOURCES = \
-	gtk-gui/gui.stetic \
-        gtk-gui/objects.xml \
         Banshee.Lyrics.addin.xml \
-	LyricsMenu.xml
+	Resources/LyricsMenu.xml
 
 REFERENCES =  \
 	System.Web \
+	System.Xml \ 
 	$(GTKHTML_SHARP_314_LIBS) \
 	$(GCONF_SHARP_20_LIBS) \
 	$(BANSHEE_1_THICKCLIENT_LIBS)

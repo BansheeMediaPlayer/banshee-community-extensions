@@ -1,17 +1,17 @@
 <Addin  id="Banshee.Lyrics"
-        name="Banshee Lyrics Plugin"
-        description="A plugin retrieving lyrics for banshee"
-	author = "Christian Martellini,Fabiano Ridolfi"
-        url=""
+        name="Lyrics Support"
+        description="Retrieve song lyrics "
+        author = "Christian Martellini"
+        url="http://banshee-project.org/"
         version="1.0"
-	compatVersion="1.0">
-
+        compatVersion="1.0">
+  
   <Dependencies>
     <Addin id="Banshee.Services" version="1.0"/>
   </Dependencies>
-
+  
   <Extension path="/Banshee/ServiceManager/Service">
-    <Service class="Banshee.Plugins.Lyrics.LyricsPlugin"/>
+    <Service class="Banshee.Lyrics.LyricsService"/>
   </Extension>
   
 </Addin>
