@@ -1,6 +1,7 @@
 <Addin  id="Banshee.Lyrics"
         name="Lyrics Support"
         description="Retrieve song lyrics "
+        copyright="© 2009 Christian Martellini. Licensed under the MIT X11 license."
         author = "Christian Martellini"
         url="http://banshee-project.org/"
         version="1.0"
