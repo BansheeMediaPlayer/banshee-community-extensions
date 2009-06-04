@@ -161,7 +161,7 @@ namespace Banshee.Lyrics
                 url = lyrc_server.Url + "/" + url;
             }
             
-            string lyric = AttachFooter (lyrc_server.GetLyrics (url), lyrc_server.Url);
+            string lyric = AttachFooter (lyrc_server.GetLyrics (url), lyrc_server.Credits);
             //write Lyrics in cache if possible
             if (lyric != null) {
                 string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
