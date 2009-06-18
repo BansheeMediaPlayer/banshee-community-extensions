@@ -84,7 +84,7 @@ namespace Magnatune
 		private uint ui_manager_id;
 		private InterfaceActionService action_service;
 		
-		protected override string TypeUniqueId {
+		protected string TypeUniqueId {
 			get {  return "Magnatune"; }
 		}
 

@@ -26,6 +26,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Banshee.Streaming;
 using Banshee.Widgets;
+using Hyena;
 using Gtk;
 using System;
 using System.Collections.Generic;
@@ -98,7 +99,9 @@ namespace Magnatune
 			{
 				rti = new RadioTrackInfo(g.GetM3uUri());
 			}
+			Log.Debug( string.Format ("Tuning Magnatune to {0}", g.GetM3uUri()), null);
 			rti.Play();
+
 		}
     }
 }
