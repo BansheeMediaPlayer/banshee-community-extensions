@@ -508,5 +508,9 @@ namespace Banshee.Mirage
         public override bool ShowBrowser {
             get { return false; }
         }
+        
+        public override bool CanUnmap {
+            get { return false; }
+        }
     }
 }

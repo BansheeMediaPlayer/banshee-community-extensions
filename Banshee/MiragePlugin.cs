@@ -87,7 +87,7 @@ namespace Banshee.Mirage
             }
 
             db = new Db(dbfile);
-            Log.Debug("Mirage - Database Initialize (dbfile: {0})", dbfile);
+            Log.DebugFormat ("Mirage - Database Initialize (dbfile: {0})", dbfile);
             
             jobsScheduled = 0;
             jobQueue = new Queue();
