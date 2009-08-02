@@ -75,6 +75,8 @@ namespace Banshee.RadioStationFetcher
                     Catalog.GetString ("Fetch stations from Xiph"), delegate {
                         (new Xiph ()).ShowDialog (); } );
             
+            actions.Add (source_actions);
+            
             action_service.UIManager.InsertActionGroup (actions, 0);
             ui_manager_id = action_service.UIManager.AddUiFromResource ("Resources.RadioStationFetcherMenu.xml");
             
