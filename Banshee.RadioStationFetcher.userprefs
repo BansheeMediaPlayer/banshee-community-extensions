@@ -1,0 +1,24 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Banshee.RadioStationFetcher/src/Xiph.cs" ctype="Workbench">
+    <Files>
+      <File FileName="Banshee.RadioStationFetcher/src/Xiph.cs" Line="108" Column="37" />
+      <File FileName="Banshee.RadioStationFetcher/src/Shoutcast.cs" Line="1" Column="1" />
+      <File FileName="Banshee.RadioStationFetcher/src/FetcherDialog.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="Banshee.RadioStationFetcher" expanded="True">
+            <Node name="src" expanded="True">
+              <Node name="Xiph.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
+</Properties>

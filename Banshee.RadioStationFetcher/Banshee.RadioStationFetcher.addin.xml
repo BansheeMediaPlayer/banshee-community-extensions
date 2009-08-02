@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.RadioStationFetcher"
+    version="0.1"
+    compatVersion="1.0"
+    copyright="© 2009 Akseli Mantila. Licensed under the MIT X11 license."
+    name="RadioStationFetcher service"
+    category="Service"
+    description="Allows user to fetch radiostations from services like www.shoutcast.co"
+    author="Akseli Mantila"
+    url="http://aksussummerofcode.blogspot.com/"
+    defaultEnabled="true">
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.RadioStationFetcher.RadioStationFetcherService"/>   
+  </Extension>
+  
+</Addin>
