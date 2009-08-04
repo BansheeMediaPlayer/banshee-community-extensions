@@ -45,7 +45,7 @@ namespace Banshee.RadioStationFetcher
     {
         public Shoutcast ()
         {
-            statusbar.Push (0, "www.shoutcast.com");
+            statusbar.Push (0, Catalog.GetString ("www.shoutcast.com"));
         }
         
         public override void FillGenreList () 
@@ -257,9 +257,6 @@ namespace Banshee.RadioStationFetcher
             station_list = new List<DatabaseTrackInfo> (XML_station_nodes.Count);
             
             PrimarySource source = GetInternetRadioSource ();
-            
-            int station_count = XML_station_nodes.Count;
-            int i = 0;
 
             if (source == null) {
                 // TODO: Show error message

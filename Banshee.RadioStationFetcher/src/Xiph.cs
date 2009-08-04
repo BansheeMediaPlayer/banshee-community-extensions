@@ -36,6 +36,7 @@ using System.Threading;
 using Banshee.Base;
 using Banshee.Collection.Database;
 using Banshee.Sources;
+using Banshee.I18n;
 
 namespace Banshee.RadioStationFetcher
 {
@@ -46,7 +47,7 @@ namespace Banshee.RadioStationFetcher
         
         public Xiph()
         {
-            statusbar.Push (0, "www.xiph.org");
+            statusbar.Push (0, Catalog.GetString ("www.xiph.org"));
             ThreadPool.QueueUserWorkItem (FetchStations, null);
         }
         
@@ -258,10 +259,12 @@ namespace Banshee.RadioStationFetcher
                     
                     station_list.Add (new_station);
                 }
-                catch (Exception e) {
+                catch (Exception) {
                     continue;
                 }
                 
+                statusbar.Push (0, String.Format (Catalog.GetString ("www.xiph.org {0} stations available."), 
+                    station_list.Count.ToString ()));
                 stations_fetched = true;
             }
         }

@@ -39,8 +39,6 @@ namespace Banshee.RadioStationFetcher
 {       
     public class RadioStationFetcherService : IExtensionService, IDisposable
     {
-        Dictionary<string, FetcherDialog> fetcher_sources = new Dictionary<string, FetcherDialog>();
-        
         private ActionGroup actions;
         private InterfaceActionService action_service;
         private uint ui_manager_id;
