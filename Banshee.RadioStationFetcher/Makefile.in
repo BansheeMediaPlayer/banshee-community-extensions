@@ -184,6 +184,7 @@ EXTRAS = \
 
 REFERENCES = \
 	-pkg:banshee-1-core \
+	-pkg:banshee-1-hyena \
 	-pkg:banshee-1-services \
 	-pkg:banshee-1-thickclient \
 	-pkg:gtk-sharp-2.0 \

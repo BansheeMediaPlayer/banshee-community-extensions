@@ -36,6 +36,8 @@ using Banshee.I18n;
 using Banshee.Collection.Database;
 using Banshee.Sources;
 
+using Hyena;
+
 namespace Banshee.RadioStationFetcher
 {
 
@@ -50,8 +52,6 @@ namespace Banshee.RadioStationFetcher
         private Entry freeText_entry;
         private Button genre_button;
         private Button freeText_button;
-//        private Alignment message_container;
-//        private Label message;
         private Table table;
         protected Statusbar statusbar;
         
@@ -246,31 +246,19 @@ namespace Banshee.RadioStationFetcher
             get { return freeText_entry.Text.Trim (); }
         }
         
-        /*
-        public string ErrorMessage {
-            set { 
-                if (value == null) {
-                    message_container.Hide ();
-                } else {
-                    message.Text = value; 
-                    message_container.Show ();
-                }
-            }
-        }
-        */
         protected PrimarySource GetInternetRadioSource () 
         {
-            Console.WriteLine ("[FetcherDialog] <GetInternetRadioSource> Start");
+            Hyena.Log.Debug ("[FetcherDialog] <GetInternetRadioSource> Start");
             
             foreach (Source source in Banshee.ServiceStack.ServiceManager.SourceManager.Sources) {
-                Console.WriteLine ("[FetcherDialog] <GetInternetRadioSource> Source: " + source.GenericName);
+                Hyena.Log.DebugFormat ("[FetcherDialog] <GetInternetRadioSource> Source: {0}", source.GenericName);
                 
                 if (source.GenericName.Equals ("Radio")) {
                     return (PrimarySource) source;
                 }
             }
     
-            Console.WriteLine ("[FetcherDialog] <GetInternetRadioSource> Not found returning null");
+            Hyena.Log.Debug ("[FetcherDialog] <GetInternetRadioSource> Not found returning null");
             return null;
         }
         
