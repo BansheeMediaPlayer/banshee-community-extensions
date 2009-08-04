@@ -31,6 +31,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Xml;
 using System.Net;
+using System.Threading;
 
 using Banshee.Base;
 using Banshee.Collection.Database;
@@ -46,6 +47,7 @@ namespace Banshee.RadioStationFetcher
         public Xiph()
         {
             statusbar.Push (0, "www.xiph.org");
+            ThreadPool.QueueUserWorkItem (FetchStations, null);
         }
         
         public override void FillGenreList () 
@@ -126,7 +128,7 @@ namespace Banshee.RadioStationFetcher
         public List<DatabaseTrackInfo> FetchStationsByGenre (string genre) 
         {
             if (!stations_fetched) {
-                FetchStations ();
+                FetchStations (null);
             }
             
             return station_list.FindAll (delegate (DatabaseTrackInfo station) 
@@ -141,7 +143,7 @@ namespace Banshee.RadioStationFetcher
         public List<DatabaseTrackInfo> FetchStationsByFreetext (string text) 
         {
             if (!stations_fetched) {
-                FetchStations ();
+                FetchStations (null);
             }
             
             return station_list.FindAll (delegate (DatabaseTrackInfo station) 
@@ -163,7 +165,7 @@ namespace Banshee.RadioStationFetcher
                 } );
         }
          
-        public void FetchStations () 
+        public void FetchStations (object o) 
         {
             Console.WriteLine ("[XiphQuery] <FetchStations> Start");
         
@@ -240,7 +242,7 @@ namespace Banshee.RadioStationFetcher
                     DatabaseTrackInfo new_station = new DatabaseTrackInfo ();
     
                     new_station.Uri = new SafeUri (URI);
-                    new_station.ArtistName = "http://www.xiph.org/";
+                    new_station.ArtistName = "www.xiph.org";
                     new_station.Genre = genre;
                     new_station.TrackTitle = name;
                     new_station.Comment = now_playing;

@@ -198,24 +198,30 @@ namespace Banshee.RadioStationFetcher
         
         private void DoGenreQuery (object o) 
         {
+            statusbar.Push (0, Catalog.GetString ("Querying genre \"" +  Genre + "\""));
             List<DatabaseTrackInfo> fetched_stations = (this as IGenreSearchable).FetchStationsByGenre (Genre);
             SaveFetchedTracksToDatabase (fetched_stations);
         } 
         
         private void DoFreetextQuery (object o) 
         {
+            statusbar.Push (0, Catalog.GetString ("Querying freetext \"" + Freetext + "\""));
             List<DatabaseTrackInfo> fetched_stations = (this as IFreetextSearchable).FetchStationsByFreetext (Freetext);
             SaveFetchedTracksToDatabase (fetched_stations);
         }
 
-        private void SaveFetchedTracksToDatabase (List<DatabaseTrackInfo> fetched_tracks) 
+        private void SaveFetchedTracksToDatabase (List<DatabaseTrackInfo> fetched_stations) 
         {
-            if (fetched_tracks == null)
+            if (fetched_stations == null) {
+                statusbar.Push (0, Catalog.GetString ("Error fetching stations."));
                 return;
+            }
             
-            foreach (DatabaseTrackInfo track in fetched_tracks) {
+            foreach (DatabaseTrackInfo track in fetched_stations) {
                 track.Save ();
             }
+            
+            statusbar.Push (0, Catalog.GetString ("Query done. Fetched " + fetched_stations.Count + " stations."));
         } 
         
         public abstract void FillGenreList ();

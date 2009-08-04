@@ -193,7 +193,6 @@ namespace Banshee.RadioStationFetcher
             try
             {
                 Console.WriteLine ("[ShoutcastQuery] <FetchStationsByGenre> Querying genre \"" + genre + "\" ...");
-                statusbar.Push (0, Catalog.GetString ("Querying genre \"" + genre + "\""));
                 
                 Stream response = request.GetResponse().GetResponseStream ();
                 StreamReader reader = new StreamReader (response);
@@ -227,7 +226,6 @@ namespace Banshee.RadioStationFetcher
             try
             {
                 Console.WriteLine ("[ShoutcastQuery] <FetchStationsByFreetext> Querying freetext \"" + text + "\" ...");
-                statusbar.Push (0, Catalog.GetString ("Querying freetext \"" + text + "\""));
             
                 Stream response = request.GetResponse ().GetResponseStream ();
                 StreamReader reader = new StreamReader (response);
@@ -252,7 +250,6 @@ namespace Banshee.RadioStationFetcher
         public List<DatabaseTrackInfo> ParseQuery (XmlDocument xml_response)
         {
             Console.WriteLine ("[ShoutcastQuery] <ParseQuery> Start");
-            statusbar.Push (0, Catalog.GetString ("Parsing query..."));
             
             List<DatabaseTrackInfo> station_list;
             XmlNodeList XML_station_nodes = xml_response.GetElementsByTagName ("station");
@@ -312,9 +309,7 @@ namespace Banshee.RadioStationFetcher
                 }
             }
 
-            statusbar.Push (0, Catalog.GetString ("Parsing done"));
-            Console.WriteLine ("[ShoutcastQuery] <ParseQuery> End");
- 
+            Console.WriteLine ("[ShoutcastQuery] <ParseQuery> End"); 
             return station_list;
         }
         

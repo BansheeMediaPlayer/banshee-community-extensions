@@ -45,6 +45,9 @@ namespace Banshee.RadioStationFetcher
         private InterfaceActionService action_service;
         private uint ui_manager_id;
         
+        private FetcherDialog shoutcast = new Shoutcast ();
+        private FetcherDialog xiph = new Xiph ();
+        
         public RadioStationFetcherService ()
         {
             Console.WriteLine ("[RadioStationFetcherService] <RadioStationFetcherService> Constructor START");
@@ -68,12 +71,12 @@ namespace Banshee.RadioStationFetcher
             source_actions[1] = new ActionEntry ("ShoutcastAction", null,
                     Catalog.GetString ("Shoutcast"), null,
                     Catalog.GetString ("Fetch stations from shoutcast"), delegate {
-                        (new Shoutcast ()).ShowDialog (); } );
+                        shoutcast.ShowDialog (); } );
             
             source_actions[2] = new ActionEntry ("XiphAction", null,
                     Catalog.GetString ("Xiph"), null,
                     Catalog.GetString ("Fetch stations from Xiph"), delegate {
-                        (new Xiph ()).ShowDialog (); } );
+                        xiph.ShowDialog (); } );
             
             actions.Add (source_actions);
             
