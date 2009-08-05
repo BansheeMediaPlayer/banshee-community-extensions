@@ -62,7 +62,7 @@ namespace Banshee.RadioStationFetcher
             InitializeDialog ();
         }
         
-        public void ShowDialog () 
+        public virtual void ShowDialog () 
         {
             ShowAll ();
         }

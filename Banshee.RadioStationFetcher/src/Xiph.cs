@@ -51,7 +51,13 @@ namespace Banshee.RadioStationFetcher
         public Xiph()
         {
             SetStatusBarMessage (Catalog.GetString ("www.xiph.org"));
-            Banshee.Kernel.Scheduler.Schedule (new DelegateJob (FetchStations));            
+            
+        }
+        
+        public override void ShowDialog () 
+        {
+            Banshee.Kernel.Scheduler.Schedule (new DelegateJob (FetchStations));
+            base.ShowDialog ();
         }
         
         public override void FillGenreList () 
