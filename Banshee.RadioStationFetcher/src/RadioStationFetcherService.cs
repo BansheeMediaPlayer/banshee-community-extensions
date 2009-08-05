@@ -62,21 +62,20 @@ namespace Banshee.RadioStationFetcher
             action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
             actions = new ActionGroup ("Radio-station fetcher");
             
-            ActionEntry[] source_actions = new ActionEntry[3];
-            
-            source_actions[0] = new ActionEntry ("RadioStationFetcherAction", null,
-                Catalog.GetString ("Radiostation fetcher"), null,
-                null, null);
-            
-            source_actions[1] = new ActionEntry ("ShoutcastAction", null,
+            // Add sources
+            ActionEntry[] source_actions = {
+                new ActionEntry ("RadioStationFetcherAction", null,
+                    Catalog.GetString ("Radiostation fetcher"), null,
+                    null, null),
+                new ActionEntry ("ShoutcastAction", null,
                     Catalog.GetString ("Shoutcast"), null,
                     Catalog.GetString ("Fetch stations from shoutcast"), delegate {
-                        shoutcast.ShowDialog (); } );
-            
-            source_actions[2] = new ActionEntry ("XiphAction", null,
+                        shoutcast.ShowDialog (); } ), 
+                new ActionEntry ("XiphAction", null,
                     Catalog.GetString ("Xiph"), null,
                     Catalog.GetString ("Fetch stations from Xiph"), delegate {
-                        xiph.ShowDialog (); } );
+                        xiph.ShowDialog (); } )
+            };
             
             actions.Add (source_actions);
             
