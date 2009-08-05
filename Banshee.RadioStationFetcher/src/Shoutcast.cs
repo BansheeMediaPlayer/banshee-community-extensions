@@ -47,7 +47,7 @@ namespace Banshee.RadioStationFetcher
     {
         public Shoutcast ()
         {
-            statusbar.Push (0, Catalog.GetString ("www.shoutcast.com"));
+            SetStatusBarMessage (Catalog.GetString ("www.shoutcast.com"));
         }
         
         public override void FillGenreList () 
@@ -297,6 +297,7 @@ namespace Banshee.RadioStationFetcher
                     new_station.IsLive = true;
                     Int32.TryParse (bitrate.Trim (), out bitrate_int);                    
                     new_station.BitRate = bitrate_int;
+                    new_station.IsLive = true;
                     
                     Hyena.Log.DebugFormat ("[Shoutcast] <ParseQuery> Station found! Name: {0} URL: {1}", 
                         name, new_station.Uri.ToString ());

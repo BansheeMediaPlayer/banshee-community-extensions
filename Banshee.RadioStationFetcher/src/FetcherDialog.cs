@@ -32,6 +32,8 @@ using System.Threading;
 
 using Gtk;
 
+using Banshee.Kernel;
+using Banshee.Base;
 using Banshee.I18n;
 using Banshee.Collection.Database;
 using Banshee.Sources;
@@ -188,24 +190,24 @@ namespace Banshee.RadioStationFetcher
         
         private void OnGenreQueryButtonClick (object o, EventArgs args) 
         {
-            ThreadPool.QueueUserWorkItem (DoGenreQuery, null);
+            Banshee.Kernel.Scheduler.Schedule (new DelegateJob (DoGenreQuery));
         }
         
         private void OnFreetextQueryButtonClick (object o, EventArgs args) 
         {
-            ThreadPool.QueueUserWorkItem (DoFreetextQuery, null);
+            Banshee.Kernel.Scheduler.Schedule (new DelegateJob (DoFreetextQuery));
         }
         
-        private void DoGenreQuery (object o) 
+        private void DoGenreQuery () 
         {
-            statusbar.Push (0, String.Format (Catalog.GetString ("Querying genre \"{0}\""), Genre));
+            SetStatusBarMessage (String.Format (Catalog.GetString ("Querying genre \"{0}\""), Genre));
             List<DatabaseTrackInfo> fetched_stations = (this as IGenreSearchable).FetchStationsByGenre (Genre);
             SaveFetchedTracksToDatabase (fetched_stations);
         } 
         
-        private void DoFreetextQuery (object o) 
+        private void DoFreetextQuery () 
         {
-            statusbar.Push (0, String.Format (Catalog.GetString ("Querying freetext \"{0}\""), Freetext));
+            SetStatusBarMessage (String.Format (Catalog.GetString ("Querying freetext \"{0}\""), Freetext));
             List<DatabaseTrackInfo> fetched_stations = (this as IFreetextSearchable).FetchStationsByFreetext (Freetext);
             SaveFetchedTracksToDatabase (fetched_stations);
         }
@@ -213,7 +215,7 @@ namespace Banshee.RadioStationFetcher
         private void SaveFetchedTracksToDatabase (List<DatabaseTrackInfo> fetched_stations) 
         {
             if (fetched_stations == null) {
-                statusbar.Push (0, Catalog.GetString ("Error fetching stations."));
+                SetStatusBarMessage (Catalog.GetString ("Error fetching stations."));
                 return;
             }
             
@@ -221,7 +223,7 @@ namespace Banshee.RadioStationFetcher
                 track.Save ();
             }
             
-            statusbar.Push (0, String.Format (Catalog.GetString ("Query done. Fetched {0} stations."), 
+            SetStatusBarMessage (String.Format (Catalog.GetString ("Query done. Fetched {0} stations."), 
                 fetched_stations.Count.ToString ()));
         } 
         
@@ -271,6 +273,14 @@ namespace Banshee.RadioStationFetcher
         protected override void OnClose()
         {
             HideAll ();
+        }
+        
+        protected void SetStatusBarMessage (string message) 
+        {
+            ThreadAssist.SpawnFromMain (delegate 
+                {
+                     statusbar.Push (0, message);
+                });
         }
     }
 }

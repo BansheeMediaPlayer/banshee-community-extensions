@@ -34,6 +34,7 @@ using System.Net;
 using System.Threading;
 
 using Banshee.Base;
+using Banshee.Kernel;
 using Banshee.Collection.Database;
 using Banshee.Sources;
 using Banshee.I18n;
@@ -49,8 +50,8 @@ namespace Banshee.RadioStationFetcher
         
         public Xiph()
         {
-            statusbar.Push (0, Catalog.GetString ("www.xiph.org"));
-            ThreadPool.QueueUserWorkItem (FetchStations, null);
+            SetStatusBarMessage (Catalog.GetString ("www.xiph.org"));
+            Banshee.Kernel.Scheduler.Schedule (new DelegateJob (FetchStations));            
         }
         
         public override void FillGenreList () 
@@ -131,7 +132,7 @@ namespace Banshee.RadioStationFetcher
         public List<DatabaseTrackInfo> FetchStationsByGenre (string genre) 
         {
             if (!stations_fetched) {
-                FetchStations (null);
+                FetchStations ();
             }
             
             return station_list.FindAll (delegate (DatabaseTrackInfo station) 
@@ -146,7 +147,7 @@ namespace Banshee.RadioStationFetcher
         public List<DatabaseTrackInfo> FetchStationsByFreetext (string text) 
         {
             if (!stations_fetched) {
-                FetchStations (null);
+                FetchStations ();
             }
             
             return station_list.FindAll (delegate (DatabaseTrackInfo station) 
@@ -168,7 +169,7 @@ namespace Banshee.RadioStationFetcher
                 } );
         }
          
-        public void FetchStations (object o) 
+        public void FetchStations () 
         {
             Hyena.Log.Debug ("[Xiph] <FetchStations> Start");
         
@@ -265,9 +266,11 @@ namespace Banshee.RadioStationFetcher
                     Hyena.Log.Debug ("[Xiph] <ParseQuery> ERROR parsing station");
                     continue;
                 }
-                Hyena.Log.Debug ("[Xiph] <ParseQuery> END");
             }
-            statusbar.Push (0, String.Format (Catalog.GetString ("www.xiph.org {0} stations available."), 
+            
+            Hyena.Log.Debug ("[Xiph] <ParseQuery> END");
+            
+            SetStatusBarMessage (String.Format (Catalog.GetString ("www.xiph.org {0} stations available."), 
                 station_list.Count.ToString ()));
             stations_fetched = true;
         }
