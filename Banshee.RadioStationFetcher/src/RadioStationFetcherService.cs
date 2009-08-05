@@ -65,14 +65,14 @@ namespace Banshee.RadioStationFetcher
             // Add sources
             ActionEntry[] source_actions = {
                 new ActionEntry ("RadioStationFetcherAction", null,
-                    Catalog.GetString ("Radiostation fetcher"), null,
+                    Catalog.GetString ("_Radiostation fetcher"), null,
                     null, null),
                 new ActionEntry ("ShoutcastAction", null,
-                    Catalog.GetString ("Shoutcast"), null,
+                    Catalog.GetString ("_Shoutcast"), null,
                     Catalog.GetString ("Fetch stations from shoutcast"), delegate {
                         shoutcast.ShowDialog (); } ), 
                 new ActionEntry ("XiphAction", null,
-                    Catalog.GetString ("Xiph"), null,
+                    Catalog.GetString ("_Xiph"), null,
                     Catalog.GetString ("Fetch stations from Xiph"), delegate {
                         xiph.ShowDialog (); } )
             };
