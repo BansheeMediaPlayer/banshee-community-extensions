@@ -206,8 +206,8 @@ namespace Banshee.RadioStationFetcher
                 
                 return ParseQuery (xml_response);
             }
-            catch (Exception ) {
-                Hyena.Log.Debug ("[Shoutcast] <FetchStationsByGenre> ERROR");
+            catch (Exception e) {
+                Hyena.Log.Exception ("[Shoutcast] <FetchStationsByGenre> ERROR: ", e);
                 return null;
             }
             finally {
@@ -239,8 +239,8 @@ namespace Banshee.RadioStationFetcher
                 
                 return ParseQuery (xml_response);
             }
-            catch(Exception) {
-                Hyena.Log.Debug ("[Shoutcast] <FetchStationsByFreetext> ERROR");
+            catch (Exception e) {
+                Hyena.Log.Exception ("[Shoutcast] <FetchStationsByFreetext> ERROR: ", e);
                 return null;
             }
             finally {
@@ -304,8 +304,8 @@ namespace Banshee.RadioStationFetcher
                     
                     station_list.Add (new_station);
                 }
-                catch (Exception) {
-                    Hyena.Log.Debug ("[Shoutcast] <ParseQuery> ERROR parsing station.");
+                catch (Exception e) {
+                    Hyena.Log.Exception ("[Shoutcast] <ParseQuery> ERROR: ", e);
                     continue;
                 }
             }

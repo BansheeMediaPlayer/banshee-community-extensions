@@ -197,8 +197,8 @@ namespace Banshee.RadioStationFetcher
                 
                 ParseQuery (xml_response);
             }
-            catch (Exception) {
-                Hyena.Log.Debug ("[Xiph] <FetchStations> ERROR");
+            catch (Exception e) {
+                Hyena.Log.Exception ("[Xiph] <FetchStations> ERROR: ", e);
                 return;
             }
             finally {
@@ -267,8 +267,8 @@ namespace Banshee.RadioStationFetcher
                     
                     station_list.Add (new_station);
                 }
-                catch (Exception) {
-                    Hyena.Log.Debug ("[Xiph] <ParseQuery> ERROR parsing station");
+                catch (Exception e) {
+                    Hyena.Log.Exception ("[Xiph] <ParseQuery> ERROR", e);
                     continue;
                 }
             }
