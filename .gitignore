@@ -1,0 +1,17 @@
+Makefile.in
+Makefile
+*.pc
+aclocal.m4
+autom4te.cache
+install-sh
+missing
+config.status
+config.sub
+config.log
+config.guess
+configure
+Banshee.Telepathy/bin/**/*
+*.userprefs
+*.usertasks
+*.pidb
+*~

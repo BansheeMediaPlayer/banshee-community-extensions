@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CFD10ED1-BF3A-4865-A136-30DCF5175702}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Banshee.Telepathy</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>3</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="Banshee.Telepathy\TelepathyService.cs" />
+    <Compile Include="Banshee.Telepathy.API\Announcer.cs" />
+    <Compile Include="Banshee.Telepathy.API\Avatar.cs" />
+    <Compile Include="Banshee.Telepathy.API\Connection.cs" />
+    <Compile Include="Banshee.Telepathy.API\ConnectionLocator.cs" />
+    <Compile Include="Banshee.Telepathy.API\Contact.cs" />
+    <Compile Include="Banshee.Telepathy.API\DispatchManager.cs" />
+    <Compile Include="Banshee.Telepathy.API\Roster.cs" />
+    <Compile Include="Banshee.Telepathy.API\Channels\Channel.cs" />
+    <Compile Include="Banshee.Telepathy.API\Channels\ContactListChannel.cs" />
+    <Compile Include="Banshee.Telepathy.API\Channels\DBusTubeChannel.cs" />
+    <Compile Include="Banshee.Telepathy.API\Channels\FileTransferChannel.cs" />
+    <Compile Include="Banshee.Telepathy.API\Channels\IChannel.cs" />
+    <Compile Include="Banshee.Telepathy.API\Channels\ITube.cs" />
+    <Compile Include="Banshee.Telepathy.API\Channels\RequestedChannel.cs" />
+    <Compile Include="Banshee.Telepathy.API\Channels\StreamTubeChannel.cs" />
+    <Compile Include="Banshee.Telepathy.API\Data\ContactService.cs" />
+    <Compile Include="Banshee.Telepathy.API\DBus\DBusConnection.cs" />
+    <Compile Include="Banshee.Telepathy.API\DBus\DBusUtility.cs" />
+    <Compile Include="Banshee.Telepathy.API\DBus\EmpathyHandler.cs" />
+    <Compile Include="Banshee.Telepathy.API\Dispatchables\Activity.cs" />
+    <Compile Include="Banshee.Telepathy.API\Dispatchables\DBusActivity.cs" />
+    <Compile Include="Banshee.Telepathy.API\Dispatchables\Dispatchable.cs" />
+    <Compile Include="Banshee.Telepathy.API\Dispatchables\DispatchableQueue.cs" />
+    <Compile Include="Banshee.Telepathy.API\Dispatchables\FileTransfer.cs" />
+    <Compile Include="Banshee.Telepathy.API\Dispatchables\IncomingFileTransfer.cs" />
+    <Compile Include="Banshee.Telepathy.API\Dispatchables\OutgoingFileTransfer.cs" />
+    <Compile Include="Banshee.Telepathy.API\Dispatchables\StreamActivity.cs" />
+    <Compile Include="Banshee.Telepathy.API\Dispatchables\StreamActivityListener.cs" />
+    <Compile Include="Banshee.Telepathy.API\Dispatchers\DBusActivityDispatcher.cs" />
+    <Compile Include="Banshee.Telepathy.API\Dispatchers\Dispatcher.cs" />
+    <Compile Include="Banshee.Telepathy.API\Dispatchers\FileTransferDispatcher.cs" />
+    <Compile Include="Banshee.Telepathy.API\Dispatchers\StreamActivityDispatcher.cs" />
+    <Compile Include="Banshee.Telepathy.Data\ContactContainerSource.cs" />
+    <Compile Include="Banshee.Telepathy.Data\ContactPlaylistSource.cs" />
+    <Compile Include="Banshee.Telepathy.Data\ContactSource.cs" />
+    <Compile Include="Banshee.Telepathy.Data\ContactTrackInfo.cs" />
+    <Compile Include="Banshee.Telepathy.Data\DownloadMonitor.cs" />
+    <Compile Include="Banshee.Telepathy.Data\IContactSource.cs" />
+    <Compile Include="Banshee.Telepathy.DBus\BaseProvider.cs" />
+    <Compile Include="Banshee.Telepathy.DBus\IMetadataProvider.cs" />
+    <Compile Include="Banshee.Telepathy.DBus\IMetadataProviderService.cs" />
+    <Compile Include="Banshee.Telepathy.DBus\IPlaylistProvider.cs" />
+    <Compile Include="Banshee.Telepathy.DBus\MetadataProvider.cs" />
+    <Compile Include="Banshee.Telepathy.DBus\MetadataProviderService.cs" />
+    <Compile Include="Banshee.Telepathy.DBus\PlaylistProvider.cs" />
+    <Compile Include="Banshee.Telepathy.Gui\ColumnCellContactStatusIndicator.cs" />
+    <Compile Include="Banshee.Telepathy.Gui\ContactRequestDialog.cs" />
+    <Compile Include="Banshee.Telepathy.Gui\ContactSourceContents.cs" />
+    <Compile Include="Banshee.Telepathy.Gui\DownloadManager.cs" />
+    <Compile Include="Banshee.Telepathy.Gui\IncomingTubeDialog.cs" />
+    <Compile Include="Banshee.Telepathy.Gui\TelepathyActions.cs" />
+    <Compile Include="Banshee.Telepathy.Gui\TransferManager.cs" />
+    <Compile Include="Banshee.Telepathy.Gui\UploadManager.cs" />
+    <Compile Include="Banshee.Telepathy.Net\BaseWebServer.cs" />
+    <Compile Include="Banshee.Telepathy.Net\StreamingHTTPProxyServer.cs" />
+    <Compile Include="Banshee.Telepathy.Net\StreamingServer.cs" />
+    <Compile Include="Telepathy\Constants.cs" />
+    <Compile Include="Telepathy\MissionControl.cs" />
+    <Compile Include="Telepathy\Telepathy.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ActiveSourceUI.xml" />
+    <None Include="Resources\GlobalUI.xml" />
+    <None Include="Banshee.Telepathy.addin.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-core</Package>
+    </Reference>
+    <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-services</Package>
+    </Reference>
+    <Reference Include="Banshee.ThickClient, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-thickclient</Package>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="NDesk.DBus, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f6716e4f9b2ed099" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" RelativeConfigureInPath=".">
+          <BuildFilesVar />
+          <DeployFilesVar />
+          <ResourcesVar />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+          <MessageRegex Name="Vala" />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>

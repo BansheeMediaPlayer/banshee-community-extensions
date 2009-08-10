@@ -1,0 +1,94 @@
+//
+// ContactContainerSource.cs
+//
+// Author:
+//   Neil Loknath <neil.loknath@gmail.com>
+//
+// Copyright (C) 2009 Neil Loknath
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+
+using System;
+using Mono.Unix;
+
+using Banshee.Configuration;
+using Banshee.Sources;
+using Banshee.ServiceStack;
+using Banshee.Sources.Gui;
+using Banshee.Telepathy.Gui;
+
+using Hyena;
+
+using NDesk.DBus;
+
+namespace Banshee.Telepathy.Data
+{
+    public class ContactContainerSource : Source
+    {
+        public ContactContainerSource (TelepathyService service) : base (Catalog.GetString ("Contacts"), "Contacts", 1000)
+        {
+            this.service = service;
+            TypeUniqueId = "telepathy-container";
+            
+            Properties.SetString ("Icon.Name", "stock_people");
+            Properties.Set<ISourceContents> ("Nereid.SourceContents", new ContactSourceContents (this));
+            Properties.Set<bool> ("Nereid.SourceContents.HeaderVisible", false);
+            Properties.SetString ("GtkActionPath", "/ContactSourceContainerPopup");
+            
+            actions = new TelepathyActions (this);
+        }
+
+        public override SourceSortType DefaultChildSort {
+            get { return SortNameAscending; }
+        }
+
+        private TelepathyActions actions;
+        public TelepathyActions Actions {
+            get { return actions; }
+        }
+
+        private TelepathyService service;
+        public TelepathyService TelepathyService {
+            get { return service; }
+        }
+
+        public static readonly SchemaEntry <bool> ShareCurrentlyPlayingSchema = new SchemaEntry <bool> (
+            "plugins.telepathy-container", "share_currently_playing",
+            false,
+            "Share Currently Playing",
+            "Set Empathy presence message to what you're currently playing"
+        );
+
+        public static readonly SchemaEntry <bool> AllowDownloadsSchema = new SchemaEntry <bool> (
+            "plugins.telepathy-container", "allow_downloads",
+            false,
+            "Allow Downloads",
+            "Allow downloads when sharing libraries"
+        );
+
+        public static readonly SchemaEntry <bool> AllowStreamingSchema = new SchemaEntry <bool> (
+            "plugins.telepathy-container", "allow_streaming",
+            false,
+            "Allow Streaming",
+            "Allow streaming when sharing libraries"
+        );
+    }
+}

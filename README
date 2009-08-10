@@ -1,0 +1,166 @@
+Features
+--------
+
+* Download your friends' Banshee library metadata and check out what they 
+  listen to, their ratings, BPM values, etc.
+
+* View your friends' playlists and export them to disk
+
+* Share what you're listening to with all your instant messaging friends by 
+  advertising the track, artist, and album of the currently playing track in 
+  Empathy's status message. This can be toggled on / off
+
+* Download your friends' music; one track at a time or a selection. You can 
+  cancel ones in progress, queued, individually or all at once. The sender 
+  has the option to cancel all in progress / queued only. Both sender and 
+  receiver get a progress bar. File sharing can be toggled on / off
+
+* Stream your friends' music. Streaming can be toggled on / off.
+
+Requirements
+------------
+
+* banshee >= 1.5.1
+* empathy >= 2.26.1, recommended >= 2.27.3
+* telepathy-gabble >= 0.7.28
+* libndesk-dbus = git master -> git-clone git://git.ndesk.org/pub/scm/dbus-sharp
+
+If you have the above, you almost definitely have the required dependencies.
+
+Installation
+------------
+
+* ./autogen.sh 
+* or, if you wish to install to ~/.config/banshee-1/addins:
+  ./autogen.sh --enable-user-extension
+* make
+* sudo make install
+
+The extension is auto-enabled by default. So, the next time you load Banshee,
+the Telepathy extension will load automatically.
+
+Usage
+-----
+
+1.) Start-up
+
+When Banshee starts, the Telepathy extension will load after a short delay.
+If Empathy is started on your machine and you have Jabber accounts online, 
+Banshee will query each contact to see if they have Banshee running with the 
+Telepathy extension installed and active. If Empathy is not started, the 
+extension will simply monitor until it is.
+
+2.) Browsing a Contact's Library
+
+Each contact that has Banshee and the Telepathy extension active will be 
+displayed as children of the 'Contacts' source. Click a contact to send them 
+a request for permission to browse their library. If they accept, their library
+will appear in Banshee shortly thereafter.
+
+3.) Streaming
+
+After a contact's library has been downloaded, attempting to play a track will
+result in the track getting streamed over a Telepathy Stream tube. Playback
+can be started from the library or playlists. Playback is continuous and
+seeking is functional. You will get errors if the user you are streaming from
+has it disabled.
+
+4.) Downloading
+
+To download a track, first ensure that a contact is selected and you have 
+downloaded their library data. Then, right-click a track and select 
+'Download Track(s).' You may also download a selection of tracks by making the
+selection holding SHIFT/CTRL while selecting tracks. When downloads start, you
+will see a progress display in the lower left corner of the Banshee application 
+window. To cancel downloads, make a selection of downloading tracks, right-click
+and click 'Cancel Download(s).' Alternatively, you may cancel all downloads by 
+clicking the 'X' that appears in the progress bar in the lower left corner of
+the Banshee application window (please see the Disclaimer section for further 
+information on downloading).
+
+Downloads are saved to a cache location (see notes). The folder hierarchy will
+follow what has been specified in Banshee preferences for File System
+Organization. Also, completed downloads will be automatically added to your
+library, so you can begin listening to your download right away.
+
+Note that if the user you are downloading from has downloading disabled, 
+nothing will happen.
+
+5.) Sharing What You're Listening to
+
+To announce to your contacts what you are currently playing in Banshee,
+right-click on 'Contacts' and select 'Share What I'm Currently Playing.' It
+is a toggle option, so each click will either enable or disable the option.
+
+Backup
+------
+
+It is recommended that you take a backup of your Banshee library. To make a 
+backup: cp ~/.config/banshee-1/banshee.db to a filename of your choosing. 
+To restore, simply copy that filename back to banshee.db.
+
+You may take comfort in the fact that I have not corrupted or otherwise caused
+bad things to happen to my personal library so far. :)
+
+Disclaimer
+----------
+ 
+It is the software user's responsibility to ensure that their use of this 
+software, a Telepathy extension for Banshee, does not infringe on the 
+property rights of others. There are many works licensed to permit sharing, but
+there are also many works that are not. If you, the software user, chooses to 
+share a work unlawfully, you are doing so at your own risk. I, Neil Loknath, 
+the original author of this software, am not responsible for your actions.
+
+Notes 
+-----
+
+* Smart playlists are not downloaded; only normal ones.
+
+* Downloads are saved to:
+  ~/.cache/banshee-1/extensions/contacts/partial-downloads
+  Once complete, auto-import follows your Banshee settings. ie. if you have
+  'Copy to Library on Import' checked, the download will get copied to your
+  library folder.
+
+* If same file exists in library after a download, it is not copied:
+  http://bugzilla.gnome.org/show_bug.cgi?id=540597
+
+* If 'Copy to Library on Import' is not checked, the track is imported from
+  the cache. This may not be appropriate.
+
+* The download cache is never cleared.
+
+* Empathy < 2.27.3 will display a progress bar dialog when transfers are
+  queued, in progress, etc. In versions >= 2.27.3, this is not displayed.
+
+* Once Empathy is ported to MC5, this extension will no longer function. It
+  will need to be migrated to support the new API.
+
+Known Issues
+------------
+
+* Right-click a contact and selecting 'Cancel Browse Request' will cancel
+  the outstanding request with the selected contact, if one exists. However,
+  if the accept dialog is open on the other side of the request, it will not
+  close. 
+  See https://bugs.freedesktop.org/show_bug.cgi?id=22337
+
+* If you are using Empathy versions < 2.27.3, you may have to add your gmail
+  accounts as jabber ones and not gtalk.
+
+* The Empathy trayicon will display a blinking lightning bolt when there is
+  a file transfer. Clicking it will display a dialog box for accepting/
+  rejecting the transfer. Using this will cause unpredictable results.
+  Telepathy Mission Control 5 will allow this to be suppressed.
+
+* Transfer speeds are highly dependant on the Telepathy framework's ability
+  to establish a P2P connection. If traffic goes through Jabber servers, be
+  prepared for a highly sluggish experience.
+  See https://bugs.freedesktop.org/show_bug.cgi?id=22930
+
+* This extension will overwrite any existing Telepathy capabilities being
+  advertised. This is due to the ContactCapabilities.SetSelfCapabilities
+  interface performing a replace operation and not an append. Mission Control
+  5 will allow this process to work correctly.
+

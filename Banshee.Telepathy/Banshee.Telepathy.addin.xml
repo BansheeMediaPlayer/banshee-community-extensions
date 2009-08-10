@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.Telepathy"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="© 2009 Neil Loknath. Licensed under the MIT X11 license."
+    name="Telepathy"
+    category="Sources"
+    description="Share music with your instant messaging friends."
+    author="Neil Loknath"
+    url="http://banshee-project.org/"
+    defaultEnabled="true">
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.Telepathy.TelepathyService"/>
+  </Extension>
+
+</Addin>
