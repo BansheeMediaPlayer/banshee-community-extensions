@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.54])
-AC_INIT([Mirage], [0.5.0])
+AC_INIT([Mirage], [0.5.1])
 AM_INIT_AUTOMAKE([foreign])
 
 dnl pkg-config

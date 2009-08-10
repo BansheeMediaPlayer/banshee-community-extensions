@@ -147,6 +147,47 @@ namespace Mirage
             
             return keys;
         }
-    }
 
+        public static Dictionary<int, Scms> LoadLibrary(ref Db db)
+        {
+            int[] mapping = new int[100];
+            int[] exclude = new int[0];
+            Dictionary<int, Scms> loadedDb = new Dictionary<int, Scms>();
+
+            IDataReader r = db.GetTracks(exclude);
+            int read;
+            do {
+                Scms[] scmss = new Scms[100];
+                for (int i = 0; i < 100; i++) {
+                    scmss[i] = new Scms(mfcccoefficients);
+                }
+
+                read = db.GetNextTracks(ref r, ref scmss, ref mapping, 100);
+                for (int i = 0; i < read; i++) {
+                    loadedDb.Add(mapping[i], scmss[i]);
+                }
+            } while (read > 0);
+
+            return loadedDb;
+        }
+
+        public static List<int> DuplicateSearch(Dictionary<int, Scms> loadedDb, int trackId, float threshold)
+        {
+            Scms seed = loadedDb[trackId];
+            ScmsConfiguration c = new ScmsConfiguration(mfcccoefficients);
+            List<int> duplicates = new List<int>();
+            foreach(KeyValuePair<int, Scms> item in loadedDb) {
+                Scms song = item.Value;
+                int songId = item.Key;
+                if (songId != trackId) {
+                    float dcur = Scms.Distance(ref seed, ref song, ref c);
+                    if (dcur <= threshold) {
+                        duplicates.Add(item.Key);
+                    }
+                }
+            }
+
+            return duplicates;
+        }
+    }
 }

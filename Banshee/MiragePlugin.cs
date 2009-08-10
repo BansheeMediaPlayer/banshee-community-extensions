@@ -22,6 +22,7 @@
  */
 
 using Gtk;
+using Glade;
 
 using System;
 using System.IO;
@@ -38,6 +39,8 @@ using Banshee.Collection.Database;
 using Banshee.ServiceStack;
 using Banshee.Sources;
 using Banshee.Gui;
+using Banshee.Playlist;
+using Banshee.Widgets;
 
 using Mirage;
 
@@ -57,6 +60,7 @@ namespace Banshee.Mirage
 
         bool rescanFailed;
         Thread scanThread;
+        Thread dupesearchThread;
 
         ActionGroup actions;
         uint uiManagerId;
@@ -301,6 +305,95 @@ namespace Banshee.Mirage
             }
         }
 
+        private void DuplicateSearch()
+        {
+            dupesearchThread = new Thread(DuplicateSearchThread);
+            dupesearchThread.IsBackground = true;
+            dupesearchThread.Priority = ThreadPriority.Lowest;
+            dupesearchThread.Start();
+        }
+
+        private class DupePlaylistSource : PlaylistSource {
+
+            public DupePlaylistSource() : 
+                base(AddinManager.CurrentLocalizer.GetString ("Mirage Duplicates"), ServiceManager.SourceManager.MusicLibrary)
+            {
+            }
+
+            public void Add(DatabaseTrackInfo track)
+            {
+                AddTrack(track);
+            }
+        }
+
+        private void DuplicateSearchThread()
+        {
+            Log.Debug("Mirage - Scanning library for duplicate tracks");
+
+            UserJob userJob = new UserJob("Mirage",
+                AddinManager.CurrentLocalizer.GetString (@"Mirage: Duplicate Search"),
+                "audio-x-generic");
+            userJob.CancelMessage = AddinManager.CurrentLocalizer.GetString (
+                @"Are you sure you want to stop the Duplicate Search? ");
+            userJob.CanCancel = true;
+            userJob.Progress = 0;
+            userJob.Register();
+
+            Dictionary<int, Scms> loadedDb = Mir.LoadLibrary(ref db);
+            List<int> dupes = new List<int>();
+            Log.Debug("Mirage - Database fully loaded!");
+
+
+            DupePlaylistSource dupePlaylist = new DupePlaylistSource ();
+            dupePlaylist.Save ();
+            dupePlaylist.PrimarySource.AddChildSource (dupePlaylist);
+
+            int tracksProcessed = 0;
+
+            foreach (int trackId in loadedDb.Keys) {
+
+                userJob.Progress = (double)tracksProcessed / (double)loadedDb.Count;
+                tracksProcessed++;
+
+                // cancel if requested
+                if (userJob.IsCancelRequested) {
+                    break;
+                }
+
+                // skip if we have already identified the track as a dupe of another
+                // track.
+                if (dupes.Contains(trackId)) {
+                    continue;
+                }
+
+                List<int> currentDupes = Mir.DuplicateSearch(loadedDb, trackId, 1);
+                dupes.AddRange(currentDupes);
+
+                DatabaseTrackInfo track = DatabaseTrackInfo.Provider.FetchSingle(trackId);
+                Log.DebugFormat ("Mirage - Processing {0}-{1}-{2}", track.TrackId, track.ArtistName, track.TrackTitle);
+                userJob.Status = String.Format("{0} - {1}", track.ArtistName, track.TrackTitle);
+
+                if (currentDupes.Count > 0) {
+                    dupePlaylist.Add(track);
+                    foreach (int dupeId in currentDupes) {
+                        DatabaseTrackInfo qtrack = DatabaseTrackInfo.Provider.FetchSingle(dupeId);
+                        Log.DebugFormat ("Mirage - Duplicate: {0} - {1} : {2}", qtrack.ArtistName, qtrack.TrackTitle, qtrack.Uri);
+                        dupePlaylist.Add(qtrack);
+                    }
+                    dupePlaylist.NotifyUser ();
+                }
+            }
+
+            userJob.Finish();
+
+            Gtk.Application.Invoke(delegate {
+                HigMessageDialog.RunHigMessageDialog (null, DialogFlags.Modal,
+                        MessageType.Info, ButtonsType.Ok, "Duplicate Search finished.", 
+                        AddinManager.CurrentLocalizer.GetString (
+                            "The Mirage Duplicate Search finished. Check the newly created <i>Mirage Duplicates</i> playlist for possible duplicates."));
+            });
+        }
+
         private void InstallInterfaceActions()
         {
             actions = new ActionGroup("Mirage Playlist Generator");
@@ -310,12 +403,17 @@ namespace Banshee.Mirage
                         AddinManager.CurrentLocalizer.GetString ("Mirage Playlist Generator"), null,
                         AddinManager.CurrentLocalizer.GetString ("Manage the Mirage plugin"), null),
 
-                    new ActionEntry("MirageRescanMusicAction", Stock.Refresh,
+                    new ActionEntry("MirageRescanMusicAction", null,
                         AddinManager.CurrentLocalizer.GetString ("Rescan the Music Collection"), null,
                         AddinManager.CurrentLocalizer.GetString ("Rescans the Music Collection for new Songs"),
                         OnMirageRescanMusicHandler),
 
-                    new ActionEntry("MirageResetAction", Stock.Clear,
+                    new ActionEntry("MirageDuplicateSearchAction", null,
+                        AddinManager.CurrentLocalizer.GetString ("Duplicate Search (Experimental)"), null,
+                        AddinManager.CurrentLocalizer.GetString ("Searches your Music Collection for possible duplicates"),
+                        OnMirageDuplicateSearchHandler),
+
+                    new ActionEntry("MirageResetAction", null,
                         AddinManager.CurrentLocalizer.GetString ("Reset Mirage"), null,
                         AddinManager.CurrentLocalizer.GetString ("Resets the Mirage Playlist Generation Plugin. "+
                             "All songs have to be analyzed again to use Automatic Playlist Generation."),
@@ -324,6 +422,26 @@ namespace Banshee.Mirage
 
             action_service.UIManager.InsertActionGroup(actions, 0);
             uiManagerId = action_service.UIManager.AddUiFromResource("MirageMenu.xml");
+        }
+
+        private void OnMirageDuplicateSearchHandler(object sender, EventArgs args)
+        {
+            MessageDialog md = new MessageDialog (null, DialogFlags.Modal, MessageType.Question,
+                    ButtonsType.Cancel, AddinManager.CurrentLocalizer.GetString (
+                        "<b>Mirage can search your music collection for duplicate music pieces.</b>\n\n"+
+                        "· To do so, your music collection needs to be analyzed completely from Mirage.\n" +
+                        "· This process will take a long time depending on the size of your collection."));
+            md.AddButton (AddinManager.CurrentLocalizer.GetString ("Scan for Duplicates"), ResponseType.Yes);
+            ResponseType result = (ResponseType)md.Run();
+            md.Destroy();
+
+            if (result == ResponseType.Yes) {
+                try {
+                    DuplicateSearch();
+                } catch (Exception) {
+                    Log.Warning("Mirage - Error scanning for duplicates.");
+                }
+            }
         }
 
         private void OnMirageRescanMusicHandler(object sender, EventArgs args)
