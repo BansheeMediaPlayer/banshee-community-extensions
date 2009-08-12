@@ -30,10 +30,9 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Net;
-
-using Banshee.I18n;
 using System.Collections.Generic;
 
+using Banshee.I18n;
 using Banshee.Collection.Database;
 using Banshee.Base;
 using Banshee.ServiceStack;
@@ -190,13 +189,13 @@ namespace Banshee.RadioStationFetcher
                 Create ("http://207.200.98.25/sbin/newxml.phtml?genre="+genre);
             request.Method = "GET";
             request.ContentType = "HTTP/1.0";
-            request.Timeout = 10 * 1000; // 10 seconds...
+            request.Timeout = 10 * 1000; // 10 seconds
 
             try
             {
                 Hyena.Log.DebugFormat ("[Shoutcast] <FetchStationsByGenre> Querying genre \"{0}\" ...", Genre);
                 
-                Stream response = request.GetResponse().GetResponseStream ();
+                Stream response = request.GetResponse ().GetResponseStream ();
                 StreamReader reader = new StreamReader (response);
 
                 XmlDocument xml_response = new XmlDocument ();
@@ -205,10 +204,6 @@ namespace Banshee.RadioStationFetcher
                 Hyena.Log.Debug ("[Shoutcast] <FetchStationsByGenre> Query done");
                 
                 return ParseQuery (xml_response);
-            }
-            catch (Exception e) {
-                Hyena.Log.Exception ("[Shoutcast] <FetchStationsByGenre> ERROR: ", e);
-                return null;
             }
             finally {
                 Hyena.Log.Debug ("[Shoutcast] <FetchStationsByGenre> End");    
@@ -223,7 +218,7 @@ namespace Banshee.RadioStationFetcher
                 Create ("http://207.200.98.25/sbin/newxml.phtml?search="+text);
             request.Method = "GET";
             request.ContentType = "HTTP/1.0";
-            request.Timeout = 10 * 1000; // 10 seconds...
+            request.Timeout = 10 * 1000; // 10 seconds
 
             try
             {
@@ -238,10 +233,6 @@ namespace Banshee.RadioStationFetcher
                 Hyena.Log.Debug ("[Shoutcast] <FetchStationsByFreetext> Query done");
                 
                 return ParseQuery (xml_response);
-            }
-            catch (Exception e) {
-                Hyena.Log.Exception ("[Shoutcast] <FetchStationsByFreetext> ERROR: ", e);
-                return null;
             }
             finally {
                 Hyena.Log.Debug ("[Shoutcast] <FetchStationsByFreetext> End");
@@ -258,12 +249,7 @@ namespace Banshee.RadioStationFetcher
 
             station_list = new List<DatabaseTrackInfo> (XML_station_nodes.Count);
             
-            PrimarySource source = GetInternetRadioSource ();
-
-            if (source == null) {
-                // TODO: Show error message
-                return null;
-            }
+            PrimarySource source = GetInternetRadioSource (); // If not found, throws exception caught in upper level.
             
             foreach (XmlNode node in XML_station_nodes)
             {

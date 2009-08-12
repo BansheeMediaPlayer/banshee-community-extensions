@@ -1,13 +1,14 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Banshee.RadioStationFetcher/src/Xiph.cs" ctype="Workbench">
     <Files>
-      <File FileName="Banshee.RadioStationFetcher/src/Xiph.cs" Line="259" Column="38" />
-      <File FileName="Banshee.RadioStationFetcher/src/Shoutcast.cs" Line="1" Column="1" />
-      <File FileName="Banshee.RadioStationFetcher/src/FetcherDialog.cs" Line="1" Column="1" />
+      <File FileName="Banshee.RadioStationFetcher/src/Xiph.cs" Line="207" Column="14" />
+      <File FileName="Banshee.RadioStationFetcher/src/Shoutcast.cs" Line="208" Column="14" />
+      <File FileName="Banshee.RadioStationFetcher/src/FetcherDialog.cs" Line="235" Column="14" />
       <File FileName="Banshee.RadioStationFetcher/src/IFreetextSearchable.cs" Line="28" Column="1" />
       <File FileName="Banshee.RadioStationFetcher/src/IGenreSearchable.cs" Line="27" Column="3" />
-      <File FileName="Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs" Line="76" Column="58" />
+      <File FileName="Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs" Line="76" Column="79" />
       <File FileName="Banshee.RadioStationFetcher/Resources/RadioStationFetcherMenu.xml" Line="4" Column="79" />
+      <File FileName="Banshee.RadioStationFetcher/Banshee.RadioStationFetcher.addin.xml" Line="9" Column="89" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -15,7 +16,7 @@
           <Node name="Banshee.RadioStationFetcher" expanded="True">
             <Node name="Resources" expanded="True" />
             <Node name="src" expanded="True">
-              <Node name="RadioStationFetcherService.cs" selected="True" />
+              <Node name="Xiph.cs" selected="True" />
             </Node>
           </Node>
         </State>

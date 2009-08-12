@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Net;
 
 using Gtk;
 
@@ -122,8 +123,8 @@ namespace Banshee.RadioStationFetcher
             genre_entry = ComboBoxEntry.NewText ();
             freeText_entry = new Entry ();
           
-            genre_button = new Button("Search");
-            freeText_button = new Button("Search");
+            genre_button = new Button ("Search");
+            freeText_button = new Button ("Search");
 
             genre_button.CanDefault = true;
             genre_button.UseStock = true;
@@ -179,8 +180,6 @@ namespace Banshee.RadioStationFetcher
             
             statusbar.HasResizeGrip = false;
             main_box.PackEnd (statusbar, false, false, 0);
-            
-//            table.Attach (message_container, 0, 2, 4, 5, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink, 0, 0);
         }
  
         public void OnCloseButtonClick (object o, EventArgs args) 
@@ -201,30 +200,52 @@ namespace Banshee.RadioStationFetcher
         private void DoGenreQuery () 
         {
             SetStatusBarMessage (String.Format (Catalog.GetString ("Querying genre \"{0}\""), Genre));
-            List<DatabaseTrackInfo> fetched_stations = (this as IGenreSearchable).FetchStationsByGenre (Genre);
-            SaveFetchedTracksToDatabase (fetched_stations);
+            
+            try {
+                List<DatabaseTrackInfo> fetched_stations = (this as IGenreSearchable).FetchStationsByGenre (Genre);
+                SaveFetchedStationsToDatabase (fetched_stations);
+            }
+            catch (InternetRadioExtensionNotFoundException) {
+                SetStatusBarMessage (String.Format (Catalog.GetString ("ERROR: Internet-radio extension not available."))); 
+            }
+            catch (WebException) {
+                SetStatusBarMessage (String.Format (Catalog.GetString ("ERROR: Network error."))); 
+            }
+            catch (Exception) {
+                SetStatusBarMessage (String.Format (Catalog.GetString ("ERROR"))); 
+            }
         } 
         
         private void DoFreetextQuery () 
         {
             SetStatusBarMessage (String.Format (Catalog.GetString ("Querying freetext \"{0}\""), Freetext));
-            List<DatabaseTrackInfo> fetched_stations = (this as IFreetextSearchable).FetchStationsByFreetext (Freetext);
-            SaveFetchedTracksToDatabase (fetched_stations);
+            
+            try {
+                List<DatabaseTrackInfo> fetched_stations = (this as IFreetextSearchable).FetchStationsByFreetext (Freetext);
+                SaveFetchedStationsToDatabase (fetched_stations);
+                SetStatusBarMessage (String.Format (Catalog.GetString ("Query done. Fetched {0} stations."), 
+                    fetched_stations.Count.ToString ()));
+            }
+            catch (InternetRadioExtensionNotFoundException) {
+                SetStatusBarMessage (String.Format (Catalog.GetString ("ERROR: Internet-radio extension not available."))); 
+            }
+            catch (WebException) {
+                SetStatusBarMessage (String.Format (Catalog.GetString ("ERROR: Network error."))); 
+            }
+            catch (Exception) {
+                SetStatusBarMessage (String.Format (Catalog.GetString ("ERROR"))); 
+            }
         }
 
-        private void SaveFetchedTracksToDatabase (List<DatabaseTrackInfo> fetched_stations) 
+        private void SaveFetchedStationsToDatabase (List<DatabaseTrackInfo> fetched_stations) 
         {
             if (fetched_stations == null) {
-                SetStatusBarMessage (Catalog.GetString ("Error fetching stations."));
-                return;
+                throw new Exception ();
             }
             
             foreach (DatabaseTrackInfo track in fetched_stations) {
                 track.Save ();
             }
-            
-            SetStatusBarMessage (String.Format (Catalog.GetString ("Query done. Fetched {0} stations."), 
-                fetched_stations.Count.ToString ()));
         } 
         
         public abstract void FillGenreList ();
@@ -260,8 +281,8 @@ namespace Banshee.RadioStationFetcher
                 }
             }
     
-            Hyena.Log.Debug ("[FetcherDialog] <GetInternetRadioSource> Not found returning null");
-            return null;
+            Hyena.Log.Debug ("[FetcherDialog] <GetInternetRadioSource> Not found throwing exception");
+            throw new InternetRadioExtensionNotFoundException ();
         }
         
         protected override bool OnDeleteEvent (Gdk.Event evnt)
@@ -282,5 +303,11 @@ namespace Banshee.RadioStationFetcher
                      statusbar.Push (0, message);
                 });
         }
+    }
+    
+    public class ParseException : Exception {
+    }
+    
+    public class InternetRadioExtensionNotFoundException : Exception {
     }
 }

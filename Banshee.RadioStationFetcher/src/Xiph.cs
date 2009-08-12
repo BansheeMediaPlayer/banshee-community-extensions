@@ -28,10 +28,10 @@
 
 using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Xml;
 using System.Net;
 using System.Threading;
+using System.Collections.Generic;
 
 using Banshee.Base;
 using Banshee.Kernel;
@@ -48,7 +48,7 @@ namespace Banshee.RadioStationFetcher
         List<DatabaseTrackInfo> station_list = new List<DatabaseTrackInfo>();
         bool stations_fetched = false;
         
-        public Xiph()
+        public Xiph ()
         {
             SetStatusBarMessage (Catalog.GetString ("www.xiph.org"));
         }
@@ -133,11 +133,15 @@ namespace Banshee.RadioStationFetcher
             genre_list.Sort ();
         }
          
-        
+
         public List<DatabaseTrackInfo> FetchStationsByGenre (string genre) 
         {
             if (!stations_fetched) {
                 FetchStations ();
+            }
+            
+            if (GetInternetRadioSource () == null) {
+                throw new InternetRadioExtensionNotFoundException ();
             }
             
             return station_list.FindAll (delegate (DatabaseTrackInfo station) 
@@ -153,6 +157,10 @@ namespace Banshee.RadioStationFetcher
         {
             if (!stations_fetched) {
                 FetchStations ();
+            }
+            
+            if (GetInternetRadioSource () == null) {
+                throw new InternetRadioExtensionNotFoundException ();
             }
             
             return station_list.FindAll (delegate (DatabaseTrackInfo station) 
@@ -181,8 +189,12 @@ namespace Banshee.RadioStationFetcher
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create ("http://dir.xiph.org/yp.xml");
             request.Method = "GET";
             request.ContentType = "HTTP/1.0";
-            request.Timeout = 10 * 1000; // 10 seconds...
-
+            request.Timeout = 10 * 1000; // 10 seconds
+            
+            if (GetInternetRadioSource () == null) {
+                throw new InternetRadioExtensionNotFoundException ();
+            }
+            
             try
             {
                 Hyena.Log.Debug ("[Xiph] <FetchStations> Querying");
@@ -196,10 +208,6 @@ namespace Banshee.RadioStationFetcher
                 Hyena.Log.Debug ("[Xiph] <FetchStations> Query done");
                 
                 ParseQuery (xml_response);
-            }
-            catch (Exception e) {
-                Hyena.Log.Exception ("[Xiph] <FetchStations> ERROR: ", e);
-                return;
             }
             finally {
                 Hyena.Log.Debug ("[Xiph] <FetchStations> End");    
@@ -216,8 +224,7 @@ namespace Banshee.RadioStationFetcher
             PrimarySource source = GetInternetRadioSource ();
             
             if (source == null) {
-                // TODO: Show error message
-                return;
+                throw new InternetRadioExtensionNotFoundException ();
             }
             
             foreach (XmlNode node in XML_station_nodes)
@@ -263,7 +270,7 @@ namespace Banshee.RadioStationFetcher
                     new_station.BitRate = bitrate_int;
                     
                     Hyena.Log.DebugFormat ("[Xiph] <ParseQuery> Station found! Name: {0} URL: {1}",
-                    name, new_station.Uri.ToString ());
+                        name, new_station.Uri.ToString ());
                     
                     station_list.Add (new_station);
                 }
