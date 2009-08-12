@@ -135,13 +135,13 @@ namespace Banshee.RadioStationFetcher
          
 
         public List<DatabaseTrackInfo> FetchStationsByGenre (string genre) 
-        {
+        {            
             if (!stations_fetched) {
                 FetchStations ();
             }
             
-            if (GetInternetRadioSource () == null) {
-                throw new InternetRadioExtensionNotFoundException ();
+            if (station_list == null) {
+                return null;
             }
             
             return station_list.FindAll (delegate (DatabaseTrackInfo station) 
@@ -159,8 +159,8 @@ namespace Banshee.RadioStationFetcher
                 FetchStations ();
             }
             
-            if (GetInternetRadioSource () == null) {
-                throw new InternetRadioExtensionNotFoundException ();
+            if (station_list == null) {
+                return null;
             }
             
             return station_list.FindAll (delegate (DatabaseTrackInfo station) 
@@ -191,12 +191,12 @@ namespace Banshee.RadioStationFetcher
             request.ContentType = "HTTP/1.0";
             request.Timeout = 10 * 1000; // 10 seconds
             
-            if (GetInternetRadioSource () == null) {
-                throw new InternetRadioExtensionNotFoundException ();
-            }
-            
             try
             {
+                if (GetInternetRadioSource () == null) {
+                    throw new InternetRadioExtensionNotFoundException ();
+                }
+                
                 Hyena.Log.Debug ("[Xiph] <FetchStations> Querying");
                 
                 Stream response = request.GetResponse().GetResponseStream ();

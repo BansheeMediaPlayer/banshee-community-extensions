@@ -204,6 +204,8 @@ namespace Banshee.RadioStationFetcher
             try {
                 List<DatabaseTrackInfo> fetched_stations = (this as IGenreSearchable).FetchStationsByGenre (Genre);
                 SaveFetchedStationsToDatabase (fetched_stations);
+                SetStatusBarMessage (String.Format (Catalog.GetString ("Query done. Fetched {0} stations."), 
+                    fetched_stations.Count.ToString ()));
             }
             catch (InternetRadioExtensionNotFoundException) {
                 SetStatusBarMessage (String.Format (Catalog.GetString ("ERROR: Internet-radio extension not available."))); 
@@ -298,7 +300,7 @@ namespace Banshee.RadioStationFetcher
         
         protected void SetStatusBarMessage (string message) 
         {
-            ThreadAssist.SpawnFromMain (delegate 
+            ThreadAssist.ProxyToMain (delegate 
                 {
                      statusbar.Push (0, message);
                 });
