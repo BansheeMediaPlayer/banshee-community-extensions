@@ -53,6 +53,26 @@ PKG_CHECK_MODULES(BANSHEE, banshee-1-hyena >= 1.4.0
                            banshee-1-services >= 1.4.0
                            banshee-1-thickclient >= 1.4.0)
 
+AC_ARG_ENABLE(user-extension, AC_HELP_STRING([--enable-user-extension], [Install extension into user-level Banshee extensions directory instead of the Banshee system extensions directory]), , enable_user_extension="no")
+
+dnl Banshee Extensions Path
+SYSTEM_PLUGINS=`$PKG_CONFIG --variable=bansheedir banshee-1-core`/Extensions
+REL_PLUGINS_DIR=`basename $SYSTEM_PLUGINS`
+REL_BANSHEE_DIR=`echo "$SYSTEM_PLUGINS" | sed -e "s|\/$REL_PLUGINS_DIR||"`
+REL_BANSHEE_DIR=`basename $REL_BANSHEE_DIR`
+REL_PLUGINS_DIR=$REL_BANSHEE_DIR/$REL_PLUGINS_DIR
+
+EXTENSION_DIR=$libdir/$REL_PLUGINS_DIR
+expanded_pluginsdir=$expanded_libdir/$REL_PLUGINS_DIR
+
+if test "x$enable_user_extension" = "xyes"; then
+ 	EXTENSION_DIR=${XDG_CONFIG_HOME:-~/.config}/banshee-1/addins
+	EXTENSION_DIR=`echo "$EXTENSION_DIR" | sed -e "s|\~|$HOME|"`
+	expanded_pluginsdir=$EXTENSION_DIR
+fi
+ 
+AC_SUBST(EXTENSION_DIR)
+
 dnl package checks, per config
 
 
