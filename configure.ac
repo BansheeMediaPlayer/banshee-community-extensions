@@ -53,7 +53,6 @@ dnl package checks, per config
 AC_CONFIG_FILES([
 Banshee.RadioStationFetcher/Makefile
 Makefile
-Banshee.RadioStationFetcher/banshee.radiostationfetcher
 
 ])
 

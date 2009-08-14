@@ -58,8 +58,7 @@ RESOURCES =  \
 	Banshee.RadioStationFetcher.addin.xml \
 	Resources/RadioStationFetcherMenu.xml,Resources.RadioStationFetcherMenu.xml 
 
-EXTRAS = \
-	banshee.radiostationfetcher.in 
+EXTRAS = 
 
 REFERENCES =  \
 	-pkg:banshee-1-core \
@@ -74,10 +73,6 @@ DLL_REFERENCES =
 CLEANFILES = $(PROGRAMFILES) $(BINARIES) 
 
 include $(top_srcdir)/Makefile.include
-
-BANSHEE_RADIOSTATIONFETCHER = $(BUILD_DIR)/banshee.radiostationfetcher
-
-$(eval $(call emit-deploy-wrapper,BANSHEE_RADIOSTATIONFETCHER,banshee.radiostationfetcher,x))
 
 
 $(eval $(call emit_resgen_targets))
