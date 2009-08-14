@@ -278,7 +278,7 @@ namespace Banshee.RadioStationFetcher
             foreach (Source source in Banshee.ServiceStack.ServiceManager.SourceManager.Sources) {
                 Log.DebugFormat ("[FetcherDialog] <GetInternetRadioSource> Source: {0}", source.GenericName);
                 
-                if (source.GenericName.Equals ("Radio")) {
+                if (source.UniqueId.Equals ("InternetRadioSource-internet-radio")) {
                     return (PrimarySource) source;
                 }
             }
