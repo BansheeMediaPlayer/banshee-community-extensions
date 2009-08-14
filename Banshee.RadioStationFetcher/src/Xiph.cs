@@ -184,7 +184,7 @@ namespace Banshee.RadioStationFetcher
          
         public void FetchStations () 
         {
-            Hyena.Log.Debug ("[Xiph] <FetchStations> Start");
+            Log.Debug ("[Xiph] <FetchStations> Start");
         
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create ("http://dir.xiph.org/yp.xml");
             request.Method = "GET";
@@ -197,7 +197,7 @@ namespace Banshee.RadioStationFetcher
                     throw new InternetRadioExtensionNotFoundException ();
                 }
                 
-                Hyena.Log.Debug ("[Xiph] <FetchStations> Querying");
+                Log.Debug ("[Xiph] <FetchStations> Querying");
                 
                 Stream response = request.GetResponse().GetResponseStream ();
                 StreamReader reader = new StreamReader (response);
@@ -205,21 +205,21 @@ namespace Banshee.RadioStationFetcher
                 XmlDocument xml_response = new XmlDocument ();
                 xml_response.LoadXml (reader.ReadToEnd ());
                 
-                Hyena.Log.Debug ("[Xiph] <FetchStations> Query done");
+                Log.Debug ("[Xiph] <FetchStations> Query done");
                 
                 ParseQuery (xml_response);
             }
             finally {
-                Hyena.Log.Debug ("[Xiph] <FetchStations> End");    
+                Log.Debug ("[Xiph] <FetchStations> End");    
             }
         }
         
         public void ParseQuery (XmlDocument xml_response)
         {
-            Hyena.Log.Debug ("[Xiph] <ParseQuery> Start");
+            Log.Debug ("[Xiph] <ParseQuery> Start");
             
             XmlNodeList XML_station_nodes = xml_response.GetElementsByTagName ("entry");
-            Hyena.Log.DebugFormat ("[Xiph] <ParseQuery> Num stations found: {0}", XML_station_nodes.Count);
+            Log.DebugFormat ("[Xiph] <ParseQuery> Num stations found: {0}", XML_station_nodes.Count);
             
             PrimarySource source = GetInternetRadioSource ();
             
@@ -269,18 +269,18 @@ namespace Banshee.RadioStationFetcher
                     Int32.TryParse (bitrate.Trim (), out bitrate_int);                    
                     new_station.BitRate = bitrate_int;
                     
-                    Hyena.Log.DebugFormat ("[Xiph] <ParseQuery> Station found! Name: {0} URL: {1}",
+                    Log.DebugFormat ("[Xiph] <ParseQuery> Station found! Name: {0} URL: {1}",
                         name, new_station.Uri.ToString ());
                     
                     station_list.Add (new_station);
                 }
                 catch (Exception e) {
-                    Hyena.Log.Exception ("[Xiph] <ParseQuery> ERROR", e);
+                    Log.Exception ("[Xiph] <ParseQuery> ERROR", e);
                     continue;
                 }
             }
             
-            Hyena.Log.Debug ("[Xiph] <ParseQuery> END");
+            Log.Debug ("[Xiph] <ParseQuery> END");
             
             SetStatusBarMessage (String.Format (Catalog.GetString ("www.xiph.org {0} stations available."), 
                 station_list.Count.ToString ()));

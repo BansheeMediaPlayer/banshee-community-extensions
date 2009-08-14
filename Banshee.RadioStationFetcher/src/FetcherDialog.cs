@@ -273,17 +273,17 @@ namespace Banshee.RadioStationFetcher
         
         protected PrimarySource GetInternetRadioSource () 
         {
-            Hyena.Log.Debug ("[FetcherDialog] <GetInternetRadioSource> Start");
+            Log.Debug ("[FetcherDialog] <GetInternetRadioSource> Start");
             
             foreach (Source source in Banshee.ServiceStack.ServiceManager.SourceManager.Sources) {
-                Hyena.Log.DebugFormat ("[FetcherDialog] <GetInternetRadioSource> Source: {0}", source.GenericName);
+                Log.DebugFormat ("[FetcherDialog] <GetInternetRadioSource> Source: {0}", source.GenericName);
                 
                 if (source.GenericName.Equals ("Radio")) {
                     return (PrimarySource) source;
                 }
             }
     
-            Hyena.Log.Debug ("[FetcherDialog] <GetInternetRadioSource> Not found throwing exception");
+            Log.Debug ("[FetcherDialog] <GetInternetRadioSource> Not found throwing exception");
             throw new InternetRadioExtensionNotFoundException ();
         }
         
