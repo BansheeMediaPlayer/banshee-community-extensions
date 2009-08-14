@@ -82,12 +82,10 @@ namespace Banshee.RadioStationFetcher
             
             Title = String.Empty;
             SkipTaskbarHint = true;
-            Modal = true;
                         
             BorderWidth = 6;
             HasSeparator = false;
             DefaultResponse = ResponseType.Ok;
-            Modal = true;
             
             VBox.Spacing = 6;
             
