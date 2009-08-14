@@ -46,7 +46,7 @@ namespace Banshee.RadioStationFetcher
     {
         public Shoutcast ()
         {
-            SetStatusBarMessage (Catalog.GetString ("www.shoutcast.com"));
+            SetStatusBarMessage ("www.shoutcast.com");
         }
         
         public override void FillGenreList () 

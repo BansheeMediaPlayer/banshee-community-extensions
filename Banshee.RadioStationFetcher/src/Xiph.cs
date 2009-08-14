@@ -50,7 +50,7 @@ namespace Banshee.RadioStationFetcher
         
         public Xiph ()
         {
-            SetStatusBarMessage (Catalog.GetString ("www.xiph.org"));
+            SetStatusBarMessage ("www.xiph.org");
         }
         
         public override void ShowDialog () 

@@ -109,7 +109,7 @@ namespace Banshee.RadioStationFetcher
             header.Show ();
 
             Label message = new Label ();
-            message.Text = Catalog.GetString ("Choose a genre or enter a text that you wish to be queried. Then press Search-button");
+            message.Text = Catalog.GetString ("Choose a genre or enter a text that you wish to be queried, then press the Search button");
             message.Xalign = 0.0f;
             message.Wrap = true;
             message.Show ();
@@ -121,8 +121,8 @@ namespace Banshee.RadioStationFetcher
             genre_entry = ComboBox.NewText ();
             freeText_entry = new Entry ();
           
-            genre_button = new Button ("Search");
-            freeText_button = new Button ("Search");
+            genre_button = new Button (Catalog.GetString ("Search"));
+            freeText_button = new Button (Catalog.GetString ("Search"));
 
             genre_button.CanDefault = true;
             genre_button.UseStock = true;
