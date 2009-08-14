@@ -51,7 +51,7 @@ namespace Banshee.RadioStationFetcher
         public static int freeText_search = 1;
         
         private Button close_button;
-        private ComboBoxEntry genre_entry;
+        private ComboBox genre_entry;
         private Entry freeText_entry;
         private Button genre_button;
         private Button freeText_button;
@@ -118,7 +118,7 @@ namespace Banshee.RadioStationFetcher
             table.RowSpacing = 6;
             table.ColumnSpacing = 6;
                         
-            genre_entry = ComboBoxEntry.NewText ();
+            genre_entry = ComboBox.NewText ();
             freeText_entry = new Entry ();
           
             genre_button = new Button ("Search");
@@ -140,8 +140,6 @@ namespace Banshee.RadioStationFetcher
                     genre_entry.AppendText (genre);
             }
 
-            genre_entry.Entry.Sensitive = false;
-            
             if (this is IGenreSearchable) {
                 AddRow (Catalog.GetString ("Query by genre:"), genre_entry, genre_button);    
             }
@@ -262,7 +260,7 @@ namespace Banshee.RadioStationFetcher
         }
     
         public string Genre {
-            get { return genre_entry.Entry.Text.Trim (); }
+            get { return genre_entry.ActiveText.Trim (); }
         }
 
         public string Freetext {
