@@ -46,6 +46,12 @@ fi
 
 
 dnl package checks, common for all configs
+PKG_CHECK_MODULES(GTKSHARP, gtk-sharp-2.0 >= 2.12)
+
+PKG_CHECK_MODULES(BANSHEE, banshee-1-hyena >= 1.4.0 
+                           banshee-1-core >= 1.4.0
+                           banshee-1-services >= 1.4.0
+                           banshee-1-thickclient >= 1.4.0)
 
 dnl package checks, per config
 
