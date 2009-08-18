@@ -26,21 +26,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-
-using Hyena;
-
-using Mono.Unix;
-
-using NDesk.DBus;
-
-using Telepathy;
 
 using Banshee.Telepathy.API.Channels;
 
@@ -292,7 +281,9 @@ namespace Banshee.Telepathy.API.Dispatchables
             
             State = TransferState.InProgress;
 
-            Transfer ();
+            ThreadPool.QueueUserWorkItem (delegate {
+                Transfer ();
+            });
         }
 
         protected abstract void Transfer ();
@@ -333,7 +324,7 @@ namespace Banshee.Telepathy.API.Dispatchables
         {
             IsClosed = true;
             
-            Console.WriteLine ("{0} detected Transfer closing", Contact.Name);
+            //Console.WriteLine ("{0} detected Transfer closing", Contact.Name);
             queue.Remove (this);
 
             if (socket != null) {
@@ -349,7 +340,7 @@ namespace Banshee.Telepathy.API.Dispatchables
                 handler (this, new TransferClosedEventArgs (state, previous_state));
             }
 
-            if (Key != null && AutoRemoveOnClose) {
+            if (Key != null && AutoRemoveOnClose && Contact != null) {
                 DispatchManager dm = Contact.DispatchManager;
                 dm.Remove (Contact, Key, this.GetType ());
             }

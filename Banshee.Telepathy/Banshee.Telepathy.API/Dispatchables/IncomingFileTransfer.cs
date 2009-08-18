@@ -34,13 +34,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-using Hyena;
-
 using Mono.Unix;
-
-using NDesk.DBus;
-
-using Telepathy;
 
 using Banshee.Telepathy.API.Channels;
 
@@ -149,16 +143,8 @@ namespace Banshee.Telepathy.API.Dispatchables
                 EndPoint ep = new UnixEndPoint (Address);
                 Socket.Connect (ep);
 
-                Thread thread;
-            
                 Console.WriteLine ("Receiving file {0}", OriginalFilename);
-                thread = new Thread (new ThreadStart (ReceiveFile));
-
-                if (thread != null) {
-                    thread.Name = "IncomingFileTransfer thread";
-                    thread.IsBackground = true;
-                    thread.Start ();
-                }
+                ReceiveFile ();
             }
             catch (Exception e) {
                 Console.WriteLine (e.ToString ());

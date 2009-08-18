@@ -28,9 +28,8 @@
 
 using System;
 
-using Mono.Unix;
-
 using Gtk;
+using Mono.Unix;
 
 using Banshee.Collection;
 using Banshee.Collection.Database;
@@ -38,13 +37,12 @@ using Banshee.Gui;
 using Banshee.MediaEngine;
 using Banshee.ServiceStack;
 using Banshee.Sources;
+using Banshee.Telepathy.Data;
+using Banshee.Telepathy.DBus;
 
 using Banshee.Telepathy.API;
 using Banshee.Telepathy.API.DBus;
 using Banshee.Telepathy.API.Dispatchables;
-
-using Banshee.Telepathy.Data;
-using Banshee.Telepathy.DBus;
 
 using Hyena;
 
@@ -106,7 +104,7 @@ namespace Banshee.Telepathy.Gui
             Actions.AddActionGroup (this);
 
             ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEvent, 
-                PlayerEvent.StartOfStream );
+                PlayerEvent.StartOfStream | PlayerEvent.StateChange);
 
             //OnUpdated (null, null);
             
@@ -122,6 +120,8 @@ namespace Banshee.Telepathy.Gui
                 action.Sensitive = false;
                 Log.Error (e.ToString ());
             }
+
+            Actions.TrackActions.PostActivate += OnTrackActionsActiviated;
         }
 
         public Source Parent {
@@ -133,9 +133,24 @@ namespace Banshee.Telepathy.Gui
             ServiceManager.PlayerEngine.DisconnectEvent (OnPlayerEvent);
             Actions.UIManager.RemoveUi (actions_id);
             Actions.RemoveActionGroup (this);
+
+            if (announcer != null) {
+                announcer.Dispose ();
+            }
+                                    
             base.Dispose ();
         }
-                             
+
+        private void AnnounceTrack (TrackInfo track)
+        {
+            if (announcer != null && ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()) {
+                if (track != null) {
+                    announcer.Announce (String.Format (Catalog.GetString ("Currently playing {0} by {1} from {2}"),
+                                                track.TrackTitle, track.ArtistName, track.AlbumTitle));
+                }
+            }
+        }
+                                
         private void OnAllowDownloads (object o, EventArgs args)
         {
             ToggleAction action = this["AllowDownloadsAction"] as Gtk.ToggleAction;
@@ -152,6 +167,13 @@ namespace Banshee.Telepathy.Gui
         {
             ToggleAction action = this["ShareCurrentlyPlayingAction"] as Gtk.ToggleAction;
             ContactContainerSource.ShareCurrentlyPlayingSchema.Set (action.Active);
+
+            if (announcer != null && !ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()) {
+                announcer.Announce (String.Empty);
+            }
+            else {
+                AnnounceTrack (ServiceManager.PlayerEngine.CurrentTrack);
+            }
         }
                             
         private void OnDownloadTrack (object o, EventArgs args)
@@ -166,11 +188,16 @@ namespace Banshee.Telepathy.Gui
 
             if (activity != null) {            
                 IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
-                if (service != null && service.DownloadsAllowed ()) {
-                    foreach (DatabaseTrackInfo track in source.DatabaseTrackModel.SelectedItems) {
-                        ContactTrackInfo.From (track).RegisterTransferHandlers ();
-                        service.DownloadFile (track.ExternalId , "");
+                try {
+                    if (service != null && service.DownloadsAllowed ()) {
+                        foreach (DatabaseTrackInfo track in source.DatabaseTrackModel.SelectedItems) {
+                            ContactTrackInfo.From (track).RegisterTransferHandlers ();
+                            service.DownloadFile (track.ExternalId , "");
+                        }
                     }
+                }
+                catch (Exception e) {
+                    Log.Exception (e);
                 }
             }
         }
@@ -202,19 +229,61 @@ namespace Banshee.Telepathy.Gui
                 }
             }
         }
+
+        private void OnTrackActionsActiviated (object o, EventArgs args)
+        {
+            IContactSource source = ServiceManager.SourceManager.ActiveSource as IContactSource;
+            if (source == null) {
+                return;
+            }
+                                    
+            Contact contact = source.Contact;
+            if (contact == null) {
+                return;
+            }
+                                                      
+            DBusActivity activity = contact.DispatchManager.Get <DBusActivity> (contact, MetadataProviderService.BusName);
+
+            if (activity != null) {            
+                IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
+                try {
+                    if (service != null) {
+                        if (service.DownloadsAllowed ()) {
+                            this["DownloadTrackAction"].Sensitive = true;
+                        }
+                        else {
+                            this["DownloadTrackAction"].Sensitive = false;
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    Log.Exception (e);
+                }
+            }
+        }
                 
         private void OnPlayerEvent (PlayerEventArgs args)
         {
-            if (announcer != null && ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()) {
-                TrackInfo track = ServiceManager.PlayerEngine.CurrentTrack;
-                if (track != null) {
-                    announcer.Announce (Catalog.GetString (String.Format ("Currently playing {0} by {1} from {2}",
-                                                track.TrackTitle, track.ArtistName, track.AlbumTitle)));
+            if (announcer != null && ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()) {                                    
+                switch (args.Event) {
+                    case PlayerEvent.StartOfStream:
+                        //AnnounceTrack (ServiceManager.PlayerEngine.CurrentTrack);
+                        break;
+                    case PlayerEvent.StateChange:
+                        PlayerEventStateChangeArgs state = args as PlayerEventStateChangeArgs;
+                        if (state != null) {
+                            switch (state.Current) {
+                                case PlayerState.Paused:
+                                    announcer.Announce (String.Empty);
+                                    break;
+                                case PlayerState.Playing:
+                                    AnnounceTrack (ServiceManager.PlayerEngine.CurrentTrack);
+                                    break;                                                
+                            }
+                        }
+                        break;
                 }
             }
-            
         }
-
     }
-    
 }

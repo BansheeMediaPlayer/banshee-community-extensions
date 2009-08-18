@@ -35,17 +35,13 @@ using Banshee.ServiceStack;
 using Banshee.Sources.Gui;
 using Banshee.Telepathy.Gui;
 
-using Hyena;
-
-using NDesk.DBus;
-
 namespace Banshee.Telepathy.Data
 {
-    public class ContactContainerSource : Source
+    public class ContactContainerSource : Source, IDisposable
     {
         public ContactContainerSource (TelepathyService service) : base (Catalog.GetString ("Contacts"), "Contacts", 1000)
         {
-            this.service = service;
+            TelepathyService = service;
             TypeUniqueId = "telepathy-container";
             
             Properties.SetString ("Icon.Name", "stock_people");
@@ -68,8 +64,26 @@ namespace Banshee.Telepathy.Data
         private TelepathyService service;
         public TelepathyService TelepathyService {
             get { return service; }
+            protected set {
+                if (value == null) {
+                    throw new ArgumentNullException ("service");
+                }
+                service = value;
+            }
         }
 
+        public void Dispose ()
+        {
+            Dispose (true);
+        }
+
+        protected virtual void Dispose (bool disposing)
+        {
+            if (disposing) {
+                actions.Dispose ();
+            }
+        }
+        
         public static readonly SchemaEntry <bool> ShareCurrentlyPlayingSchema = new SchemaEntry <bool> (
             "plugins.telepathy-container", "share_currently_playing",
             false,

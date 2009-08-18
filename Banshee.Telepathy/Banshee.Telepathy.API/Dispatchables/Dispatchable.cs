@@ -29,10 +29,6 @@
 using System;
 using System.Collections.Generic;
 
-using Hyena;
-
-using NDesk.DBus;
-
 using Banshee.Telepathy.API.Channels;
 
 namespace Banshee.Telepathy.API.Dispatchables
@@ -65,9 +61,6 @@ namespace Banshee.Telepathy.API.Dispatchables
         public static event EventHandler <ErrorEventArgs> Error;
 
         public event EventHandler <EventArgs> Disposing;
-        
-        private Contact contact;
-        private IChannel channel;
 
         private Dispatchable ()
         {
@@ -75,14 +68,22 @@ namespace Banshee.Telepathy.API.Dispatchables
 
         internal Dispatchable (Contact contact, IChannel channel)
         {
-            this.contact = contact;
+            Contact = contact;
             this.channel = channel;
         }
-        
+
+        private Contact contact;
         public Contact Contact {
             get { return contact; }
+            protected set {
+                if (value == null) {
+                    throw new ArgumentNullException ("contact");
+                }
+                contact = value;
+            }
         }
 
+        private IChannel channel;
         internal IChannel Channel {
             get { return channel; }
             set { channel = value; }
@@ -106,11 +107,21 @@ namespace Banshee.Telepathy.API.Dispatchables
         }
         
         public uint InitiatorHandle {
-            get { return channel.InitiatorHandle; }
+            get {
+                if (channel != null) {
+                    return channel.InitiatorHandle; 
+                }
+                return 0;
+            }
         }
 
         public bool IsSelfInitiated { 
-            get { return channel.InitiatorHandle == Contact.Connection.SelfHandle; }
+            get {
+                if (channel != null && Contact != null) {
+                    return channel.InitiatorHandle == Contact.Connection.SelfHandle; 
+                }
+                return false;
+            }
         }
         
         private static bool auto_remove = true;
@@ -121,6 +132,10 @@ namespace Banshee.Telepathy.API.Dispatchables
         
         public static int Count <T> (Connection conn) where T : Dispatchable
         {
+            if (conn == null) {
+                throw new ArgumentNullException ("conn");
+            }
+            
             int count = 0;
             
             foreach (Contact contact in conn.Roster.GetAllContacts ()) {
@@ -141,12 +156,19 @@ namespace Banshee.Telepathy.API.Dispatchables
             if (d == null) {
                 throw new ArgumentNullException ("obj");
             }
+            else if (d.Contact == null) {
+                return false;
+            }
 
             return d.Contact.Equals (Contact) && d.Key.Equals (Key) && d.GetType ().Equals (this.GetType ());
         }
 
         public override int GetHashCode ()
         {
+            if (Contact == null) {
+                throw new InvalidOperationException ("Contact is null");
+            }
+            
             return Contact.GetHashCode () + Key.GetHashCode () + GetType ().GetHashCode ();
         }
 
@@ -203,7 +225,7 @@ namespace Banshee.Telepathy.API.Dispatchables
                 handler (this, args);
             }
             
-            if (!disposed && key != null && AutoRemoveOnClose) {
+            if (!disposed && key != null && AutoRemoveOnClose && Contact != null) {
                 DispatchManager dm = contact.DispatchManager;
                 dm.Remove (contact, key, this.GetType ());
             }

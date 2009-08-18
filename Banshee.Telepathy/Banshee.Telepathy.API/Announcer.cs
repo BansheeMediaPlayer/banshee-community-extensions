@@ -27,11 +27,6 @@
 //
 
 using System;
-using System.Collections.Generic;
-
-using Hyena;
-
-using NDesk.DBus;
 
 using Telepathy;
 using Telepathy.MissionControl;
@@ -40,7 +35,7 @@ using Banshee.Telepathy.API.DBus;
 
 namespace Banshee.Telepathy.API
 {
-    public class Announcer
+    public class Announcer : IDisposable
     {
         private BusType bus;
         private IMissionControl mission_control;
@@ -52,6 +47,24 @@ namespace Banshee.Telepathy.API
                                                                        Constants.MISSIONCONTROL_PATH);
         }
 
+        public void Dispose ()
+        {
+            Dispose (true);
+        }
+
+        protected virtual void Dispose (bool disposing)
+        {
+            if (disposing) {
+                try {
+                    if (mission_control != null) {
+                        Announce (String.Empty);
+                    }
+                }
+                catch {}
+                mission_control = null;
+            }
+        }
+        
         public virtual void Announce (string message)
         {
             if (message == null) {

@@ -30,20 +30,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-using Mono.Unix;
 using Gtk;
+using Mono.Unix;
 
 using Banshee.Collection;
 using Banshee.Collection.Gui;
+using Banshee.Gui;
+using Banshee.Gui.Widgets;
 using Banshee.ServiceStack;
 using Banshee.Sources;
 using Banshee.Sources.Gui;
-using Banshee.Gui;
-using Banshee.Gui.Widgets;
+using Banshee.Telepathy.Data;
 using Banshee.Widgets;
 
 using Banshee.Telepathy.API;
-using Banshee.Telepathy.Data;
 
 namespace Banshee.Telepathy.Gui
 {
@@ -124,11 +124,26 @@ namespace Banshee.Telepathy.Gui
 
         private void AppendToList (Connection conn)
         {
+            if (conn == null || conn.Roster == null) {
+                return;
+            }
+            
             foreach (Contact contact in conn.Roster.GetAllContacts ()) {
+                if (contact == null || contact.Avatar == null) {
+                    continue;
+                }
+                
                 MenuTile tile = new MenuTile ();
+                tile.SizeAllocated += delegate (object o, SizeAllocatedArgs args) {
+                    int main_width, main_height = 0;
+                    main_box.GetSizeRequest (out main_width, out main_height);
+                    
+                    tile.WidthRequest = main_width;               
+                };
+                
                 tile.PrimaryText = contact.Name;
                 tile.SecondaryText = String.IsNullOrEmpty (contact.StatusMessage) ? contact.Status.ToString () : contact.StatusMessage;
-
+                
                 Avatar avatar = contact.Avatar;
                 if (avatar.State == AvatarState.Loaded) {
                     tile.Pixbuf = new Gdk.Pixbuf (avatar.Image);

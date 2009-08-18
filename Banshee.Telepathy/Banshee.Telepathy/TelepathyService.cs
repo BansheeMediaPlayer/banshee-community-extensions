@@ -29,22 +29,20 @@
 using System;
 using System.Collections.Generic;
 
+using Hyena;
 using Banshee.Base;
 using Banshee.Collection;
 using Banshee.Sources;
 using Banshee.ServiceStack;
-
-using Banshee.Telepathy.API;
-using Banshee.Telepathy.API.Data;
-using Banshee.Telepathy.API.DBus;
-using Banshee.Telepathy.API.Dispatchables;
-
 using Banshee.Telepathy.Data;
 using Banshee.Telepathy.DBus;
 using Banshee.Telepathy.Gui;
 using Banshee.Telepathy.Net;
 
-using Hyena;
+using Banshee.Telepathy.API;
+using Banshee.Telepathy.API.Data;
+using Banshee.Telepathy.API.DBus;
+using Banshee.Telepathy.API.Dispatchables;
 
 using Telepathy;
 using Telepathy.MissionControl;
@@ -121,6 +119,7 @@ namespace Banshee.Telepathy
                     source.Contact.ContactServicesChanged -= OnContactServicesChanged;
                     source.Dispose ();
                 }
+                
                 ServiceManager.SourceManager.RemoveSource (container, true);
                 container = null;
             }

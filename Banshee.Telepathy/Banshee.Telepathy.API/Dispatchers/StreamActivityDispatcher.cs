@@ -29,8 +29,6 @@
 using System;
 using System.Collections.Generic;
 
-using Hyena;
-
 using Telepathy;
 
 using Banshee.Telepathy.API.Channels;

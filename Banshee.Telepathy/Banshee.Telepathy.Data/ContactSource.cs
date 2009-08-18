@@ -26,7 +26,6 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-//using Gtk;
 using System;
 using System.Collections.Generic;
 using Mono.Unix;
@@ -41,15 +40,12 @@ using Banshee.Gui.Dialogs;
 using Banshee.Library;
 using Banshee.Sources;
 using Banshee.ServiceStack;
-
-using Banshee.Telepathy.API;
-using Banshee.Telepathy.API.Dispatchables;
-
 using Banshee.Telepathy.Gui;
 using Banshee.Telepathy.DBus;
 using Banshee.Telepathy.Net;
 
-using NDesk.DBus;
+using Banshee.Telepathy.API;
+using Banshee.Telepathy.API.Dispatchables;
 
 namespace Banshee.Telepathy.Data
 {
@@ -63,11 +59,10 @@ namespace Banshee.Telepathy.Data
     
     public class ContactSource : PrimarySource, IContactSource
     {
-        private Contact contact;
+        private const int chunk_length = 250;
         private readonly DownloadMonitor download_monitor = new DownloadMonitor ();
         private ContactRequestDialog dialog;
         
-
         private static readonly string tmp_download_path = Paths.Combine (TelepathyService.CacheDirectory, "partial-downloads");
         public static string TempDownloadDirectory {
             get { return tmp_download_path; }
@@ -77,12 +72,16 @@ namespace Banshee.Telepathy.Data
             DELETE FROM CorePrimarySources WHERE PrimarySourceId = ?
         ");
                 
-        public ContactSource (Contact contact) : base (Catalog.GetString ("Contact"), String.Format ("{0} ({1})", contact.Name, contact.Status.ToString ()),
-                                                    contact.ToString (), 300)
+        public ContactSource (Contact contact) : base (Catalog.GetString ("Contact"), 
+                                                       String.Format ("{0} ({1})", 
+                                                                      contact != null ? contact.Name : String.Empty, 
+                                                                      contact != null ? contact.Status.ToString () : String.Empty),
+                                                       contact !=null ? contact.ToString () : String.Empty, 
+                                                       300)
         {
-            this.contact = contact;
-            contact.ContactUpdated += OnContactUpdated;
-            Log.DebugFormat ("ContactSource created for {0}", contact.Name);
+            Contact = contact;
+            Contact.ContactUpdated += OnContactUpdated;
+            Log.DebugFormat ("ContactSource created for {0}", Contact.Name);
             
             //Properties.SetString ("UnmapSourceActionLabel", Catalog.GetString ("Disconnect"));
             //Properties.SetString ("UnmapSourceActionIconName", "gtk-disconnect");
@@ -114,20 +113,42 @@ namespace Banshee.Telepathy.Data
             get { return state; }
         }
             
+        private Contact contact;
         public Contact Contact {
             get { return contact; }
+            protected set {
+                if (value == null) {
+                   throw new ArgumentNullException ("contact");
+                }
+                contact = value;
+            }
         }
         
         public string AccountId {
-            get { return contact.AccountId; }
+            get {
+                if (Contact != null) {
+                    return Contact.AccountId;
+                }
+                return String.Empty;
+            }
         }
 
         public string ContactName {
-            get { return contact.Name; }
+            get { 
+                if (Contact != null) {
+                    return Contact.Name; 
+                }
+                return String.Empty;
+            }
         }
 
         public string ContactStatus {
-            get { return contact.Status.ToString (); }
+            get {
+                if (Contact != null) {
+                    return Contact.Status.ToString (); 
+                }
+                return String.Empty;
+            }
         }
         
         public override bool CanRemoveTracks {
@@ -192,8 +213,10 @@ namespace Banshee.Telepathy.Data
 
             CleanUpData ();
 
-            DispatchManager dm  = contact.DispatchManager;
-            dm.RemoveAll (contact);
+            if (Contact != null) {
+                DispatchManager dm  = Contact.DispatchManager;
+                dm.RemoveAll (contact);
+            }
             
             if (is_temporary) {
                 PurgeSelf ();
@@ -210,26 +233,33 @@ namespace Banshee.Telepathy.Data
             DBusActivity.Closed += OnActivityClosed;
 
             download_monitor.AllFinished += OnAllDownloadsFinished;
+            download_monitor.AllProcessed += OnAllDownloadsProcessed;
 
             TrackExternalObjectHandler = GetContactTrackInfoObject;
         }
 
         public override void Activate ()
         {
-            Log.DebugFormat ("{0} selected", contact.Name);
+            if (Contact == null) {
+                Log.Error ("ContactSource.Activate found contact is null.");
+                return;
+            }
+            
+            Log.DebugFormat ("{0} selected", Contact.Name);
 
-            if (contact.DispatchManager.Exists <DBusActivity> (contact, MetadataProviderService.BusName)) {
-                LoadData ();
+            DispatchManager dm = Contact.DispatchManager;
+            if (dm.Exists <DBusActivity> (contact, MetadataProviderService.BusName)) {
+                try {
+                    LoadData ();
+                }
+                catch (Exception e) {
+                    Log.Exception (e);
+                }
             }
             else {
-                if (contact.HasService (MetadataProviderService.BusName)) {
+                if (Contact.HasService (MetadataProviderService.BusName)) {
                     SetStatus (Catalog.GetString ("Waiting for response from contact"), false);
-                    
-                    IDictionary <string, object> properties = new Dictionary <string, object> ();
-                    properties.Add ("ServiceName", MetadataProviderService.BusName);
-                    
-                    DispatchManager dm = contact.Connection.DispatchManager;
-                    dm.Request <DBusActivity> (contact, properties);
+                    RequestDBusTube ();                    
                 }
                 else {
                     SetStatus (Catalog.GetString ("Contact does not support Telepathy extension"), true);
@@ -244,12 +274,31 @@ namespace Banshee.Telepathy.Data
             return new ContactTrackInfo (track, this);
         }
 
+        private void RequestDBusTube ()
+        {
+            IDictionary <string, object> properties = new Dictionary <string, object> ();
+            properties.Add ("ServiceName", MetadataProviderService.BusName);
+
+            try {
+                Contact.DispatchManager.Request <DBusActivity> (Contact, properties);
+            }
+            catch (Exception e) {
+                Log.Exception (e);
+            }
+        }
+        
         private void RequestStreamTube ()
         {
-            if (!Contact.DispatchManager.Exists <StreamActivityListener> (Contact, StreamingServer.ServiceName)) {
-                IDictionary <string, object> properties = new Dictionary <string, object> ();
-                properties.Add ("Service", StreamingServer.ServiceName);
-                Contact.DispatchManager.Request <StreamActivityListener> (Contact, properties);
+            try {
+                if (!Contact.DispatchManager.Exists <StreamActivityListener> (Contact, StreamingServer.ServiceName)) {
+                    IDictionary <string, object> properties = new Dictionary <string, object> ();
+                    properties.Add ("Service", StreamingServer.ServiceName);
+                
+                    Contact.DispatchManager.Request <StreamActivityListener> (Contact, properties);
+                }
+            }
+            catch (Exception e) {
+                Log.Exception (e);
             }
         }
         
@@ -262,91 +311,172 @@ namespace Banshee.Telepathy.Data
 
         private void RegisterActivityServices (DBusActivity activity, bool permission)
         {
+            if (activity == null) {
+                throw new ArgumentNullException ("activity");
+            }
+            
             IMetadataProviderService provider_service = new MetadataProviderService (activity, permission);
             activity.RegisterDBusObject (provider_service, MetadataProviderService.ObjectPath);
         }
 
         private void LoadData ()
         {
-            DBusActivity activity = contact.DispatchManager.Get <DBusActivity> (contact, MetadataProviderService.BusName);
+            if (Contact == null) {
+                throw new InvalidOperationException ("Contact is null.");
+            }
+            
+            DBusActivity activity = Contact.DispatchManager.Get <DBusActivity> (contact, MetadataProviderService.BusName);
             LoadData (activity);
         }
             
         private void LoadData (DBusActivity activity)
         {
-            if (activity.State != ActivityState.Connected || state != ContactSourceState.Unloaded) {
+            if (state != ContactSourceState.Unloaded) {
                 return;
+            }
+            else if (activity == null) {
+                throw new ArgumentNullException ("activity");
+            }
+            else if (activity.State != ActivityState.Connected) {
+                throw new InvalidOperationException (String.Format ("activity state {0} is invalid.", activity.State));
             }
         
             IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
-           
-            if (service.PermissionGranted ()) {
-
-                // clean up any residual tracks
-                download_monitor.Reset ();
-                SetStatus (Catalog.GetString ("Loading..."), false);
-                state = ContactSourceState.LoadingMetadata;
-                CleanUpData ();
-
-                string metadata_path = service.CreateMetadataProvider (LibraryType.Music).ToString ();
-                Log.DebugFormat ("Metadata path {0}", metadata_path);
-                
-                IMetadataProvider library_provider = activity.GetDBusObject <IMetadataProvider>
-                    (MetadataProvider.BusName, metadata_path);
-
-                download_monitor.Add (metadata_path, new Download ());
-                
-                library_provider.ChunkReady += OnLibraryChunkReady;
-                library_provider.GetChunks (400);
-
-                download_monitor.Start ();
+            if (service == null) {
+                throw new InvalidOperationException ("ContactSource.LoadData found service null");
             }
-            else {
-                SetStatus (Catalog.GetString ("Waiting for response from contact"), false);
-                
-                service.PermissionResponse += OnPermissionResponse;
-                service.RequestPermission ();
+
+            try {
+                if (service.PermissionGranted ()) {
+                    // clean up any residual tracks
+                    download_monitor.Reset ();
+                    SetStatus (Catalog.GetString ("Loading..."), false);
+                    state = ContactSourceState.LoadingMetadata;
+                    CleanUpData ();
+    
+                    string metadata_path = service.CreateMetadataProvider (LibraryType.Music).ToString ();
+                    IMetadataProvider library_provider = activity.GetDBusObject <IMetadataProvider> (MetadataProvider.BusName, metadata_path);
+
+                    Download download = new Download ();
+                    download_monitor.Add (metadata_path, download);
+
+                    download.ProcessIncomingPayloads (delegate (object sender, object [] o) {
+
+                        IDictionary <string, object> [] chunk = o as IDictionary <string, object> [];
+                        if (chunk == null) {
+                            return;
+                        }
+                        
+                        HyenaSqliteConnection conn = ServiceManager.DbConnection;
+                        conn.BeginTransaction ();
+                        
+                        for (int i = 0; i < chunk.Length; i++) {
+                            IDictionary <string, object> track = chunk[i];
+                            ContactTrackInfo contact_track = new ContactTrackInfo (track, this);
+        
+                            // notify once per chunk
+                            if (i == chunk.Length - 1) {
+                                conn.CommitTransaction ();
+                                contact_track.Save (true);
+                            } else {
+                                contact_track.Save (false);
+                            }
+                        }
+                    });
+
+                    library_provider.ChunkReady += OnLibraryChunkReady;
+                    library_provider.GetChunks (chunk_length);
+    
+                    download_monitor.Start ();
+                }
+                else {
+                    SetStatus (Catalog.GetString ("Waiting for response from contact"), false);
+                    
+                    service.PermissionResponse += OnPermissionResponse;
+                    service.RequestPermission ();
+                }
+            }
+            catch (Exception e) {
+                Log.Exception (e);
+                SetStatus (Catalog.GetString ("An error occurred while loading data"), true);
             }
         }
 
         private void LoadPlaylists ()
         {
-            DBusActivity activity = contact.DispatchManager.Get <DBusActivity> (contact, MetadataProviderService.BusName);
+            if (Contact == null) {
+                throw new InvalidOperationException ("Contact is null.");
+            }
+            
+            DBusActivity activity = Contact.DispatchManager.Get <DBusActivity> (contact, MetadataProviderService.BusName);
             LoadPlaylists (activity);
         }
         
         private void LoadPlaylists (DBusActivity activity)
         {
-            if (activity.State != ActivityState.Connected || state != ContactSourceState.LoadedMetadata) {
-                return;
+            if (activity == null) {
+                throw new ArgumentNullException ("activity");
             }
-        
-            IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
-            
-            int [] playlist_ids = service.GetPlaylistIds (LibraryType.Music);
+            else if (activity.State != ActivityState.Connected) {
+                throw new InvalidOperationException (String.Format ("activity state {0} is invalid.", activity.State));
+            }
+            else if (state != ContactSourceState.LoadedMetadata) {
+                throw new InvalidOperationException (String.Format ("state {0} is invalid.", state));
+            }
 
-            download_monitor.Reset ();
-            
-            if (playlist_ids.Length == 0) {
-                state = ContactSourceState.Loaded;
-                HideStatus ();
-            } 
-            else {
-                foreach (int id in playlist_ids) {
-                    string playlist_path = service.CreatePlaylistProvider (id).ToString ();
-                    Log.DebugFormat ("Playlist path {0}", playlist_path);
-                    
-                    IPlaylistProvider playlist_provider = activity.GetDBusObject <IPlaylistProvider>
-                    (PlaylistProvider.BusName, playlist_path);
+            try {
+                IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
+                int [] playlist_ids = service.GetPlaylistIds (LibraryType.Music);
+    
+                download_monitor.Reset ();
+                
+                if (playlist_ids.Length == 0) {
+                    state = ContactSourceState.Loaded;
+                    HideStatus ();
+                } 
+                else {
+                    foreach (int id in playlist_ids) {
+                        string playlist_path = service.CreatePlaylistProvider (id).ToString ();
+                        IPlaylistProvider playlist_provider = activity.GetDBusObject <IPlaylistProvider>
+                        (PlaylistProvider.BusName, playlist_path);
 
-                    download_monitor.Add (playlist_path, new Download ());
-                    download_monitor.AssociateObject (playlist_path, new ContactPlaylistSource (playlist_provider.GetName (), this));
-                    
-                    playlist_provider.ChunkReady += OnPlaylistChunkReady;
-                    playlist_provider.GetChunks (400);
+                        Download download = new Download ();
+                        download_monitor.Add (playlist_path, download);
+                        download_monitor.AssociateObject (playlist_path, new ContactPlaylistSource (playlist_provider.GetName (), this));
+                        
+                        download.ProcessIncomingPayloads (delegate (object sender, object [] o) {
+                            IDictionary <string, object> [] chunk = o as IDictionary <string, object> [];
+                            if (chunk == null) {
+                                return;
+                            }
+
+                            Download d = sender as Download;
+                            ContactPlaylistSource source = download_monitor.GetAssociatedObject (d) as ContactPlaylistSource;
+                
+                            if (source != null) {
+                                source.AddTracks (chunk);
+                            }
+
+                            ThreadAssist.ProxyToMain (delegate {
+                                if (d != null && d.IsFinished) {
+                                    Log.DebugFormat ("Download complete for {0}", playlist_path);
+                                    AddChildSource (source);
+                                    HideStatus ();
+                                }
+                            });
+                        });
+                        
+                        playlist_provider.ChunkReady += OnPlaylistChunkReady;
+                        playlist_provider.GetChunks (chunk_length);
+                    }
+    
+                    download_monitor.Start ();
                 }
-
-                download_monitor.Start ();
+            }
+            catch (Exception e) {
+                Log.Exception (e);
+                download_monitor.Reset ();
+                SetStatus (Catalog.GetString ("An error occurred while loading playlists"), true);
             }
         }
         
@@ -368,12 +498,23 @@ namespace Banshee.Telepathy.Data
 
 #endregion        
         
-#region Activity Events
+#region Download Events
 
         private void OnAllDownloadsFinished (object sender, EventArgs args)
         {
             if (state == ContactSourceState.LoadingMetadata) {
                 state = ContactSourceState.LoadedMetadata;
+                
+                SetStatus (Catalog.GetString ("All tracks downloaded. Loading..."), false);
+            }                
+            else {
+                state = ContactSourceState.Loaded;
+            }
+        }
+
+        private void OnAllDownloadsProcessed (object sender, EventArgs args)
+        {
+            if (state == ContactSourceState.LoadedMetadata) {
 
                 SetStatus (Catalog.GetString ("Loading playlists"), false);
                 
@@ -381,16 +522,24 @@ namespace Banshee.Telepathy.Data
                 //after download
                 System.Timers.Timer timer = new System.Timers.Timer (1000);
                 timer.Elapsed += delegate {
-                    LoadPlaylists ();
-                    timer.Stop ();
+                    try {
+                        LoadPlaylists ();
+                    }
+                    catch (Exception e) {
+                        Log.Exception (e);
+                    }
+                    finally {
+                        timer.Stop ();
+                    }
                 };
                 timer.AutoReset = false;
                 timer.Start ();
             }
-            else {
-                state = ContactSourceState.Loaded;
-            }
         }
+
+#endregion        
+        
+#region Activity Events
         
         private void OnActivityReady (object sender, EventArgs args)
         {
@@ -399,18 +548,23 @@ namespace Banshee.Telepathy.Data
                 return;
             }
             
-            Log.DebugFormat ("ContactSource OnReady for {0}", contact.Name);
-            
-            if (contact.Equals (activity.Contact)) {
+            if (Contact != null && Contact.Equals (activity.Contact)) {
+                Log.DebugFormat ("ContactSource OnReady for {0}", Contact.Name);
+
                 // TODO decide if this is the right place for this
                 RequestStreamTube ();
-                
-                if (activity.InitiatorHandle != contact.Connection.SelfHandle) {
-                    RegisterActivityServices (activity);
+
+                try {
+                    if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
+                        RegisterActivityServices (activity);
+                    }
+                    else {
+                        RegisterActivityServices (activity, false);
+                        LoadData (activity);
+                    }
                 }
-                else {
-                    RegisterActivityServices (activity, false);
-                    LoadData (activity);
+                catch (Exception e) {
+                    Log.Exception (e);
                 }
             }
         }
@@ -422,8 +576,8 @@ namespace Banshee.Telepathy.Data
                 return;
             }
 
-            if (contact.Equals (activity.Contact)) {
-                if (activity.InitiatorHandle != contact.Connection.SelfHandle) {
+            if (Contact != null && Contact.Equals (activity.Contact)) {
+                if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
                     if (dialog != null) {
                         dialog.Destroy ();
                         dialog = null;
@@ -441,15 +595,13 @@ namespace Banshee.Telepathy.Data
                 return;
             }
             
-            Log.DebugFormat ("OnActivityResponseRequired from {0} for {1}", activity.Contact.Handle, contact.Name);
+            Log.DebugFormat ("OnActivityResponseRequired from {0} for {1}", activity.Contact.Handle, activity.Contact.Name);
                              
-            if (contact.Equals (activity.Contact) &&
-                activity.InitiatorHandle != contact.Connection.SelfHandle) {
-                Log.DebugFormat ("{0} handle {1} accepting tube from ContactSource", contact.Name, contact.Handle);
+            if (Contact != null && Contact.Equals (activity.Contact) &&
+                activity.InitiatorHandle != Contact.Connection.SelfHandle) {
+                Log.DebugFormat ("{0} handle {1} accepting tube from ContactSource", Contact.Name, Contact.Handle);
                 
-                dialog = new ContactRequestDialog ("Contact Request", 
-                                                                    String.Format ("{0} would like to browse your music library.",
-                                                                    contact.Name));
+                dialog = new ContactRequestDialog (Contact.Name);
                 dialog.ShowAll ();
                 dialog.Response += delegate (object o, Gtk.ResponseArgs e) {
                     try {
@@ -481,7 +633,12 @@ namespace Banshee.Telepathy.Data
         {
             if (granted) {
                 Log.Debug ("Permission granted");
-                LoadData ();
+                try {
+                    LoadData ();
+                }
+                catch (Exception e) {
+                    Log.Exception (e);
+                }
             }
             else {
                 Log.Debug ("Permission denied");
@@ -495,44 +652,23 @@ namespace Banshee.Telepathy.Data
             Log.DebugFormat ("Library Chunk Ready timestamp {0} seq {1} tracks {2} path {3}",
                        timestamp, seq_num, chunk.Length, object_path);
             
-            ContactTrackInfo contact_track = null;
-
             Download current_download = download_monitor.Get (object_path);
-
-            if (!current_download.IsStarted) {
-                Log.Debug ("Initializing download");
-                current_download.Timestamp = timestamp;
-                current_download.TotalExpected = total;
-            }
-
-            current_download.UpdateDownload (timestamp, seq_num, chunk.Length);
-
-            string message = String.Format ("Loading {0} of {1}", current_download.TotalDownloaded, total);
-            SetStatus (Catalog.GetString (message), false);
-            
-            ThreadAssist.Spawn (delegate {
-                HyenaSqliteConnection conn = ServiceManager.DbConnection;
-                conn.BeginTransaction ();
-                
-                for (int i = 0; i < chunk.Length; i++) {
-                    IDictionary <string, object> track = chunk[i];
-                    contact_track = new ContactTrackInfo (track, this);
-
-                    // notify once per chunk
-                    if (i == chunk.Length - 1) {
-                        conn.CommitTransaction ();
-                        contact_track.Save (true);
-                    } else {
-                        contact_track.Save (false);
-                    }
-                    
+            if (current_download != null)  {
+                if (!current_download.IsStarted) {
+                    Log.Debug ("Initializing download");
+                    current_download.Timestamp = timestamp;
+                    current_download.TotalExpected = total;
                 }
-            });
-            
-            if (current_download.IsFinished && !current_download.Processed) {
+
+                SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), current_download.TotalDownloaded, total), false);
+                
+                current_download.UpdateDownload (timestamp, seq_num, chunk.Length, chunk);
+            }
+/*            
+            if (current_download != null && current_download.IsFinished && !current_download.Processed) {
                 current_download.Processed = true;
                 Log.DebugFormat ("Download complete for {0}", object_path);
-            }
+            } */
         }
 
         private void OnPlaylistChunkReady (string object_path, IDictionary<string, object>[] chunk, 
@@ -542,36 +678,17 @@ namespace Banshee.Telepathy.Data
                        timestamp, seq_num, chunk.Length, object_path);
 
             Download current_download = download_monitor.Get (object_path);
-                        
-            if (!current_download.IsStarted) {
-                Log.Debug ("Initializing download");
-                current_download.Timestamp = timestamp;
-                current_download.TotalExpected = total;
-            }
-
-            current_download.UpdateDownload (timestamp, seq_num, chunk.Length);
-            
-            string message = String.Format ("Loading {0} of {1}", current_download.TotalDownloaded, total);
-            SetStatus (Catalog.GetString (message), false);
-            
-            ThreadAssist.Spawn (delegate {
-                ContactPlaylistSource source = download_monitor.GetAssociatedObject (current_download) as ContactPlaylistSource;
-                
-                if (source != null) {
-                    source.AddTracks (chunk);
+            if (current_download != null) {            
+                if (!current_download.IsStarted) {
+                    Log.Debug ("Initializing download");
+                    current_download.Timestamp = timestamp;
+                    current_download.TotalExpected = total;
                 }
 
-                ThreadAssist.ProxyToMain ( delegate {
-                    if (current_download.IsFinished && !current_download.Processed) {
-                        current_download.Processed = true;
-                        Log.DebugFormat ("Download complete for {0}", object_path);
-                        AddChildSource (source);
-                        HideStatus ();
-                    }
-                });
-            });
-            
-            
+                SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), current_download.TotalDownloaded, total), false);
+                
+                current_download.UpdateDownload (timestamp, seq_num, chunk.Length, chunk);
+            }
         }
 
 #endregion

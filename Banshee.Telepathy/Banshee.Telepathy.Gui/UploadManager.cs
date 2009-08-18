@@ -33,7 +33,6 @@ using Hyena;
 
 using Banshee.Base;
 using Banshee.ServiceStack;
-
 using Banshee.Telepathy;
 
 using Banshee.Telepathy.API;

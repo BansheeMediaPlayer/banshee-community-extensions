@@ -35,7 +35,6 @@ using Hyena.Jobs;
 
 using Banshee.ServiceStack;
 using Banshee.Sources;
-
 using Banshee.Telepathy;
 using Banshee.Telepathy.Data;
 
@@ -46,7 +45,7 @@ namespace Banshee.Telepathy.Gui
 {
     public class DownloadManager : TransferManager
     {
-        TelepathyService service = null;
+        private TelepathyService service = null;
 
         public DownloadManager (TelepathyService service) : base ()
         {
@@ -63,6 +62,9 @@ namespace Banshee.Telepathy.Gui
         
         protected override void Initialize ()
         {
+            queued_caller = new StartQueuedCaller (StartQueued);
+            sq_callback = new AsyncCallback (StartQueuedCallback);
+            
             IncomingFileTransfer.AutoStart = false;
             IncomingFileTransfer.TransferInitialized += OnTransferInitialized;
             IncomingFileTransfer.Ready += OnTransferReady;
@@ -82,8 +84,11 @@ namespace Banshee.Telepathy.Gui
             base.Dispose (disposing);
         }
 
+        private delegate int StartQueuedCaller (int max);
+        private StartQueuedCaller queued_caller;
+        private AsyncCallback sq_callback;
         private int StartQueued (int max)
-        {
+        {   
             int started = 0;
             
             while (FileTransfer.QueuedCount () > 0 && started < max) {
@@ -166,11 +171,11 @@ namespace Banshee.Telepathy.Gui
                     if (ft.State == TransferState.Connected) {
                         ft.Start ();
                         InProgress++;
+                        
+                        Update ();
+                        RefreshListView ();
                     }
                 }
-                
-                Update ();
-                RefreshListView ();
             }
         }
 
@@ -196,16 +201,29 @@ namespace Banshee.Telepathy.Gui
                 
                 // previous state was in progress, completed, cancelled, failed
                 if (args.PreviousState > TransferState.Connected) {
-                    InProgress += StartQueued (MaxConcurrentDownloads - (InProgress - 1)) - 1;
+                    queued_caller.BeginInvoke (MaxConcurrentDownloads - (InProgress - 1),
+                                               sq_callback, 
+                                               queued_caller);
                 }
-                
-                Update ();
-                RefreshListView ();
-
-                if (BytesExpected == BytesTransferred) {
-                    DestroyUserJob ();
+                else {
+                    Update ();
+                    RefreshListView ();
                 }
             }
         }
+        
+        private void StartQueuedCallback (IAsyncResult result)
+        {
+            StartQueuedCaller caller = (StartQueuedCaller) result.AsyncState;
+            InProgress += caller.EndInvoke (result) - 1;
+
+            Update ();
+            RefreshListView ();
+
+            if (BytesExpected == BytesTransferred) {
+                DestroyUserJob ();
+            }
+        }
+
     }
 }

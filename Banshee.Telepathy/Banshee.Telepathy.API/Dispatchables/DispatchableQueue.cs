@@ -29,8 +29,6 @@
 using System;
 using System.Collections.Generic;
 
-using Hyena;
-
 namespace Banshee.Telepathy.API.Dispatchables
 {
     // TODO not a "true" queue. Not really paying attention to order.
@@ -127,7 +125,7 @@ namespace Banshee.Telepathy.API.Dispatchables
                 throw new ArgumentNullException ("obj");
             }
 
-            Console.WriteLine ("DispatchableQueue.Remove called");
+            //Console.WriteLine ("DispatchableQueue.Remove called");
             Connection conn = obj.Contact.Connection;
             
             lock (queue) {

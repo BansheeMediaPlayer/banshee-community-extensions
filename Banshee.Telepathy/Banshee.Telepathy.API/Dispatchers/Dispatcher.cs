@@ -34,7 +34,6 @@ using NDesk.DBus;
 using Telepathy;
 
 using Banshee.Telepathy.API.DBus;
-
 using Banshee.Telepathy.API.Dispatchables;
 
 namespace Banshee.Telepathy.API.Dispatchers
@@ -49,10 +48,6 @@ namespace Banshee.Telepathy.API.Dispatchers
 
         protected Dispatcher (Connection conn, string channel_type, string [] property_keys)
         {
-            if (conn == null) {
-                throw new ArgumentNullException ("conn");
-            }
-            
             this.conn = conn;
             ChannelType = channel_type;
             this.property_keys = property_keys;
@@ -79,6 +74,12 @@ namespace Banshee.Telepathy.API.Dispatchers
         private Connection conn;
         protected Connection Connection {
             get { return conn; }
+            set {
+                if (conn == null) {
+                   throw new ArgumentNullException ("conn");
+                }
+                conn = value;
+            }
         }
 
         private IRequests requests = null;

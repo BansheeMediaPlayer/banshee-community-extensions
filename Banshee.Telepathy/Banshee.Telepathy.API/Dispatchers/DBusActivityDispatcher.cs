@@ -29,8 +29,6 @@
 using System;
 using System.Collections.Generic;
 
-using Hyena;
-
 using Telepathy;
 
 using Banshee.Telepathy.API.Channels;
@@ -74,20 +72,24 @@ namespace Banshee.Telepathy.API.Dispatchers
         {
             string service_name = (string) c.Properties[Constants.CHANNEL_TYPE_DBUSTUBE + ".ServiceName"];
             Contact contact = Connection.Roster.GetContact (target_handle);
-            DBusTubeChannel tube = new DBusTubeChannel (this.Connection, 
-                                                        object_path,
-                                                        initiator_handle, 
-                                                        target_handle,
-                                                        service_name);
 
+            DBusTubeChannel tube = null;
             try {
+                tube = new DBusTubeChannel (this.Connection,
+                                            object_path,
+                                            initiator_handle, 
+                                            target_handle,
+                                            service_name);
+
                 DBusActivity activity = new DBusActivity (contact, tube);
                 DispatchManager dm = Connection.DispatchManager;
                 dm.Add (contact, activity.Service, activity);
             }
-            catch (InvalidOperationException e) {
+            catch (Exception e) {
                 Console.WriteLine (e.ToString ());
-                tube.Dispose ();
+                if (tube != null) {
+                    tube.Dispose ();
+                }
             }
         }
     }

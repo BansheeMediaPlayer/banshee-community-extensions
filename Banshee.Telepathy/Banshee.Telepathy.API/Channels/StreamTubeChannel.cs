@@ -30,12 +30,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using Hyena;
-
 using Banshee.Telepathy.API.DBus;
 
 using Telepathy;
-using Telepathy.Draft;
 
 namespace Banshee.Telepathy.API.Channels
 {

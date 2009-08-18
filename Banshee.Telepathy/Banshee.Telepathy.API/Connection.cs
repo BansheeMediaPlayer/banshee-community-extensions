@@ -29,13 +29,8 @@
 using System;
 using System.Collections.Generic;
 
-//using Hyena;
-
-using NDesk.DBus;
-
 using Telepathy;
 using Telepathy.Draft;
-using Telepathy.MissionControl;
 
 using Banshee.Telepathy.API.Data;
 using Banshee.Telepathy.API.DBus;

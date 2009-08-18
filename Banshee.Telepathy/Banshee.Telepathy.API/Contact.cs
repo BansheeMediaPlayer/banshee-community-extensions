@@ -60,15 +60,30 @@ namespace Banshee.Telepathy.API
         }
 
         public Connection Connection {
-            get { return roster.Connection; }
+            get {
+                if (roster != null) {
+                    return roster.Connection; 
+                }
+                return null;
+            }
         }
 
         public DispatchManager DispatchManager {
-            get { return Connection.DispatchManager; }
+            get {
+                if (Connection != null) {
+                    return Connection.DispatchManager; 
+                }
+                return null;
+            }
         }
         
         public string AccountId {
-            get { return Connection.AccountId; }
+            get {
+                if (Connection != null) {
+                    return Connection.AccountId; 
+                }
+                return String.Empty;
+            }
         }
 
         private string member_name;

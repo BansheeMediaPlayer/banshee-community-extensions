@@ -26,10 +26,9 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using Gtk;
-using GLib;
 using System;
 using System.Collections.Generic;
+
 using NDesk.DBus;
 
 namespace Banshee.Telepathy.API.DBus
@@ -127,15 +126,8 @@ namespace Banshee.Telepathy.API.DBus
         public void ConnectToMainLoop ()
         {
             if (conn != null) {
-                //BusG.Init ();
-                //Application.Init ();                
                 BusG.Init (conn);
             }
         }
-/*        
-        public static T GetProxy <T> (string bus_name, string object_path)
-        {
-            return GetProxy <T> (BusType.Session, bus_name, object_path);
-        }*/
     }
 }

@@ -157,7 +157,7 @@ namespace Banshee.Telepathy.API
             }
             
             string type = d.GetType ().FullName;
-            Hyena.Log.DebugFormat ("DispatchManager.Add dispatchable type {0}", type);
+            //Hyena.Log.DebugFormat ("DispatchManager.Add dispatchable type {0}", type);
             
             lock (dispatchables) {
                 if (!dispatchables.ContainsKey (contact)) {

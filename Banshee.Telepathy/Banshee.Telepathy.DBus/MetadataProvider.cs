@@ -36,12 +36,9 @@ using Banshee.ServiceStack;
 using Banshee.Telepathy.API;
 using Banshee.Telepathy.API.Dispatchables;
 
-using NDesk.DBus;
-
 namespace Banshee.Telepathy.DBus
 {
-    //[DBusExportable (ServiceName = "Telepathy")]
-    public class MetadataProvider : BaseProvider, IMetadataProvider//, IDBusExportable
+    public class MetadataProvider : BaseProvider, IMetadataProvider
     {
         private static object class_lock = new object ();
         private static int instance_count = 0;
@@ -152,7 +149,6 @@ namespace Banshee.Telepathy.DBus
 
         void IMetadataProvider.Destroy ()
         {
-            //ServiceManager.DBusServiceManager.UnregisterObject (this);
             activity.UnRegisterDBusObject (ObjectPath);
             Dispose ();
         }
@@ -170,14 +166,5 @@ namespace Banshee.Telepathy.DBus
         public string ObjectPath {
             get { return "/org/bansheeproject/MetadataProvider_" + myindex; }
         }
-/*
-        IDBusExportable IDBusExportable.Parent { 
-            get { return myservice; }
-        }
-     
-        string IService.ServiceName {
-            get { return "MetadataProvider_" + instance_count; }
-        }
-*/
     }
 }

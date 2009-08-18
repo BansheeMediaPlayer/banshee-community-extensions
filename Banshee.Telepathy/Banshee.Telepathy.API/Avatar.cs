@@ -27,14 +27,13 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using System.Collections.Generic;
 
 using Banshee.Telepathy.API.DBus;
 
 using Telepathy;
-using Telepathy.Draft;
 
 namespace Banshee.Telepathy.API
 {
@@ -237,19 +236,25 @@ namespace Banshee.Telepathy.API
                  retreiving = LoadFromCache ();
             }
 
-            if (!retreiving) {
-                uint [] handles = { Contact.Handle };
-                
-                State = AvatarState.Loading;
-                
-                IDictionary <uint, string> tokens = avatars.GetKnownAvatarTokens (handles);
-                if (tokens.Count == 0) {
-                    State = AvatarState.NoAvatar;
+            try {
+                if (!retreiving) {
+                    uint [] handles = { Contact.Handle };
+                    
+                    State = AvatarState.Loading;
+
+                    IDictionary <uint, string> tokens = avatars.GetKnownAvatarTokens (handles);
+                    if (tokens.Count == 0) {
+                        State = AvatarState.NoAvatar;
+                    }
+                    else {
+                        avatars.AvatarRetrieved += OnAvatarRetrieved;
+                        avatars.RequestAvatars (handles);
+                    }
                 }
-                else {
-                    avatars.AvatarRetrieved += OnAvatarRetrieved;
-                    avatars.RequestAvatars (handles);
-                }
+            }
+            catch (Exception e) {
+                Console.WriteLine (e.ToString ());
+                State = AvatarState.NoAvatar;
             }
         }
 

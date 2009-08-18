@@ -33,14 +33,13 @@ using Hyena;
 
 namespace Banshee.Telepathy.Data
 {
-    internal delegate void AllFinishedHandler (object sender, EventArgs args);
-    
     internal class DownloadMonitor
     {
-        private IDictionary <string, Download> downloads = new Dictionary <string, Download> ();
-        private IDictionary <Download, object> associated = new Dictionary <Download, object> ();
+        private readonly IDictionary <string, Download> downloads = new Dictionary <string, Download> ();
+        private readonly IDictionary <Download, object> associated = new Dictionary <Download, object> ();
         
-        public event AllFinishedHandler AllFinished;
+        public event EventHandler <EventArgs> AllFinished;
+        public event EventHandler <EventArgs> AllProcessed;
         
         public DownloadMonitor ()
         {
@@ -69,7 +68,13 @@ namespace Banshee.Telepathy.Data
         
         public void Add (string key, Download d)
         {
-            if (monitoring) {
+            if (key == null) {
+                throw new ArgumentNullException ("key");
+            }
+            else if (d == null) {
+                throw new ArgumentNullException ("d");
+            }
+            else if (monitoring) {
                 throw new InvalidOperationException ("Can't add while monitoring.");
             }
             
@@ -77,6 +82,7 @@ namespace Banshee.Telepathy.Data
                 if (!downloads.ContainsKey (key)) {
                     downloads.Add (key, d);
                     d.Finished += OnDownloadFinished;
+                    d.ProcessingComplete += OnDownloadProcessed;
                     Log.DebugFormat ("Download added for {0}", key);
                 }
             }
@@ -122,6 +128,10 @@ namespace Banshee.Telepathy.Data
         
         public Download Get (string key)
         {
+            if (key == null) {
+                throw new ArgumentNullException ("key");
+            }
+            
             Log.DebugFormat ("Getting download with key {0}", key);
             
             lock (downloads) {
@@ -152,10 +162,29 @@ namespace Banshee.Telepathy.Data
 
             return true;
         }
+
+        public bool ProcessingFinished ()
+        {
+            lock (downloads) {
+                foreach (Download d in downloads.Values) {
+                    if (!d.Processed) return false;
+                }
+            }
+
+            return true;
+        }
         
         protected virtual void OnAllFinished (EventArgs args)
         {
-            AllFinishedHandler handler = AllFinished;
+            EventHandler <EventArgs> handler = AllFinished;
+            if (handler != null) {
+                handler (this, args);
+            }
+        }
+
+        protected virtual void OnAllProcessed (EventArgs args)
+        {
+            EventHandler <EventArgs> handler = AllProcessed;
             if (handler != null) {
                 handler (this, args);
             }
@@ -163,18 +192,30 @@ namespace Banshee.Telepathy.Data
 
         private void OnDownloadFinished (object sender, EventArgs args)
         {
-            
             Download download = sender as Download;
 
-            if (downloads.Values.Contains (download)) {
+            if (download != null && downloads.Values.Contains (download)) {
+                download.StopProcessing ();
+                
                 if (monitoring && MonitoredFinished ()) {
                     OnAllFinished (EventArgs.Empty);
                 }
             }
         }
+
+        private void OnDownloadProcessed (object sender, EventArgs args)
+        {
+            Download download = sender as Download;
+
+            if (download != null && downloads.Values.Contains (download)) {
+                if (monitoring && ProcessingFinished ()) {
+                    OnAllProcessed (EventArgs.Empty);
+                }
+            }
+        }
     }
 
-    internal delegate void FinishedHandler (object sender, EventArgs args);
+    internal delegate void PayloadHandler (object sender, object [] o);
     
     internal class Download
     {
@@ -183,8 +224,10 @@ namespace Banshee.Telepathy.Data
         private long total_downloaded;
         private long total_expected;
         
-
-        public event FinishedHandler Finished;
+        private readonly Queue <object [] > queue = new Queue<object [] > ();
+        
+        public event EventHandler <EventArgs> Finished;
+        public event EventHandler <EventArgs> ProcessingComplete;
         
         public Download ()
         {
@@ -227,10 +270,49 @@ namespace Banshee.Telepathy.Data
         private bool processed = false;
         public bool Processed {
             get { return processed; }
-            set { processed = value; }
+        }
+
+        private bool processing = false;
+        private PayloadHandler payload_handler;
+        public void ProcessIncomingPayloads (PayloadHandler handler)
+        {
+            if (processing) {
+                throw new InvalidOperationException ("Already processing.");
+            }
+            
+            payload_handler = handler;
+            processing = true;
+
+            Banshee.Base.ThreadAssist.Spawn (Process);
+        }
+
+        public void StopProcessing ()
+        {
+            processing = false;
+        }
+
+        private void Process ()
+        {
+            var handler = payload_handler;
+            
+            while (processing) {
+                //Log.Debug ("processing");
+                if (handler != null && queue.Count > 0) {
+                    handler (this, queue.Dequeue ());
+                }
+            }
+
+            for (int i = queue.Count - 1; i >= 0; i--) {
+                handler (this, queue.Dequeue ());
+            }
+
+            Banshee.Base.ThreadAssist.ProxyToMain (delegate {
+                processed = true;
+                OnProcessingComplete (EventArgs.Empty);
+            });
         }
         
-        public void UpdateDownload (long timestamp, int seq, int chunk_size)
+        public void UpdateDownload (long timestamp, int seq, int chunk_size, object [] payload)
         {
             long expected_stamp = this.timestamp;
             int expected_seq = last_sequence_num + 1;
@@ -249,6 +331,8 @@ namespace Banshee.Telepathy.Data
             Log.DebugFormat ("UpdateDownload: expected {0} downloaded {1}",
                              total_expected, total_downloaded);
 
+            queue.Enqueue (payload);
+            
             if (IsFinished) {
                 OnFinished (EventArgs.Empty);
             }
@@ -256,7 +340,15 @@ namespace Banshee.Telepathy.Data
 
         protected virtual void OnFinished (EventArgs args)
         {
-            FinishedHandler handler = Finished;
+            EventHandler <EventArgs> handler = Finished;
+            if (handler != null) {
+                handler (this, args);
+            }
+        }
+
+        protected virtual void OnProcessingComplete (EventArgs args)
+        {
+            EventHandler <EventArgs> handler = ProcessingComplete;
             if (handler != null) {
                 handler (this, args);
             }

@@ -29,12 +29,9 @@
 using System;
 using System.Collections.Generic;
 
-using Hyena;
-
 using Banshee.Telepathy.API.DBus;
 
 using Telepathy;
-using Telepathy.Draft;
 
 namespace Banshee.Telepathy.API.Channels
 {
@@ -97,7 +94,6 @@ namespace Banshee.Telepathy.API.Channels
         }
         public void Offer ()
         {
-            Console.WriteLine ("Offering DTube");
             address = tube.Offer (new Dictionary <string, object>(), SocketAccessControl.Localhost);
             Console.WriteLine ("Tube from {0} offered", address);
         }

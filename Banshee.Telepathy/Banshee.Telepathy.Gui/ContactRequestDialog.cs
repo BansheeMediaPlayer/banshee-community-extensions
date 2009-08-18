@@ -37,9 +37,9 @@ namespace Banshee.Telepathy.Gui
         private AccelGroup accel_group;
         private Label message;
     
-        public ContactRequestDialog (string title, string msg) : base ()
+        public ContactRequestDialog (string contact_name) : base ()
         {
-            Title = Catalog.GetString (title);
+            Title = Catalog.GetString ("Contact Request");
             HasSeparator = false;
             BorderWidth = 5;
             
@@ -64,7 +64,7 @@ namespace Banshee.Telepathy.Gui
             hbox.PackStart (image, false, false, 0);
             hbox.PackStart (vbox, true, true, 0);
         
-            message = new Label (Catalog.GetString (msg));
+            message = new Label (String.Format (Catalog.GetString ("{0} would like to browse your music library."), contact_name));
             message.Xalign = 0.0f;
             message.Show ();
             

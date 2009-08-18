@@ -28,7 +28,6 @@
 
 using System;
 using System.Collections.Generic;
-using Mono.Unix;
 
 using Hyena;
 using Hyena.Data.Sqlite;
@@ -41,7 +40,6 @@ using Banshee.Playlist;
 using Banshee.Sources;
 
 using Banshee.Telepathy.API;
-using Banshee.Telepathy.Data;
 
 namespace Banshee.Telepathy.Data
 {
@@ -54,25 +52,57 @@ namespace Banshee.Telepathy.Data
         
         private ContactSource parent;
         public Contact Contact {
-            get { return parent.Contact; }
+            get {
+                if (parent != null) {
+                    return parent.Contact;
+                }
+                return null;
+            }
+        }
+        
+        public string AccountId {
+            get {
+                if (Contact != null) {
+                    return Contact.AccountId;
+                }
+                return String.Empty;
+            }
         }
 
         public string ContactName {
-            get { return Contact.Name; }
+            get { 
+                if (Contact != null) {
+                    return Contact.Name; 
+                }
+                return String.Empty;
+            }
         }
 
         public string ContactStatus {
-            get { return Contact.Status.ToString (); }
+            get {
+                if (Contact != null) {
+                    return Contact.Status.ToString (); 
+                }
+                return String.Empty;
+            }
         }
         
         public ContactPlaylistSource (string name, ContactSource parent) : base (name, parent)
         {
+            if (parent == null) {
+                throw new ArgumentNullException ("parent");
+            }
+            
             this.parent = parent;
             Save ();
         }
         
         public ContactPlaylistSource (IDictionary <string, object> [] playlist, string name, ContactSource parent) : this (name, parent)
         {
+            if (playlist == null) {
+                throw new ArgumentNullException ("playlist");
+            }
+            
             AddTracks (playlist);
         }
         

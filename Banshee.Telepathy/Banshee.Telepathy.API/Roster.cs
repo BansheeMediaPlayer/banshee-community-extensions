@@ -29,14 +29,10 @@
 using System;
 using System.Collections.Generic;
 
-using Banshee.Telepathy.API.DBus;
-
-using NDesk.DBus;
-
 using Telepathy;
-using Telepathy.MissionControl;
 
 using Banshee.Telepathy.API.Channels;
+using Banshee.Telepathy.API.DBus;
 
 namespace Banshee.Telepathy.API
 {

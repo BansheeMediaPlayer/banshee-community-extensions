@@ -38,11 +38,10 @@ using Banshee.Base;
 using Banshee.Collection;
 using Banshee.Collection.Database;
 using Banshee.ServiceStack;
+using Banshee.Telepathy.DBus;
 
 using Banshee.Telepathy.API;
 using Banshee.Telepathy.API.Dispatchables;
-
-using Banshee.Telepathy.DBus;
 
 namespace Banshee.Telepathy.Data
 {
@@ -56,6 +55,13 @@ namespace Banshee.Telepathy.Data
         
         public ContactTrackInfo (DatabaseTrackInfo track, ContactSource source) : this ()
         {
+            if (track == null) {
+                throw new ArgumentNullException ("track");
+            }
+            else if (source == null) {
+                throw new ArgumentNullException ("source");
+            }
+            
             this.TrackId = track.TrackId;
             this.ExternalId = track.ExternalId;
             this.AlbumTitle = track.AlbumTitle;
@@ -69,6 +75,13 @@ namespace Banshee.Telepathy.Data
         
         public ContactTrackInfo (IDictionary <string, object> track, ContactSource source) : this ()
         {
+            if (track == null) {
+                throw new ArgumentNullException ("track");
+            }
+            else if (source == null) {
+                throw new ArgumentNullException ("source");
+            }
+            
             //TimeSpan = double
             //DateTime = long
             //Uri = string
@@ -103,7 +116,7 @@ namespace Banshee.Telepathy.Data
             }
 
             PrimarySource = source;
-            remote_path = LocalPath;
+            remote_path = LocalPath ?? String.Empty;
 
             string ext = Path.GetExtension (LocalPath);
             
@@ -216,8 +229,6 @@ namespace Banshee.Telepathy.Data
                     } else {
                         transfer.Accept (ContactSource.TempDownloadDirectory);
                     }
-    
-                    //PrimarySource.NotifyTracksChanged ();
                 }
             }
         }

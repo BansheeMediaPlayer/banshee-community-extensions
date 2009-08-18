@@ -41,8 +41,7 @@ using NDesk.DBus;
 
 namespace Banshee.Telepathy.DBus
 {
-    //[DBusExportable (ServiceName = "Telepathy")]
-    public class PlaylistProvider : BaseProvider, IPlaylistProvider//, IDBusExportable
+    public class PlaylistProvider : BaseProvider, IPlaylistProvider
     {
         private static object class_lock = new object ();
         private static int instance_count = 0;
@@ -52,7 +51,6 @@ namespace Banshee.Telepathy.DBus
                        
         public PlaylistProvider (DBusActivity activity, int id) : base ()
         {
-            //DBusConnection.Connect ("MetadataGrabber");
             lock (class_lock) {
                 instance_count++;
                 myindex = instance_count;
@@ -170,14 +168,5 @@ namespace Banshee.Telepathy.DBus
         public string ObjectPath {
             get { return "/org/bansheeproject/PlaylistProvider_" + myindex; }
         }
-/*
-        IDBusExportable IDBusExportable.Parent { 
-            get { return myservice; }
-        }
-        
-        string IService.ServiceName {
-            get { return "PlaylistProvider_" + instance_count; }
-        }
-*/        
     }
 }

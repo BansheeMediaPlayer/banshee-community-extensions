@@ -29,7 +29,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 
 using Banshee.Telepathy.API.DBus;
 
@@ -231,7 +230,7 @@ namespace Banshee.Telepathy.API.Channels
                         ft.Closed -= OnFileTransferClosed;
                         ft.InitialOffsetDefined -= OnInitialOffsetDefined;
                     }
-                    catch (Exception) {}
+                    catch {}
                 }
             }
 
@@ -243,9 +242,7 @@ namespace Banshee.Telepathy.API.Channels
             try {
                 ft.Close ();
             }
-            catch (Exception) {
-                //Console.WriteLine (e.ToString());
-            }
+            catch {}
         }
     }
 }

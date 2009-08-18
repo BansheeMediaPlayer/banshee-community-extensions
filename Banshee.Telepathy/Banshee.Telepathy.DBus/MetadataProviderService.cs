@@ -33,12 +33,13 @@ using System.Collections.Generic;
 using Banshee.Base;
 using Banshee.Collection.Database;
 using Banshee.ServiceStack;
+using Banshee.Telepathy.Data;
+using Banshee.Telepathy.Gui;
 
 using Banshee.Telepathy.API;
 using Banshee.Telepathy.API.Dispatchables;
 
-using Banshee.Telepathy.Data;
-using Banshee.Telepathy.Gui;
+
 
 using Hyena.Data.Sqlite;
     
@@ -54,8 +55,7 @@ namespace Banshee.Telepathy.DBus
 
     public delegate void PermissionResponseHandler (bool granted);
     
-    //[DBusExportable (ServiceName = "Telepathy")]
-    public class MetadataProviderService : IMetadataProviderService//, IDBusExportable
+    public class MetadataProviderService : IMetadataProviderService
     {
         public event PermissionResponseHandler PermissionResponse;
         
@@ -67,6 +67,10 @@ namespace Banshee.Telepathy.DBus
         
         public MetadataProviderService (DBusActivity activity)
         {
+            if (activity == null) {
+                throw new ArgumentNullException ("activity");
+            }
+            
             this.activity = activity;
         }
 
@@ -83,7 +87,7 @@ namespace Banshee.Telepathy.DBus
         
         public ObjectPath CreateMetadataProvider (LibraryType type)
         {
-            if (!permission_granted) {
+            if (activity == null || !permission_granted) {
                 return new ObjectPath ("");
             }
             
@@ -95,19 +99,18 @@ namespace Banshee.Telepathy.DBus
         
         public ObjectPath CreatePlaylistProvider (int id)
         {
-            if (!permission_granted) {
+            if (activity == null || !permission_granted) {
                 return new ObjectPath ("");
             }
             
             PlaylistProvider provider = new PlaylistProvider (activity, id);
             activity.RegisterDBusObject (provider, provider.ObjectPath);
             return new ObjectPath (provider.ObjectPath);
-            //return ServiceManager.DBusServiceManager.RegisterObject (new PlaylistProvider (this, id));
         }
         
         public int[] GetPlaylistIds (LibraryType type)
         {
-            Console.WriteLine ("I am in GetPlaylistIds");
+            //Console.WriteLine ("I am in GetPlaylistIds");
             int primary_source_id = 0;
             
             switch (type) {
@@ -139,16 +142,18 @@ namespace Banshee.Telepathy.DBus
 
         public void RequestPermission ()
         {
-            if (permission_granted) {
+            if (activity == null || activity.Contact == null) {
+                OnPermissionResponse (false);
+                return;
+            }
+            else if (permission_granted) {
                 OnPermissionResponse (permission_granted);
                 return;
             }
             
             Contact contact = activity.Contact;
             
-            ContactRequestDialog dialog = new ContactRequestDialog ("Contact Request", 
-                                                                    String.Format ("{0} would like to browse your music library.",
-                                                                    contact.Name));
+            ContactRequestDialog dialog = new ContactRequestDialog (contact.Name);
             dialog.ShowAll ();
             dialog.Response += delegate(object o, ResponseArgs e) {
                 if (e.ResponseId == ResponseType.Accept) {               
@@ -162,6 +167,10 @@ namespace Banshee.Telepathy.DBus
 
         public void DownloadFile (long external_id, string content_type)
         {
+            if (activity == null || activity.Contact == null) {
+                return;
+            }
+            
             DatabaseTrackInfo track = DatabaseTrackInfo.Provider.FetchFirstMatching ("TrackID = ?", external_id);
             if (track == null) {
                 return;
@@ -191,7 +200,11 @@ namespace Banshee.Telepathy.DBus
                 "SELECT Uri FROM CoreTracks WHERE TrackID = ?", id
             );
 
-            return new SafeUri (uri).LocalPath;
+            if (!String.IsNullOrEmpty (uri)) {
+                return new SafeUri (uri).LocalPath;
+            }
+
+            return String.Empty;
         }
 
         public bool DownloadsAllowed ()
@@ -214,16 +227,6 @@ namespace Banshee.Telepathy.DBus
         public static string BusName {
             get { return "org.bansheeproject.MetadataProviderService"; }
         }
-
-/*
-        IDBusExportable IDBusExportable.Parent { 
-            get { return null; }
-        }
-        
-        string IService.ServiceName {
-            get { return "MetadataProviderService"; }
-        }
-*/
     }
 }
         
