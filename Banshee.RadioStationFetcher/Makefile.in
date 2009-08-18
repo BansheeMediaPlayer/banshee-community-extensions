@@ -17,7 +17,6 @@
 
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
-pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 install_sh_DATA = $(install_sh) -c -m 644
@@ -32,7 +31,6 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/banshee.radiostationfetcher.in \
 	$(top_srcdir)/Makefile.include
 subdir = Banshee.RadioStationFetcher
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -41,7 +39,7 @@ am__aclocal_m4_deps = $(top_srcdir)/expansions.m4 \
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
-CONFIG_CLEAN_FILES = banshee.radiostationfetcher
+CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkglibdir)" \
 	"$(DESTDIR)$(programfilesdir)"
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
@@ -58,18 +56,27 @@ am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 programfilesDATA_INSTALL = $(INSTALL_DATA)
 DATA = $(programfiles_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+pkglibdir = $(PLUGINDIR)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BANSHEE_1_CORE_CFLAGS = @BANSHEE_1_CORE_CFLAGS@
+BANSHEE_1_CORE_LIBS = @BANSHEE_1_CORE_LIBS@
+BANSHEE_1_SERVICES_CFLAGS = @BANSHEE_1_SERVICES_CFLAGS@
+BANSHEE_1_SERVICES_LIBS = @BANSHEE_1_SERVICES_LIBS@
+BANSHEE_1_THICKCLIENT_CFLAGS = @BANSHEE_1_THICKCLIENT_CFLAGS@
+BANSHEE_1_THICKCLIENT_LIBS = @BANSHEE_1_THICKCLIENT_LIBS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 GMCS = @GMCS@
+GTK_SHARP_20_CFLAGS = @GTK_SHARP_20_CFLAGS@
+GTK_SHARP_20_LIBS = @GTK_SHARP_20_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -89,6 +96,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PLUGINDIR = @PLUGINDIR@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -100,6 +108,7 @@ abs_top_srcdir = @abs_top_srcdir@
 am__leading_dot = @am__leading_dot@
 am__tar = @am__tar@
 am__untar = @am__untar@
+banshee_libdir = @banshee_libdir@
 bindir = @bindir@
 build_alias = @build_alias@
 builddir = @builddir@
@@ -111,6 +120,7 @@ exec_prefix = @exec_prefix@
 expanded_bindir = @expanded_bindir@
 expanded_datadir = @expanded_datadir@
 expanded_libdir = @expanded_libdir@
+expanded_pluginsdir = @expanded_pluginsdir@
 host_alias = @host_alias@
 htmldir = @htmldir@
 includedir = @includedir@
@@ -154,9 +164,9 @@ EXTRA_DIST = $(build_sources) $(build_resx_files) \
 @ENABLE_RELEASE_TRUE@PROJECT_REFERENCES = 
 @ENABLE_DEBUG_TRUE@BUILD_DIR = bin/Debug
 @ENABLE_RELEASE_TRUE@BUILD_DIR = bin/Release
-@ENABLE_DEBUG_TRUE@BANSHEE_RADIOSTATIONFETCHER_EXE_MDB_SOURCE = bin/Debug/Banshee.RadioStationFetcher.dll.mdb
-@ENABLE_DEBUG_TRUE@BANSHEE_RADIOSTATIONFETCHER_EXE_MDB = $(BUILD_DIR)/Banshee.RadioStationFetcher.dll.mdb
-@ENABLE_RELEASE_TRUE@BANSHEE_RADIOSTATIONFETCHER_EXE_MDB = 
+@ENABLE_DEBUG_TRUE@BANSHEE_RADIOSTATIONFETCHER_DLL_MDB_SOURCE = bin/Debug/Banshee.RadioStationFetcher.dll.mdb
+@ENABLE_DEBUG_TRUE@BANSHEE_RADIOSTATIONFETCHER_DLL_MDB = $(BUILD_DIR)/Banshee.RadioStationFetcher.dll.mdb
+@ENABLE_RELEASE_TRUE@BANSHEE_RADIOSTATIONFETCHER_DLL_MDB = 
 AL = al2
 SATELLITE_ASSEMBLY_NAME = $(notdir $(basename $(ASSEMBLY))).resources.dll
 PROGRAMFILES = \
@@ -178,9 +188,6 @@ DATA_FILES =
 RESOURCES = \
 	Banshee.RadioStationFetcher.addin.xml \
 	Resources/RadioStationFetcherMenu.xml,Resources.RadioStationFetcherMenu.xml 
-
-EXTRAS = \
-	banshee.radiostationfetcher.in 
 
 REFERENCES = \
 	-pkg:banshee-1-core \
@@ -249,7 +256,7 @@ rm = $(call rm_actual,$(call s2q2s,$1),$(call s2q2s,$2)/$(shell basename '$(call
 DISTCLEANFILES = $(GENERATED_FILES) $(pc_files) $(BUILD_DIR)/*
 pkglib_SCRIPTS = $(ASSEMBLY)
 bin_SCRIPTS = $(BINARIES)
-programfilesdir = @libdir@/@PACKAGE@
+programfilesdir = $(PLUGINDIR)
 programfiles_DATA = $(PROGRAMFILES)
 
 # generating satellite assemblies
@@ -293,8 +300,6 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
-banshee.radiostationfetcher: $(top_builddir)/config.status $(srcdir)/banshee.radiostationfetcher.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
@@ -487,7 +492,7 @@ uninstall-am: uninstall-binSCRIPTS uninstall-pkglibSCRIPTS \
 	uninstall-programfilesDATA
 
 
-all: $(ASSEMBLY) $(PROGRAMFILES) $(BINARIES) 
+all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
 
 # macros
 

@@ -12,8 +12,8 @@ COMPILE_TARGET = library
 PROJECT_REFERENCES = 
 BUILD_DIR = bin/Debug
 
-BANSHEE_RADIOSTATIONFETCHER_EXE_MDB_SOURCE=bin/Debug/Banshee.RadioStationFetcher.dll.mdb
-BANSHEE_RADIOSTATIONFETCHER_EXE_MDB=$(BUILD_DIR)/Banshee.RadioStationFetcher.dll.mdb
+BANSHEE_RADIOSTATIONFETCHER_DLL_MDB_SOURCE=bin/Debug/Banshee.RadioStationFetcher.dll.mdb
+BANSHEE_RADIOSTATIONFETCHER_DLL_MDB=$(BUILD_DIR)/Banshee.RadioStationFetcher.dll.mdb
 
 endif
 
@@ -26,7 +26,7 @@ COMPILE_TARGET = library
 PROJECT_REFERENCES = 
 BUILD_DIR = bin/Release
 
-BANSHEE_RADIOSTATIONFETCHER_EXE_MDB=
+BANSHEE_RADIOSTATIONFETCHER_DLL_MDB=
 
 endif
 
@@ -42,7 +42,7 @@ BINARIES = \
 
 RESGEN=resgen2
 	
-all: $(ASSEMBLY) $(PROGRAMFILES) $(BINARIES) 
+all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
 
 FILES =  \
 	src/FetcherDialog.cs \
@@ -57,9 +57,6 @@ DATA_FILES =
 RESOURCES =  \
 	Banshee.RadioStationFetcher.addin.xml \
 	Resources/RadioStationFetcherMenu.xml,Resources.RadioStationFetcherMenu.xml 
-
-EXTRAS = \
-	banshee.radiostationfetcher.in 
 
 REFERENCES =  \
 	-pkg:banshee-1-core \
