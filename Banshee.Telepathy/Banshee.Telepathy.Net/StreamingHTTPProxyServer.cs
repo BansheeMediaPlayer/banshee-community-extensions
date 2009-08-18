@@ -35,8 +35,10 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Collections;
 
+using Banshee.Collection;
 using Banshee.Sources;
 using Banshee.Telepathy.Data;
+using Banshee.Web;
 
 using Banshee.Telepathy.API;
 using Banshee.Telepathy.API.Dispatchables;
@@ -49,13 +51,15 @@ namespace Banshee.Telepathy.Net
     {
         public StreamingHTTPProxyServer() : base ()
         {
+            this.Name = "StreamingHTTPProxyServer";
+            
             port = 7777;
             (this.EndPoint as IPEndPoint).Port = (int) port;
         }
 
-        public override void Start () 
+        public override void Start (int backlog) 
         {
-            base.Start ();
+            base.Start (backlog);
             port = (ushort)(server.LocalEndPoint as IPEndPoint).Port;
         }
 
@@ -66,7 +70,7 @@ namespace Banshee.Telepathy.Net
             }
             
             Socket stream_socket = GetServerSocket (client);
-            if (!stream_socket.Connected) {
+            if (stream_socket == null || !stream_socket.Connected) {
                 return false;
             }
 
@@ -139,8 +143,14 @@ namespace Banshee.Telepathy.Net
             
         private Socket GetServerSocket (Socket client)
         {
+            TrackInfo track = Banshee.ServiceStack.ServiceManager.PlayerEngine.CurrentTrack;
+            if (track == null) {
+                return null;
+            }
+            
             Socket stream_socket = new Socket (AddressFamily.Unix, SocketType.Stream, ProtocolType.IP);
-            Contact contact = (Banshee.ServiceStack.ServiceManager.SourceManager.ActiveSource as IContactSource).Contact;
+            
+            Contact contact = ContactTrackInfo.From (track).Contact;
             
             if (contact != null) {
                 DispatchManager dm = contact.DispatchManager;

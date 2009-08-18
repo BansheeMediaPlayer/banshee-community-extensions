@@ -28,7 +28,6 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-// Heavily based on Banshee.Daap.DaapProxyWebServer.cs
 
 using System;
 using System.IO;
@@ -40,7 +39,7 @@ using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Banshee.Telepathy.Net
+namespace Banshee.Web
 {
     public abstract class BaseWebServer
     {
@@ -63,11 +62,14 @@ namespace Banshee.Telepathy.Net
             this.DefaultEndPoint = default_ep;
         }
 
-        private string name = "Proxy";
+        private string name = "WebServer";
         public string Name {
             get { return name; }
             set {
-                if (running) {
+                if (value == null) {
+                    throw new ArgumentNullException ("name");
+                }
+                else if (running) {
                     throw new InvalidOperationException ("Cannot set Name while running.");
                 }
                 name = value;
@@ -113,6 +115,9 @@ namespace Banshee.Telepathy.Net
         public int ChunkLength {
             get { return chunk_length; }
             set {
+                if (chunk_length < 1) {
+                    throw new ArgumentOutOfRangeException ("chunk_length", "Must be > 0");
+                }
                 if (running) {
                     throw new InvalidOperationException ("Cannot change ChunkLength while server is running.");
                 }
@@ -120,8 +125,17 @@ namespace Banshee.Telepathy.Net
             }
         }
 
-        public virtual void Start () 
+        public void Start ()
         {
+            Start (10);
+        }
+        
+        public virtual void Start (int backlog) 
+        {
+            if (backlog < 0) {
+                throw new ArgumentOutOfRangeException ("backlog");
+            }
+            
             if (running) {
                 return;
             }
@@ -138,7 +152,7 @@ namespace Banshee.Telepathy.Net
                 }
             }
             
-            server.Listen (10);
+            server.Listen (backlog);
 
             running = true;
             Thread thread = new Thread (ServerLoop);
@@ -193,6 +207,23 @@ namespace Banshee.Telepathy.Net
             }
         }
 
+        protected virtual long ParseRangeRequest (string line)
+        {
+            long offset = 0;
+            if (String.IsNullOrEmpty (line)) {
+                return offset;
+            }
+
+            string [] split_line = line.Split (' ', '=', '-');
+            foreach (string word in split_line) {
+                if (long.TryParse (word, out offset)) {
+                    return offset;
+                }
+            }
+
+            return offset;
+        }
+        
         protected virtual bool HandleRequest (Socket client) 
         {
             if (client == null || !client.Connected) {
@@ -254,8 +285,11 @@ namespace Banshee.Telepathy.Net
         
         protected virtual void WriteResponse (Socket client, HttpStatusCode code, byte [] body) 
         {
-            if (!client.Connected) {
+            if (client == null || !client.Connected) {
                 return;
+            }
+            else if (body == null) {
+                throw new ArgumentNullException ("body");
             }
             
             string headers = String.Empty;
@@ -273,25 +307,36 @@ namespace Banshee.Telepathy.Net
             client.Close ();
         }
 
-        protected virtual void WriteResponseStream (Socket client, Stream response, long length, string filename)
+        protected void WriteResponseStream (Socket client, Stream response, long length, string filename)
         {
             WriteResponseStream (client, response, length, filename, 0);
         }
         
         protected virtual void WriteResponseStream (Socket client, Stream response, long length, string filename, long offset)
         {
+            if (client == null || !client.Connected) {
+                return;
+            }
+            else if (response == null) {
+                throw new ArgumentNullException ("response");
+            }
+            else if (length < 1) {
+                throw new ArgumentOutOfRangeException ("length", "Must be > 0");
+            }
+            else if (offset < 0) {
+                throw new ArgumentOutOfRangeException ("offset", "Must be positive.");
+            }
+
             using (BinaryWriter writer = new BinaryWriter (new NetworkStream (client, false))) {
                 string headers = "HTTP/1.1 200 OK\r\n";
-                
+
                 if (offset > 0) {
                     headers = "HTTP/1.1 206 Partial Content\r\n";
-                    headers += String.Format ("Content-Range: {0}-{1}\r\n", offset, length);
-                 
-                    response.Position = offset;
+                    headers += String.Format ("Content-Range: {0}-{1}\r\n", offset, offset + length);
                 }
 
                 if (length > 0) {
-                    headers += String.Format ("Content-Length: {0}\r\n", length - offset);
+                    headers += String.Format ("Content-Length: {0}\r\n", length);
                 }
                 
                 if (filename != null) {
@@ -303,8 +348,6 @@ namespace Banshee.Telepathy.Net
                 headers += "\r\n";
                 
                 writer.Write (Encoding.UTF8.GetBytes(headers));
-
-                
                     
                 using (BinaryReader reader = new BinaryReader (response)) {
                     while (true) {

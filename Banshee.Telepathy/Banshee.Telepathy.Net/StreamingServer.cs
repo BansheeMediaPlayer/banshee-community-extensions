@@ -37,6 +37,7 @@ using System.Collections;
 
 using Banshee.Collection;
 using Banshee.Collection.Database;
+using Banshee.Web;
 
 using Mono.Unix;
 
@@ -70,23 +71,6 @@ namespace Banshee.Telepathy.Net
                     Hyena.Log.Exception (e);
                 }
             }
-        }
-
-        private long ParseRangeRequest (string line)
-        {
-            long offset = 0;
-            if (String.IsNullOrEmpty (line)) {
-                return offset;
-            }
-
-            string [] split_line = line.Split (' ', '=', '-');
-            foreach (string word in split_line) {
-                if (long.TryParse (word, out offset)) {
-                    return offset;
-                }
-            }
-
-            return offset;
         }
 
         protected override bool HandleRequest (Socket client)
@@ -156,7 +140,15 @@ namespace Banshee.Telepathy.Net
             if (track != null) {
                 stream = new FileStream (track.LocalPath, FileMode.Open, FileAccess.Read);
                 if (stream != null) {
-                    WriteResponseStream (client, stream, track.FileSize, new FileInfo (track.LocalPath).Name, offset);
+                    if (offset > 0) {
+                        stream.Position = offset;
+                    }
+                    
+                    WriteResponseStream (client, 
+                                         stream, 
+                                         offset == 0 ? track.FileSize : track.FileSize - offset, 
+                                         new FileInfo (track.LocalPath).Name, 
+                                         offset);
                     stream.Close ();
                 }
             }
