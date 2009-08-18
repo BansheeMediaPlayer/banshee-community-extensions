@@ -50,14 +50,14 @@ namespace Banshee.RadioStationFetcher
         
         public RadioStationFetcherService ()
         {
-            Hyena.Log.Debug ("[RadioStationFetcherService] <RadioStationFetcherService> Constructor START");
+            Log.Debug ("[RadioStationFetcherService] <RadioStationFetcherService> Constructor START");
             
-            Hyena.Log.Debug ("[RadioStationFetcherService] <RadioStationFetcherService> Constructor END");
+            Log.Debug ("[RadioStationFetcherService] <RadioStationFetcherService> Constructor END");
         }
         
         void IExtensionService.Initialize () 
         {
-            Hyena.Log.Debug ("[RadioStationFetcherService] <Initialize> START");       
+            Log.Debug ("[RadioStationFetcherService] <Initialize> START");       
             
             action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
             actions = new ActionGroup ("Radio-station fetcher");
@@ -82,7 +82,7 @@ namespace Banshee.RadioStationFetcher
             action_service.UIManager.InsertActionGroup (actions, 0);
             ui_manager_id = action_service.UIManager.AddUiFromResource ("Resources.RadioStationFetcherMenu.xml");
             
-            Hyena.Log.Debug ("[RadioStationFetcherService] <Initialize> END");
+            Log.Debug ("[RadioStationFetcherService] <Initialize> END");
         }
         
         string IService.ServiceName {
@@ -91,7 +91,7 @@ namespace Banshee.RadioStationFetcher
         
         public void Dispose ()
         {
-            Hyena.Log.Debug ("[RadioStationFetcherService] <Dispose>");
+            Log.Debug ("[RadioStationFetcherService] <Dispose>");
             action_service.UIManager.RemoveUi (ui_manager_id);
             action_service.UIManager.RemoveActionGroup (actions);
             actions = null;

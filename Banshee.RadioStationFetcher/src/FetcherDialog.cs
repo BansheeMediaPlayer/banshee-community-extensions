@@ -51,7 +51,7 @@ namespace Banshee.RadioStationFetcher
         public static int freeText_search = 1;
         
         private Button close_button;
-        private ComboBoxEntry genre_entry;
+        private ComboBox genre_entry;
         private Entry freeText_entry;
         private Button genre_button;
         private Button freeText_button;
@@ -82,12 +82,10 @@ namespace Banshee.RadioStationFetcher
             
             Title = String.Empty;
             SkipTaskbarHint = true;
-            Modal = true;
                         
             BorderWidth = 6;
             HasSeparator = false;
             DefaultResponse = ResponseType.Ok;
-            Modal = true;
             
             VBox.Spacing = 6;
             
@@ -111,7 +109,7 @@ namespace Banshee.RadioStationFetcher
             header.Show ();
 
             Label message = new Label ();
-            message.Text = Catalog.GetString ("Choose a genre or enter a text that you wish to be queried. Then press Search-button");
+            message.Text = Catalog.GetString ("Choose a genre or enter a text that you wish to be queried, then press the Search button");
             message.Xalign = 0.0f;
             message.Wrap = true;
             message.Show ();
@@ -120,11 +118,11 @@ namespace Banshee.RadioStationFetcher
             table.RowSpacing = 6;
             table.ColumnSpacing = 6;
                         
-            genre_entry = ComboBoxEntry.NewText ();
+            genre_entry = ComboBox.NewText ();
             freeText_entry = new Entry ();
           
-            genre_button = new Button ("Search");
-            freeText_button = new Button ("Search");
+            genre_button = new Button (Catalog.GetString ("Search"));
+            freeText_button = new Button (Catalog.GetString ("Search"));
 
             genre_button.CanDefault = true;
             genre_button.UseStock = true;
@@ -142,8 +140,6 @@ namespace Banshee.RadioStationFetcher
                     genre_entry.AppendText (genre);
             }
 
-            genre_entry.Entry.Sensitive = false;
-            
             if (this is IGenreSearchable) {
                 AddRow (Catalog.GetString ("Query by genre:"), genre_entry, genre_button);    
             }
@@ -264,7 +260,7 @@ namespace Banshee.RadioStationFetcher
         }
     
         public string Genre {
-            get { return genre_entry.Entry.Text.Trim (); }
+            get { return genre_entry.ActiveText.Trim (); }
         }
 
         public string Freetext {
@@ -273,17 +269,17 @@ namespace Banshee.RadioStationFetcher
         
         protected PrimarySource GetInternetRadioSource () 
         {
-            Hyena.Log.Debug ("[FetcherDialog] <GetInternetRadioSource> Start");
+            Log.Debug ("[FetcherDialog] <GetInternetRadioSource> Start");
             
             foreach (Source source in Banshee.ServiceStack.ServiceManager.SourceManager.Sources) {
-                Hyena.Log.DebugFormat ("[FetcherDialog] <GetInternetRadioSource> Source: {0}", source.GenericName);
+                Log.DebugFormat ("[FetcherDialog] <GetInternetRadioSource> Source: {0}", source.GenericName);
                 
-                if (source.GenericName.Equals ("Radio")) {
+                if (source.UniqueId.Equals ("InternetRadioSource-internet-radio")) {
                     return (PrimarySource) source;
                 }
             }
     
-            Hyena.Log.Debug ("[FetcherDialog] <GetInternetRadioSource> Not found throwing exception");
+            Log.Debug ("[FetcherDialog] <GetInternetRadioSource> Not found throwing exception");
             throw new InternetRadioExtensionNotFoundException ();
         }
         

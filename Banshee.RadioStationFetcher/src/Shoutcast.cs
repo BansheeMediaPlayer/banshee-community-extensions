@@ -46,7 +46,7 @@ namespace Banshee.RadioStationFetcher
     {
         public Shoutcast ()
         {
-            SetStatusBarMessage (Catalog.GetString ("www.shoutcast.com"));
+            SetStatusBarMessage ("www.shoutcast.com");
         }
         
         public override void FillGenreList () 
@@ -183,7 +183,7 @@ namespace Banshee.RadioStationFetcher
         
         public List<DatabaseTrackInfo> FetchStationsByGenre (string genre) 
         {
-            Hyena.Log.Debug ("[Shoutcast] <FetchStationsByGenre> Start");
+            Log.Debug ("[Shoutcast] <FetchStationsByGenre> Start");
         
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.
                 Create ("http://207.200.98.25/sbin/newxml.phtml?genre="+genre);
@@ -193,7 +193,7 @@ namespace Banshee.RadioStationFetcher
 
             try
             {
-                Hyena.Log.DebugFormat ("[Shoutcast] <FetchStationsByGenre> Querying genre \"{0}\" ...", Genre);
+                Log.DebugFormat ("[Shoutcast] <FetchStationsByGenre> Querying genre \"{0}\" ...", Genre);
                 
                 Stream response = request.GetResponse ().GetResponseStream ();
                 StreamReader reader = new StreamReader (response);
@@ -201,18 +201,18 @@ namespace Banshee.RadioStationFetcher
                 XmlDocument xml_response = new XmlDocument ();
                 xml_response.LoadXml (reader.ReadToEnd ());
                 
-                Hyena.Log.Debug ("[Shoutcast] <FetchStationsByGenre> Query done");
+                Log.Debug ("[Shoutcast] <FetchStationsByGenre> Query done");
                 
                 return ParseQuery (xml_response);
             }
             finally {
-                Hyena.Log.Debug ("[Shoutcast] <FetchStationsByGenre> End");    
+                Log.Debug ("[Shoutcast] <FetchStationsByGenre> End");    
             }
         }
 
         public List<DatabaseTrackInfo> FetchStationsByFreetext (string text) 
         {
-            Hyena.Log.Debug ("[Shoutcast] <FetchStationsByFreetext> Start");
+            Log.Debug ("[Shoutcast] <FetchStationsByFreetext> Start");
             
             HttpWebRequest request = (HttpWebRequest) HttpWebRequest.
                 Create ("http://207.200.98.25/sbin/newxml.phtml?search="+text);
@@ -222,7 +222,7 @@ namespace Banshee.RadioStationFetcher
 
             try
             {
-                Hyena.Log.DebugFormat ("[Shoutcast] <FetchStationsByFreetext> Querying freetext \"{0}\" ...", Freetext);
+                Log.DebugFormat ("[Shoutcast] <FetchStationsByFreetext> Querying freetext \"{0}\" ...", Freetext);
             
                 Stream response = request.GetResponse ().GetResponseStream ();
                 StreamReader reader = new StreamReader (response);
@@ -230,19 +230,19 @@ namespace Banshee.RadioStationFetcher
                 XmlDocument xml_response = new XmlDocument();
                 xml_response.LoadXml (reader.ReadToEnd ());
                 
-                Hyena.Log.Debug ("[Shoutcast] <FetchStationsByFreetext> Query done");
+                Log.Debug ("[Shoutcast] <FetchStationsByFreetext> Query done");
                 
                 return ParseQuery (xml_response);
             }
             finally {
-                Hyena.Log.Debug ("[Shoutcast] <FetchStationsByFreetext> End");
+                Log.Debug ("[Shoutcast] <FetchStationsByFreetext> End");
             }
         }
         
         
         public List<DatabaseTrackInfo> ParseQuery (XmlDocument xml_response)
         {
-            Hyena.Log.Debug ("[Shoutcast] <ParseQuery> Start");
+            Log.Debug ("[Shoutcast] <ParseQuery> Start");
             
             List<DatabaseTrackInfo> station_list;
             XmlNodeList XML_station_nodes = xml_response.GetElementsByTagName ("station");
@@ -285,18 +285,18 @@ namespace Banshee.RadioStationFetcher
                     new_station.BitRate = bitrate_int;
                     new_station.IsLive = true;
                     
-                    Hyena.Log.DebugFormat ("[Shoutcast] <ParseQuery> Station found! Name: {0} URL: {1}", 
+                    Log.DebugFormat ("[Shoutcast] <ParseQuery> Station found! Name: {0} URL: {1}", 
                         name, new_station.Uri.ToString ());
                     
                     station_list.Add (new_station);
                 }
                 catch (Exception e) {
-                    Hyena.Log.Exception ("[Shoutcast] <ParseQuery> ERROR: ", e);
+                    Log.Exception ("[Shoutcast] <ParseQuery> ERROR: ", e);
                     continue;
                 }
             }
 
-            Hyena.Log.Debug ("[Shoutcast] <ParseQuery> End"); 
+            Log.Debug ("[Shoutcast] <ParseQuery> End"); 
             return station_list;
         }
         

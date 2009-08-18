@@ -34,15 +34,12 @@ AL=al2
 SATELLITE_ASSEMBLY_NAME=$(notdir $(basename $(ASSEMBLY))).resources.dll
 
 PROGRAMFILES = \
-	$(BANSHEE_RADIOSTATIONFETCHER_EXE_MDB)  
-
-BINARIES = \
-	$(BANSHEE_RADIOSTATIONFETCHER)  
+	$(BANSHEE_RADIOSTATIONFETCHER_DLL_MDB)  
 
 
 RESGEN=resgen2
 	
-all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
+all: $(ASSEMBLY) $(PROGRAMFILES)
 
 FILES =  \
 	src/FetcherDialog.cs \
@@ -58,6 +55,8 @@ RESOURCES =  \
 	Banshee.RadioStationFetcher.addin.xml \
 	Resources/RadioStationFetcherMenu.xml,Resources.RadioStationFetcherMenu.xml 
 
+EXTRAS = 
+
 REFERENCES =  \
 	-pkg:banshee-1-core \
 	-pkg:banshee-1-hyena \
@@ -68,19 +67,17 @@ REFERENCES =  \
 
 DLL_REFERENCES = 
 
-CLEANFILES = $(PROGRAMFILES) $(BINARIES) 
+CLEANFILES = $(PROGRAMFILES) 
 
 include $(top_srcdir)/Makefile.include
-
-BANSHEE_RADIOSTATIONFETCHER = $(BUILD_DIR)/banshee.radiostationfetcher
-
-$(eval $(call emit-deploy-wrapper,BANSHEE_RADIOSTATIONFETCHER,banshee.radiostationfetcher,x))
 
 
 $(eval $(call emit_resgen_targets))
 $(build_xamlg_list): %.xaml.g.cs: %.xaml
 	xamlg '$<'
 
-$(ASSEMBLY) $(ASSEMBLY_MDB): $(build_sources) $(build_resources) $(build_datafiles) $(DLL_REFERENCES) $(PROJECT_REFERENCES) $(build_xamlg_list) $(build_satellite_assembly_list)
+$(ASSEMBLY_MDB): $(ASSEMBLY)
+
+$(ASSEMBLY): $(build_sources) $(build_resources) $(build_datafiles) $(DLL_REFERENCES) $(PROJECT_REFERENCES) $(build_xamlg_list) $(build_satellite_assembly_list)
 	mkdir -p $(shell dirname $(ASSEMBLY))
 	$(ASSEMBLY_COMPILER_COMMAND) $(ASSEMBLY_COMPILER_FLAGS) -out:$(ASSEMBLY) -target:$(COMPILE_TARGET) $(build_sources_embed) $(build_resources_embed) $(build_references_ref)

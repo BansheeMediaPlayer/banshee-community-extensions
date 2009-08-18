@@ -15,6 +15,12 @@ SHAMROCK_EXPAND_LIBDIR
 SHAMROCK_EXPAND_BINDIR
 SHAMROCK_EXPAND_DATADIR
 
+IT_PROG_INTLTOOL([0.35.0])
+GETTEXT_PACKAGE=$PACKAGE
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Gettext Package])
+AM_GLIB_GNU_GETTEXT
+
 AC_PROG_INSTALL
 
 AC_PATH_PROG(GMCS, gmcs, no)
@@ -46,10 +52,32 @@ fi
 
 
 dnl package checks, common for all configs
-PKG_CHECK_MODULES([BANSHEE_1_CORE], [banshee-1-core])
-PKG_CHECK_MODULES([GTK_SHARP_20], [gtk-sharp-2.0])
-PKG_CHECK_MODULES([BANSHEE_1_THICKCLIENT], [banshee-1-thickclient])
-PKG_CHECK_MODULES([BANSHEE_1_SERVICES], [banshee-1-services])
+PKG_CHECK_MODULES(GTKSHARP, gtk-sharp-2.0 >= 2.12)
+
+PKG_CHECK_MODULES(BANSHEE, banshee-1-hyena >= 1.4.0 
+                           banshee-1-core >= 1.4.0
+                           banshee-1-services >= 1.4.0
+                           banshee-1-thickclient >= 1.4.0)
+
+AC_ARG_ENABLE(user-extension, AC_HELP_STRING([--enable-user-extension], [Install extension into user-level Banshee extensions directory instead of the Banshee system extensions directory]), , enable_user_extension="no")
+
+dnl Banshee Extensions Path
+SYSTEM_PLUGINS=`$PKG_CONFIG --variable=bansheedir banshee-1-core`/Extensions
+REL_PLUGINS_DIR=`basename $SYSTEM_PLUGINS`
+REL_BANSHEE_DIR=`echo "$SYSTEM_PLUGINS" | sed -e "s|\/$REL_PLUGINS_DIR||"`
+REL_BANSHEE_DIR=`basename $REL_BANSHEE_DIR`
+REL_PLUGINS_DIR=$REL_BANSHEE_DIR/$REL_PLUGINS_DIR
+
+EXTENSION_DIR=$libdir/$REL_PLUGINS_DIR
+expanded_pluginsdir=$expanded_libdir/$REL_PLUGINS_DIR
+
+if test "x$enable_user_extension" = "xyes"; then
+ 	EXTENSION_DIR=${XDG_CONFIG_HOME:-~/.config}/banshee-1/addins
+	EXTENSION_DIR=`echo "$EXTENSION_DIR" | sed -e "s|\~|$HOME|"`
+	expanded_pluginsdir=$EXTENSION_DIR
+fi
+ 
+AC_SUBST(EXTENSION_DIR)
 
 dnl package checks, per config
 
@@ -91,6 +119,7 @@ AC_SUBST(expanded_pluginsdir)
 
 AC_CONFIG_FILES([
 Banshee.RadioStationFetcher/Makefile
+po/Makefile.in
 Makefile
 ])
 
