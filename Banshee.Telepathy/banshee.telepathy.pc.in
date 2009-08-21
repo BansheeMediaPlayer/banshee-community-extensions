@@ -3,4 +3,4 @@ Description: Banshee.Telepathy
 Version: 0.1
 
 Requires: 
-Libs: -r:@expanded_libdir@/@PACKAGE@/Banshee.Telepathy.dll
+Libs: -r:@PLUGINDIR@/Banshee.Telepathy.dll
