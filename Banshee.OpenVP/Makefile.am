@@ -71,8 +71,8 @@ REFERENCES =  \
 	-pkg:mono-addins \
 	-pkg:openvp \
 	-pkg:openvp.core \
-	-pkg:tao-freeglut-2.4 \
-	-pkg:tao-opengl-2.1 \
+	-pkg:tao-freeglut \
+	-pkg:tao-opengl \
 	System
 
 DLL_REFERENCES = 
