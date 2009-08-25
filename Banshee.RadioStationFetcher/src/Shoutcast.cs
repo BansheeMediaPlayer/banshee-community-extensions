@@ -46,7 +46,8 @@ namespace Banshee.RadioStationFetcher
     {
         public Shoutcast ()
         {
-            SetStatusBarMessage ("www.shoutcast.com");
+            source_name = "www.shoutcast.com";
+            InitializeDialog ();
         }
         
         public override void FillGenreList () 

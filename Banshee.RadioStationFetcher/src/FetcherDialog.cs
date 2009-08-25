@@ -46,6 +46,7 @@ namespace Banshee.RadioStationFetcher
 
     public abstract class FetcherDialog : Gtk.Dialog
     {
+        public string source_name;
         public List<string> genre_list = new List<string> ();
         public static int genre_search = 0;
         public static int freeText_search = 1;
@@ -60,11 +61,11 @@ namespace Banshee.RadioStationFetcher
         
         public FetcherDialog ()
         {
-            InitializeDialog ();
         }
         
         public virtual void ShowDialog () 
         {
+            SetStatusBarMessage (source_name);
             ShowAll ();
         }
         
@@ -104,13 +105,17 @@ namespace Banshee.RadioStationFetcher
             main_box.Spacing = 10;
             
             Label header = new Label ();
-
+            header.Text = String.Format (Catalog.GetString ("{0}Radiostation fetcher{1}\n({2})"),
+                "<span weight=\"bold\" size=\"larger\">", "</span>",source_name);
             header.Xalign = 0.0f;
+            header.Yalign = 0.0f;
+            header.UseMarkup = true;
+            header.Wrap = true;
             header.Show ();
 
             Label message = new Label ();
-            message.Text = Catalog.GetString ("Choose a genre or enter a text that you wish to be queried," + 
-                "then press the Search button. Found stations will be added to internet-radio source.");
+            message.Text = Catalog.GetString ("Choose a genre or enter a text that you wish to be queried, " + 
+                "then press the Get stations button. Found stations will be added to internet-radio source.");
             message.Xalign = 0.0f;
             message.Wrap = true;
             message.Show ();
@@ -174,8 +179,8 @@ namespace Banshee.RadioStationFetcher
             close_button.Clicked += OnCloseButtonClick;
             
             statusbar = new Statusbar ();
-            
             statusbar.HasResizeGrip = false;
+            SetStatusBarMessage (source_name);
             main_box.PackEnd (statusbar, false, false, 0);
         }
  
