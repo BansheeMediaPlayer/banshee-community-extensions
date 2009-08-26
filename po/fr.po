@@ -1,77 +1,87 @@
-#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:112
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:109
+#, csharp-format
+msgid ""
+"{0}Radiostation fetcher{1}\n"
+"({2})"
+msgstr ""
+
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:118
 msgid ""
 "Choose a genre or enter a text that you wish to be queried, then press the "
-"Search button"
+"Get stations button. Found stations will be added to internet-radio source."
 msgstr ""
 
-#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:124
-#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:125
-msgid "Search"
-msgstr "Rechercher"
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:131
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:132
+msgid "Get stations"
+msgstr ""
 
-#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:144
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:151
 msgid "Query by genre:"
-msgstr ""
+msgstr "Recherche par genre:"
 
-#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:148
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:155
 msgid "Query by free text:"
 msgstr ""
 
-#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:198
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:205
 #, csharp-format
 msgid "Querying genre \"{0}\""
-msgstr ""
-
-#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:203
-#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:224
-#, csharp-format
-msgid "Query done. Fetched {0} stations."
-msgstr ""
-
-#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:207
-#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:228
-#, csharp-format
-msgid "ERROR: Internet-radio extension not available."
 msgstr ""
 
 #: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:210
 #: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:231
 #, csharp-format
+msgid "Query done. Fetched {0} stations."
+msgstr ""
+
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:214
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:235
+#, csharp-format
+msgid "ERROR: Internet-radio extension not available."
+msgstr ""
+
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:217
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:238
+#, csharp-format
 msgid "ERROR: Network error."
 msgstr ""
 
-#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:213
-#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:234
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:220
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:241
 #, csharp-format
 msgid "ERROR"
 msgstr ""
 
-#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:219
+#: ../Banshee.RadioStationFetcher/src/FetcherDialog.cs:226
 #, csharp-format
 msgid "Querying freetext \"{0}\""
 msgstr ""
 
-#: ../Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs:68
+#: ../Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs:69
 msgid "_Radiostation fetcher"
 msgstr ""
 
-#: ../Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs:71
+#: ../Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs:72
 msgid "_Shoutcast"
 msgstr ""
 
-#: ../Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs:72
+#: ../Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs:73
 msgid "Fetch stations from shoutcast"
 msgstr ""
 
-#: ../Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs:75
+#: ../Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs:76
 msgid "_Xiph"
 msgstr ""
 
-#: ../Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs:76
+#: ../Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs:77
 msgid "Fetch stations from Xiph"
 msgstr ""
 
-#: ../Banshee.RadioStationFetcher/src/Xiph.cs:285
+#: ../Banshee.RadioStationFetcher/src/Xiph.cs:286
 #, csharp-format
 msgid "www.xiph.org {0} stations available."
 msgstr ""
+
+#~ msgid "Search"
+#~ msgstr "Rechercher"
