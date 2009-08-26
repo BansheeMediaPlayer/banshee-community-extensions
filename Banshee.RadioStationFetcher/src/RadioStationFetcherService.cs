@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 
 using Gtk;
+using Mono.Addins;
 
 using Banshee.ServiceStack;
 using Banshee.Gui;
@@ -65,15 +66,15 @@ namespace Banshee.RadioStationFetcher
             // Add sources
             ActionEntry[] source_actions = {
                 new ActionEntry ("RadioStationFetcherAction", null,
-                    Catalog.GetString ("_Radiostation fetcher"), null,
+                    AddinManager.CurrentLocalizer.GetString ("_Radiostation fetcher"), null,
                     null, null),
                 new ActionEntry ("ShoutcastAction", null,
-                    Catalog.GetString ("_Shoutcast"), null,
-                    Catalog.GetString ("Fetch stations from shoutcast"), delegate {
+                    AddinManager.CurrentLocalizer.GetString ("_Shoutcast"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Fetch stations from shoutcast"), delegate {
                         shoutcast.ShowDialog (); } ), 
                 new ActionEntry ("XiphAction", null,
-                    Catalog.GetString ("_Xiph"), null,
-                    Catalog.GetString ("Fetch stations from Xiph"), delegate {
+                    AddinManager.CurrentLocalizer.GetString ("_Xiph"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Fetch stations from Xiph"), delegate {
                         xiph.ShowDialog (); } )
             };
             

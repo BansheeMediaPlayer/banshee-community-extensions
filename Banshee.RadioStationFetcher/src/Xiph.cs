@@ -33,6 +33,8 @@ using System.Net;
 using System.Threading;
 using System.Collections.Generic;
 
+using Mono.Addins;
+
 using Banshee.Base;
 using Banshee.Kernel;
 using Banshee.Collection.Database;
@@ -283,7 +285,7 @@ namespace Banshee.RadioStationFetcher
             
             Log.Debug ("[Xiph] <ParseQuery> END");
             
-            SetStatusBarMessage (String.Format (Catalog.GetString ("www.xiph.org {0} stations available."), 
+            SetStatusBarMessage (String.Format (AddinManager.CurrentLocalizer.GetString ("www.xiph.org {0} stations available."), 
                 station_list.Count.ToString ()));
             stations_fetched = true;
         }

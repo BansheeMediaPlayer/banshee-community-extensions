@@ -32,6 +32,7 @@ using System.Threading;
 using System.Net;
 
 using Gtk;
+using Mono.Addins;
 
 using Banshee.Kernel;
 using Banshee.Base;
@@ -105,7 +106,7 @@ namespace Banshee.RadioStationFetcher
             main_box.Spacing = 10;
             
             Label header = new Label ();
-            header.Text = String.Format (Catalog.GetString ("{0}Radiostation fetcher{1}\n({2})"),
+            header.Text = String.Format (AddinManager.CurrentLocalizer.GetString ("{0}Radiostation fetcher{1}\n({2})"),
                 "<span weight=\"bold\" size=\"larger\">", "</span>",source_name);
             header.Xalign = 0.0f;
             header.Yalign = 0.0f;
@@ -114,7 +115,7 @@ namespace Banshee.RadioStationFetcher
             header.Show ();
 
             Label message = new Label ();
-            message.Text = Catalog.GetString ("Choose a genre or enter a text that you wish to be queried, " + 
+            message.Text = AddinManager.CurrentLocalizer.GetString ("Choose a genre or enter a text that you wish to be queried, " + 
                 "then press the Get stations button. Found stations will be added to internet-radio source.");
             message.Xalign = 0.0f;
             message.Wrap = true;
@@ -127,8 +128,8 @@ namespace Banshee.RadioStationFetcher
             genre_entry = ComboBox.NewText ();
             freeText_entry = new Entry ();
           
-            genre_button = new Button (Catalog.GetString ("Get stations"));
-            freeText_button = new Button (Catalog.GetString ("Get stations"));
+            genre_button = new Button (AddinManager.CurrentLocalizer.GetString ("Get stations"));
+            freeText_button = new Button (AddinManager.CurrentLocalizer.GetString ("Get stations"));
 
             genre_button.CanDefault = true;
             genre_button.UseStock = true;
@@ -147,11 +148,11 @@ namespace Banshee.RadioStationFetcher
             }
 
             if (this is IGenreSearchable) {
-                AddRow (Catalog.GetString ("Query by genre:"), genre_entry, genre_button);    
+                AddRow (AddinManager.CurrentLocalizer.GetString ("Query by genre:"), genre_entry, genre_button);    
             }
             
             if (this is IFreetextSearchable) {
-                AddRow (Catalog.GetString ("Query by free text:"), freeText_entry, freeText_button);
+                AddRow (AddinManager.CurrentLocalizer.GetString ("Query by free text:"), freeText_entry, freeText_button);
             }
             
             table.ShowAll ();
@@ -201,43 +202,43 @@ namespace Banshee.RadioStationFetcher
         
         private void DoGenreQuery () 
         {
-            SetStatusBarMessage (String.Format (Catalog.GetString ("Querying genre \"{0}\""), Genre));
+            SetStatusBarMessage (String.Format (AddinManager.CurrentLocalizer.GetString ("Querying genre \"{0}\""), Genre));
             
             try {
                 List<DatabaseTrackInfo> fetched_stations = (this as IGenreSearchable).FetchStationsByGenre (Genre);
                 SaveFetchedStationsToDatabase (fetched_stations);
-                SetStatusBarMessage (String.Format (Catalog.GetString ("Query done. Fetched {0} stations."), 
+                SetStatusBarMessage (String.Format (AddinManager.CurrentLocalizer.GetString ("Query done. Fetched {0} stations."), 
                     fetched_stations.Count.ToString ()));
             }
             catch (InternetRadioExtensionNotFoundException) {
-                SetStatusBarMessage (String.Format (Catalog.GetString ("ERROR: Internet-radio extension not available."))); 
+                SetStatusBarMessage (String.Format (AddinManager.CurrentLocalizer.GetString ("ERROR: Internet-radio extension not available."))); 
             }
             catch (WebException) {
-                SetStatusBarMessage (String.Format (Catalog.GetString ("ERROR: Network error."))); 
+                SetStatusBarMessage (String.Format (AddinManager.CurrentLocalizer.GetString ("ERROR: Network error."))); 
             }
             catch (Exception) {
-                SetStatusBarMessage (String.Format (Catalog.GetString ("ERROR"))); 
+                SetStatusBarMessage (String.Format (AddinManager.CurrentLocalizer.GetString ("ERROR"))); 
             }
         } 
         
         private void DoFreetextQuery () 
         {
-            SetStatusBarMessage (String.Format (Catalog.GetString ("Querying freetext \"{0}\""), Freetext));
+            SetStatusBarMessage (String.Format (AddinManager.CurrentLocalizer.GetString ("Querying freetext \"{0}\""), Freetext));
             
             try {
                 List<DatabaseTrackInfo> fetched_stations = (this as IFreetextSearchable).FetchStationsByFreetext (Freetext);
                 SaveFetchedStationsToDatabase (fetched_stations);
-                SetStatusBarMessage (String.Format (Catalog.GetString ("Query done. Fetched {0} stations."), 
+                SetStatusBarMessage (String.Format (AddinManager.CurrentLocalizer.GetString ("Query done. Fetched {0} stations."), 
                     fetched_stations.Count.ToString ()));
             }
             catch (InternetRadioExtensionNotFoundException) {
-                SetStatusBarMessage (String.Format (Catalog.GetString ("ERROR: Internet-radio extension not available."))); 
+                SetStatusBarMessage (String.Format (AddinManager.CurrentLocalizer.GetString ("ERROR: Internet-radio extension not available."))); 
             }
             catch (WebException) {
-                SetStatusBarMessage (String.Format (Catalog.GetString ("ERROR: Network error."))); 
+                SetStatusBarMessage (String.Format (AddinManager.CurrentLocalizer.GetString ("ERROR: Network error."))); 
             }
             catch (Exception) {
-                SetStatusBarMessage (String.Format (Catalog.GetString ("ERROR"))); 
+                SetStatusBarMessage (String.Format (AddinManager.CurrentLocalizer.GetString ("ERROR"))); 
             }
         }
 
