@@ -10,6 +10,9 @@
     author="Akseli Mantila"
     url="http://aksussummerofcode.blogspot.com/"
     defaultEnabled="true">
+
+  <Localizer type="Gettext" catalog="@GETTEXT_PACKAGE@" location="@prefix@/share/locale"/>
+
   <Dependencies>
     <Addin id="Banshee.Services" version="1.0"/>
     <Addin id="Banshee.ThickClient" version="1.0"/>

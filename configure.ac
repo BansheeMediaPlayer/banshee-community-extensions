@@ -118,6 +118,7 @@ AC_SUBST(expanded_pluginsdir)
 
 
 AC_CONFIG_FILES([
+Banshee.RadioStationFetcher/Banshee.RadioStationFetcher.addin.xml
 Banshee.RadioStationFetcher/Makefile
 po/Makefile.in
 Makefile
