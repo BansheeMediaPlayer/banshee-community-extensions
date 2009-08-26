@@ -1,3 +1,10 @@
+2009-08-26  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/Banshee.Plugins.Mirage.addin.xml.in: Have configure
+	automatically set the catalog name.
+
+	* Banshee/MiragePlugin.cs: Remove unnecessary using statement.
+
 2009-08-10  Dominik Schnitzer <dominik@schnitzer.at>
 
 	* configure.ac: Bump version to 0.5.1
