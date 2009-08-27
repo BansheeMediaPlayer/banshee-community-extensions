@@ -168,7 +168,9 @@ namespace Banshee.RadioStationFetcher
             
             VBox.PackStart (split_box, true, true, 0);
 
-            close_button = new Button (Stock.Close);
+            close_button = new Button ();
+            close_button.Image = new Image ("gtk-close", IconSize.Button);
+            close_button.Label = AddinManager.CurrentLocalizer.GetString ("_Close");
             close_button.CanDefault = true;
             close_button.UseStock = true;
             close_button.Show ();
