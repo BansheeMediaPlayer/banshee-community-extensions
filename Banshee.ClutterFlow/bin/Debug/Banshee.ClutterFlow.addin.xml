@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.ClutterFlow"
+    version="0.1"
+    compatVersion="1.0"
+    copyright="© 2009 Mathijs Dumon Licensed under the MIT X11 license."
+    name="ClutterFlow"
+    category="required:User Interface"
+    description="Provides a CoverFlow like album broser"
+    author="Mathijs Dumon"
+    url=""
+    defaultEnabled="true">
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/SourceManager/Source">
+    <Source class="Banshee.ClutterFlow.ClutterFlowSource"/>
+  </Extension>
+</Addin>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Banshee.ClutterFlow</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="clutter-gtk-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=87b7d16e3a31768b">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-gtk-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-core</Package>
+    </Reference>
+    <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-services</Package>
+    </Reference>
+    <Reference Include="Banshee.ThickClient, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-thickclient</Package>
+    </Reference>
+    <Reference Include="Banshee.Widgets, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-thickclient</Package>
+    </Reference>
+    <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-hyena</Package>
+    </Reference>
+    <Reference Include="Hyena.Gui, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-hyena-gui</Package>
+    </Reference>
+    <Reference Include="Mono.Cairo" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="clutter-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=87b7d16e3a31768b">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-sharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="ClutterFlowListView.cs" />
+    <Compile Include="ClutterFlowSource.cs" />
+    <Compile Include="ClutterFlowSourceContents.cs" />
+    <Compile Include="CoverGroup.cs" />
+    <Compile Include="ClutterFlowListView_Rendering.cs" />
+    <Compile Include="AnimationManager.cs" />
+    <Compile Include="CoverGroupHelper.cs" />
+    <Compile Include="ClutterSlider.cs" />
+    <Compile Include="ClutterArrowButton.cs" />
+    <Compile Include="ClutterHelper.cs" />
+    <Compile Include="ClutterSliderHandle.cs" />
+    <Compile Include="ClutterButton.cs" />
+    <Compile Include="ClutterSliderHandleButton.cs" />
+    <Compile Include="CoverGroupCache.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="..\Banshee.ClutterFlow.Addin.xml" />
+    <None Include="..\Banshee.ClutterFlow.addin.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Banshee.ClutterFlow.addin.xml" />
+    <EmbeddedResource Include="..\ThemeIcons\22x22\clutterflow-icon.png" />
+  </ItemGroup>
+</Project>

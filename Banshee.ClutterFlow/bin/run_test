@@ -1,0 +1,2 @@
+sudo cp -v Debug/* /usr/lib/banshee-1/Extensions/
+banshee
