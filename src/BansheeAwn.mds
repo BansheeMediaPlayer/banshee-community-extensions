@@ -1,10 +1,15 @@
-<Combine name="BansheeAwn" fileversion="2.0">
+<Combine fileversion="2.0" name="BansheeAwn">
+  <Policies>
+    <TextStylePolicy FileWidth="120" TabWidth="4" TabsToSpaces="False" NoTabsAfterNonTabs="False" RemoveTrailingWhitespace="False" EolMarker="Native" />
+    <DotNetNamingPolicy DirectoryNamespaceAssociation="None" ResourceNamePolicy="FileFormatDefault" />
+    <StandardHeader inheritsSet="MITX11License" />
+  </Policies>
   <Configurations active="Release">
     <Configuration name="Debug" ctype="CombineConfiguration">
-      <Entry build="True" configuration="Debug" />
+      <Entry build="True" name="Banshee.Awn" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
-      <Entry build="True" configuration="Release" />
+      <Entry build="True" name="Banshee.Awn" configuration="Release" />
     </Configuration>
   </Configurations>
   <StartMode startupentry="Banshee.Awn" single="True">
