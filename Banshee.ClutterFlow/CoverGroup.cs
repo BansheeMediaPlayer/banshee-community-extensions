@@ -26,44 +26,49 @@ using Gdk;
 using Cairo;
 using Clutter;
 
+using Banshee.Gui;
 using Banshee.Collection;
+using Banshee.Collection.Gui;
+using Banshee.ServiceStack;
 
 namespace Banshee.ClutterFlow
 {
 	public class CoverGroup : Clutter.Group, IDisposable
 	{
 		
+		#region static Members
+		private static Gdk.Pixbuf default_cover;
+		public static Gdk.Pixbuf DefaultCover {
+			get { return default_cover; }
+		}
+		
+		private static bool is_setup = false;
+		public static bool IsSetup {
+			get { return is_setup; }
+		}
+		
+		private static ArtworkManager artwork_manager;
+		public static ArtworkManager GetArtworkManager {
+			get { return artwork_manager; }
+		}
+		#endregion
+		
 		private CairoTexture cover = null;
 		private Clone reflection = null;
 		private Shader shader;
 		
-		private AnimationManager anim_mgr = null;
-		public AnimationManager AnimationManager {
-			get { return anim_mgr; }
-			set { if (value!=anim_mgr) SetupAnimationManager (value); }
+		private CoverManager coverManager;
+		public CoverManager CoverManager {
+			get { return coverManager; }
 		}
 		
-		private uint position;
-		public uint Position {
-			set {
-				if (value!=position) {
-					position = value;
-					if (position == anim_mgr.MiddlePosition) CoverGroupHelper.InvokeNewCurrentCover (this);
-					anim_mgr.Animate (this, position);
-				} else {
-					ReapplyPosition ();
-				}
-			}
-			get {
-				return position;
-			}
-		}
-		public bool IsLeft {
-			get { return Position < anim_mgr.MiddlePosition; }
-		}
-		public bool IsRight {
-			get { return Position > anim_mgr.MiddlePosition; }
-		}
+		#region Position Handling
+		protected int index = -1; //-1 = not visible
+		public int Index {
+			get { return index; }
+			set { if (value!=index) index = value; }
+		}		
+		#endregion
 		
 		private AlbumInfo album;
 		public AlbumInfo Album {
@@ -77,46 +82,37 @@ namespace Banshee.ClutterFlow
 			get { return album!=null ? album.ArtworkId : null; }
 		}
 		
-		public void ReapplyPosition ()
-		{
-			ApplyPosition (Position);
-		}
-		public void ApplyPosition (uint position)
-		{
-			if (this.position!=position && position == anim_mgr.MiddlePosition) CoverGroupHelper.InvokeNewCurrentCover (this);
-			this.position = position;
-			anim_mgr.Apply (this, position);
-		}
-		
-		public void CheckVisibility () {
-			if (position==0 || position==anim_mgr.Positions) {
-				this.Hide();
-			} else {
-				this.ShowAll();
-			}
-		}
-		
 	#region Initialization	
-		public CoverGroup(AlbumInfo album, float ideal_dim, AnimationManager anim_mgr) : base()
+		public CoverGroup(AlbumInfo album, CoverManager coverManager) : base()
 		{
 			this.album = album;
+			this.coverManager = coverManager;
+			
 			base.Painted += HandlePainted;
-			SetupAnimationManager(anim_mgr);
+			
+			LoadCover(ArtworkId, coverManager.Behaviour.CoverWidth);
+			
+			this.SetPosition(0,0);
+		}
 
-			CoverGroupHelper.Setup((int) ideal_dim);
-			LoadCover(ArtworkId, ideal_dim);
+	#endregion
+		
+		public CoverGroup CreateClickClone() {
+			coverManager.Behaviour.CreateClickedCloneAnimation(this);			
+			return this;
 		}
 		
-		protected void SetupAnimationManager(AnimationManager new_mgr) {
-			if (anim_mgr!=null) {
-				anim_mgr.FinishedAnimation -= HandleFinishedAnimation;
-				anim_mgr.StoppedAnimation -= HandleStoppedAnimation;
+		public double AlphaFunction(double progress) {
+			if (index < 0)
+				//this.Hide(); TODO?
+				return 0;
+			else {
+				double val = (CoverManager.HalfVisCovers - (CoverManager.TotalCovers-1) * progress + index) / (CoverManager.VisibleCovers-1);
+				if (val<0) { val=0; }
+				if (val>1) { val=1; }
+				return val;
 			}
-			anim_mgr = new_mgr;
-			anim_mgr.FinishedAnimation += HandleFinishedAnimation;
-			anim_mgr.StoppedAnimation += HandleStoppedAnimation;
 		}
-	#endregion
 		
 	#region Event Handling
 		
@@ -125,7 +121,7 @@ namespace Banshee.ClutterFlow
 			UpdateOpacity();
 		}
 
-		protected void HandleFinishedAnimation(object sender, EventArgs e)
+		/*protected void HandleFinishedAnimation(object sender, EventArgs e)
 		{
 			CheckVisibility();
 		}
@@ -133,7 +129,7 @@ namespace Banshee.ClutterFlow
 		protected void HandleStoppedAnimation(object sender, EventArgs e)
 		{
 			CheckVisibility();
-		}
+		}*/
 		
 	#endregion
 
@@ -147,7 +143,7 @@ namespace Banshee.ClutterFlow
 		{
 			ClutterHelper.RemoveAllFromGroup (this);
 			//Cover:
-			Gdk.Pixbuf pb = CoverGroupHelper.Lookup (artwork_id, (int) ideal_dim);
+			Gdk.Pixbuf pb = Lookup (artwork_id, (int) ideal_dim);
 			while (cover==null) {
 				cover = new Clutter.CairoTexture ((uint) ideal_dim, (uint) ideal_dim);
 				cover.SetSize (ideal_dim, ideal_dim);
@@ -171,6 +167,8 @@ namespace Banshee.ClutterFlow
 			
 			this.SetAnchorPoint (this.Width/2, this.Height/4);
 			this.SetOpacity (0);
+			
+			
 		}
 		
 		public void SetOpacity (byte value)
@@ -210,6 +208,23 @@ void main()
 			ClutterHelper.RemoveAllFromGroup (this);
 			ClutterHelper.DestroyActor (this);
 		}
+		
+		#region static Methods
+		static CoverGroup() {
+			if (!is_setup) {
+				artwork_manager = ServiceManager.Get<ArtworkManager> ();
+				default_cover = IconThemeUtils.LoadIcon (100, "media-optical", "browser-album-cover");
+			}
+				
+			is_setup = true;
+		}
+		
+		public static Gdk.Pixbuf Lookup(string artworkId, int size) {
+			Gdk.Pixbuf pb = artwork_manager == null ? null 
+                : artwork_manager.LookupScalePixbuf(artworkId, size);
+			return pb ?? default_cover;
+		}
+		#endregion
 
 	}
 }

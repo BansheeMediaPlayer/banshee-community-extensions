@@ -28,35 +28,24 @@ namespace Banshee.ClutterFlow
 		
 		private Dictionary<object, CoverGroup> cached_covers = new Dictionary<object, CoverGroup> ();
 		
+		private CoverManager coverManager;
+		
 		private bool is_ready = false;
 		public bool IsReady {
 			get { return is_ready; }
 		}
-		
-		private AnimationManager anim_mgr = null;
-		public AnimationManager AnimationManager {
-			get { return anim_mgr; }
-			set { 
-				if (anim_mgr!=value) {
-					anim_mgr = value;
-					for (int i=0; i < cached_covers.Count; i++) {
-						cached_covers[i].AnimationManager = anim_mgr;
-					}
-				}
-			}
-		}
-		
-		public CoverGroupCache (AnimationManager anim_mgr) 
+			
+		public CoverGroupCache (CoverManager coverManager) 
 		{
-			this.anim_mgr = anim_mgr;
+			this.coverManager = coverManager;
 			is_ready = true;
 		}
 		
-		public CoverGroup GetCoverGroupFromAlbum (AlbumInfo album, float ideal_dim) 
+		public CoverGroup GetCoverGroupFromAlbum (AlbumInfo album) 
 		{
 			if (!is_ready) return null;
 			if (!cached_covers.ContainsKey(album.CacheEntryId)) {
-				CoverGroup new_cover = new CoverGroup (album, ideal_dim, anim_mgr);
+				CoverGroup new_cover = new CoverGroup (album, coverManager);
 				cached_covers.Add (album.CacheEntryId, new_cover);
 			}
 			return cached_covers[album.CacheEntryId];

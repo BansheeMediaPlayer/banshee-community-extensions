@@ -5,7 +5,7 @@
     compatVersion="1.0"
     copyright="© 2009 Mathijs Dumon Licensed under the MIT X11 license."
     name="ClutterFlow"
-    category="required:User Interface"
+    category="User Interface"
     description="Provides a CoverFlow like album broser"
     author="Mathijs Dumon"
     url=""

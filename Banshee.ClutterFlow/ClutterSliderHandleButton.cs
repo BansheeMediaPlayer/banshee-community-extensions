@@ -10,24 +10,6 @@ namespace Banshee.ClutterFlow
 		
 		public ClutterSliderHandleButton(uint width, uint height, byte state) : base(width, height, state) {
 		}
-		
-		#region Event Handling
-		
-		protected override void HandleEnterEvent (object o, Clutter.EnterEventArgs args)
-		{
-			args.RetVal = false; //pass it on to the parent
-		}
-		
-		protected override void HandleButtonReleaseEvent (object o, Clutter.ButtonReleaseEventArgs args)
-		{
-			args.RetVal = false; //pass it on to the parent
-		}
-		
-		protected override void HandleLeaveEvent (object o, Clutter.LeaveEventArgs args)
-		{
-			args.RetVal = false; //pass it on to the parent
-		}
-		#endregion
 
 		protected override void CreateTexture (Clutter.CairoTexture texture, byte with_state) {
 			texture.Clear();
@@ -45,5 +27,12 @@ namespace Banshee.ClutterFlow
 			((IDisposable) context.Target).Dispose();
 			((IDisposable) context).Dispose();
 		}
+		
+		protected override void HandleButtonPressEvent (object o, Clutter.ButtonPressEventArgs args)
+		{
+			base.HandleButtonPressEvent (o, args);
+			args.RetVal = false;
+		}
+
 	}
 }

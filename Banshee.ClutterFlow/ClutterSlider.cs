@@ -23,28 +23,28 @@ namespace Banshee.ClutterFlow
 		protected ClutterSliderHandle handle;
 		
 		//Count is 1-based
-		protected uint count = 1;
-		public uint Count {
+		protected int count = 1;
+		public int Count {
 			get {
 				return count;
 			}
 			set {
 				if (count!=value) {
-					uint index = HandlePostionFromIndex;
+					int index = HandlePostionFromIndex;
 					count = value;
 					HandlePostionFromIndex = index;
 				}
 			}
 		}
 		
-		public void UpdateBounds(uint count, uint index) {
+		public void UpdateBounds(int count, int index) {
 			this.count = count;
 			HandlePostionFromIndex = index;
 		}
 		
-		public uint HandlePostionFromIndex {
+		public int HandlePostionFromIndex {
 			get {
-				return (uint) Math.Round(handle.Value * (float)(Count-1));
+				return (int) Math.Round(handle.Value * (float)(Count-1));
 			}
 			set {
 				if (value >= count) value = count-1;

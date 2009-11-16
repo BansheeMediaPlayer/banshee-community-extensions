@@ -59,16 +59,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-sharp.dll</HintPath>
     </Reference>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ClutterFlowListView.cs" />
     <Compile Include="ClutterFlowSource.cs" />
     <Compile Include="ClutterFlowSourceContents.cs" />
     <Compile Include="CoverGroup.cs" />
-    <Compile Include="ClutterFlowListView_Rendering.cs" />
-    <Compile Include="AnimationManager.cs" />
-    <Compile Include="CoverGroupHelper.cs" />
+    <Compile Include="ClutterFlowListView.cs" />
+    <Compile Include="CoverManager.cs" />
     <Compile Include="ClutterSlider.cs" />
     <Compile Include="ClutterArrowButton.cs" />
     <Compile Include="ClutterHelper.cs" />
@@ -76,6 +75,9 @@
     <Compile Include="ClutterButton.cs" />
     <Compile Include="ClutterSliderHandleButton.cs" />
     <Compile Include="CoverGroupCache.cs" />
+    <Compile Include="ClutterFlowTimeline.cs" />
+    <Compile Include="FlowBehaviour.cs" />
+    <Compile Include="ClutterFlowSlider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

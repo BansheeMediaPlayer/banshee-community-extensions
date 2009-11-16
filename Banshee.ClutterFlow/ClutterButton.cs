@@ -45,21 +45,25 @@ namespace Banshee.ClutterFlow
 		protected virtual void HandleEnterEvent(object o, EnterEventArgs args)
 		{
 			State |= 1;
+			args.RetVal = true;
 		}
 
 		protected virtual void HandleButtonPressEvent(object o, ButtonPressEventArgs args)
 		{
 			State |= 2;
+			args.RetVal = true;
 		}
 
 		protected virtual void HandleButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
 		{
 			State &= 1;
+			args.RetVal = true;
 		}
 		
 		protected virtual void HandleLeaveEvent(object o, LeaveEventArgs args)
 		{
 			State &= 2;
+			args.RetVal = true;
 		}
 		#endregion
 		

@@ -23,16 +23,16 @@ namespace Banshee.ClutterFlow
 			get { return posval; }
 			set {
 				if (value!=posval) {
-					if (value>1) value=1;
-					if (value<0) value=0;
-					posval = value;
+					if (value>1) posval=1;
+					else if (value<0) posval=0;
+					else posval = value;
 					UpdatePosition();
 					InvokeSliderHasChanged();
 				}
 			}
 		}
 		private void UpdatePosition() {
-			button.SetPosition(posval * (Width - Height), 0);
+			button.SetPosition(Value * (Width - Height), 0);
 		}
 		
 		public ClutterSliderHandle(float x, float y, float width, float height, byte state) : base()
@@ -102,7 +102,10 @@ namespace Banshee.ClutterFlow
 			float x1; float y1;
 			Clutter.EventHelper.GetCoords(args.Event, out x1, out y1);
 			
-			if ((args.Event.ModifierState.value__ & ModifierType.Button1Mask.value__)!=0 && (button.State & 2)!=0) {
+			float tx; float ty;
+			GetTransformedPosition(out tx, out ty);
+			
+			if (x1 <=  tx+Width && x1 >= tx && (args.Event.ModifierState.value__ & ModifierType.Button1Mask.value__)!=0 && (button.State & 2)!=0) {
 				float deltaX = (x1 - mouseX);
 				Value += (deltaX / (Width - Height));
 			}

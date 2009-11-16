@@ -1,102 +1,215 @@
-//
-// ClutterFlowListView.cs
-//
-// Author:
-//   Mathijs Dumon <mathijsken@hotmail.com>
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
-
-//
-// The ClutterFlowListView is actually the embedded ClutterWidget containing
-// all code related to linking the Banshee API with the ClutterFlow 'API'.
-//
 
 using System;
+using System.Collections.Generic;
 
-using Hyena.Data;
-using Hyena.Data.Gui;
-
-using Banshee.Collection;
-using Banshee.Collection.Gui;
 using Banshee.ServiceStack;
-using Banshee.MediaEngine;
-using Banshee.Gui;
+using Banshee.Collection;
+//using Banshee.Collection.Gui;
+using Hyena.Data;
+using Hyena.Gui;
 
-using Clutter;
+using Gdk;
 using Gtk;
+using Cairo;
+using Pango;
+using Clutter;
 
 namespace Banshee.ClutterFlow
 {
 	
-    public partial class ClutterFlowListView : Clutter.Embed
-    {	
+	public delegate void ForEachCover(CoverGroup o);
+	
+	public partial class ClutterFlowListView : Clutter.Embed
+	{
 		
 		public event EventHandler UpdatedAlbum;
 		
-		private CoverGroup current_cover = null;
-		private IListModel<AlbumInfo> model;
-
 		public AlbumInfo CurrentAlbum {
-			get { return current_cover==null ? null : current_cover.Album; }
+			get { return coverManager.CurrentAlbum; }
 		}
-        
+		
+		protected CoverManager coverManager = new CoverManager();
+		
         public virtual IListModel<AlbumInfo> Model {
-            get { return model; }
+            get { return coverManager.Model; }
         }
 		
         public void SetModel (IListModel<AlbumInfo> model)
         {
-            SetModel (model, 0.0);
+            SetModel(model, 0.0);
         }
 
         public void SetModel (IListModel<AlbumInfo> value, double vpos)
         {
-            if (model == value) {
-                return;
-            }
-
-            if (model != null) {
-                model.Cleared -= OnModelClearedHandler;
-                model.Reloaded -= OnModelReloadedHandler;
-            }
-            
-            model = value;
-
-            if (model != null) {
-                model.Cleared += OnModelClearedHandler;
-                model.Reloaded += OnModelReloadedHandler;
-				//model.Selection.Changed += HandleSelectionChanged;
-                //selection_proxy.Selection = model.Selection;
-                //IsEverReorderable = model.CanReorder;
-            }
-            ReloadCovers (); //had vpos as argument
+            coverManager.Model = value;
         }
 		
-        private void OnModelClearedHandler (object o, EventArgs args)
-        {
-            OnModelCleared ();
-        }
-        
-        private void OnModelReloadedHandler (object o, EventArgs args)
-        {
-            OnModelReloaded ();
-        }
+		private bool dragging = false;			// wether or not we are currently dragging the viewport around
+		private double mouse_x, mouse_y;
 		
-        protected virtual void OnModelCleared ()
+		private ClutterFlowSlider slider;
+		private Clutter.Text srf_text;
+		private Animation text_fade;
+		
+		private const float rotSens = 0.00001f;
+		private const float viewportMaxAngleX = -15;// maximum X viewport angle
+		private const float viewportMaxAngleY = -5;	// maximum Y viewport angle
+		private float viewportAngleX = 0;			// current X viewport angle
+		private float viewportAngleY = 0;			// current Y viewport angle
+		private float viewportOffsetZ  = 400;
+
+		#region Initialisation
+        public ClutterFlowListView () : base ()
+        {	
+			SetSizeRequest (500, 300);
+			
+			Clutter.Global.MotionEventsEnabled = true;
+			
+			Stage.AllocationChanged += HandleAllocationChanged;
+			Stage.ScrollEvent += HandleScroll;
+			Stage.ButtonReleaseEvent += HandleButtonReleaseEvent;
+			Stage.MotionEvent += HandleMotionEvent;
+			
+			SetupViewport();
+			SetupSlider();
+			SetupAlbumText();
+
+			//anim_mgr.NewFrame += HandleNewFrame;
+			
+			coverManager.NewCurrentCover += HandleNewCurrentCover;
+		}
+
+		protected void SetupViewport() {
+			Stage.Color = new Clutter.Color (0x00, 0x00, 0x00, 0xff);
+			
+			coverManager.SetRotation(RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
+			//coverStage.SetPosition(viewportOffsetX, viewportOffsetY);
+			coverManager.Depth = viewportOffsetZ;
+			Stage.Add(coverManager);
+			coverManager.ShowAll();
+			coverManager.LowerBottom();
+		}
+		
+		protected void SetupSlider() {
+			slider = new ClutterFlowSlider(Stage.Width, Stage.Height, coverManager);
+			Stage.Add(slider);
+		}
+		
+		protected void SetupAlbumText() {
+			srf_text = new Text("Sans Bold 7.5", "Unkown Artist\nUnkown Album", new Clutter.Color(1.0f,1.0f,1.0f,1.0f));
+			Stage.Add(srf_text);
+			srf_text.Show();
+			srf_text.Depth = 200;
+			srf_text.Editable = false;
+			srf_text.Selectable = false;
+			srf_text.Activatable = false;
+			srf_text.CursorVisible = false;
+			srf_text.LineAlignment = Pango.Alignment.Center;
+			RedrawAlbumText();
+		}
+		#endregion
+		
+		#region Rendering
+		//Update all elements:
+		protected void RedrawInterface() {
+			RedrawSlider();
+			RedrawAlbumText();
+			RedrawViewport();
+		}
+		
+		//Update the coverStage position:
+		protected void RedrawViewport() {
+			coverManager.UpdateBehaviour();
+			coverManager.SetRotation(RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
+			coverManager.Depth = viewportOffsetZ;
+			if (!coverManager.IsVisible) coverManager.Show();
+			coverManager.LowerBottom();
+		}
+		
+		//Update coverStage rotation with intervals:
+		public void DeltaRotationX(float delta) {
+			viewportAngleX += delta*rotSens;
+			if (viewportAngleX < viewportMaxAngleX) viewportAngleX = viewportMaxAngleX;
+			if (viewportAngleX > 0) viewportAngleX = 0;
+			coverManager.SetRotation(RotateAxis.X, viewportAngleX, coverManager.Width*0.5f,coverManager.Height*0.5f,0);
+		}
+		public void DeltaRotationY(float delta) {
+			viewportAngleY -= delta*rotSens;
+			if (viewportAngleY < viewportMaxAngleY) viewportAngleY = viewportMaxAngleY;
+			if (viewportAngleY > -viewportMaxAngleY) viewportAngleY = -viewportMaxAngleY;
+			coverManager.SetRotation(RotateAxis.Y, viewportAngleY, coverManager.Width*0.5f,coverManager.Height*0.5f,0);
+		}
+		
+		//Fades text out and in:
+		protected void UpdateAlbumText() {
+			if (text_fade==null || !text_fade.Timeline.IsPlaying) {
+				text_fade = srf_text.Animatev((ulong) AnimationMode.Linear.value__, 150, new string[] { "opacity" }, new GLib.Value((byte) 0));
+				text_fade.Completed += delegate(object sender, EventArgs e) {
+					RedrawAlbumText();
+					srf_text.Animatev((ulong) AnimationMode.Linear.value__, 150, new string[] { "opacity" }, new GLib.Value((byte) 255));
+				};
+			}
+		}
+		//Updates the text surface:
+		protected void RedrawAlbumText() {
+			if (CurrentAlbum!=null)
+				srf_text.Value = CurrentAlbum.ArtistName + "\n" + CurrentAlbum.Title;
+			else
+				srf_text.Value = "Unkown Artist\nUnkown Album";
+			//srf_text.SetScale(coverWidth*fontScale/srf_text.Height, coverWidth*fontScale/srf_text.Height);
+			srf_text.SetAnchorPoint(srf_text.Width*0.5f, 0);
+			srf_text.SetPosition(Stage.Width*0.5f, Stage.Height*0.125f);
+		}
+
+		//Redraws and positions the slider:
+		protected void RedrawSlider() {
+			slider.Update();
+			slider.SetAnchorPoint(slider.Width*0.5f,slider.Height*0.5f);
+			slider.SetPosition(Stage.Width*0.5f, Stage.Height - 20);
+		}
+		#endregion
+		
+		#region Event Handling
+		private void HandleAllocationChanged(object o, AllocationChangedArgs args)
+		{	
+			RedrawInterface();
+		}
+		
+		void HandleButtonReleaseEvent(object o, Clutter.ButtonReleaseEventArgs args)
+		{
+			if (!dragging && args.Event.Button==1 && UpdatedAlbum!=null) UpdatedAlbum (coverManager.CurrentCover.CreateClickClone(), EventArgs.Empty);
+		}
+		
+		private void HandleMotionEvent(object o, Clutter.MotionEventArgs args)
+		{			
+			if ((args.Event.ModifierState.value__ & Clutter.ModifierType.Button1Mask.value__)!=0 && (args.Event.ModifierState.value__ & Clutter.ModifierType.ControlMask.value__)!=0) {
+				dragging = true;
+				
+				DeltaRotationY( (float) (mouse_x - args.Event.X));
+				DeltaRotationX( (float) (mouse_y - args.Event.Y));
+			} else dragging = false;
+			mouse_x = args.Event.X;
+			mouse_y = args.Event.Y;
+		}
+		
+		private void HandleScroll (object o, Clutter.ScrollEventArgs args)
+		{
+			if (args.Event.Direction==Clutter.ScrollDirection.Down)
+				Scroll(true);
+			else
+				Scroll(false);
+		}
+		
+		public void Scroll(bool Backward) {
+			if (Backward) coverManager.TargetIndex--;
+			else coverManager.TargetIndex++;
+		}
+		
+        void HandleNewCurrentCover (CoverGroup cover, EventArgs e)
         {
-            ReloadCovers ();
+			UpdateAlbumText (); //TODO suprimate this by creating a special AlbumText class
         }
-        
-        protected virtual void OnModelReloaded ()
-        {
-            ReloadCovers ();
-        }
-    }
+		#endregion
+		
+	}	
 }
