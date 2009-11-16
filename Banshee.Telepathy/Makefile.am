@@ -85,6 +85,7 @@ FILES =  \
 	Banshee.Telepathy.API/Dispatchers/Dispatcher.cs \
 	Banshee.Telepathy.API/Dispatchers/FileTransferDispatcher.cs \
 	Banshee.Telepathy/TelepathyService.cs \
+	Banshee.Telepathy.Net/BaseWebServer.cs \
 	Banshee.Telepathy.Net/StreamingHTTPProxyServer.cs \
 	Banshee.Telepathy.Net/StreamingServer.cs \
 	Banshee.Telepathy.Data/ContactContainerSource.cs \
