@@ -1,5 +1,5 @@
 //
-// StreamActivityListener.cs
+// DBusTubeChannelInfo.cs
 //
 // Author:
 //   Neil Loknath <neil.loknath@gmail.com>
@@ -27,49 +27,23 @@
 //
 
 using System;
+using System.Collections.Generic;
 
-using Banshee.Telepathy.API.Channels;
+using Telepathy;
 
-namespace Banshee.Telepathy.API.Dispatchables
-{
-    public class StreamActivityListener : Activity
+namespace Banshee.Telepathy.API.Data {
+
+    public sealed class DBusTubeChannelInfo : ChannelInfo, IServiceProvidingChannel
     {
-        private StreamTubeChannel tube;
-        
-
-        internal StreamActivityListener (Contact c, StreamTubeChannel tube) : base (c, tube)
+        public DBusTubeChannelInfo (ChannelType type, HandleType target, string service) : base (type, target)
         {
-            this.tube = tube;
+            Service = service;
         }
 
-        public object Address {
-            get { return tube.ServerAddress; }
-            set { 
-                if (State == ActivityState.Connected) {
-                    throw new InvalidOperationException ("Address is already connected.");
-                }
-                tube.ServerAddress = value; 
-            }
-        }
-
-        private static bool AutoAccept {
-            get; set;
-        }
-
-        protected new void Accept () {}
-        protected new void Reject () {}
-        
-        protected override void OnChannelReady (object sender, EventArgs args)
-        {
-            Console.WriteLine ("{0} Connection to address {1}", Contact.Name, Address);
-            
-            State = ActivityState.Connected;
-            OnReady (EventArgs.Empty);
-        }
-
-        protected override void Dispose (bool disposing)
-        {
-            base.Dispose (disposing);
+        private string service;
+        public string Service {
+            get { return service; }
+            set { service = value; }
         }
     }
 }

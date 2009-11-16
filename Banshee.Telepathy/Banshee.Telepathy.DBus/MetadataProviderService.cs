@@ -187,6 +187,7 @@ namespace Banshee.Telepathy.DBus
                 
                 IDictionary <string, object> properties = new Dictionary <string, object> ();
                 properties.Add ("Filename", external_id.ToString ());
+                properties.Add ("Description", "Telepathy extension for Banshee transfer");
                 properties.Add ("ContentType", content_type);
                 properties.Add ("Size", (ulong) track.FileSize);
     

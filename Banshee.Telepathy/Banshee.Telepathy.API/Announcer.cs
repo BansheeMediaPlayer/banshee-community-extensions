@@ -29,7 +29,6 @@
 using System;
 
 using Telepathy;
-using Telepathy.MissionControl;
 
 using Banshee.Telepathy.API.DBus;
 
@@ -37,16 +36,26 @@ namespace Banshee.Telepathy.API
 {
     public class Announcer : IDisposable
     {
-        private BusType bus;
-        private IMissionControl mission_control;
-        
-        public Announcer ()
+        private Announcer ()
         {
-            bus = BusType.Session;
-            mission_control = DBusUtility.GetProxy <IMissionControl> (bus, Constants.MISSIONCONTROL_IFACE, 
-                                                                       Constants.MISSIONCONTROL_PATH);
         }
 
+        public Announcer (ConnectionLocator locator)
+        {
+            ConnectionLocator = locator;
+        }
+
+        private ConnectionLocator locator;
+        private ConnectionLocator ConnectionLocator {
+            set {
+                if (value == null) {
+                    throw new ArgumentNullException ("locator");
+                }
+
+                locator = value;
+            }
+        }
+        
         public void Dispose ()
         {
             Dispose (true);
@@ -56,32 +65,43 @@ namespace Banshee.Telepathy.API
         {
             if (disposing) {
                 try {
-                    if (mission_control != null) {
+                    if (locator != null) {
                         Announce (String.Empty);
                     }
                 }
                 catch {}
-                mission_control = null;
+                locator = null;
             }
         }
         
         public virtual void Announce (string message)
         {
             if (message == null) {
-                throw new ArgumentNullException ();
+                throw new ArgumentNullException ("message");
             }
 
+            
             try {
-                McPresence presence =  mission_control.GetPresence ();
-                mission_control.SetPresence (presence, message);
+                foreach (Account account in locator.GetConnections ()) {
+                    object obj = DBusUtility.GetProperty (account.BusType, 
+                                                          Constants.ACCOUNTMANAGER_IFACE, 
+                                                          account.AccountObjectPath, 
+                                                          Constants.ACCOUNT_IFACE, 
+                                                          "CurrentPresence");
+                    SimplePresence presence = (SimplePresence) System.Convert.ChangeType (obj, typeof (SimplePresence));
+                    
+                    presence.StatusMessage = message;
+                    DBusUtility.SetProperty (account.BusType, 
+                                             Constants.ACCOUNTMANAGER_IFACE, 
+                                             account.AccountObjectPath, 
+                                             Constants.ACCOUNT_IFACE, 
+                                             "RequestedPresence",
+                                             presence);
+                }
             }
             catch (Exception e) {
                 Console.WriteLine (e.ToString ());
             }
-        }
-
-        public BusType Bus {
-            get { return bus; }
         }
     }
 }

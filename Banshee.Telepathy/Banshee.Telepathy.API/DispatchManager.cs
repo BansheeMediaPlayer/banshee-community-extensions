@@ -58,7 +58,7 @@ namespace Banshee.Telepathy.API
 
         private void Initialize ()
         {
-            if (conn.CapabilitiesSupported (ConnectionCapabilities.DBusTransport)) {
+            if (conn.CapabilitiesSupported (ConnectionCapabilities.DBusTube)) {
                 RegisterDispatcher (new DBusActivityDispatcher (conn));
             }
 
@@ -66,7 +66,7 @@ namespace Banshee.Telepathy.API
                 RegisterDispatcher (new FileTransferDispatcher (conn));
             }
 
-            if (conn.CapabilitiesSupported (ConnectionCapabilities.SocketTransport)) {
+            if (conn.CapabilitiesSupported (ConnectionCapabilities.StreamTube)) {
                 RegisterDispatcher (new StreamActivityDispatcher (conn));
             }
         }
@@ -76,7 +76,7 @@ namespace Banshee.Telepathy.API
             Dispose (true);
         }
 
-        protected void Dispose (bool disposing)
+        private void Dispose (bool disposing)
         {
             if (disposing) {
                 UnloadRegistered ();

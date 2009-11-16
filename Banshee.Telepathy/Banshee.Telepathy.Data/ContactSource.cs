@@ -45,6 +45,7 @@ using Banshee.Telepathy.DBus;
 using Banshee.Telepathy.Net;
 
 using Banshee.Telepathy.API;
+using Banshee.Telepathy.API.Data;
 using Banshee.Telepathy.API.Dispatchables;
 
 namespace Banshee.Telepathy.Data
@@ -257,7 +258,7 @@ namespace Banshee.Telepathy.Data
                 }
             }
             else {
-                if (Contact.HasService (MetadataProviderService.BusName)) {
+                if (Contact.SupportedChannels.GetChannelInfo <DBusTubeChannelInfo> (MetadataProviderService.BusName) != null) {
                     SetStatus (Catalog.GetString ("Waiting for response from contact"), false);
                     RequestDBusTube ();                    
                 }

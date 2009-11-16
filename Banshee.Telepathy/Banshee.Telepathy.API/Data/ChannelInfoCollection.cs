@@ -1,5 +1,5 @@
 //
-// StreamActivityListener.cs
+// ChannelInfoColletion.cs
 //
 // Author:
 //   Neil Loknath <neil.loknath@gmail.com>
@@ -27,49 +27,36 @@
 //
 
 using System;
+using System.Collections.Generic;
 
-using Banshee.Telepathy.API.Channels;
+using Telepathy;
 
-namespace Banshee.Telepathy.API.Dispatchables
-{
-    public class StreamActivityListener : Activity
+namespace Banshee.Telepathy.API.Data {
+
+    public class ChannelInfoCollection : List <ChannelInfo>
     {
-        private StreamTubeChannel tube;
-        
-
-        internal StreamActivityListener (Contact c, StreamTubeChannel tube) : base (c, tube)
+        public ChannelInfoCollection ()
         {
-            this.tube = tube;
         }
 
-        public object Address {
-            get { return tube.ServerAddress; }
-            set { 
-                if (State == ActivityState.Connected) {
-                    throw new InvalidOperationException ("Address is already connected.");
+        public IEnumerable <ChannelInfo> GetAll (ChannelType type)
+        {
+            foreach (ChannelInfo channel in this) {
+                if (channel.Type == type) {
+                    yield return channel;
                 }
-                tube.ServerAddress = value; 
             }
         }
 
-        private static bool AutoAccept {
-            get; set;
-        }
-
-        protected new void Accept () {}
-        protected new void Reject () {}
-        
-        protected override void OnChannelReady (object sender, EventArgs args)
+        public T GetChannelInfo <T> (string service_name) where T : IServiceProvidingChannel
         {
-            Console.WriteLine ("{0} Connection to address {1}", Contact.Name, Address);
-            
-            State = ActivityState.Connected;
-            OnReady (EventArgs.Empty);
-        }
+            foreach (IServiceProvidingChannel channel in this) {
+                if (channel != null && channel.Service.Equals (service_name)) {
+                    return (T) channel;
+                }
+            }
 
-        protected override void Dispose (bool disposing)
-        {
-            base.Dispose (disposing);
+            return default (T);
         }
     }
 }

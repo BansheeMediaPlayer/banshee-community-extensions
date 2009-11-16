@@ -30,8 +30,8 @@ using System;
 using System.Collections.Generic;
 
 using Telepathy;
-using Telepathy.Draft;
 
+//using Data = Banshee.Telepathy.API.Data;
 using Banshee.Telepathy.API.Data;
 using Banshee.Telepathy.API.DBus;
 
@@ -40,15 +40,15 @@ namespace Banshee.Telepathy.API
     [Flags]
     public enum ConnectionCapabilities {
         None = 0,
-        DBusTransport = 1,
-        SocketTransport = 2,
+        DBusTube = 1,
+        StreamTube = 2,
         FileTransfer = 4
     }
 
     public class Connection : IDisposable
     {
         private ConnectionCapabilities capabilities_mask;
-        private readonly IDictionary <string, ContactService> services = new Dictionary <string, ContactService> ();
+        private readonly ChannelInfoCollection supported_channels = new ChannelInfoCollection ();
 
         public event EventHandler <EventArgs> Disconnected;
 
@@ -56,30 +56,39 @@ namespace Banshee.Telepathy.API
         {
         }
         
-        protected Connection (string bus_name, string object_path)
+        public Connection (Account account) : this (account.BusName, account.ObjectPath, account.AccountId, account.AccountObjectPath)
         {
-            this.BusName = bus_name;
-            this.ObjectPath = object_path;
         }
 
-        public Connection (string bus_name, string object_path, string account_id) : this (bus_name, object_path)
+        public Connection (Account account, ConnectionCapabilities capabilities_mask) : this (account.BusName, account.ObjectPath, account.AccountId, account.AccountObjectPath, capabilities_mask)
+        {
+        }
+            
+        public Connection (string bus_name, string object_path, string account_id, string account_path)
         {
             this.AccountId = account_id;
+            this.AccountObjectPath = account_path;
+            this.BusName = bus_name;
+            this.ObjectPath = object_path;
+            
             this.conn = DBusUtility.GetProxy <IConnection> (bus, bus_name, object_path);
             self_handle = (uint) DBusUtility.GetProperty (bus, bus_name, object_path, 
                                                    Constants.CONNECTION_IFACE, "SelfHandle");
             Initialize ();
         }
 
-        public Connection (string bus_name, string object_path, 
-                           string account_id, ConnectionCapabilities capabilities_mask) : this (bus_name, object_path, account_id)
+        public Connection (string bus_name, 
+                           string object_path,
+                           string account_id,
+                           string account_path,
+                           ConnectionCapabilities capabilities_mask) : this (bus_name, object_path, account_id, account_path)
         {
             if (!CapabilitiesSupported (capabilities_mask)) {
                 throw new NotSupportedException ("Capabilities not supported");
             }
 
             //HACK reset in case there was a crash
-            capabilities.SetSelfCapabilities (new Dictionary <string, object> [0] );
+            //capabilities.SetSelfCapabilities (new Dictionary <string, object> [0] );
          }
 
         private DispatchManager dispatch_manager = null;
@@ -87,6 +96,11 @@ namespace Banshee.Telepathy.API
             get { return dispatch_manager; }
         }
 
+        private ChannelHandler channel_handler = null;
+        internal ChannelHandler ChannelHandler {
+            get { return channel_handler; }
+        }
+        
         private IConnection conn = null;
         internal IConnection DBusProxy {
             get { return conn; }
@@ -133,6 +147,17 @@ namespace Banshee.Telepathy.API
             }
         }
 
+        private string account_path;
+        public string AccountObjectPath {
+            get { return account_path; }
+            private set { 
+                if (value == null) {
+                   throw new ArgumentNullException ("account_path");
+                }
+                account_path = value; 
+            }
+        }
+        
         private string account_id;
         public string AccountId {
             get { return account_id; }
@@ -168,6 +193,21 @@ namespace Banshee.Telepathy.API
             set { cache_dir = value; }
         }
 
+        private string client_name;
+        public string ClientName {
+            get { return client_name; }
+            private set {
+                if (value == null) {
+                    throw new ArgumentNullException ("client_name");
+                }
+                client_name = value;
+            }
+        }
+
+        public ChannelInfoCollection SupportedChannels {
+            get { return supported_channels; }
+        }
+        
         public override bool Equals (object obj)
         {
             if (obj as Connection == null) {
@@ -182,83 +222,33 @@ namespace Banshee.Telepathy.API
             return object_path.GetHashCode ();
         }
 
-        public int ServiceCount ()
+        public void AdvertiseSupportedChannels (string client_name, IList<Data.ChannelInfo> channels)
         {
-            lock (services) {
-                return services.Count;
+            ClientName = client_name;
+
+            foreach (Data.ChannelInfo channel in channels) {
+                AddChannel (channel);
             }
+
+            RegisterChannelHandler ();
         }
         
-        public bool HasService (string service)
+        private void AddChannel (Data.ChannelInfo channel)
         {
-            lock (services) {
-                return services.ContainsKey (service);
-            }
-        }
-
-        public bool HasService (ContactService service)
-        {
-            lock (services) {
-                return services.ContainsKey (service.ToString ());
-            }
-        }
-
-        public void AddService (ContactService service)
-        {
-            AddService (service, true);
-        }
-        
-        public void AddService (ContactService service, bool advertise)
-        {
-            if (service.Type == ContactServiceType.DBusTransport && 
-               !CapabilitiesSupported (ConnectionCapabilities.DBusTransport)) {
-                throw new InvalidOperationException ("This connection does not support DBus transport.");
+            if (channel.Type == ChannelType.DBusTube && 
+               !CapabilitiesSupported (ConnectionCapabilities.DBusTube)) {
+                throw new InvalidOperationException ("This connection does not support DBus tubes.");
             } 
-            else if (service.Type == ContactServiceType.SocketTransport &&
-               !CapabilitiesSupported (ConnectionCapabilities.SocketTransport)) {
-                throw new InvalidOperationException ("This connection does not support Socket transport.");
+            else if (channel.Type == ChannelType.StreamTube &&
+               !CapabilitiesSupported (ConnectionCapabilities.StreamTube)) {
+                throw new InvalidOperationException ("This connection does not support Stream tubes.");
+            }
+            else if (channel.Type == ChannelType.FileTransfer &&
+               !CapabilitiesSupported (ConnectionCapabilities.FileTransfer)) {
+                throw new InvalidOperationException ("This connection does not support file transfers.");
             } 
-            else if (!services.ContainsKey (service.ToString ())) {
-                lock (services) {
-                    services.Add (service.ToString (), service);
-                }
-                if (advertise) {
-                    AdvertiseServices ();
-                }
-            }
-        }
-
-        public bool RemoveService (ContactService service)
-        {
-            if (services.ContainsKey (service.ToString ())) {
-                lock (services) {
-                    services.Remove (service.ToString ());
-                }
-                AdvertiseServices ();
-                return true;
-                }
-
-            return false;
-        }
-
-        public ContactService GetService (string service)
-        {
-            lock (services) {
-                if (services.ContainsKey (service)) {
-                    return services[service];
-                }
-                else {
-                    throw new InvalidOperationException ("Service not found.");
-                }
-            }
-        }
-        
-        public IEnumerable <ContactService> GetAllServices ()
-        {
-            lock (services) {
-                foreach (KeyValuePair <string, ContactService> kv in services) {
-                    yield return kv.Value;
-                }
+            lock (supported_channels) {
+                supported_channels.Add (channel);
             }
         }
 
@@ -284,6 +274,7 @@ namespace Banshee.Telepathy.API
 
             dispatch_manager = new DispatchManager (this);
 
+            
             CreateRoster ();
         }
 
@@ -305,20 +296,24 @@ namespace Banshee.Telepathy.API
             }
 
             // reset capabilities ie. do not advertise our Telepathy extension
-            if (capabilities != null) {
-                try {
-                    capabilities.SetSelfCapabilities (new Dictionary <string, object> [0] );
-                }
-                catch (Exception e) {
-                    Console.WriteLine (e.Message);
-                }
-                capabilities = null;
-            }
+//            if (capabilities != null) {
+//                try {
+//                    capabilities.SetSelfCapabilities (new Dictionary <string, object> [0] );
+//                }
+//                catch (Exception e) {
+//                    Console.WriteLine (e.Message);
+//                }
+//                capabilities = null;
+//            }
 
             if (dispatch_manager != null) {
                 dispatch_manager.Dispose ();
             }
 
+            if (ChannelHandler == null) {
+                ChannelHandler.Destroy ();
+            }
+                
             if (roster != null) {
                 roster.Dispose ();
                 roster = null;
@@ -333,14 +328,15 @@ namespace Banshee.Telepathy.API
                 conn = null;
             }
 
+            capabilities = null;
             dispatch_manager = null;
             requests = null;
         }
         
         protected virtual bool IsMaskValid (ConnectionCapabilities mask)
         {
-            const ConnectionCapabilities max_caps = ConnectionCapabilities.DBusTransport |
-                ConnectionCapabilities.SocketTransport |
+            const ConnectionCapabilities max_caps = ConnectionCapabilities.DBusTube |
+                ConnectionCapabilities.StreamTube |
                     ConnectionCapabilities.FileTransfer;
             
             if (mask <= ConnectionCapabilities.None || mask > max_caps) {
@@ -349,7 +345,7 @@ namespace Banshee.Telepathy.API
 
             return true;
         }
-        
+
         private void LoadCapabilities ()
         {
             //FIXME hardcoding use of jabber connections due to Mono bug
@@ -359,49 +355,63 @@ namespace Banshee.Telepathy.API
 
             string protocol = conn.GetProtocol ();
             if (protocol != null && protocol.Equals ("jabber")) {
-                capabilities_mask = ConnectionCapabilities.DBusTransport |
+                capabilities_mask = ConnectionCapabilities.DBusTube |
                 ConnectionCapabilities.FileTransfer |
-                ConnectionCapabilities.SocketTransport; 
+                ConnectionCapabilities.StreamTube; 
             }
         }
 
-        protected virtual void AdvertiseServices ()
+        protected virtual void RegisterChannelHandler ()
         {
             IDictionary<string, object> [] caps;
-            int service_count;
+            int channel_count;
             
-            lock (services) {
-                service_count = services.Count;
-                if (service_count == 0) {
+            lock (supported_channels) {
+                channel_count = supported_channels.Count;
+                if (channel_count == 0) {
                     return;
                 }
 
-                caps =  new Dictionary<string, object>[service_count];
+                caps =  new Dictionary<string, object>[channel_count];
                 int counter = 0;
 
-                foreach (ContactService service in services.Values) {
+                foreach (Data.ChannelInfo channel in supported_channels) {
                     caps[counter] = new Dictionary<string, object> ();
     
-                    if (service.Type == ContactServiceType.DBusTransport) {
-                        caps[counter].Add ("org.freedesktop.Telepathy.Channel.ChannelType", Constants.CHANNEL_TYPE_DBUSTUBE);
-                        caps[counter].Add (Constants.CHANNEL_TYPE_DBUSTUBE + ".ServiceName", service.Service);
+                    if (channel.Type == ChannelType.DBusTube) {
+                        DBusTubeChannelInfo tube_info = channel as DBusTubeChannelInfo;
+                        if (tube_info != null) {
+                            caps[counter].Add ("org.freedesktop.Telepathy.Channel.ChannelType", Constants.CHANNEL_TYPE_DBUSTUBE);
+                            caps[counter].Add (Constants.CHANNEL_TYPE_DBUSTUBE + ".ServiceName", tube_info.Service);
+                        }
                         
                         //Log.DebugFormat ("{0} adding service {1}", this.account_id, service.Service);
                     }
-                    else if (service.Type == ContactServiceType.SocketTransport) {
-                        caps[counter].Add ("org.freedesktop.Telepathy.Channel.ChannelType", Constants.CHANNEL_TYPE_STREAMTUBE);
-                        caps[counter].Add (Constants.CHANNEL_TYPE_STREAMTUBE + ".Service", service.Service);
+                    else if (channel.Type == ChannelType.StreamTube) {
+                        StreamTubeChannelInfo tube_info = channel as StreamTubeChannelInfo;
+                        if (tube_info != null) {
+                            caps[counter].Add ("org.freedesktop.Telepathy.Channel.ChannelType", Constants.CHANNEL_TYPE_STREAMTUBE);
+                            caps[counter].Add (Constants.CHANNEL_TYPE_STREAMTUBE + ".Service", tube_info.Service);
+                        }
+                    }
+                    else if (channel.Type == ChannelType.FileTransfer) {
+                        
+                        FileTransferChannelInfo transfer_info = channel as FileTransferChannelInfo;
+                        if (transfer_info != null) {
+                            caps[counter].Add ("org.freedesktop.Telepathy.Channel.ChannelType", Constants.CHANNEL_TYPE_FILETRANSFER);
+                            caps[counter].Add (Constants.CHANNEL_TYPE_FILETRANSFER + ".ContentType", transfer_info.ContentType);
+                            caps[counter].Add (Constants.CHANNEL_TYPE_FILETRANSFER + ".Description", transfer_info.Description);
+                        }
                     }
 
-                    caps[counter].Add ("org.freedesktop.Telepathy.Channel.TargetHandleType", service.TargetHandleType);
+                    caps[counter].Add ("org.freedesktop.Telepathy.Channel.TargetHandleType", channel.TargetHandleType);
                     counter++;
                 }
             }
 
-            //FIXME method does a 'replace,' so any caps previously set by other applications
-            // will be wiped out! this method is really a helper for MC5 and should not be
-            // used directly
-            capabilities.SetSelfCapabilities (caps);
+            if (ChannelHandler == null) {
+                channel_handler = ChannelHandler.Create (ClientName, caps);
+            }
         }
 
         protected virtual void OnDisconnected (EventArgs args)

@@ -90,9 +90,10 @@ namespace Banshee.Telepathy.Gui
         private int StartQueued (int max)
         {   
             int started = 0;
+            Log.Debug ("in StartQueued");
             
             while (FileTransfer.QueuedCount () > 0 && started < max) {
-            
+
                 FileTransfer transfer = FileTransfer.DequeueIfQueued ();
                 
                 if (transfer != null) {

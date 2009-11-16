@@ -41,6 +41,7 @@ using Banshee.Telepathy.Net;
 
 using Banshee.Telepathy.API;
 using Banshee.Telepathy.API.Data;
+using APIData = Banshee.Telepathy.API.Data;
 using Banshee.Telepathy.API.DBus;
 using Banshee.Telepathy.API.Dispatchables;
 
@@ -55,7 +56,7 @@ namespace Banshee.Telepathy
         private static StreamingServer streaming_server;
         
         private ContactContainerSource container;
-        private ConnectionLocator locator;
+        
         private DownloadManager download_manager;
         private UploadManager upload_manager;
         
@@ -89,12 +90,6 @@ namespace Banshee.Telepathy
 
         public void Dispose ()
         {
-            if (locator != null) {
-                locator.ConnectionStatusChanged -= OnConnectionStatusChanged;
-                locator.Dispose ();
-                locator = null;
-            }
-
             if (streaming_server != null) {
                 streaming_server.Stop ();
                 streaming_server = null;
@@ -124,6 +119,12 @@ namespace Banshee.Telepathy
                 container = null;
             }
 
+            if (locator != null) {
+                locator.ConnectionStatusChanged -= OnConnectionStatusChanged;
+                locator.Dispose ();
+                locator = null;
+            }
+
             foreach (KeyValuePair <string, Connection> kv in conn_map) {
                 if (kv.Value != null) {
                     kv.Value.Roster.RosterStateChanged -= OnRosterStateChanged;
@@ -132,17 +133,12 @@ namespace Banshee.Telepathy
                 }
             }
 
-            UnregisterDBusServiceWithEmpathy (MetadataProviderService.BusName);
-            UnregisterStreamServiceWithEmpathy (StreamingServer.ServiceName);
-            
             conn_map.Clear ();
             source_map.Clear ();
         }
 
         public void DelayedInitialize ()
         {
-            ConnectionParms [] parms = null;
-            
             conn_map = new Dictionary <string, Connection> ();
             source_map = new Dictionary <string, IDictionary <uint, ContactSource>> ();
             
@@ -154,18 +150,14 @@ namespace Banshee.Telepathy
 
             try {
                 locator = new ConnectionLocator ();
-                parms = locator.GetConnections ();
             }
             catch (DBusProxyObjectNotFound e) {
                 Log.Error (e.ToString ());
                 return;
             }
 
-            RegisterDBusServiceWithEmpathy (MetadataProviderService.BusName);
-            RegisterStreamServiceWithEmpathy (StreamingServer.ServiceName);
-            
-            foreach (ConnectionParms parm in parms) {
-                CreateConnection (parm.account_id, parm.bus_name, parm.object_path);
+            foreach (Account account in locator.GetConnections ()) {
+                CreateConnection (account);
             }
 
             locator.ConnectionStatusChanged += OnConnectionStatusChanged;
@@ -188,46 +180,6 @@ namespace Banshee.Telepathy
                 Log.Exception (e);
             }
         }
-
-        private void RegisterDBusServiceWithEmpathy (string service)
-        {
-            // HACK - suppress error messages from Empathy
-            string empathy_handler_bus = EmpathyConstants.DTUBE_HANDLER_IFACE + "." +
-                service.Replace (".", "_");
-            string empathy_handler_path = EmpathyConstants.DTUBE_HANDLER_PATH + "/" +
-                service.Replace (".", "_");
-            
-            DBusUtility.Register (BusType.Session, empathy_handler_bus, 
-                                  empathy_handler_path, new EmpathyHandler ());
-        }
-
-        private void UnregisterDBusServiceWithEmpathy (string service)
-        {
-            string empathy_handler_path = EmpathyConstants.DTUBE_HANDLER_PATH + "/" +
-                service.Replace (".", "_");
-            
-            DBusUtility.Unregister (BusType.Session, empathy_handler_path);
-        }
-
-        private void RegisterStreamServiceWithEmpathy (string service)
-        {
-            // HACK - suppress error messages from Empathy
-            string empathy_handler_bus = EmpathyConstants.STREAMTUBE_HANDLER_IFACE + "." +
-                service.Replace (".", "_");
-            string empathy_handler_path = EmpathyConstants.STREAMTUBE_HANDLER_PATH + "/" +
-                service.Replace (".", "_");
-            
-            DBusUtility.Register (BusType.Session, empathy_handler_bus, 
-                                  empathy_handler_path, new EmpathyHandler ());
-        }
-
-        private void UnregisterStreamServiceWithEmpathy (string service)
-        {
-            string empathy_handler_path = EmpathyConstants.STREAMTUBE_HANDLER_PATH + "/" +
-                service.Replace (".", "_");
-            
-            DBusUtility.Unregister (BusType.Session, empathy_handler_path);
-        }
         
         public IEnumerable <Connection> GetActiveConnections ()
         {
@@ -235,16 +187,24 @@ namespace Banshee.Telepathy
                 yield return c;
             }
         }
-        
-        private void CreateConnection (string account_id, string bus_name, string object_path)
+
+        private void CreateConnection (Account account)
         {
-            if (!conn_map.ContainsKey (account_id)) {
+            CreateConnection (account.BusName, account.ObjectPath, account.AccountId, account.AccountObjectPath);
+        }
+        
+        private void CreateConnection (string bus_name, string object_path, string account_id, string account_path)
+        {
+            if (!conn_map.ContainsKey (account_path)) {
                 //Log.DebugFormat ("{0} not found in map", account_id);
                 try {
-                    AddConnection (new Connection (bus_name, object_path, 
-                                               account_id, ConnectionCapabilities.DBusTransport |
-                                                ConnectionCapabilities.FileTransfer |
-                                                ConnectionCapabilities.SocketTransport));
+                    AddConnection (new Connection (bus_name, 
+                                                   object_path, 
+                                                   account_id, 
+                                                   account_path, 
+                                                   ConnectionCapabilities.DBusTube |
+                                                   ConnectionCapabilities.FileTransfer |
+                                                   ConnectionCapabilities.StreamTube));
                 }
                 catch (DBusProxyObjectNotFound e) {
                     Log.Error (e.ToString ());
@@ -258,12 +218,12 @@ namespace Banshee.Telepathy
 
         private void AddConnection (Connection conn)
         {
-            conn_map.Add (conn.AccountId, conn);
+            conn_map.Add (conn.AccountObjectPath, conn);
             conn.CacheDirectory = Paths.Combine (TelepathyService.CacheDirectory, conn.AccountId);
             
             try {
                 //Log.DebugFormat ("Connection object for {0} created successfully", conn.AccountId);
-                source_map.Add (conn.AccountId, new Dictionary <uint, ContactSource> ());
+                source_map.Add (conn.AccountObjectPath, new Dictionary <uint, ContactSource> ());
                 conn.Disconnected += OnDisconnected;
 
                 conn.Roster.RosterStateChanged += OnRosterStateChanged;
@@ -275,24 +235,24 @@ namespace Banshee.Telepathy
         }
 
         
-        private void RemoveConnection (string account_id)
+        private void RemoveConnection (string object_path)
         {
-            if (conn_map.ContainsKey (account_id)) {
-                Log.DebugFormat ("Removing connection {0}", account_id);
-                RemoveContactSources (conn_map[account_id].Roster);
-                conn_map[account_id].Roster.RosterStateChanged -= OnRosterStateChanged;
-                conn_map[account_id].Dispose ();
-                conn_map.Remove (account_id);
-                source_map.Remove (account_id);
+            if (conn_map.ContainsKey (object_path)) {
+                Log.DebugFormat ("Removing connection {0}", object_path);
+                RemoveContactSources (conn_map[object_path].Roster);
+                conn_map[object_path].Roster.RosterStateChanged -= OnRosterStateChanged;
+                conn_map[object_path].Dispose ();
+                conn_map.Remove (object_path);
+                source_map.Remove (object_path);
             }
         }
         
         private void AddContactSource (Contact contact)
         {
-            if (contact.HasService (MetadataProviderService.BusName)) {
+            if (contact.SupportedChannels.GetChannelInfo <DBusTubeChannelInfo> (MetadataProviderService.BusName) != null) {
                 ContactSource source = new ContactSource (contact);
                 container.AddChildSource (source);
-                source_map[contact.AccountId].Add (contact.Handle, source);
+                source_map[contact.Connection.AccountObjectPath].Add (contact.Handle, source);
             }
 
             contact.ContactServicesChanged += OnContactServicesChanged;
@@ -300,12 +260,12 @@ namespace Banshee.Telepathy
 
         private void RemoveContactSource (Contact contact)
         {
-            if (source_map[contact.AccountId].ContainsKey (contact.Handle)) {
-                ContactSource source = source_map[contact.AccountId][contact.Handle];
+            if (source_map[contact.Connection.AccountObjectPath].ContainsKey (contact.Handle)) {
+                ContactSource source = source_map[contact.Connection.AccountObjectPath][contact.Handle];
                 //source.Contact.ContactServicesChanged -= OnContactServicesChanged;
                 source.Dispose ();
                 container.RemoveChildSource (source);
-                source_map[contact.AccountId].Remove (contact.Handle);
+                source_map[contact.Connection.AccountObjectPath].Remove (contact.Handle);
             }
         }
 
@@ -320,23 +280,23 @@ namespace Banshee.Telepathy
 
         private void RemoveContactSources (Roster roster)
         {
-            foreach (KeyValuePair <uint, ContactSource> kv in source_map[roster.Connection.AccountId]) {
+            foreach (KeyValuePair <uint, ContactSource> kv in source_map[roster.Connection.AccountObjectPath]) {
                 kv.Value.Dispose ();
                 container.RemoveChildSource (kv.Value);
                 //kv.Value.Contact.ContactServicesChanged -= OnContactServicesChanged;
             }
 
-            source_map[roster.Connection.AccountId].Clear ();
+            source_map[roster.Connection.AccountObjectPath].Clear ();
         }
 
         private void OnContactServicesChanged (object o, EventArgs args)
         {
             Contact contact = o as Contact;
-            bool has_service = contact.HasService (MetadataProviderService.BusName);
+            bool has_service = contact.SupportedChannels.GetChannelInfo <DBusTubeChannelInfo> (MetadataProviderService.BusName) != null;
 
             Log.DebugFormat ("{0} in OnContactServicesChanged", contact.Name);
             
-            if (source_map[contact.AccountId].ContainsKey (contact.Handle)) {
+            if (source_map[contact.Connection.AccountObjectPath].ContainsKey (contact.Handle)) {
                 if (!has_service) {
                     RemoveContactSource (contact);
                 }
@@ -363,10 +323,14 @@ namespace Banshee.Telepathy
             container.SortChildSources ();
         }
         
-        private void OnConnectionStatusChanged (object sender, ConnectionLocatorEventArgs args)
+        private void OnConnectionStatusChanged (object sender, ConnectionStatusEventArgs args)
         {
-            if (args.Action == McStatus.Connected) {
-                CreateConnection (args.AccountId, args.BusName, args.ObjectPath);
+            if (args.Action == AccountConnectionStatus.Connected) {
+                if (conn_map.ContainsKey (args.AccountObjectPath)) {
+                    RemoveConnection (args.AccountObjectPath);
+                }
+                
+                CreateConnection (args.BusName, args.ObjectPath, args.AccountId, args.AccountObjectPath);
             }
         }
 
@@ -375,7 +339,7 @@ namespace Banshee.Telepathy
             Connection conn = sender as Connection;
             
             if (conn != null) {
-                RemoveConnection (conn.AccountId);
+                RemoveConnection (conn.AccountObjectPath);
             }
         }
         
@@ -386,23 +350,31 @@ namespace Banshee.Telepathy
                 AddContactSources (roster);
                 roster.ContactMembershipChanged += OnContactMembershipChanged;
                 System.Threading.Thread.Sleep (1000);   //FIXME
-                
-                roster.Connection.AddService (new ContactService (ContactServiceType.DBusTransport, 
-                                              HandleType.Contact, 
-                                              MetadataProviderService.BusName), false);
 
-                //TODO move this elsewhere?
-                StreamActivity.AutoAccept = true;
-                roster.Connection.AddService (new ContactService (ContactServiceType.SocketTransport,
-                                                                  HandleType.Contact,
-                                                                  StreamingServer.ServiceName,
-                                                                  StreamingServer.Address));
+                AddSupportedChannels (roster.Connection);
             }
+        }
+
+        private void AddSupportedChannels (Connection conn)
+        {
+            IList<APIData.ChannelInfo> channels = new List<APIData.ChannelInfo> ();
+            channels.Add (new DBusTubeChannelInfo (ChannelType.DBusTube, HandleType.Contact, MetadataProviderService.BusName));
+            channels.Add (new StreamTubeChannelInfo (ChannelType.StreamTube, HandleType.Contact, StreamingServer.ServiceName, StreamingServer.Address));
+            channels.Add (new FileTransferChannelInfo (ChannelType.FileTransfer, HandleType.Contact, "audio/mpeg", "Telepathy extension for Banshee transfer"));
+            
+            //TODO move this elsewhere?
+            StreamActivity.AutoAccept = true;
+
+            conn.AdvertiseSupportedChannels ("Banshee", channels);
         }
 
         string IService.ServiceName {
             get { return "TelepathyService"; }
         }
 
+        private ConnectionLocator locator;
+        public ConnectionLocator ConnectionLocator {
+            get { return locator; }
+        }
     }
 }

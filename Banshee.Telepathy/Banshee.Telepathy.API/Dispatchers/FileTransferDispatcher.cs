@@ -40,7 +40,7 @@ namespace Banshee.Telepathy.API.Dispatchers
     {
         internal FileTransferDispatcher (Connection conn) : base (conn, 
                                                                   Constants.CHANNEL_TYPE_FILETRANSFER, 
-                                                                  new string [] { "Filename", "ContentType", "Size" } )
+                                                                  new string [] { "Filename", "ContentType", "Size", "Description" } )
         {
             DispatchObject = typeof (OutgoingFileTransfer);
             PropertyKeysForDispatching = new string [] { "Filename" };

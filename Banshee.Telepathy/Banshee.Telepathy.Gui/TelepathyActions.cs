@@ -110,17 +110,6 @@ namespace Banshee.Telepathy.Gui
             
             //Register ();
 
-            try {
-                announcer = new Announcer ();
-            }
-            catch (DBusProxyObjectNotFound e) {
-                ContactContainerSource.ShareCurrentlyPlayingSchema.Set (false);
-                ToggleAction action = this["ShareCurrentlyPlayingAction"] as Gtk.ToggleAction;
-                action.Active = false;
-                action.Sensitive = false;
-                Log.Error (e.ToString ());
-            }
-
             Actions.TrackActions.PostActivate += OnTrackActionsActiviated;
         }
 
@@ -143,6 +132,11 @@ namespace Banshee.Telepathy.Gui
 
         private void AnnounceTrack (TrackInfo track)
         {
+            if (announcer == null) {
+                announcer = new Announcer (container.TelepathyService.ConnectionLocator);
+            }
+                                    
+            //Log.Debug (String.Format ("{0} announcing", ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()));
             if (announcer != null && ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()) {
                 if (track != null) {
                     announcer.Announce (String.Format (Catalog.GetString ("Currently playing {0} by {1} from {2}"),
@@ -192,7 +186,7 @@ namespace Banshee.Telepathy.Gui
                     if (service != null && service.DownloadsAllowed ()) {
                         foreach (DatabaseTrackInfo track in source.DatabaseTrackModel.SelectedItems) {
                             ContactTrackInfo.From (track).RegisterTransferHandlers ();
-                            service.DownloadFile (track.ExternalId , "");
+                            service.DownloadFile (track.ExternalId , "audio/mpeg");
                         }
                     }
                 }
@@ -264,7 +258,7 @@ namespace Banshee.Telepathy.Gui
                 
         private void OnPlayerEvent (PlayerEventArgs args)
         {
-            if (announcer != null && ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()) {                                    
+            if (ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()) {                                    
                 switch (args.Event) {
                     case PlayerEvent.StartOfStream:
                         //AnnounceTrack (ServiceManager.PlayerEngine.CurrentTrack);

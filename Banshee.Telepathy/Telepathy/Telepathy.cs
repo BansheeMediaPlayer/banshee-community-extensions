@@ -276,23 +276,26 @@ namespace Telepathy
     public delegate void CapabilitiesChangedHandler (CapabilityChange[] @caps);
     
     
-    namespace Draft
+    [Interface ("org.freedesktop.Telepathy.Connection.Interface.ContactCapabilities")]
+    public interface IContactCapabilities : IConnection
     {
-    
-        [Interface ("org.freedesktop.Telepathy.Connection.Interface.ContactCapabilities.DRAFT")]
-        public interface IContactCapabilities : IConnection
-        {
-    
-            // Method
-            void SetSelfCapabilities (IDictionary<string,object>[] @caps);
-            // Method
-            IDictionary<uint,RequestableChannelClass[]> GetContactCapabilities (uint[] @handles);
-            event ContactCapabilitiesChangedHandler ContactCapabilitiesChanged;
-    
-        }
-    
-        public delegate void ContactCapabilitiesChangedHandler (IDictionary<uint,RequestableChannelClass[]> @caps);
+
+        // Method
+        void UpdateCapabilities (HandlerCapabilities[] @caps);
+        // Method
+        IDictionary<uint,RequestableChannelClass[]> GetContactCapabilities (uint[] @handles);
+        event ContactCapabilitiesChangedHandler ContactCapabilitiesChanged;
+
     }
+
+    public struct HandlerCapabilities
+    {
+        public string WellKnownName;
+        public IDictionary<string, object>[] ChannelClasses;
+        public string[] Capabilities;
+    }
+    
+    public delegate void ContactCapabilitiesChangedHandler (IDictionary<uint,RequestableChannelClass[]> @caps);
     
     namespace Draft
     {
@@ -2021,6 +2024,11 @@ namespace Telepathy
     #if USE_DBUS_PROPERTIES
             // Property
             ObjectPath[] HandledChannels { get; }
+    #endif
+
+    #if USE_DBUS_PROPERTIES
+            // Property
+            string[] Capabilities { get; }
     #endif
         
         }

@@ -90,7 +90,8 @@ namespace Banshee.Telepathy.API.Channels
         protected IGroup Group {
             get { return group; }
         }
-        
+
+        //private delegate void EnsureChannelCaller (IDictionary <string, object> specs, out bool yours, out ObjectPath path, out IDictionary <string, object> properties);
         public override void Request ()
         {
             IDictionary <string, object> channel_specs = new Dictionary <string, object> ();
@@ -101,10 +102,10 @@ namespace Banshee.Telepathy.API.Channels
             channel_specs.Add (Constants.CHANNEL_IFACE + ".TargetID", 
                                this.target_id);
             
-            bool yours;
-            ObjectPath object_path;
-            Requests.EnsureChannel (channel_specs, out yours, 
-                                          out object_path, out channel_properties);
+            bool yours = false;
+            ObjectPath object_path = null;
+
+            Requests.EnsureChannel (channel_specs, out yours, out object_path, out channel_properties);
             this.ChannPath = object_path.ToString ();   
             
             group = DBusUtility.GetProxy <IGroup> (Connection.Bus, Connection.BusName, ChannPath);

@@ -27,135 +27,116 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using NDesk.DBus;
 
 using Telepathy;
-using Telepathy.MissionControl;
 
 using Banshee.Telepathy.API.DBus;
 
 namespace Banshee.Telepathy.API
 {
-    public struct ConnectionParms
-    {
-        public string account_id;
-        public string bus_name;
-        public string object_path;
-    }
+    public enum AccountConnectionStatus {
+        Connected,
+        Disconnected
+    };
     
-    public class ConnectionLocatorEventArgs : EventArgs
+    public class ConnectionStatusEventArgs : EventArgs
     {
-        private McStatus action;
-        private ConnectionParms parms;
+        private AccountConnectionStatus action;
 
-        public ConnectionLocatorEventArgs (McStatus action, string account_id, 
-                           string bus_name, string object_path)
+        public ConnectionStatusEventArgs (AccountConnectionStatus action, 
+                                           string account_id, 
+                                           string bus_name, 
+                                           string object_path,
+                                           string account_object_path)
         {
             this.action = action;
-            this.parms.account_id = account_id;
-            this.parms.bus_name = bus_name;
-            this.parms.object_path = object_path;
+            this.account_id = account_id;
+            this.bus_name = bus_name;
+            this.object_path = object_path;
+            this.account_object_path = account_object_path;
         }
 
-        public McStatus Action {
+        public AccountConnectionStatus Action {
             get { return action; }
         }
 
+        private string account_id;
         public string AccountId {
-            get { return parms.account_id; }
+            get { return account_id; }
         }
 
+        private string bus_name;
         public string BusName {
-            get { return parms.bus_name; }
+            get { return bus_name; }
         }
 
+        private string object_path;
         public string ObjectPath {
-            get { return parms.object_path; }
+            get { return object_path; }
+        }
+
+        private string account_object_path;
+        public string AccountObjectPath {
+            get { return account_object_path; }
         }
     }
 
     public class ConnectionLocator : IDisposable
     {
-        private BusType bus;
-        protected IMissionControl mission_control;
-        private AccountStatusChangedParms previous_parms = null;
         
-        public event EventHandler <ConnectionLocatorEventArgs> ConnectionStatusChanged;
+        protected IAccountManager account_manager;
+        protected readonly IDictionary <string, Account> connections = new Dictionary<string, Account> ();
+        
+        public event EventHandler <ConnectionStatusEventArgs> ConnectionStatusChanged;
         
         public ConnectionLocator ()
         {
-            bus = BusType.Session;
-            mission_control = DBusUtility.GetProxy <IMissionControl> (bus, Constants.MISSIONCONTROL_IFACE,
-                Constants.MISSIONCONTROL_PATH);
+            account_manager = DBusUtility.GetProxy <IAccountManager> (bus, Constants.ACCOUNTMANAGER_IFACE,
+                Constants.ACCOUNTMANAGER_PATH);
             
-            mission_control.AccountStatusChanged += OnAccountStatusChanged;
+            Initialize ();
         }
 
+        private BusType bus = BusType.Session;
         public BusType Bus {
             get { return bus; }
         }
+
+        protected void Initialize ()
+        {
+            AddConnections ();
+        }
         
-        public ConnectionParms [] GetConnections ()
+        private void AddConnections ()
         {
-            string[] ids;
-            ids = mission_control.GetOnlineConnections ();
-            ConnectionParms [] parms = new ConnectionParms[ids.Length];
-
-            for (int i = 0; i < ids.Length; i++) {
-                string bus_name;
-                ObjectPath object_path;
-                mission_control.GetConnection (ids[i], out bus_name, out object_path);
-                parms[i].account_id = ids[i];
-                parms[i].bus_name = bus_name;
-                parms[i].object_path = object_path.ToString ();
-            }
-
-            return parms;
-        }
-
-        protected virtual void OnAccountStatusChanged (McStatus status, McPresence presence, 
-                                            ConnectionStatusReason reason, string account_id)
-        {
-            //HACK MissionControl issues duplicate events, so suppress them
-            if (previous_parms == null) {
-                previous_parms = new AccountStatusChangedParms (status, presence, reason, account_id);
-            }
-            else {
-                AccountStatusChangedParms current_parms = new AccountStatusChangedParms (status, presence, reason, account_id);
-                if (previous_parms.Equals (current_parms)) {
-                    Console.WriteLine ("Suppressing duplicate MissionControl.AccountStatusChanged event.");
-                    return;
-                }
-                else {
-                    previous_parms = current_parms;
-                }
-            }
-                
-            Console.WriteLine ("Mission Control reporting account status changed: status {0}, presence {1}, reason {2}, account {3}",
-                             status.ToString (), presence.ToString (), reason.ToString (), account_id);
-
-            string bus_name = null;
-            ObjectPath object_path = null;
+            ObjectPath[] paths = (ObjectPath[]) DBusUtility.GetProperty(bus, Constants.ACCOUNTMANAGER_IFACE, Constants.ACCOUNTMANAGER_PATH, Constants.ACCOUNTMANAGER_IFACE, "ValidAccounts");
             
-            switch (status) {
-                case McStatus.Connected:
-                    if (presence != McPresence.Unset) {
-                        mission_control.GetConnection (account_id, out bus_name, out object_path);
-                        OnConnectionStatusChanged (new ConnectionLocatorEventArgs (status, account_id, 
-                                                                bus_name, object_path.ToString ()));
-                    }
-                    break;
-                case McStatus.Disconnected:
-                    OnConnectionStatusChanged (new ConnectionLocatorEventArgs (status, account_id, 
-                                                                "", ""));
-                    break;
+            foreach (ObjectPath p in paths) {
+                Account account = new Account (p.ToString ());
+                
+                account.ConnectionStatusChanged += delegate(object sender, ConnectionStatusEventArgs args) {
+                    OnConnectionStatusChanged (args);
+                };
+                
+                connections.Add (p.ToString (), account);
+            }
+        }
+        
+        public IEnumerable <Account> GetConnections ()
+        {
+            foreach (Account account in connections.Values) {
+                if (account.Connected) {
+                    yield return account;
+                }
             }
         }
 
-        protected virtual void OnConnectionStatusChanged (ConnectionLocatorEventArgs args)
+        protected virtual void OnConnectionStatusChanged (ConnectionStatusEventArgs args)
         {
-            EventHandler <ConnectionLocatorEventArgs> handler = ConnectionStatusChanged;
+            EventHandler <ConnectionStatusEventArgs> handler = ConnectionStatusChanged;
             if (handler != null) {
                 handler (this, args);
             }
@@ -169,69 +150,18 @@ namespace Banshee.Telepathy.API
         protected virtual void Dispose (bool disposing)
         {
             if (disposing) {
-                if (mission_control != null) {
+                if (account_manager != null) {
                     try {
-                        mission_control.AccountStatusChanged -= OnAccountStatusChanged;
+                        //mission_control.AccountStatusChanged -= OnAccountStatusChanged;
                     }
                     catch (Exception) {}
-                    mission_control = null;
+                    account_manager = null;
                 }
+
+                connections.Clear ();
             }
         }
 
-        //HACK MissionControl issues duplicate events, so suppress them
-        private class AccountStatusChangedParms
-        {
-            private McStatus status;
-            private McPresence presence;
-            private ConnectionStatusReason reason;
-            private string account_id;
-    
-            public AccountStatusChangedParms (McStatus status, 
-                                              McPresence presence, 
-                                              ConnectionStatusReason reason,
-                                              string account_id)
-            {
-                this.status = status;
-                this.presence = presence;
-                this.reason = reason;
-                this.account_id = account_id;
-            }
-    
-            public McStatus Status { 
-                get { return status; }
-            }
-                
-            public McPresence Presence { 
-                get { return presence; }
-            }
-            
-            public ConnectionStatusReason Reason { 
-                get { return reason; }
-            }
-            
-            public string AccountId { 
-                get { return account_id; }
-            }
-    
-            public override bool Equals (object obj)
-            {
-                AccountStatusChangedParms parms = obj as AccountStatusChangedParms;
-                
-                if (parms != null) {
-                    return parms.Status == status && parms.Presence == presence &&
-                        parms.Reason == reason && parms.AccountId.Equals (account_id);
-                }
-                
-                return false;
-            }
-    
-            public override int GetHashCode ()
-            {
-                return status.GetHashCode () + presence.GetHashCode () + reason.GetHashCode () +
-                    account_id.GetHashCode ();
-            }
-    
-        }
+        
     }
 }

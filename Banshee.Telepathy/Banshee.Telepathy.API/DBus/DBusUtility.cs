@@ -113,10 +113,49 @@ namespace Banshee.Telepathy.API.DBus
         public static object GetProperty (BusType bus, string bus_name, 
                                           string object_path, string iface, string property)
         {
+            if (bus_name == null) {
+                throw new ArgumentNullException ("bus_name");
+            }
+
+            if (object_path == null) {
+                throw new ArgumentNullException ("object_path");
+            }
+
+            if (iface == null) {
+                throw new ArgumentNullException ("iface");
+            }
+
+            if (property == null) {
+                throw new ArgumentNullException ("property");
+            }
+            
             Properties p = GetProxy <Properties> (bus, bus_name, object_path);
             return p.Get (iface, property);
         }
 
+        public static void SetProperty (BusType bus, string bus_name, 
+                                        string object_path, string iface, string property, object value)
+        {
+            if (bus_name == null) {
+                throw new ArgumentNullException ("bus_name");
+            }
+
+            if (object_path == null) {
+                throw new ArgumentNullException ("object_path");
+            }
+
+            if (iface == null) {
+                throw new ArgumentNullException ("iface");
+            }
+
+            if (property == null) {
+                throw new ArgumentNullException ("property");
+            }
+            
+            Properties p = GetProxy <Properties> (bus, bus_name, object_path);
+            p.Set (iface, property, value);
+        }
+        
         public static void Register (BusType bus_type, string bus_name, string object_path, object o)
         {
             if (bus_name == null) {

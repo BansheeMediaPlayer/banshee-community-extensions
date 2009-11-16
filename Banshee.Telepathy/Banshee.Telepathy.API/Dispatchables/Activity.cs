@@ -33,6 +33,7 @@ using Telepathy;
 
 using Banshee.Telepathy.API.Channels;
 using Banshee.Telepathy.API.Data;
+using Data = Banshee.Telepathy.API.Data;
 
 namespace Banshee.Telepathy.API.Dispatchables
 {
@@ -45,7 +46,7 @@ namespace Banshee.Telepathy.API.Dispatchables
 
     public abstract class Activity : Dispatchable
     {
-        private ContactService service;
+        //private Data.ChannelInfo channel;
         private Banshee.Telepathy.API.Channels.ITube tube;
         
         internal Activity (Contact c,  Banshee.Telepathy.API.Channels.ITube tube) : base (c, tube)
@@ -53,28 +54,20 @@ namespace Banshee.Telepathy.API.Dispatchables
             string service = tube.Service;
             Key = service;
             
-            if (c.HasService (service)) {
-                ContactService s = c.GetService (service);
-                this.service = s;
-            } else {
-                throw new InvalidOperationException (String.Format ("Contact does not support service {0}",
-                                                                    service));
-            }
+//            if (c.HasService (service)) {
+//                ContactService s = c.GetService (service);
+//                this.service = s;
+//            } else {
+//                throw new InvalidOperationException (String.Format ("Contact does not support service {0}",
+//                                                                    service));
+//            }
 
             this.tube = tube;
             Initialize ();
         }
 
-        public ContactServiceType Type {
-            get { return service.Type; }
-        }
-
-        public HandleType TargetHandleType {
-            get { return service.TargetHandleType; }
-        }
-
         public string Service {
-            get { return service.Service; }
+            get { return tube.Service; }
         }
 
         private ActivityState state = ActivityState.Idle;
@@ -130,10 +123,10 @@ namespace Banshee.Telepathy.API.Dispatchables
                 return;
             }
             
-            if (!Contact.HasService (service)) {
-                throw new InvalidOperationException (String.Format ("{0} does not support service {1}",
-                                                                    Contact.Name, service));
-            }
+//            if (!Contact.HasService (service)) {
+//                throw new InvalidOperationException (String.Format ("{0} does not support service {1}",
+//                                                                    Contact.Name, service));
+//            }
             
             tube.Offer ();
             state = ActivityState.RemotePending;

@@ -31,6 +31,8 @@ using System.Collections.Generic;
 
 using Telepathy;
 
+using Banshee.Telepathy.API.Data;
+//using Data = Banshee.Telepathy.API.Data;
 using Banshee.Telepathy.API.Channels;
 using Banshee.Telepathy.API.Dispatchables;
 
@@ -49,12 +51,12 @@ namespace Banshee.Telepathy.API.Dispatchers
         protected override bool VerifyRequest (uint target_handle, IDictionary <string, object> properties)
         {
             string service_name = null;
+            
             if (base.VerifyRequest (target_handle, properties)) {
                 service_name = (string) properties["Service"];
             
                 Contact contact = Connection.Roster.GetContact (target_handle);
-    
-                if (!contact.HasService (service_name)) {
+                if (contact.SupportedChannels.GetChannelInfo <StreamTubeChannelInfo> (service_name) == null) {
                     throw new InvalidOperationException (String.Format ("Contact does not support service {0}",
                                                                         service_name));
                 }
@@ -84,7 +86,7 @@ namespace Banshee.Telepathy.API.Dispatchers
                                           service_name);
                 
                 if (initiator_handle == Connection.SelfHandle) {
-                    tube.ServerAddress = Connection.GetService (service_name).Address;
+                    tube.ServerAddress = Connection.SupportedChannels.GetChannelInfo <StreamTubeChannelInfo> (service_name).Address;
                     activity = new StreamActivityListener (contact, tube);
                 }
                 else {

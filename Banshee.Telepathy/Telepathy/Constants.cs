@@ -20,6 +20,11 @@ namespace Telepathy
         public const string MISSIONCONTROL_IFACE = "org.freedesktop.Telepathy.MissionControl";
         public const string MISSIONCONTROL_PATH = "/org/freedesktop/Telepathy/MissionControl";
 
+        public const string ACCOUNTMANAGER_IFACE = "org.freedesktop.Telepathy.AccountManager";
+        public const string ACCOUNTMANAGER_PATH = "/org/freedesktop/Telepathy/AccountManager";
+
+        public const string ACCOUNT_IFACE = "org.freedesktop.Telepathy.Account";
+        
         public const string DBUS_PROPERTIES = "org.freedesktop.DBus.Properties";
     }
 }

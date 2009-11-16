@@ -44,9 +44,8 @@ RESGEN=resgen2
 	
 all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
 
-FILES = \
-	AssemblyInfo.cs \
-	Banshee.Telepathy/TelepathyService.cs \
+FILES =  \
+	Banshee.Telepathy.API/Account.cs \
 	Banshee.Telepathy.API/Announcer.cs \
 	Banshee.Telepathy.API/Avatar.cs \
 	Banshee.Telepathy.API/Connection.cs \
@@ -55,16 +54,21 @@ FILES = \
 	Banshee.Telepathy.API/DispatchManager.cs \
 	Banshee.Telepathy.API/Roster.cs \
 	Banshee.Telepathy.API/Channels/Channel.cs \
+	Banshee.Telepathy.API/Channels/RequestedChannel.cs \
 	Banshee.Telepathy.API/Channels/ContactListChannel.cs \
 	Banshee.Telepathy.API/Channels/DBusTubeChannel.cs \
 	Banshee.Telepathy.API/Channels/FileTransferChannel.cs \
+	Banshee.Telepathy.API/Channels/StreamTubeChannel.cs \
 	Banshee.Telepathy.API/Channels/IChannel.cs \
 	Banshee.Telepathy.API/Channels/ITube.cs \
-	Banshee.Telepathy.API/Channels/RequestedChannel.cs \
-	Banshee.Telepathy.API/Channels/StreamTubeChannel.cs \
-	Banshee.Telepathy.API/Data/ContactService.cs \
-	Banshee.Telepathy.API/DBus/DBusConnection.cs \
+	Banshee.Telepathy.API/Data/ChannelInfo.cs \
+	Banshee.Telepathy.API/Data/ChannelInfoCollection.cs \
+	Banshee.Telepathy.API/Data/DBusTubeChannelInfo.cs \
+	Banshee.Telepathy.API/Data/IServiceProvidingChannel.cs\
+	Banshee.Telepathy.API/Data/StreamTubeChannelInfo.cs \
+	Banshee.Telepathy.API/Data/FileTransferChannelInfo.cs \
 	Banshee.Telepathy.API/DBus/DBusUtility.cs \
+	Banshee.Telepathy.API/DBus/DBusConnection.cs \
 	Banshee.Telepathy.API/DBus/EmpathyHandler.cs \
 	Banshee.Telepathy.API/Dispatchables/Activity.cs \
 	Banshee.Telepathy.API/Dispatchables/DBusActivity.cs \
@@ -75,16 +79,27 @@ FILES = \
 	Banshee.Telepathy.API/Dispatchables/OutgoingFileTransfer.cs \
 	Banshee.Telepathy.API/Dispatchables/StreamActivity.cs \
 	Banshee.Telepathy.API/Dispatchables/StreamActivityListener.cs \
+	Banshee.Telepathy.API/Dispatchers/ChannelHandler.cs \
 	Banshee.Telepathy.API/Dispatchers/DBusActivityDispatcher.cs \
+	Banshee.Telepathy.API/Dispatchers/StreamActivityDispatcher.cs \
 	Banshee.Telepathy.API/Dispatchers/Dispatcher.cs \
 	Banshee.Telepathy.API/Dispatchers/FileTransferDispatcher.cs \
-	Banshee.Telepathy.API/Dispatchers/StreamActivityDispatcher.cs \
+	Banshee.Telepathy/TelepathyService.cs \
+	Banshee.Telepathy.Net/StreamingHTTPProxyServer.cs \
+	Banshee.Telepathy.Net/StreamingServer.cs \
 	Banshee.Telepathy.Data/ContactContainerSource.cs \
-	Banshee.Telepathy.Data/ContactPlaylistSource.cs \
 	Banshee.Telepathy.Data/ContactSource.cs \
 	Banshee.Telepathy.Data/ContactTrackInfo.cs \
+	Banshee.Telepathy.Data/ContactPlaylistSource.cs \
 	Banshee.Telepathy.Data/DownloadMonitor.cs \
 	Banshee.Telepathy.Data/IContactSource.cs \
+	Banshee.Telepathy.Gui/ColumnCellContactStatusIndicator.cs \
+	Banshee.Telepathy.Gui/ContactRequestDialog.cs \
+	Banshee.Telepathy.Gui/DownloadManager.cs \
+	Banshee.Telepathy.Gui/ContactSourceContents.cs \
+	Banshee.Telepathy.Gui/TelepathyActions.cs \
+	Banshee.Telepathy.Gui/TransferManager.cs \
+	Banshee.Telepathy.Gui/UploadManager.cs \
 	Banshee.Telepathy.DBus/BaseProvider.cs \
 	Banshee.Telepathy.DBus/IMetadataProvider.cs \
 	Banshee.Telepathy.DBus/IMetadataProviderService.cs \
@@ -92,20 +107,10 @@ FILES = \
 	Banshee.Telepathy.DBus/MetadataProvider.cs \
 	Banshee.Telepathy.DBus/MetadataProviderService.cs \
 	Banshee.Telepathy.DBus/PlaylistProvider.cs \
-	Banshee.Telepathy.Gui/ColumnCellContactStatusIndicator.cs \
-	Banshee.Telepathy.Gui/ContactRequestDialog.cs \
-	Banshee.Telepathy.Gui/ContactSourceContents.cs \
-	Banshee.Telepathy.Gui/DownloadManager.cs \
-	Banshee.Telepathy.Gui/IncomingTubeDialog.cs \
-	Banshee.Telepathy.Gui/TelepathyActions.cs \
-	Banshee.Telepathy.Gui/TransferManager.cs \
-	Banshee.Telepathy.Gui/UploadManager.cs \
-	Banshee.Telepathy.Net/BaseWebServer.cs \
-	Banshee.Telepathy.Net/StreamingHTTPProxyServer.cs \
-	Banshee.Telepathy.Net/StreamingServer.cs \
 	Telepathy/Constants.cs \
 	Telepathy/MissionControl.cs \
-	Telepathy/Telepathy.cs 
+	Telepathy/Telepathy.cs
+
 
 DATA_FILES = 
 
@@ -143,3 +148,4 @@ $(build_xamlg_list): %.xaml.g.cs: %.xaml
 $(ASSEMBLY) $(ASSEMBLY_MDB): $(build_sources) $(build_resources) $(build_datafiles) $(DLL_REFERENCES) $(PROJECT_REFERENCES) $(build_xamlg_list) $(build_satellite_assembly_list)
 	mkdir -p $(shell dirname $(ASSEMBLY))
 	$(ASSEMBLY_COMPILER_COMMAND) $(ASSEMBLY_COMPILER_FLAGS) -out:$(ASSEMBLY) -target:$(COMPILE_TARGET) $(build_sources_embed) $(build_resources_embed) $(build_references_ref)
+
