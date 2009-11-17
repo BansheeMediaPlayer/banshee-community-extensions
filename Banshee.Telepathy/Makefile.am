@@ -1,5 +1,5 @@
 
-EXTRA_DIST =  
+EXTRA_DIST =  Banshee.Telepathy.dll.config
 
 # Warning: This is an automatically generated file, do not edit!
 
@@ -34,7 +34,8 @@ AL=al2
 SATELLITE_ASSEMBLY_NAME=$(notdir $(basename $(ASSEMBLY))).resources.dll
 
 PROGRAMFILES = \
-	$(BANSHEE_TELEPATHY_DLL_MDB)  
+	$(BANSHEE_TELEPATHY_DLL_MDB) \
+	$(LIBSOCKET_CONFIG)
 
 LINUX_PKGCONFIG = \
 	$(BANSHEE_TELEPATHY_PC)  
@@ -171,9 +172,10 @@ CLEANFILES = $(PROGRAMFILES) $(LINUX_PKGCONFIG)
 include $(top_srcdir)/Makefile.include
 
 BANSHEE_TELEPATHY_PC = $(BUILD_DIR)/banshee.telepathy.pc
+LIBSOCKET_CONFIG = $(BUILD_DIR)/Banshee.Telepathy.dll.config
 
 $(eval $(call emit-deploy-wrapper,BANSHEE_TELEPATHY_PC,banshee.telepathy.pc))
-
+$(eval $(call emit-deploy-wrapper,LIBSOCKET_CONFIG,Banshee.Telepathy.dll.config))
 
 $(eval $(call emit_resgen_targets))
 $(build_xamlg_list): %.xaml.g.cs: %.xaml
