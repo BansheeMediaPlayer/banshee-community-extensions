@@ -22,18 +22,6 @@ if test "x$GMCS" = "xno"; then
         AC_MSG_ERROR([gmcs Not found])
 fi
 
-dnl empathy check
-AC_PATH_PROG(EMPATHY, empathy, no)
-if test "x$EMPATHY" = "xno"; then
-        AC_MSG_ERROR([empathy Not found])
-fi
-
-dnl telepathy-gabble check
-AC_PATH_PROG(GABBLE, telepathy-gabble, no, /usr/libexec)
-if test "x$GABBLE" = "xno"; then
-        AC_MSG_ERROR([telepathy-gabble Not found])
-fi
-
 AC_ARG_ENABLE(debug,
 	AC_HELP_STRING([--enable-debug],
 		[Use 'DEBUG' Configuration [default=YES]]),
