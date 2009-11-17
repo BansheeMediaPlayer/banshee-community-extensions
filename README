@@ -19,7 +19,7 @@ Features
 
 Requirements
 ------------
-
+* mono >= 2.4.2
 * banshee = 1.5.1
 * empathy >= 2.28.1
 * telepathy-gabble >= 0.9
