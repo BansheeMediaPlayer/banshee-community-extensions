@@ -24,7 +24,8 @@ Requirements
 * empathy >= 2.28.1
 * telepathy-gabble >= 0.9
 
-If you have the above, you almost definitely have the required dependencies.
+A very cutting-edge ie. git-master version of NDesk.DBus is bundled with this
+tarball.
 
 Installation
 ------------
