@@ -85,7 +85,7 @@ namespace Banshee.Telepathy.Gui
             ContactTrackInfo ci = ContactTrackInfo.From (BoundTrack);
             if (ci != null) {
                 if (ci.IsDownloadPending) {
-                    context.Sensitive = false;
+                    context.Opaque = false;
                 } 
             }
             
