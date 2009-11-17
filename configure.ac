@@ -61,7 +61,6 @@ PKG_CHECK_MODULES([GTK_SHARP_20], [gtk-sharp-2.0])
 PKG_CHECK_MODULES([BANSHEE_1_THICKCLIENT], [banshee-1-thickclient])
 PKG_CHECK_MODULES([BANSHEE_1_SERVICES], [banshee-1-services])
 PKG_CHECK_MODULES([BANSHEE_1_CORE], [banshee-1-core])
-PKG_CHECK_MODULES([NDESK_DBUS_10], [ndesk-dbus-1.0])
 
 dnl package checks, per config
 

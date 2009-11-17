@@ -5,7 +5,7 @@ EXTRA_DIST =
 
 if ENABLE_DEBUG
 ASSEMBLY_COMPILER_COMMAND = gmcs
-ASSEMBLY_COMPILER_FLAGS =  -noconfig -codepage:utf8 -warn:3 -optimize- -debug "-define:DEBUG"
+ASSEMBLY_COMPILER_FLAGS =  -unsafe -noconfig -codepage:utf8 -warn:3 -optimize- -debug "-define:DEBUG"
 ASSEMBLY = bin/Debug/Banshee.Telepathy.dll
 ASSEMBLY_MDB = $(ASSEMBLY).mdb
 COMPILE_TARGET = library
@@ -19,7 +19,7 @@ endif
 
 if ENABLE_RELEASE
 ASSEMBLY_COMPILER_COMMAND = gmcs
-ASSEMBLY_COMPILER_FLAGS =  -noconfig -codepage:utf8 -warn:4 -optimize-
+ASSEMBLY_COMPILER_FLAGS =  -unsafe -noconfig -codepage:utf8 -warn:4 -optimize-
 ASSEMBLY = bin/Release/Banshee.Telepathy.dll
 ASSEMBLY_MDB = 
 COMPILE_TARGET = library
@@ -110,8 +110,39 @@ FILES =  \
 	Banshee.Telepathy.DBus/PlaylistProvider.cs \
 	Telepathy/Constants.cs \
 	Telepathy/MissionControl.cs \
-	Telepathy/Telepathy.cs
-
+	Telepathy/Telepathy.cs \
+	NDesk.DBus/Address.cs \
+	NDesk.DBus/Authentication.cs \
+	NDesk.DBus/Bus.cs \
+	NDesk.DBus/BusObject.cs \
+	NDesk.DBus/Connection.cs \
+	NDesk.DBus/DBus.cs \
+	NDesk.DBus/DProxy.cs \
+	NDesk.DBus/ExportObject.cs \
+	NDesk.DBus/GLib.cs \
+	NDesk.DBus/GLib.IO.cs \
+	NDesk.DBus/Introspection.cs \
+	NDesk.DBus/IntrospectionSchema.cs \
+	NDesk.DBus/Mapper.cs \
+	NDesk.DBus/MatchRule.cs \
+	NDesk.DBus/Message.cs \
+	NDesk.DBus/MessageFilter.cs \
+	NDesk.DBus/MessageReader.cs \
+	NDesk.DBus/MessageWriter.cs \
+	NDesk.DBus/PendingCall.cs \
+	NDesk.DBus/Protocol.cs \
+	NDesk.DBus/Server.cs \
+	NDesk.DBus/ServerBus.cs \
+	NDesk.DBus/Signature.cs \
+	NDesk.DBus/SocketTransport.cs \
+	NDesk.DBus/Transport.cs \
+	NDesk.DBus/TypeDefiner.cs \
+	NDesk.DBus/TypeImplementer.cs \
+	NDesk.DBus/Unix.cs \
+	NDesk.DBus/UnixMonoTransport.cs \
+	NDesk.DBus/UnixNativeTransport.cs \
+	NDesk.DBus/UnixTransport.cs \
+	NDesk.DBus/Wrapper.cs 
 
 DATA_FILES = 
 
@@ -121,15 +152,17 @@ RESOURCES = \
 	Banshee.Telepathy.addin.xml
 
 EXTRAS =  \
-	banshee.telepathy.pc.in 
+	banshee.telepathy.pc.in
+
 
 REFERENCES =  \
 	$(BANSHEE_1_CORE_LIBS) \
 	$(BANSHEE_1_SERVICES_LIBS) \
 	$(BANSHEE_1_THICKCLIENT_LIBS) \
 	$(GTK_SHARP_20_LIBS) \
-	$(NDESK_DBUS_10_LIBS) \
-	System.Web
+	System.Web \
+	System.Xml \
+	System.Core
 
 DLL_REFERENCES = 
 
