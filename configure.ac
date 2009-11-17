@@ -63,7 +63,6 @@ PKG_CHECK_MODULES([GTK_SHARP_20], [gtk-sharp-2.0])
 PKG_CHECK_MODULES([BANSHEE_1_THICKCLIENT], [banshee-1-thickclient = 1.5.1])
 PKG_CHECK_MODULES([BANSHEE_1_SERVICES], [banshee-1-services = 1.5.1])
 PKG_CHECK_MODULES([BANSHEE_1_CORE], [banshee-1-core = 1.5.1])
-PKG_CHECK_MODULES([TELEPATHY_GLIB], [telepathy-glib >= 0.9.0])
 
 dnl package checks, per config
 
