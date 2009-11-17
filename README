@@ -20,10 +20,9 @@ Features
 Requirements
 ------------
 
-* banshee >= 1.5.1
-* empathy >= 2.26.1, recommended >= 2.27.3
-* telepathy-gabble >= 0.7.28
-* libndesk-dbus = git master -> git-clone git://git.ndesk.org/pub/scm/dbus-sharp
+* banshee = 1.5.1
+* empathy >= 2.28.1
+* telepathy-gabble >= 0.9
 
 If you have the above, you almost definitely have the required dependencies.
 
@@ -99,19 +98,6 @@ It is recommended that you take a backup of your Banshee library. To make a
 backup: cp ~/.config/banshee-1/banshee.db to a filename of your choosing. 
 To restore, simply copy that filename back to banshee.db.
 
-You may take comfort in the fact that I have not corrupted or otherwise caused
-bad things to happen to my personal library so far. :)
-
-Disclaimer
-----------
- 
-It is the software user's responsibility to ensure that their use of this 
-software, a Telepathy extension for Banshee, does not infringe on the 
-property rights of others. There are many works licensed to permit sharing, but
-there are also many works that are not. If you, the software user, chooses to 
-share a work unlawfully, you are doing so at your own risk. I, Neil Loknath, 
-the original author of this software, am not responsible for your actions.
-
 Notes 
 -----
 
@@ -131,12 +117,6 @@ Notes
 
 * The download cache is never cleared.
 
-* Empathy < 2.27.3 will display a progress bar dialog when transfers are
-  queued, in progress, etc. In versions >= 2.27.3, this is not displayed.
-
-* Once Empathy is ported to MC5, this extension will no longer function. It
-  will need to be migrated to support the new API.
-
 Known Issues
 ------------
 
@@ -149,18 +129,8 @@ Known Issues
 * If you are using Empathy versions < 2.27.3, you may have to add your gmail
   accounts as jabber ones and not gtalk.
 
-* The Empathy trayicon will display a blinking lightning bolt when there is
-  a file transfer. Clicking it will display a dialog box for accepting/
-  rejecting the transfer. Using this will cause unpredictable results.
-  Telepathy Mission Control 5 will allow this to be suppressed.
-
 * Transfer speeds are highly dependant on the Telepathy framework's ability
   to establish a P2P connection. If traffic goes through Jabber servers, be
   prepared for a highly sluggish experience.
   See https://bugs.freedesktop.org/show_bug.cgi?id=22930
-
-* This extension will overwrite any existing Telepathy capabilities being
-  advertised. This is due to the ContactCapabilities.SetSelfCapabilities
-  interface performing a replace operation and not an append. Mission Control
-  5 will allow this process to work correctly.
 
