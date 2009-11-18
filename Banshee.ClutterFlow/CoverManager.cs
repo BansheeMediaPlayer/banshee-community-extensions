@@ -223,6 +223,14 @@ namespace Banshee.ClutterFlow
 			yield break;
 		}*/
 		
+		public void ForSomeCovers(ForEachCover method_call, int lBound, int uBound) {
+			if (covers!=null && lBound <= uBound && lBound >= 0 && uBound < covers.Count) {
+				IEnumerator<CoverGroup> enumerator = covers.GetRange(lBound, uBound-lBound + 1).GetEnumerator();
+				while (enumerator.MoveNext())
+					method_call(enumerator.Current); 
+			}
+		}
+		
 		public void ForEachCover(ForEachCover method_call) {
 			if (covers!=null) {
 				IEnumerator<CoverGroup> enumerator = covers.GetEnumerator();

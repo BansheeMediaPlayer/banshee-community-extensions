@@ -54,8 +54,6 @@ namespace Banshee.ClutterFlow
 		#endregion
 		
 		private CairoTexture cover = null;
-		private Clone reflection = null;
-		private Shader shader;
 		
 		private CoverManager coverManager;
 		public CoverManager CoverManager {
@@ -87,9 +85,7 @@ namespace Banshee.ClutterFlow
 		{
 			this.album = album;
 			this.coverManager = coverManager;
-			
-			base.Painted += HandlePainted;
-			
+					
 			LoadCover(ArtworkId, coverManager.Behaviour.CoverWidth);
 			
 			this.SetPosition(0,0);
@@ -113,25 +109,6 @@ namespace Banshee.ClutterFlow
 				return val;
 			}
 		}
-		
-	#region Event Handling
-		
-		protected void HandlePainted(object sender, EventArgs e)
-		{
-			UpdateOpacity();
-		}
-
-		/*protected void HandleFinishedAnimation(object sender, EventArgs e)
-		{
-			CheckVisibility();
-		}
-		
-		protected void HandleStoppedAnimation(object sender, EventArgs e)
-		{
-			CheckVisibility();
-		}*/
-		
-	#endregion
 
 	#region Texture Setup
 		public void ReloadCover () 
@@ -145,44 +122,37 @@ namespace Banshee.ClutterFlow
 			//Cover:
 			Gdk.Pixbuf pb = Lookup (artwork_id, (int) ideal_dim);
 			while (cover==null) {
-				cover = new Clutter.CairoTexture ((uint) ideal_dim, (uint) ideal_dim);
-				cover.SetSize (ideal_dim, ideal_dim);
+				cover = new Clutter.CairoTexture ((uint) ideal_dim, (uint) ideal_dim*2);
+				cover.SetSize (ideal_dim, ideal_dim*2);
 				cover.Opacity = 255;				
 				Cairo.Context context = cover.Create();
 				Gdk.CairoHelper.SetSourcePixbuf(context, pb, 0, 0); 
 				context.Paint();
+				
+				double alpha = 0.5;
+        		double step = 1 / ideal_dim;
+      
+        		context.Translate (0, 2 * ideal_dim);
+        		context.Scale (1, -1);
+        
+				for (int i = 0; i < ideal_dim; i++) {
+					context.Rectangle (0, ideal_dim-i, ideal_dim, 1);
+					context.Clip ();
+					Gdk.CairoHelper.SetSourcePixbuf(context, pb, 0, 0);
+					alpha = alpha - step;
+					context.PaintWithAlpha (alpha);
+					context.ResetClip ();
+				}			
 				((IDisposable) context.Target).Dispose();
 				((IDisposable) context).Dispose();
 			}
 			
-			//Reflection:
-			reflection = new Clutter.Clone (cover);
-			reflection.SetSize (ideal_dim ,ideal_dim);
-			reflection.SetPosition (0, cover.Height);
-			reflection.Opacity = 190;
-			ResetShader ();
-			
 			this.Add (cover);
-			this.Add (reflection);
-			
 			this.SetAnchorPoint (this.Width/2, this.Height/4);
-			this.SetOpacity (0);
-			
-			
+			this.Opacity = 0;
 		}
 		
-		public void SetOpacity (byte value)
-		{
-			base.Opacity = value;
-			UpdateOpacity ();
-		}
-
-		protected void UpdateOpacity () 
-		{
-			reflection.SetShaderParamFloat ("alpha_r", ((float) base.Opacity)/255f);
-		}
-		
-		protected void ResetShader () 
+/*		protected void ResetShader () 
 		{
 			shader = new Shader ();
 			shader.FragmentSource = @"
@@ -190,9 +160,9 @@ varying vec2 texture_coordinate; varying sampler2D my_color_texture;
 uniform float alpha_r;
 void main()
 {
-	texture_coordinate.y = 1.0 - texture_coordinate.y;
-	vec4 color = texture2D(my_color_texture, texture_coordinate).rgba;
-	float alpha = (texture_coordinate.y*texture_coordinate.y*0.5*alpha_r);
+	vec2 tc =  vec2(texture_coordinate.x, 1.0 - texture_coordinate.y);
+	vec4 color = texture2D(my_color_texture, tc).rgba;
+	float alpha = ((1-texture_coordinate.y)*(1-texture_coordinate.y)*0.5*alpha_r);
 	gl_FragColor = vec4(color.r * alpha, color.g * alpha, color.b * alpha, color.a);
 }
 ";
@@ -200,7 +170,7 @@ void main()
 			reflection.SetShader (shader);
 			float alpha = ((float) base.Opacity)/255f;
 			reflection.SetShaderParamFloat ("alpha_r", alpha);
-		}
+		}*/
 	#endregion
 		
 		new public void Dispose () 

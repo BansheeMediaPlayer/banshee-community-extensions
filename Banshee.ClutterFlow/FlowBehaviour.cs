@@ -6,7 +6,8 @@ namespace Banshee.ClutterFlow
 {
 
 	public class FlowBehaviour {
-			
+				
+		#region Fields
 		private int zFar = 50;
 		public int ZFar {
 			get { return zFar; }
@@ -114,7 +115,8 @@ namespace Banshee.ClutterFlow
 				}
 			}
 		}
-			
+		#endregion
+		
 		public FlowBehaviour (CoverManager coverManager) {
 			this.CoverManager = coverManager;
 		}
@@ -135,14 +137,41 @@ namespace Banshee.ClutterFlow
 		}
 		#endregion
 			
+		#region Actor Handling (animation)
+		
+		protected double previousProgress = 0.0;
+		
 		public void UpdateActors () 
 		{
-			coverManager.ForEachCover (UpdateActor);
+			double currentProgress = Progress;
+			
+			int ccb = Math.Min(coverManager.TotalCovers , Math.Max(0, (int) (currentProgress * (CoverManager.TotalCovers-1))));
+			int clb = Math.Min(coverManager.TotalCovers , Math.Max(0, (int) (ccb - (CoverManager.HalfVisCovers + 1))));
+			int cub = Math.Min(coverManager.TotalCovers , Math.Max(0, (int) (ccb + (CoverManager.HalfVisCovers + 1))));
+			
+			int pcb = Math.Min(coverManager.TotalCovers , Math.Max(0, (int) (previousProgress * (CoverManager.TotalCovers-1))));
+			int plb = Math.Min(coverManager.TotalCovers , Math.Max(0, (int) (pcb - (CoverManager.HalfVisCovers + 1))));
+			int pub = Math.Min(coverManager.TotalCovers , Math.Max(0, (int) (pcb + (CoverManager.HalfVisCovers + 1))));
+					
+			if (ccb<pcb)
+				coverManager.ForSomeCovers(HideActor, cub, pub);
+			else
+				coverManager.ForSomeCovers(HideActor, plb, clb);
+			
+			
+			coverManager.ForSomeCovers(UpdateActor, clb, cub);
 			coverManager.SortDepthOrder();
+			
+			previousProgress = currentProgress;
 		}
 		
 		protected double Progress {
 			get { return coverManager.Timeline.Progress; }
+		}
+		
+		protected void HideActor (CoverGroup cover)
+		{
+			cover.Hide();
 		}
 		
 		protected void UpdateActor (CoverGroup cover)
@@ -228,6 +257,6 @@ namespace Banshee.ClutterFlow
 			actor.SetRotation (Clutter.RotateAxis.Y, (left ? 1 : -1) * rotationAngle, 0, 0, 0);
 			actor.Opacity = 255;
 		}
-		
+		#endregion
 	}	
 }
