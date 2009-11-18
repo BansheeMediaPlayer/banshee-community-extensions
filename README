@@ -20,7 +20,7 @@ Features
 Requirements
 ------------
 * mono >= 2.4.2
-* banshee = 1.5.1
+* banshee >= 1.5.1
 * empathy >= 2.28.1
 * telepathy-gabble >= 0.9
 
@@ -30,11 +30,19 @@ tarball.
 Installation
 ------------
 
-* ./autogen.sh 
-* or, if you wish to install to ~/.config/banshee-1/addins:
+1)
+a) if banshee is installed to /usr/local
+  ./autogen.sh 
+b) or, if banshee is installed to /usr
+  ./autogen.sh --prefix=/usr 
+c) or, if you wish to install to ~/.config/banshee-1/addins:
   ./autogen.sh --enable-user-extension
-* make
-* sudo make install
+
+Option c) is the easiest, if you don't know where banshee is installed.
+
+2) make
+
+3) sudo make install
 
 The extension is auto-enabled by default. So, the next time you load Banshee,
 the Telepathy extension will load automatically.
@@ -75,10 +83,10 @@ will see a progress display in the lower left corner of the Banshee application
 window. To cancel downloads, make a selection of downloading tracks, right-click
 and click 'Cancel Download(s).' Alternatively, you may cancel all downloads by 
 clicking the 'X' that appears in the progress bar in the lower left corner of
-the Banshee application window (please see the Disclaimer section for further 
+the Banshee application window (please see the DISCLAIMER file for further 
 information on downloading).
 
-Downloads are saved to a cache location (see notes). The folder hierarchy will
+Downloads are saved to a cache location (see Notes). The folder hierarchy will
 follow what has been specified in Banshee preferences for File System
 Organization. Also, completed downloads will be automatically added to your
 library, so you can begin listening to your download right away.
