@@ -69,20 +69,28 @@ namespace Banshee.Telepathy.Net
                 return false;
             }
             
-            Socket stream_socket = GetServerSocket (client);
-            if (stream_socket == null || !stream_socket.Connected) {
+            bool keep_connection = false;
+
+            Socket stream_socket = null;
+            try {
+                stream_socket = GetServerSocket (client);
                 Hyena.Log.DebugFormat ("Failed to get socket from stream tube. Socket is {0}", 
                     stream_socket == null ? "null" : stream_socket.Connected.ToString ());
-                return false;
+    
+                if (stream_socket != null && stream_socket.Connected) {
+                    keep_connection = true;
+                
+                    Hyena.Log.Debug ("Sending stream request through telepathy tube...");
+                    keep_connection = ProxyHTTPRequest (client, stream_socket);
+                    Hyena.Log.Debug ("Sent stream request through tube...");
+                    
+                    ReceiveData (stream_socket, client);
+                }
+            } finally {
+                if (stream_socket != null) {
+                    stream_socket.Close ();
+                }
             }
-
-            bool keep_connection = true;
-        
-            Hyena.Log.Debug ("Sending stream request through telepathy tube...");
-            keep_connection = ProxyHTTPRequest (client, stream_socket);
-            Hyena.Log.Debug ("Sent stream request through tube...");
-            
-            ReceiveData (stream_socket, client);
         
             return keep_connection;
         }
