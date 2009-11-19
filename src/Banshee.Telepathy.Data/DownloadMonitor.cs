@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 using Hyena;
 
@@ -147,9 +148,18 @@ namespace Banshee.Telepathy.Data
         public void Reset ()
         {
             Log.Debug ("resetting downloads");
-            monitoring = false;
-            downloads.Clear ();
+            
+            lock (downloads) {
+                foreach (Download d in downloads.Values) {
+                    d.StopProcessing ();
+                }
+                
+                downloads.Clear ();
+            }
+            
             associated.Clear ();
+            
+            monitoring = false;
         }
 
         public bool MonitoredFinished ()
@@ -224,7 +234,9 @@ namespace Banshee.Telepathy.Data
         private long total_downloaded;
         private long total_expected;
         
+        private readonly ManualResetEvent manual_event = new ManualResetEvent (false);
         private readonly Queue <object [] > queue = new Queue<object [] > ();
+        private readonly object sync = new object ();
         
         public event EventHandler <EventArgs> Finished;
         public event EventHandler <EventArgs> ProcessingComplete;
@@ -289,6 +301,7 @@ namespace Banshee.Telepathy.Data
         public void StopProcessing ()
         {
             processing = false;
+            manual_event.Set ();
         }
 
         private void Process ()
@@ -296,20 +309,44 @@ namespace Banshee.Telepathy.Data
             var handler = payload_handler;
             
             while (processing) {
-                //Log.Debug ("processing");
-                if (handler != null && queue.Count > 0) {
-                    handler (this, queue.Dequeue ());
+                manual_event.WaitOne ();
+                while (handler != null && QueueCount () > 0) {
+                    handler (this, Dequeue ());
                 }
             }
 
-            for (int i = queue.Count - 1; i >= 0; i--) {
-                handler (this, queue.Dequeue ());
+            // flush queue
+            for (int i = QueueCount () - 1; i >= 0; i--) {
+                handler (this, Dequeue ());
             }
 
             Banshee.Base.ThreadAssist.ProxyToMain (delegate {
                 processed = true;
                 OnProcessingComplete (EventArgs.Empty);
             });
+        }
+
+        private int QueueCount () 
+        {
+            lock (sync) {
+                return queue.Count;
+            }
+        }
+        
+        private object[] Dequeue ()
+        {
+            lock (sync) {
+                manual_event.Reset ();
+                return queue.Dequeue ();
+            }
+        }
+        
+        private void Enqueue (object[] o)
+        {
+            lock (sync) {
+                queue.Enqueue (o);
+                manual_event.Set ();
+            }
         }
         
         public void UpdateDownload (long timestamp, int seq, int chunk_size, object [] payload)
@@ -331,7 +368,7 @@ namespace Banshee.Telepathy.Data
             Log.DebugFormat ("UpdateDownload: expected {0} downloaded {1}",
                              total_expected, total_downloaded);
 
-            queue.Enqueue (payload);
+            Enqueue (payload);
             
             if (IsFinished) {
                 OnFinished (EventArgs.Empty);

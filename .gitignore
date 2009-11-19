@@ -10,7 +10,7 @@ config.sub
 config.log
 config.guess
 configure
-Banshee.Telepathy/bin/**/*
+src/bin/**/*
 *.userprefs
 *.usertasks
 *.pidb

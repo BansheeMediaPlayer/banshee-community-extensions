@@ -85,8 +85,8 @@ AC_SUBST(PLUGINDIR)
 AC_SUBST(expanded_pluginsdir)
 
 AC_CONFIG_FILES([
-Banshee.Telepathy/Makefile
-Banshee.Telepathy/banshee.telepathy.pc
+src/Makefile
+src/banshee.telepathy.pc
 Makefile
 
 ])
