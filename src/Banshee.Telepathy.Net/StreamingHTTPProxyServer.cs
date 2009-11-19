@@ -71,6 +71,8 @@ namespace Banshee.Telepathy.Net
             
             Socket stream_socket = GetServerSocket (client);
             if (stream_socket == null || !stream_socket.Connected) {
+                Hyena.Log.DebugFormat ("Failed to get socket from stream tube. Socket is {0}", 
+                    stream_socket == null ? "null" : stream_socket.Connected.ToString ());
                 return false;
             }
 
