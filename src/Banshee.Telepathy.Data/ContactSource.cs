@@ -102,8 +102,11 @@ namespace Banshee.Telepathy.Data
             );
             
             SupportsPlaylists = false;
+            
+            if (SavedCount > 0) {
+                CleanUpData ();
+            }
             SavedCount = 0;
-            //UpdateIcon ();
 
             ContactSourceInitialize ();
             AfterInitialized ();
