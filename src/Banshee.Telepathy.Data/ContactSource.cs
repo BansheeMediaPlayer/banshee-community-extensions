@@ -293,6 +293,8 @@ namespace Banshee.Telepathy.Data
         
         private void RequestStreamTube ()
         {
+            Log.Debug ("In RequestStreamTube ()");
+            
             try {
                 if (!Contact.DispatchManager.Exists <StreamActivityListener> (Contact, StreamingServer.ServiceName)) {
                     IDictionary <string, object> properties = new Dictionary <string, object> ();
@@ -300,6 +302,8 @@ namespace Banshee.Telepathy.Data
                 
                     Contact.DispatchManager.Request <StreamActivityListener> (Contact, properties);
                 }
+                
+                Log.Debug ("StreamActivityListener already exists");
             }
             catch (Exception e) {
                 Log.Exception (e);
@@ -555,6 +559,12 @@ namespace Banshee.Telepathy.Data
             if (Contact != null && Contact.Equals (activity.Contact)) {
                 Log.DebugFormat ("ContactSource OnReady for {0}", Contact.Name);
 
+                // TODO decide if this is the right place for this
+                // one contact may not stream, so the tube may not be
+                // necessary. But, the OnReady and OnPermissionRequired events
+                // only get raised for one contact.
+                RequestStreamTube ();
+                
                 try {
                     if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
                         RegisterActivityServices (activity);
@@ -612,8 +622,7 @@ namespace Banshee.Telepathy.Data
                         if (e.ResponseId == Gtk.ResponseType.Accept) {               
                             activity.Accept ();
                             
-                            // TODO decide if this is the right place for this
-                            RequestStreamTube ();
+                            
                         } else if (e.ResponseId == Gtk.ResponseType.Reject) {
                             activity.Reject ();
                         }
