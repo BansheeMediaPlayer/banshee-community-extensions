@@ -583,6 +583,9 @@ namespace Banshee.Telepathy.Data
                         dialog.Destroy ();
                         dialog = null;
                     }
+                } else {
+                    Log.DebugFormat ("Detected closing tube, so cleaning up data for {0}", Contact.Name);
+                    CleanUpData ();
                 }
             }
 
