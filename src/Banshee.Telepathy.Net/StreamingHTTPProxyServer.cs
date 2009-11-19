@@ -76,7 +76,10 @@ namespace Banshee.Telepathy.Net
 
             bool keep_connection = true;
         
+            Hyena.Log.Debug ("Sending stream request through telepathy tube...");
             keep_connection = ProxyHTTPRequest (client, stream_socket);
+            Hyena.Log.Debug ("Sent stream request through tube...");
+            
             ReceiveData (stream_socket, client);
         
             return keep_connection;
@@ -93,6 +96,8 @@ namespace Banshee.Telepathy.Net
                 return;
             }
 
+            Hyena.Log.Debug ("Waiting for stream...");
+            
             using (BinaryWriter writer = new BinaryWriter (new NetworkStream (output, false))) {
                 using (BinaryReader reader = new BinaryReader (new NetworkStream (input, false))) {
                     

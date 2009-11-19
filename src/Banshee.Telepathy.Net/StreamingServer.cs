@@ -84,6 +84,8 @@ namespace Banshee.Telepathy.Net
         
         protected override void HandleValidRequest (Socket client, string [] split_request, string [] body_request)
         {
+            Hyena.Log.Debug ("Processing stream request from telepathy tube...");
+            
             long offset = 0;
             foreach (string line in body_request) {
                 if (line.ToLower ().Contains ("range:")) {
@@ -106,6 +108,9 @@ namespace Banshee.Telepathy.Net
                 long id = 0;
                 try {
                     id = Convert.ToInt64 (nodes[0]);
+                    
+                    Hyena.Log.Debug ("Attempting to stream track through tube...");
+                    
                     StreamTrack (client, id, offset);
                     track_found = true;
                 } catch {}
@@ -143,6 +148,8 @@ namespace Banshee.Telepathy.Net
                     if (offset > 0) {
                         stream.Position = offset;
                     }
+                    
+                    Hyena.Log.Debug ("Sending stream through tube...");
                     
                     WriteResponseStream (client, 
                                          stream, 
