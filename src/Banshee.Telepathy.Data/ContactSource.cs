@@ -552,9 +552,6 @@ namespace Banshee.Telepathy.Data
             if (Contact != null && Contact.Equals (activity.Contact)) {
                 Log.DebugFormat ("ContactSource OnReady for {0}", Contact.Name);
 
-                // TODO decide if this is the right place for this
-                RequestStreamTube ();
-
                 try {
                     if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
                         RegisterActivityServices (activity);
@@ -611,12 +608,13 @@ namespace Banshee.Telepathy.Data
                     try {
                         if (e.ResponseId == Gtk.ResponseType.Accept) {               
                             activity.Accept ();
-                        }
-                        else if (e.ResponseId == Gtk.ResponseType.Reject) {
+                            
+                            // TODO decide if this is the right place for this
+                            RequestStreamTube ();
+                        } else if (e.ResponseId == Gtk.ResponseType.Reject) {
                             activity.Reject ();
                         }
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         Log.Exception (ex);
                     }
 
@@ -639,12 +637,10 @@ namespace Banshee.Telepathy.Data
                 Log.Debug ("Permission granted");
                 try {
                     LoadData ();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     Log.Exception (e);
                 }
-            }
-            else {
+            } else {
                 Log.Debug ("Permission denied");
                 ResetStatus ();
             }
