@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Addin 
     id="Banshee.Telepathy"
-    version="1.0"
-    compatVersion="1.0"
+    version="0.1.1"
+    compatVersion="0.1.1"
     copyright="© 2009 Neil Loknath. Licensed under the MIT X11 license."
     name="Telepathy"
     category="Sources"
