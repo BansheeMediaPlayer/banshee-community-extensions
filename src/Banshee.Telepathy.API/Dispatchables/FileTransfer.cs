@@ -98,7 +98,7 @@ namespace Banshee.Telepathy.API.Dispatchables
     {
         public event EventHandler <BytesTransferredEventArgs> BytesTransferred;
         
-        public static event EventHandler <TransferClosedEventArgs> TransferClosed;
+        //public static event EventHandler <TransferClosedEventArgs> TransferClosed;
         public static event EventHandler <TransferStateChangedEventArgs> TransferStateChanged;
         public static event EventHandler <EventArgs> TransferInitialized;
 
@@ -322,9 +322,8 @@ namespace Banshee.Telepathy.API.Dispatchables
         
         protected virtual void OnTransferClosed (object sender, EventArgs args)
         {
-            IsClosed = true;
+            OnClosed (new TransferClosedEventArgs (state, previous_state));
             
-            //Console.WriteLine ("{0} detected Transfer closing", Contact.Name);
             queue.Remove (this);
 
             if (socket != null) {
@@ -335,22 +334,19 @@ namespace Banshee.Telepathy.API.Dispatchables
             }
             socket = null;
             
-            EventHandler <TransferClosedEventArgs> handler = TransferClosed;
-            if (handler !=  null) {
-                handler (this, new TransferClosedEventArgs (state, previous_state));
-            }
-
-            if (Key != null && AutoRemoveOnClose && Contact != null) {
-                DispatchManager dm = Contact.DispatchManager;
-                dm.Remove (Contact, Key, this.GetType ());
-            }
+//            EventHandler <TransferClosedEventArgs> handler = TransferClosed;
+//            if (handler !=  null) {
+//                handler (this, new TransferClosedEventArgs (state, previous_state));
+//            }
+//
+//            if (Key != null && AutoRemoveOnClose && Contact != null) {
+//                DispatchManager dm = Contact.DispatchManager;
+//                dm.Remove (Contact, Key, this.GetType ());
+//            }
         }
 
         protected override void OnChannelReady (object sender, EventArgs args)
         {
-            //FileTransferChannel ft = Channel as FileTransferChannel;
-            //Console.WriteLine ("{0} Connection to address {1}", Contact.Name, ft.Address);
-            
             State = TransferState.Connected;
         }
     }

@@ -266,6 +266,10 @@ namespace Banshee.Telepathy
             if (source_map[contact.Connection.AccountObjectPath].ContainsKey (contact.Handle)) {
                 ContactSource source = source_map[contact.Connection.AccountObjectPath][contact.Handle];
                 //source.Contact.ContactServicesChanged -= OnContactServicesChanged;
+                
+                // remove and close all channels, in case we don't get closed events
+                contact.DispatchManager.RemoveAll (contact);
+                
                 source.Dispose ();
                 container.RemoveChildSource (source);
                 source_map[contact.Connection.AccountObjectPath].Remove (contact.Handle);

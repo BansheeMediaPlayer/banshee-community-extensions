@@ -295,17 +295,6 @@ namespace Banshee.Telepathy.API
                 return;
             }
 
-            // reset capabilities ie. do not advertise our Telepathy extension
-//            if (capabilities != null) {
-//                try {
-//                    capabilities.SetSelfCapabilities (new Dictionary <string, object> [0] );
-//                }
-//                catch (Exception e) {
-//                    Console.WriteLine (e.Message);
-//                }
-//                capabilities = null;
-//            }
-
             if (dispatch_manager != null) {
                 dispatch_manager.Dispose ();
             }

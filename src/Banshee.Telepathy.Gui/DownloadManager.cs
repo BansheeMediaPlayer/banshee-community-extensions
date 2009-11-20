@@ -68,7 +68,7 @@ namespace Banshee.Telepathy.Gui
             IncomingFileTransfer.AutoStart = false;
             IncomingFileTransfer.TransferInitialized += OnTransferInitialized;
             IncomingFileTransfer.Ready += OnTransferReady;
-            IncomingFileTransfer.TransferClosed += OnTransferClosed;
+            IncomingFileTransfer.Closed += OnTransferClosed;
 
             base.Initialize ();
         }
@@ -78,7 +78,7 @@ namespace Banshee.Telepathy.Gui
             if (disposing) {
                 IncomingFileTransfer.TransferInitialized -= OnTransferInitialized;
                 IncomingFileTransfer.Ready -= OnTransferReady;
-                IncomingFileTransfer.TransferClosed -= OnTransferClosed;
+                IncomingFileTransfer.Closed -= OnTransferClosed;
             }
 
             base.Dispose (disposing);
@@ -180,28 +180,29 @@ namespace Banshee.Telepathy.Gui
             }
         }
 
-        private void OnTransferClosed (object sender, TransferClosedEventArgs args)
+        private void OnTransferClosed (object sender, EventArgs args)
         {
+            TransferClosedEventArgs transfer_args = args as TransferClosedEventArgs;
             IncomingFileTransfer ft = sender as IncomingFileTransfer;
 
             if (ft != null && !Cancelling) {
                 
                 Log.DebugFormat ("OnTransferClosed: path {0} state {1} previous {2}", 
                                  ft.OriginalFilename, 
-                                 args.StateOnClose, 
-                                 args.PreviousState);
+                                 transfer_args.StateOnClose, 
+                                 transfer_args.PreviousState);
                 
                 // cancelled or failed
-                if (args.StateOnClose > TransferState.Completed) {
+                if (transfer_args.StateOnClose > TransferState.Completed) {
                     BytesTransferred -= ft.TotalBytesReported;
                     BytesExpected -= ft.ExpectedBytes;
                     Total--;
-                } else if (args.StateOnClose == TransferState.Completed) {
+                } else if (transfer_args.StateOnClose == TransferState.Completed) {
                     ImportTrack (ft.Filename);
                 }
                 
                 // previous state was in progress, completed, cancelled, failed
-                if (args.PreviousState > TransferState.Connected) {
+                if (transfer_args.PreviousState > TransferState.Connected) {
                     queued_caller.BeginInvoke (MaxConcurrentDownloads - (InProgress - 1),
                                                sq_callback, 
                                                queued_caller);

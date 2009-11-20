@@ -55,7 +55,7 @@ namespace Banshee.Telepathy.Gui
             OutgoingFileTransfer.TransferInitialized += OnTransferInitialized;
             OutgoingFileTransfer.TransferStateChanged += OnTransferStateChanged;
             OutgoingFileTransfer.Ready += OnTransferReady;
-            OutgoingFileTransfer.TransferClosed += OnTransferClosed;
+            OutgoingFileTransfer.Closed += OnTransferClosed;
 
             base.Initialize ();
         }
@@ -66,7 +66,7 @@ namespace Banshee.Telepathy.Gui
                 OutgoingFileTransfer.TransferInitialized -= OnTransferInitialized;
                 OutgoingFileTransfer.TransferStateChanged -= OnTransferStateChanged;
                 OutgoingFileTransfer.Ready -= OnTransferReady;
-                OutgoingFileTransfer.TransferClosed -= OnTransferClosed;
+                OutgoingFileTransfer.Closed -= OnTransferClosed;
             }
 
             base.Dispose (disposing);
@@ -139,26 +139,27 @@ namespace Banshee.Telepathy.Gui
             }
         }
 
-        private void OnTransferClosed (object sender, TransferClosedEventArgs args)
+        private void OnTransferClosed (object sender, EventArgs args)
         {
+            TransferClosedEventArgs transfer_args = args as TransferClosedEventArgs;
             OutgoingFileTransfer ft = sender as OutgoingFileTransfer;
 
             if (ft != null && !Cancelling) {
         
                 Log.DebugFormat ("OnTransferClosed: path {0} state {1} previous {2}",
                                  ft.OriginalFilename, 
-                                 args.StateOnClose, 
-                                 args.PreviousState);
+                                 transfer_args.StateOnClose, 
+                                 transfer_args.PreviousState);
                 
                 // cancelled or failed
-                if (args.StateOnClose > TransferState.Completed) {
+                if (transfer_args.StateOnClose > TransferState.Completed) {
                     BytesTransferred -= ft.TotalBytesReported;
                     BytesExpected -= ft.ExpectedBytes;
                     Total--;
                 }
                 
                 // previous state was in progress, completed, cancelled, failed
-                if (args.PreviousState > TransferState.Connected) {
+                if (transfer_args.PreviousState > TransferState.Connected) {
                     InProgress--;
                 }
                 

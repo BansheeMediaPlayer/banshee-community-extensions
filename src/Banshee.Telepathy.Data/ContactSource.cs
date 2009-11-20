@@ -217,10 +217,10 @@ namespace Banshee.Telepathy.Data
 
             CleanUpData ();
 
-            if (Contact != null) {
-                DispatchManager dm  = Contact.DispatchManager;
-                dm.RemoveAll (contact);
-            }
+//            if (Contact != null) {
+//                DispatchManager dm  = Contact.DispatchManager;
+//                dm.RemoveAll (contact);
+//            }
             
             if (is_temporary) {
                 PurgeSelf ();

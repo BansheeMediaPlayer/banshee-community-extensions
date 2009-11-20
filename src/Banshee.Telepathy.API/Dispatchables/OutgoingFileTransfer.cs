@@ -133,11 +133,7 @@ namespace Banshee.Telepathy.API.Dispatchables
         
         protected override void OnChannelReady (object sender, EventArgs args)
         {
-            //FileTransferChannel ft = Channel as FileTransferChannel;
-            //Console.WriteLine ("{0} Connection to address {1}", Contact.Name, ft.Address);
-            
             base.OnChannelReady (sender, args);
-
             OnReady (EventArgs.Empty);
             
             if (State == TransferState.Completed && AutoStart) {

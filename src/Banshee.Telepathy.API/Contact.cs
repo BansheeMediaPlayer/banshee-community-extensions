@@ -219,9 +219,6 @@ namespace Banshee.Telepathy.API
                     avatar = null;
                 }
                 
-                // this happens in Connection class
-                //DispatchManager.RemoveAll (this);
-                                
                 roster = null;
             }
         }
@@ -287,18 +284,6 @@ namespace Banshee.Telepathy.API
                     
                     //Log.Debug ((string) c.FixedProperties[Constants.CHANNEL_IFACE + ".ChannelType"]);
                 }
-
-//                foreach (DBusActivity activity in DispatchManager.GetAll <DBusActivity> (this)) {
-//                    if (activity.IsSelfInitiated && !HasService (activity.Service)) {
-//                        activity.Close ();
-//                    }
-//                }
-//
-//                foreach (StreamActivityListener activity in DispatchManager.GetAll <StreamActivityListener> (this)) {
-//                    if (activity.IsSelfInitiated && !HasService (activity.Service)) {
-//                        activity.Close ();
-//                    }
-//                }
             }
             
             OnContactServicesChanged (EventArgs.Empty);
@@ -322,7 +307,6 @@ namespace Banshee.Telepathy.API
         
         private void OnContactCapabilitiesChanged (IDictionary <uint,RequestableChannelClass[]> caps)
         {
-            //Log.DebugFormat ("OnContactCapabilitiesChanged: {0}", this.Name);
             if (caps.ContainsKey (handle)) {
                 LoadSupportedChannels (caps[Handle]);
             }

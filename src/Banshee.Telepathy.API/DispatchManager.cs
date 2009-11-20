@@ -82,8 +82,10 @@ namespace Banshee.Telepathy.API
                 UnloadRegistered ();
                 UnregisterDispatchers ();
 
-                foreach (Contact c in dispatchables.Keys) {
-                    RemoveAll (c);
+                lock (dispatchables) {
+                    foreach (Contact c in new List<Contact> (dispatchables.Keys)) {
+                        RemoveAll (c);
+                    }
                 }
             }
         }
@@ -120,16 +122,14 @@ namespace Banshee.Telepathy.API
         {
             if (contact == null) {
                 throw new ArgumentNullException ("contact");
-            }
-            else if (properties == null) {
+            } else if (properties == null) {
                 throw new ArgumentNullException ("properties");
             }
             
             string type_name = typeof (T).FullName;
             if (dispatchers.ContainsKey (type_name)) {
                 dispatchers[type_name].Request (contact.Handle, HandleType.Contact, properties);
-            }
-            else {
+            } else {
                 throw new InvalidOperationException (String.Format ("Dispatcher for {0} is not registered.",
                                                                     type_name));
             }
@@ -144,14 +144,11 @@ namespace Banshee.Telepathy.API
         {
             if (contact == null) {
                 throw new ArgumentNullException ("contact");
-            }
-            else if (key == null) {
+            } else if (key == null) {
                 throw new ArgumentNullException ("key");
-            }
-            else if (d == null) {
+            } else if (d == null) {
                 throw new ArgumentNullException ("d");
-            }
-            else if (!conn.Equals (contact.Connection)) {
+            } else if (!conn.Equals (contact.Connection)) {
                 throw new InvalidOperationException (String.Format ("Contact does not belong to connection {0}",
                                                      conn.AccountId));
             }
@@ -168,8 +165,7 @@ namespace Banshee.Telepathy.API
                 }
                 if (!dispatchables[contact][type].ContainsKey (key)) {
                     dispatchables[contact][type].Add (key, d);
-                }
-                else if (replace) {
+                } else if (replace) {
                     Remove (contact, key, d.GetType ());
                     Add (contact, key, d, false);
                 }
@@ -185,8 +181,7 @@ namespace Banshee.Telepathy.API
         {
             if (contact == null) {
                 throw new ArgumentNullException ("contact");
-            }
-            else if (key == null) {
+            } else if (key == null) {
                 throw new ArgumentNullException ("key");
             }
             
@@ -201,8 +196,7 @@ namespace Banshee.Telepathy.API
                             try {
                                 dispatchables[contact][type].Remove (key);
                                 Console.WriteLine ("{0} with key {1} removed from DM", type, key.ToString ());
-                            }
-                            catch (KeyNotFoundException) {}
+                            } catch (KeyNotFoundException) {}
                         }
                     }
                 }
@@ -218,7 +212,9 @@ namespace Banshee.Telepathy.API
             lock (dispatchables) {
                 if (dispatchables.ContainsKey (contact)) {
                     foreach (Dispatchable d in GetAll <Dispatchable> (contact)) {
-                        d.Dispose ();
+                        if (d != null) {
+                            d.Dispose ();
+                        }
                         dispatchables.Remove (contact);
                     }
                 }
@@ -234,8 +230,7 @@ namespace Banshee.Telepathy.API
         {
             if (contact == null) {
                 throw new ArgumentNullException ("contact");
-            }
-            else if (key == null) {
+            } else if (key == null) {
                 throw new ArgumentNullException ("key");
             }
             
@@ -270,13 +265,11 @@ namespace Banshee.Telepathy.API
             lock (dispatchables) {
                 if (dispatchables.ContainsKey (contact)) {
                     if (!everything && dispatchables[contact].ContainsKey (type)) {
-                        
                         foreach (Dispatchable d in new List <Dispatchable> (dispatchables[contact][type].Values)) {
                             yield return (T) d;
                         }
-                    }
-                    else if (everything) {
-                        foreach (KeyValuePair <string, IDictionary <object, Dispatchable>> kv in dispatchables[contact]) {
+                    } else if (everything) {
+                        foreach (KeyValuePair <string, IDictionary <object, Dispatchable>> kv in new Dictionary <string, IDictionary <object, Dispatchable>> (dispatchables[contact])) {
                             foreach (Dispatchable d in new List <Dispatchable> (kv.Value.Values)) {
                                 yield return (T) d;
                             }
@@ -290,8 +283,7 @@ namespace Banshee.Telepathy.API
         {
             if (contact == null) {
                 throw new ArgumentNullException ("contact");
-            }
-            else if (key == null) {
+            } else if (key == null) {
                 throw new ArgumentNullException ("key");
             }
             
