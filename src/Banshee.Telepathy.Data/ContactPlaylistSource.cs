@@ -87,6 +87,16 @@ namespace Banshee.Telepathy.Data
             }
         }
         
+        public bool IsDownloadingAllowed {
+            get {
+                if (parent != null) {
+                    return parent.IsDownloadingAllowed;
+                }
+                
+                return true;
+            }
+        }
+        
         public ContactPlaylistSource (string name, ContactSource parent) : base (name, parent)
         {
             if (parent == null) {

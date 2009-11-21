@@ -54,10 +54,14 @@ namespace Banshee.Telepathy.DBus
     };
 
     public delegate void PermissionResponseHandler (bool granted);
+    public delegate void DownloadingAllowedHandler (bool allowed);
+    public delegate void StreamingAllowedHandler (bool allowed);
     
     public class MetadataProviderService : IMetadataProviderService
     {
         public event PermissionResponseHandler PermissionResponse;
+        public event DownloadingAllowedHandler DownloadingAllowedChanged;
+        public event StreamingAllowedHandler StreamingAllowedChanged;
         
         private DBusActivity activity;
         
@@ -72,6 +76,9 @@ namespace Banshee.Telepathy.DBus
             }
             
             this.activity = activity;
+            
+            ContactContainerSource.DownloadingAllowedChanged += (o, a) => OnDownloadingAllowedChanged (DownloadsAllowed ());
+            ContactContainerSource.StreamingAllowedChanged += (o, a) => OnStreamingAllowedChanged (StreamingAllowed ());
         }
 
         public MetadataProviderService (DBusActivity activity, bool permission) : this (activity)
@@ -171,6 +178,10 @@ namespace Banshee.Telepathy.DBus
                 return;
             }
             
+            if (!DownloadsAllowed ()) {
+                return;
+            }
+            
             DatabaseTrackInfo track = DatabaseTrackInfo.Provider.FetchFirstMatching ("TrackID = ?", external_id);
             if (track == null) {
                 return;
@@ -210,7 +221,14 @@ namespace Banshee.Telepathy.DBus
 
         public bool DownloadsAllowed ()
         {
-            return ContactContainerSource.AllowDownloadsSchema.Get ();
+            bool downloading_allowed = ContactContainerSource.AllowDownloadsSchema.Get ();
+            return downloading_allowed;
+        }
+        
+        public bool StreamingAllowed ()
+        {
+            bool streaming_allowed = ContactContainerSource.AllowStreamingSchema.Get ();
+            return streaming_allowed;
         }
             
         private void OnPermissionResponse (bool granted)
@@ -218,6 +236,22 @@ namespace Banshee.Telepathy.DBus
             PermissionResponseHandler handler = PermissionResponse;
             if (handler != null) {
                 handler (granted);
+            }
+        }
+        
+        private void OnDownloadingAllowedChanged (bool allowed)
+        {
+            DownloadingAllowedHandler handler = DownloadingAllowedChanged;
+            if (handler != null) {
+                handler (allowed);
+            }
+        }
+        
+        private void OnStreamingAllowedChanged (bool allowed)
+        {
+            StreamingAllowedHandler handler = StreamingAllowedChanged;
+            if (handler != null) {
+                handler (allowed);
             }
         }
         

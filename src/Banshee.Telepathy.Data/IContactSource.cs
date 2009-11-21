@@ -39,6 +39,7 @@ namespace Banshee.Telepathy.Data
         Contact Contact { get; }
         string ContactName { get; }
         string ContactStatus { get; }
+        bool IsDownloadingAllowed { get; }
         DatabaseTrackListModel DatabaseTrackModel { get; }
     }
 }

@@ -148,13 +148,13 @@ namespace Banshee.Telepathy.Gui
         private void OnAllowDownloads (object o, EventArgs args)
         {
             ToggleAction action = this["AllowDownloadsAction"] as Gtk.ToggleAction;
-            ContactContainerSource.AllowDownloadsSchema.Set (action.Active);
+            container.UpdateDownloadingAllowed (action.Active);
         }
 
         private void OnAllowStreaming (object o, EventArgs args)
         {
             ToggleAction action = this["AllowStreamingAction"] as Gtk.ToggleAction;
-            ContactContainerSource.AllowStreamingSchema.Set (action.Active);
+            container.UpdateStreamingAllowed (action.Active);
         }
                                 
         private void OnShareCurrentlyPlaying (object o, EventArgs args)
@@ -174,7 +174,7 @@ namespace Banshee.Telepathy.Gui
         {
             IContactSource source = ServiceManager.SourceManager.ActiveSource as IContactSource;
             Contact contact = source.Contact;
-            if (contact == null) {
+            if (contact == null || !source.IsDownloadingAllowed) {
                 return;
             }
                                     
@@ -183,7 +183,7 @@ namespace Banshee.Telepathy.Gui
             if (activity != null) {            
                 IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
                 try {
-                    if (service != null && service.DownloadsAllowed ()) {
+                    if (service != null) {
                         foreach (DatabaseTrackInfo track in source.DatabaseTrackModel.SelectedItems) {
                             ContactTrackInfo.From (track).RegisterTransferHandlers ();
                             service.DownloadFile (track.ExternalId , "audio/mpeg");
@@ -236,23 +236,11 @@ namespace Banshee.Telepathy.Gui
                 return;
             }
                                                       
-            DBusActivity activity = contact.DispatchManager.Get <DBusActivity> (contact, MetadataProviderService.BusName);
-
-            if (activity != null) {            
-                IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
-                try {
-                    if (service != null) {
-                        if (service.DownloadsAllowed ()) {
-                            this["DownloadTrackAction"].Sensitive = true;
-                        }
-                        else {
-                            this["DownloadTrackAction"].Sensitive = false;
-                        }
-                    }
-                }
-                catch (Exception e) {
-                    Log.Exception (e);
-                }
+            if (source.IsDownloadingAllowed) {
+                this["DownloadTrackAction"].Sensitive = true;
+            }
+            else {
+                this["DownloadTrackAction"].Sensitive = false;
             }
         }
                 

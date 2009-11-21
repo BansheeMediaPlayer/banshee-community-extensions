@@ -37,6 +37,8 @@ namespace Banshee.Telepathy.DBus
     public interface IMetadataProviderService
     {
         event PermissionResponseHandler PermissionResponse;
+        event DownloadingAllowedHandler DownloadingAllowedChanged;
+        event StreamingAllowedHandler StreamingAllowedChanged;
         
         ObjectPath CreateMetadataProvider (LibraryType type);
         ObjectPath CreatePlaylistProvider (int id);
@@ -46,6 +48,7 @@ namespace Banshee.Telepathy.DBus
         void DownloadFile (long external_id, string content_type);
         string GetTrackPath (long id);
         bool DownloadsAllowed ();
+        bool StreamingAllowed ();
             
         //void Destroy ();
     }
