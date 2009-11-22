@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 using Banshee.ServiceStack;
 using Banshee.Collection;
-//using Banshee.Collection.Gui;
 using Hyena.Data;
 using Hyena.Gui;
 
@@ -29,6 +28,9 @@ namespace Banshee.ClutterFlow
 		}
 		
 		protected CoverManager coverManager = new CoverManager();
+		public CoverManager CoverManager {
+			get { return coverManager; }
+		}
 		
         public virtual IListModel<AlbumInfo> Model {
             get { return coverManager.Model; }
@@ -43,6 +45,11 @@ namespace Banshee.ClutterFlow
         {
             coverManager.Model = value;
         }
+
+		public bool Enabled {
+			get { return coverManager!=null ? coverManager.Enabled : false; }
+			set { coverManager.Enabled  = value; }
+		}
 		
 		private bool dragging = false;			// wether or not we are currently dragging the viewport around
 		private double mouse_x, mouse_y;
@@ -52,11 +59,32 @@ namespace Banshee.ClutterFlow
 		private Animation text_fade;
 		
 		private const float rotSens = 0.00001f;
-		private const float viewportMaxAngleX = -15;// maximum X viewport angle
+		private const float viewportMaxAngleX = -40;// maximum X viewport angle
 		private const float viewportMaxAngleY = -5;	// maximum Y viewport angle
-		private float viewportAngleX = 0;			// current X viewport angle
+		private float viewportAngleX = -15;			// current X viewport angle
+		public float ViewportAngleX {
+			get { return viewportAngleX; }
+			set {
+				if (value!=viewportAngleX) {
+					viewportAngleX = value;
+					if (viewportAngleX < viewportMaxAngleX) viewportAngleX = viewportMaxAngleX;
+					if (viewportAngleX > 0) viewportAngleX = 0;
+					coverManager.SetRotation(RotateAxis.X, viewportAngleX, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZNear);
+				}
+			}
+		}
 		private float viewportAngleY = 0;			// current Y viewport angle
-		private float viewportOffsetZ  = 400;
+		public float ViewportAngleY {
+			get { return viewportAngleY; }
+			set {
+				if (value!=viewportAngleY) {
+					viewportAngleY = value;
+					if (viewportAngleY < viewportMaxAngleY) viewportAngleY = viewportMaxAngleY;
+					if (viewportAngleY > -viewportMaxAngleY) viewportAngleY = -viewportMaxAngleY;
+					coverManager.SetRotation(RotateAxis.Y, viewportAngleY, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZNear);
+				}
+			}
+		}
 
 		#region Initialisation
         public ClutterFlowListView () : base ()
@@ -73,8 +101,6 @@ namespace Banshee.ClutterFlow
 			SetupViewport();
 			SetupSlider();
 			SetupAlbumText();
-
-			//anim_mgr.NewFrame += HandleNewFrame;
 			
 			coverManager.NewCurrentCover += HandleNewCurrentCover;
 		}
@@ -83,10 +109,8 @@ namespace Banshee.ClutterFlow
 			Stage.Color = new Clutter.Color (0x00, 0x00, 0x00, 0xff);
 			
 			coverManager.SetRotation(RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
-			//coverStage.SetPosition(viewportOffsetX, viewportOffsetY);
-			coverManager.Depth = viewportOffsetZ;
+			//coverManager.Depth = viewportOffsetZ;
 			Stage.Add(coverManager);
-			coverManager.ShowAll();
 			coverManager.LowerBottom();
 		}
 		
@@ -120,24 +144,9 @@ namespace Banshee.ClutterFlow
 		//Update the coverStage position:
 		protected void RedrawViewport() {
 			coverManager.UpdateBehaviour();
-			coverManager.SetRotation(RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
-			coverManager.Depth = viewportOffsetZ;
+			coverManager.SetRotation(RotateAxis.X, viewportAngleX, coverManager.Width*0.5f, coverManager.Height*0.5f,0);
 			if (!coverManager.IsVisible) coverManager.Show();
 			coverManager.LowerBottom();
-		}
-		
-		//Update coverStage rotation with intervals:
-		public void DeltaRotationX(float delta) {
-			viewportAngleX += delta*rotSens;
-			if (viewportAngleX < viewportMaxAngleX) viewportAngleX = viewportMaxAngleX;
-			if (viewportAngleX > 0) viewportAngleX = 0;
-			coverManager.SetRotation(RotateAxis.X, viewportAngleX, coverManager.Width*0.5f,coverManager.Height*0.5f,0);
-		}
-		public void DeltaRotationY(float delta) {
-			viewportAngleY -= delta*rotSens;
-			if (viewportAngleY < viewportMaxAngleY) viewportAngleY = viewportMaxAngleY;
-			if (viewportAngleY > -viewportMaxAngleY) viewportAngleY = -viewportMaxAngleY;
-			coverManager.SetRotation(RotateAxis.Y, viewportAngleY, coverManager.Width*0.5f,coverManager.Height*0.5f,0);
 		}
 		
 		//Fades text out and in:
@@ -158,7 +167,7 @@ namespace Banshee.ClutterFlow
 				srf_text.Value = "Unkown Artist\nUnkown Album";
 			//srf_text.SetScale(coverWidth*fontScale/srf_text.Height, coverWidth*fontScale/srf_text.Height);
 			srf_text.SetAnchorPoint(srf_text.Width*0.5f, 0);
-			srf_text.SetPosition(Stage.Width*0.5f, Stage.Height*0.125f);
+			srf_text.SetPosition(Stage.Width*0.5f, 5 + Stage.Height*0.125f);
 		}
 
 		//Redraws and positions the slider:
@@ -170,6 +179,7 @@ namespace Banshee.ClutterFlow
 		#endregion
 		
 		#region Event Handling
+		
 		private void HandleAllocationChanged(object o, AllocationChangedArgs args)
 		{	
 			RedrawInterface();
@@ -184,9 +194,8 @@ namespace Banshee.ClutterFlow
 		{			
 			if ((args.Event.ModifierState.value__ & Clutter.ModifierType.Button1Mask.value__)!=0 && (args.Event.ModifierState.value__ & Clutter.ModifierType.ControlMask.value__)!=0) {
 				dragging = true;
-				
-				DeltaRotationY( (float) (mouse_x - args.Event.X));
-				DeltaRotationX( (float) (mouse_y - args.Event.Y));
+				ViewportAngleY += (float) (mouse_x - args.Event.X)*rotSens;
+				ViewportAngleX += (float) (mouse_y - args.Event.Y)*rotSens;
 			} else dragging = false;
 			mouse_x = args.Event.X;
 			mouse_y = args.Event.Y;
@@ -207,7 +216,7 @@ namespace Banshee.ClutterFlow
 		
         void HandleNewCurrentCover (CoverGroup cover, EventArgs e)
         {
-			UpdateAlbumText (); //TODO suprimate this by creating a special AlbumText class
+			UpdateAlbumText (); //TODO suprimate this by creating a special AlbumText class + needs to fade out seperately
         }
 		#endregion
 		

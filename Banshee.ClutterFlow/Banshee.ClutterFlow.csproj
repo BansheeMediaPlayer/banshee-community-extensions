@@ -85,7 +85,9 @@
     <None Include="..\Banshee.ClutterFlow.addin.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Banshee.ClutterFlow.addin.xml" />
+    <EmbeddedResource Include="Banshee.ClutterFlow.addin.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\ThemeIcons\22x22\clutterflow-icon.png" />
   </ItemGroup>
 </Project>

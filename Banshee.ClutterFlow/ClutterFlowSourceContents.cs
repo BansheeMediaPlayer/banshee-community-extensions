@@ -71,13 +71,12 @@ namespace Banshee.ClutterFlow
         
         public override void Dispose ()
         {
-			
-            /*if (filter_view != null) {
+			Clutter.Application.Quit();
+			if (filter_view != null) {
 				filter_view.Destroy();
 				filter_view.Dispose();
                 filter_view = null;
-            }*/ // UNDONE THIS CAUSES A CRASH
-			Clutter.Application.Quit();
+            }
         }
 		
         protected void InitializeViews ()

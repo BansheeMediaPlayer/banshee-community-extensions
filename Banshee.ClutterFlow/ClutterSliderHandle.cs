@@ -1,3 +1,22 @@
+//
+// ClutterSliderHandle.cs
+//
+// Author:
+//   Mathijs Dumon <mathijsken@hotmail.com>
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+//
+// The ClutterSliderHandle is actually a wrapper around the ClutterSliderHandleButton.
+// It restricts it's position to certain bounds and enables dragging of the button,
+// and making the slider jump when clicking before & after the button.
+//
 
 using System;
 using Clutter;
@@ -9,13 +28,27 @@ namespace Banshee.ClutterFlow
 	
 	public class ClutterSliderHandle : Group
 	{
-			
+
+		#region Events
+		public event EventHandler<System.EventArgs> SliderHasMoved;
+		private void InvokeSliderHasMoved ()
+		{
+			if (SliderHasMoved!=null) SliderHasMoved (this, System.EventArgs.Empty);
+		}		
+		
 		public event EventHandler<System.EventArgs> SliderHasChanged;
-		private void InvokeSliderHasChanged() {
-			if (SliderHasChanged!=null) SliderHasChanged(this, System.EventArgs.Empty);
+		private void InvokeSliderHasChanged ()
+		{
+			if (SliderHasChanged!=null) SliderHasChanged (this, System.EventArgs.Empty);
 		}
+		#endregion
+		
+		#region Fields
 		
 		protected ClutterSliderHandleButton button;
+		public ClutterSliderHandleButton Button {
+			get { return button; }
+		}
 			
 		//position of the handle (as a fraction of width - handlewidth)
 		protected float posval = 0.0f;
@@ -23,17 +56,27 @@ namespace Banshee.ClutterFlow
 			get { return posval; }
 			set {
 				if (value!=posval) {
-					if (value>1) posval=1;
-					else if (value<0) posval=0;
-					else posval = value;
-					UpdatePosition();
+					SilentValue = value;
 					InvokeSliderHasChanged();
 				}
 			}
 		}
-		private void UpdatePosition() {
-			button.SetPosition(Value * (Width - Height), 0);
+		protected float SilentValue {
+			set {
+				if (value!=posval) {
+					if (value>1) posval=1;
+					else if (value<0) posval=0;
+					else posval = value;
+					UpdatePosition();
+					InvokeSliderHasMoved();
+				}
+			}
 		}
+
+		protected float width; protected float height;
+		protected float mouseX;
+
+		#endregion
 		
 		public ClutterSliderHandle(float x, float y, float width, float height, byte state) : base()
 		{
@@ -53,20 +96,32 @@ namespace Banshee.ClutterFlow
 			LeaveEvent += HandleLeaveEvent;
 		}
 
+		private void UpdatePosition ()
+		{
+			button.SetPosition(Value * (width - height), 0);
+		}
+		
 		#region Event Handling
-		protected virtual void HandleEnterEvent(object o, EnterEventArgs args)
+		protected virtual void HandleEnterEvent (object o, EnterEventArgs args)
 		{
 			button.State |= 1;
 			args.RetVal = true;
 		}
 
-		protected virtual void HandleButtonPressEvent(object o, ButtonPressEventArgs args)
+		public new void SetSize (float width, float height)
+		{
+			this.width = width;
+			this.height = height;
+			base.SetSize (width, height);
+		}
+
+		protected virtual void HandleButtonPressEvent (object o, ButtonPressEventArgs args)
 		{
 			Clutter.Grab.Pointer(this);
 			
 			float x1; float y1; float x2;
-			Clutter.EventHelper.GetCoords(args.Event, out x1, out y1);
-			button.GetTransformedPosition(out x2, out y1);
+			Clutter.EventHelper.GetCoords (args.Event, out x1, out y1);
+			button.GetTransformedPosition (out x2, out y1);
 			
 			if ((x2 + button.Width) < x1) {
 				//right side increase
@@ -75,39 +130,36 @@ namespace Banshee.ClutterFlow
 				//left side decrease
 				Value -= 0.1f;
 			}
-			    
-			
+
 			args.RetVal = true;
 		}
 
-		protected virtual void HandleButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
+		protected virtual void HandleButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
 		{
-			
 			if (args.Event.Source!=this) button.State = 0;
 			else button.State &= 1;
-			Clutter.Ungrab.Pointer();
+			Clutter.Ungrab.Pointer ();
+			InvokeSliderHasChanged ();
 			args.RetVal = true;
 		}
 		
-		protected virtual void HandleLeaveEvent(object o, LeaveEventArgs args)
+		protected virtual void HandleLeaveEvent (object o, LeaveEventArgs args)
 		{
 			button.State &= 2;
 			args.RetVal = true;
 		}
 		
-		private float mouseX;
-		
-		void HandleMotionEvent(object o, MotionEventArgs args)
+		protected void HandleMotionEvent (object o, MotionEventArgs args)
 		{
 			float x1; float y1;
-			Clutter.EventHelper.GetCoords(args.Event, out x1, out y1);
+			Clutter.EventHelper.GetCoords (args.Event, out x1, out y1);
 			
 			float tx; float ty;
-			GetTransformedPosition(out tx, out ty);
+			GetTransformedPosition (out tx, out ty);
 			
 			if (x1 <=  tx+Width && x1 >= tx && (args.Event.ModifierState.value__ & ModifierType.Button1Mask.value__)!=0 && (button.State & 2)!=0) {
 				float deltaX = (x1 - mouseX);
-				Value += (deltaX / (Width - Height));
+				SilentValue = posval + (deltaX / (Width - Height));
 			}
 			mouseX = x1;
 			args.RetVal = true;
@@ -116,8 +168,7 @@ namespace Banshee.ClutterFlow
 		
 		public void Update ()
 		{
-			button.Update();
+			button.Update ();
 		}
-
 	}
 }

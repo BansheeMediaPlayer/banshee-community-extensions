@@ -88,7 +88,7 @@ namespace Banshee.ClutterFlow
 			}
 		}
 		
-		protected int visibleCovers = 15;
+		protected int visibleCovers = 17;
 		public EventHandler<EventArgs> VisibleCoversChanged;
 		public int VisibleCovers {
 			get { return visibleCovers; }
@@ -118,18 +118,34 @@ namespace Banshee.ClutterFlow
 			set {
 				if (value < 0) value = 0;
 				else if (value >= TotalCovers) value = TotalCovers-1;
-				if (!disableMovement && value!=targetIndex) {
+				if (value!=targetIndex) {
 					targetIndex = value;
 					InvokeTargetIndexChanged();
 				}
 			}
 		}
+
+		protected bool needsReloading = false;
+		public bool NeedsReloading {
+			get { return needsReloading; }
+		}
 		
-		private bool disableMovement = false;	// wether or not index setting is allowed
+		protected bool enabled = false;
+		public bool Enabled {
+			get { return enabled; }
+			set {
+				enabled = value;
+				behaviour.HoldUpdates = !value;
+				if (enabled && needsReloading) {
+					ReloadCovers();
+					needsReloading = false;
+				}
+			}
+		}
 		
 		public CoverManager () : base ()
 		{
-			UpdateTimeline(2); //Dummy timeline
+			UpdateTimeline(1); //Dummy timeline
 			cover_cache = new CoverGroupCache (this);
 			behaviour = new FlowBehaviour(this);
 		}
@@ -139,7 +155,7 @@ namespace Banshee.ClutterFlow
 			if (behaviour!=null && Stage!=null) {
 				behaviour.Height = Stage.Height;
 				behaviour.Width = Stage.Width;
-				behaviour.CoverWidth = 0.5f*Stage.Height;
+				behaviour.CoverWidth = Math.Max(Math.Min(Stage.Height*0.5f, 250), 75);;
 			}
 		}
 		
@@ -169,36 +185,36 @@ namespace Banshee.ClutterFlow
 		
 		protected void ReloadCovers () 
 		{
-			int newTargetIndex = 0;
 			if (Timeline!=null) Timeline.Halt ();
 			if (covers==null || covers.Count==0) {
 				Hyena.Log.Information ("Loading Covers");
-				disableMovement = true;
 				LoadCovers (null);
 				if (covers.Count!=0) currentCover = covers[0];
-				disableMovement = false;
-			} else if (!disableMovement) {
-				disableMovement = true;
-				
+				InvokeCoversChanged();
+				TargetIndex = 0;
+			} else {
 				Hyena.Log.Information ("Reloading Covers");
+				behaviour.HoldUpdates = true;
 				
-				//Step 1: setup new and old lists:
 				int old_current_index = covers.IndexOf (CurrentCover);
-				float current_ipos = (float) old_current_index / (float) (covers.Count-1);
+				List<CoverGroup> old_covers = new List<CoverGroup>(SafeGetRange(covers, old_current_index - HalfVisCovers, visibleCovers));
 				foreach (CoverGroup cover in covers) {
 					cover.Index = -1;
+					if (!old_covers.Contains(cover)) cover.Hide();
 				}
-				bool keep_current = false;
-				LoadCovers(delegate (CoverGroup cover) {
-					if (cover==CurrentCover) keep_current = true;
-					cover.Show();
+				LoadCovers(delegate (CoverGroup cover) {});
+				int newTargetIndex = (int) Math.Round(Timeline.Progress * (covers.Count-1));
+				Timeline.Progress = (float) newTargetIndex/ (float) (covers.Count-1);
+				Timeline.Target = (uint) newTargetIndex;
+				List<CoverGroup> new_covers = new List<CoverGroup>(SafeGetRange(covers, newTargetIndex - HalfVisCovers, visibleCovers));
+				
+				behaviour.FadeCoversInAndOut (old_covers, new_covers, Timeline.Progress, delegate (object o, EventArgs e) {
+					TargetIndex = newTargetIndex;
+					InvokeCoversChanged();
+					behaviour.HoldUpdates = false;
 				});
-				newTargetIndex = keep_current ? covers.IndexOf(CurrentCover) : (int) Math.Round(current_ipos * (covers.Count-1));
-				//List<CoverGroup> new_covers = new List<CoverGroup>(SafeGetRange(covers,TargetIndex - HalfVisCovers, visibleCovers));
-				disableMovement = false;
+				
 			}
-			InvokeCoversChanged();
-			TargetIndex = newTargetIndex;
 		}
 		
 		private void LoadCovers(System.Action<CoverGroup> method_call) {
@@ -210,7 +226,7 @@ namespace Banshee.ClutterFlow
 				if (method_call!=null) method_call(cover);
 			}
 		}
-		/*private IEnumerable<CoverGroup> SafeGetRange(List<CoverGroup> list, int index, int count) {
+		private IEnumerable<CoverGroup> SafeGetRange(List<CoverGroup> list, int index, int count) {
 			for (int i = index; i < index + count; i++) {
 				CoverGroup cover;
 				try {
@@ -221,7 +237,7 @@ namespace Banshee.ClutterFlow
 				yield return cover;
 			}
 			yield break;
-		}*/
+		}
 		
 		public void ForSomeCovers(ForEachCover method_call, int lBound, int uBound) {
 			if (covers!=null && lBound <= uBound && lBound >= 0 && uBound < covers.Count) {
@@ -249,20 +265,22 @@ namespace Banshee.ClutterFlow
 			else covers.Insert(index, cover);
 			if (cover.Parent!=this)
 				Add(cover);
-			//cover.Hide();
 			cover.Index = (index-1);
 			return cover;
 		}
 		
 		#region Event Handlers
+	
         protected void OnModelClearedHandler (object o, EventArgs args)
         {
-			ReloadCovers ();
+			if (enabled) ReloadCovers ();
+			else needsReloading = true;
         }
         
         protected void OnModelReloadedHandler (object o, EventArgs args)
         {
-			ReloadCovers ();
+			if (enabled) ReloadCovers ();
+			else needsReloading = true;
         }
 		#endregion
 	}

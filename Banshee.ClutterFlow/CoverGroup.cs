@@ -54,6 +54,7 @@ namespace Banshee.ClutterFlow
 		#endregion
 		
 		private CairoTexture cover = null;
+		private CairoTexture shade = null;
 		
 		private CoverManager coverManager;
 		public CoverManager CoverManager {
@@ -61,6 +62,11 @@ namespace Banshee.ClutterFlow
 		}
 		
 		#region Position Handling
+		protected double lastAlpha = 0;
+		public double LastAlpha {
+			get { return lastAlpha; }
+		}
+		
 		protected int index = -1; //-1 = not visible
 		public int Index {
 			get { return index; }
@@ -98,16 +104,17 @@ namespace Banshee.ClutterFlow
 			return this;
 		}
 		
-		public double AlphaFunction(double progress) {
+		public double AlphaFunction(double progress)
+		{
 			if (index < 0)
-				//this.Hide(); TODO?
-				return 0;
+				lastAlpha = 0;
 			else {
 				double val = (CoverManager.HalfVisCovers - (CoverManager.TotalCovers-1) * progress + index) / (CoverManager.VisibleCovers-1);
 				if (val<0) { val=0; }
 				if (val>1) { val=1; }
-				return val;
+				lastAlpha = val;
 			}
+			return lastAlpha;
 		}
 
 	#region Texture Setup
@@ -122,55 +129,70 @@ namespace Banshee.ClutterFlow
 			//Cover:
 			Gdk.Pixbuf pb = Lookup (artwork_id, (int) ideal_dim);
 			while (cover==null) {
-				cover = new Clutter.CairoTexture ((uint) ideal_dim, (uint) ideal_dim*2);
+				cover = new CairoTexture ((uint) ideal_dim, (uint) ideal_dim*2);
 				cover.SetSize (ideal_dim, ideal_dim*2);
-				cover.Opacity = 255;				
+				cover.Opacity = 255;
+				
 				Cairo.Context context = cover.Create();
+				
 				Gdk.CairoHelper.SetSourcePixbuf(context, pb, 0, 0); 
 				context.Paint();
-				
-				double alpha = 0.5;
-        		double step = 1 / ideal_dim;
-      
-        		context.Translate (0, 2 * ideal_dim);
-        		context.Scale (1, -1);
-        
-				for (int i = 0; i < ideal_dim; i++) {
-					context.Rectangle (0, ideal_dim-i, ideal_dim, 1);
-					context.Clip ();
-					Gdk.CairoHelper.SetSourcePixbuf(context, pb, 0, 0);
-					alpha = alpha - step;
-					context.PaintWithAlpha (alpha);
-					context.ResetClip ();
-				}			
+				MakeReflection(context, ideal_dim);
+
 				((IDisposable) context.Target).Dispose();
 				((IDisposable) context).Dispose();
 			}
+
+			shade = new CairoTexture ((uint) ideal_dim, (uint) ideal_dim*2);
+			shade.SetSize (ideal_dim, ideal_dim*2);
+			shade.Opacity = 0;
+			
+			Cairo.Context sh_ct = shade.Create();
+			Gradient gr = new LinearGradient(0, 0, ideal_dim, 0);
+			gr.AddColorStop(0.25, new Cairo.Color(0.0, 0.0, 0.0, 0.0));
+			gr.AddColorStop(1.0, new Cairo.Color(0.0, 0.0, 0.0, 0.6));
+			sh_ct.Pattern = gr;
+			sh_ct.Rectangle(new Cairo.Rectangle(0, 0, ideal_dim, ideal_dim));
+			sh_ct.Fill();
+			MakeReflection(sh_ct, ideal_dim);
+
+			((IDisposable) sh_ct.Target).Dispose();
+			((IDisposable) sh_ct).Dispose();
 			
 			this.Add (cover);
-			this.SetAnchorPoint (this.Width/2, this.Height/4);
+			this.Add (shade);
+			this.SetAnchorPoint (this.Width*0.5f, this.Height*0.25f);
 			this.Opacity = 0;
 		}
 		
-/*		protected void ResetShader () 
-		{
-			shader = new Shader ();
-			shader.FragmentSource = @"
-varying vec2 texture_coordinate; varying sampler2D my_color_texture;
-uniform float alpha_r;
-void main()
-{
-	vec2 tc =  vec2(texture_coordinate.x, 1.0 - texture_coordinate.y);
-	vec4 color = texture2D(my_color_texture, tc).rgba;
-	float alpha = ((1-texture_coordinate.y)*(1-texture_coordinate.y)*0.5*alpha_r);
-	gl_FragColor = vec4(color.r * alpha, color.g * alpha, color.b * alpha, color.a);
-}
-";
-			shader.Compile ();
-			reflection.SetShader (shader);
-			float alpha = ((float) base.Opacity)/255f;
-			reflection.SetShaderParamFloat ("alpha_r", alpha);
-		}*/
+		public void SetShade(byte opacity, bool left) {
+			shade.Opacity = opacity;
+			if (left)
+				shade.SetRotation(RotateAxis.Y, 0, shade.Width*0.5f, shade.Height*0.25f, 0);
+			else
+				shade.SetRotation(RotateAxis.Y, 180, shade.Width*0.5f, shade.Height*0.25f, 0);
+		}
+		
+		protected void MakeReflection(Context context, float ideal_dim) {
+			context.Save();
+				
+			double alpha = 0.65;
+    		double step = 1 / ideal_dim;
+  
+    		context.Translate (0, 2 * ideal_dim);
+    		context.Scale (1, -1);
+    
+			for (int i = 0; i < ideal_dim; i++) {
+				context.Rectangle (0, ideal_dim-i, ideal_dim, 1);
+				context.Clip ();
+				context.SetSource (context.Target);
+				alpha = alpha - step;
+				context.PaintWithAlpha (alpha);
+				context.ResetClip ();
+			}
+
+			context.Restore();
+		}
 	#endregion
 		
 		new public void Dispose () 

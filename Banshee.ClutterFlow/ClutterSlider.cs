@@ -11,9 +11,15 @@ namespace Banshee.ClutterFlow
 	public class ClutterSlider : Group
 	{	
 		
+		public event EventHandler<System.EventArgs> SliderHasMoved;
+		void HandleSliderHasMoved(object sender, EventArgs e)
+		{
+			if (SliderHasMoved!=null) SliderHasMoved(this, System.EventArgs.Empty);
+		}
 		public event EventHandler<System.EventArgs> SliderHasChanged;
 		private void HandleSliderHasChanged(object sender, EventArgs e)
 		{
+			HandlePostionFromIndex = HandlePostionFromIndex;
 			if (SliderHasChanged!=null) SliderHasChanged(this, System.EventArgs.Empty);
 		}
 		
@@ -62,6 +68,7 @@ namespace Banshee.ClutterFlow
 			
 			handle = new ClutterSliderHandle((float) (arrow_width + margin), 0, (float) slider_w, (float) max_height, 0);
 			handle.SliderHasChanged += HandleSliderHasChanged;
+			handle.SliderHasMoved += HandleSliderHasMoved;
 			Add(handle);
 			
 			outline = new CairoTexture(slider_w,(uint) max_height);
@@ -89,7 +96,7 @@ namespace Banshee.ClutterFlow
 				HandlePostionFromIndex -= 1;
 			args.RetVal = true;
 		}
-
+		
 		void HandleRightArrowButtonPressEvent(object o, ButtonPressEventArgs args)
 		{
 			if (args.Event.ClickCount==1 || args.Event.ClickCount%2!=1)

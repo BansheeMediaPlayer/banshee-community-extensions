@@ -41,6 +41,9 @@ namespace Banshee.ClutterFlow
 		protected uint funcId;
 		
 		protected TimelineDirection direction = TimelineDirection.Forward;
+		public TimelineDirection Direction {
+			get { return direction; }
+		}
 		
 		protected uint target = 0;
 		public virtual uint Target {
@@ -78,7 +81,7 @@ namespace Banshee.ClutterFlow
 			get { return (double) (progress*(indexCount-1)); }
 		}
 		
-		int delta = 0;
+		protected int delta = 0;
 		public int Delta {
 			get { return delta;	}
 		}
@@ -137,6 +140,7 @@ namespace Banshee.ClutterFlow
 						InvokeTargetReached();
 					}
 				}
+				delta = (int) Math.Abs(AbsoluteProgress - Target);
 			}
 			lastTime = now;
 			InvokeNewFrameEvent ();
@@ -185,24 +189,10 @@ namespace Banshee.ClutterFlow
 		#region Fields
 		protected int lastMarker = 0;
 		protected int lastDelta = 0;
-		
-		protected double[] frequencies = new double[5];
+
 		public override double Frequency {
-			get { return frequencies[SpeedClass]; }
-		}
-		
-		public int SpeedClass {
 			get {
-				if (Delta <= 2)
-					return 0;
-				else if (Delta > 2 && Delta <= 4)
-					return 1;
-				else if (Delta > 4 && Delta <= 8)
-					return 2;
-				else if (Delta > 8 && Delta <= 16)
-					return 3;
-			 	else
-					return 4;
+				return (double) Math.Max((Delta - 1),1) / (double) CoverManager.MaxAnimationSpan;
 			}
 		}
 				
@@ -229,13 +219,6 @@ namespace Banshee.ClutterFlow
 		public ClutterFlowTimeline (CoverManager coverManager) : base((uint) coverManager.TotalCovers, 1 / (double) CoverManager.MaxAnimationSpan)
 		{
 			this.CoverManager = coverManager;
-			SetupFrequencies();
-		}
-		
-		protected void SetupFrequencies ()
-		{
-			for (int i=0; i < frequencies.Length; i++)
-				frequencies[i] = 1 / (double) (CoverManager.MaxAnimationSpan - (CoverManager.MaxAnimationSpan - CoverManager.MinAnimationSpan) * ((double) i / (double) (frequencies.Length-1)));
 		}
 		
 		#region Event Handlers
