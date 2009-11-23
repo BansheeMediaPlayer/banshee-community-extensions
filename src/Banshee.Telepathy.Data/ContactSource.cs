@@ -71,8 +71,6 @@ namespace Banshee.Telepathy.Data
         private GetBoolPropertyCaller permission_caller;
         private GetBoolPropertyCaller downloading_caller;
         
-        private DBusActivity current_activity = null;
-        
         private static readonly string tmp_download_path = Paths.Combine (TelepathyService.CacheDirectory, "partial-downloads");
         public static string TempDownloadDirectory {
             get { return tmp_download_path; }
@@ -163,6 +161,11 @@ namespace Banshee.Telepathy.Data
                 return String.Empty;
             }
         }
+
+        private DBusActivity current_activity = null;
+        public DBusActivity CurrentActivity {
+            get { return current_activity; }
+        }
         
         public override bool CanRemoveTracks {
             get { return false; }
@@ -201,10 +204,8 @@ namespace Banshee.Telepathy.Data
                 return;
             }
             
-            Contact contact = source.Contact;
-            Activity activity = contact.DispatchManager.Get <DBusActivity> (contact, MetadataProviderService.BusName);
-            if (activity != null) {
-                activity.Close ();
+            if (source.CurrentActivity != null) {
+                source.CurrentActivity.Close ();
             }
             
             StopStreaming (source);
@@ -301,11 +302,7 @@ namespace Banshee.Telepathy.Data
                 if (current_activity.State == ActivityState.RemotePending) {
                     SetWaiting ();
                 } else {
-                    try {
-                        LoadData (current_activity);
-                    } catch (Exception e) {
-                        Log.Exception (e);
-                    }
+                    LoadData (current_activity);
                 }
                 
             } else {
@@ -375,7 +372,7 @@ namespace Banshee.Telepathy.Data
         private void RegisterActivityServices (DBusActivity activity, bool permission)
         {
             if (activity == null) {
-                throw new ArgumentNullException ("activity");
+                return;
             }
             
             IMetadataProviderService provider_service = new MetadataProviderService (activity, permission);
@@ -427,14 +424,16 @@ namespace Banshee.Telepathy.Data
             if (state >= ContactSourceState.LoadingMetadata) {
                 return;
             } else if (activity == null) {
-                throw new ArgumentNullException ("activity");
+                return;
             } else if (activity.State != ActivityState.Connected) {
-                throw new InvalidOperationException (String.Format ("activity state {0} is invalid.", activity.State));
+                Log.Debug (String.Format ("activity state {0} is invalid.", activity.State));
+                return;
             }
         
             IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
             if (service == null) {
-                throw new InvalidOperationException ("ContactSource.LoadData found service null");
+                Log.Debug ("ContactSource.LoadData found service null");
+                return;
             }
 
             try {
@@ -520,11 +519,13 @@ namespace Banshee.Telepathy.Data
         private void LoadPlaylists (DBusActivity activity)
         {
             if (activity == null) {
-                throw new ArgumentNullException ("activity");
+                return;
             } else if (activity.State != ActivityState.Connected) {
-                throw new InvalidOperationException (String.Format ("activity state {0} is invalid.", activity.State));
+                Log.Debug (String.Format ("activity state {0} is invalid.", activity.State));
+                return;
             } else if (state != ContactSourceState.LoadedMetadata) {
-                throw new InvalidOperationException (String.Format ("state {0} is invalid.", state));
+                Log.Debug (String.Format ("state {0} is invalid.", state));
+                return;
             }
 
             try {
@@ -630,13 +631,8 @@ namespace Banshee.Telepathy.Data
                 //after download
                 System.Timers.Timer timer = new System.Timers.Timer (1000);
                 timer.Elapsed += delegate {
-                    try {
-                        LoadPlaylists (current_activity);
-                    } catch (Exception e) {
-                        Log.Exception (e);
-                    } finally {
-                        timer.Stop ();
-                    }
+                    LoadPlaylists (current_activity);
+                    timer.Stop ();
                 };
                 timer.AutoReset = false;
                 timer.Start ();
@@ -653,7 +649,7 @@ namespace Banshee.Telepathy.Data
             if (activity == null || !activity.Service.Equals (MetadataProviderService.BusName)) {
                 return;
             }
-            
+                
             if (Contact != null && Contact.Equals (activity.Contact)) {
                 Log.DebugFormat ("ContactSource OnReady for {0}", Contact.Name);
 
@@ -664,22 +660,18 @@ namespace Banshee.Telepathy.Data
                 // necessary. But, the OnReady and OnPermissionRequired events
                 // only get raised for one contact.
                 RequestStreamTube ();
-                
-                try {
-                    if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
-                        RegisterActivityServices (current_activity);
-                        
-                        // tube was not ready at the time user clicked source
-                        // so it was put into waiting state
-                        if (state == ContactSourceState.Waiting) {
-                            LoadData (current_activity);
-                        }
-                    } else {
-                        RegisterActivityServices (current_activity, false);
+            
+                if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
+                    RegisterActivityServices (current_activity);
+                    
+                    // tube was not ready at the time user clicked source
+                    // so it was put into waiting state
+                    if (state == ContactSourceState.Waiting) {
                         LoadData (current_activity);
                     }
-                } catch (Exception e) {
-                    Log.Exception (e);
+                } else {
+                    RegisterActivityServices (current_activity, false);
+                    LoadData (current_activity);
                 }
             }
         }
@@ -760,11 +752,7 @@ namespace Banshee.Telepathy.Data
             if (granted) {
                 Log.Debug ("Permission granted");
                 state = ContactSourceState.PermissionGranted;
-                try {
-                    LoadData (current_activity);
-                } catch (Exception e) {
-                    Log.Exception (e);
-                }
+                LoadData (current_activity);
             } else {
                 Log.Debug ("Permission denied");
                 ResetState ();

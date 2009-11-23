@@ -116,7 +116,6 @@ namespace Banshee.Telepathy.API.Channels
                 
                 case TubeChannelState.NotOffered:
                     break;
-               
             }
             
         }
