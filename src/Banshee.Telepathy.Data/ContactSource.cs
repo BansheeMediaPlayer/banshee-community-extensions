@@ -195,6 +195,34 @@ namespace Banshee.Telepathy.Data
             get { return downloading_allowed; }
         }
             
+        public static void StopSharing (ContactSource source)
+        {
+            if (source == null) {
+                return;
+            }
+            
+            Contact contact = source.Contact;
+            Activity activity = contact.DispatchManager.Get <DBusActivity> (contact, MetadataProviderService.BusName);
+            if (activity != null) {
+                activity.Close ();
+            }
+            
+            StopStreaming (source);
+        }
+        
+        public static void StopStreaming (ContactSource source)
+        {
+            if (source == null) {
+                return;
+            }
+            
+            Contact contact = source.Contact;
+            Activity activity = contact.DispatchManager.Get <StreamActivityListener> (contact, StreamingServer.ServiceName);
+            if (activity != null) {
+                activity.Close ();
+            }
+        }
+        
         protected override void Initialize ()
         { 
             base.Initialize ();
@@ -669,13 +697,22 @@ namespace Banshee.Telepathy.Data
                         dialog.Destroy ();
                         dialog = null;
                     }
-                  } //else {
-//                    Log.DebugFormat ("Detected closing tube, so cleaning up data for {0}", Contact.Name);
-//                    CleanUpData ();
-//                }
+                    
+                    ResetState ();
+                } else {
+                    StopStreaming (this);
+                    
+                    // the tube was closed before the library was fully downloaded
+                    // this seems to occur randomly
+                    if (!download_monitor.ProcessingFinished ()) {
+                        SetStatus (Catalog.GetString ("A problem occured while downloading this contact's library"), true);
+                    }
+                    
+                    ResetState (false);
+                }
                 
                 current_activity = null;
-                ResetState ();
+
             }
         }
         
