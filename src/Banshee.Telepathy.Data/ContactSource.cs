@@ -682,15 +682,16 @@ namespace Banshee.Telepathy.Data
             if (activity == null || !activity.Service.Equals (MetadataProviderService.BusName)) {
                 return;
             }
-
+            
             if (Contact != null && Contact.Equals (activity.Contact)) {
+                
+                ResetState ();
+                
                 if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
                     if (dialog != null) {
                         dialog.Destroy ();
                         dialog = null;
                     }
-                    
-                    ResetState ();
                 } else {
                     StopStreaming (this);
                     
@@ -699,8 +700,6 @@ namespace Banshee.Telepathy.Data
                     if (!download_monitor.ProcessingFinished ()) {
                         SetStatus (Catalog.GetString ("A problem occured while downloading this contact's library"), true);
                     }
-                    
-                    ResetState (false);
                 }
                 
                 current_activity = null;
