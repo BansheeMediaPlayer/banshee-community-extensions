@@ -148,22 +148,22 @@ namespace Banshee.Telepathy.Data
             get { return (PrimarySource as ContactSource).Contact; }
         }
 
-        public IncomingFileTransfer FileTransfer {
+        public TelepathyDownload FileTransfer {
             get {
-                IncomingFileTransfer file_transfer = Contact.DispatchManager.Get <IncomingFileTransfer> (Contact, ExternalId.ToString ());
-                return file_transfer;
+                TransferManager<TelepathyDownloadKey, TelepathyDownload> manager = TelepathyService.DownloadManager.DownloadManager;
+                return manager.Get (new TelepathyDownloadKey (this));
             }
         }
 
         public bool IsDownloading {
             get {
-                return FileTransfer != null ? FileTransfer.State == TransferState.InProgress : false;
+                return FileTransfer != null ? FileTransfer.IsDownloading : false;
             }
         }
 
         public bool IsDownloadPending {
             get {
-                return FileTransfer != null ? FileTransfer.State >= TransferState.LocalPending && FileTransfer.State <= TransferState.Connected : false;
+                return FileTransfer != null ? FileTransfer.IsDownloadingPending : false;
             }
         }
         
@@ -193,46 +193,5 @@ namespace Banshee.Telepathy.Data
                 FileTransfer.Cancel ();
             }
         }
-        
-        public void UnregisterTransferHandlers ()
-        {
-            IncomingFileTransfer.ResponseRequired -= OnTransferResponseRequired;
-        }
-
-        public void RegisterTransferHandlers ()
-        {
-            IncomingFileTransfer.ResponseRequired += OnTransferResponseRequired;
-        }
-        
-#region FileTransfer Events
-        
-        private void OnTransferResponseRequired (object sender, EventArgs args)
-        {
-            IncomingFileTransfer transfer = sender as IncomingFileTransfer;
-            if (transfer == null) {
-                return;
-            }
-            
-            if (Contact.Equals (transfer.Contact) && transfer.OriginalFilename.Equals (ExternalId.ToString ())) {
-                UnregisterTransferHandlers ();
-                
-                Log.DebugFormat ("{0} handle {1} accepting transfer from ContactSource", Contact.Name, Contact.Handle);
-
-                // passing extension on Uri to allow import after a download
-                string ext = Uri.ToString ().Substring (Uri.ToString ().LastIndexOf ('/') + 1);
-                string filename = FileNamePattern.BuildFull (ContactSource.TempDownloadDirectory, this, ext);
-
-                if (transfer.State == TransferState.LocalPending) {
-                    if (filename != null || filename != String.Empty) {
-                        transfer.Filename = filename;
-                        transfer.Accept ();
-                    } else {
-                        transfer.Accept (ContactSource.TempDownloadDirectory);
-                    }
-                }
-            }
-        }
-
-#endregion
     }
 }

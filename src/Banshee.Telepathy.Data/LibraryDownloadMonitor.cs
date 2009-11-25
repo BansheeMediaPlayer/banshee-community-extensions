@@ -1,5 +1,5 @@
 //
-// DownloadMonitor.cs
+// LibraryDownloadMonitor.cs
 //
 // Author:
 //   Neil Loknath <neil.loknath@gmail.com>
@@ -34,15 +34,15 @@ using Hyena;
 
 namespace Banshee.Telepathy.Data
 {
-    internal class DownloadMonitor
+    internal class LibraryDownloadMonitor
     {
-        private readonly IDictionary <string, Download> downloads = new Dictionary <string, Download> ();
-        private readonly IDictionary <Download, object> associated = new Dictionary <Download, object> ();
+        private readonly IDictionary <string, LibraryDownload> downloads = new Dictionary <string, LibraryDownload> ();
+        private readonly IDictionary <LibraryDownload, object> associated = new Dictionary <LibraryDownload, object> ();
         
         public event EventHandler <EventArgs> AllFinished;
         public event EventHandler <EventArgs> AllProcessed;
         
-        public DownloadMonitor ()
+        public LibraryDownloadMonitor ()
         {
         }
 
@@ -67,7 +67,7 @@ namespace Banshee.Telepathy.Data
             }
         }
         
-        public void Add (string key, Download d)
+        public void Add (string key, LibraryDownload d)
         {
             if (key == null) {
                 throw new ArgumentNullException ("key");
@@ -94,7 +94,7 @@ namespace Banshee.Telepathy.Data
             AssociateObject (Get (key), o);
         }
         
-        public void AssociateObject (Download d, object o)
+        public void AssociateObject (LibraryDownload d, object o)
         {
             if (d == null) {
                 throw new ArgumentNullException ("d");
@@ -112,7 +112,7 @@ namespace Banshee.Telepathy.Data
             return GetAssociatedObject (Get (key));
         }
         
-        public object GetAssociatedObject (Download d)
+        public object GetAssociatedObject (LibraryDownload d)
         {
             if (d == null) {
                 throw new ArgumentNullException ("d");
@@ -127,7 +127,7 @@ namespace Banshee.Telepathy.Data
             return null;
         }
         
-        public Download Get (string key)
+        public LibraryDownload Get (string key)
         {
             if (key == null) {
                 throw new ArgumentNullException ("key");
@@ -150,7 +150,7 @@ namespace Banshee.Telepathy.Data
             Log.Debug ("resetting downloads");
             
             lock (downloads) {
-                foreach (Download d in downloads.Values) {
+                foreach (LibraryDownload d in downloads.Values) {
                     d.StopProcessing ();
                 }
                 
@@ -165,7 +165,7 @@ namespace Banshee.Telepathy.Data
         public bool MonitoredFinished ()
         {
             lock (downloads) {
-                foreach (Download d in downloads.Values) {
+                foreach (LibraryDownload d in downloads.Values) {
                     if (!d.IsFinished) return false;
                 }
             }
@@ -176,7 +176,7 @@ namespace Banshee.Telepathy.Data
         public bool ProcessingFinished ()
         {
             lock (downloads) {
-                foreach (Download d in downloads.Values) {
+                foreach (LibraryDownload d in downloads.Values) {
                     if (!d.Processed) return false;
                 }
             }
@@ -202,7 +202,7 @@ namespace Banshee.Telepathy.Data
 
         private void OnDownloadFinished (object sender, EventArgs args)
         {
-            Download download = sender as Download;
+            LibraryDownload download = sender as LibraryDownload;
 
             if (download != null && downloads.Values.Contains (download)) {
                 download.StopProcessing ();
@@ -215,7 +215,7 @@ namespace Banshee.Telepathy.Data
 
         private void OnDownloadProcessed (object sender, EventArgs args)
         {
-            Download download = sender as Download;
+            LibraryDownload download = sender as LibraryDownload;
 
             if (download != null && downloads.Values.Contains (download)) {
                 if (monitoring && ProcessingFinished ()) {
@@ -227,7 +227,7 @@ namespace Banshee.Telepathy.Data
 
     internal delegate void PayloadHandler (object sender, object [] o);
     
-    internal class Download
+    internal class LibraryDownload
     {
         private long timestamp = 0;
         private int last_sequence_num;
@@ -241,13 +241,13 @@ namespace Banshee.Telepathy.Data
         public event EventHandler <EventArgs> Finished;
         public event EventHandler <EventArgs> ProcessingComplete;
         
-        public Download ()
+        public LibraryDownload ()
         {
             this.last_sequence_num = 0;
             this.total_downloaded = 0;
         }
         
-        public Download (long timestamp, long total_expected) : this ()
+        public LibraryDownload (long timestamp, long total_expected) : this ()
         {
             this.timestamp = timestamp;
             this.total_expected = total_expected;

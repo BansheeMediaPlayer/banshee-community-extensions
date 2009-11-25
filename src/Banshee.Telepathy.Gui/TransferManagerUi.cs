@@ -1,5 +1,5 @@
 //
-// TransferManager.cs
+// TransferManagerUi.cs
 //
 // Author:
 //   Neil Loknath <neil.loknath@gmail.com>
@@ -33,14 +33,16 @@ using Mono.Unix;
 using Hyena.Jobs;
 using Banshee.ServiceStack;
 
+using Banshee.Telepathy.Data;
+
 namespace Banshee.Telepathy.Gui
 {
-    public class TransferManager : IDisposable
+    public abstract class TransferManagerUi : IDisposable
     {
         private UserJob user_job = null;
         private readonly object sync = new object ();
         
-        protected TransferManager ()
+        protected TransferManagerUi ()
         {
             Initialize ();
         }
@@ -160,11 +162,24 @@ namespace Banshee.Telepathy.Gui
                 user_job.Progress = BytesExpected != 0 ? (double) BytesTransferred / (double) BytesExpected : 0;
                 user_job.Status = String.Format (ProgressMessage, InProgress, Total);
             }
-
         }
 
-        public virtual void CancelAll ()
+        public abstract void CancelAll ();
+  
+                
+        protected virtual void OnUpdated (object sender, UpdatedEventArgs args)
         {
+            BytesExpected = args.BytesExpected;
+            BytesTransferred = args.BytesTransferred;
+            InProgress = args.InProgress;
+            Total = args.Total;
+            
+            Update ();
+        }
+        
+        protected virtual void OnCompleted (object sender, EventArgs args)
+        {
+            DestroyUserJob ();    
         }
         
         protected virtual void OnCancelRequested (object sender, EventArgs args)

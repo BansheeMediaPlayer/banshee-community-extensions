@@ -36,12 +36,15 @@ using Banshee.Telepathy.API.Dispatchers;
 
 namespace Banshee.Telepathy.API
 {
+    // TODO this thing is a bit messy
     public sealed class DispatchManager : IDisposable
     {
         private Connection conn;
         private readonly IDictionary <string, Dispatcher> dispatchers = new Dictionary <string, Dispatcher> ();
         private readonly IDictionary <Contact, IDictionary <string, IDictionary <object, Dispatchable>>> dispatchables = new Dictionary <Contact, IDictionary <string, IDictionary <object, Dispatchable>>> ();
 
+        public event EventHandler<EventArgs> Dispatched;
+        
         private DispatchManager ()
         {        
         }
@@ -169,6 +172,9 @@ namespace Banshee.Telepathy.API
                     Remove (contact, key, d.GetType ());
                     Add (contact, key, d, false);
                 }
+                
+                OnDispatched (d, EventArgs.Empty);
+                d.Initialize ();
             }
         }
 
@@ -215,8 +221,8 @@ namespace Banshee.Telepathy.API
                         if (d != null) {
                             d.Dispose ();
                         }
-                        dispatchables.Remove (contact);
                     }
+                    dispatchables.Remove (contact);
                 }
             }
         }
@@ -236,6 +242,7 @@ namespace Banshee.Telepathy.API
             
             string type = obj_type.FullName;
             
+            //Console.WriteLine (String.Format ("{0} {1} {2}", type, contact.Handle, key.ToString ()));
             lock (dispatchables) {
                 if (dispatchables.ContainsKey (contact)) {
                     if (dispatchables[contact].ContainsKey (type)) {
@@ -262,16 +269,16 @@ namespace Banshee.Telepathy.API
                 everything = true;
             }
 
-            lock (dispatchables) {
+            lock (dispatchables) { 
                 if (dispatchables.ContainsKey (contact)) {
                     if (!everything && dispatchables[contact].ContainsKey (type)) {
-                        foreach (Dispatchable d in new List <Dispatchable> (dispatchables[contact][type].Values)) {
-                            yield return (T) d;
+                        foreach (object key in new List<object> (dispatchables[contact][type].Keys)) {
+                            yield return (T) dispatchables[contact][type][key];
                         }
                     } else if (everything) {
-                        foreach (KeyValuePair <string, IDictionary <object, Dispatchable>> kv in new Dictionary <string, IDictionary <object, Dispatchable>> (dispatchables[contact])) {
-                            foreach (Dispatchable d in new List <Dispatchable> (kv.Value.Values)) {
-                                yield return (T) d;
+                        foreach (KeyValuePair <string, IDictionary <object, Dispatchable>> kv in dispatchables[contact]) {
+                            foreach (object key in new List<object> (kv.Value.Keys)) {
+                                yield return (T) dispatchables[contact][kv.Key][key];
                             }
                         }
                     }
@@ -300,6 +307,14 @@ namespace Banshee.Telepathy.API
             }
 
             return false;
+        }
+        
+        protected void OnDispatched (Dispatchable d, EventArgs args)
+        {
+            var handler = Dispatched;
+            if (handler != null) {
+                handler (d, args);
+            }
         }
     }
 

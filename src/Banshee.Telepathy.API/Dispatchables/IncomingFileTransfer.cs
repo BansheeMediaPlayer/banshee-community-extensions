@@ -58,16 +58,6 @@ namespace Banshee.Telepathy.API.Dispatchables
             set { auto_start = value; }
         }
         
-        private long bytes_received = 0;
-        public long TotalBytesReceived {
-            get { return bytes_received; }
-            private set { bytes_received = value; }
-        }
-        
-        public bool IsReceiveComplete {
-            get { return ExpectedBytes == TotalBytesReceived; }
-        }
-
         public static IEnumerable <IncomingFileTransfer> GetAll (Connection conn)
         {
             foreach (Contact contact in conn.Roster.GetAllContacts ()) {
@@ -78,7 +68,7 @@ namespace Banshee.Telepathy.API.Dispatchables
             }
         }
 
-        protected override void Initialize ()
+        internal protected override void Initialize ()
         {
             FileTransferChannel ft = Channel as FileTransferChannel;
             ft.TransferProvided += OnTransferProvided;
@@ -163,12 +153,10 @@ namespace Banshee.Telepathy.API.Dispatchables
 
                     while ( (bytes_received = Socket.Receive (data, 0, data.Length, SocketFlags.None)) > 0) {
                         bwriter.Write (data, 0, bytes_received);
-                        TotalBytesReceived += bytes_received;
+                        BytesTransferred += bytes_received;
                     }
                 
                     bwriter.Close ();
-                    
-                    //Console.WriteLine ("{0} bytes received", TotalBytesReceived);
                 }
             }
             catch (Exception e) {
@@ -191,22 +179,6 @@ namespace Banshee.Telepathy.API.Dispatchables
             }
         }
 
-        protected override void OnTransferClosed (object sender, EventArgs args)
-        {
-            if (State != TransferState.Cancelled) {
-                PreviousState = State;
-            }
-            
-            if (IsReceiveComplete) {
-                State = TransferState.Completed;
-            }
-            else if (State != TransferState.Cancelled) {
-                State = TransferState.Failed;
-            }
-
-            base.OnTransferClosed (sender, args);
-        }
-
         protected override void OnChannelReady (object sender, EventArgs args)
         {
             base.OnChannelReady (sender, args);
@@ -217,7 +189,7 @@ namespace Banshee.Telepathy.API.Dispatchables
             
             OnReady (EventArgs.Empty);
             
-            if (State == TransferState.Completed && AutoStart) {
+            if (State == TransferState.Connected && AutoStart) {
                 Start ();
             }
         }

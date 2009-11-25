@@ -46,20 +46,10 @@ namespace Banshee.Telepathy.API.Dispatchables
         {
         }
 
-        private long bytes_sent = 0;
-        public long TotalBytesSent {
-            get { return bytes_sent; }
-            private set { bytes_sent = value; }
-        }
-
         private static bool auto_start = true;
         public static bool AutoStart {
             get { return auto_start; }
             set { auto_start = value; }
-        }
-        
-        public bool IsSendComplete {
-            get { return ExpectedBytes == TotalBytesSent; }
         }
 
         public static IEnumerable <OutgoingFileTransfer> GetAll (Connection conn)
@@ -97,13 +87,10 @@ namespace Banshee.Telepathy.API.Dispatchables
                     byte [] data = new byte[8192];
                     int read;
     
-    
                      while ( (read = fs.Read (data, 0, data.Length)) > 0) {
                         Socket.Send (data, 0, read, SocketFlags.None );
-                        TotalBytesSent += read;
+                        BytesTransferred += read;
                     }
-    
-                    //Console.WriteLine ("Sent {0} bytes", TotalBytesSent);
                 }
             }
             catch (Exception e) {
@@ -115,28 +102,12 @@ namespace Banshee.Telepathy.API.Dispatchables
             }
         }
 
-        protected override void OnTransferClosed (object sender, EventArgs args)
-        {
-            if (State != TransferState.Cancelled) {
-                PreviousState = State;
-            }
-            
-            if (IsSendComplete) {
-                State = TransferState.Completed;
-            }
-            else if (State != TransferState.Cancelled) {
-                State = TransferState.Failed;
-            }
-
-            base.OnTransferClosed (sender, args);
-        }
-        
         protected override void OnChannelReady (object sender, EventArgs args)
         {
             base.OnChannelReady (sender, args);
             OnReady (EventArgs.Empty);
             
-            if (State == TransferState.Completed && AutoStart) {
+            if (State == TransferState.Connected && AutoStart) {
                 Start ();
             }
         }

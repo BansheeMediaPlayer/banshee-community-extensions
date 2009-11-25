@@ -78,24 +78,24 @@
     <Compile Include="Banshee.Telepathy.Data\ContactTrackInfo.cs" />
     <Compile Include="Banshee.Telepathy.API\DispatchManager.cs" />
     <Compile Include="Banshee.Telepathy.Data\ContactPlaylistSource.cs" />
-    <Compile Include="Banshee.Telepathy.Data\DownloadMonitor.cs" />
+    <Compile Include="Banshee.Telepathy.Data\LibraryDownloadMonitor.cs" />
     <Compile Include="Banshee.Telepathy.API\Dispatchables\FileTransfer.cs" />
     <Compile Include="Banshee.Telepathy.API\Channels\FileTransferChannel.cs" />
     <Compile Include="Banshee.Telepathy.API\Dispatchers\FileTransferDispatcher.cs" />
     <Compile Include="Banshee.Telepathy.API\DBus\EmpathyHandler.cs" />
-    <Compile Include="Banshee.Telepathy.Gui\DownloadManager.cs" />
+    <Compile Include="Banshee.Telepathy.Gui\DownloadManagerUi.cs" />
     <Compile Include="Banshee.Telepathy.Gui\ColumnCellContactStatusIndicator.cs" />
     <Compile Include="Banshee.Telepathy.API\Dispatchables\DispatchableQueue.cs" />
     <Compile Include="Banshee.Telepathy.API\Avatar.cs" />
     <Compile Include="Banshee.Telepathy.API\Channels\StreamTubeChannel.cs" />
     <Compile Include="Banshee.Telepathy.API\Dispatchables\StreamActivity.cs" />
     <Compile Include="Banshee.Telepathy.API\Dispatchers\StreamActivityDispatcher.cs" />
-    <Compile Include="Banshee.Telepathy.Gui\UploadManager.cs" />
+    <Compile Include="Banshee.Telepathy.Gui\UploadManagerUi.cs" />
     <Compile Include="Banshee.Telepathy.API\Dispatchables\IncomingFileTransfer.cs" />
     <Compile Include="Banshee.Telepathy.API\Dispatchables\OutgoingFileTransfer.cs" />
     <Compile Include="Banshee.Telepathy.API\Dispatchables\StreamActivityListener.cs" />
     <Compile Include="Banshee.Telepathy.API\Channels\RequestedChannel.cs" />
-    <Compile Include="Banshee.Telepathy.Gui\TransferManager.cs" />
+    <Compile Include="Banshee.Telepathy.Gui\TransferManagerUi.cs" />
     <Compile Include="Banshee.Telepathy.Net\StreamingHTTPProxyServer.cs" />
     <Compile Include="Banshee.Telepathy.Net\StreamingServer.cs" />
     <Compile Include="Banshee.Telepathy.Data\IContactSource.cs" />
@@ -107,6 +107,12 @@
     <Compile Include="Banshee.Telepathy.API\Data\IServiceProvidingChannel.cs" />
     <Compile Include="Banshee.Telepathy.API\Data\ChannelInfoCollection.cs" />
     <Compile Include="Banshee.Telepathy.Net\BaseWebServer.cs" />
+    <Compile Include="Banshee.Telepathy.Data\TransferManager.cs" />
+    <Compile Include="Banshee.Telepathy.Data\Transfer.cs" />
+    <Compile Include="Banshee.Telepathy.Data\TransferList.cs" />
+    <Compile Include="Banshee.Telepathy.Data\TelepathyTransfer.cs" />
+    <Compile Include="Banshee.Telepathy.Data\TelepathyUpload.cs" />
+    <Compile Include="Banshee.Telepathy.Data\TelepathyDownload.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

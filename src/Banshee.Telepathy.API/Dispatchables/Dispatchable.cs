@@ -55,10 +55,10 @@ namespace Banshee.Telepathy.API.Dispatchables
     
     public abstract class Dispatchable : IDisposable
     {
-        public static event EventHandler <EventArgs> ResponseRequired;
-        public static event EventHandler <EventArgs> Ready;
-        public static event EventHandler <EventArgs> Closed;
-        public static event EventHandler <ErrorEventArgs> Error;
+        public event EventHandler <EventArgs> ResponseRequired;
+        public event EventHandler <EventArgs> Ready;
+        public event EventHandler <EventArgs> Closed;
+        public event EventHandler <ErrorEventArgs> Error;
 
         public event EventHandler <EventArgs> Disposing;
 
@@ -154,24 +154,28 @@ namespace Banshee.Telepathy.API.Dispatchables
         {
             Dispatchable d = obj as Dispatchable;
             if (d == null) {
-                throw new ArgumentNullException ("obj");
+                return false;
             }
             else if (d.Contact == null) {
                 return false;
             }
 
+            //Console.WriteLine (String.Format ("{0} {1} {2}", d.Contact.Handle, d.Key.ToString (), d.GetType ().ToString ()));
+            //Console.WriteLine (String.Format ("{0} {1} {2}", Contact.Handle, Key.ToString (), GetType ().ToString ()));
             return d.Contact.Equals (Contact) && d.Key.Equals (Key) && d.GetType ().Equals (this.GetType ());
         }
 
         public override int GetHashCode ()
         {
             if (Contact == null) {
-                throw new InvalidOperationException ("Contact is null");
+                return base.GetHashCode ();
             }
             
             return Contact.GetHashCode () + Key.GetHashCode () + GetType ().GetHashCode ();
         }
 
+        internal protected abstract void Initialize ();
+        
         public void Dispose ()
         {
             Dispose (true);

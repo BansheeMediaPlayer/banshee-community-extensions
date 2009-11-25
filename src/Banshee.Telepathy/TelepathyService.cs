@@ -57,15 +57,15 @@ namespace Banshee.Telepathy
         
         private ContactContainerSource container;
         
-        private DownloadManager download_manager;
-        private UploadManager upload_manager;
+        private static DownloadManagerUi download_manager;
+        private static UploadManagerUi upload_manager;
         
         // track ConnectionManagers we're using and ensure only one per connection
         private IDictionary <string, Connection> conn_map;
         
         // track ContactSources for each Connection. Needed since all contacts for all connections
         // are lumped under one container source
-        private IDictionary <string, IDictionary <uint,ContactSource>> source_map;
+        private IDictionary <string, IDictionary <Contact, ContactSource>> source_map;
                 
         public TelepathyService()
         {
@@ -82,6 +82,14 @@ namespace Banshee.Telepathy
         private static readonly string cache_dir = Paths.Combine (Paths.ExtensionCacheRoot, "contacts");
         public static string CacheDirectory {
             get { return cache_dir; }
+        }
+        
+        public static DownloadManagerUi DownloadManager {
+            get { return download_manager; }
+        }
+        
+        public static UploadManagerUi UploadManager {
+            get { return upload_manager; }
         }
         
         void IExtensionService.Initialize ()
@@ -102,10 +110,12 @@ namespace Banshee.Telepathy
             
             if (download_manager != null) {
                 download_manager.Dispose ();
+                download_manager = null;
             }
 
             if (upload_manager != null) {
                 upload_manager.Dispose ();
+                upload_manager = null;
             }
             
             if (container != null) {
@@ -143,13 +153,13 @@ namespace Banshee.Telepathy
             NDesk.DBus.BusG.Init ();
 
             conn_map = new Dictionary <string, Connection> ();
-            source_map = new Dictionary <string, IDictionary <uint, ContactSource>> ();
+            source_map = new Dictionary <string, IDictionary <Contact, ContactSource>> ();
             
             container = new ContactContainerSource (this);
             ServiceManager.SourceManager.AddSource (container);
 
-            download_manager = new DownloadManager (this);
-            upload_manager = new UploadManager (this);
+            download_manager = new DownloadManagerUi (this);
+            upload_manager = new UploadManagerUi (this);
 
             try {
                 locator = new ConnectionLocator ();
@@ -226,7 +236,7 @@ namespace Banshee.Telepathy
             
             try {
                 //Log.DebugFormat ("Connection object for {0} created successfully", conn.AccountId);
-                source_map.Add (conn.AccountObjectPath, new Dictionary <uint, ContactSource> ());
+                source_map.Add (conn.AccountObjectPath, new Dictionary <Contact, ContactSource> ());
                 conn.Disconnected += OnDisconnected;
 
                 conn.Roster.RosterStateChanged += OnRosterStateChanged;
@@ -255,7 +265,7 @@ namespace Banshee.Telepathy
             if (contact.SupportedChannels.GetChannelInfo <DBusTubeChannelInfo> (MetadataProviderService.BusName) != null) {
                 ContactSource source = new ContactSource (contact);
                 container.AddChildSource (source);
-                source_map[contact.Connection.AccountObjectPath].Add (contact.Handle, source);
+                source_map[contact.Connection.AccountObjectPath].Add (contact, source);
             }
 
             contact.ContactServicesChanged += OnContactServicesChanged;
@@ -263,16 +273,18 @@ namespace Banshee.Telepathy
 
         private void RemoveContactSource (Contact contact)
         {
-            if (source_map[contact.Connection.AccountObjectPath].ContainsKey (contact.Handle)) {
-                ContactSource source = source_map[contact.Connection.AccountObjectPath][contact.Handle];
-                //source.Contact.ContactServicesChanged -= OnContactServicesChanged;
+            if (source_map[contact.Connection.AccountObjectPath].ContainsKey (contact)) {
+                ContactSource source = source_map[contact.Connection.AccountObjectPath][contact];
+                if (source.Contact.Connection.Status == ConnectionStatus.Disconnected) {
+                    source.Contact.ContactServicesChanged -= OnContactServicesChanged;
+                }
                 
                 // remove and close all channels, in case we don't get closed events
                 contact.DispatchManager.RemoveAll (contact);
                 
                 source.Dispose ();
                 container.RemoveChildSource (source);
-                source_map[contact.Connection.AccountObjectPath].Remove (contact.Handle);
+                source_map[contact.Connection.AccountObjectPath].Remove (contact);
             }
         }
 
@@ -287,10 +299,10 @@ namespace Banshee.Telepathy
 
         private void RemoveContactSources (Roster roster)
         {
-            foreach (KeyValuePair <uint, ContactSource> kv in source_map[roster.Connection.AccountObjectPath]) {
-                kv.Value.Dispose ();
-                container.RemoveChildSource (kv.Value);
-                //kv.Value.Contact.ContactServicesChanged -= OnContactServicesChanged;
+            ICollection<ContactSource> collection = source_map[roster.Connection.AccountObjectPath].Values;
+            IEnumerator<ContactSource> e;
+            while ((e = collection.GetEnumerator ()).MoveNext ()) {
+                RemoveContactSource (e.Current.Contact);
             }
 
             source_map[roster.Connection.AccountObjectPath].Clear ();
@@ -303,7 +315,7 @@ namespace Banshee.Telepathy
 
             Log.DebugFormat ("{0} in OnContactServicesChanged", contact.Name);
             
-            if (source_map[contact.Connection.AccountObjectPath].ContainsKey (contact.Handle)) {
+            if (source_map[contact.Connection.AccountObjectPath].ContainsKey (contact)) {
                 if (!has_service) {
                     RemoveContactSource (contact);
                 }

@@ -136,6 +136,13 @@ namespace Banshee.Telepathy.Data
             get { return false; }
         }
 
+        internal void InvalidateCaches ()
+        {
+            ThreadAssist.SpawnFromMain (delegate {
+                base.InvalidateCaches ();
+            });
+        }
+        
         public void AddTracks (IDictionary <string, object> [] tracks)
         {
             int count = 0;

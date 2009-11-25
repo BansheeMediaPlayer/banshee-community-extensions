@@ -63,7 +63,6 @@ namespace Banshee.Telepathy.API.Dispatchables
 //            }
 
             this.tube = tube;
-            Initialize ();
         }
 
         public string Service {
@@ -87,7 +86,7 @@ namespace Banshee.Telepathy.API.Dispatchables
             return Service;
         }
 
-        private void Initialize ()
+        internal protected override void Initialize ()
         {
             tube.ChannelReady += OnChannelReady;
             tube.Closed += OnTubeClosed;
@@ -103,7 +102,7 @@ namespace Banshee.Telepathy.API.Dispatchables
             }
             
             if (disposing) {
-                //OnDisposing (EventArgs.Empty);
+                Close ();
                 
                 if (tube != null) {
                     tube.ChannelReady -= OnChannelReady;

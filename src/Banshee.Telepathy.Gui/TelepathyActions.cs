@@ -173,25 +173,19 @@ namespace Banshee.Telepathy.Gui
         private void OnDownloadTrack (object o, EventArgs args)
         {
             IContactSource source = ServiceManager.SourceManager.ActiveSource as IContactSource;
-            Contact contact = source.Contact;
-            if (contact == null || !source.IsDownloadingAllowed) {
+            if (source == null || !source.IsDownloadingAllowed) {
                 return;
             }
-                                    
-            DBusActivity activity = contact.DispatchManager.Get <DBusActivity> (contact, MetadataProviderService.BusName);
-
-            if (activity != null) {            
-                IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
-                try {
-                    if (service != null) {
-                        foreach (DatabaseTrackInfo track in source.DatabaseTrackModel.SelectedItems) {
-                            ContactTrackInfo.From (track).RegisterTransferHandlers ();
-                            service.DownloadFile (track.ExternalId , "audio/mpeg");
-                        }
-                    }
-                }
-                catch (Exception e) {
-                    Log.Exception (e);
+            
+            foreach (DatabaseTrackInfo track in source.DatabaseTrackModel.SelectedItems) {
+                TelepathyDownloadKey key = new TelepathyDownloadKey (ContactTrackInfo.From (track));
+                TelepathyDownload download = TelepathyService.DownloadManager.DownloadManager.Get (key);
+                if (download == null) {
+                    TelepathyService.DownloadManager.DownloadManager.Queue (
+                        new TelepathyDownload (new TelepathyDownloadKey (ContactTrackInfo.From (track)))
+                    );
+                } else {
+                    download.Requeue ();
                 }
             }
         }

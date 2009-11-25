@@ -93,15 +93,21 @@ FILES =  \
 	Banshee.Telepathy.Data/ContactSource.cs \
 	Banshee.Telepathy.Data/ContactTrackInfo.cs \
 	Banshee.Telepathy.Data/ContactPlaylistSource.cs \
-	Banshee.Telepathy.Data/DownloadMonitor.cs \
+	Banshee.Telepathy.Data/LibraryDownloadMonitor.cs \
 	Banshee.Telepathy.Data/IContactSource.cs \
+	Banshee.Telepathy.Data/TelepathyDownload.cs \
+	Banshee.Telepathy.Data/TransferManager.cs \
+	Banshee.Telepathy.Data/TelepathyTransfer.cs \
+	Banshee.Telepathy.Data/TelepathyUpload.cs \
+	Banshee.Telepathy.Data/Transfer.cs \
+	Banshee.Telepathy.Data/TransferList.cs \
 	Banshee.Telepathy.Gui/ColumnCellContactStatusIndicator.cs \
 	Banshee.Telepathy.Gui/ContactRequestDialog.cs \
-	Banshee.Telepathy.Gui/DownloadManager.cs \
+	Banshee.Telepathy.Gui/DownloadManagerUi.cs \
 	Banshee.Telepathy.Gui/ContactSourceContents.cs \
 	Banshee.Telepathy.Gui/TelepathyActions.cs \
-	Banshee.Telepathy.Gui/TransferManager.cs \
-	Banshee.Telepathy.Gui/UploadManager.cs \
+	Banshee.Telepathy.Gui/TransferManagerUi.cs \
+	Banshee.Telepathy.Gui/UploadManagerUi.cs \
 	Banshee.Telepathy.DBus/BaseProvider.cs \
 	Banshee.Telepathy.DBus/IMetadataProvider.cs \
 	Banshee.Telepathy.DBus/IMetadataProviderService.cs \

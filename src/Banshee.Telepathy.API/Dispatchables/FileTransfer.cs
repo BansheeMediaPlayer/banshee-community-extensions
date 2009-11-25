@@ -40,6 +40,7 @@ namespace Banshee.Telepathy.API.Dispatchables
         LocalPending,
         RemotePending,
         Connected,
+        Initiated,
         InProgress,
         Completed,
         Cancelled,
@@ -48,13 +49,12 @@ namespace Banshee.Telepathy.API.Dispatchables
 
     public class BytesTransferredEventArgs : EventArgs
     {
-        private long bytes;
-
         public BytesTransferredEventArgs (long bytes)
         {
             this.bytes = bytes;
         }
 
+        private long bytes;
         public long Bytes {
             get { return bytes; }
         }
@@ -62,13 +62,12 @@ namespace Banshee.Telepathy.API.Dispatchables
 
     public class TransferStateChangedEventArgs : EventArgs
     {
-        private TransferState state;
-
         public TransferStateChangedEventArgs (TransferState state)
         {
             this.state = state;
         }
 
+        private TransferState state;
         public TransferState State {
             get { return state; }
         }
@@ -76,38 +75,39 @@ namespace Banshee.Telepathy.API.Dispatchables
 
     public class TransferClosedEventArgs : EventArgs
     {
-        private TransferState state_on_close;
-        private TransferState previous_state;
-
-        public TransferClosedEventArgs (TransferState state_on_close, TransferState previous_state)
+        public TransferClosedEventArgs (TransferState state, long expected_bytes, long bytes_reported)
         {
-            this.state_on_close = state_on_close;
-            this.previous_state = previous_state;
+            this.state = state;
+            this.expected_bytes = expected_bytes;
+            this.bytes_reported = bytes_reported;
         }
 
-        public TransferState StateOnClose {
-            get { return state_on_close; }
+        private TransferState state;
+        public TransferState State {
+            get { return state; }
         }
-
-        public TransferState PreviousState {
-            get { return previous_state; }
+        
+        private long expected_bytes;
+        public long ExpectedBytes {
+            get { return expected_bytes; }
+        }
+        
+        private long bytes_reported;
+        public long BytesReported {
+            get { return bytes_reported; }
         }
     }
     
     public abstract class FileTransfer : Dispatchable
     {
-        public event EventHandler <BytesTransferredEventArgs> BytesTransferred;
-        
-        //public static event EventHandler <TransferClosedEventArgs> TransferClosed;
-        public static event EventHandler <TransferStateChangedEventArgs> TransferStateChanged;
-        public static event EventHandler <EventArgs> TransferInitialized;
-
+        public event EventHandler <BytesTransferredEventArgs> ProgressChanged;
+        public event EventHandler <TransferStateChangedEventArgs> TransferStateChanged;
+        public event EventHandler <EventArgs> TransferInitialized;
         
         internal FileTransfer (Contact c,  FileTransferChannel ft) : base (c, ft)
         {
             filename = ft.Filename;
             Key = OriginalFilename;
-            Initialize ();
         }
 
         private Socket socket;
@@ -146,10 +146,20 @@ namespace Banshee.Telepathy.API.Dispatchables
             get { return (Channel as FileTransferChannel).Size; }
         }
 
-        private long total_bytes_reported = 0;
-        public long TotalBytesReported {
-            get { return total_bytes_reported; }
-            protected set { total_bytes_reported = value; }
+        private long bytes_reported = 0;
+        public long BytesReported {
+            get { return bytes_reported; }
+            protected set { bytes_reported = value; }
+        }
+
+        private long bytes_transferred = 0;
+        public long BytesTransferred {
+            get { return bytes_transferred; }
+            protected set { bytes_transferred = value; }
+        }
+        
+        public bool IsComplete {
+            get { return ExpectedBytes == BytesTransferred; }
         }
         
         private TransferState state = TransferState.Idle;
@@ -159,18 +169,11 @@ namespace Banshee.Telepathy.API.Dispatchables
                 if (value < TransferState.Idle || value > TransferState.Failed) {
                     throw new ArgumentOutOfRangeException ("state", "Not of type TransferState");
                 }
-                state = value;
-                OnTransferStateChanged (new TransferStateChangedEventArgs (state));
-            }
-        }
-
-        private TransferState previous_state = TransferState.Idle;
-        protected TransferState PreviousState {
-            get { return previous_state; }
-            set { if (value < TransferState.Idle || value > TransferState.Failed) {
-                    throw new ArgumentOutOfRangeException ("previous_state", "Not of type TransferState");
+                
+                if (state != value) {
+                    state = value;
+                    OnTransferStateChanged (new TransferStateChangedEventArgs (state));
                 }
-                previous_state = value;
             }
         }
 
@@ -179,12 +182,12 @@ namespace Banshee.Telepathy.API.Dispatchables
             get { return queue; }
         }
         
-        public static FileTransfer DequeueIfQueued ()
+        public static FileTransfer Dequeue ()
         {
             return queue.Dequeue ();
         }
         
-        public static FileTransfer DequeueIfQueued (Connection conn)
+        public static FileTransfer Dequeue (Connection conn)
         {
             if (conn == null) {
                 throw new ArgumentNullException ("conn");                
@@ -207,7 +210,7 @@ namespace Banshee.Telepathy.API.Dispatchables
             return queue.Count (conn);
         }
         
-        protected virtual void Initialize ()
+        internal protected override void Initialize ()
         {
             OnTransferInitialized (EventArgs.Empty);
             FileTransferChannel ft = Channel as FileTransferChannel;
@@ -262,7 +265,6 @@ namespace Banshee.Telepathy.API.Dispatchables
         
         public void Cancel ()
         {
-            PreviousState = state;
             State = TransferState.Cancelled;
             Close ();
         }
@@ -277,10 +279,9 @@ namespace Banshee.Telepathy.API.Dispatchables
                 throw new InvalidOperationException ("Transfer has already been started.");
             }
 
+            State = TransferState.Initiated;
             queue.Remove (this);
             
-            State = TransferState.InProgress;
-
             ThreadPool.QueueUserWorkItem (delegate {
                 Transfer ();
             });
@@ -307,14 +308,15 @@ namespace Banshee.Telepathy.API.Dispatchables
         protected long bytes_last_reported = 0;
         protected void OnTransferredBytesChanged (ulong bytes)
         {
-            OnBytesTransferred (new BytesTransferredEventArgs ((long) bytes - bytes_last_reported));
+            State = TransferState.InProgress;
+            OnProgressChanged (new BytesTransferredEventArgs ((long) bytes - bytes_last_reported));
             bytes_last_reported = (long) bytes;
-            TotalBytesReported = (long) bytes;
+            BytesReported = (long) bytes;
         }
         
-        protected virtual void OnBytesTransferred (BytesTransferredEventArgs args)
+        protected virtual void OnProgressChanged (BytesTransferredEventArgs args)
         {
-            EventHandler <BytesTransferredEventArgs> handler = BytesTransferred;
+            EventHandler <BytesTransferredEventArgs> handler = ProgressChanged;
             if (handler !=  null) {
                 handler (this, args);
             }
@@ -322,7 +324,15 @@ namespace Banshee.Telepathy.API.Dispatchables
         
         protected virtual void OnTransferClosed (object sender, EventArgs args)
         {
-            OnClosed (new TransferClosedEventArgs (state, previous_state));
+            if (State != TransferState.Cancelled) {
+                if (IsComplete) {
+                    State = TransferState.Completed;
+                } else {
+                    State = TransferState.Failed;
+                }
+            }
+            
+            OnClosed (new TransferClosedEventArgs (state, ExpectedBytes, BytesReported));
             
             queue.Remove (this);
 
@@ -333,16 +343,6 @@ namespace Banshee.Telepathy.API.Dispatchables
                 catch (Exception) {}
             }
             socket = null;
-            
-//            EventHandler <TransferClosedEventArgs> handler = TransferClosed;
-//            if (handler !=  null) {
-//                handler (this, new TransferClosedEventArgs (state, previous_state));
-//            }
-//
-//            if (Key != null && AutoRemoveOnClose && Contact != null) {
-//                DispatchManager dm = Contact.DispatchManager;
-//                dm.Remove (Contact, Key, this.GetType ());
-//            }
         }
 
         protected override void OnChannelReady (object sender, EventArgs args)

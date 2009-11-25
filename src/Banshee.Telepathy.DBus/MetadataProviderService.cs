@@ -39,8 +39,6 @@ using Banshee.Telepathy.Gui;
 using Banshee.Telepathy.API;
 using Banshee.Telepathy.API.Dispatchables;
 
-
-
 using Hyena.Data.Sqlite;
     
 using NDesk.DBus;
@@ -191,19 +189,9 @@ namespace Banshee.Telepathy.DBus
                 content_type = "application/octet-stream";
             }
 
-            Contact contact = activity.Contact;
-            DispatchManager dm = contact.DispatchManager;
-            
-            if (!dm.Exists <OutgoingFileTransfer> (contact, external_id.ToString ())) {
-                
-                IDictionary <string, object> properties = new Dictionary <string, object> ();
-                properties.Add ("Filename", external_id.ToString ());
-                properties.Add ("Description", "Telepathy extension for Banshee transfer");
-                properties.Add ("ContentType", content_type);
-                properties.Add ("Size", (ulong) track.FileSize);
-    
-                dm.Request <OutgoingFileTransfer> (contact, properties);
-            }
+             TelepathyService.UploadManager.UploadManager.Queue (
+                    new TelepathyUpload (new TelepathyUploadKey (activity.Contact, external_id.ToString (), track, content_type))
+                );
         }
 
         public string GetTrackPath (long id)
