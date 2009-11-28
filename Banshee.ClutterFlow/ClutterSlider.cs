@@ -117,7 +117,7 @@ namespace Banshee.ClutterFlow
 		private const double arrow_height = max_height;
 		private const double arrow_width = arrow_height*1.25;
 		
-		public void Update() {
+		public virtual void Update() {
 			outline.Clear();
 			Cairo.Context context = outline.Create();
 			

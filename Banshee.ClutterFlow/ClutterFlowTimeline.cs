@@ -63,7 +63,7 @@ namespace Banshee.ClutterFlow
 		}
 		
 		public double RelativeTarget {
-			get { return target/ (double) (indexCount-1); }
+			get { return target / (double) (indexCount-1); }
 		}
 		
 		protected double progress = 0;

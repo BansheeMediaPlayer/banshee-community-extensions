@@ -46,32 +46,40 @@ namespace Banshee.ClutterFlow
 		protected float OffsetRotationAngle = 0;
 		
 		protected float width = 450;
-		protected float CenterX = 225;
 		public float Width {
 			get { return width; }
 			set {
 				if (value!=width) {
 					width = value;
-					CenterX = value*0.5f;
+					centerX = value*0.5f;
 					UpdateXStepAndSideWidth ();
 					UpdateActors ();
 				}
 			}
 		}
+
 		protected float height = 200;
-		protected float CenterY = 100;
 		public float Height {
 			get { return height; }
 			set {
 				if (value!=height) {
 					height = value;
-					CenterY = value*0.45f;
+					centerY = value*0.45f;
 					UpdateActors ();
 				}
 			}
 		}
 		
+		protected float centerY = 100;
+		public float CenterY {
+			get { return centerY; }
+		}
+
 		protected float OffsetCenterX = 0;
+		protected float centerX = 225;
+		public float CenterX {
+			get { return centerX; }
+		}
 		
 		private float CoverCount {
 			get { return coverManager.VisibleCovers; }

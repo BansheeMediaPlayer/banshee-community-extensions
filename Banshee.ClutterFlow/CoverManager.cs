@@ -120,6 +120,7 @@ namespace Banshee.ClutterFlow
 				else if (value >= TotalCovers) value = TotalCovers-1;
 				if (value!=targetIndex) {
 					targetIndex = value;
+					currentCover = null; //to prevent clicks to load the old centered cover!
 					InvokeTargetIndexChanged();
 				}
 			}
@@ -145,7 +146,7 @@ namespace Banshee.ClutterFlow
 		
 		public CoverManager () : base ()
 		{
-			UpdateTimeline(1); //Dummy timeline
+			UpdateTimeline(2); //Dummy timeline
 			cover_cache = new CoverGroupCache (this);
 			behaviour = new FlowBehaviour(this);
 		}

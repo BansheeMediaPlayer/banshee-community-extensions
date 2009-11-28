@@ -50,20 +50,21 @@ using ScrolledWindow=Gtk.ScrolledWindow;
 
 namespace Banshee.ClutterFlow
 {
-    public class ClutterFlowSourceContents : VBox, ISourceContents, ITrackModelSourceContents
+
+    public class ClutterFlowContents : VBox
     {
+
+		private string name;
+		
+		private Paned container;
+		private Hyena.Widgets.RoundedFrame frame;
         private ClutterFlowListView filter_view;
+		private Gtk.ScrolledWindow main_scrolled_window;
         private TrackListView main_view;
 
-        private string name;
-        private Gtk.ScrolledWindow main_scrolled_window;
-		
-		
-        private Paned container;
-
-        public ClutterFlowSourceContents ()
+        public ClutterFlowContents ()
         {
-            this.name = "albumartist";
+			name = "ClutterFlowView";
             InitializeViews ();		
 			Layout ();
             NoShowAll = true;
@@ -81,16 +82,21 @@ namespace Banshee.ClutterFlow
 		
         protected void InitializeViews ()
         {
-			Clutter.Application.InitForToolkit();
             SetupMainView (main_view = new TrackListView ());
-			filter_view = new ClutterFlowListView ();
+			SetupFilterView ();
         }
-        
+
         protected void SetupMainView (TrackListView main_view)
         {
             this.main_view = main_view;
             main_scrolled_window = SetupView (main_view);
 			main_view.HeaderVisible = true;
+        }
+
+        protected void SetupFilterView ()
+        {
+			Clutter.Application.InitForToolkit();
+			filter_view = new ClutterFlowListView ();
         }
 		
         private ScrolledWindow SetupView (Widget view)
@@ -114,23 +120,53 @@ namespace Banshee.ClutterFlow
         {
             // The main container gets destroyed since it will be recreated.
             if (container != null) {
-				if (filter_view != null) container.Remove (filter_view);
+				if (frame != null) container.Remove (frame);
 				if (main_scrolled_window != null) container.Remove (main_scrolled_window);	
                 Remove (container);
             }
         }
+
+		public ClutterFlowListView FilterView {
+			get { return filter_view; }
+		}
+
+		public void UndoFullscreenReparent ()
+		{
+            if (filter_view.Parent != frame) {
+				if (filter_view.Parent != null)
+					(filter_view.Parent as Container).Remove (filter_view);
+				frame.Add (filter_view);
+                filter_view.Show ();
+            }
+			ShowPack ();
+		}
+		
+		public void FullscreenReparent (Widget new_parent)
+		{
+            if (filter_view.Parent != new_parent) {
+                filter_view.Reparent (new_parent);
+                filter_view.Show ();
+            }
+		}
 
         private void Layout ()
         {
             Reset ();
             
             container = new VPaned ();
-			
-			container.Pack1 (filter_view, false, false);
+
+            frame = new Hyena.Widgets.RoundedFrame ();
+            frame.SetFillColor (new Cairo.Color (0, 0, 0));
+            frame.DrawBorder = false;
+			frame.Add (filter_view);
+            frame.Show ();
+
+			container.Pack1 (frame, false, false);			
             container.Pack2 (main_scrolled_window, true, false);
 
             container.Position = 175;
             PersistentPaneController.Control (container, ControllerName (-1));
+			
             ShowPack ();
         }
 		
@@ -160,65 +196,9 @@ namespace Banshee.ClutterFlow
             }
         }
 
-#region Implement ISourceContents
-
-        protected ITrackModelSource source;
-		
-        public bool SetSource (ISource source)
-        {
-			this.source = source as ITrackModelSource;
-			if (this.source == null) {
-				return false;
-			}			
-			
-            IFilterableSource filterable_source = ServiceManager.SourceManager.MusicLibrary as IFilterableSource;
-            if (filterable_source == null) {
-            	return false;
-            }
-            if (filterable_source.CurrentFilters != null) {
-                foreach (IListModel model in filterable_source.CurrentFilters) {
-                    if (model is IListModel<AlbumInfo>) {
-                        filter_view.SetModel (model as IListModel<AlbumInfo>);
-					}
-                }
-			}
-
-			main_view.SetModel(this.source.TrackModel);
-			
-			return true;
-        }
-
-        public void ResetSource ()
-        {
-            source = null;
-            main_view.SetModel(null);
-        }		
-		
-        public ISource Source {
-            get { return source; }
-        }
-
-        public Widget Widget {
-            get { return this; }
-        }
-
-#endregion
-		
-        IListView<TrackInfo> ITrackModelSourceContents.TrackView {
-            get { return main_view; }
-        }
-
         public TrackListView TrackView {
             get { return main_view; }
         }
-		
-		public ClutterFlowListView FilterView {
-			get { return filter_view; }
-		}
-
-        /*public TrackListModel TrackModel {
-            get { return (TrackListModel) track_model; }
-        }*/
 
     }
 }

@@ -32,6 +32,15 @@ namespace Banshee.ClutterFlow
 			this.SliderHasChanged += HandleSliderHasChanged;
 			this.SliderHasMoved += HandleSliderHasMoved;
 		}
+
+		public override void Update ()
+		{
+			if (Stage!=null) {
+				SetAnchorPoint(Width*0.5f, Height*0.5f);
+				SetPosition(coverManager.Behaviour.CenterX, Math.Min(coverManager.Behaviour.CenterY + coverManager.Behaviour.CoverWidth * 1.25f, Stage.Height - Height));
+			}
+			base.Update ();
+		}
 		
         protected void HandleCoversChanged (object sender, EventArgs e)
         {
@@ -46,7 +55,7 @@ namespace Banshee.ClutterFlow
 			ignoreTargetIndexOnce = false;
 		}
 		
-		void HandleSliderHasMoved(object sender, EventArgs e)
+		protected void HandleSliderHasMoved(object sender, EventArgs e)
 		{
 			ignoreTargetIndexOnce = true;
 			coverManager.TargetIndex = HandlePostionFromIndex;

@@ -18,7 +18,7 @@ namespace Banshee.ClutterFlow
 	
 	public delegate void ForEachCover(CoverGroup o);
 	
-	public partial class ClutterFlowListView : Clutter.Embed
+	public class ClutterFlowListView : Clutter.Embed
 	{
 		
 		public event EventHandler UpdatedAlbum;
@@ -55,13 +55,12 @@ namespace Banshee.ClutterFlow
 		private double mouse_x, mouse_y;
 		
 		private ClutterFlowSlider slider;
-		private Clutter.Text srf_text;
-		private Animation text_fade;
+		private CoverCaption caption;
 		
 		private const float rotSens = 0.00001f;
-		private const float viewportMaxAngleX = -40;// maximum X viewport angle
+		private const float viewportMaxAngleX = -30;// maximum X viewport angle
 		private const float viewportMaxAngleY = -5;	// maximum Y viewport angle
-		private float viewportAngleX = -15;			// current X viewport angle
+		private float viewportAngleX = -5;			// current X viewport angle
 		public float ViewportAngleX {
 			get { return viewportAngleX; }
 			set {
@@ -69,7 +68,7 @@ namespace Banshee.ClutterFlow
 					viewportAngleX = value;
 					if (viewportAngleX < viewportMaxAngleX) viewportAngleX = viewportMaxAngleX;
 					if (viewportAngleX > 0) viewportAngleX = 0;
-					coverManager.SetRotation(RotateAxis.X, viewportAngleX, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZNear);
+					coverManager.SetRotation(RotateAxis.X, viewportAngleX, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZFar);
 				}
 			}
 		}
@@ -81,16 +80,15 @@ namespace Banshee.ClutterFlow
 					viewportAngleY = value;
 					if (viewportAngleY < viewportMaxAngleY) viewportAngleY = viewportMaxAngleY;
 					if (viewportAngleY > -viewportMaxAngleY) viewportAngleY = -viewportMaxAngleY;
-					coverManager.SetRotation(RotateAxis.Y, viewportAngleY, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZNear);
+					coverManager.SetRotation(RotateAxis.Y, viewportAngleY, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZFar);
 				}
 			}
 		}
 
 		#region Initialisation
         public ClutterFlowListView () : base ()
-        {	
+        {
 			SetSizeRequest (500, 300);
-			
 			Clutter.Global.MotionEventsEnabled = true;
 			
 			Stage.AllocationChanged += HandleAllocationChanged;
@@ -101,15 +99,12 @@ namespace Banshee.ClutterFlow
 			SetupViewport();
 			SetupSlider();
 			SetupAlbumText();
-			
-			coverManager.NewCurrentCover += HandleNewCurrentCover;
 		}
 
 		protected void SetupViewport() {
 			Stage.Color = new Clutter.Color (0x00, 0x00, 0x00, 0xff);
 			
 			coverManager.SetRotation(RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
-			//coverManager.Depth = viewportOffsetZ;
 			Stage.Add(coverManager);
 			coverManager.LowerBottom();
 		}
@@ -120,25 +115,18 @@ namespace Banshee.ClutterFlow
 		}
 		
 		protected void SetupAlbumText() {
-			srf_text = new Text("Sans Bold 7.5", "Unkown Artist\nUnkown Album", new Clutter.Color(1.0f,1.0f,1.0f,1.0f));
-			Stage.Add(srf_text);
-			srf_text.Show();
-			srf_text.Depth = 200;
-			srf_text.Editable = false;
-			srf_text.Selectable = false;
-			srf_text.Activatable = false;
-			srf_text.CursorVisible = false;
-			srf_text.LineAlignment = Pango.Alignment.Center;
-			RedrawAlbumText();
+			caption = new CoverCaption(coverManager, "Sans Bold 10", new Clutter.Color(1.0f,1.0f,1.0f,1.0f));
+			Stage.Add(caption);
 		}
 		#endregion
 		
 		#region Rendering
 		//Update all elements:
-		protected void RedrawInterface() {
-			RedrawSlider();
-			RedrawAlbumText();
-			RedrawViewport();
+		protected void RedrawInterface () 
+		{
+			slider.Update ();
+			caption.Update ();
+			RedrawViewport ();
 		}
 		
 		//Update the coverStage position:
@@ -148,37 +136,16 @@ namespace Banshee.ClutterFlow
 			if (!coverManager.IsVisible) coverManager.Show();
 			coverManager.LowerBottom();
 		}
-		
-		//Fades text out and in:
-		protected void UpdateAlbumText() {
-			if (text_fade==null || !text_fade.Timeline.IsPlaying) {
-				text_fade = srf_text.Animatev((ulong) AnimationMode.Linear.value__, 150, new string[] { "opacity" }, new GLib.Value((byte) 0));
-				text_fade.Completed += delegate(object sender, EventArgs e) {
-					RedrawAlbumText();
-					srf_text.Animatev((ulong) AnimationMode.Linear.value__, 150, new string[] { "opacity" }, new GLib.Value((byte) 255));
-				};
-			}
-		}
-		//Updates the text surface:
-		protected void RedrawAlbumText() {
-			if (CurrentAlbum!=null)
-				srf_text.Value = CurrentAlbum.ArtistName + "\n" + CurrentAlbum.Title;
-			else
-				srf_text.Value = "Unkown Artist\nUnkown Album";
-			//srf_text.SetScale(coverWidth*fontScale/srf_text.Height, coverWidth*fontScale/srf_text.Height);
-			srf_text.SetAnchorPoint(srf_text.Width*0.5f, 0);
-			srf_text.SetPosition(Stage.Width*0.5f, 5 + Stage.Height*0.125f);
-		}
-
-		//Redraws and positions the slider:
-		protected void RedrawSlider() {
-			slider.Update();
-			slider.SetAnchorPoint(slider.Width*0.5f,slider.Height*0.5f);
-			slider.SetPosition(Stage.Width*0.5f, Stage.Height - 20);
-		}
 		#endregion
 		
 		#region Event Handling
+
+		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
+		{
+			base.OnSizeAllocated (allocation);
+			RedrawInterface();
+		}
+
 		
 		private void HandleAllocationChanged(object o, AllocationChangedArgs args)
 		{	
@@ -187,7 +154,8 @@ namespace Banshee.ClutterFlow
 		
 		void HandleButtonReleaseEvent(object o, Clutter.ButtonReleaseEventArgs args)
 		{
-			if (!dragging && args.Event.Button==1 && UpdatedAlbum!=null) UpdatedAlbum (coverManager.CurrentCover.CreateClickClone(), EventArgs.Empty);
+			if (args.Event.Button==1 && !dragging  && coverManager.CurrentCover!=null && UpdatedAlbum!=null) 
+				UpdatedAlbum (coverManager.CurrentCover.CreateClickClone(), EventArgs.Empty);
 		}
 		
 		private void HandleMotionEvent(object o, Clutter.MotionEventArgs args)
@@ -213,11 +181,6 @@ namespace Banshee.ClutterFlow
 			if (Backward) coverManager.TargetIndex--;
 			else coverManager.TargetIndex++;
 		}
-		
-        void HandleNewCurrentCover (CoverGroup cover, EventArgs e)
-        {
-			UpdateAlbumText (); //TODO suprimate this by creating a special AlbumText class + needs to fade out seperately
-        }
 		#endregion
 		
 	}	

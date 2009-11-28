@@ -60,11 +60,15 @@
       <HintPath>..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-sharp.dll</HintPath>
     </Reference>
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Banshee.NowPlaying, Version=1.5.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\usr\lib\banshee-1\Extensions\Banshee.NowPlaying.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ClutterFlowSource.cs" />
-    <Compile Include="ClutterFlowSourceContents.cs" />
+    <Compile Include="ClutterFlowContents.cs" />
     <Compile Include="CoverGroup.cs" />
     <Compile Include="ClutterFlowListView.cs" />
     <Compile Include="CoverManager.cs" />
@@ -78,6 +82,8 @@
     <Compile Include="ClutterFlowTimeline.cs" />
     <Compile Include="FlowBehaviour.cs" />
     <Compile Include="ClutterFlowSlider.cs" />
+    <Compile Include="CoverCaption.cs" />
+    <Compile Include="ClutterFlowInterface.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

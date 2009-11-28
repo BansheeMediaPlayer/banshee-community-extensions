@@ -41,53 +41,63 @@ namespace Banshee.ClutterFlow
     public class ClutterFlowSource : Source, IDisposable, ITrackModelSource
     {
 	
-        private ClutterFlowSourceContents clutter_flow_contents;
+        private ClutterFlowInterface clutter_flow_interface;
 		private MemoryTrackListModel track_model = new MemoryTrackListModel();
         
-        //public ClutterFlowSource () : base("clutterflow", ServiceManager.SourceManager.MusicLibrary)
 		public ClutterFlowSource () : base("ClutterFlow", "ClutterFlow", 0)
         {
 			TypeUniqueId = "ClutterFlow";
-            //Initialize ();
-            //AfterInitialized ();	
 		
-            clutter_flow_contents = new ClutterFlowSourceContents ();
-			clutter_flow_contents.FilterView.UpdatedAlbum += HandleUpdatedAlbum;
-			clutter_flow_contents.SetSource(this);
-			Properties.SetString ("Icon.Name", "clutterflow-icon");
-            Properties.Set<ISourceContents> ("Nereid.SourceContents", clutter_flow_contents);
+            clutter_flow_interface = new ClutterFlowInterface ();
+			clutter_flow_interface.FilterView.UpdatedAlbum += HandleUpdatedAlbum;
+			clutter_flow_interface.SetSource(this);
 			
+			Properties.SetString ("Icon.Name", "clutterflow-icon");
+            Properties.Set<ISourceContents> ("Nereid.SourceContents", clutter_flow_interface);
             Properties.Set<bool> ("Nereid.SourceContents.HeaderVisible", true);
 			
 			ServiceManager.SourceManager.ActiveSourceChanged += HandleActiveSourceChanged;
-			
+
+			//This places ClutterFlow inside the Music Library, ideally it should plug itself into the SourceContents as an action...
 			SetParentSource(ServiceManager.SourceManager.MusicLibrary);
 			Parent.AddChildSource(this);
 			
 			/* TODO add context menu's, actions etc. */
 			
-			//Create();
 			Reload();
         }
+
+        public void Dispose ()
+        {
+            if (clutter_flow_interface != null) {
+                clutter_flow_interface.Destroy ();
+                clutter_flow_interface.Dispose ();
+                clutter_flow_interface = null;
+            }
+        }
 		
+        public override void Activate ()
+        {
+            if (clutter_flow_interface != null) {
+                clutter_flow_interface.OverrideFullscreen ();
+            }
+        }
+
+        public override void Deactivate ()
+        {
+            if (clutter_flow_interface != null) {
+                clutter_flow_interface.RelinquishFullscreen ();
+            }
+        }
+
 		//ISourceContents old_source_contents = null;
 		protected void HandleActiveSourceChanged(SourceEventArgs args)
 		{
 			if (args.Source==this)
-				clutter_flow_contents.FilterView.Enabled = true;
+				clutter_flow_interface.FilterView.Enabled = true;
 			else
-				clutter_flow_contents.FilterView.Enabled = false;
-			
+				clutter_flow_interface.FilterView.Enabled = false;
 		}
-		
-        public void Dispose ()
-        {
-            if (clutter_flow_contents != null) {
-                clutter_flow_contents.Destroy ();
-                clutter_flow_contents.Dispose ();
-                clutter_flow_contents = null;
-            }
-        }
 		
         private void HandleUpdatedAlbum(object sender, EventArgs e)
         {
@@ -124,7 +134,7 @@ namespace Banshee.ClutterFlow
 
         public void Reload ()
         {
-			AlbumInfo album = clutter_flow_contents.FilterView.CurrentAlbum;
+			AlbumInfo album = clutter_flow_interface.FilterView.CurrentAlbum;
 			if (album!=null) {
 				track_model.Clear();
 	            string query = String.Format(
@@ -163,11 +173,12 @@ namespace Banshee.ClutterFlow
 		
         public void RemoveSelectedTracks ()
         {
+			throw new Exception ("Should not call RemoveSelectedTracks on a ClutterFlowSource");
         }
 
         public void DeleteSelectedTracks ()
         {
-            throw new Exception ("Should not call DeleteSelectedTracks on ClutterFlowSource");
+            throw new Exception ("Should not call DeleteSelectedTracks on a ClutterFlowSource");
         }
 
         public bool CanAddTracks {
