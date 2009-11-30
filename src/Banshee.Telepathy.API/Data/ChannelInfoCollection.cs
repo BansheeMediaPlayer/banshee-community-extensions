@@ -39,11 +39,11 @@ namespace Banshee.Telepathy.API.Data {
         {
         }
 
-        public IEnumerable <ChannelInfo> GetAll (ChannelType type)
+        public IEnumerable <T> GetAll <T> () where T : ChannelInfo
         {
             foreach (ChannelInfo channel in this) {
-                if (channel.Type == type) {
-                    yield return channel;
+                if (channel as T != null) {
+                    yield return (T) channel;
                 }
             }
         }

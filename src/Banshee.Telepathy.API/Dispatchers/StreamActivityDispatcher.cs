@@ -67,6 +67,17 @@ namespace Banshee.Telepathy.API.Dispatchers
             return false;
         }
 
+        protected override bool CanProcess (ChannelDetails details)
+        {
+            foreach (StreamTubeChannelInfo info in Connection.SupportedChannels.GetAll<StreamTubeChannelInfo> ()) {
+                if (info.Service.Equals (details.Properties[Constants.CHANNEL_TYPE_STREAMTUBE + ".Service"])) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
         protected override void ProcessNewChannel (string object_path, 
                                                    uint initiator_handle,
                                                    uint target_handle, 

@@ -219,6 +219,8 @@ namespace Banshee.Telepathy.API.Dispatchers
                                                    uint target_handle, 
                                                    ChannelDetails c);
         
+        protected abstract bool CanProcess (ChannelDetails details);
+        
         protected void OnNewChannels (ChannelDetails[] channels)
         {
             foreach (ChannelDetails c in channels) {
@@ -228,7 +230,7 @@ namespace Banshee.Telepathy.API.Dispatchers
                 HandleType handle_type = (HandleType) c.Properties[Constants.CHANNEL_IFACE + ".TargetHandleType"];
                 uint target_handle = (uint) c.Properties[Constants.CHANNEL_IFACE + ".TargetHandle"];
                 
-                if (channel_type.Equals (ChannelType)) {
+                if (channel_type.Equals (ChannelType) && CanProcess (c)) {
                     Console.WriteLine ("NewChannel detected: object path {0}, channel_type {1}, handle_type {2}, target_handle {3}",
                                    object_path, channel_type, handle_type.ToString (), target_handle);
                     

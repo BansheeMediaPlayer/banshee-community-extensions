@@ -31,6 +31,7 @@ using System.Collections.Generic;
 
 using Telepathy;
 
+using Banshee.Telepathy.API.Data;
 using Banshee.Telepathy.API.Channels;
 using Banshee.Telepathy.API.Dispatchables;
 
@@ -46,11 +47,26 @@ namespace Banshee.Telepathy.API.Dispatchers
             PropertyKeysForDispatching = new string [] { "Filename" };
         }
         
+        protected override bool CanProcess (ChannelDetails details)
+        {
+            foreach (FileTransferChannelInfo info in Connection.SupportedChannels.GetAll<FileTransferChannelInfo> ()) {
+                string content_type = (string) details.Properties[Constants.CHANNEL_TYPE_FILETRANSFER + ".ContentType"];
+                string desc = (string) details.Properties[Constants.CHANNEL_TYPE_FILETRANSFER + ".Description"];
+                if (info.ContentType.Equals (content_type) && info.Description.Equals (desc)) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
         protected override void ProcessNewChannel (string object_path, 
                                                    uint initiator_handle,
                                                    uint target_handle, 
                                                    ChannelDetails c)
         {
+            Console.WriteLine ("Processing new channel for file transfer");
+            
             string filename = (string) c.Properties[Constants.CHANNEL_TYPE_FILETRANSFER + ".Filename"];
             string content_type = (string) c.Properties[Constants.CHANNEL_TYPE_FILETRANSFER + ".ContentType"];
             ulong size = (ulong) c.Properties[Constants.CHANNEL_TYPE_FILETRANSFER + ".Size"];
