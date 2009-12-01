@@ -91,6 +91,12 @@ namespace Banshee.Telepathy.Data
             get { return Key.Name; }
         }
         
+        private bool cancel_pending = false;
+        public bool CancelPending {
+            get { return cancel_pending; }
+            protected set { cancel_pending = value; }
+        }
+        
         private T file_transfer = null;
         public T FileTransfer {
             get {
@@ -121,11 +127,14 @@ namespace Banshee.Telepathy.Data
         public override void Cancel ()
         {
             if (FileTransfer != null) {
+                cancel_pending = false;
                 FileTransfer.Cancel ();
+            } else {
+                cancel_pending = true;
             }
             
-            //base.Cancel ();    
-            state = TransferState.Cancelled;
+            base.Cancel ();    
+            //state = TransferState.Cancelled;
         }
         
         private void UnregisterHandlers ()

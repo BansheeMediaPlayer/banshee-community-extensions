@@ -35,6 +35,9 @@
     <Reference Include="NDesk.DBus, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f6716e4f9b2ed099">
       <Package>ndesk-dbus-1.0</Package>
     </Reference>
+    <Reference Include="notify-sharp, Version=0.4.0.0, Culture=neutral, PublicKeyToken=2df29c54e245917a">
+      <Package>notify-sharp</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Banshee.Telepathy.addin.xml" />
@@ -113,6 +116,8 @@
     <Compile Include="Banshee.Telepathy.Data\TelepathyTransfer.cs" />
     <Compile Include="Banshee.Telepathy.Data\TelepathyUpload.cs" />
     <Compile Include="Banshee.Telepathy.Data\TelepathyDownload.cs" />
+    <Compile Include="Banshee.Telepathy.Gui\TelepathyNotification.cs" />
+    <Compile Include="Banshee.Telepathy.Data\TelepathyDownloadManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -96,6 +96,7 @@ FILES =  \
 	Banshee.Telepathy.Data/LibraryDownloadMonitor.cs \
 	Banshee.Telepathy.Data/IContactSource.cs \
 	Banshee.Telepathy.Data/TelepathyDownload.cs \
+	Banshee.Telepathy.Data/TelepathyDownloadManager.cs \
 	Banshee.Telepathy.Data/TransferManager.cs \
 	Banshee.Telepathy.Data/TelepathyTransfer.cs \
 	Banshee.Telepathy.Data/TelepathyUpload.cs \

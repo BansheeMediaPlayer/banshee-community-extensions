@@ -103,7 +103,8 @@ namespace Banshee.Telepathy.Data
         public void Requeue ()
         {
             if (state == TransferState.Cancelled) {
-                state = TransferState.Queued;
+                State = TransferState.Queued;
+                CancelPending = false;
             }
         }
         
@@ -170,8 +171,8 @@ namespace Banshee.Telepathy.Data
             IncomingFileTransfer transfer = sender as IncomingFileTransfer;
             
             // transfer was cancelled before the channel was available
-            if (state == TransferState.Cancelled) {
-                transfer.Cancel ();
+            if (CancelPending) {
+                Cancel ();
                 return;
             }
             

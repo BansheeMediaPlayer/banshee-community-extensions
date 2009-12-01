@@ -42,7 +42,7 @@ namespace Banshee.Telepathy.Gui
     public class DownloadManagerUi : TransferManagerUi
     {
         private TelepathyService service = null;
-        private readonly TransferManager<TelepathyDownloadKey, TelepathyDownload> download_manager = new TransferManager<TelepathyDownloadKey, TelepathyDownload> ();
+        private readonly TelepathyDownloadManager download_manager = new TelepathyDownloadManager ();
 
         public DownloadManagerUi (TelepathyService service) : base ()
         {
@@ -55,7 +55,7 @@ namespace Banshee.Telepathy.Gui
             download_manager.TransferCompleted += OnTransferCompleted;
         }
 
-        public TransferManager<TelepathyDownloadKey, TelepathyDownload> DownloadManager {
+        public TelepathyDownloadManager DownloadManager {
             get { return download_manager; }
         }
         

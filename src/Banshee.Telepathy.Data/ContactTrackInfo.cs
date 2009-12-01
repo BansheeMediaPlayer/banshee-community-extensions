@@ -150,7 +150,7 @@ namespace Banshee.Telepathy.Data
 
         public TelepathyDownload FileTransfer {
             get {
-                TransferManager<TelepathyDownloadKey, TelepathyDownload> manager = TelepathyService.DownloadManager.DownloadManager;
+                TelepathyDownloadManager manager = TelepathyService.DownloadManager.DownloadManager;
                 return manager.Get (new TelepathyDownloadKey (this));
             }
         }
