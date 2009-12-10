@@ -182,7 +182,7 @@ namespace Banshee.Telepathy.Gui
                 TelepathyDownload download = TelepathyService.DownloadManager.DownloadManager.Get (key);
                 if (download == null) {
                     TelepathyService.DownloadManager.DownloadManager.Queue (
-                        new TelepathyDownload (new TelepathyDownloadKey (ContactTrackInfo.From (track)))
+                        new TelepathyDownload (key)
                     );
                 } else {
                     download.Requeue ();
