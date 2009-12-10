@@ -91,12 +91,14 @@ namespace Banshee.Telepathy.Data
                 if (service != null) {
                     base.Queue ();
                     Banshee.Base.ThreadAssist.Spawn (delegate {
-                        try {
-                            service.DownloadFile (long.Parse (Key.Name) , "audio/mpeg");
-                        }
-                        catch (Exception e) {
-                            Log.Exception (e);
-                        }
+						lock (sync) {
+	                        try {
+	                            service.DownloadFile (long.Parse (Key.Name) , "audio/mpeg");
+	                        }
+	                        catch (Exception e) {
+	                            Log.Exception (e);
+	                        }
+						}
                     });
                 }
             }

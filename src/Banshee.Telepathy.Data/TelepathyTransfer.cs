@@ -78,6 +78,8 @@ namespace Banshee.Telepathy.Data
     public abstract class TelepathyTransfer<K, T> : Transfer<K> where T : FileTransfer 
         where K : TelepathyTransferKey, IEquatable<K>
     {
+		protected readonly object sync = new object ();
+		
         public TelepathyTransfer (K key) : base (key)
         {
             Initialize ();    

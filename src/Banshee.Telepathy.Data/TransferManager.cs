@@ -155,8 +155,10 @@ namespace Banshee.Telepathy.Data
             foreach (T t in transfers.Ready ()) {
                 if (Initiated == max_downloads) break;
                 if (t != null) {
-                    Log.DebugFormat ("Starting download for {0}", t.Key.ToString ());
-                    if (t.Start ()) initiated.Add (t.Key);
+					lock (sync) {
+                    	Log.DebugFormat ("Starting download for {0}", t.Key.ToString ());
+                    	if (t.Start ()) initiated.Add (t.Key);
+					}
                 }
             } 
         }
