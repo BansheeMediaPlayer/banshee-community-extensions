@@ -33,9 +33,11 @@ namespace Banshee.Telepathy.Data
 {  
     public class TransferList<K, V> : Dictionary<K, V> where V : Transfer<K> where K : IEquatable<K>
     {
+		private readonly object sync = new object ();
+		
         public IEnumerable<V> Queued ()
         {
-            lock (this) {
+            lock (sync) {
                 foreach (V t in this.Values) {
                     if (t.State == TransferState.Queued) {
                         yield return t;
@@ -46,7 +48,7 @@ namespace Banshee.Telepathy.Data
         
         public IEnumerable<V> Ready ()
         {
-            lock (this) {
+            lock (sync) {
                 foreach (V t in this.Values) {
                     if (t.State == TransferState.Ready) {
                         yield return t;
@@ -57,14 +59,14 @@ namespace Banshee.Telepathy.Data
         
         public void Add (K key, V value)
         {
-            lock (this) {
+            lock (sync) {
                 base.Add (key, value);
             }
         }
         
         public bool Remove (K key)
         {
-            lock (this) {
+            lock (sync) {
                 return base.Remove (key);
             }
         }
