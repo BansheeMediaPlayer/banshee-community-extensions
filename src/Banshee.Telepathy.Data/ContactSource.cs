@@ -295,6 +295,7 @@ namespace Banshee.Telepathy.Data
                 // user clicked to browse a contact, but contact on the other end sent a 
                 // request also. The tube is probably slow and states have not changed yet,
                 // so set waiting
+                // TODO there is probably a race condition here - TEST                
                 if (current_activity.State == ActivityState.RemotePending) {
                     SetWaiting ();
                 } else {
@@ -685,6 +686,9 @@ namespace Banshee.Telepathy.Data
                 if (!download_monitor.ProcessingFinished ()) {
                     SetStatus (Catalog.GetString ("A problem occured while downloading this contact's library"), true);
                 }
+                
+                TelepathyNotification.Create ().Show (activity.Contact.Name, 
+                    Catalog.GetString ("is no longer sharing their Banshee library with you"));
             }
             
             UnregisterHandlers ();
@@ -698,6 +702,9 @@ namespace Banshee.Telepathy.Data
             if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
                 Log.DebugFormat ("{0} handle {1} accepting tube from ContactSource", Contact.Name, Contact.Handle);
                 
+                TelepathyNotification.Create ().Show (activity.Contact.Name, 
+                    Catalog.GetString ("is requesting to browse your Banshee library"));
+                                                      
                 dialog = new ContactRequestDialog (Contact.Name);
                 dialog.ShowAll ();
                 dialog.Response += delegate (object o, Gtk.ResponseArgs e) {
@@ -763,7 +770,7 @@ namespace Banshee.Telepathy.Data
                 }
 
                 SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), current_download.TotalDownloaded, total), false);
-                
+
                 current_download.UpdateDownload (timestamp, seq_num, chunk.Length, chunk);
             }
         }

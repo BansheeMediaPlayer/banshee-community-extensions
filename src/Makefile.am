@@ -108,6 +108,7 @@ FILES =  \
 	Banshee.Telepathy.Gui/ContactSourceContents.cs \
 	Banshee.Telepathy.Gui/TelepathyActions.cs \
 	Banshee.Telepathy.Gui/TransferManagerUi.cs \
+	Banshee.Telepathy.Gui/TelepathyNotification.cs \
 	Banshee.Telepathy.Gui/UploadManagerUi.cs \
 	Banshee.Telepathy.DBus/BaseProvider.cs \
 	Banshee.Telepathy.DBus/IMetadataProvider.cs \
@@ -168,6 +169,7 @@ REFERENCES =  \
 	$(BANSHEE_1_SERVICES_LIBS) \
 	$(BANSHEE_1_THICKCLIENT_LIBS) \
 	$(GTK_SHARP_20_LIBS) \
+	$(NOTIFY_SHARP_LIBS) \
 	System.Web \
 	System.Xml \
 	System.Core

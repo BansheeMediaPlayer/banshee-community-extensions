@@ -36,6 +36,7 @@ using Banshee.Base;
 using Banshee.Collection.Database;
 using Banshee.ServiceStack;
 using Banshee.Telepathy;
+using Banshee.Telepathy.Gui;
 
 using Banshee.Telepathy.API;
 using Banshee.Telepathy.API.Dispatchables;
@@ -96,6 +97,8 @@ namespace Banshee.Telepathy.Data
         {
             if (FileTransfer != null) {
                 SetTransferFilename (FileTransfer);
+                TelepathyNotification.Create ().Show (FileTransfer.Contact.Name, 
+                    String.Format (Catalog.GetString ("is downloading {0} with Banshee"), FileTransfer.Filename));
                 return base.Start ();
             }
             

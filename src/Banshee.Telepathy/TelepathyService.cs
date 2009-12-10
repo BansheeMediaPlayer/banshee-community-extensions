@@ -145,6 +145,11 @@ namespace Banshee.Telepathy
 
             conn_map.Clear ();
             source_map.Clear ();
+            
+            TelepathyNotification notify = TelepathyNotification.Get;
+            if (notify != null) {
+                notify.Dispose ();
+            }
         }
 
         public void DelayedInitialize ()

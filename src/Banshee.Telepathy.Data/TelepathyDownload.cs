@@ -27,12 +27,14 @@
 //
 
 using System;
+using Mono.Unix;
 
 using Banshee.Base;
 using Banshee.Collection.Database;
 using Banshee.ServiceStack;
 using Banshee.Sources;
 
+using Banshee.Telepathy.Gui;
 using Banshee.Telepathy.DBus;
 
 using Banshee.Telepathy.API;
@@ -113,6 +115,8 @@ namespace Banshee.Telepathy.Data
             if (FileTransfer != null) {
                 base.Start ();
                 FileTransfer.Start ();
+                TelepathyNotification.Create ().Show (FileTransfer.Contact.Name, 
+                    String.Format (Catalog.GetString ("is sending {0} with Banshee"), FileTransfer.Filename));
                 return true;
             }
             
