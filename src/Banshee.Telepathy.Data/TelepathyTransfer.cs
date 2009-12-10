@@ -136,7 +136,6 @@ namespace Banshee.Telepathy.Data
             }
             
             base.Cancel ();    
-            //state = TransferState.Cancelled;
         }
         
         private void UnregisterHandlers ()
@@ -204,6 +203,9 @@ namespace Banshee.Telepathy.Data
                 transfer.TransferInitialized += OnTransferInitialized;
                 transfer.Ready += OnTransferReady;
                 transfer.Closed += OnTransferClosed;
+				if (Contact != null) {
+                    Contact.DispatchManager.Dispatched -= OnDispatched;
+                }
             }    
         }
     }

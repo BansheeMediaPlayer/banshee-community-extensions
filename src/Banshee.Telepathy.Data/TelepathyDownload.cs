@@ -69,12 +69,6 @@ namespace Banshee.Telepathy.Data
         {
             IncomingFileTransfer.AutoStart = false;
             base.Initialize ();
-            
-//            if (state == TransferState.Cancelled && FileTransfer != null) {
-//                if (FileTransfer.State == API.Dispatchables.TransferState.LocalPending) {
-//                    AcceptTransfer (FileTransfer);
-//                }
-//            }
         }
         
         public override void Queue ()
@@ -104,22 +98,15 @@ namespace Banshee.Telepathy.Data
             }
         }
         
-        public void Requeue ()
-        {
-            if (state == TransferState.Cancelled) {
-                State = TransferState.Queued;
-                CancelPending = false;
-            }
-        }
-        
         public override bool Start ()
         {
             if (FileTransfer != null) {
-                base.Start ();
-                FileTransfer.Start ();
-                TelepathyNotification.Create ().Show (FileTransfer.Contact.Name, 
-                    String.Format (Catalog.GetString ("is sending {0} with Banshee"), FileTransfer.Filename));
-                return true;
+                if (base.Start ()) {
+	                FileTransfer.Start ();
+	                TelepathyNotification.Create ().Show (FileTransfer.Contact.Name, 
+	                    String.Format (Catalog.GetString ("is sending {0} with Banshee"), FileTransfer.Filename));
+	                return true;
+				}
             }
             
             return false;

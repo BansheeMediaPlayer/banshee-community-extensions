@@ -35,11 +35,46 @@ namespace Banshee.Telepathy.Data
 {
     public class TelepathyDownloadManager : TransferManager<TelepathyDownloadKey, TelepathyDownload>
     {
-        protected override void CleanUpTransfer (TelepathyDownload t)
+		private readonly IDictionary<TelepathyDownloadKey, TelepathyDownload> cancelled = new Dictionary<TelepathyDownloadKey, TelepathyDownload> ();
+		
+		protected override void Dispose (bool disposing)
+		{
+			if (disposing) {
+				foreach (TelepathyDownload d in new List<TelepathyDownload> (cancelled.Values)) {
+					if (d != null) {
+						d.Dispose ();
+					}
+				}
+				cancelled.Clear ();
+			}
+			
+			base.Dispose (disposing);
+		}
+		
+        protected new void CleanUpTransfer (TelepathyDownload t)
         {
             if (!t.CancelPending) {
+				cancelled.Remove (t.Key);
                 base.CleanUpTransfer (t);
-            }
+            } else {
+				// if cancel_pending, the file transfer channel was not yet
+				// available to cancel, so continue to keep track so when it
+				// comes across it can be cancelled
+				CleanUpTransfer (t, false);
+				cancelled[t.Key] =  t;
+			}
         }
+		
+		public new void Queue (TelepathyDownload t)
+		{
+			if (cancelled.ContainsKey (t.Key)) {
+				TelepathyDownload old = cancelled[t.Key];
+				if (old != null) {
+					old.Dispose ();
+				}
+				cancelled.Remove (t.Key);
+			}
+			base.Queue (t);
+		}
     }
 }

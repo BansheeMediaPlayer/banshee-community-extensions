@@ -73,9 +73,9 @@ namespace Banshee.Telepathy.Data
     
     public class TransferManager<K, T> : IDisposable where T : Transfer<K> where K : IEquatable<K>
     {
-        private readonly TransferList<K, T> transfers = new TransferList<K, T> ();
-        private readonly IList<K> initiated = new List<K> ();
-        private readonly object sync = new object ();
+        protected readonly TransferList<K, T> transfers = new TransferList<K, T> ();
+        protected readonly IList<K> initiated = new List<K> ();
+        protected readonly object sync = new object ();
         
         public event EventHandler<EventArgs> TransferCompleted;
         public event EventHandler<EventArgs> Completed;
@@ -130,7 +130,9 @@ namespace Banshee.Telepathy.Data
         {
             if (disposing) {
                 foreach (T t in transfers.Values) {
-                    t.Dispose ();
+					if (t != null) {
+                    	t.Dispose ();
+					}
                 }
                 transfers.Clear ();
             }
@@ -152,15 +154,15 @@ namespace Banshee.Telepathy.Data
         
         protected virtual void StartReady ()
         {   
-            foreach (T t in transfers.Ready ()) {
-                if (Initiated == max_downloads) break;
-                if (t != null) {
-					lock (sync) {
-                    	Log.DebugFormat ("Starting download for {0}", t.Key.ToString ());
-                    	if (t.Start ()) initiated.Add (t.Key);
-					}
-                }
-            } 
+			lock (sync) {
+	            foreach (T t in transfers.Ready ()) {
+	                if (Initiated == max_downloads) break;
+	                if (t != null) {
+	                 	Log.DebugFormat ("Starting download for {0}", t.Key.ToString ());
+	                   	if (t.Start ()) initiated.Add (t.Key);
+	                }
+	            } 
+			}
         }
         
         public void CancelAll ()
@@ -180,12 +182,19 @@ namespace Banshee.Telepathy.Data
             }
         }
         
-        protected virtual void CleanUpTransfer (T t)
+		protected void CleanUpTransfer (T t)
+		{
+			CleanUpTransfer (t, true);	
+		}
+		
+        protected virtual void CleanUpTransfer (T t, bool dispose)
         {
             if (t != null) {
                 t.StateChanged -= OnTransferStateChanged;
                 t.ProgressChanged -= OnTransferProgressChanged;
-                t.Dispose ();
+				if (dispose) {
+                	t.Dispose ();
+				}
                 transfers.Remove (t.Key);
             }
         }

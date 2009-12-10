@@ -37,22 +37,20 @@ namespace Banshee.Telepathy.Data
 		
         public IEnumerable<V> Queued ()
         {
-            lock (sync) {
-                foreach (V t in this.Values) {
-                    if (t.State == TransferState.Queued) {
-                        yield return t;
-                    }
+			IList<V> values = new List<V> (Values);
+            foreach (V t in values) {
+                if (t.State == TransferState.Queued) {
+                    yield return t;
                 }
             }
         }
         
         public IEnumerable<V> Ready ()
         {
-            lock (sync) {
-                foreach (V t in this.Values) {
-                    if (t.State == TransferState.Ready) {
-                        yield return t;
-                    }
+			IList<V> values = new List<V> (Values);
+            foreach (V t in values) {
+                if (t.State == TransferState.Ready) {
+                    yield return t;
                 }
             }
         }

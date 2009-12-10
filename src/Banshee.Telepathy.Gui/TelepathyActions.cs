@@ -184,8 +184,6 @@ namespace Banshee.Telepathy.Gui
                     TelepathyService.DownloadManager.DownloadManager.Queue (
                         new TelepathyDownload (key)
                     );
-                } else {
-                    download.Requeue ();
                 }
             }
         }

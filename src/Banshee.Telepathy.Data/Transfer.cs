@@ -137,9 +137,13 @@ namespace Banshee.Telepathy.Data
         
         public virtual bool Start ()
         {
-            State = TransferState.Initiated;
-            return true;
-        }
+			if (state == TransferState.Ready) {
+            	State = TransferState.Initiated;
+            	return true;
+			}
+			
+			return false;
+		}
         
         public virtual void Cancel ()
         {

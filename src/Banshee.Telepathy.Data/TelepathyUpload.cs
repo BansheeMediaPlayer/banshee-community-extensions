@@ -95,6 +95,8 @@ namespace Banshee.Telepathy.Data
 
         public override bool Start ()
         {
+			if (State != TransferState.Ready) return false;
+			
             if (FileTransfer != null) {
                 SetTransferFilename (FileTransfer);
                 TelepathyNotification.Create ().Show (FileTransfer.Contact.Name, 
