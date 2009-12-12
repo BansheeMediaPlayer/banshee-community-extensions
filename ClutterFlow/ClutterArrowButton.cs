@@ -3,9 +3,8 @@ using System;
 using Clutter;
 using Cairo;
 
-namespace Banshee.ClutterFlow
+namespace ClutterFlow
 {
-	
 	
 	public class ClutterArrowButton : ClutterButton
 	{	

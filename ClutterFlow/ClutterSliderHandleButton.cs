@@ -2,15 +2,39 @@ using System;
 using Clutter;
 using Cairo;
 
-namespace Banshee.ClutterFlow
+namespace ClutterFlow
 {
 	
 	public class ClutterSliderHandleButton : ClutterButton
 	{
+		protected Clutter.Text label;
+		public string Label {
+			get { return label.Value; }
+			set {
+				if (value!=label.Value) {
+					label.Value = value;
+					Update ();
+				}
+			}
+		}
 		
 		public ClutterSliderHandleButton(uint width, uint height, byte state) : base(width, height, state) {
+			label = new Text("Sans Bold 10", "", new Clutter.Color(0.0f,0.0f,0.0f,0.8f));
+			Add (label);
+			label.SetAnchorPoint (label.Width*0.5f, label.Height*0.5f);
+			label.SetPosition (this.Width*0.5f,this.Height*0.5f);
+			label.ShowAll();
 		}
 
+		public override void Update ()
+		{
+			base.Update ();
+			label.SetAnchorPoint (label.Width*0.5f, label.Height*0.5f);
+			label.SetPosition (this.Width*0.5f,this.Height*0.5f);
+			label.ShowAll ();
+		}
+
+		
 		protected override void CreateTexture (Clutter.CairoTexture texture, byte with_state) {
 			texture.Clear();
 			Cairo.Context context = texture.Create();

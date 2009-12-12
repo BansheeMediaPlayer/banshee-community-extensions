@@ -67,23 +67,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ClutterFlowSource.cs" />
-    <Compile Include="ClutterFlowContents.cs" />
-    <Compile Include="CoverGroup.cs" />
-    <Compile Include="ClutterFlowListView.cs" />
-    <Compile Include="CoverManager.cs" />
-    <Compile Include="ClutterSlider.cs" />
-    <Compile Include="ClutterArrowButton.cs" />
-    <Compile Include="ClutterHelper.cs" />
-    <Compile Include="ClutterSliderHandle.cs" />
-    <Compile Include="ClutterButton.cs" />
-    <Compile Include="ClutterSliderHandleButton.cs" />
-    <Compile Include="CoverGroupCache.cs" />
-    <Compile Include="ClutterFlowTimeline.cs" />
-    <Compile Include="FlowBehaviour.cs" />
-    <Compile Include="ClutterFlowSlider.cs" />
-    <Compile Include="CoverCaption.cs" />
     <Compile Include="ClutterFlowInterface.cs" />
+    <Compile Include="ClutterFlowContents.cs" />
+    <Compile Include="ClutterFlowService.cs" />
+    <Compile Include="ClutterFlowSource.cs" />
+    <Compile Include="ClutterFlowAlbum.cs" />
+    <Compile Include="AlbumLoader.cs" />
+    <Compile Include="ClutterFlowWidget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -95,5 +85,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="..\ThemeIcons\22x22\clutterflow-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClutterFlow\ClutterFlow.csproj">
+      <Project>{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}</Project>
+      <Name>ClutterFlow</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

@@ -58,7 +58,7 @@ namespace Banshee.ClutterFlow
 		
 		private Paned container;
 		private Hyena.Widgets.RoundedFrame frame;
-        private ClutterFlowListView filter_view;
+        private ClutterFlowWidget filter_view;
 		private Gtk.ScrolledWindow main_scrolled_window;
         private TrackListView main_view;
 
@@ -95,8 +95,12 @@ namespace Banshee.ClutterFlow
 
         protected void SetupFilterView ()
         {
+			/*if (!GLib.Thread.Supported) GLib.Thread.Init();
+			Gdk.Threads.Init();
+			Clutter.Threads.Init();*/
 			Clutter.Application.InitForToolkit();
-			filter_view = new ClutterFlowListView ();
+			Clutter.Application.Init();
+			filter_view = new ClutterFlowWidget ();
         }
 		
         private ScrolledWindow SetupView (Widget view)
@@ -126,7 +130,7 @@ namespace Banshee.ClutterFlow
             }
         }
 
-		public ClutterFlowListView FilterView {
+		public ClutterFlowWidget FilterView {
 			get { return filter_view; }
 		}
 

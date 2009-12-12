@@ -12,38 +12,39 @@ using Gtk;
 using Cairo;
 using Pango;
 using Clutter;
+using ClutterFlow;
 
 namespace Banshee.ClutterFlow
 {
 	
-	public delegate void ForEachCover(CoverGroup o);
-	
-	public class ClutterFlowListView : Clutter.Embed
+	public class ClutterFlowWidget : Clutter.Embed
 	{
 		
 		public event EventHandler UpdatedAlbum;
 		
 		public AlbumInfo CurrentAlbum {
-			get { return coverManager.CurrentAlbum; }
+			get { return albumLoader.CurrentAlbum; }
 		}
-		
+
+		protected AlbumLoader albumLoader;
 		protected CoverManager coverManager = new CoverManager();
 		public CoverManager CoverManager {
 			get { return coverManager; }
 		}
 		
         public virtual IListModel<AlbumInfo> Model {
-            get { return coverManager.Model; }
+            get { return albumLoader.Model; }
         }
 		
         public void SetModel (IListModel<AlbumInfo> model)
         {
+			//model.
             SetModel(model, 0.0);
         }
 
         public void SetModel (IListModel<AlbumInfo> value, double vpos)
         {
-            coverManager.Model = value;
+            albumLoader.Model = value;
         }
 
 		public bool Enabled {
@@ -55,7 +56,11 @@ namespace Banshee.ClutterFlow
 		private double mouse_x, mouse_y;
 		
 		private ClutterFlowSlider slider;
+		
 		private CoverCaption caption;
+		public bool CaptionIsVisble {
+			set { if (value) caption.ShowAll(); else caption.HideAll(); }
+		}
 		
 		private const float rotSens = 0.00001f;
 		private const float viewportMaxAngleX = -30;// maximum X viewport angle
@@ -86,10 +91,12 @@ namespace Banshee.ClutterFlow
 		}
 
 		#region Initialisation
-        public ClutterFlowListView () : base ()
+        public ClutterFlowWidget () : base ()
         {
 			SetSizeRequest (500, 300);
 			Clutter.Global.MotionEventsEnabled = true;
+
+			albumLoader = new AlbumLoader(coverManager);
 			
 			Stage.AllocationChanged += HandleAllocationChanged;
 			Stage.ScrollEvent += HandleScroll;
@@ -116,7 +123,7 @@ namespace Banshee.ClutterFlow
 		
 		protected void SetupAlbumText() {
 			caption = new CoverCaption(coverManager, "Sans Bold 10", new Clutter.Color(1.0f,1.0f,1.0f,1.0f));
-			Stage.Add(caption);
+			Stage.Add(caption); //TODO ALLEMAALKAKA
 		}
 		#endregion
 		
@@ -180,6 +187,12 @@ namespace Banshee.ClutterFlow
 		public void Scroll(bool Backward) {
 			if (Backward) coverManager.TargetIndex--;
 			else coverManager.TargetIndex++;
+		}
+
+		public override void Destroy ()
+		{
+			ArtworkLookup.Stop();
+			base.Destroy ();
 		}
 		#endregion
 		

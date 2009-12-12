@@ -4,32 +4,17 @@ using System.Runtime.InteropServices;
 using GLib;
 using Clutter;
 
-namespace Banshee.ClutterFlow
+namespace ClutterFlow
 {
-
-    /*[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    public struct sVertex
-    {       
-        public float X;
-		public float Y;
-		public float Z;
-		
-		public sVertex(float X, float Y, float Z) {
-			this.X = X;
-			this.Y = Y;
-			this.Z = Z;
-		}
-    }	*/
 	
 	public static class ClutterHelper
 	{
-		[DllImport ("libcairo.so.2")]
-		private static extern void cairo_destroy(System.IntPtr context);
-		
 		[DllImport ("libclutter-glx-1.0.so.0")]
     	private static extern void clutter_actor_destroy(System.IntPtr actor);
 		[DllImport ("libclutter-glx-1.0.so.0")]
 		private static extern void clutter_group_remove_all(System.IntPtr group);
+		[DllImport ("libclutter-glx-1.0.so.0")]
+		private static extern void clutter_container_remove(System.IntPtr container, System.IntPtr actor);
 		
 		public static void DestroyActor(Clutter.Actor actor) {
 			clutter_actor_destroy(actor.Handle);
@@ -37,8 +22,8 @@ namespace Banshee.ClutterFlow
 		public static void RemoveAllFromGroup(Clutter.Group group) {
 			clutter_group_remove_all(group.Handle);
 		}
-		public static void DestroyCairoContext(Cairo.Context context) {
-			cairo_destroy(context.Handle);
+		public static void RemoveFromGroup(System.IntPtr group, Clutter.Actor actor) {
+			clutter_container_remove(group, actor.Handle);
 		}
 	}
 }

@@ -35,9 +35,42 @@ using Banshee.Collection.Database;
 using Banshee.PlaybackController;
 using Banshee.Gui;
 using Banshee.Sources.Gui;
+using Banshee.Configuration;
+using Banshee.Preferences;
 
 namespace Banshee.ClutterFlow
 {
+
+	public static class ClutterFlowSchemas {
+        internal static readonly SchemaEntry<bool> DisplayLabel = new SchemaEntry<bool>(
+            "clutterflow", "display_album_label",
+            true,
+            "",
+            "Wether or not the album label needs to be shown above the artwork"
+        );
+
+        internal static readonly SchemaEntry<int> TextureSize = new SchemaEntry<int>(
+            "clutterflow", "texture_size",
+            128, 32, 512,
+            "Texture size in pixels",
+            "The in-memory size of the cover textures in pixels"
+        );
+
+        internal static readonly SchemaEntry<int> MinCoverSize = new SchemaEntry<int>(
+            "clutterflow", "min_cover_size",
+            64, 64, 128,
+            "Minimal cover size in pixels",
+            "The on-stage minimal cover size in pixels"
+        );
+
+        internal static readonly SchemaEntry<int> MaxCoverSize = new SchemaEntry<int>(
+            "clutterflow", "max_cover_size",
+            256, 128, 512,
+            "Maximal cover size in pixels",
+            "The on-stage minimal cover size in pixels"
+        );
+	}
+	
     public class ClutterFlowSource : Source, IDisposable, ITrackModelSource
     {
 	
@@ -51,31 +84,37 @@ namespace Banshee.ClutterFlow
             clutter_flow_interface = new ClutterFlowInterface ();
 			clutter_flow_interface.FilterView.UpdatedAlbum += HandleUpdatedAlbum;
 			clutter_flow_interface.SetSource(this);
+
+			//IconTheme.Default.AppendSearchPath();
 			
 			Properties.SetString ("Icon.Name", "clutterflow-icon");
             Properties.Set<ISourceContents> ("Nereid.SourceContents", clutter_flow_interface);
             Properties.Set<bool> ("Nereid.SourceContents.HeaderVisible", true);
 			
 			ServiceManager.SourceManager.ActiveSourceChanged += HandleActiveSourceChanged;
+			//ServiceManager.PlaybackController.SourceChanged += OnPlaybackSourceChanged; todo
 
 			//This places ClutterFlow inside the Music Library, ideally it should plug itself into the SourceContents as an action...
 			SetParentSource(ServiceManager.SourceManager.MusicLibrary);
 			Parent.AddChildSource(this);
 			
-			/* TODO add context menu's, actions etc. */
+			InstallPreferences();
+
 			
 			Reload();
         }
-
+		
         public void Dispose ()
-        {
+        {		
             if (clutter_flow_interface != null) {
                 clutter_flow_interface.Destroy ();
                 clutter_flow_interface.Dispose ();
                 clutter_flow_interface = null;
             }
+			UninstallPreferences ();
         }
-		
+
+		#region FullScreen Overrides
         public override void Activate ()
         {
             if (clutter_flow_interface != null) {
@@ -89,7 +128,85 @@ namespace Banshee.ClutterFlow
                 clutter_flow_interface.RelinquishFullscreen ();
             }
         }
+		#endregion
+		#region Preferences
+		//protected string[] sort_fields = new string[] { "TitleLowered" };
+		
+		private SourcePage pref_page;
+        private Section general;
+		private Section dimensions;
+		
+		protected void InstallPreferences () 
+		{
+			pref_page = new Banshee.Preferences.SourcePage (PreferencesPageId, Name, "clutterflow-icon", 400);
+			
+            general = PreferencesPage.Add (new Section ("general", 
+                Catalog.GetString ("General"), 1));
 
+            general.Add (new SchemaPreference<bool> (ClutterFlowSchemas.DisplayLabel, 
+                Catalog.GetString ("Display album _label"), ClutterFlowSchemas.DisplayLabel.LongDescription, UpdateLabelVisibility));
+
+            /*general.Add (new SchemaPreference<bool> (ClutterFlowSchemas.DisplayLabel, 
+                Catalog.GetString ("Display album _label"), ClutterFlowSchemas.DisplayLabel.LongDescription, null)); TODO click behaviour*/
+			
+			dimensions = PreferencesPage.Add (new Section ("dimensions", 
+                Catalog.GetString ("Dimensions"), 2));
+
+            dimensions.Add (new SchemaPreference<int> (ClutterFlowSchemas.MinCoverSize, 
+                Catalog.GetString ("Minimal cover size"), ClutterFlowSchemas.MinCoverSize.ShortDescription, UpdateMinCoverSize));
+			dimensions.Add (new SchemaPreference<int> (ClutterFlowSchemas.MaxCoverSize, 
+                Catalog.GetString ("Maximal cover size"), ClutterFlowSchemas.MaxCoverSize.ShortDescription, UpdateMaxCoverSize));
+			dimensions.Add (new SchemaPreference<int> (ClutterFlowSchemas.TextureSize, 
+                Catalog.GetString ("Texture size"), ClutterFlowSchemas.TextureSize.ShortDescription, UpdateTextureSize));
+
+			LoadPreferences ();
+		}
+
+		private void LoadPreferences ()
+		{
+			UpdateLabelVisibility ();
+			UpdateMinCoverSize ();
+			UpdateMaxCoverSize ();
+			UpdateTextureSize ();
+		}
+		
+		private void UpdateLabelVisibility ()
+		{
+			if (clutter_flow_interface != null)
+				clutter_flow_interface.FilterView.CaptionIsVisble = 
+					ClutterFlowSchemas.DisplayLabel.Get ();
+		}
+
+		private void UpdateMinCoverSize ()
+		{
+			if (clutter_flow_interface != null)
+				clutter_flow_interface.FilterView.CoverManager.MinCoverWidth = 
+					ClutterFlowSchemas.MinCoverSize.Get ();
+		}
+
+		private void UpdateMaxCoverSize ()
+		{
+			if (clutter_flow_interface != null)
+				clutter_flow_interface.FilterView.CoverManager.MaxCoverWidth = 
+					ClutterFlowSchemas.MaxCoverSize.Get ();
+		}
+
+		private void UpdateTextureSize ()
+		{
+			if (clutter_flow_interface != null)
+				clutter_flow_interface.FilterView.CoverManager.TextureSize = 
+					ClutterFlowSchemas.TextureSize.Get ();
+		}
+		
+        private void UninstallPreferences ()
+        {
+            pref_page.Dispose ();
+            pref_page = null;
+            general = null;
+			dimensions = null;
+        }
+		#endregion
+		#region Event Handling		
 		//ISourceContents old_source_contents = null;
 		protected void HandleActiveSourceChanged(SourceEventArgs args)
 		{
@@ -103,18 +220,20 @@ namespace Banshee.ClutterFlow
         {
 			this.Reload();
 			ServiceManager.SourceManager.SetActiveSource(this);
+			ServiceManager.PlaybackController.Source = this; //TODO make this an option to set NextSource instead!
 			if (!ServiceManager.PlayerEngine.IsPlaying()) 
 				ServiceManager.PlayerEngine.Play();
 			else
 				ServiceManager.PlaybackController.Next();			
 			OnUpdated ();
         }
+		#endregion
 		
         public override int Count {
             get { return track_model.Count; }
         }
 		
-#region ITrackModelSource Implementation
+		#region ITrackModelSource Implementation
 		
         public bool HasDependencies {
             get { return false; }
@@ -132,7 +251,7 @@ namespace Banshee.ClutterFlow
             get { return null; }
         }
 
-        public void Reload ()
+        public void Reload () // to implement sorting: create a DatabaseAlbumListModel subclass
         {
 			AlbumInfo album = clutter_flow_interface.FilterView.CurrentAlbum;
 			if (album!=null) {
@@ -169,7 +288,6 @@ namespace Banshee.ClutterFlow
 				(Parent as DatabaseSource).TrackModel.Reload();
 			}
         }
-		
 		
         public void RemoveSelectedTracks ()
         {
@@ -217,6 +335,6 @@ namespace Banshee.ClutterFlow
             get { return true; }
         }
 
-#endregion
+		#endregion
     }
 }

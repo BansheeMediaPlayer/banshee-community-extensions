@@ -2,9 +2,8 @@
 using System;
 using Clutter;
 
-namespace Banshee.ClutterFlow
+namespace ClutterFlow
 {
-	
 	
 	public class ClutterButton : Group
 	{

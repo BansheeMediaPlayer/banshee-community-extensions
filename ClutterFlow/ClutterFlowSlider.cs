@@ -1,7 +1,8 @@
 
+using ClutterFlow;
 using System;
 
-namespace Banshee.ClutterFlow
+namespace ClutterFlow
 {
 	
 	
@@ -25,7 +26,7 @@ namespace Banshee.ClutterFlow
 				}
 			}
 		}
-		
+	
 		public ClutterFlowSlider (float width, float height, CoverManager coverManager) : base (width, height)
 		{
 			this.CoverManager = coverManager;
@@ -50,6 +51,10 @@ namespace Banshee.ClutterFlow
 		bool ignoreTargetIndexOnce = false;
 		protected void HandleTargetIndexChanged(object sender, EventArgs e)
 		{
+			if (coverManager.TargetActor!=null)
+				this.handle.Button.Label = coverManager.TargetActor.SortLabel.ToUpper ().Substring (0,1);
+			else
+				this.handle.Button.Label = "?";
 			if (!ignoreTargetIndexOnce)
 				HandlePostionFromIndex = coverManager.TargetIndex;
 			ignoreTargetIndexOnce = false;

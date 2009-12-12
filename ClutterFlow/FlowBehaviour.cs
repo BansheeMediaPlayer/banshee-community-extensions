@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Clutter;
 
-namespace Banshee.ClutterFlow
+namespace ClutterFlow
 {
 
 	public class FlowBehaviour {
@@ -204,22 +204,22 @@ namespace Banshee.ClutterFlow
 			}
 		}
 		
-		protected void HideActor (CoverGroup cover)
+		protected void HideActor (ClutterFlowActor actor)
 		{
-			cover.Hide ();
+			actor.Hide ();
 		}
 		
-		protected void UpdateActor (CoverGroup cover)
+		protected void UpdateActor (ClutterFlowActor actor)
 		{
-			UpdateActor (cover, Progress);
+			UpdateActor (actor, Progress);
 		}
 		
-		protected void UpdateActor (CoverGroup cover, double progress)
+		protected void UpdateActor (ClutterFlowActor actor, double progress)
 		{
-			UpdateActorWithAlpha (cover, cover.AlphaFunction(progress));
+			UpdateActorWithAlpha (actor, actor.AlphaFunction(progress));
 		}
 		
-		protected void UpdateActorWithAlpha (CoverGroup cover, double alpha) {
+		protected void UpdateActorWithAlpha (ClutterFlowActor actor, double alpha) {
 			float ratio = Math.Min (0.5f * (float) coverManager.Timeline.Delta / (float) coverManager.VisibleCovers, 1.0f);
 			OffsetRotationAngle = (float) ((rotationAngle / 5) * ratio);
 			OffsetCenterX = -(float) ((CenterMargin / 2) * ratio);
@@ -229,75 +229,60 @@ namespace Banshee.ClutterFlow
 				OffsetCenterX = -OffsetCenterX;
 			}
 			
-			cover.SetScale (coverWidth/cover.Width, coverWidth/cover.Width);
+			actor.SetScale (coverWidth/actor.Width, coverWidth/actor.Width);
 			if (alpha!=0 || alpha!=1) {
 				if (alpha<AlphaStep) {
-					MoveAndFadeOutActor			(cover, (float) (alpha / AlphaStep), true);
+					MoveAndFadeOutActor			(actor, (float) (alpha / AlphaStep), true);
 				} else if (alpha>=AlphaStep && alpha<=0.5-AlphaStep) {
-					MoveActorSideways			(cover, (float) ((alpha - AlphaStep) / (0.5f - 2*AlphaStep)), true);
+					MoveActorSideways			(actor, (float) ((alpha - AlphaStep) / (0.5f - 2*AlphaStep)), true);
 				} else if (alpha>0.5f-AlphaStep && alpha<0.5f+AlphaStep) {
-					MoveAndRotateActorCentrally (cover, (float) ((alpha - 0.5f) / AlphaStep));
+					MoveAndRotateActorCentrally (actor, (float) ((alpha - 0.5f) / AlphaStep));
 				} else if (alpha>=0.5f+AlphaStep && alpha<=1-AlphaStep) {
-					MoveActorSideways			(cover, (float) ((1 - AlphaStep - alpha) / (0.5f - 2*AlphaStep)), false);
+					MoveActorSideways			(actor, (float) ((1 - AlphaStep - alpha) / (0.5f - 2*AlphaStep)), false);
 				} else if (alpha>1-AlphaStep) {
-					MoveAndFadeOutActor			(cover,  (float) ((1 - alpha) / AlphaStep), false);
+					MoveAndFadeOutActor			(actor,  (float) ((1 - alpha) / AlphaStep), false);
 				}
-				cover.Show ();
-			} else cover.Hide ();
+				actor.Show ();
+			} else actor.Hide ();
 		}
-		
-		private void MoveAndFadeOutActor (CoverGroup cover, float progress, bool left)
-		{
-			MoveAndFadeOutActor ((Actor) cover, progress, left);
-			cover.SetShade (255, left);
-		}
-		
+			
 		private void MoveAndFadeOutActor (Actor actor, float progress,  bool left) 
 		{
 			actor.SetPosition ((left ? 0 : Width) + (SideMargin + progress * XStep)*(left ? 1 : -1), CenterY);
 			actor.Depth = zFar - 3 + progress;
 			actor.SetRotation (Clutter.RotateAxis.Y, (left ? 1 : -1) * rotationAngle + OffsetRotationAngle, 0, 0, 0);
 			actor.Opacity = (byte) (progress * 223);
+			if (actor is ClutterFlowActor) (actor as ClutterFlowActor).SetShade (255, left);
 		}
-		
-		private void MoveActorSideways (CoverGroup cover, float progress, bool left)
-		{
-			MoveActorSideways ((Actor) cover, progress, left);
-			cover.SetShade (255, left);
-		}
-		
+			
 		private void MoveActorSideways (Actor actor, float progress, bool left)
 		{
 			actor.SetPosition (CenterX + OffsetCenterX - (left ? 1 : -1) * ((1-progress)*(SideWidth + OffsetCenterX*(left ? 1 : -1)) + CenterMargin), CenterY);
 			actor.Depth = zFar - 2 + progress;
 			actor.SetRotation (Clutter.RotateAxis.Y, (left ? 1 : -1) * rotationAngle + OffsetRotationAngle, 0, 0, 0);
 			actor.Opacity = (byte) (255 - (1-progress)*32);
+			if (actor is ClutterFlowActor) (actor as ClutterFlowActor).SetShade (255, left);
 		}
 		
-		private void MoveAndRotateActorCentrally (CoverGroup cover, float progress)
-		{
-			MoveAndRotateActorCentrally ((Actor) cover, progress);
-			cover.SetShade ((byte) Math.Abs(255*progress), (progress < 0));
-		}
-		
-		private void MoveAndRotateActorCentrally (Actor actor, float progress) 
+		private void MoveAndRotateActorCentrally (Actor actor, float progress)
 		{
 			actor.SetPosition ((float) (CenterX + OffsetCenterX + CenterMargin*progress), CenterY);
 			actor.Depth = (float) (zFar + (zNear + OffsetZNear - zFar ) * (1 - Math.Abs(progress)));
 			actor.SetRotation (Clutter.RotateAxis.Y, -progress * rotationAngle + OffsetRotationAngle, 0, 0, 0);
 			actor.Opacity = 255;
+			if (actor is ClutterFlowActor) (actor as ClutterFlowActor).SetShade ((byte) Math.Abs(255*progress), (progress < 0));
 		}
 		
-		public void FadeCoversInAndOut (List<CoverGroup> old_covers, List<CoverGroup> new_covers, double newProgress, EventHandler onCompleted) 
+		public void FadeCoversInAndOut (List<ClutterFlowActor> old_covers, List<ClutterFlowActor> new_covers, double newProgress, EventHandler onCompleted) 
 		{
 			if (fadeOutAnim!=null) { fadeOutAnim.Dispose (); fadeOutAnim = null; }
 			if (fadeInAnim!=null) { fadeInAnim.Dispose (); fadeInAnim = null; }
 
 			//Fade out removed covers, slide still visible ones
-			List<CoverGroup> sliding_covers = new List<CoverGroup> ();
-			foreach (CoverGroup cover in old_covers) {
+			List<ClutterFlowActor> sliding_covers = new List<ClutterFlowActor> ();
+			foreach (ClutterFlowActor cover in old_covers) {
 				if (cover!=null) {
-					if (!new_covers.Contains (cover)) {
+					if (cover.Index==-1) {
 						FadeOutActor (cover);
 					} else {
 						if (cover.Data.ContainsKey ("fromAlpha")) cover.Data.Remove ("fromAlpha");
@@ -308,8 +293,8 @@ namespace Banshee.ClutterFlow
 				}
 			}
 
-			//Clear fromAlpha hashes from new covers (could still be there from older searches
-			foreach (CoverGroup cover in new_covers) {
+			//Clear fromAlpha hashes from new covers (could still be there from older searches)
+			foreach (ClutterFlowActor cover in new_covers) {
 				if (cover!=null && cover.Data.ContainsKey ("fromAlpha")) cover.Data.Remove ("fromAlpha");
 			}
 
@@ -319,7 +304,7 @@ namespace Banshee.ClutterFlow
 			//Set up slide animation:
 			Timeline tSlide = new Timeline (CoverManager.MaxAnimationSpan);
 			tSlide.NewFrame += delegate (object o, NewFrameArgs args) {
-				foreach (CoverGroup cover in new_covers) {
+				foreach (ClutterFlowActor cover in new_covers) {
 					if (cover!=null) {
 						double toAlpha = cover.AlphaFunction (newProgress);
 						double fromAlpha = 0;
@@ -346,16 +331,16 @@ namespace Banshee.ClutterFlow
 			else onCompleted (this, EventArgs.Empty);
 		}
 		
-		public void CreateClickedCloneAnimation (CoverGroup cover) {		
-			if (cover.Parent!=null) {
-				Clone clone = new Clone (cover);
+		public void CreateClickedCloneAnimation (ClutterFlowActor actor) {
+			if (actor.Parent!=null) {
+				Clone clone = new Clone(actor);
 				MoveAndRotateActorCentrally (clone, 0);
-				double scaleX, scaleY; cover.GetScale (out scaleX, out scaleY); clone.SetScale (scaleX, scaleY);
-				
-				((Group) cover.Parent).Add (clone);
+				double scaleX, scaleY; actor.GetScale (out scaleX, out scaleY); clone.SetScale (scaleX, scaleY);
+
+				((Group) actor.Parent).Add (clone);
 				clone.ShowAll ();
 				clone.Opacity = 255;
-				clone.Raise (cover);
+				clone.Raise (actor);
 				Animation anmn = clone.Animatev ((ulong) AnimationMode.EaseInExpo.value__, 1000, new string[] { "opacity" }, new GLib.Value ((byte) 50));
 				anmn.Completed += HandleClickedCloneCompleted;
 				clone.AnimateWithTimelinev ((ulong) AnimationMode.EaseInExpo.value__, anmn.Timeline, new string[] { "scale-x" }, new GLib.Value (scaleX*2));

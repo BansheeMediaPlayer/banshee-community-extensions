@@ -22,7 +22,7 @@ using System;
 using Clutter;
 using Cairo;
 
-namespace Banshee.ClutterFlow
+namespace ClutterFlow
 {
 	
 	
@@ -56,20 +56,18 @@ namespace Banshee.ClutterFlow
 			get { return posval; }
 			set {
 				if (value!=posval) {
-					SilentValue = value;
+					SetValueSilently (value);
 					InvokeSliderHasChanged();
 				}
 			}
 		}
-		protected float SilentValue {
-			set {
-				if (value!=posval) {
-					if (value>1) posval=1;
-					else if (value<0) posval=0;
-					else posval = value;
-					UpdatePosition();
-					InvokeSliderHasMoved();
-				}
+		public void SetValueSilently (float value) {
+			if (value!=posval) {
+				if (value>1) posval=1;
+				else if (value<0 || float.IsNaN(value) || float.IsInfinity(value)) posval=0;
+				else posval = value;
+				UpdatePosition();
+				InvokeSliderHasMoved();
 			}
 		}
 
@@ -98,7 +96,10 @@ namespace Banshee.ClutterFlow
 
 		private void UpdatePosition ()
 		{
-			button.SetPosition(Value * (width - height), 0);
+			if (!float.IsNaN(Value))
+				button.SetPosition(Value * (width - height), 0);
+			else
+				button.SetPosition(0, 0);
 		}
 		
 		#region Event Handling
@@ -159,7 +160,7 @@ namespace Banshee.ClutterFlow
 			
 			if (x1 <=  tx+Width && x1 >= tx && (args.Event.ModifierState.value__ & ModifierType.Button1Mask.value__)!=0 && (button.State & 2)!=0) {
 				float deltaX = (x1 - mouseX);
-				SilentValue = posval + (deltaX / (Width - Height));
+				SetValueSilently (posval + (deltaX / (width - height)));
 			}
 			mouseX = x1;
 			args.RetVal = true;

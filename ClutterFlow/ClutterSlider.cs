@@ -1,11 +1,11 @@
 
 using System;
-using Hyena;
+//using Hyena;
 using Clutter;
 using Cairo;
 using Gdk;
 
-namespace Banshee.ClutterFlow
+namespace ClutterFlow
 {
 	
 	public class ClutterSlider : Group
@@ -19,7 +19,7 @@ namespace Banshee.ClutterFlow
 		public event EventHandler<System.EventArgs> SliderHasChanged;
 		private void HandleSliderHasChanged(object sender, EventArgs e)
 		{
-			HandlePostionFromIndex = HandlePostionFromIndex;
+			SetPostionFromIndexSilently(HandlePostionFromIndex);
 			if (SliderHasChanged!=null) SliderHasChanged(this, System.EventArgs.Empty);
 		}
 		
@@ -50,13 +50,21 @@ namespace Banshee.ClutterFlow
 		
 		public int HandlePostionFromIndex {
 			get {
-				return (int) Math.Round(handle.Value * (float)(Count-1));
+				return (int) Math.Round(handle.Value * (float)(count-1));
 			}
 			set {
-				if (value >= count) value = count-1;
-				if (value < 0) value = 0;
-				handle.Value = (float) value / (float) (count-1);
+				int retval = value;
+				if (retval >= count) retval = count-1;
+				if (retval < 0) retval = 0;
+				handle.Value = (float) retval / (float) (count-1);
 			}
+		}
+
+		protected void SetPostionFromIndexSilently (int value)
+		{
+			if (value >= count) value = count-1;
+			if (value < 0) value = 0;
+			handle.SetValueSilently ((float) value / (float) (count-1));
 		}
 		
 #region Initialisation

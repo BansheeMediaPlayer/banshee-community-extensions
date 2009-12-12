@@ -2,7 +2,7 @@
 using System;
 using Clutter;
 
-namespace Banshee.ClutterFlow
+namespace ClutterFlow
 {
 	
 	public class NewFrameEventArgs : EventArgs 
@@ -57,6 +57,9 @@ namespace Banshee.ClutterFlow
 				} else if (value < AbsoluteProgress) {
 					target = value;
 					direction = TimelineDirection.Backward;
+				} else {
+					InvokeNewFrameEvent ();
+					InvokeTargetReached ();
 				}
 				delta = (int) Math.Abs(AbsoluteProgress - Target);
 			}
@@ -231,21 +234,6 @@ namespace Banshee.ClutterFlow
 		{
 			AdvanceToTarget((uint) coverManager.TargetIndex);
 		}
-		
-		/*protected void CheckSpeed ()
-		{
-			uint delta = (uint) Math.Abs(AbsoluteProgress - Target);
-			if (delta <= 2)
-				frequency = 1 / (double) CoverManager.MaxAnimationSpan;
-			else if (delta > 2 && delta <= 4)
-				frequency = 1 / (double) (CoverManager.MinAnimationSpan + (CoverManager.MaxAnimationSpan - CoverManager.MinAnimationSpan) * 0.75);
-			else if (delta > 4 && delta <= 8)
-				frequency = 1 / (double) (CoverManager.MinAnimationSpan + (CoverManager.MaxAnimationSpan - CoverManager.MinAnimationSpan) * 0.50);
-			else if (delta > 8 && delta <= 16)
-				frequency = 1 / (double) (CoverManager.MinAnimationSpan + (CoverManager.MaxAnimationSpan - CoverManager.MinAnimationSpan) * 0.25);
-			else if (delta > 16)
-				frequency = 1 / (double) CoverManager.MinAnimationSpan;
-		}*/
 		#endregion
 		
 	}
