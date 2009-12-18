@@ -51,12 +51,7 @@ namespace Banshee.OpenVP.Visualizations
             this.Effects.Add(new RandomMovement());
 
             this.Effects.Add(new CustomScope());
-
-            Scope scope = new Scope();
-            scope.Color = new Color(1, 0.5f, 0, 1);
-            scope.Circular = true;
-            scope.LineWidth = 3;
-            this.Effects.Add(scope);
+            this.Effects.Add(new OrangeScope());
 
             buffer = new SingleBuffer();
             buffer.Load = false;
@@ -64,6 +59,47 @@ namespace Banshee.OpenVP.Visualizations
             this.Effects.Add(buffer);
             
             this.Effects.Add(new CircularMovement());
+        }
+        
+        private class OrangeScope : Scope
+        {
+            public OrangeScope()
+            {
+            	Color = new Color(1, 0.35f, 0, 1);
+            	Circular = true;
+            }
+            
+            public override void RenderFrame(IController controller)
+            {
+	            float bass = GetBass (controller.PlayerData);
+	            
+	            LineWidth = 0.5f + bass * 5.5f;
+                
+                Gl.glMatrixMode(Gl.GL_MODELVIEW);
+                Gl.glPushMatrix();
+                
+                float scale = bass * 0.75f + 0.25f;
+                Gl.glScalef(scale, scale, 1);
+                
+                base.RenderFrame(controller);
+
+                Gl.glMatrixMode(Gl.GL_MODELVIEW);
+                Gl.glPopMatrix();
+            }
+            
+	        private float GetBass (PlayerData data)
+	        {
+	            float[] freq = new float[data.NativeSpectrumLength];
+	            data.GetSpectrum(freq);
+	            
+	            float sum = 0;
+	            int range = freq.Length / 100;
+	            
+	            for (int i = 0; i < range; i++)
+	                sum += freq[i];
+	            
+	            return sum / range;
+	        }
         }
 
         private class RandomMovement : MovementBase
