@@ -35,7 +35,7 @@ namespace Banshee.OpenVP
 {
 	public class OpenVPService : IExtensionService, IDisposable
 	{
-        private OpenVPSourceContents contents;
+        private VisualizationDisplayWidget contents;
         
 		public OpenVPService () { }
         
@@ -43,20 +43,20 @@ namespace Banshee.OpenVP
         
 		public void Initialize ()
 		{
-		    contents = new OpenVPSourceContents();
+		    contents = new VisualizationDisplayWidget();
             
             ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
             
             NowPlayingSource nps = ServiceManager.SourceManager.FindSources<NowPlayingSource>().FirstOrDefault();
             if (nps != null)
-                nps.SetReplacementAudioContents(contents);
+                nps.SetSubstituteAudioDisplay(contents);
 		}
         
         private void OnSourceAdded (SourceAddedArgs args)
         {
             NowPlayingSource nps = args.Source as NowPlayingSource;
             if (nps != null)
-                nps.SetReplacementAudioContents(contents);
+                nps.SetSubstituteAudioDisplay(contents);
         }
 		
 		#endregion
@@ -67,9 +67,11 @@ namespace Banshee.OpenVP
 		{
             NowPlayingSource nps = ServiceManager.SourceManager.FindSources<NowPlayingSource>().FirstOrDefault();
             if (nps != null)
-                nps.SetReplacementAudioContents(null);
+                nps.SetSubstituteAudioDisplay(null);
             
 		    contents.Destroy ();
+            contents.Dispose ();
+            contents = null;
 		}
 		
 		#endregion

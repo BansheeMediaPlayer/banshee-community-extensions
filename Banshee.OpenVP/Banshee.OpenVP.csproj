@@ -76,7 +76,6 @@
     <Compile Include="VisualizationDisplayWidget.cs" />
     <Compile Include="VisualizationExtensionNode.cs" />
     <Compile Include="Gtk\GLWidget.cs" />
-    <Compile Include="OpenVPSourceContents.cs" />
     <Compile Include="OpenVPService.cs" />
   </ItemGroup>
   <ItemGroup>

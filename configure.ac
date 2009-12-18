@@ -45,15 +45,16 @@ fi
 
 
 dnl package checks, common for all configs
+PKG_CHECK_MODULES([BANSHEE_1_CORE], [banshee-1-core])
+PKG_CHECK_MODULES([BANSHEE_1_NOWPLAYING], [banshee-1-nowplaying])
+PKG_CHECK_MODULES([BANSHEE_1_SERVICES], [banshee-1-services])
 PKG_CHECK_MODULES([BANSHEE_1_THICKCLIENT], [banshee-1-thickclient])
 PKG_CHECK_MODULES([GTK_SHARP_20], [gtk-sharp-2.0])
-PKG_CHECK_MODULES([TAO_OPENGL], [tao-opengl])
-PKG_CHECK_MODULES([OPENVP], [openvp])
 PKG_CHECK_MODULES([MONO_ADDINS], [mono-addins])
-PKG_CHECK_MODULES([BANSHEE_1_SERVICES], [banshee-1-services])
 PKG_CHECK_MODULES([OPENVPCORE], [openvp.core])
-PKG_CHECK_MODULES([BANSHEE_1_CORE], [banshee-1-core])
+PKG_CHECK_MODULES([OPENVP], [openvp])
 PKG_CHECK_MODULES([TAO_FREEGLUT], [tao-freeglut])
+PKG_CHECK_MODULES([TAO_OPENGL], [tao-opengl])
 
 dnl package checks, per config
 
