@@ -63,6 +63,10 @@
     <Reference Include="Banshee.Widgets, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-thickclient</Package>
     </Reference>
+    <Reference Include="Banshee.NowPlaying, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-nowplaying</Package>
+    </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -72,17 +76,21 @@
     <Compile Include="VisualizationDisplayWidget.cs" />
     <Compile Include="VisualizationExtensionNode.cs" />
     <Compile Include="Gtk\GLWidget.cs" />
-    <Compile Include="OpenVPSourceContentProvider.cs" />
+    <Compile Include="OpenVPSourceContents.cs" />
+    <Compile Include="OpenVPService.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="resources\Banshee.OpenVP.addin.xml" />
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="resources\ActiveSourceUI.xml">
+      <LogicalName>ActiveSourceUI.xml</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
-      <Properties>
+      <Properties InternalTargetFrameworkVersion="3.5">
         <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" SyncReferences="true" IsAutotoolsProject="true" RelativeConfigureInPath="..">
           <BuildFilesVar Sync="true" Name="FILES" />
           <DeployFilesVar />

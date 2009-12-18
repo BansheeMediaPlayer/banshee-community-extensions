@@ -26,10 +26,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Banshee.ServiceStack;
 using Banshee.Sources;
 using Banshee.Sources.Gui;
+using Banshee.Gui;
 using Mono.Addins;
 using Gdk;
 using Gtk;
@@ -41,11 +43,14 @@ namespace Banshee.OpenVP
 {
     public class VisualizationDisplayWidget : Gtk.Bin, IController
     {
-        private HBox headerExtension;
-        private CheckButton halfResolutionCheckbox;
-        private ComboBox visualizationList;
+        private const string SELECT_VIS_ACTION = "SelectVisualizationAction";
+        private uint global_ui_id;
         
-        private ListStore visualizationStore = new ListStore(typeof(VisualizationExtensionNode));
+        private Menu visualizationMenu;
+        private Dictionary<VisualizationExtensionNode, RadioMenuItem> visualizationMenuMap =
+            new Dictionary<VisualizationExtensionNode, RadioMenuItem>();
+        
+        private VisualizationExtensionNode activeVisualization;
 
         private GLWidget glWidget = null;
 
@@ -55,20 +60,10 @@ namespace Banshee.OpenVP
 
         private Thread RenderThread;
         
-        public Widget HeaderExtension {
-            get { return headerExtension; }
-        }
-        
         public VisualizationDisplayWidget()
         {
-            BuildHeaderExtension();
-
-            this.visualizationList.Model = this.visualizationStore;
-
-            CellRendererText text = new CellRendererText();
-            this.visualizationList.PackStart(text, true);
-            this.visualizationList.SetCellDataFunc(text, VisualizationCellDataFunc);
-
+            this.visualizationMenu = new Menu();
+            
             this.glWidget = new GLWidget();
             this.glWidget.DoubleBuffered = true;
             this.glWidget.Render += this.OnRender;
@@ -87,7 +82,7 @@ namespace Banshee.OpenVP
                     this.RenderThread = new Thread(this.RenderLoop);
                     this.RenderThread.Start();
                 }
-
+                
                 this.ConnectVisualization();
             };
 
@@ -96,6 +91,51 @@ namespace Banshee.OpenVP
             };
             
             AddinManager.AddExtensionNodeHandler("/Banshee/OpenVP/Visualization", this.OnVisualizationChanged);
+            
+            InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
+            ias.GlobalActions.AddImportant(new ActionEntry(SELECT_VIS_ACTION,
+                                                           null, "Select visualization",
+                                                           null, null,
+                                                           OnSelectVisualizationClicked));
+            ias.GlobalActions.UpdateAction(SELECT_VIS_ACTION, false);
+            
+            global_ui_id = ias.UIManager.AddUiFromResource("ActiveSourceUI.xml");
+        }
+        
+        private void OnVisualizationChanged(object o, ExtensionNodeEventArgs args)
+        {
+            VisualizationExtensionNode node =
+                (VisualizationExtensionNode) args.ExtensionNode;
+
+            if (args.Change == ExtensionChange.Add) {
+                RadioMenuItem group = visualizationMenu.Children.OfType<RadioMenuItem>().FirstOrDefault();
+                RadioMenuItem menu = group != null ?
+                    new RadioMenuItem(group, node.Label) :
+                        new RadioMenuItem(node.Label);
+                
+                menu.Show();
+                menu.Activated += delegate {
+                    activeVisualization = node;
+                    ConnectVisualization();
+                };
+                
+                visualizationMenuMap[node] = menu;
+                visualizationMenu.Add(menu);
+                
+                if (group == null)
+                    menu.Activate();
+            } else {
+                RadioMenuItem menu;
+                if (visualizationMenuMap.TryGetValue(node, out menu)) {
+                    visualizationMenu.Remove(menu);
+                    visualizationMenuMap.Remove(node);
+                }
+            }
+        }
+        
+        private void OnSelectVisualizationClicked (object o, EventArgs e)
+        {
+            visualizationMenu.Popup();
         }
         
         protected override void OnSizeAllocated (Rectangle allocation)
@@ -108,53 +148,6 @@ namespace Banshee.OpenVP
         protected override void OnSizeRequested (ref Requisition requisition)
         {
             requisition = this.Child.SizeRequest();
-        }
-        
-        private void BuildHeaderExtension()
-        {
-            headerExtension = new HBox(false, 6);
-            
-            halfResolutionCheckbox = new CheckButton("Low resolution");
-            halfResolutionCheckbox.Toggled += OnHalfResolutionCheckboxToggled;
-            
-            visualizationList = new ComboBox();
-            visualizationList.Changed += OnVisualizationListChanged;
-            
-            headerExtension.PackStart(halfResolutionCheckbox, false, false, 0);
-            headerExtension.PackStart(visualizationList, false, false, 0);
-            
-            headerExtension.ShowAll();
-        }
-
-        private static void VisualizationCellDataFunc(CellLayout layout, CellRenderer r, TreeModel model, TreeIter iter)
-        {
-            VisualizationExtensionNode node = (VisualizationExtensionNode) model.GetValue(iter, 0);
-            
-            ((CellRendererText) r).Text = (node == null) ? "" : node.Label;
-        }
-
-        private void OnVisualizationChanged(object o, ExtensionNodeEventArgs args)
-        {
-            VisualizationExtensionNode node =
-                (VisualizationExtensionNode) args.ExtensionNode;
-
-            if (args.Change == ExtensionChange.Add) {
-                this.visualizationStore.AppendValues(node);
-                
-                if (this.visualizationStore.IterNChildren() == 1)
-                    this.visualizationList.Active = 0;
-            } else {
-                TreeIter i;
-
-                if (this.visualizationStore.GetIterFirst(out i)) {
-                    do {
-                        if (this.visualizationStore.GetValue(i, 0) == node) {
-                            this.visualizationStore.Remove(ref i);
-                            break;
-                        }
-                    } while (this.visualizationStore.IterNext(ref i));
-                }
-            }
         }
 
         private void OnGlSizeAllocated (object o, SizeAllocatedArgs args)
@@ -180,11 +173,12 @@ namespace Banshee.OpenVP
             this.haveDataSlice = false;
             
             while (this.loopRunning) {
-                if (this.renderLock.WaitOne(500, false) && this.playerData.Update(500)) {
+                if (this.playerData.Update(500)) {
                     this.haveDataSlice = true;
-                    this.renderLock.Reset();
                     
+                    this.renderLock.Reset();
                     Banshee.Base.ThreadAssist.ProxyToMain(this.glWidget.QueueDraw);
+                    this.renderLock.WaitOne(500, false);
                 }
             }
             
@@ -209,37 +203,35 @@ namespace Banshee.OpenVP
             
             this.glWidget.Dispose();
             this.glWidget.Destroy();
+            
+            InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
+            ias.GlobalActions.Remove(SELECT_VIS_ACTION);
+            ias.UIManager.RemoveUi(global_ui_id);
         }
         
         protected override void OnMapped ()
         {
             base.OnMapped ();
             this.playerData.Active = true;
+            
+            InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
+            ias.GlobalActions.UpdateAction(SELECT_VIS_ACTION, true);
         }
         
         protected override void OnUnmapped ()
         {
             base.OnUnmapped();
             this.playerData.Active = false;
-        }
-
-        protected virtual void OnVisualizationListChanged (object sender, System.EventArgs e)
-        {
-            this.ConnectVisualization();
+            
+            InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
+            ias.GlobalActions.UpdateAction(SELECT_VIS_ACTION, false);
         }
 
         private void ConnectVisualization() {
-            TreeIter i;
-
             this.DisposeRenderer();
-            if (!this.visualizationList.GetActiveIter(out i)) {
-                return;
-            }
-
-            VisualizationExtensionNode node =
-                (VisualizationExtensionNode) this.visualizationStore.GetValue(i, 0);
-
-            this.renderer = node.CreateObject();
+            
+            if (activeVisualization != null)
+            	this.renderer = activeVisualization.CreateObject();
         }
 
         private void DisposeRenderer()
@@ -252,26 +244,26 @@ namespace Banshee.OpenVP
             }
         }
 
-        protected virtual void OnHalfResolutionCheckboxToggled(object sender, System.EventArgs e)
-        {
-            this.halfResolution = this.halfResolutionCheckbox.Active;
-            this.needsResize = true;
-        }
+//        protected virtual void OnHalfResolutionCheckboxToggled(object sender, System.EventArgs e)
+//        {
+//            this.halfResolution = this.halfResolutionCheckbox.Active;
+//            this.needsResize = true;
+//        }
 
 #region IController
-        private IRenderer renderer = null;
+        private volatile IRenderer renderer = null;
         
-        private int widgetHeight;
+        private volatile int widgetHeight;
         
-        private int widgetWidth;
+        private volatile int widgetWidth;
 
-        private int renderHeight;
+        private volatile int renderHeight;
 
-        private int renderWidth;
+        private volatile int renderWidth;
 
-        private bool needsResize = true;
+        private volatile bool needsResize = true;
         
-        private bool halfResolution = false;
+        private volatile bool halfResolution = false;
 
         private BansheePlayerData playerData = null;
         
@@ -489,6 +481,7 @@ namespace Banshee.OpenVP
                 } else {
                     Gl.glClearColor(0, 0, 0, 1);
                     Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
+                    this.renderLock.Set();
                 }
             }
 

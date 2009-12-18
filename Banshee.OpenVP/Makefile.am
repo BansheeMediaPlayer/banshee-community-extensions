@@ -49,7 +49,8 @@ FILES =  \
 	BansheePlayerData.cs \
 	Gtk/GLWidget.cs \
 	gtk-gui/generated.cs \
-	OpenVPSourceContentProvider.cs \
+	OpenVPService.cs \
+	OpenVPSourceContents.cs \
 	VisualizationDisplayWidget.cs \
 	VisualizationExtensionNode.cs 
 
@@ -57,6 +58,7 @@ DATA_FILES =
 
 RESOURCES =  \
 	gtk-gui/gui.stetic \
+	resources/ActiveSourceUI.xml \
 	resources/Banshee.OpenVP.addin.xml,Banshee.OpenVP.resources.Banshee.OpenVP.addin.xml 
 
 EXTRAS = \
@@ -65,6 +67,7 @@ EXTRAS = \
 REFERENCES =  \
 	Mono.Posix \
 	-pkg:banshee-1-core \
+	-pkg:banshee-1-nowplaying \
 	-pkg:banshee-1-services \
 	-pkg:banshee-1-thickclient \
 	-pkg:gtk-sharp-2.0 \
@@ -73,7 +76,8 @@ REFERENCES =  \
 	-pkg:openvp.core \
 	-pkg:tao-freeglut \
 	-pkg:tao-opengl \
-	System
+	System \
+	System.Core
 
 DLL_REFERENCES = 
 

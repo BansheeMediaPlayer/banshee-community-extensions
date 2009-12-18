@@ -19,8 +19,8 @@
     <Addin id="Banshee.ThickClient" version="1.0"/>
   </Dependencies>
   
-  <Extension path="/Banshee/ThickClient/SourceContentProvider">
-  	<Provider class="Banshee.OpenVP.OpenVPSourceContentProvider" />
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.OpenVP.OpenVPService"/>
   </Extension>
 
   <ExtensionPoint path="/Banshee/OpenVP/Visualization">

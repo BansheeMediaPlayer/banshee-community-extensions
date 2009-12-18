@@ -31,41 +31,6 @@ using Gtk;
 
 namespace Banshee.OpenVP
 {
-    public class OpenVPSourceContentProvider : SourceContentProvider, IDisposable
-    {
-        private OpenVPSourceContents contents = null;
-        
-        public OpenVPSourceContentProvider()
-        {
-            Id = "now-playing-openvp";
-            Name = "OpenVP (music visualizer)";
-        }
-        
-        public override bool Supports (Source source)
-        {
-            // This is lame but I'm too lazy to tell upstream to provide a .pc
-            // for Banshee.NowPlaying.
-            return source.GetType().Name == "NowPlayingSource";
-        }
-        
-        public override ISourceContents CreateFor (Source source)
-        {
-            if (contents == null) {
-                contents = new OpenVPSourceContents();
-            }
-            
-            return contents;
-        }
-        
-        void IDisposable.Dispose()
-        {
-            if (contents != null) {
-	            contents.Destroy();
-	            contents = null;
-            }
-        }
-    }
-    
     internal class OpenVPSourceContents : ISourceContents
     {
         private ISource source = null;
@@ -93,10 +58,6 @@ namespace Banshee.OpenVP
         
         public Widget Widget {
             get { return widget; }
-        }
-        
-        public Widget HeaderExtension {
-            get { return widget.HeaderExtension; }
         }
         
         public void Destroy()
