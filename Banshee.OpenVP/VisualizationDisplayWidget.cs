@@ -44,6 +44,7 @@ namespace Banshee.OpenVP
     public class VisualizationDisplayWidget : Gtk.Bin, IController
     {
         private const string SELECT_VIS_ACTION = "SelectVisualizationAction";
+        private const string LOW_RES_ACTION = "LowResVisualizationAction";
         private uint global_ui_id;
         
         private Menu visualizationMenu;
@@ -93,11 +94,19 @@ namespace Banshee.OpenVP
             AddinManager.AddExtensionNodeHandler("/Banshee/OpenVP/Visualization", this.OnVisualizationChanged);
             
             InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
+            
             ias.GlobalActions.AddImportant(new ActionEntry(SELECT_VIS_ACTION,
                                                            null, "Select visualization",
                                                            null, null,
                                                            OnSelectVisualizationClicked));
+            
+            ias.GlobalActions.AddImportant(new ToggleActionEntry(LOW_RES_ACTION,
+                                                           		 null, "Low resolution",
+                                                                 null, null,
+                                                                 OnHalfResolutionToggled, false));
+            
             ias.GlobalActions.UpdateAction(SELECT_VIS_ACTION, false);
+            ias.GlobalActions.UpdateAction(LOW_RES_ACTION, false);
             
             global_ui_id = ias.UIManager.AddUiFromResource("ActiveSourceUI.xml");
         }
@@ -216,6 +225,7 @@ namespace Banshee.OpenVP
             
             InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
             ias.GlobalActions.UpdateAction(SELECT_VIS_ACTION, true);
+            ias.GlobalActions.UpdateAction(LOW_RES_ACTION, true);
         }
         
         protected override void OnUnmapped ()
@@ -225,6 +235,7 @@ namespace Banshee.OpenVP
             
             InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
             ias.GlobalActions.UpdateAction(SELECT_VIS_ACTION, false);
+            ias.GlobalActions.UpdateAction(LOW_RES_ACTION, false);
         }
 
         private void ConnectVisualization() {
@@ -244,11 +255,13 @@ namespace Banshee.OpenVP
             }
         }
 
-//        protected virtual void OnHalfResolutionCheckboxToggled(object sender, System.EventArgs e)
-//        {
-//            this.halfResolution = this.halfResolutionCheckbox.Active;
-//            this.needsResize = true;
-//        }
+        protected virtual void OnHalfResolutionToggled(object sender, System.EventArgs e)
+        {
+            InterfaceActionService ias = ServiceManager.Get<InterfaceActionService> ();
+            
+            this.halfResolution = ((ToggleAction)ias.GlobalActions[LOW_RES_ACTION]).Active;
+            this.needsResize = true;
+        }
 
 #region IController
         private volatile IRenderer renderer = null;
