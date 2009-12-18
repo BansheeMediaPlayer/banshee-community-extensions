@@ -61,8 +61,6 @@ namespace Banshee.OpenVP
         
         public VisualizationDisplayWidget()
         {
-            Stetic.BinContainer.Attach(this);
-            
             BuildHeaderExtension();
 
             this.visualizationList.Model = this.visualizationStore;
@@ -98,6 +96,18 @@ namespace Banshee.OpenVP
             };
             
             AddinManager.AddExtensionNodeHandler("/Banshee/OpenVP/Visualization", this.OnVisualizationChanged);
+        }
+        
+        protected override void OnSizeAllocated (Rectangle allocation)
+        {
+            base.OnSizeAllocated(allocation);
+            
+            this.Child.Allocation = allocation;
+        }
+        
+        protected override void OnSizeRequested (ref Requisition requisition)
+        {
+            requisition = this.Child.SizeRequest();
         }
         
         private void BuildHeaderExtension()

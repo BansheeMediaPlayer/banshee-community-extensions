@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <AssemblyName>Banshee.OpenVP.Visualizations</AssemblyName>
     <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
+    <RootNamespace>Banshee.OpenVP.Visualizations</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,17 +31,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Tao.OpenGl, Version=2.1.0.7, Culture=neutral, PublicKeyToken=1ca010269a4501ef">
-      <Package>tao-opengl-2.1</Package>
+    <Reference Include="Tao.OpenGl, Version=3.0.0.0, Culture=neutral, PublicKeyToken=1ca010269a4501ef">
+      <Package>tao-opengl</Package>
     </Reference>
-    <Reference Include="OpenVP, Version=0.0.1.0, Culture=neutral, PublicKeyToken=">
-      <Package>openvp</Package>
-    </Reference>
-    <Reference Include="OpenVP.Core, Version=0.0.1.0, Culture=neutral, PublicKeyToken=">
+    <Reference Include="OpenVP.Core, Version=0.0.1.0, Culture=neutral">
       <Package>openvp.core</Package>
     </Reference>
-    <Reference Include="Tao.Platform.X11, Version=1.0.0.0, Culture=neutral, PublicKeyToken=701104b2da67a104">
-      <Package>tao-opengl</Package>
+    <Reference Include="OpenVP, Version=0.0.1.0, Culture=neutral">
+      <Package>openvp</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +51,7 @@
     <Compile Include="Voiceprint.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="GreenFlower.cs" />
+    <Compile Include="SpinningGrid.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

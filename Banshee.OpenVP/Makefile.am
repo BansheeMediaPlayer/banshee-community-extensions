@@ -57,7 +57,7 @@ DATA_FILES =
 
 RESOURCES =  \
 	gtk-gui/gui.stetic \
-	resources/Banshee.OpenVP.addin.xml,resources.Banshee.OpenVP.addin.xml 
+	resources/Banshee.OpenVP.addin.xml,Banshee.OpenVP.resources.Banshee.OpenVP.addin.xml 
 
 EXTRAS = \
 	banshee.openvp.pc.in 

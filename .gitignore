@@ -10,3 +10,8 @@ configure
 # Build output
 build
 *.pc
+
+# MD cruft
+*.pidb
+*.userprefs
+*.usertasks

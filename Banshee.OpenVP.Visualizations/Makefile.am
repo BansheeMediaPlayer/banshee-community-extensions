@@ -53,11 +53,12 @@ FILES =  \
 	Inferno.cs \
 	SimpleScope.cs \
 	SpectrumAnalyzer.cs \
+	SpinningGrid.cs \
 	Voiceprint.cs 
 
 DATA_FILES = 
 
-RESOURCES = resources/Banshee.OpenVP.Visualizations.addin.xml,resources.Banshee.OpenVP.Visualizations.addin.xml 
+RESOURCES = resources/Banshee.OpenVP.Visualizations.addin.xml,Banshee.OpenVP.Visualizations.resources.Banshee.OpenVP.Visualizations.addin.xml 
 
 EXTRAS = \
 	banshee.openvp.visualizations.pc.in 
