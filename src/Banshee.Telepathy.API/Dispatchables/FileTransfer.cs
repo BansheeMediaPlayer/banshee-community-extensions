@@ -265,6 +265,7 @@ namespace Banshee.Telepathy.API.Dispatchables
         
         public void Cancel ()
         {
+			Console.WriteLine ("FileTransfer.Cancel () called");
             State = TransferState.Cancelled;
             Close ();
         }

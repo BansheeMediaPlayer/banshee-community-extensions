@@ -51,21 +51,21 @@ namespace Banshee.Telepathy.Data
 			base.Dispose (disposing);
 		}
 		
-        protected new void CleanUpTransfer (TelepathyDownload t)
+        protected override void CleanUpTransfer (TelepathyDownload t, bool dispose)
         {
             if (!t.CancelPending) {
 				cancelled.Remove (t.Key);
-                base.CleanUpTransfer (t);
+                base.CleanUpTransfer (t, dispose);
             } else {
 				// if cancel_pending, the file transfer channel was not yet
 				// available to cancel, so continue to keep track so when it
 				// comes across it can be cancelled
-				CleanUpTransfer (t, false);
+				base.CleanUpTransfer (t, false);
 				cancelled[t.Key] =  t;
 			}
         }
 		
-		public new void Queue (TelepathyDownload t)
+		public override void Queue (TelepathyDownload t)
 		{
 			if (cancelled.ContainsKey (t.Key)) {
 				TelepathyDownload old = cancelled[t.Key];

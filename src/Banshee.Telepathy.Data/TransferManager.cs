@@ -172,7 +172,7 @@ namespace Banshee.Telepathy.Data
             }
         }
 
-        public void Queue (T t)
+        public virtual void Queue (T t)
         {
             if (!transfers.ContainsKey (t.Key)) {
                 transfers.Add (t.Key, t);
@@ -235,14 +235,13 @@ namespace Banshee.Telepathy.Data
                 total++;
                 break;
             case TransferState.Ready:
-                bytes_expected += args.BytesExpected;
-                
                 ThreadAssist.SpawnFromMain (delegate {
                     StartReady ();
                 });
                 
                 break;
             case TransferState.InProgress:
+				bytes_expected += args.BytesExpected;
                 in_progress++;
                 break;
             case TransferState.Completed:
@@ -256,9 +255,7 @@ namespace Banshee.Telepathy.Data
                     OnTransferCompleted (t, EventArgs.Empty);
                 } else if (args.State == TransferState.Cancelled && args.BytesTransferred == 0) {
                     start = false;
-                }
-                
-                if (args.State == TransferState.Cancelled || args.State == TransferState.Failed) {
+                } else if ((args.State == TransferState.Cancelled || args.State == TransferState.Failed) && args.BytesTransferred > 0) {
                     bytes_expected -= args.BytesExpected;
                     bytes_transferred -= args.BytesTransferred;
                 }
@@ -292,8 +289,8 @@ namespace Banshee.Telepathy.Data
         
         private void OnTransferProgressChanged (object sender, TransferProgressEventArgs args)
         {
-            Log.DebugFormat ("OnTransferProgressChanged: transferred {0} expected {1}", 
-                             args.BytesTransferred, args.BytesExpected);
+            //Log.DebugFormat ("OnTransferProgressChanged: transferred {0} expected {1}", 
+	//                         args.BytesTransferred, args.BytesExpected);
             bytes_transferred += args.Bytes;
             OnUpdated ();
         }
