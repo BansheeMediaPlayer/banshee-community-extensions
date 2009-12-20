@@ -171,7 +171,9 @@ namespace Banshee.Telepathy.API
                 } else if (replace) {
                     Remove (contact, key, d.GetType ());
                     Add (contact, key, d, false);
-                }
+                } else {
+					throw new InvalidOperationException ("Dispatchable could not be added to dispatch manager.");
+				}
                 
                 OnDispatched (d, EventArgs.Empty);
                 d.Initialize ();

@@ -97,7 +97,7 @@ namespace Banshee.Telepathy.API.Dispatchers
 
                 DBusActivity activity = new DBusActivity (contact, tube);
                 DispatchManager dm = Connection.DispatchManager;
-                dm.Add (contact, activity.Service, activity);
+                dm.Add (contact, activity.Service, activity, false);
             }
             catch (Exception e) {
                 Console.WriteLine (e.ToString ());
