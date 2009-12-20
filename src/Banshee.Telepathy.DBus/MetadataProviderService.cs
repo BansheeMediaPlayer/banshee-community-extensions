@@ -51,13 +51,14 @@ namespace Banshee.Telepathy.DBus
         Video
     };
 
-    public delegate void PermissionResponseHandler (bool granted);
+    public delegate void PermissionSetHandler (bool granted);
     public delegate void DownloadingAllowedHandler (bool allowed);
     public delegate void StreamingAllowedHandler (bool allowed);
     
     public class MetadataProviderService : IMetadataProviderService
     {
-        public event PermissionResponseHandler PermissionResponse;
+        public event PermissionSetHandler PermissionSet;
+		public event EventHandler<EventArgs> PermissionRequired;
         public event DownloadingAllowedHandler DownloadingAllowedChanged;
         public event StreamingAllowedHandler StreamingAllowedChanged;
         
@@ -85,6 +86,14 @@ namespace Banshee.Telepathy.DBus
         }
 
         private bool permission_granted = true;
+		public bool Permission {
+			get { return permission_granted; }
+			set {
+				permission_granted = value;
+				OnPermissionSet (permission_granted);
+			}
+		}
+		
         public bool PermissionGranted () 
         {
             return permission_granted; 
@@ -148,26 +157,28 @@ namespace Banshee.Telepathy.DBus
         public void RequestPermission ()
         {
             if (activity == null || activity.Contact == null) {
-                OnPermissionResponse (false);
+                Permission = false;
                 return;
             }
             else if (permission_granted) {
-                OnPermissionResponse (permission_granted);
+                Permission = true;
                 return;
             }
-            
-            Contact contact = activity.Contact;
-            
-            ContactRequestDialog dialog = new ContactRequestDialog (contact.Name);
-            dialog.ShowAll ();
-            dialog.Response += delegate(object o, ResponseArgs e) {
-                if (e.ResponseId == ResponseType.Accept) {               
-                    permission_granted = true;
-                }
-                
-                dialog.Destroy ();
-                OnPermissionResponse (permission_granted);
-            };
+			
+			OnPermissionRequired (EventArgs.Empty);
+			
+//            Contact contact = activity.Contact;
+//            
+//            ContactRequestDialog dialog = new ContactRequestDialog (contact.Name);
+//            dialog.ShowAll ();
+//            dialog.Response += delegate(object o, ResponseArgs e) {
+//                if (e.ResponseId == ResponseType.Accept) {               
+//                    permission_granted = true;
+//                }
+//                
+//                dialog.Destroy ();
+//                OnPermissionResponse (permission_granted);
+//            };
         }
 
         public void DownloadFile (long external_id, string content_type)
@@ -219,9 +230,17 @@ namespace Banshee.Telepathy.DBus
             return streaming_allowed;
         }
             
-        private void OnPermissionResponse (bool granted)
+		protected virtual void OnPermissionRequired (EventArgs args)
         {
-            PermissionResponseHandler handler = PermissionResponse;
+            var handler = PermissionRequired;
+            if (handler != null) {
+                handler (this, args);
+            }
+        }
+		
+        private void OnPermissionSet (bool granted)
+        {
+            PermissionSetHandler handler = PermissionSet;
             if (handler != null) {
                 handler (granted);
             }

@@ -27,10 +27,10 @@
 //
 
 using System;
+using System.Timers;
 using System.Collections.Generic;
 using Mono.Unix;
 
-using Hyena;
 using Hyena.Data.Sqlite;
 
 using Banshee.Base;
@@ -79,7 +79,10 @@ namespace Banshee.Telepathy.Data
         private HyenaSqliteCommand purge_source_command = new HyenaSqliteCommand (@"
             DELETE FROM CorePrimarySources WHERE PrimarySourceId = ?
         ");
-                
+        
+		private SourceMessage response_message;
+		private bool getting_response = false;
+		
         public ContactSource (Contact contact) : base (Catalog.GetString ("Contact"), 
                                                        String.Format ("{0} ({1})", 
                                                                       contact != null ? contact.Name : String.Empty, 
@@ -89,7 +92,7 @@ namespace Banshee.Telepathy.Data
         {
             Contact = contact;
             Contact.ContactUpdated += OnContactUpdated;
-            Log.DebugFormat ("ContactSource created for {0}", Contact.Name);
+            Hyena.Log.DebugFormat ("ContactSource created for {0}", Contact.Name);
             
             //Properties.SetString ("UnmapSourceActionLabel", Catalog.GetString ("Disconnect"));
             //Properties.SetString ("UnmapSourceActionIconName", "gtk-disconnect");
@@ -283,11 +286,15 @@ namespace Banshee.Telepathy.Data
         public override void Activate ()
         {
             if (Contact == null) {
-                Log.Error ("ContactSource.Activate found contact is null.");
+                Hyena.Log.Error ("ContactSource.Activate found contact is null.");
                 return;
             }
             
-            Log.DebugFormat ("{0} selected", Contact.Name);
+			if (getting_response) {
+				return;
+			}
+			
+            Hyena.Log.DebugFormat ("{0} selected", Contact.Name);
 
             EnsureDBusActivity ();
             
@@ -348,7 +355,7 @@ namespace Banshee.Telepathy.Data
             try {
                 Contact.DispatchManager.Request <DBusActivity> (Contact, properties);
             } catch (Exception e) {
-                Log.Exception (e);
+                Hyena.Log.Exception (e);
             }
         }
         
@@ -362,7 +369,7 @@ namespace Banshee.Telepathy.Data
                     Contact.DispatchManager.Request <StreamActivityListener> (Contact, properties);
                 }
             } catch (Exception e) {
-                Log.Exception (e);
+                Hyena.Log.Exception (e);
             }
         }
         
@@ -380,6 +387,10 @@ namespace Banshee.Telepathy.Data
             }
             
             IMetadataProviderService provider_service = new MetadataProviderService (activity, permission);
+			(provider_service as MetadataProviderService).PermissionRequired += (o, a) => {
+				ShowResponseMessage (o as MetadataProviderService);
+			};
+			
             activity.RegisterDBusObject (provider_service, MetadataProviderService.ObjectPath);
         }
 
@@ -406,7 +417,95 @@ namespace Banshee.Telepathy.Data
             
             LoadData (current_activity);
         }
-        
+
+		private void ResetResponseMessage ()
+		{
+			getting_response = false;
+			
+			if (response_message != null) {
+				RemoveMessage (response_message);
+			}
+		}
+		
+		private void ShowResponseMessage ()
+		{
+			ShowResponseMessage (null);
+		}
+		
+		private void ShowResponseMessage (MetadataProviderService provider_service)
+		{
+			getting_response = true;
+			
+			if (response_message == null) {
+				response_message = new SourceMessage (this);
+				response_message.CanClose = false;
+            	response_message.IsSpinning = false;
+            	response_message.SetIconName (null);
+            	response_message.IsHidden = false;
+			}
+			
+			PushMessage (response_message);
+			response_message.FreezeNotify ();
+			response_message.ClearActions ();
+			
+			string status_name = String.Format ("<i>{0}</i>", GLib.Markup.EscapeText (Name));
+			string message = String.Format (Catalog.GetString ("{0} is requesting to browse your library"), Contact.Name);
+			response_message.Text = String.Format (GLib.Markup.EscapeText (message), status_name);
+            
+            response_message.AddAction (new MessageAction (Catalog.GetString ("Accept"),
+                delegate { 
+				if (current_activity != null) {
+					if (provider_service == null) {
+						current_activity.Accept ();
+					} else {
+						provider_service.Permission = true;
+					}
+					ResetResponseMessage ();
+				}
+			}));
+            response_message.AddAction (new MessageAction (Catalog.GetString ("Reject"),
+                delegate { 
+				if (current_activity != null) {
+					if (provider_service == null) {
+						current_activity.Reject ();
+					} else {
+						provider_service.Permission = false;
+					}
+					ResetResponseMessage ();
+				}
+			}));
+
+            response_message.ThawNotify ();
+			TelepathyNotification.Create ().Show (Contact.Name, 
+                    	Catalog.GetString ("is requesting to browse your Banshee library"));
+			
+			// show notify bubble every 30 seconds
+			Timer notify_timer = new Timer (30000);
+			notify_timer.Elapsed += (o, a) => {
+                if (!getting_response) {
+               		notify_timer.Stop ();
+				} else {
+					TelepathyNotification.Create ().Show (Contact.Name, 
+                    	Catalog.GetString ("is requesting to browse your Banshee library"));
+				}
+            };
+            notify_timer.AutoReset = true;
+            notify_timer.Start ();
+			
+			// pulse source every 7 seconds
+			Timer timer = new Timer (7000);
+            timer.Elapsed += (o, a) => {
+                if (!getting_response) {
+               		timer.Stop ();
+					notify_timer.Stop ();
+				} else {
+					NotifyUser ();
+				}
+            };
+            timer.AutoReset = true;
+            timer.Start ();
+		}
+		
         private void SetWaiting ()
         {
             state = ContactSourceState.Waiting;
@@ -420,13 +519,13 @@ namespace Banshee.Telepathy.Data
             } else if (activity == null) {
                 return;
             } else if (activity.State != ActivityState.Connected) {
-                Log.Debug (String.Format ("activity state {0} is invalid.", activity.State));
+                Hyena.Log.Debug (String.Format ("activity state {0} is invalid.", activity.State));
                 return;
             }
         
             IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
             if (service == null) {
-                Log.Debug ("ContactSource.LoadData found service null");
+                Hyena.Log.Debug ("ContactSource.LoadData found service null");
                 return;
             }
 
@@ -490,11 +589,11 @@ namespace Banshee.Telepathy.Data
                 
                 } else if (state == ContactSourceState.PermissionNotGranted) {
                     SetWaiting ();
-                    service.PermissionResponse += OnPermissionResponse;
+                    service.PermissionSet += OnPermissionSet;
                     service.RequestPermission ();
                 }
             } catch (Exception e) {
-                Log.Exception (e);
+                Hyena.Log.Exception (e);
                 ResetState (false);
                 SetStatus (Catalog.GetString ("An error occurred while loading data"), true);
             }
@@ -505,10 +604,10 @@ namespace Banshee.Telepathy.Data
             if (activity == null) {
                 return;
             } else if (activity.State != ActivityState.Connected) {
-                Log.Debug (String.Format ("activity state {0} is invalid.", activity.State));
+                Hyena.Log.Debug (String.Format ("activity state {0} is invalid.", activity.State));
                 return;
             } else if (state != ContactSourceState.LoadedMetadata) {
-                Log.Debug (String.Format ("state {0} is invalid.", state));
+                Hyena.Log.Debug (String.Format ("state {0} is invalid.", state));
                 return;
             }
 
@@ -546,7 +645,7 @@ namespace Banshee.Telepathy.Data
 
                             ThreadAssist.ProxyToMain (delegate {
                                 if (d != null && d.IsFinished) {
-                                    Log.DebugFormat ("Download complete for {0}", playlist_path);
+                                    Hyena.Log.DebugFormat ("Download complete for {0}", playlist_path);
                                     AddChildSource (source);
                                     HideStatus ();
                                 }
@@ -560,7 +659,7 @@ namespace Banshee.Telepathy.Data
                     download_monitor.Start ();
                 }
             } catch (Exception e) {
-                Log.Exception (e);
+                Hyena.Log.Exception (e);
                 ResetState (false);
                 SetStatus (Catalog.GetString ("An error occurred while loading playlists"), true);
             }
@@ -613,13 +712,10 @@ namespace Banshee.Telepathy.Data
                 
                 //FIXME delay required to let tracks save to database
                 //after download
-                System.Timers.Timer timer = new System.Timers.Timer (1000);
-                timer.Elapsed += delegate {
+                GLib.Timeout.Add (1000, delegate {
                     LoadPlaylists (current_activity);
-                    timer.Stop ();
-                };
-                timer.AutoReset = false;
-                timer.Start ();
+					return false;
+                });
             }
         }
 
@@ -634,7 +730,7 @@ namespace Banshee.Telepathy.Data
                 activity.Contact.Equals (contact) && 
                 activity.Service.Equals (MetadataProviderService.BusName)) {
                 
-                //Log.Debug ("Registering event handlers");
+                //Hyena.Log.Debug ("Registering event handlers");
                 activity.ResponseRequired += OnActivityResponseRequired;
                 activity.Ready += OnActivityReady;
                 activity.Closed += OnActivityClosed;
@@ -646,7 +742,7 @@ namespace Banshee.Telepathy.Data
         private void OnActivityReady (object sender, EventArgs args)
         {
             DBusActivity activity = sender as DBusActivity;
-            Log.DebugFormat ("ContactSource OnReady for {0}", Contact.Name);
+            Hyena.Log.DebugFormat ("ContactSource OnReady for {0}", Contact.Name);
 
             // TODO decide if this is the right place for this
             // one contact may not stream, so the tube may not be
@@ -674,10 +770,13 @@ namespace Banshee.Telepathy.Data
             ResetState ();
             
             if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
-                if (dialog != null) {
-                    dialog.Destroy ();
-                    dialog = null;
-                }
+//                if (dialog != null) {
+//                    dialog.Destroy ();
+//                    dialog = null;
+//                }
+				if (getting_response) {
+					ResetResponseMessage ();
+				}
             } else {
                 StopStreaming (this);
                 
@@ -697,41 +796,39 @@ namespace Banshee.Telepathy.Data
         private void OnActivityResponseRequired (object sender, EventArgs args)
         {
             DBusActivity activity = sender as DBusActivity;
-            Log.DebugFormat ("OnActivityResponseRequired from {0} for {1}", activity.Contact.Handle, activity.Contact.Name);
+            Hyena.Log.DebugFormat ("OnActivityResponseRequired from {0} for {1}", activity.Contact.Handle, activity.Contact.Name);
                              
             if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
-                Log.DebugFormat ("{0} handle {1} accepting tube from ContactSource", Contact.Name, Contact.Handle);
-                
-                TelepathyNotification.Create ().Show (activity.Contact.Name, 
-                    Catalog.GetString ("is requesting to browse your Banshee library"));
-                                                      
-                dialog = new ContactRequestDialog (Contact.Name);
-                dialog.ShowAll ();
-                dialog.Response += delegate (object o, Gtk.ResponseArgs e) {
-                    try {
-                        if (e.ResponseId == Gtk.ResponseType.Accept) {               
-                            activity.Accept ();
-                        } else if (e.ResponseId == Gtk.ResponseType.Reject) {
-                            activity.Reject ();
-                        }
-                    } catch (Exception ex) {
-                        Log.Exception (ex);
-                    }
-
-                    if (dialog !=  null) {
-                        dialog.Destroy ();
-                        dialog = null;
-                    }
-                };
+                Hyena.Log.DebugFormat ("{0} handle {1} accepting tube from ContactSource", Contact.Name, Contact.Handle);
+                                          
+				ShowResponseMessage ();
+//                dialog = new ContactRequestDialog (Contact.Name);
+//                dialog.ShowAll ();
+//                dialog.Response += delegate (object o, Gtk.ResponseArgs e) {
+//                    try {
+//                        if (e.ResponseId == Gtk.ResponseType.Accept) {               
+//                            activity.Accept ();
+//                        } else if (e.ResponseId == Gtk.ResponseType.Reject) {
+//                            activity.Reject ();
+//                        }
+//                    } catch (Exception ex) {
+//                        Hyena.Log.Exception (ex);
+//                    }
+//
+//                    if (dialog !=  null) {
+//                        dialog.Destroy ();
+//                        dialog = null;
+//                    }
+//                };
                 
             }
         }
         
         private void UnregisterHandlers ()
         {
-            //Log.Debug ("UnregisterHandlers");
+            //Hyena.Log.Debug ("UnregisterHandlers");
             if (current_activity != null) {
-                //Log.Debug ("unregistering event handlers");
+                //Hyena.Log.Debug ("unregistering event handlers");
                 current_activity.ResponseRequired -= OnActivityResponseRequired;
                 current_activity.Ready -= OnActivityReady;
                 current_activity.Closed -= OnActivityClosed;
@@ -743,14 +840,14 @@ namespace Banshee.Telepathy.Data
         
 #region MetadataServiceProvider Events
         
-        private void OnPermissionResponse (bool granted)
+        private void OnPermissionSet (bool granted)
         {
             if (granted) {
-                Log.Debug ("Permission granted");
+                Hyena.Log.Debug ("Permission granted");
                 state = ContactSourceState.PermissionGranted;
                 LoadData (current_activity);
             } else {
-                Log.Debug ("Permission denied");
+                Hyena.Log.Debug ("Permission denied");
                 ResetState ();
             }
         }
@@ -758,13 +855,13 @@ namespace Banshee.Telepathy.Data
         private void OnLibraryChunkReady (string object_path, IDictionary<string, object>[] chunk, 
                            long timestamp, int seq_num, int total)
         {
-            Log.DebugFormat ("Library Chunk Ready timestamp {0} seq {1} tracks {2} path {3}",
+            Hyena.Log.DebugFormat ("Library Chunk Ready timestamp {0} seq {1} tracks {2} path {3}",
                        timestamp, seq_num, chunk.Length, object_path);
             
             LibraryDownload current_download = download_monitor.Get (object_path);
             if (current_download != null)  {
                 if (!current_download.IsStarted) {
-                    Log.Debug ("Initializing download");
+                    Hyena.Log.Debug ("Initializing download");
                     current_download.Timestamp = timestamp;
                     current_download.TotalExpected = total;
                 }
@@ -778,13 +875,13 @@ namespace Banshee.Telepathy.Data
         private void OnPlaylistChunkReady (string object_path, IDictionary<string, object>[] chunk, 
                            long timestamp, int seq_num, int total)
         {
-            Log.DebugFormat ("Playlist Chunk Ready timestamp {0} seq {1} tracks {2} path {3}",
+            Hyena.Log.DebugFormat ("Playlist Chunk Ready timestamp {0} seq {1} tracks {2} path {3}",
                        timestamp, seq_num, chunk.Length, object_path);
 
             LibraryDownload current_download = download_monitor.Get (object_path);
             if (current_download != null) {            
                 if (!current_download.IsStarted) {
-                    Log.Debug ("Initializing download");
+                    Hyena.Log.Debug ("Initializing download");
                     current_download.Timestamp = timestamp;
                     current_download.TotalExpected = total;
                 }

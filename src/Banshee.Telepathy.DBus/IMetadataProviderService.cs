@@ -36,7 +36,7 @@ namespace Banshee.Telepathy.DBus
     [Interface ("org.bansheeproject.MetadataProviderService")]
     public interface IMetadataProviderService
     {
-        event PermissionResponseHandler PermissionResponse;
+        event PermissionSetHandler PermissionSet;
         event DownloadingAllowedHandler DownloadingAllowedChanged;
         event StreamingAllowedHandler StreamingAllowedChanged;
         
