@@ -52,6 +52,7 @@ namespace Banshee.OpenVP
             new Dictionary<VisualizationExtensionNode, RadioMenuItem>();
         
         private VisualizationExtensionNode activeVisualization;
+        private MenuItem noVisualizationsMenuItem;
 
         private GLWidget glWidget = null;
 
@@ -64,6 +65,10 @@ namespace Banshee.OpenVP
         public VisualizationDisplayWidget()
         {
             this.visualizationMenu = new Menu();
+            noVisualizationsMenuItem = new MenuItem("No visualizations installed");
+            noVisualizationsMenuItem.Sensitive = false;
+            noVisualizationsMenuItem.Show();
+            visualizationMenu.Add(noVisualizationsMenuItem);
             
             this.glWidget = new GLWidget();
             this.glWidget.DoubleBuffered = true;
@@ -133,12 +138,28 @@ namespace Banshee.OpenVP
                 
                 if (group == null)
                     menu.Activate();
+                
+                noVisualizationsMenuItem.Hide();
             } else {
                 RadioMenuItem menu;
                 if (visualizationMenuMap.TryGetValue(node, out menu)) {
                     visualizationMenu.Remove(menu);
                     visualizationMenuMap.Remove(node);
                 }
+                
+                bool haveVis = visualizationMenu.Children.Length != 1;
+                
+                if (node == activeVisualization) {
+                    if (haveVis) {
+                        ((MenuItem) visualizationMenu.Children[1]).Activate();
+                    } else {
+                        activeVisualization = null;
+                    }
+                    
+                    ConnectVisualization();
+                }
+                
+                noVisualizationsMenuItem.Visible = !haveVis;
             }
         }
         
@@ -253,7 +274,9 @@ namespace Banshee.OpenVP
             this.renderer = null;
 
             if (r != null) {
-                r.Dispose();
+                lock (cleanupLock) {
+                	r.Dispose();
+                }
             }
         }
 
