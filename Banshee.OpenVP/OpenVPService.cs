@@ -30,12 +30,14 @@ using System.Linq;
 using Banshee.ServiceStack;
 using Banshee.NowPlaying;
 using Banshee.Sources;
+using Gtk;
 
 namespace Banshee.OpenVP
 {
 	public class OpenVPService : IExtensionService, IDisposable
 	{
         private VisualizationDisplayWidget contents;
+        private NowPlayingSource installedSource = null;
         
 		public OpenVPService () { }
         
@@ -46,17 +48,29 @@ namespace Banshee.OpenVP
 		    contents = new VisualizationDisplayWidget();
             
             ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
+            ServiceManager.SourceManager.SourceRemoved += OnSourceRemoved;
             
-            NowPlayingSource nps = ServiceManager.SourceManager.FindSources<NowPlayingSource>().FirstOrDefault();
-            if (nps != null)
-                nps.SetSubstituteAudioDisplay(contents);
+            InstallDisplay (ServiceManager.SourceManager.FindSources<NowPlayingSource>().FirstOrDefault());
 		}
         
         private void OnSourceAdded (SourceAddedArgs args)
         {
-            NowPlayingSource nps = args.Source as NowPlayingSource;
-            if (nps != null)
-                nps.SetSubstituteAudioDisplay(contents);
+            InstallDisplay (args.Source as NowPlayingSource);
+        }
+        
+        private void OnSourceRemoved (SourceEventArgs args)
+        {
+            if (args.Source == installedSource) {
+                installedSource = null;
+            }
+        }
+        
+        private void InstallDisplay (NowPlayingSource nps)
+        {
+            if (installedSource == null && nps != null) {
+                nps.SetSubstituteAudioDisplay (contents);
+                installedSource = nps;
+            }
         }
 		
 		#endregion
@@ -65,9 +79,10 @@ namespace Banshee.OpenVP
         
 		public void Dispose ()
 		{
-            NowPlayingSource nps = ServiceManager.SourceManager.FindSources<NowPlayingSource>().FirstOrDefault();
-            if (nps != null)
-                nps.SetSubstituteAudioDisplay(null);
+            if (installedSource != null) {
+                installedSource.SetSubstituteAudioDisplay (null);
+                installedSource = null;
+            }
             
 		    contents.Destroy ();
             contents.Dispose ();

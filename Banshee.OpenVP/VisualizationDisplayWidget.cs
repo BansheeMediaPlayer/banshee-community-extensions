@@ -201,8 +201,6 @@ namespace Banshee.OpenVP
 
         protected override void OnDestroyed ()
         {
-            base.OnDestroyed ();
-
             this.loopRunning = false;
             if (this.RenderThread != null) {
                 this.RenderThread.Join();
@@ -210,12 +208,16 @@ namespace Banshee.OpenVP
 
             this.DisposeRenderer();
             
-            this.glWidget.Dispose();
+            Remove (glWidget);
             this.glWidget.Destroy();
+            this.glWidget.Dispose();
             
             InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
             ias.GlobalActions.Remove(SELECT_VIS_ACTION);
+            ias.GlobalActions.Remove(LOW_RES_ACTION);
             ias.UIManager.RemoveUi(global_ui_id);
+            
+            base.OnDestroyed ();
         }
         
         protected override void OnMapped ()
