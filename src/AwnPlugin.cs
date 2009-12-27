@@ -120,12 +120,14 @@ namespace Banshee.Awn
                 SetIcon ();
                 break;
 			case PlayerEvent.StateChange:
-				if (service.CurrentState != PlayerState.Playing &&
-				    service.CurrentState != PlayerState.Playing)
-					UnsetIcon();
-				else 
-					SetIcon();
-				
+				if (service != null) 
+				{
+					if (service.CurrentState != PlayerState.Playing &&
+					    service.CurrentState != PlayerState.Playing)
+						UnsetIcon();
+					else 
+						SetIcon();
+				}
 				break;
             default:
                 break;
