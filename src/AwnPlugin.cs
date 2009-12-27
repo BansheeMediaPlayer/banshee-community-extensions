@@ -32,30 +32,38 @@ using Banshee.Base;
 using Banshee.Configuration;
 using Banshee.MediaEngine;
 using Banshee.ServiceStack;
-using NDesk.DBus;
 using Hyena;
 	
 namespace Banshee.Awn
 {
 	
-	[Interface("com.google.code.Awn")]
+	[NDesk.DBus.Interface("com.google.code.Awn")]
 	public interface IAvantWindowNavigator
 	{
-		void SetTaskIconByName (string app, string icon);
-		void UnsetTaskIconByName (string app);
-		void SetProgressByName (string app, int percent);
-		void SetInfoByName (string app, string text);
+		void SetTaskIconByName (string TaskName, string ImageFileLocation);
+		void UnsetTaskIconByName (string TaskName);
+		void SetProgressByName (string TaskName, int SomePercent);
+		void SetInfoByName (string TaskName, string SomeText);
 		void UnsetInfoByName (string app);
 		
-		//void SetTaskIconByXid (long xid, string ImageFileLocation)
-		//void UnsetTaskIconByXid (long xid)
+		//int AddTaskMenuItemByName (string TaskName, string stock_id, string item_name);
+		//int AddTaskCheckItemByName (string TaskName, string item_name, bool active);
+		//void SetTaskCheckItemByName (string TaskName, int id, bool active);
+
+		//event MenuItemClickedHandler MenuItemClicked;
+		//event CheckItemClickedHandler CheckItemClicked;
+
+		void SetTaskIconByXid (long xid, string ImageFileLocation);
+		void UnsetTaskIconByXid (long xid);
 
 	}
     
+	public delegate void MenuItemClickedHandler (int id);
+	public delegate void CheckItemClickedHandler (int id, bool active);
+	
     public class AwnService : Banshee.ServiceStack.IExtensionService, IDisposable
     {
-		//EventHandler timer;
-		const string taskName = "banshee-1";	
+		string[] taskName = new string[] {"banshee", "banshee-1"};	
 
 		private IAvantWindowNavigator awn;
             
@@ -67,27 +75,32 @@ namespace Banshee.Awn
 		{
 			try 
 			{
-				Log.Debug("BansheeAwn - Starting...");
 			
-				awn = Bus.Session.GetObject<IAvantWindowNavigator> ("com.google.code.Awn",
-                                                              new ObjectPath ("/com/google/code/Awn"));
+				Log.Debug("BansheeAwn. Starting...");
+
+				awn = NDesk.DBus.Bus.Session.GetObject<IAvantWindowNavigator> ("com.google.code.Awn",
+                                                              new NDesk.DBus.ObjectPath ("/com/google/code/Awn"));
+				if (awn == null)
+					throw new NullReferenceException();
 				service = ServiceManager.PlayerEngine;
+		
 				service.ConnectEvent(new PlayerEventHandler(this.OnEventChanged));
+				
 				Log.Debug("BansheeAwn - Initialized");
-			
-				//timer = new EventHandler(this.Progress);
-				//timer.BeginInvoke(new AsyncCallback(this.ProgressCallback), timer);
+	
 			}
-			catch
+			catch (Exception ex)
 			{
+				Log.Debug("BansheeAwn - Failed loading Awn Extension. " + ex.Message);
 			}
 		}
+		
 
         void IDisposable.Dispose()
         {
-			service = null;
             UnsetIcon ();
-            UnsetTrackProgress();
+            //UnsetTrackProgress();
+			service = null;
 			awn = null;
         }
 
@@ -128,8 +141,9 @@ namespace Banshee.Awn
 					string fileName = CoverArtSpec.GetPath(service.CurrentTrack.ArtworkId);
 					if(File.Exists (fileName))
 					{
-						awn.SetTaskIconByName (taskName, fileName);
-						Log.Debug("BansheeAwn - Cover: '" + fileName + "'");
+						for (int i =0; i < taskName.Length; i++)
+							awn.SetTaskIconByName (taskName[i], fileName);
+						Log.Debug("BansheeAwn - Setting cover: " + fileName);
 					}
 					else
 					{
@@ -137,6 +151,7 @@ namespace Banshee.Awn
 					}
 
 				}
+
 			}
 			catch 
 			{
@@ -182,17 +197,18 @@ namespace Banshee.Awn
 		private void UnsetIcon ()
 		{
             if (awn != null) {
-                awn.UnsetTaskIconByName (taskName);
+ 				for (int i =0; i < taskName.Length; i++)
+					awn.UnsetTaskIconByName (taskName[i]);
             }
         }
-       	private void UnsetTrackProgress ()
-		{
-            if (awn != null)
-			{
-				awn.SetProgressByName(taskName, 100);
-				awn.UnsetInfoByName(taskName);
-            }
-        } 
+//       	private void UnsetTrackProgress ()
+//		{
+//            if (awn != null)
+//			{
+//				awn.SetProgressByName(taskName, 100);
+//				awn.UnsetInfoByName(taskName);
+//            }
+//        } 
         public static readonly SchemaEntry<bool> EnabledSchema = new SchemaEntry<bool> (
             "plugins.awn", "enabled",
             true,
