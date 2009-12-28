@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.Lyrics", "Banshee.Lyrics.csproj", "{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Windows|Any CPU = Windows|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Windows|Any CPU.ActiveCfg = Windows|Any CPU
+		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Windows|Any CPU.Build.0 = Windows|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Banshee.Lyrics.csproj
+	EndGlobalSection
+EndGlobal
