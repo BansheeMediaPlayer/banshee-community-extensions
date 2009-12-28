@@ -35,8 +35,8 @@ namespace Banshee.Lyrics.Sources
     {
         public Lyriki ()
         {
-            base.regexLyric =
-                new Regex ("<p>(.*?)</p><!",
+        	base.regexLyric =
+                new Regex ("<p>(.*)</p>",
                            RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
         

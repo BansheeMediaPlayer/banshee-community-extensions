@@ -6,6 +6,7 @@ CUSTOM_MCS_FLAGS = $(MCS_FLAGS) \
 	-unsafe
 SOURCES = \
         Banshee.Lyrics/LyricsManager.cs \
+        Banshee.Lyrics.Gui/ContextPage.cs \
         Banshee.Lyrics/LyricsPlugin.cs \
         Banshee.Lyrics.Network/ProxyManager.cs \
 	Banshee.Lyrics.Network/HttpUtils.cs \  

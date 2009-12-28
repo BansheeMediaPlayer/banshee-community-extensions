@@ -70,11 +70,11 @@ namespace Banshee.Lyrics.Gui {
             w1.Position = 0;
             w1.Expand = false;
             
-            this.lyricsBrowser = new Banshee.Lyrics.Gui.LyricsBrowser();
+            this.lyricsBrowser = new Banshee.Lyrics.Gui.LyricsBrowser ();
             this.lyricsBrowser.Events = ((Gdk.EventMask)(256));
             this.lyricsBrowser.Name = "lyricsBrowser";
             this.vbox1.Add(this.lyricsBrowser);
-            Gtk.Box.BoxChild w2 = ((Gtk.Box.BoxChild)(this.vbox1[this.lyricsBrowser]));
+            Gtk.Box.BoxChild w2 = ( (Gtk.Box.BoxChild) ( this.vbox1 [this.lyricsBrowser] ));
             w2.Position = 1;
             
             this.dialog1_ActionArea1 = new Gtk.HButtonBox();

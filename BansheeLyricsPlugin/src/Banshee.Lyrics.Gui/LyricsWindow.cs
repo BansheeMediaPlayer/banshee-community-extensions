@@ -39,9 +39,6 @@ namespace Banshee.Lyrics.Gui
 {
     public partial class LyricsWindow : Gtk.Window
     {
-        private string saved_artist;
-        private string saved_title;
-        
         public LyricsWindow () : base (Gtk.WindowType.Toplevel)
         {
             this.Build ();
@@ -113,29 +110,23 @@ namespace Banshee.Lyrics.Gui
         
         void OnRefresh (object sender, EventArgs args)
         {
-            Thread t = new Thread (new ThreadStart (LyricsManager.Instance.RefreshLyrics));
-            t.Start ();
+        	GetBrowser ().OnRefresh (sender,args);
         }
+		
         void OnBrowserChangeMode (object sender, ChangeModeEventArgs e)
         {
             if (e.mode == LyricsBrowser.INSERT_MODE) {
-                this.buttonSave.Show();
-                this.buttonRefresh.Hide();
-                this.saved_artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
-                this.saved_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
+                this.buttonSave.Show ();
+                this.buttonRefresh.Hide ();
             } else {
-                this.buttonSave.Hide();
-                this.buttonRefresh.Show();
+                this.buttonSave.Hide ();
+                this.buttonRefresh.Show ();
             }
         }
-        
+
         public void OnSaveLyric (object sender, EventArgs args)
         {
-            string lyric = lyricsBrowser.GetText ();
-            LyricsManager.Instance.AddLyrics (saved_artist, saved_title, lyric);
-            
-            lyricsBrowser.LoadString(lyric);
-            lyricsBrowser.SwitchTo (LyricsBrowser.HTML_MODE);
+            this.GetBrowser ().SaveLyric ();
         }
     }
 }

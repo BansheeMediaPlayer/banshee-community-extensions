@@ -36,10 +36,10 @@ namespace Banshee.Lyrics.Sources
     
         public Lyrc ()
         {
-            base.regexLyric =
+        	base.regexLyric =
                 new
                 Regex
-                ("<img src=\"img/pix_discontinua.gif\" width=\"400\" height=\"3\"></td>(.*)<td height=\"10\" align=\"center\" valign=\"top\" class=\"TEXTmagenta\">",
+                ("</script></td></tr></table>(.*)<p><hr size=1",
                  RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Singleline);
             base.regexSuggestion =
                 new Regex ("Suggestions :(.*?)<br><br> If none is your song <br>",

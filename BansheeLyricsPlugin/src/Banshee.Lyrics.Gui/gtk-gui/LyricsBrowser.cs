@@ -38,45 +38,50 @@ namespace Banshee.Lyrics.Gui {
         private Gtk.HTML htmlBrowser;
         private Gtk.TextView textBrowser;
         
-        protected virtual void Build() {
-            Gui.Initialize(this);
-            BinContainer.Attach(this);
-            this.Name = "Banshee.Lyrics.Gui.LyricsBrowser";
-            
-            this.frame1 = new Gtk.Frame();
-            this.frame1.CanFocus = true;
-            this.frame1.Name = "frame1";
-            this.frame1.BorderWidth = 0;
-            this.frame1.ShadowType = ((Gtk.ShadowType)(6));
-            
-            this.vbox2 = new Gtk.VBox();
-            this.vbox2.Name = "vbox2";
-            
-            this.lyricsScrollPane = new Gtk.ScrolledWindow();
-            this.lyricsScrollPane.CanFocus = true;
-            this.lyricsScrollPane.Name = "lyricsScrollPane";
-            this.lyricsScrollPane.HscrollbarPolicy = ((Gtk.PolicyType)(2));
-            this.lyricsScrollPane.ShadowType = ((Gtk.ShadowType)(1));
-            this.vbox2.Add(this.lyricsScrollPane);
-            Gtk.Box.BoxChild w1 = ((Gtk.Box.BoxChild)(this.vbox2[this.lyricsScrollPane]));
-            w1.Position = 0;
-            
-            this.frame1.Add(this.vbox2);
-            this.Add(this.frame1);
-            if ((this.Child != null)) {
-                this.Child.ShowAll();
-            }
-            
+        protected virtual void Build ()
+        {
+        	Gui.Initialize (this);
+        	BinContainer.Attach (this);
+        	this.Name = "Banshee.Lyrics.Gui.LyricsBrowser";
+        	
+            this.frame1 = new Gtk.Frame ();
+        	this.frame1.CanFocus = true;
+        	this.frame1.Name = "frame1";
+        	this.frame1.BorderWidth = 0;
+        	this.frame1.ShadowType = ((Gtk.ShadowType)(6));
+        	
+            this.vbox2 = new Gtk.VBox ();
+        	this.vbox2.Name = "vbox2";
+        	
+            this.lyricsScrollPane = new Gtk.ScrolledWindow ();
+        	this.lyricsScrollPane.CanFocus = true;
+        	this.lyricsScrollPane.Name = "lyricsScrollPane";
+        	this.lyricsScrollPane.HscrollbarPolicy = ((Gtk.PolicyType)(2));
+        	this.lyricsScrollPane.ShadowType = ((Gtk.ShadowType)(1));
+        	this.vbox2.Add (this.lyricsScrollPane);
+        	Gtk.Box.BoxChild w1 = ((Gtk.Box.BoxChild)(this.vbox2[this.lyricsScrollPane]));
+        	w1.Position = 0;
+        	
+            this.frame1.Add (this.vbox2);
+        	this.Add (this.frame1);
+        	if ((this.Child != null)) {
+        		this.Child.ShowAll ();
+        	}
+        	
             this.htmlBrowser = new Gtk.HTML ();
-            this.htmlBrowser.AllowSelection (true);
-            this.htmlBrowser.Editable = false;
-            this.lyricsScrollPane.Add (htmlBrowser);
-            this.htmlBrowser.Show ();
-            
+        	this.htmlBrowser.AllowSelection (true);
+        	this.htmlBrowser.Editable = false;
+        	this.lyricsScrollPane.Add (htmlBrowser);
+        	this.htmlBrowser.Show ();
+        	
             this.textBrowser = new Gtk.TextView ();
-            this.textBrowser.WrapMode = (Gtk.WrapMode) (2);
-            
-            this.Hide();
+        	this.textBrowser.WrapMode = (Gtk.WrapMode)(2);
+        	
+            this.Hide ();
         }
+		
+		public void RemoveShadow () {
+			lyricsScrollPane.ShadowType = ((Gtk.ShadowType)(0));
+		}
     }
 }

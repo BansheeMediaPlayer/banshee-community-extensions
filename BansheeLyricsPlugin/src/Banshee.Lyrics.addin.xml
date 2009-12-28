@@ -8,8 +8,13 @@
         compatVersion="1.0">
   
   <Dependencies>
-    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin version="1.0" id="Banshee.Services"/>
+    <Addin version="1.0" id="Banshee.ThickClient"/>
   </Dependencies>
+  
+  <Extension path="/Banshee/ThickClient/ContextPane">
+    <ContextPage class="Banshee.Lyrics.Gui.ContextPage"/>
+  </Extension>
   
   <Extension path="/Banshee/ServiceManager/Service">
     <Service class="Banshee.Lyrics.LyricsService"/>

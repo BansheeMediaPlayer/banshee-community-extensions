@@ -50,36 +50,54 @@ namespace Banshee.Lyrics.Gui
     public partial class LyricsBrowser : Gtk.Bin
     {
         public event ChangeModeEventHandler ChangeModeEvent;
-
         public static int HTML_MODE = 0;
         public static int INSERT_MODE = 1;
         
-        private string browser_str;
+        private string current_artist;
+        private string current_title;
+
+		private bool enableInsertMode = true;
+        private string browser_content;
         
+        public LyricsBrowser (bool enableInsertMode) : this()
+        {
+            this.enableInsertMode = enableInsertMode;
+            this.RemoveShadow ();
+        }
+		
         public LyricsBrowser ()
         {
             this.Build ();
             
-            LyricsManager.Instance.LoadingLyricEvent += OnLoadingLyric;
+            LyricsManager.Instance.LoadingLyricEvent += OnLoading;
             LyricsManager.Instance.LyricChangedEvent += OnLyricChanged;
             
             this.htmlBrowser.LinkClicked += new LinkClickedHandler (OnLinkClicked);
             this.htmlBrowser.ButtonPressEvent += new ButtonPressEventHandler (OnButtonPress);
             SwitchTo (LyricsBrowser.HTML_MODE);
         }
-        
-        /*depends on the mode (HTML or INSERT) show the browser or the text area */
+		
+        /* Show the browser in HTML mode or the textArea in INSERT mode */
         public void SwitchTo (int mode)
         {
+            if (mode == LyricsBrowser.INSERT_MODE && !this.enableInsertMode) {
+                return;
+            }
+			
             this.lyricsScrollPane.Remove (this.lyricsScrollPane.Child);
             
             if (mode == LyricsBrowser.HTML_MODE) {
                 this.lyricsScrollPane.Add (this.htmlBrowser);
             } else {
+				/* save current track information */
+                this.current_artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
+                this.current_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
+
                 this.lyricsScrollPane.Add (this.textBrowser);
                 this.textBrowser.Buffer.Text = "";
                 this.textBrowser.GrabFocus ();
             }
+			
             this.lyricsScrollPane.ResizeChildren ();
             this.lyricsScrollPane.ShowAll ();
             
@@ -91,13 +109,13 @@ namespace Banshee.Lyrics.Gui
         public void OnLyricChanged (object o, LyricEventArgs args)
         {
             if (args.error != null) {
-                this.browser_str = args.error;
+                this.browser_content = args.error;
             } else if (args.suggestion != null) {
-                this.browser_str = GetSuggestionString (args.suggestion);
+                this.browser_content = GetSuggestionString (args.suggestion);
             } else if (args.lyric != null) {
-                this.browser_str = args.lyric;
+                this.browser_content = args.lyric;
             } else {
-                this.browser_str = Catalog.GetString("No lyric found.");
+                this.browser_content = Catalog.GetString("No lyric found.");
             }
             
             Gtk.Application.Invoke (LoadString);
@@ -107,9 +125,11 @@ namespace Banshee.Lyrics.Gui
         {
             StringBuilder sb = new StringBuilder ();
             sb.Append ("<b>" + Catalog.GetString ("Lyric not found") + "</b>");
-            sb.Append ("<br><a href=\"" + Catalog.GetString ("add") + "\">");
-            sb.Append (Catalog.GetString ("Click here to manually add a new lyric"));
-            sb.Append ("</a>");
+            if (enableInsertMode) {
+				sb.Append ("<br><a href=\"" + Catalog.GetString ("add") + "\">");
+				sb.Append (Catalog.GetString ("Click here to manually add a new lyric"));
+				sb.Append ("</a>");
+            }
             sb.Append ("<br><br>");
             sb.Append (Catalog.GetString ("Suggestions:"));
             sb.Append (lyric_suggestion);
@@ -117,9 +137,9 @@ namespace Banshee.Lyrics.Gui
             return sb.ToString ();
         }
         
-        private void OnLoadingLyric (object o, EventArgs args)
+        private void OnLoading (object o, EventArgs args)
         {
-            this.browser_str = Catalog.GetString ("Loading lyric...");
+            this.browser_content = "<b>" + Catalog.GetString ("Loading...") + "</b>";
             Gtk.Application.Invoke (LoadString);
         }
         
@@ -130,12 +150,15 @@ namespace Banshee.Lyrics.Gui
         /*prevent multi threading problems */
         private void LoadString (object o, EventArgs args)
         {
-            this.browser_str = this.browser_str == null ? "" : this.browser_str;
-            LoadString (browser_str);
+            this.browser_content = this.browser_content == null ? "" : this.browser_content;
+            LoadString (browser_content);
         }
         
         public void LoadString (string str)
         {
+        	if (str == null) {
+        		str = "";
+        	}
             HTMLStream html_stream = this.htmlBrowser.Begin ("text/html; charset=utf-8");
             html_stream.Write (str);
             this.htmlBrowser.End (html_stream, HTMLStreamStatus.Ok);
@@ -146,41 +169,58 @@ namespace Banshee.Lyrics.Gui
             if (args.Url == Catalog.GetString ("add")) {
                 this.SwitchTo (INSERT_MODE);
             } else {
-                this.LoadString (LyricsManager.Instance.GetLyricsFromLyrc (args.Url));
+                /* an event is launch to update the browser */
+                LyricsManager.Instance.GetLyricsFromLyrc (args.Url);
             }
         }
         
-        private void OnSelect (object sender, EventArgs args)
+        protected void OnSelect (object sender, EventArgs args)
         {
             this.htmlBrowser.SelectAll ();
         }
-        
-        private void OnCopy (object sender, EventArgs args)
+
+		public void OnRefresh (object sender, EventArgs args)
+		{
+			Thread t = new Thread (new ThreadStart (LyricsManager.Instance.RefreshLyrics));
+			t.Start ();
+		}
+
+        protected void OnCopy (object sender, EventArgs args)
         {
             this.htmlBrowser.Copy ();
         }
         
         private void OnButtonPress (object sender, ButtonPressEventArgs args)
         {
-            if (args.Event.Button != 3) {
-                return;
-            }
-            
+        	if (args.Event.Button != 3) {
+        		return;
+        	}
+        	
             Menu menu = new Menu ();
-            ImageMenuItem copyItem = new ImageMenuItem (Stock.Copy, null);
-            ImageMenuItem selectAllItem = new ImageMenuItem (Stock.SelectAll, null);
-            
+        	ImageMenuItem copyItem = new ImageMenuItem (Stock.Copy, null);
+        	ImageMenuItem selectAllItem = new ImageMenuItem (Stock.SelectAll, null);
+        	ImageMenuItem refreshItem = new ImageMenuItem (Stock.Refresh, null);
+        	
             //handle activate event
-            copyItem.Activated += new EventHandler (OnCopy);
-            selectAllItem.Activated += new EventHandler (OnSelect);
-            
-            //add item to the menu
-            menu.Append (selectAllItem);
-            menu.Append (copyItem);
-            
+        	copyItem.Activated += new EventHandler (OnCopy);
+        	selectAllItem.Activated += new EventHandler (OnSelect);
+        	refreshItem.Activated += new EventHandler (OnRefresh);
+			
+			//add item to the menu
+        	menu.Append (selectAllItem);
+        	menu.Append (copyItem);
+        	menu.Append (new SeparatorMenuItem() );
+        	menu.Append (refreshItem);
+			
             //show the menu
             menu.ShowAll ();
             menu.Popup ();
         }
+		
+		public void SaveLyric() {			
+            LyricsManager.Instance.AddLyrics (current_artist, current_title, GetText ());
+            LoadString (GetText ());
+            SwitchTo (LyricsBrowser.HTML_MODE);
+		}
     }
 }

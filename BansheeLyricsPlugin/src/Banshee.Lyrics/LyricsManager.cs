@@ -70,14 +70,15 @@ namespace Banshee.Lyrics
         
         private static LyricsManager instance = new LyricsManager ();
         
-        private LyricsManager () : base ()
+        private LyricsManager () : base()
         {
-            sourceList = new List < ILyricSource > ();
-            sourceList.Add (new Lyrc ());
-            sourceList.Add (new LeosLyrics ());
-            sourceList.Add (new LyricWiki ());
-            sourceList.Add (new AutoLyrics ());
-            sourceList.Add (new Lyriki ());
+        	sourceList = new List<ILyricSource> ();
+        	sourceList.Add (new Lyrc ());
+			sourceList.Add (new Lyriki ());
+        	sourceList.Add (new LeosLyrics ());
+			sourceList.Add (new AutoLyrics ());
+            //sourceList.Add (new LyricWiki ());
+            
         }
         
         internal static LyricsManager Instance {
@@ -149,12 +150,12 @@ namespace Banshee.Lyrics
             return lyric;
         }
         
-        public string GetLyricsFromLyrc (string url)
+        public void GetLyricsFromLyrc (string url)
         {
             if (url == null) {
-                return null;
+                return;
             }
-            
+            Console.WriteLine(url);
             /*get the lyric on lyrc using the its url */
             Lyrc lyrc_server = (Lyrc) sourceList[0];
             if (!url.Contains (lyrc_server.Url)) {
@@ -169,7 +170,7 @@ namespace Banshee.Lyrics
                 cache.WriteLyric (artist, song_title, lyric);
             }
             
-            return lyric;
+            LyricChangedEvent (this, new LyricEventArgs (lyric, null, null));
         }
         
         private string DownloadLyrics (string artist, string title)
