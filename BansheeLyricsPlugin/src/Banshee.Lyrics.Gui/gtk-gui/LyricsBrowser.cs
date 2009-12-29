@@ -23,7 +23,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
-
+using Gtk;
 namespace Banshee.Lyrics.Gui {
     
     
@@ -81,7 +81,8 @@ namespace Banshee.Lyrics.Gui {
         }
 		
 		public void RemoveShadow () {
-			lyricsScrollPane.ShadowType = ((Gtk.ShadowType)(0));
+			this.frame1.ShadowType = Gtk.ShadowType.None;
+			lyricsScrollPane.ShadowType = Gtk.ShadowType.None ;
 		}
     }
 }

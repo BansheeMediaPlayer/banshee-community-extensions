@@ -7,7 +7,8 @@ CUSTOM_MCS_FLAGS = $(MCS_FLAGS) \
 SOURCES = \
         Banshee.Lyrics/LyricsManager.cs \
         Banshee.Lyrics.Gui/ContextPage.cs \
-        Banshee.Lyrics/LyricsPlugin.cs \
+	Banshee.Lyrics.Gui/LyricPane.cs \
+        Banshee.Lyrics/LyricsService.cs \
         Banshee.Lyrics.Network/ProxyManager.cs \
 	Banshee.Lyrics.Network/HttpUtils.cs \  
       	Banshee.Lyrics.Sources/Lyrc.cs \
@@ -22,14 +23,14 @@ SOURCES = \
         Banshee.Lyrics.Gui/gtk-gui/generated.cs \
         Banshee.Lyrics.Gui/gtk-gui/LyricsWindow.cs \
         Banshee.Lyrics.IO/LyricsCache.cs \
-        Banshee.Lyrics.Gui/LyricsBrowser.cs
-
+        Banshee.Lyrics.Gui/LyricsBrowser.cs 
 RESOURCES = \
         Banshee.Lyrics.addin.xml \
 	Resources/LyricsMenu.xml
 
 REFERENCES =  \
 	System.Web \
+	System.Web.Services \ 
 	System.Xml \ 
 	$(GTKHTML_SHARP_314_LIBS) \
 	$(GCONF_SHARP_20_LIBS) \

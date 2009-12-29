@@ -23,45 +23,47 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
+
+using Gtk;
+
 using System;
 
 using Mono.Unix;
 
-using Banshee.Lyrics.Gui;
-
-using Banshee.ContextPane;
-
-using Gtk;
-
-using Hyena;
-
 namespace Banshee.Lyrics.Gui
 {
-    public class ContextPage : BaseContextPage
+    public class LyricPane : VBox
     {
-        private LyricPane lyric_pane;
-        public ContextPage ()
+        private Gtk.Label label;
+        private LyricsBrowser browser;
+        
+        private string last_track_name;
+        public void SetTrackName (String track_name)
         {
-            Id = "lyrics";
-            Name = Catalog.GetString ("Lyrics");
-            IconNames = new string[] { "preferences-desktop-font" , "gtk-edit" };
-        }
-
-        public override void SetTrack (Banshee.Collection.TrackInfo track)
-        {
-            lyric_pane.SetTrackName(track.TrackTitle);
+            if (!String.IsNullOrEmpty (track_name) && track_name != last_track_name) {
+                last_track_name = track_name;
+                label.Text = "<b>" + last_track_name + Catalog.GetString(" lyric") + "</b>";
+                label.UseMarkup = true;
+            }
+            
         }
         
-        public override Widget Widget {
-            get {
-                if (lyric_pane == null) {
-                
-                    lyric_pane = new LyricPane();
-					LyricsManager.Instance.LoadingLyricEvent += delegate { State = ContextState.Loading; };
-                    LyricsManager.Instance.LyricChangedEvent += delegate { State = ContextState.Loaded; };
-                }
-                return lyric_pane;
-            }
+        public LyricPane ()
+        {
+            browser = new LyricsBrowser (false);
+            
+            label = new Label ();
+            label.Xalign = 0;
+            
+            Gtk.Alignment label_align = new Gtk.Alignment (0, 0, 0, 0);
+            label_align.TopPadding = 5;
+            label_align.LeftPadding = 9;
+            label_align.Add (label);
+            
+            PackStart (label_align, false, true, 0);
+            PackStart (browser, true, true, 0);
+            
+            this.ShowAll();
         }
     }
 }

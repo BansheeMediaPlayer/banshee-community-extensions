@@ -72,13 +72,12 @@ namespace Banshee.Lyrics
         
         private LyricsManager () : base()
         {
-        	sourceList = new List<ILyricSource> ();
-        	sourceList.Add (new Lyrc ());
-			sourceList.Add (new Lyriki ());
-        	sourceList.Add (new LeosLyrics ());
-			sourceList.Add (new AutoLyrics ());
+            sourceList = new List<ILyricSource> ();
+            sourceList.Add (new Lyrc ());
+            sourceList.Add (new LeosLyrics ());
+            sourceList.Add (new Lyriki ());
+            sourceList.Add (new AutoLyrics ());
             //sourceList.Add (new LyricWiki ());
-            
         }
         
         internal static LyricsManager Instance {
@@ -155,21 +154,23 @@ namespace Banshee.Lyrics
             if (url == null) {
                 return;
             }
-            Console.WriteLine(url);
-            /*get the lyric on lyrc using the its url */
+
+            /*obtain the lyrc absolute url */
             Lyrc lyrc_server = (Lyrc) sourceList[0];
             if (!url.Contains (lyrc_server.Url)) {
                 url = lyrc_server.Url + "/" + url;
             }
-            
-            string lyric = AttachFooter (lyrc_server.GetLyrics (url), lyrc_server.Credits);
-            //write Lyrics in cache if possible
-            if (lyric != null) {
+
+            /* get the lyric from lyrc */
+            string lyric = lyrc_server.GetLyrics (url);
+            if (IsLyricOk (lyric)) {
+                lyric = AttachFooter (lyric, lyrc_server.Credits);
                 string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
                 string song_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
                 cache.WriteLyric (artist, song_title, lyric);
             }
             
+            /*launch a lyric changed event to notify widgets */
             LyricChangedEvent (this, new LyricEventArgs (lyric, null, null));
         }
         

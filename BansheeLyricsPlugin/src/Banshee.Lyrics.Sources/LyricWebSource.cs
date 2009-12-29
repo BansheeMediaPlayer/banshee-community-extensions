@@ -94,13 +94,11 @@ namespace Banshee.Lyrics.Sources
             if (html == null) {
                 return null;
             }
-            Console.WriteLine(url);
             string parsed_html = null;
             if (r.IsMatch (html)) {
                 Match m = r.Match (html);
                 parsed_html = m.Groups[1].ToString ();
             }
-			Console.WriteLine(parsed_html);
             return parsed_html;
         }
     }

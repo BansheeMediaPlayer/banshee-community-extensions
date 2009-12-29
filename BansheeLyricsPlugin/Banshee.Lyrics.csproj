@@ -58,10 +58,11 @@
     </Reference>
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="src/Banshee.Lyrics.addin.xml" />
-    <EmbeddedResource Include="src/Resources\LyricsMenu.xml">
+    <EmbeddedResource Include="src\Banshee.Lyrics.addin.xml" />
+    <EmbeddedResource Include="src\Resources\LyricsMenu.xml">
       <LogicalName>LyricsMenu.xml</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
@@ -83,6 +84,7 @@
     <Compile Include="src\Banshee.Lyrics.Gui\LyricsBrowser.cs" />
     <Compile Include="src\Banshee.Lyrics\LyricsService.cs" />
     <Compile Include="src\Banshee.Lyrics.Gui\ContextPage.cs" />
+    <Compile Include="src\Banshee.Lyrics.Gui\LyricPane.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

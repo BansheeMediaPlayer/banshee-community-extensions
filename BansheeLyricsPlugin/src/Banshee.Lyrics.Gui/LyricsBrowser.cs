@@ -56,12 +56,12 @@ namespace Banshee.Lyrics.Gui
         private string current_artist;
         private string current_title;
 
-		private bool enableInsertMode = true;
+		private bool enableEditMode = true;
         private string browser_content;
         
-        public LyricsBrowser (bool enableInsertMode) : this()
+        public LyricsBrowser (bool enableEditMode) : this()
         {
-            this.enableInsertMode = enableInsertMode;
+            this.enableEditMode = enableEditMode;
             this.RemoveShadow ();
         }
 		
@@ -80,7 +80,7 @@ namespace Banshee.Lyrics.Gui
         /* Show the browser in HTML mode or the textArea in INSERT mode */
         public void SwitchTo (int mode)
         {
-            if (mode == LyricsBrowser.INSERT_MODE && !this.enableInsertMode) {
+            if (mode == LyricsBrowser.INSERT_MODE && !this.enableEditMode) {
                 return;
             }
 			
@@ -125,7 +125,7 @@ namespace Banshee.Lyrics.Gui
         {
             StringBuilder sb = new StringBuilder ();
             sb.Append ("<b>" + Catalog.GetString ("Lyric not found") + "</b>");
-            if (enableInsertMode) {
+            if (enableEditMode) {
 				sb.Append ("<br><a href=\"" + Catalog.GetString ("add") + "\">");
 				sb.Append (Catalog.GetString ("Click here to manually add a new lyric"));
 				sb.Append ("</a>");
