@@ -203,6 +203,9 @@ namespace Banshee.Lyrics
 
         private bool LyricOutOfDate (string artist, string title)
         {
+            if ( ServiceManager.PlayerEngine == null || ServiceManager.PlayerEngine.CurrentTrack == null ) {
+                return true;
+            }
             string current_artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
             string current_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
             return artist != current_artist || title != current_title;
