@@ -80,6 +80,7 @@
     <Compile Include="src\Banshee.Lyrics.Gui\LyricsWindow.cs" />
     <Compile Include="src\Banshee.Lyrics.Gui\gtk-gui\generated.cs" />
     <Compile Include="src\Banshee.Lyrics.Gui\gtk-gui\LyricsWindow.cs" />
+    <Compile Include="src\Banshee.Lyrics.Gui\gtk-gui\LyricsBrowser.cs" />
     <Compile Include="src\Banshee.Lyrics.IO\LyricsCache.cs" />
     <Compile Include="src\Banshee.Lyrics.Gui\LyricsBrowser.cs" />
     <Compile Include="src\Banshee.Lyrics\LyricsService.cs" />
