@@ -43,13 +43,13 @@ namespace Banshee.Lyrics
 {
     public delegate void LyricChangedEventHandler (object o, LyricEventArgs e);
     public delegate void LoadingLyricEventHandler (object o, EventArgs e);
-    
+
     public class LyricEventArgs : EventArgs
     {
         public readonly string lyric;
         public readonly string error;
         public readonly string suggestion;
-        
+
         public LyricEventArgs (string lyric, string suggestion, string error)
         {
             this.lyric = lyric;
@@ -57,19 +57,19 @@ namespace Banshee.Lyrics
             this.error = error;
         }
     }
-    
+
     public class LyricsManager
     {
-    
+
         public event LyricChangedEventHandler LyricChangedEvent;
         public event LoadingLyricEventHandler LoadingLyricEvent;
-        
+
         private List < ILyricSource > sourceList;       /*the sources for download lyrics */
-        
+
         private LyricsCache cache = new LyricsCache (); /*object to manage saved lyrics */
-        
+
         private static LyricsManager instance = new LyricsManager ();
-        
+
         private LyricsManager () : base()
         {
             sourceList = new List<ILyricSource> ();
@@ -79,11 +79,11 @@ namespace Banshee.Lyrics
             sourceList.Add (new AutoLyrics ());
             //sourceList.Add (new LyricWiki ());
         }
-        
+
         internal static LyricsManager Instance {
             get { return instance; }
         }
-        
+
         public void RefreshLyrics ()
         {
             string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
@@ -91,11 +91,11 @@ namespace Banshee.Lyrics
             cache.DeleteLyric (artist, song_title);
             GetLyrics ();
         }
-        
+
         public void GetLyrics ()
         {
             LoadingLyricEvent (this, null);
-            
+
             string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
             string song_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
 
@@ -115,15 +115,15 @@ namespace Banshee.Lyrics
             } catch (Exception e) {
                 error = e.Message;
             }
-            
+
             LyricChangedEvent (this, new LyricEventArgs (lyric, suggestion, error));
         }
-        
+
         public void AddLyrics (string artist, string title, string lyric)
         {
             cache.WriteLyric (artist, title, lyric.Replace ("\n", "<br>"));
         }
-        
+
         public string GetLyrics (string artist, string title)
         {
             if (artist == null || title == null) {
@@ -148,7 +148,7 @@ namespace Banshee.Lyrics
             
             return lyric;
         }
-        
+
         public void GetLyricsFromLyrc (string url)
         {
             if (url == null) {
@@ -173,7 +173,7 @@ namespace Banshee.Lyrics
             /*launch a lyric changed event to notify widgets */
             LyricChangedEvent (this, new LyricEventArgs (lyric, null, null));
         }
-        
+
         private string DownloadLyrics (string artist, string title)
         {
             foreach (ILyricSource source in sourceList) {
@@ -186,7 +186,7 @@ namespace Banshee.Lyrics
             
             return null;
         }
-        
+
         private string GetSuggestions (string artist, string title)
         {
             //Obtain suggestions from Lyrc
@@ -195,19 +195,19 @@ namespace Banshee.Lyrics
             string suggestions = lyrc_server.GetSuggestions (artist, title);
             return AttachFooter (suggestions, sourceList[0].Credits);
         }
-        
+
         private bool IsLyricOk (string l)
         {
             return l != null && !l.Equals ("");
         }
-        
+
         private bool LyricOutOfDate (string artist, string title)
         {
             string current_artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
             string current_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
             return artist != current_artist || title != current_title;
         }
-        
+
         private string AttachFooter (string lyric, string credits)
         {
             if (lyric == null) {
