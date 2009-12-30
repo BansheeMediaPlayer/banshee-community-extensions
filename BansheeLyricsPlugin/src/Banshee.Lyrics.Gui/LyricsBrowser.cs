@@ -124,7 +124,7 @@ namespace Banshee.Lyrics.Gui
         private string GetSuggestionString (string lyric_suggestion)
         {
             StringBuilder sb = new StringBuilder ();
-            sb.Append ("<b>" + Catalog.GetString ("Lyric not found") + "</b>");
+            sb.Append ("<b>" + Catalog.GetString ("No lyric found.") + "</b>");
             if (enableEditMode) {
 				sb.Append ("<br><a href=\"" + Catalog.GetString ("add") + "\">");
 				sb.Append (Catalog.GetString ("Click here to manually add a new lyric"));
