@@ -78,12 +78,14 @@ namespace Banshee.Lyrics.Sources
             if (lyric_xml == null) {
                 return null;
             }
-            
             XmlDocument xDoc = new XmlDocument ();
             xDoc.LoadXml (lyric_xml);
             
             /*get the lyric from the xml */
             XmlNodeList textList = xDoc.GetElementsByTagName ("text");
+            if (textList == null || textList.Count == 0) {
+                return null;
+            }
             string lyric = textList.Item (0).InnerText;
             return lyric;
         }

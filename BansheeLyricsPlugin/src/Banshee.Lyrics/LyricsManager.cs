@@ -104,7 +104,7 @@ namespace Banshee.Lyrics
             string suggestion = null;
             try {
                 lyric = GetLyrics (artist, song_title);
-
+                
                 if (lyric == null) {
                     suggestion = GetSuggestions (artist, song_title);
                 }
@@ -113,6 +113,7 @@ namespace Banshee.Lyrics
                     return;
                 }
             } catch (Exception e) {
+                Hyena.Log.DebugException (e);
                 error = e.Message;
             }
 
@@ -163,7 +164,7 @@ namespace Banshee.Lyrics
 
             /* get the lyric from lyrc */
             string lyric = lyrc_server.GetLyrics (url);
-            if (IsLyricOk (lyric)) {
+            if ( IsLyricOk (lyric)) {
                 lyric = AttachFooter (lyric, lyrc_server.Credits);
                 string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
                 string song_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
