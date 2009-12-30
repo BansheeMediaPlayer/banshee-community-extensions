@@ -45,14 +45,19 @@ namespace Banshee.Lyrics
 {
     public class LyricsService: IExtensionService, IDisposable
     {
-        public static string lyrics_dir =
-            ".config" + Path.DirectorySeparatorChar + "banshee" + Path.DirectorySeparatorChar + "lyrics";
+        private static string lyrics_dir = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + Path.DirectorySeparatorChar +
+            ".cache" + Path.DirectorySeparatorChar + "banshee-1" + Path.DirectorySeparatorChar + "lyrics" + Path.DirectorySeparatorChar;
             
         private LyricsWindow window = new LyricsWindow ();
         
         private uint ui_manager_id;
-        private ActionGroup action_group;
+        private ActionGroup lyrics_action_group;
         
+
+        public static String LyricsDir {
+            get { return lyrics_dir; }
+        }
+
         void IExtensionService.Initialize ()
         {
             ServiceManager.PlayerEngine.ActiveEngine.EventChanged += OnPlayerEngineEventChanged;
@@ -62,7 +67,7 @@ namespace Banshee.Lyrics
             
             if (!Directory.Exists (lyrics_dir)) {
                 Directory.CreateDirectory (lyrics_dir);
-            }
+            } else 
             
             /*get the lyric of the current played song and update the window */
             if (ServiceManager.PlayerEngine.CurrentTrack != null) {
@@ -77,8 +82,8 @@ namespace Banshee.Lyrics
             ServiceManager.PlayerEngine.ActiveEngine.EventChanged -= OnPlayerEngineEventChanged;
             ServiceManager.PlayerEngine.ActiveEngine.EventChanged -= window.OnPlayerEngineEventChanged;
             
-            InterfaceActionService actions = ServiceManager.Get < InterfaceActionService > ();
-            actions.UIManager.RemoveActionGroup (action_group);
+            InterfaceActionService actions = ServiceManager.Get<InterfaceActionService> ();
+            actions.UIManager.RemoveActionGroup (lyrics_action_group);
             actions.UIManager.RemoveUi (ui_manager_id);
             
             this.window.Hide ();
@@ -91,7 +96,7 @@ namespace Banshee.Lyrics
         private void OnPlayerEngineEventChanged (PlayerEventArgs args)
         {
             if (args.Event == PlayerEvent.EndOfStream) {
-                action_group.Sensitive = false;
+                lyrics_action_group.Sensitive = false;
                 return;
             }
             
@@ -99,7 +104,7 @@ namespace Banshee.Lyrics
                 return;
             }
             
-            action_group.Sensitive = true;
+            lyrics_action_group.Sensitive = true;
             //Get the lyrics
             Thread t = new Thread (new ThreadStart (LyricsManager.Instance.GetLyrics));
             t.Start ();
@@ -107,23 +112,31 @@ namespace Banshee.Lyrics
         
         private void InstallInterfaceActions ()
         {
-            action_group = new ActionGroup ("Lyrics");
-            action_group.Add (new ActionEntry[] {
-                              new ActionEntry ("ShowLyricsAction", null, "Show Lyrics", "<control>T",
-                                               Catalog.GetString ("Show Lyrics"), OnToggleShow)});
-            action_group.Sensitive = ServiceManager.PlayerEngine.CurrentTrack != null ? true : false;
+            InterfaceActionService action_service = ServiceManager.Get<InterfaceActionService> ();
             
-            InterfaceActionService actions = ServiceManager.Get < InterfaceActionService > ();
-            ui_manager_id = actions.UIManager.AddUiFromResource ("LyricsMenu.xml");
-            actions.UIManager.InsertActionGroup (action_group, 0);
+            lyrics_action_group = new ActionGroup ("Lyrics");
+            lyrics_action_group.Add (new ToggleActionEntry[] {
+                              new ToggleActionEntry ("ShowLyricsAction", null, 
+                                                     Catalog.GetString ("Show Lyrics"), "<control>T",
+                                                     Catalog.GetString ("Show Lyrics in a separate window"), null, false) });
+            lyrics_action_group.Sensitive = ServiceManager.PlayerEngine.CurrentTrack != null ? true : false;
+            //actions.UIManager.InsertActionGroup (lyrics_action_group, 0);
+            action_service.AddActionGroup (lyrics_action_group);
+            action_service.FindAction ("Lyrics.ShowLyricsAction").Activated += OnToggleWindow;
+            
+            ui_manager_id = action_service.UIManager.AddUiFromResource ("LyricsMenu.xml");
+            
         }
         
-        private void OnToggleShow (object o, EventArgs args)
+        private void OnToggleWindow (object o, EventArgs args)
         {
-            if (!window.Visible || !window.IsActive) {
+            ToggleAction action = (ToggleAction)o;
+            if (action.Active) {
                 window.ForceUpdate ();
                 window.Show ();
                 window.Present ();
+            } else {
+                window.Hide ();
             }
         }
     }

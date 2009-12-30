@@ -34,6 +34,7 @@ using Gdk;
 
 using Banshee.ServiceStack;
 using Banshee.MediaEngine;
+using Banshee.Gui;
 
 namespace Banshee.Lyrics.Gui
 {
@@ -106,6 +107,13 @@ namespace Banshee.Lyrics.Gui
         void OnClose (object sender, EventArgs args)
         {
             this.Hide ();
+            
+            /*deselect the toggle action "Show lyrics" in the View menu */
+            InterfaceActionService action_service = ServiceManager.Get<InterfaceActionService> ();
+            ToggleAction show_lyrics_action = (ToggleAction) action_service.FindAction ("Lyrics.ShowLyricsAction");
+            if (show_lyrics_action != null) {
+                show_lyrics_action.Active = false;
+            }
         }
         
         void OnRefresh (object sender, EventArgs args)

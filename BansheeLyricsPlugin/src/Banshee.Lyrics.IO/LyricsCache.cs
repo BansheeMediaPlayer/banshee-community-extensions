@@ -35,7 +35,7 @@ namespace Banshee.Lyrics.IO
 
         private string GetLyricsFilename (string artist, string title)
         {
-            return LyricsService.lyrics_dir + artist + "_" + title + ".lyrics";
+            return LyricsService.LyricsDir + artist + "_" + title + ".lyrics";
         }
 
         public void DeleteLyric (string artist, string title)
