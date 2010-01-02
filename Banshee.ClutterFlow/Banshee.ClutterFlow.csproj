@@ -8,6 +8,7 @@
     <ProjectGuid>{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Banshee.ClutterFlow</AssemblyName>
+    <RootNamespace>Banshee.ClutterFlow</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -69,11 +70,12 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ClutterFlowInterface.cs" />
     <Compile Include="ClutterFlowContents.cs" />
-    <Compile Include="ClutterFlowService.cs" />
     <Compile Include="ClutterFlowSource.cs" />
     <Compile Include="ClutterFlowAlbum.cs" />
     <Compile Include="AlbumLoader.cs" />
     <Compile Include="ClutterFlowWidget.cs" />
+    <Compile Include="PartyModeButton.cs" />
+    <Compile Include="FullscreenButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

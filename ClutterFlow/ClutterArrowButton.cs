@@ -60,9 +60,6 @@ namespace ClutterFlow
 			context.SetSourceRGB(0.0,0.0,0.0);
 			context.Stroke();
 			
-			/*((IDisposable) border).Dispose();
-			((IDisposable) arrow).Dispose();*/
-			
 			((IDisposable) context.Target).Dispose();
 			((IDisposable) context).Dispose();
 		}

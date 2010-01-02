@@ -8,6 +8,7 @@
     <ProjectGuid>{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>ClutterFlow</AssemblyName>
+    <RootNamespace>ClutterFlow</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,7 +52,6 @@
     <Compile Include="ClutterSliderHandle.cs" />
     <Compile Include="ClutterArrowButton.cs" />
     <Compile Include="ClutterHelper.cs" />
-    <Compile Include="ConfigData.cs" />
     <Compile Include="ClutterFlowSlider.cs" />
     <Compile Include="ClutterFlowTimeline.cs" />
     <Compile Include="CoverCaption.cs" />
@@ -59,6 +59,11 @@
     <Compile Include="FlowBehaviour.cs" />
     <Compile Include="ClutterFlowActor.cs" />
     <Compile Include="ActorLoader.cs" />
+    <Compile Include="ClutterWidgetBar.cs" />
+    <Compile Include="ClutterGenericButton.cs" />
+    <Compile Include="ClutterToggleButton.cs" />
+    <Compile Include="TrackCaption.cs" />
+    <Compile Include="Caption.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

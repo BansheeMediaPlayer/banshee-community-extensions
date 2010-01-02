@@ -43,12 +43,18 @@ namespace Banshee.ClutterFlow
             fullscreen_adapter = new FullscreenAdapter ();
             screensaver = new ScreensaverManager ();
 
+			FilterView.FSButton.Toggled += HandleFSButtonToggled;
+			
 			ShowAll();
 		}
-
+		
         private void MoveVideoExternal (bool hidden)
         {
 			contents.FullscreenReparent (video_window);
+			if (hidden)
+				video_window.Hide();
+			else
+				video_window.Show();
         }
         
         private void MoveVideoInternal ()
@@ -60,6 +66,10 @@ namespace Banshee.ClutterFlow
 
         private ViewActions.FullscreenHandler previous_fullscreen_handler;
 
+		public bool IsFullscreen {
+			get { return contents.IsFullscreen; }
+		}
+		
         private void DisableFullscreenAction ()
         {
             InterfaceActionService service = ServiceManager.Get<InterfaceActionService> ();
@@ -94,53 +104,52 @@ namespace Banshee.ClutterFlow
             
             service.ViewActions.Fullscreen = previous_fullscreen_handler;
         }
-        
+	
         private void OnFullscreenWindowHidden (object o, EventArgs args)
         {
             MoveVideoInternal ();
             DisableFullscreenAction ();
         }
 
+		private bool handlingFullScreen = false;
         private void FullscreenHandler (bool fullscreen)
         {
-            if (fullscreen) {
-                MoveVideoExternal (true);
-                video_window.Show ();
-                fullscreen_adapter.Fullscreen (video_window, true);
-                screensaver.Inhibit ();
-            } else {
-                video_window.Hide ();
-                screensaver.UnInhibit ();
-                fullscreen_adapter.Fullscreen (video_window, false);
-                video_window.Hide ();
-            }
+			if (!handlingFullScreen) {
+				handlingFullScreen = true;
+				FilterView.FSButton.IsActive = fullscreen;
+				FilterView.LabelTrackIsVisible = ClutterFlowSchemas.DisplayTitle.Get () && fullscreen;
+	            if (fullscreen) {
+	                MoveVideoExternal (true);
+	                video_window.Show ();
+	                fullscreen_adapter.Fullscreen (video_window, true);
+	                screensaver.Inhibit ();
+	            } else {
+	                video_window.Hide ();
+	                screensaver.UnInhibit ();
+	                fullscreen_adapter.Fullscreen (video_window, false);
+	                video_window.Hide ();
+	            }
+				handlingFullScreen = false;
+			}
         }
+		private void HandleFSButtonToggled(object sender, EventArgs e)
+		{
+			FullscreenHandler (FilterView.FSButton.IsActive);
+		}
         
 #endregion
 
 #region Implement ISourceContents
 
-        protected ITrackModelSource source;
+        protected ClutterFlowSource source;
 		
         public bool SetSource (ISource source)
         {
-			this.source = source as ITrackModelSource;
+			this.source = source as ClutterFlowSource;
 			if (this.source == null) {
 				return false;
 			}			
-			
-            IFilterableSource filterable_source = ServiceManager.SourceManager.MusicLibrary as IFilterableSource;
-            if (filterable_source == null) {
-            	return false;
-            }
-            if (filterable_source.CurrentFilters != null) {
-                foreach (IListModel model in filterable_source.CurrentFilters) {
-                    if (model is IListModel<AlbumInfo>) {
-                        contents.FilterView.SetModel (model as IListModel<AlbumInfo>);
-					}
-                }
-			}
-
+			contents.FilterView.SetModel (this.source.AlbumModel);
 			contents.TrackView.SetModel (this.source.TrackModel);
 			
 			return true;
@@ -150,6 +159,7 @@ namespace Banshee.ClutterFlow
         {
             source = null;
             contents.TrackView.SetModel (null);
+			contents.FilterView.SetModel (null);
         }		
 		
         public ISource Source {

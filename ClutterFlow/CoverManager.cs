@@ -1,8 +1,6 @@
 
 using System;
 using System.Collections.Generic;
-//using Banshee.Collection;
-//using Hyena.Data;
 
 using Clutter;
 using GLib;
@@ -35,7 +33,7 @@ namespace ClutterFlow
 		public ClutterFlowTimeline Timeline {
 			get { 
 				if (timeline==null) UpdateTimeline ();
-				return (timeline==null) ? null : timeline; 
+				return timeline; 
 			}
 		}
 		
@@ -51,10 +49,10 @@ namespace ClutterFlow
 			}
 		}
 
-		protected IActorLoader actorLoader;	//Loads the actors (detaches C;utterFlow from Banshee related dependencies)
-		internal IActorLoader ActorLoader {
+		protected IActorLoader actorLoader;	//Loads the actors (detaches ClutterFlow from Banshee related dependencies)
+		public IActorLoader ActorLoader {
 			get { return actorLoader; }
-			set { actorLoader = value; }
+			internal set { actorLoader = value; }
 		}
 		
 		public int TotalCovers	{				// number of covers or zero if null
@@ -72,7 +70,7 @@ namespace ClutterFlow
 			set { 
 				if (maxCoverWidth!=value) {
 					maxCoverWidth = value;
-					UpdateBehaviour(); //FIXME use a flag instead. Multiple update calls may cause slowdowns?
+					UpdateBehaviour(); //TODO use a flag instead. Multiple update calls may cause slowdowns?
 				}
 			}
 		}
@@ -82,7 +80,7 @@ namespace ClutterFlow
 			set { 
 				if (minCoverWidth!=value) {
 					minCoverWidth = value;
-					UpdateBehaviour(); //FIXME use a flag instead. Multiple update calls may cause slowdowns?
+					UpdateBehaviour(); //TODO use a flag instead. Multiple update calls may cause slowdowns?
 				}
 			}
 		}
@@ -95,7 +93,7 @@ namespace ClutterFlow
 			set {
 				if (textureSize!=value) {
 					textureSize = value;
-					if (TextureSizeChanged!=null) TextureSizeChanged(this, EventArgs.Empty); //FIXME use a flag instead. Multiple update calls may cause slowdowns?
+					if (TextureSizeChanged!=null) TextureSizeChanged (this, EventArgs.Empty); //TODO use a flag instead. Multiple update calls may cause slowdowns?
 				}
 			}
 		}
@@ -128,8 +126,8 @@ namespace ClutterFlow
 		public int TargetIndex {
 			get { return targetIndex; }
 			set {
+				if (value >= TotalCovers) value = TotalCovers-1;
 				if (value < 0) value = 0;
-				else if (value >= TotalCovers) value = TotalCovers-1;
 				if (value!=targetIndex) {
 					targetIndex = value;
 					currentCover = null; //to prevent clicks to load the old centered cover!
@@ -147,7 +145,7 @@ namespace ClutterFlow
 			}
 		}
 
-		protected bool needsReloading = true;
+		protected bool needsReloading = false;
 		public bool NeedsReloading {
 			get { return needsReloading; }
 			internal set { needsReloading = value; }
@@ -159,6 +157,7 @@ namespace ClutterFlow
 			set {
 				enabled = value;
 				behaviour.HoldUpdates = !value;
+				behaviour.UpdateActors();
 				if (enabled && needsReloading) {
 					ReloadCovers();
 					needsReloading = false;
@@ -168,7 +167,7 @@ namespace ClutterFlow
 		
 		public CoverManager () : base ()
 		{
-			UpdateTimeline(2); //Dummy timeline
+			UpdateTimeline (0);
 			behaviour = new FlowBehaviour (this);
 		}
 		
@@ -188,18 +187,15 @@ namespace ClutterFlow
 		
 		protected void UpdateTimeline (int CoverCount) 
 		{
-			if (CoverCount > 0) {
-		 		if (timeline==null) {
-					timeline = new ClutterFlowTimeline(this);
-					timeline.TargetMarkerReached += HandleTargetMarkerReached;
-				} else
-					timeline.SetIndexCount((uint) CoverCount, false, false);
-			}
+	 		if (timeline==null) {
+				timeline = new ClutterFlowTimeline(this);
+				timeline.TargetMarkerReached += HandleTargetMarkerReached;
+			} else
+				timeline.SetIndexCount((uint) CoverCount, false, false);
 		}
 
 		void HandleTargetMarkerReached(object sender, TargetReachedEventArgs args)
 		{
-			//Hyena.Log.Information("HandleTargetMarkerReached --> covers.Count == " + covers.Count);
 			if (args.Target==TargetIndex) {
 				if (TotalCovers==0)
 					CurrentCover = null;
@@ -211,8 +207,8 @@ namespace ClutterFlow
 		internal void ReloadCovers () 
 		{
 			if (Timeline!=null) Timeline.Halt ();
-			//Hyena.Log.Information ("Updating Covers");
 			if (covers!=null && covers.Count!=0) {
+				Console.WriteLine("Reloading Covers");
 				behaviour.HoldUpdates = true;		
 				
 				int old_current_index = CurrentCover!=null ? covers.IndexOf (CurrentCover) : 0;
@@ -227,17 +223,16 @@ namespace ClutterFlow
 				covers = actorLoader.GetActors (delegate (ClutterFlowActor actor) {
 						if (currentCover==actor) keepCurrent = true;
 				});
-				UpdateTimeline(covers.Count);
+				UpdateTimeline();
 
 				//recalculate timeline progression and the target index
 				int newTargetIndex = 0;
-				Timeline.Progress = 0;
 				if (covers.Count > 1) {
-					Timeline.Progress = (float) newTargetIndex/ (float) (covers.Count-1);
 					if (keepCurrent)
 						newTargetIndex = currentCover.Index;
 					else
-						newTargetIndex = (int) Math.Round(Timeline.Progress * (covers.Count-1));		
+						newTargetIndex = (int) Math.Round(Timeline.Progress * (covers.Count-1));
+					Timeline.Progress = (float) newTargetIndex / (float) (covers.Count-1);
 				}
 				
 				List<ClutterFlowActor> new_covers = new List<ClutterFlowActor>(SafeGetRange(covers, newTargetIndex - HalfVisCovers, visibleCovers));
@@ -248,10 +243,14 @@ namespace ClutterFlow
 				});
 				
 			} else {
-				covers = actorLoader.GetActors (null);
+				Console.WriteLine("Loading Covers");
+				covers = actorLoader.GetActors (delegate (ClutterFlowActor actor) { actor.Hide(); });
+				UpdateTimeline();
+				Timeline.Progress = 0;
 				currentCover = covers[0];
-   				InvokeCoversChanged();
-   				TargetIndex = 0;
+				TargetIndex = 0;
+				InvokeCoversChanged ();
+				Behaviour.UpdateActors ();
 			}
 		}
 		

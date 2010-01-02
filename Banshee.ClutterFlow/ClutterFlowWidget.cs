@@ -21,12 +21,20 @@ namespace Banshee.ClutterFlow
 	{
 		
 		public event EventHandler UpdatedAlbum;
-		
+
+		private AlbumInfo activeAlbum = null;
+		public AlbumInfo ActiveAlbum {
+			get { return activeAlbum; }
+			protected set { activeAlbum = value; }
+		}
 		public AlbumInfo CurrentAlbum {
 			get { return albumLoader.CurrentAlbum; }
 		}
 
 		protected AlbumLoader albumLoader;
+		public AlbumLoader AlbumLoader {
+			get { return albumLoader; }
+		}
 		protected CoverManager coverManager = new CoverManager();
 		public CoverManager CoverManager {
 			get { return coverManager; }
@@ -36,13 +44,12 @@ namespace Banshee.ClutterFlow
             get { return albumLoader.Model; }
         }
 		
-        public void SetModel (IListModel<AlbumInfo> model)
+        public void SetModel (FilterListModel<AlbumInfo> model)
         {
-			//model.
             SetModel(model, 0.0);
         }
 
-        public void SetModel (IListModel<AlbumInfo> value, double vpos)
+        public void SetModel (FilterListModel<AlbumInfo> value, double vpos)
         {
             albumLoader.Model = value;
         }
@@ -56,11 +63,37 @@ namespace Banshee.ClutterFlow
 		private double mouse_x, mouse_y;
 		
 		private ClutterFlowSlider slider;
-		
-		private CoverCaption caption;
-		public bool CaptionIsVisble {
-			set { if (value) caption.ShowAll(); else caption.HideAll(); }
+		public ClutterFlowSlider Slider {
+			get { return slider;	}
 		}
+		private ClutterWidgetBar widget_bar;
+		public ClutterWidgetBar WidgetBar {
+			get { return widget_bar;	}
+		}
+		private PartyModeButton pm_button;
+		public PartyModeButton PMButton {
+			get { return pm_button;	}
+		}
+		private FullscreenButton fs_button;
+		public FullscreenButton FSButton {
+			get { return fs_button; }
+		}
+		private CoverCaption caption_cover;
+		public CoverCaption LabelCover {
+			get { return caption_cover;	}
+		}
+		private TrackCaption caption_track;
+		public TrackCaption LabelTrack {
+			get { return caption_track;	}
+		}
+		
+		public bool LabelCoverIsVisible {
+			set { if (value) caption_cover.ShowAll(); else caption_cover.HideAll(); }
+		}
+		public bool LabelTrackIsVisible {
+			set { if (value) caption_track.ShowAll(); else caption_track.HideAll(); }
+		}
+
 		
 		private const float rotSens = 0.00001f;
 		private const float viewportMaxAngleX = -30;// maximum X viewport angle
@@ -96,34 +129,52 @@ namespace Banshee.ClutterFlow
 			SetSizeRequest (500, 300);
 			Clutter.Global.MotionEventsEnabled = true;
 
-			albumLoader = new AlbumLoader(coverManager);
+			albumLoader = new AlbumLoader (coverManager);
 			
 			Stage.AllocationChanged += HandleAllocationChanged;
 			Stage.ScrollEvent += HandleScroll;
 			Stage.ButtonReleaseEvent += HandleButtonReleaseEvent;
 			Stage.MotionEvent += HandleMotionEvent;
 			
-			SetupViewport();
-			SetupSlider();
-			SetupAlbumText();
+			SetupViewport ();
+			SetupSlider ();
+			SetupLabels ();
+			SetupWidgetBar ();
 		}
 
-		protected void SetupViewport() {
+		protected void SetupViewport ()
+		{
 			Stage.Color = new Clutter.Color (0x00, 0x00, 0x00, 0xff);
 			
-			coverManager.SetRotation(RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
-			Stage.Add(coverManager);
-			coverManager.LowerBottom();
+			coverManager.SetRotation (RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
+			Stage.Add (coverManager);
+			coverManager.LowerBottom ();
+			coverManager.Show ();
 		}
 		
-		protected void SetupSlider() {
-			slider = new ClutterFlowSlider(Stage.Width, Stage.Height, coverManager);
-			Stage.Add(slider);
+		protected void SetupSlider ()
+		{
+			slider = new ClutterFlowSlider (Stage.Width, Stage.Height, coverManager);
+			Stage.Add (slider);
 		}
 		
-		protected void SetupAlbumText() {
-			caption = new CoverCaption(coverManager, "Sans Bold 10", new Clutter.Color(1.0f,1.0f,1.0f,1.0f));
-			Stage.Add(caption); //TODO ALLEMAALKAKA
+		protected void SetupLabels () {
+			caption_cover = new CoverCaption (coverManager, "Sans Bold 10", new Clutter.Color(1.0f,1.0f,1.0f,1.0f));
+			Stage.Add (caption_cover);
+
+			caption_track = new TrackCaption (coverManager, "Sans Bold 10", new Clutter.Color(1.0f,1.0f,1.0f,1.0f));
+			Stage.Add (caption_track);
+		}
+
+		protected void SetupWidgetBar ()
+		{
+			pm_button = new PartyModeButton ();
+			fs_button = new FullscreenButton ();
+			
+			widget_bar = new ClutterWidgetBar (new Actor[] { pm_button, fs_button });
+			widget_bar.ShowAll ();
+			Stage.Add (widget_bar);
+			widget_bar.SetPosition (5, 5);
 		}
 		#endregion
 		
@@ -132,7 +183,10 @@ namespace Banshee.ClutterFlow
 		protected void RedrawInterface () 
 		{
 			slider.Update ();
-			caption.Update ();
+			caption_cover.Update ();
+			caption_track.Update ();
+
+			widget_bar.SetPosition (5, 5);
 			RedrawViewport ();
 		}
 		
@@ -161,8 +215,10 @@ namespace Banshee.ClutterFlow
 		
 		void HandleButtonReleaseEvent(object o, Clutter.ButtonReleaseEventArgs args)
 		{
-			if (args.Event.Button==1 && !dragging  && coverManager.CurrentCover!=null && UpdatedAlbum!=null) 
-				UpdatedAlbum (coverManager.CurrentCover.CreateClickClone(), EventArgs.Empty);
+			if (args.Event.Button==1 && !dragging  && coverManager.CurrentCover!=null && activeAlbum != CurrentAlbum) {
+				ActiveAlbum = CurrentAlbum;
+				if (UpdatedAlbum!=null)	UpdatedAlbum (coverManager.CurrentCover.CreateClickClone(), EventArgs.Empty);
+			}
 		}
 		
 		private void HandleMotionEvent(object o, Clutter.MotionEventArgs args)
@@ -187,12 +243,6 @@ namespace Banshee.ClutterFlow
 		public void Scroll(bool Backward) {
 			if (Backward) coverManager.TargetIndex--;
 			else coverManager.TargetIndex++;
-		}
-
-		public override void Destroy ()
-		{
-			ArtworkLookup.Stop();
-			base.Destroy ();
 		}
 		#endregion
 		

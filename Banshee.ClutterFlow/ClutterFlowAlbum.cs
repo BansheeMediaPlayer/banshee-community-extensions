@@ -36,41 +36,69 @@ using ClutterFlow;
 namespace Banshee.ClutterFlow
 {
 
-	public static class ArtworkLookup {
+	public class ArtworkLookup : IDisposable {
 
-		#region static Fields
-		private static ArtworkManager artwork_manager;
+		//PLANNED: add stopped started and iter events that should get invoked on the main loop!
+		
+		#region Fields
+		private ArtworkManager artwork_manager;
 
-		private static bool is_setup = false;
-		public static bool IsSetup {
-			get { return is_setup; }
-			protected set { is_setup = value; }
+		protected CoverManager coverManager;
+		public CoverManager CoverManager {
+			get { return this.coverManager; }
+			set {
+				if (coverManager!=null) {
+				}
+				coverManager = value;
+				if (coverManager!=null) {
+				}
+			}
 		}
 
-		//Threaded pixel actor lookup:
-		public static readonly object listLock = new Object ();
-		private static Queue<ClutterFlowAlbum> LookupQueue = new Queue<ClutterFlowAlbum> ();
-		public static void Enqueue (ClutterFlowAlbum cover)
+		protected readonly object listLock = new object ();
+		private Queue<ClutterFlowAlbum> LookupQueue = new Queue<ClutterFlowAlbum> ();
+		
+	    protected readonly object stopLock = new object ();	// Lock covering stopping and stopped
+	    protected bool stopping = false;					// Whether or not the worker thread has been asked to stop
+	    protected bool stopped = true;						// Whether or not the worker thread has stopped
+	    
+	    // Returns whether the worker thread has been asked to stop.
+	    // This continues to return true even after the thread has stopped.
+	    public bool Stopping {
+	        get { lock (stopLock) { return stopping; } }
+	    }
+	    
+	    // Returns whether the worker thread has stopped.
+	    public bool Stopped {
+	        get { lock (stopLock) { return stopped; } }
+	    }
+		#endregion
+		
+		public ArtworkLookup (CoverManager coverManager) 
+		{
+		 	this.CoverManager = coverManager;
+			artwork_manager = ServiceManager.Get<ArtworkManager> ();
+		}
+
+		#region Queueing and index hinting	
+		public void Enqueue (ClutterFlowAlbum cover)
 		{
 				lock (listLock) {
-					//Hyena.Log.Information("Enqueued a ClutterFlowAlbum");
-					LookupQueue.Enqueue (cover);
+					if (!LookupQueue.Contains(cover))
+						LookupQueue.Enqueue (cover);
 					Start ();
 					Monitor.Pulse (listLock);
 				}
 		}
 		#endregion
-
-		static ArtworkLookup () 
+		
+		#region  Start/Stop Handling
+		public void Dispose ()
 		{
-			if (!is_setup) {
-				artwork_manager = ServiceManager.Get<ArtworkManager> ();
-				Start ();
-			}
-			is_setup = true;
+			Stop();
 		}
-
-		public static void Start () 
+		
+		public void Start () 
 		{
 			if (Stopped)  {
 				stopped = false;
@@ -80,26 +108,11 @@ namespace Banshee.ClutterFlow
 				Hyena.Log.Information("ArtworkLookup Job has started");
 			}
 		}
-		
-	    static readonly object stopLock = new object ();  // Lock covering stopping and stopped
-	    static bool stopping = false;  // Whether or not the worker thread has been asked to stop
-	    static bool stopped = true; // Whether or not the worker thread has stopped
-	    
-	    // Returns whether the worker thread has been asked to stop.
-	    // This continues to return true even after the thread has stopped.
-	    public static  bool Stopping {
-	        get { lock (stopLock) { return stopping; } }
-	    }
-	    
-	    // Returns whether the worker thread has stopped.
-	    public static bool Stopped {
-	        get { lock (stopLock) { return stopped; } }
-	    }
 	
 	    // Tells the worker thread to stop, typically after completing its 
 	    // current work item. (The thread is *not* guaranteed to have stopped
 	    // by the time this method returns.)
-	    public static void Stop ()
+	    public void Stop ()
 	    {
 	        lock (stopLock) {
 				Monitor.Pulse (LookupQueue);
@@ -108,33 +121,18 @@ namespace Banshee.ClutterFlow
 	    }
 	
 	    // Called by the worker thread to indicate when it has stopped.
-	    static void SetStopped ()
+	    protected void SetStopped ()
 	    {
 	        lock (stopLock) { stopped = true; }
 			Hyena.Log.Information("ArtworkLookup Job has finished");
 	    }
+		#endregion
 		
 	    // Main work loop of the class.
-	    public static void Run ()
+	    public void Run ()
 	    {
 	        try {
-	            while (!Stopping) {
-	                // Insert work here. Make sure it doesn't tight loop!
-	                // (If work is arriving periodically, use a queue and Monitor.Wait,
-	                // changing the Stop method to pulse the monitor as well as setting
-	                // stopping.)
-	
-	                // Note that you may also wish to break out *within* the loop
-	                // if work items can take a very long time but have points at which
-	                // it makes sense to check whether or not you've been asked to stop.
-	                // Do this with just:
-	                // if (Stopping)
-	                // {
-	                //     return;
-	                // }
-	                // The finally block will make sure that the stopped flag is set.
-						
-					
+	            while (!Stopping) {	
 					lock (listLock) {
 						
 						while (LookupQueue.Count==0) {
@@ -142,18 +140,23 @@ namespace Banshee.ClutterFlow
 							Monitor.Wait (listLock);
 						}
 						//TODO implement a sliding index thingy in tandem with the covermanager behaviour.
-						/*
-						 * this will become an instancable class, on a static field in ClutterFlowAlbum
+						/* For this to be possible, we should make this an instance so it can register for
+						 * events on the Behaviour and Timeline classes of the coverManager.
+						 * So, this will become an instancable class. Albumloader creates one instance and passes it
+						 * to the ClutterFlowAlbum so it can queue itself.
 						 * */
 						Clutter.Threads.Enter ();
 							ClutterFlowAlbum cover = LookupQueue.Dequeue ();
 							float size = cover.CoverManager.TextureSize;
 							string cache_id = cover.PbId;
 							Gdk.Threads.Enter ();
-								Gdk.Pixbuf newPb = artwork_manager.LookupScalePixbuf (cache_id, (int) size) ?? ClutterFlowActor.DefaultPb;
-								if (newPb!=null) Gtk.Application.Invoke (delegate {
-									GtkUtil.TextureSetFromPixbuf (cover.Cover, ClutterFlowActor.MakeReflection(newPb));
-								});
+								Gdk.Pixbuf newPb = artwork_manager.LookupScalePixbuf (cache_id, (int) size);
+								if (newPb!=null) {
+									Gtk.Application.Invoke (delegate {
+										cover.SwappedToDefault = false;
+										GtkUtil.TextureSetFromPixbuf (cover.Cover, ClutterFlowActor.MakeReflection(newPb));
+									});
+								}
 							Gdk.Threads.Leave ();
 						Clutter.Threads.Leave ();
 					}
@@ -169,63 +172,80 @@ namespace Banshee.ClutterFlow
 	public class ClutterFlowAlbum : ClutterFlowActor
 	{
 		#region Fields
-		private static bool is_setup = false;
-		public static bool IsSetup {
-			get { return is_setup; }
-			protected set { is_setup = value; }
+		protected static ArtworkLookup lookup;
+		public static ArtworkLookup Lookup {
+			get { return lookup; }
+			set { lookup = value; }
 		}
 
-		protected AlbumInfo key;
-		public virtual AlbumInfo Key {
-			get { return key; }
+		protected AlbumInfo album;
+		public virtual AlbumInfo Album {
+			get { return album; }
 			set {
-				if (key!=value) {
-					key = value;
-					ArtworkLookup.Enqueue (this);
+				if (album!=value) {
+					album = value;
+					Lookup.Enqueue (this);
 				}
 			}
 		}
-
 	
 		public virtual string PbId {
-			get { return key.ArtworkId; }
+			get { return album.ArtworkId; }
+		}
+
+		public override string CacheKey {
+			get { return album!=null ? CreateCacheKey(album) : ""; }
+			set { 
+				throw new System.NotImplementedException ("CacheKey cannot be set directly in a ClutterFlowAlbum," +
+				                                          "derived from the Album property."); //TODO should use reflection here
+			}
+		}
+		public static string CreateCacheKey(AlbumInfo album) {
+			return album.ArtistName + "\n" + album.Title;
 		}
 
 		public override string Label {
-			get { return Key!=null ? Key.ArtistName + "\n" + Key.Title : ""; }
+			get { return album!=null ? album.ArtistName + "\n" + album.Title : ""; }
 			set {
-				throw new System.NotImplementedException ("Label cannot be set directly in a ClutterFlowAlbum, derived from the Key property.");
+				throw new System.NotImplementedException ("Label cannot be set directly in a ClutterFlowAlbum, derived from the Album property.");
 			}
 		}
 
 		public override string SortLabel {
-			get { return (Key!=null && Key.Title!=null) ? Key.Title : "?" ; }
+			get { return (album!=null && album.Title!=null) ? album.Title : "?" ; }
 			set {
-				throw new System.NotImplementedException ("SortLabel cannot be set directly in a ClutterFlowAlbum, derived from the Key property.");
+				throw new System.NotImplementedException ("SortLabel cannot be set directly in a ClutterFlowAlbum, derived from the Album property.");
 			}
 		}
-
 		#endregion
 
 		#region Initialization	
-		public ClutterFlowAlbum (AlbumInfo album, CoverManager coverManager) : base ()
+		public ClutterFlowAlbum (AlbumInfo album, CoverManager coverManager) : base (coverManager, null)
 		{
-			this.CoverManager = coverManager;
-			this.key = album;
-			if (DefaultPb==null) DefaultPb = IconThemeUtils.LoadIcon (coverManager.TextureSize, "media-optical", "browser-album-cover");
-			SetupActors ();
+			this.album = album;
 		}
-
+		protected override void SetupStatics ()
+		{
+			if (lookup==null) lookup = new ArtworkLookup (CoverManager);
+			base.SetupStatics ();
+		}
+		#endregion
+		
+		#region Texture Handling
+		protected override Gdk.Pixbuf GetDefaultPb ()
+		{
+			return IconThemeUtils.LoadIcon (coverManager.TextureSize, "media-optical", "browser-album-cover");
+		}
+		
 		protected override void SetupActors ()
 		{
 			base.SetupActors ();
-			ArtworkLookup.Enqueue(this);
+			Lookup.Enqueue(this);
 		}			
 
 		protected override void HandleTextureSizeChanged (object sender, System.EventArgs e)
 		{
-			DefaultPb = IconThemeUtils.LoadIcon (coverManager.TextureSize, "media-optical", "browser-album-cover");
-			ArtworkLookup.Enqueue(this);
+			Lookup.Enqueue(this);
 		}
 		#endregion
 	}

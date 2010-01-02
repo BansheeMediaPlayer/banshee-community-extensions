@@ -32,23 +32,143 @@ using GLib;
 namespace ClutterFlow
 {
 
-	public class ClutterFlowActor : Clutter.Group
-	{	
-		#region Static Fields
-		private static Gdk.Pixbuf default_pb;
-		public static Gdk.Pixbuf DefaultPb {
-			get { return default_pb; }
-			protected set { default_pb = value; }
-		}	
+	public delegate Gdk.Pixbuf NeedPixbuf();
+	
+	public class TextureHolder {
+		#region Fields
+		protected CoverManager coverManager;
+		public CoverManager CoverManager {
+			get { return coverManager; }
+			set {
+				if (value!=coverManager) {
+					if (coverManager!=null) {
+						coverManager.TextureSizeChanged -= HandleTextureSizeChanged;
+					}
+					coverManager = value;
+					if (coverManager!=null) {
+						coverManager.TextureSizeChanged += HandleTextureSizeChanged;
+					}
+				}
+			}
+		}
+		
+		protected Gdk.Pixbuf default_pb;
+		public Gdk.Pixbuf DefaultPb {
+			get {
+				if (default_pb==null && GetDefaultPb!=null) default_pb = GetDefaultPb();
+				return default_pb; 
+			}
+		}
+		
+		protected Texture defltTexture;
+		public Texture DefaultTexture {
+			get {
+				if (defltTexture==null) SetupDefaultTexture ();
+				return defltTexture;
+			}
+		}
+
+		protected CairoTexture shadeTexture;
+		public CairoTexture ShadeTexture {
+			get {
+				if (shadeTexture==null) SetupShadeTexture ();
+				return shadeTexture;
+			}
+		}
+		
+		public NeedPixbuf GetDefaultPb;
+		#endregion
+		#region Initialisation
+		public TextureHolder (CoverManager coverManager, NeedPixbuf getDefaultPb)
+		{
+			this.CoverManager = coverManager;
+			this.GetDefaultPb = getDefaultPb;
+			ReloadDefaultTextures ();
+		}
+
+		public void ReloadDefaultTextures ()
+		{
+			default_pb = null; //reset this so it gets reloaded
+			SetupDefaultTexture (true);
+			SetupShadeTexture (true);
+		}
+		
+		public void SetupDefaultTexture () 
+		{
+			SetupDefaultTexture (false);
+		}
+		public void SetupDefaultTexture (bool forceResize) 
+		{
+			if (defltTexture==null) {
+				defltTexture = new Texture ();
+				defltTexture.SetSize (coverManager.TextureSize, coverManager.TextureSize);
+				coverManager.Add (defltTexture);
+				defltTexture.Hide();
+			} else if (forceResize)
+				defltTexture.SetSize (coverManager.TextureSize, coverManager.TextureSize);
+			if (DefaultPb!=null)
+				GtkUtil.TextureSetFromPixbuf (defltTexture, ClutterFlowActor.MakeReflection (DefaultPb));
+		}
+
+
+		public void SetupShadeTexture () 
+		{
+			SetupShadeTexture (false);
+		}
+		public void SetupShadeTexture (bool forceResize) 
+		{
+			if (shadeTexture==null) {
+				shadeTexture = new CairoTexture ((uint) coverManager.TextureSize, (uint) coverManager.TextureSize);
+				coverManager.Add (shadeTexture);
+				shadeTexture.Hide();
+				ClutterFlowActor.SetTextureToShade (shadeTexture, coverManager.TextureSize);
+			} else if (forceResize)
+				shadeTexture.SetSize (coverManager.TextureSize, coverManager.TextureSize);
+			ClutterFlowActor.SetTextureToShade (shadeTexture, coverManager.TextureSize);
+		}
 		#endregion
 		
+		protected void HandleTextureSizeChanged(object sender, EventArgs e)
+		{
+			ReloadDefaultTextures ();
+		}
+	}
+	
+	public class ClutterFlowActor : Clutter.Group
+	{	
 		#region Fields
+		protected static TextureHolder textureHolder;
+
+		private static bool is_setup = false;
+		public static bool IsSetup {
+			get { return is_setup; }
+			protected set { is_setup = value; }
+		}
+		
+		protected IntPtr coverMaterial;
+		private bool swapped = false;
+	 	public bool SwappedToDefault {
+			get { return swapped; }
+			set {
+				if (value!=swapped) {
+					swapped = value;
+					if (swapped) {
+						coverMaterial = Cogl.Material.Ref(cover.CoglMaterial);
+						cover.CoglMaterial = textureHolder.DefaultTexture.CoglMaterial;
+					} else {
+						cover.CoglMaterial = coverMaterial;
+						Cogl.Material.Unref(coverMaterial);
+					}
+				}
+			}
+		}
+		
 		protected Texture cover = null;
 		public Texture Cover {
 			get { return cover; }
 		}
-		protected CairoTexture shade = null;
-		public CairoTexture Shade {
+		protected Texture shade = null;
+		public Texture Shade {
 			get { return shade; }
 		}
 		
@@ -68,6 +188,12 @@ namespace ClutterFlow
 			}
 		}
 
+		protected string cache_key = "";
+		public virtual string CacheKey {
+			get { return cache_key; }
+			set { cache_key = value; }
+		}
+		
 		protected string label = "";
 		public virtual string Label {
 			get { return label; }
@@ -91,52 +217,69 @@ namespace ClutterFlow
 			set { if (value!=index) { index = value; } }
 		}
 
+		private NeedPixbuf getDefaultPb;
 
 		#endregion
 		
 		#region Initialization	
-		public ClutterFlowActor (CoverManager coverManager) : this ()
+		public ClutterFlowActor (CoverManager coverManager, NeedPixbuf getDefaultPb) : base ()
 		{
 			this.CoverManager = coverManager;
+			this.getDefaultPb = getDefaultPb;
+			SetupStatics ();
 			SetupActors ();
 		}
-		protected ClutterFlowActor () : base ()	{ } //to be overriden by subclasses
+		protected virtual void SetupStatics ()
+		{
+			if (textureHolder==null) 
+				textureHolder = new TextureHolder(CoverManager, GetDefaultPb);
+			IsSetup = true;
+		}
 		protected virtual void SetupActors ()
 		{
-			float actor_dim = coverManager.Behaviour.CoverWidth;
-			float txtre_dim = coverManager.TextureSize;
+			SetAnchorPoint (0, 0);
 			
-			//Cover:
-			cover = new Texture ();
-			cover.SetSize (actor_dim, actor_dim*2);
-			cover.Opacity = 255;
-			GtkUtil.TextureSetFromPixbuf (cover, MakeReflection(default_pb));
+			SetupCover ();
+			SetupShade ();
 
-			//Shade:
-			shade = new CairoTexture ((uint) txtre_dim, (uint) txtre_dim*2);
-			shade.SetSize (actor_dim, actor_dim*2);
-			shade.Opacity = 0;
-			SetTextureToShade (shade, txtre_dim);
-			
-			Add (cover);
-			Add (shade);
-			
 			SetAnchorPoint (this.Width*0.5f, this.Height*0.25f);
 			SetPosition (0,0);
-			Opacity = 0;
 			
 			ShowAll();
 		}
+		protected virtual void SetupCover ()
+		{
+			if (cover==null) {
+				cover = new Texture();
+				Add (cover);
+				cover.Show ();
+			}
+			cover.SetSize (coverManager.Behaviour.CoverWidth, coverManager.Behaviour.CoverWidth*2);
+			cover.SetPosition (0, 0);
+			cover.Opacity = 255;
+			SwappedToDefault = true;
+		}
+
+		protected virtual void SetupShade ()
+		{
+			if (shade==null) {
+				shade = new Texture();
+				Add (shade);
+				shade.Show ();
+				shade.CoglMaterial = textureHolder.ShadeTexture.CoglMaterial;
+			}
+			shade.SetSize (coverManager.Behaviour.CoverWidth, coverManager.Behaviour.CoverWidth*2);
+			shade.SetPosition (0, 0);
+			shade.Opacity = 255;
+
+			if (cover!=null) Raise (cover);
+		}
 		#endregion
 
-		#region Texture Setup
-		
-		public void SetShade (byte opacity, bool left) {
-			shade.Opacity = opacity;
-			if (left)
-				shade.SetRotation (RotateAxis.Y, 0, shade.Width*0.5f, shade.Height*0.25f, 0);
-			else
-				shade.SetRotation (RotateAxis.Y, 180, shade.Width*0.5f, shade.Height*0.25f, 0);
+		#region Texture Handling
+		protected virtual Gdk.Pixbuf GetDefaultPb ()
+		{
+			return (getDefaultPb!=null) ? getDefaultPb() : null;
 		}
 
 		public static void SetTextureToShade (CairoTexture text, float txtre_dim)
@@ -224,7 +367,21 @@ namespace ClutterFlow
 			}
 			return finalPb;
 		}
+
+		protected virtual void HandleTextureSizeChanged(object sender, EventArgs e)
+		{
+			SetupActors();
+		}
 		#endregion
+
+		#region Behaviour Functions
+		public void SetShade (byte opacity, bool left) {
+			shade.Opacity = opacity;
+			if (left)
+				shade.SetRotation (RotateAxis.Y, 0, shade.Width*0.5f, shade.Height*0.25f, 0);
+			else
+				shade.SetRotation (RotateAxis.Y, 180, shade.Width*0.5f, shade.Height*0.25f, 0);
+		}
 		
 		public ClutterFlowActor CreateClickClone () {
 			coverManager.Behaviour.CreateClickedCloneAnimation (this);			
@@ -243,19 +400,6 @@ namespace ClutterFlow
 			}
 			return lastAlpha;
 		}
-		
-		protected virtual void HandleTextureSizeChanged(object sender, EventArgs e)
-		{
-			SetupActors();
-		}
-		
-
-		
-		/*new public void Dispose () 
-		{
-			ClutterHelper.RemoveAllFromGroup (this);
-			//ClutterHelper.DestroyActor (this);
-		}*/
-		
+		#endregion
 	}
 }

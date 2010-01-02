@@ -11,7 +11,7 @@ namespace ClutterFlow
 		List<ClutterFlowActor> GetActors (System.Action<ClutterFlowActor> method_call);
 	}
 	
-	public class ActorLoader<TKey> : IActorLoader {
+	public class ActorLoader<TKey, TGen> : IActorLoader {
 		#region Fields	
 		protected Dictionary<TKey, ClutterFlowActor> cached_covers = new Dictionary<TKey, ClutterFlowActor> ();
 		public virtual Dictionary<TKey, ClutterFlowActor> Cache {
@@ -44,8 +44,15 @@ namespace ClutterFlow
 			throw new System.NotImplementedException();
 		}
 		
-		protected virtual ClutterFlowActor AddActorFromKeyToList(TKey key, List<ClutterFlowActor> list) {
+		protected virtual ClutterFlowActor AddActorToList(TGen generator, List<ClutterFlowActor> list) {
 			throw new System.NotImplementedException();
+		}
+
+		public virtual void ScrollTo (TKey key)
+		{
+			ClutterFlowActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
+			if (actor!=null && coverManager.covers.Contains (actor))
+				coverManager.TargetIndex = coverManager.covers.IndexOf (actor);
 		}
 	}
 }

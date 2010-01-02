@@ -24,6 +24,6 @@ namespace ClutterFlow
 		}
 		public static void RemoveFromGroup(System.IntPtr group, Clutter.Actor actor) {
 			clutter_container_remove(group, actor.Handle);
-		}
+		}		
 	}
 }

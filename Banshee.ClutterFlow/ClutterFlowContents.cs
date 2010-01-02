@@ -95,9 +95,9 @@ namespace Banshee.ClutterFlow
 
         protected void SetupFilterView ()
         {
-			/*if (!GLib.Thread.Supported) GLib.Thread.Init();
-			Gdk.Threads.Init();
-			Clutter.Threads.Init();*/
+			if (!GLib.Thread.Supported) GLib.Thread.Init();
+			/*Gdk.Threads.Init();*/
+			Clutter.Threads.Init();
 			Clutter.Application.InitForToolkit();
 			Clutter.Application.Init();
 			filter_view = new ClutterFlowWidget ();
@@ -140,8 +140,8 @@ namespace Banshee.ClutterFlow
 				if (filter_view.Parent != null)
 					(filter_view.Parent as Container).Remove (filter_view);
 				frame.Add (filter_view);
-                filter_view.Show ();
-            }
+			}
+			is_fullscreen = false;
 			ShowPack ();
 		}
 		
@@ -151,6 +151,12 @@ namespace Banshee.ClutterFlow
                 filter_view.Reparent (new_parent);
                 filter_view.Show ();
             }
+			is_fullscreen = true;
+		}
+
+		protected bool is_fullscreen = false;
+		public bool IsFullscreen {
+			get { return is_fullscreen; }
 		}
 
         private void Layout ()
@@ -163,6 +169,7 @@ namespace Banshee.ClutterFlow
             frame.SetFillColor (new Cairo.Color (0, 0, 0));
             frame.DrawBorder = false;
 			frame.Add (filter_view);
+			filter_view.Show();
             frame.Show ();
 
 			container.Pack1 (frame, false, false);			

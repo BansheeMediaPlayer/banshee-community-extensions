@@ -127,7 +127,7 @@ namespace ClutterFlow
 		}
 
 		protected double previousProgress = 0.0;
-		
+		protected int pcb = -1; protected int plb; protected int pub;
 		protected double Progress {
 			get { return coverManager.Timeline.Progress; }
 		}
@@ -179,28 +179,32 @@ namespace ClutterFlow
 
 		public void UpdateActors () 
 		{
-			if (!holdUpdates) {
+			if (!holdUpdates && coverManager.Enabled && coverManager.IsVisible) {
 				//only update covers that were visible at the previous & current progress:
 				
 				double currentProgress = Progress;
-
 				int ccb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (currentProgress * (CoverManager.TotalCovers-1))));
 				int clb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (ccb - (CoverManager.HalfVisCovers + 1))));
 				int cub = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (ccb + (CoverManager.HalfVisCovers + 1))));
 				
-				int pcb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (previousProgress * (CoverManager.TotalCovers-1))));
-				int plb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (pcb - (CoverManager.HalfVisCovers + 1))));
-				int pub = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (pcb + (CoverManager.HalfVisCovers + 1))));
-						
+				if (pcb==-1) {
+					pcb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (previousProgress * (CoverManager.TotalCovers-1))));
+					plb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (pcb - (CoverManager.HalfVisCovers + 1))));
+					pub = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (pcb + (CoverManager.HalfVisCovers + 1))));
+				}
+				
 				if (ccb<pcb)
 					coverManager.ForSomeCovers (HideActor, cub, pub);
-				else
+				else if (ccb>pcb)
 					coverManager.ForSomeCovers (HideActor, plb, clb);
 				
 				coverManager.ForSomeCovers (UpdateActor, clb, cub);
 				coverManager.SortDepthOrder ();
 				
 				previousProgress = currentProgress;
+				pcb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (previousProgress * (CoverManager.TotalCovers-1))));
+				plb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (pcb - (CoverManager.HalfVisCovers + 1))));
+				pub = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (pcb + (CoverManager.HalfVisCovers + 1))));				
 			}
 		}
 		
@@ -231,6 +235,7 @@ namespace ClutterFlow
 			
 			actor.SetScale (coverWidth/actor.Width, coverWidth/actor.Width);
 			if (alpha!=0 || alpha!=1) {
+				actor.Show ();
 				if (alpha<AlphaStep) {
 					MoveAndFadeOutActor			(actor, (float) (alpha / AlphaStep), true);
 				} else if (alpha>=AlphaStep && alpha<=0.5-AlphaStep) {
@@ -242,7 +247,6 @@ namespace ClutterFlow
 				} else if (alpha>1-AlphaStep) {
 					MoveAndFadeOutActor			(actor,  (float) ((1 - alpha) / AlphaStep), false);
 				}
-				actor.Show ();
 			} else actor.Hide ();
 		}
 			

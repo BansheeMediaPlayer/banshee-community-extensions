@@ -1,17 +1,16 @@
 
 using System;
-using System.Runtime.InteropServices;
 using Clutter;
 
 namespace ClutterFlow
 {
 	
 	
-	public class CoverCaption : Clutter.Text
+	public class CoverCaption : Caption
 	{
 		#region Fields
 		protected string defaultValue = "Unkown Artist\nUnkown Album";
-		public string DefaultValue {
+		public override string DefaultValue {
 			get { return defaultValue; }
 			set {
 				if (value!=defaultValue) {
@@ -20,9 +19,8 @@ namespace ClutterFlow
 				}
 			}
 		}
-		
-		protected CoverManager coverManager;
-		public CoverManager CoverManager {
+
+		public override CoverManager CoverManager {
 			get { return coverManager; }
 			set {
 				if (value!=coverManager) {
@@ -40,56 +38,21 @@ namespace ClutterFlow
 				}
 			}
 		}
-
-
-
-		private Animation aFade = null;
-		
 		#endregion
 		
-		public CoverCaption (CoverManager coverManager, string font_name, Color color) : base (clutter_text_new ())
+		public CoverCaption (CoverManager coverManager, string font_name, Color color) : base (coverManager, font_name, color)
 		{
-			CoverManager = coverManager;
-			Editable = false;
-			Selectable = false;
-			Activatable = false;
-			CursorVisible = false;
-			LineAlignment = Pango.Alignment.Center;
-			FontName = font_name;
-			SetColor (color);
-		 	Value = defaultValue;
-
-			UpdatePosition ();
 		}
 
 		#region Methods
-		[DllImport("libclutter-glx-1.0.so.0")]
-		static extern IntPtr clutter_text_new ();
-		
-		public void FadeOut ()
-		{
-			aFade = this.Animatev ((ulong) AnimationMode.Linear.value__, (uint) (CoverManager.MaxAnimationSpan*0.5f), new string[] { "opacity" }, new GLib.Value ((byte) 0));
-		}
 
-		public void FadeIn() 
-		{
-			EventHandler hFadeIn = delegate (object sender, EventArgs e) {
-				this.Animatev ((ulong) AnimationMode.Linear.value__, (uint) (CoverManager.MaxAnimationSpan*0.5f), new string[] { "opacity" }, new GLib.Value ((byte) 255));
-				aFade = null;
-			};
-			if (aFade!=null && aFade.Timeline.IsPlaying)
-				aFade.Completed +=  hFadeIn;
-			else
-				hFadeIn (this, EventArgs.Empty);
-		}
-
-		public void Update ()
+		public override void Update ()
 		{
 			SetTextFromCover (coverManager.CurrentCover);
-			UpdatePosition ();
+			base.Update ();
 		}
 		
-		public void UpdatePosition ()
+		public override void UpdatePosition ()
 		{
 			if (Stage!=null) {
 				SetAnchorPoint (Width*0.5f, Height*0.5f);
@@ -107,18 +70,19 @@ namespace ClutterFlow
 		#endregion
 
 		#region Event Handling
-		protected void HandleNewCurrentCover (ClutterFlowActor cover, EventArgs e)
+		protected virtual void HandleNewCurrentCover (ClutterFlowActor cover, EventArgs e)
 		{
+			if (Opacity>0) FadeOut ();
 			Update ();
 			if (IsVisible) FadeIn ();
 		}
 
-		protected void HandleTargetIndexChanged (object sender, EventArgs e)
+		protected virtual void HandleTargetIndexChanged (object sender, EventArgs e)
 		{
 			if (IsVisible) FadeOut ();
 		}
 
-		protected void HandleCoversChanged(object sender, EventArgs e)
+		protected virtual void HandleCoversChanged(object sender, EventArgs e)
 		{
 			Update ();
 			if (IsVisible) FadeIn ();

@@ -39,6 +39,7 @@ namespace ClutterFlow
 		}
 		
 		protected uint funcId;
+		protected bool stop_timeout = false;
 		
 		protected TimelineDirection direction = TimelineDirection.Forward;
 		public TimelineDirection Direction {
@@ -88,6 +89,19 @@ namespace ClutterFlow
 		public int Delta {
 			get { return delta;	}
 		}
+
+		protected int timeout = -1;
+		public virtual int Timeout {
+			get { lock (func_lock) { return timeout; } }
+			set {
+				lock (func_lock) {
+					lastTime = DateTime.Now;
+					timeout = value; 
+				}
+			}
+		}
+
+		protected static double time_threshold = 1000; //threshold to assure visible animations
 		
 		protected double frequency = 0.004;	//indeces per millisecond
 		public virtual double Frequency {
@@ -109,12 +123,18 @@ namespace ClutterFlow
 			get { return isPlaying; }
 			set { isPlaying = value; }
 		}
+
+		private bool run_frame_source = true;
+		protected void StopFrameSource () {
+			lock (func_lock) { run_frame_source = false; }
+		}
 		
 		#endregion
 		
 		public ThrottledTimeline ()
 		{
-			funcId = Clutter.Threads.AddRepaintFunc(RepaintFunc);
+			Clutter.Threads.AddFrameSourceFull (250, 30, RepaintFunc);
+			funcId = Clutter.Threads.AddRepaintFunc (RepaintFunc);
 		}
 		
 		public ThrottledTimeline (uint indexCount, double frequency) : this()
@@ -122,32 +142,43 @@ namespace ClutterFlow
 			SetIndexCount(indexCount);
 			Frequency = frequency;
 		}
-		
-		protected bool RepaintFunc ()
+
+		private object func_lock = new object();
+		protected virtual bool RepaintFunc ()
 		{
-			DateTime now = DateTime.Now;
-			if (IsPlaying) {
+			lock (func_lock) {
+				DateTime now = DateTime.Now;
 				double timeDelta = (now - lastTime).Milliseconds;
-				if (direction==TimelineDirection.Forward) {
-					progress +=	timeDelta * Frequency / (double) (indexCount-1);
-					if (target<=AbsoluteProgress) {
-						isPlaying = false;
-						progress = RelativeTarget;
-						InvokeTargetReached();
+				if (timeout != -1) {
+					if (timeout <= timeDelta) {
+						timeout = -1;
+						lastTime = now;
 					}
-				} else {
-					progress -= timeDelta * Frequency / (double) (indexCount-1);
-					if (target>=AbsoluteProgress) {
-						isPlaying = false;
-						progress = RelativeTarget;
-						InvokeTargetReached();
-					}
+					return true;
 				}
-				delta = (int) Math.Abs(AbsoluteProgress - Target);
+				if (timeDelta > time_threshold) timeDelta = time_threshold;
+				if (IsPlaying) {
+					if (direction==TimelineDirection.Forward) {
+						progress +=	timeDelta * Frequency / (double) (indexCount-1);
+						if (target<=AbsoluteProgress) {
+							isPlaying = false;
+							progress = RelativeTarget;
+							InvokeTargetReached();
+						}
+					} else {
+						progress -= timeDelta * Frequency / (double) (indexCount-1);
+						if (target>=AbsoluteProgress) {
+							isPlaying = false;
+							progress = RelativeTarget;
+							InvokeTargetReached();
+						}
+					}
+					delta = (int) Math.Abs(AbsoluteProgress - Target);
+				}
+				lastTime = now;
+				InvokeNewFrameEvent ();
+				return run_frame_source; //keep on calling this function
 			}
-			lastTime = now;
-			InvokeNewFrameEvent ();
-			return true; //keep on calling this function
 		}
 		
 		public void Start ()
@@ -169,33 +200,35 @@ namespace ClutterFlow
 		
 		public void SetIndexCount (uint newCount) 
 		{
-			SetIndexCount(newCount, true, true);
+			SetIndexCount (newCount, true, true);
 		}
 		public virtual void SetIndexCount (uint newCount, bool scaleProgress, bool scaleTarget)
 		{
-			if (!scaleProgress && newCount > 0) Progress = (double) AbsoluteProgress / newCount;
-			if (scaleTarget && IndexCount > 0)
+			if (IndexCount > 0)
 				Target = (uint) (RelativeTarget * newCount);
 			else 
-				Target = target;
+				Target = 0;
 			indexCount = newCount;
 		}
 		
 		public void Dispose ()
 		{
-			Clutter.Threads.RemoveRepaintFunc(funcId);
+			Clutter.Threads.RemoveRepaintFunc (funcId);
+			StopFrameSource ();
 		}
 	}
 	
 	public class ClutterFlowTimeline : ThrottledTimeline
 	{
 		#region Fields
-		protected int lastMarker = 0;
 		protected int lastDelta = 0;
 
 		public override double Frequency {
 			get {
-				return (double) Math.Max((Delta - 1),1) / (double) CoverManager.MaxAnimationSpan;
+				double retval = (double) Math.Max((Delta - (Delta - lastDelta)*0.25 ),1) / (double) CoverManager.MaxAnimationSpan;
+				//Console.WriteLine("Frequency == " + retval);
+				lastDelta = Delta;
+				return retval;
 			}
 		}
 				

@@ -118,7 +118,7 @@ namespace ClutterFlow
 #region Rendering
 		
 		private const double max_width = 400;
-		private const double max_height = 25;
+		private const double max_height = 26;
 		private const double margin = -max_height*0.5;
 
 		private const double arc_radius = max_height*0.5;

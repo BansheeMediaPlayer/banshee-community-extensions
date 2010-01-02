@@ -3,16 +3,23 @@ using System;
 using System.Collections.Generic;
 
 using Banshee.Collection;
+using Banshee.Collection.Database;
 using Hyena.Data;
 
 using ClutterFlow;
 
 namespace Banshee.ClutterFlow
 {
-
-	public class BansheeActorLoader<T> : ActorLoader<T>  {
-		private IListModel<T> model;
-		public virtual IListModel<T> Model {
+	
+	public class BansheeActorLoader<TGen> : ActorLoader<string, TGen> where TGen : ICacheableItem  {
+		bool no_reloading = false;
+		public bool NoReloading {
+			get { return no_reloading; }
+			set { no_reloading = value;	}
+		}
+		
+		private FilterListModel<TGen> model;
+		public virtual FilterListModel<TGen> Model {
 			get { return model; }
 			set {
 				if (value!=model) {
@@ -22,7 +29,7 @@ namespace Banshee.ClutterFlow
 		            }
 					
 					model = value;
-		
+					
 		            if (model != null) {
 		                model.Cleared += OnModelClearedHandler;
 		                model.Reloaded += OnModelReloadedHandler;
@@ -35,14 +42,19 @@ namespace Banshee.ClutterFlow
 		public BansheeActorLoader (CoverManager coverManager) : base (coverManager) { }
 		
 		#region Event Handlers
+		protected void OnSourceUpdatedHandler (object o, EventArgs args)
+		{
+			Console.WriteLine("OnSourceUpdatedHandler");
+		}
+		
         protected void OnModelClearedHandler (object o, EventArgs args)
         {
-			RefreshCoverManager ();
+			if (!no_reloading) RefreshCoverManager ();
         }
         
         protected void OnModelReloadedHandler (object o, EventArgs args)
         {
-			RefreshCoverManager ();
+			if (!no_reloading) RefreshCoverManager ();
         }
 		#endregion
 	}
@@ -53,7 +65,7 @@ namespace Banshee.ClutterFlow
 		public AlbumInfo CurrentAlbum {
 			get {
 				if (coverManager.CurrentCover!=null && coverManager.CurrentCover is ClutterFlowAlbum)
-					return (coverManager.CurrentCover as ClutterFlowAlbum).Key;
+					return (coverManager.CurrentCover as ClutterFlowAlbum).Album;
 				else
 					return null;
 			}
@@ -64,22 +76,29 @@ namespace Banshee.ClutterFlow
 		public override List<ClutterFlowActor> GetActors (System.Action<ClutterFlowActor> method_call)
 		{
 			List<ClutterFlowActor> list = new List<ClutterFlowActor>();
-			for (int i = 1; i < Model.Count; i++) {
-				ClutterFlowActor actor = AddActorFromKeyToList(Model[i], list);
+			if (Model!=null) for (int i = 1; i < Model.Count; i++) {
+				ClutterFlowActor actor = AddActorToList(Model[i], list);
 				if (method_call!=null) method_call(actor);
 			}
 			return list;
 		}
-	
-		protected override ClutterFlowActor AddActorFromKeyToList (AlbumInfo album, List<ClutterFlowActor> list)
+
+		public virtual void ScrollTo (AlbumInfo generator)
 		{
-			ClutterFlowActor actor = Cache.ContainsKey (album) ? Cache[album] : null;
+			coverManager.Timeline.Timeout = 500; //give 'm some time to load the song etc.
+			ScrollTo (ClutterFlowAlbum.CreateCacheKey (generator));
+		}
+		
+		protected override ClutterFlowActor AddActorToList (AlbumInfo generator, List<ClutterFlowActor> list)
+		{
+			string key = ClutterFlowAlbum.CreateCacheKey(generator);
+			ClutterFlowActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
 			if (actor==null) {
-				actor = new ClutterFlowAlbum (album, coverManager);
+				actor = new ClutterFlowAlbum (generator, coverManager);
 				coverManager.Add ((Clutter.Actor) actor);
-				Cache.Add (album, actor);
+				Cache.Add (key, actor);
 			}
-			actor.Index = list.Count; //placing this before the add saves us one subtraction
+			actor.Index = list.Count;
 			list.Add(actor);
 			return actor;
 		}
