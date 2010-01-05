@@ -82,9 +82,11 @@ namespace Banshee.Lyrics.IO
                 if (File.Exists (filename)) {
                     File. Delete (filename);
                 }
+
                 //create a new file
                 FileStream stream = File. Create (filename);
                 stream.Close ();
+
                 //write the lyrics
                 File.WriteAllText (filename, lyrics);
                 Hyena.Log.Debug ("Lyric successfully written " + filename);

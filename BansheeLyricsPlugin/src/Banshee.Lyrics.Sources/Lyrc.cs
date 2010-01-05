@@ -31,7 +31,7 @@ using Mono.Unix;
 
 namespace Banshee.Lyrics.Sources
 {
-    public class Lyrc:LyricWebSource
+    public class Lyrc : LyricWebSource
     {
     
         public Lyrc ()
@@ -59,7 +59,7 @@ namespace Banshee.Lyrics.Sources
             string lyric = base.GetLyrics (artist, title);
             /*HACK: on Lyrc lyrics and suggestions share the same html code. 
                Sometimes text downloaded as a lyric could be a suggestion. */
-            if (GetSuggestions (artist, title) == null) {
+            if (GetSuggestions (artist, title) == null && !lyric.Contains ("<b> Nothing found :</b>") && !lyric.Contains ("</addalyric/?tema=")) {
                 return lyric;
             } else {
                 return null;

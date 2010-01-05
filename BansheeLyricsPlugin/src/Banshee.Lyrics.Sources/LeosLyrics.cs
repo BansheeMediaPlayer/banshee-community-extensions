@@ -80,8 +80,8 @@ namespace Banshee.Lyrics.Sources
             }
 
             XmlDocument xDoc = new XmlDocument ();
-            XmlTextReader reader = new XmlTextReader (new System.IO.StringReader (lyric_xml));
-            xDoc.Load (reader);
+            Hyena.Log.Debug(lyric_xml);
+            xDoc.LoadXml (lyric_xml);
             
             /*get the lyric from the xml */
             XmlNodeList textList = xDoc.GetElementsByTagName ("text");
@@ -94,16 +94,12 @@ namespace Banshee.Lyrics.Sources
         
         private string GetHid (string xml)
         {
-            if (xml == null || !xml.StartsWith ("<leoslyrics>")) {
+            if (xml == null) {
                 return null;
             }
 
             XmlDocument xDoc = new XmlDocument ();
-            XmlTextReader reader = new XmlTextReader (new System.IO.StringReader (xml));
-            if (reader.IsStartElement ("leoslyrics")) {
-                return null;
-            }
-            xDoc.Load (reader);
+            xDoc.LoadXml (xml);
             XmlNodeList results = xDoc.GetElementsByTagName ("result");
 
             if (results == null) {
