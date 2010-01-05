@@ -157,7 +157,7 @@ namespace Banshee.Lyrics.Gui
             if (str == null) {
                 str = " ";
             }
-            str = "<div style=\"font-size:12px\">" +  str + "</div>";
+            str = "<div style=\"margin-left:5px;font-size:12px\">" +  str + "</div>";
             this.LoadHtmlString (str, null);
         }
     }
