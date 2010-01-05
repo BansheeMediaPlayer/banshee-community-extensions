@@ -36,7 +36,8 @@ namespace Banshee.Lyrics.Gui
     {
         private Gtk.Label label;
         private LyricsBrowser browser;
-        
+        private Gtk.ScrolledWindow scrollPane;
+
         private string last_track_name;
         public void SetTrackName (String track_name)
         {
@@ -50,7 +51,8 @@ namespace Banshee.Lyrics.Gui
         
         public LyricPane ()
         {
-            browser = new LyricsBrowser (false);
+            this.browser = new LyricsBrowser ();
+            this.browser.InsertModeAvailable = false;
             
             label = new Label ();
             label.Xalign = 0;
@@ -60,8 +62,13 @@ namespace Banshee.Lyrics.Gui
             label_align.LeftPadding = 9;
             label_align.Add (label);
             
+            this.scrollPane = new Gtk.ScrolledWindow ();
+            this.scrollPane.HscrollbarPolicy = ((Gtk.PolicyType)(2));
+            this.scrollPane.ShadowType = Gtk.ShadowType.None;
+            this.scrollPane.Add (this.browser);
+            
             PackStart (label_align, false, true, 0);
-            PackStart (browser, true, true, 0);
+            PackStart (this.scrollPane, true, true, 0);
             
             this.ShowAll();
         }

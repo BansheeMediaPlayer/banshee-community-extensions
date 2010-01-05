@@ -78,11 +78,12 @@ namespace Banshee.Lyrics.IO
         {
             string filename = GetLyricsFilename (artist, title);
             try {
+                /*delete the file if it exist */
                 if (File.Exists (filename)) {
-                    return;
+                    File. Delete (filename);
                 }
                 //create a new file
-                FileStream stream = File.Create (filename);
+                FileStream stream = File. Create (filename);
                 stream.Close ();
                 //write the lyrics
                 File.WriteAllText (filename, lyrics);

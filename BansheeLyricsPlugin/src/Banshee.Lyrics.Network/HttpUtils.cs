@@ -49,13 +49,13 @@ namespace Banshee.Lyrics.Network
         
         private static string GetHtml (string url)
         {
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create (url);
-            request.Timeout = 6000;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create (url);
+            request.Timeout = 5000;
             if (ProxyManager.Instance.isHttpProxy ()) {
                 request.Proxy = ProxyManager.Instance.getProxy (url);
             }
             
-            HttpWebResponse response = (HttpWebResponse) request.GetResponse ();
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
             if (response.ContentLength == 0) {
                 return null;
             }

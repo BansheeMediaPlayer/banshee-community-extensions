@@ -66,8 +66,19 @@ namespace Banshee.Lyrics.Sources
         
         public virtual string GetSuggestions (string url)
         {
-            return ParseUrl (url, regexSuggestion);
+            string suggestion = ParseUrl (url, regexSuggestion);
+            return CleanSuggestion (suggestion);
         }
+
+        static string CleanSuggestion (string suggestion)
+        {
+            if (suggestion == null) {
+                return null;
+            }
+            suggestion = suggestion.Replace ("color='white'", "");
+            return suggestion;
+        }
+
         
         protected abstract string GetLyricUrl (string artist, string title);
         

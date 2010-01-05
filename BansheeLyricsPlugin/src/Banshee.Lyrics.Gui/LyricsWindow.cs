@@ -40,7 +40,14 @@ namespace Banshee.Lyrics.Gui
 {
     public partial class LyricsWindow : Gtk.Window
     {
-        public LyricsWindow () : base (Gtk.WindowType.Toplevel)
+        private string saved_artist;
+        private string saved_title;
+        private int current_mode;
+
+        public static int HTML_MODE = 0;
+        public static int INSERT_MODE = 1;
+
+        public LyricsWindow () : base(Gtk.WindowType.Toplevel)
         {
             this.Build ();
             InitComponents ();
@@ -49,16 +56,17 @@ namespace Banshee.Lyrics.Gui
         private void InitComponents ()
         {
             this.KeyPressEvent += OnKeyPressed;
-            this.DeleteEvent += delegate (object o, DeleteEventArgs args)
-            {
+            this.DeleteEvent += delegate(object o, DeleteEventArgs args) {
                 OnClose (this, null);
                 args.RetVal = true;
             };
-
+            
             this.buttonRefresh.Clicked += new EventHandler (OnRefresh);
             this.buttonSave.Clicked += new EventHandler (OnSaveLyric);
             this.buttonClose.Clicked += new EventHandler (OnClose);
-            this.lyricsBrowser.ChangeModeEvent += new ChangeModeEventHandler (OnBrowserChangeMode);
+            
+            this.lyricsBrowser.AddLinkClicked += ManuallyAddLyric;
+            this.SwitchTo (HTML_MODE);
         }
 
         public void ForceUpdate ()
@@ -66,15 +74,16 @@ namespace Banshee.Lyrics.Gui
             if (ServiceManager.PlayerEngine.CurrentTrack == null) {
                 return;
             }
-
+            
             string window_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
             string by_str = " " + Catalog.GetString ("by") + " ";
             string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
             if (artist == null) {
-                artist = Catalog.GetString("Unknown Artist");
+                artist = Catalog.GetString ("Unknown Artist");
             }
             window_title += by_str + artist;
             this.Title = window_title;
+            
         }
 
         public void OnPlayerEngineEventChanged (PlayerEventArgs args)
@@ -84,18 +93,20 @@ namespace Banshee.Lyrics.Gui
             }
             ForceUpdate ();
         }
-        
+
         public LyricsBrowser GetBrowser ()
         {
             return this.lyricsBrowser;
         }
-        
+
         public new void Show ()
         {
-            this.lyricsBrowser.SwitchTo (LyricsBrowser.HTML_MODE);
+            if (current_mode != HTML_MODE) {
+                this.SwitchTo (HTML_MODE);
+            }
             base.Show ();
         }
-        
+
         /*event handlers */
         void OnKeyPressed (object sender, KeyPressEventArgs args)
         {
@@ -103,38 +114,61 @@ namespace Banshee.Lyrics.Gui
                 OnClose (this, null);
             }
         }
-        
+
         void OnClose (object sender, EventArgs args)
         {
             this.Hide ();
             
             /*deselect the toggle action "Show lyrics" in the View menu */
             InterfaceActionService action_service = ServiceManager.Get<InterfaceActionService> ();
-            ToggleAction show_lyrics_action = (ToggleAction) action_service.FindAction ("Lyrics.ShowLyricsAction");
+            ToggleAction show_lyrics_action = (ToggleAction)action_service.FindAction ("Lyrics.ShowLyricsAction");
             if (show_lyrics_action != null) {
                 show_lyrics_action.Active = false;
             }
         }
-        
+
         void OnRefresh (object sender, EventArgs args)
         {
-        	GetBrowser ().OnRefresh (sender,args);
+            this.GetBrowser ().OnRefresh ();
         }
-		
-        void OnBrowserChangeMode (object sender, ChangeModeEventArgs e)
+
+        void ManuallyAddLyric (object sender, EventArgs args)
         {
-            if (e.mode == LyricsBrowser.INSERT_MODE) {
+            this.SwitchTo (INSERT_MODE);
+        }
+
+        public void SwitchTo (int mode)
+        {
+            this.lyricsScrollPane.Remove (this.lyricsScrollPane.Child);
+            if (mode == HTML_MODE) {
+                this.buttonRefresh.Show ();
+                this.buttonSave.Hide ();
+                this.lyricsScrollPane.Add (this.lyricsBrowser);
+            } else {
                 this.buttonSave.Show ();
                 this.buttonRefresh.Hide ();
-            } else {
-                this.buttonSave.Hide ();
-                this.buttonRefresh.Show ();
+                
+                this.lyricsScrollPane.Add (this.textBrowser);
+                this.textBrowser.Buffer.Text = "";
+                this.textBrowser.GrabFocus ();
+                
+                this.saved_artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
+                this.saved_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
             }
+            
+            this.lyricsScrollPane.ResizeChildren ();
+            this.lyricsScrollPane.ShowAll ();
+            
+            current_mode = mode;
         }
 
         public void OnSaveLyric (object sender, EventArgs args)
         {
-            this.GetBrowser ().SaveLyric ();
+            string lyric = this.textBrowser.Buffer.Text;
+            LyricsManager.Instance.WriteLyric (saved_artist, saved_title, lyric);
+            
+            lyricsBrowser.LoadString (lyric);
+            this.SwitchTo (HTML_MODE);
         }
     }
 }

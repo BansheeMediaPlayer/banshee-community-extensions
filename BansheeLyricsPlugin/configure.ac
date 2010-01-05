@@ -37,7 +37,7 @@ dnl pkg-config
 dnl package checks, common for all configs
 PKG_CHECK_MODULES([BANSHEE_1_THICKCLIENT], [banshee-1-thickclient >= 0.98])
 PKG_CHECK_MODULES([GCONF_SHARP_20], [gconf-sharp-2.0])
-PKG_CHECK_MODULES([GTKHTML_SHARP_314], [gtkhtml-sharp-3.14])
+PKG_CHECK_MODULES(WEBKIT_SHARP, webkit-sharp-1.0 >= 0.2)
 
 dnl package checks, per config
 

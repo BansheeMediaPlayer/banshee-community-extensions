@@ -41,16 +41,16 @@ using Hyena;
 
 namespace Banshee.Lyrics
 {
-    public delegate void LyricChangedEventHandler (object o, LyricEventArgs e);
-    public delegate void LoadingLyricEventHandler (object o, EventArgs e);
+    public delegate void LoadFinishedEventHandler (object o, LoadFinishedEventArgs e);
+    public delegate void LoadStartedEventHandler (object o, EventArgs e);
 
-    public class LyricEventArgs : EventArgs
+    public class LoadFinishedEventArgs : EventArgs
     {
         public readonly string lyric;
         public readonly string error;
         public readonly string suggestion;
 
-        public LyricEventArgs (string lyric, string suggestion, string error)
+        public LoadFinishedEventArgs (string lyric, string suggestion, string error)
         {
             this.lyric = lyric;
             this.suggestion = suggestion;
@@ -61,8 +61,8 @@ namespace Banshee.Lyrics
     public class LyricsManager
     {
 
-        public event LyricChangedEventHandler LyricChangedEvent;
-        public event LoadingLyricEventHandler LoadingLyricEvent;
+        public event LoadFinishedEventHandler LoadFinished;
+        public event LoadStartedEventHandler LoadStarted;
 
         private List < ILyricSource > sourceList;       /*the sources for download lyrics */
 
@@ -92,9 +92,12 @@ namespace Banshee.Lyrics
             GetLyrics ();
         }
 
+        /**
+         * Get the lyrics for the current track
+         */
         public void GetLyrics ()
         {
-            LoadingLyricEvent (this, null);
+            LoadStarted (this, null);
 
             string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
             string song_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
@@ -117,25 +120,27 @@ namespace Banshee.Lyrics
                 error = e.Message;
             }
 
-            LyricChangedEvent (this, new LyricEventArgs (lyric, suggestion, error));
+            LoadFinished (this, new LoadFinishedEventArgs (lyric, suggestion, error));
         }
 
-        public void AddLyrics (string artist, string title, string lyric)
+        public void WriteLyric (string artist, string title, string lyric)
         {
             cache.WriteLyric (artist, title, lyric.Replace ("\n", "<br>"));
         }
-
-        public string GetLyrics (string artist, string title)
+        
+        public string GetLyrics (string artist, string title, bool force)
         {
             if (artist == null || title == null) {
                 return null;
             }
-            //check if the lyric is in cache
-            if (cache.IsInCache (artist, title)) {
+            
+            //check if the lyric is in cache (if force = true force a new fetch of the lyrics)
+            if (!force && cache.IsInCache (artist, title)) {
                 return cache.ReadLyric (artist, title);
             }
+            
             //check if the netowrk is up
-            if (!ServiceManager.Get < Banshee.Networking.Network > ().Connected) {
+            if (!ServiceManager.Get<Banshee.Networking.Network> ().Connected) {
                 throw new Exception ("You don't seem to be connected to internet.<br>Check your network connection.");
             }
             
@@ -150,12 +155,19 @@ namespace Banshee.Lyrics
             return lyric;
         }
 
+        public string GetLyrics (string artist, string title)
+        {
+            return GetLyrics (artist, title, false);
+        }
+
         public void GetLyricsFromLyrc (string url)
         {
             if (url == null) {
                 return;
             }
-
+            
+            LoadStarted (this, null);
+            
             /*obtain the lyrc absolute url */
             Lyrc lyrc_server = (Lyrc) sourceList[0];
             if (!url.Contains (lyrc_server.Url)) {
@@ -172,14 +184,19 @@ namespace Banshee.Lyrics
             }
             
             /*launch a lyric changed event to notify widgets */
-            LyricChangedEvent (this, new LyricEventArgs (lyric, null, null));
+            LoadFinished (this, new LoadFinishedEventArgs (lyric, null, null));
         }
 
         private string DownloadLyrics (string artist, string title)
         {
             foreach (ILyricSource source in sourceList) {
-                string lyric = source.GetLyrics (artist, title);
-                
+                string lyric;
+                try {
+                    lyric = source.GetLyrics (artist, title);
+                } catch (Exception e) {
+                    Log.Exception (e);
+                    continue;
+                }
                 if (IsLyricOk (lyric)) {
                     return AttachFooter (lyric, source.Credits);
                 }
@@ -217,6 +234,7 @@ namespace Banshee.Lyrics
             if (lyric == null) {
                 return null;
             }
+            Log.Debug (credits);
             return string.Format ("{0} <br><br> <i>{1}</i>", lyric, credits);
         }
     }

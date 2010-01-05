@@ -55,10 +55,9 @@ namespace Banshee.Lyrics.Gui
         public override Widget Widget {
             get {
                 if (lyric_pane == null) {
-                
                     lyric_pane = new LyricPane();
-					LyricsManager.Instance.LoadingLyricEvent += delegate { State = ContextState.Loading; };
-                    LyricsManager.Instance.LyricChangedEvent += delegate { State = ContextState.Loaded; };
+					LyricsManager.Instance.LoadStarted += delegate { State = ContextState.Loading; };
+                    LyricsManager.Instance.LoadFinished += delegate { State = ContextState.Loaded; };
                 }
                 return lyric_pane;
             }

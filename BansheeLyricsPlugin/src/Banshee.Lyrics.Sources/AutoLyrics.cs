@@ -30,12 +30,12 @@ using Mono.Unix;
 
 namespace Banshee.Lyrics.Sources
 {
-    public class AutoLyrics:Lyrc
+    public class AutoLyrics : Lyrc
     {
         public AutoLyrics ()
         {
             base.regexLyric =
-                new Regex ("<img src=\"img/pix_discontinua.gif\" width=\"400\" height=\"3\"></td>(.*)TEXTmagenta",
+                new Regex ("<img src=\"img/pix_discontinua.gif\" width=\"400\" height=\"3\"></td>(.*)<td height=\"10\" align=\"center\" valign=\"top\" class=\"TEXTmagenta\">",
                            RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
         
