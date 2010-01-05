@@ -133,8 +133,16 @@ namespace ClutterFlow
 			ReloadDefaultTextures ();
 		}
 	}
+
+	public interface IIndexable : IComparable<IIndexable> 
+	{
+		int Index { get; }
+		event IndexChangedEventHandler IndexChanged;
+	}
+
+	public delegate void IndexChangedEventHandler(IIndexable item, int old_index, int new_index);
 	
-	public class ClutterFlowActor : Clutter.Group
+	public class ClutterFlowActor : Clutter.Group, IIndexable
 	{	
 		#region Fields
 		protected static TextureHolder textureHolder;
@@ -210,11 +218,25 @@ namespace ClutterFlow
 		public double LastAlpha {
 			get { return lastAlpha; }
 		}
+
+		public virtual event IndexChangedEventHandler IndexChanged;
 		
 		protected int index = -1; //-1 = not visible
-		public int Index {
+		public virtual int Index {
 			get { return index; }
-			set { if (value!=index) { index = value; } }
+			set { 
+				if (value!=index) {
+					int old_index = index;
+					index = value;
+					if (IndexChanged!=null) IndexChanged (this, old_index, index);
+				}
+			}
+		}
+
+		public int CompareTo (IIndexable obj) {
+			if (obj.Index==-1 && this.Index!=-1)
+				return 1;
+			return obj.Index - this.Index;
 		}
 
 		private NeedPixbuf getDefaultPb;

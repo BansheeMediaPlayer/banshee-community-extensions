@@ -62,6 +62,12 @@ namespace Banshee.ClutterFlow
 	public class AlbumLoader : BansheeActorLoader<AlbumInfo>
 	{
 
+		#region Fields
+		protected ArtworkLookup lookup;
+		public ArtworkLookup Lookup {
+			get { return lookup; }
+		}
+		
 		public AlbumInfo CurrentAlbum {
 			get {
 				if (coverManager.CurrentCover!=null && coverManager.CurrentCover is ClutterFlowAlbum)
@@ -70,8 +76,16 @@ namespace Banshee.ClutterFlow
 					return null;
 			}
 		}
+		#endregion
 		
-		public AlbumLoader (CoverManager coverManager) : base (coverManager) { }
+		public AlbumLoader (CoverManager coverManager) : base (coverManager) 
+		{
+			lookup = new ArtworkLookup (coverManager);	
+		}
+		~AlbumLoader ()
+		{
+			lookup.Stop ();
+		}
 		
 		public override List<ClutterFlowActor> GetActors (System.Action<ClutterFlowActor> method_call)
 		{
@@ -94,7 +108,7 @@ namespace Banshee.ClutterFlow
 			string key = ClutterFlowAlbum.CreateCacheKey(generator);
 			ClutterFlowActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
 			if (actor==null) {
-				actor = new ClutterFlowAlbum (generator, coverManager);
+				actor = new ClutterFlowAlbum (generator, coverManager, lookup);
 				coverManager.Add ((Clutter.Actor) actor);
 				Cache.Add (key, actor);
 			}
