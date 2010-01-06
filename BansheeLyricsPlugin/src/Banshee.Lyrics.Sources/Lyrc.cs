@@ -59,11 +59,16 @@ namespace Banshee.Lyrics.Sources
             string lyric = base.GetLyrics (artist, title);
             /*HACK: on Lyrc lyrics and suggestions share the same html code. 
                Sometimes text downloaded as a lyric could be a suggestion. */
-            if (GetSuggestions (artist, title) == null && !lyric.Contains ("<b> Nothing found :</b>") && !lyric.Contains ("</addalyric/?tema=")) {
-                return lyric;
-            } else {
+            if (GetSuggestions (artist, title) != null) {
                 return null;
             }
+
+            /* HACK: Sometimes lyrics is''t found but an invalid content were parsed in lyrc and autolyrics */
+            if (lyric != null && 
+                (lyric.Contains ("<b> Nothing found :</b>") || lyric.Contains ("</addalyric/?tema=:"))) {
+                return null;
+            }
+            return lyric;
         }
         
         protected override string GetLyricUrl (string artist, string title)
