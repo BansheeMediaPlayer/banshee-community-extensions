@@ -50,7 +50,7 @@ namespace Banshee.Lyrics.Network
         private static string GetHtml (string url)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create (url);
-            request.Timeout = 5000;
+            request.Timeout = 6000;
             if (ProxyManager.Instance.isHttpProxy ()) {
                 request.Proxy = ProxyManager.Instance.getProxy (url);
             }

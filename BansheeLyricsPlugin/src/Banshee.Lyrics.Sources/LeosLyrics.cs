@@ -80,7 +80,6 @@ namespace Banshee.Lyrics.Sources
             }
 
             XmlDocument xDoc = new XmlDocument ();
-            Hyena.Log.Debug(lyric_xml);
             xDoc.LoadXml (lyric_xml);
             
             /*get the lyric from the xml */
