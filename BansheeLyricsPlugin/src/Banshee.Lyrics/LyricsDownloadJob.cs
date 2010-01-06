@@ -38,7 +38,7 @@ namespace Banshee.Lyrics
         private static void FetchLyrics ()
         {
             PrimarySource music_library = ServiceManager.SourceManager.MusicLibrary;
-            CachedList<DatabaseTrackInfo> list = CachedList<DatabaseTrackInfo>.CreateFromModel (music_library.DatabaseTrackModel);
+            CachedList<DatabaseTrackInfo> list = CachedList<DatabaseTrackInfo>.CreateFromSourceModel (music_library.DatabaseTrackModel);
             foreach (DatabaseTrackInfo track_info in list) {
                 Log.Debug ("Fetching lyrics for " + track_info.Artist.Name + " - " + track_info.TrackTitle);
                 LyricsManager.Instance.GetLyrics (track_info.Artist.Name, track_info.TrackTitle, true);
