@@ -38,7 +38,7 @@ namespace Banshee.Lyrics.Sources
                 new Regex ("<img src=\"img/pix_discontinua.gif\" width=\"400\" height=\"3\"></td>(.*)<td height=\"10\" align=\"center\" valign=\"top\" class=\"TEXTmagenta\">",
                            RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
-        
+
         public override string Name {
             get { return "Autolyrics"; }
         }

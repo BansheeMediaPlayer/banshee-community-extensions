@@ -42,20 +42,20 @@ namespace Banshee.Lyrics.Sources
         public override string Name {
             get { return "LyricWiki";}
         }
-        
+
         public override string Url {
             get { return "http://lyricwiki.org"; }
         }
-        
+
         protected override string GetSuggestionUrl (string artist, string title)
         {
             return null;
         }
-        
+
         protected override string GetLyricUrl (string artist, string title)
         {
-            string url_artist = System.Web.HttpUtility.UrlEncode (base.cleanArtistName (artist));
-            string url_song_title = System.Web.HttpUtility.UrlEncode (base.cleanSongTitle (title));
+            string url_artist = System.Web.HttpUtility.UrlEncode (base.CleanArtistName (artist));
+            string url_song_title = System.Web.HttpUtility.UrlEncode (base.CleanSongTitle (title));
             string relative_url = string.Format ("{0}:{1}", url_artist, url_song_title);
             string[]splitted_strings = relative_url.Split ('+');
             
@@ -69,7 +69,7 @@ namespace Banshee.Lyrics.Sources
                 string new_str = first_char.ToString ().ToUpper () + str.Substring (1, str.Length - 1);
                 lyricwiki_url += new_str + "_";
             }
-            
+
             return lyricwiki_url.Substring (0, lyricwiki_url.Length - 1);
         }
     }

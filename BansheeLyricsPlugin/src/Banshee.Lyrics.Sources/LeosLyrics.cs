@@ -79,18 +79,24 @@ namespace Banshee.Lyrics.Sources
                 return null;
             }
 
+			/*get the lyric from the xml */
             XmlDocument xDoc = new XmlDocument ();
             xDoc.LoadXml (lyric_xml);
-            
-            /*get the lyric from the xml */
             XmlNodeList textList = xDoc.GetElementsByTagName ("text");
             if (textList == null || textList.Count == 0) {
                 return null;
             }
+			
             string lyric = textList.Item (0).InnerText;
+			lyric = IndentLyric (lyric);
             return lyric;
         }
         
+		private string IndentLyric (string lyric) 
+        {
+			return lyric.Replace("\n","<br/>");
+		}
+		
         private string GetHid (string xml)
         {
             if (xml == null) {

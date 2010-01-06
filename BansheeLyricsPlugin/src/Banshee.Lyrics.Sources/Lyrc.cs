@@ -27,6 +27,7 @@
 using System;
 using System.Web;
 using System.Text.RegularExpressions;
+
 using Mono.Unix;
 
 namespace Banshee.Lyrics.Sources
@@ -57,6 +58,7 @@ namespace Banshee.Lyrics.Sources
         public override string GetLyrics (string artist, string title)
         {
             string lyric = base.GetLyrics (artist, title);
+            
             /*HACK: on Lyrc lyrics and suggestions share the same html code. 
                Sometimes text downloaded as a lyric could be a suggestion. */
             if (GetSuggestions (artist, title) != null) {
@@ -73,8 +75,8 @@ namespace Banshee.Lyrics.Sources
         
         protected override string GetLyricUrl (string artist, string title)
         {
-            string url_artist = HttpUtility.UrlEncode (base.cleanArtistName (artist));
-            string url_song_title = HttpUtility.UrlEncode (base.cleanSongTitle (title));
+            string url_artist = HttpUtility.UrlEncode (base.CleanArtistName (artist));
+            string url_song_title = HttpUtility.UrlEncode (base.CleanSongTitle (title));
             string url = string.Format (this.Url + "/tema1en.php?artist={0}&songname={1}", url_artist, url_song_title);
             
             return url;
@@ -82,7 +84,9 @@ namespace Banshee.Lyrics.Sources
         
         protected override string GetSuggestionUrl (string artist, string title)
         {
-            artist = artist == null ? "" : artist;
+            if (artist == null) {
+                artist = "";
+            }
             return GetLyricUrl (artist, title);
         }
     }

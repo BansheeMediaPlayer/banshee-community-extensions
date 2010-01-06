@@ -24,10 +24,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 using System;
-using Banshee.IO;
 using System.Text.RegularExpressions;
 
 using Mono.Unix;
+
+using Banshee.IO;
 
 using Banshee.Lyrics.Network;
 
@@ -48,22 +49,22 @@ namespace Banshee.Lyrics.Sources
                 return string.Format ("Powered by {0} ({1})", Name, Url);
             }
         }
-        
+
         public virtual string GetLyrics (string artist, string title)
         {
             return GetLyrics (GetLyricUrl (artist, title));
         }
-        
+
         public virtual string GetSuggestions (string artist, string title)
         {
             return GetSuggestions (GetSuggestionUrl (artist, title));
         }
-        
+
         public virtual string GetLyrics (string url)
         {
             return ParseUrl (url, regexLyric);
         }
-        
+
         public virtual string GetSuggestions (string url)
         {
             string suggestion = ParseUrl (url, regexSuggestion);
@@ -79,21 +80,20 @@ namespace Banshee.Lyrics.Sources
             return suggestion;
         }
 
-        
         protected abstract string GetLyricUrl (string artist, string title);
         
         protected abstract string GetSuggestionUrl (string artist, string title);
         
-        protected string cleanArtistName (string artist)
+        protected string CleanArtistName (string artist)
         {
             return artist.EndsWith (" ") ? artist.Substring (0, artist.Length - 2) : artist;
         }
         
-        protected string cleanSongTitle (string title)
+        protected string CleanSongTitle (string title)
         {
             return title.EndsWith (" ") ? title.Substring (0, title.Length - 1) : title;
         }
-        
+
         /*parse the content of an url using a regular expression to filter the content */
         public string ParseUrl (string url, Regex r)
         {

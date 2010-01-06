@@ -25,8 +25,9 @@
 // 
 
 using System;
-using GConf;
 using System.Net;
+
+using GConf;
 
 namespace Banshee.Lyrics.Network
 {
@@ -47,7 +48,7 @@ namespace Banshee.Lyrics.Network
             string proxyAddress = null;
             int proxyPort = 0;
             
-              try {
+            try {
                 userName = getProxyUserName ();
                 password = getProxyPassword ();
                 proxyAddress = getProxyAddress ();
@@ -61,6 +62,7 @@ namespace Banshee.Lyrics.Network
             credcache.Add (new Uri (url), "BASIC", netcred);
             WebProxy myProxy = new WebProxy (proxyAddress, proxyPort);
             myProxy.Credentials = credcache;
+            
             return myProxy;
         }
         

@@ -127,7 +127,7 @@ namespace Banshee.Lyrics
         {
             cache.WriteLyric (artist, title, lyric.Replace ("\n", "<br>"));
         }
-        
+
         public string GetLyrics (string artist, string title, bool force)
         {
             if (artist == null || title == null) {
@@ -165,9 +165,9 @@ namespace Banshee.Lyrics
             if (url == null) {
                 return;
             }
-            
+
             LoadStarted (this, null);
-            
+
             /*obtain the lyrc absolute url */
             Lyrc lyrc_server = (Lyrc) sourceList[0];
             if (!url.Contains (lyrc_server.Url)) {
@@ -182,7 +182,7 @@ namespace Banshee.Lyrics
                 string song_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
                 cache.WriteLyric (artist, song_title, lyric);
             }
-            
+
             /*launch a lyric changed event to notify widgets */
             LoadFinished (this, new LoadFinishedEventArgs (lyric, null, null));
         }

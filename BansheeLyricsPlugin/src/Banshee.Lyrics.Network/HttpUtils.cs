@@ -41,7 +41,7 @@ namespace Banshee.Lyrics.Network
                 html = GetHtml (url);
             } catch (Exception e)
             {
-                Hyena.Log.DebugFormat ("{0}, {1}", e.Message, url);
+                Hyena.Log.InformationFormat ("{0}, {1}", e.Message, url);
                 return null;
             }
             return html;
@@ -51,6 +51,7 @@ namespace Banshee.Lyrics.Network
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create (url);
             request.Timeout = 6000;
+            
             if (ProxyManager.Instance.isHttpProxy ()) {
                 request.Proxy = ProxyManager.Instance.getProxy (url);
             }
@@ -70,6 +71,7 @@ namespace Banshee.Lyrics.Network
             //read all bytes from the stream
             string source = reader.ReadToEnd ();
             reader.Close ();
+            
             return source;
         }
     }
