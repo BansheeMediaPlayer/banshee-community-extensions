@@ -63,9 +63,18 @@ namespace Banshee.Lyrics
 
         void IExtensionService.Initialize ()
         {
-            ServiceManager.PlayerEngine.ActiveEngine.EventChanged += OnPlayerEngineEventChanged;
-            ServiceManager.PlayerEngine.ActiveEngine.EventChanged += window.OnPlayerEngineEventChanged;
-            
+            ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEngineEventChanged,
+                PlayerEvent.StartOfStream |
+                PlayerEvent.EndOfStream |
+                PlayerEvent.TrackInfoUpdated);
+
+            ServiceManager.PlayerEngine.ConnectEvent (window.OnPlayerEngineEventChanged, 
+                PlayerEvent.StartOfStream |
+                PlayerEvent.EndOfStream |
+                PlayerEvent.TrackInfoUpdated);
+
+            ServiceManager.SourceManager.MusicLibrary.TracksAdded += OnTracksAdded;
+
             InstallInterfaceActions ();
 
             /* create the lyrics dir if needed */
@@ -83,12 +92,15 @@ namespace Banshee.Lyrics
         
         public void Dispose ()
         {
-            ServiceManager.PlayerEngine.ActiveEngine.EventChanged -= OnPlayerEngineEventChanged;
-            ServiceManager.PlayerEngine.ActiveEngine.EventChanged -= window.OnPlayerEngineEventChanged;
+            ServiceManager.PlayerEngine.DisconnectEvent (OnPlayerEngineEventChanged);
+            ServiceManager.PlayerEngine.DisconnectEvent (window.OnPlayerEngineEventChanged);
+
+            ServiceManager.SourceManager.MusicLibrary.TracksAdded -= OnTracksAdded;
 
             InterfaceActionService actions_service = ServiceManager.Get<InterfaceActionService> ();
             actions_service.RemoveActionGroup (lyrics_action_group);
             actions_service.UIManager.RemoveUi (ui_manager_id);
+            lyrics_action_group = null;
             
             this.window.Hide ();
         }
@@ -103,10 +115,10 @@ namespace Banshee.Lyrics
                 lyrics_action_group.GetAction ("ShowLyricsAction").Sensitive = false;
                 return;
             }
-            
+            /*
             if (args.Event != PlayerEvent.StartOfStream && args.Event != PlayerEvent.TrackInfoUpdated) {
                 return;
-            }
+            }*/
 
             lyrics_action_group.GetAction ("ShowLyricsAction").Sensitive = true;
 
@@ -120,6 +132,7 @@ namespace Banshee.Lyrics
             InterfaceActionService action_service = ServiceManager.Get<InterfaceActionService> ();
             
             lyrics_action_group = new ActionGroup ("Lyrics");
+
             lyrics_action_group.Add (new ActionEntry[] {
                 new ActionEntry ("LyricsAction", null, 
                     Catalog.GetString ("L_yrics"), null, 
@@ -128,6 +141,7 @@ namespace Banshee.Lyrics
                     Catalog.GetString ("_Download Lyrics"), null, 
                     Catalog.GetString ("Download lyrics for all tracks"), OnFetchLyrics)
             });
+
             lyrics_action_group.Add (new ToggleActionEntry[] {
                 new ToggleActionEntry ("ShowLyricsAction", null, 
                             Catalog.GetString ("Show Lyrics"), "<control>T",
@@ -139,25 +153,31 @@ namespace Banshee.Lyrics
             action_service.AddActionGroup (lyrics_action_group);
             
             ui_manager_id = action_service.UIManager.AddUiFromResource ("LyricsMenu.xml");
-            
         }
 
+        private void OnTracksAdded (Source sender, TrackEventArgs args)
+        {
+            /*do not force all lyrics to be refreshed.*/
+            FetchAllLyrics (false);
+        }
         private void OnFetchLyrics (object o, EventArgs args)
         {
-            FetchAllLyrics ();
+            /*do not force all lyrics to be refreshed.*/
+            FetchAllLyrics (true);
         }
 
-        private void FetchAllLyrics ()
+        private void FetchAllLyrics (bool force_refresh)
         {
             /*check if the netowrk is up */            
             if (job != null || !ServiceManager.Get<Banshee.Networking.Network> ().Connected) {
                 return;
             }
             
-            job = new LyricsDownloadJob ();
+            job = new LyricsDownloadJob (force_refresh);
             job.Finished += delegate {
                 job = null;
             };
+
             ServiceManager.JobScheduler.Add (job);
         }
 

@@ -21,7 +21,9 @@ namespace Banshee.Lyrics
     public class LyricsDownloadJob : SimpleAsyncJob
     {
 
-        public LyricsDownloadJob ()
+        private bool force_refresh;
+
+        public LyricsDownloadJob (bool force_refresh)
         {
             base.Title = Catalog.GetString ("Downloading Lyrics");
             PriorityHints = PriorityHints.LongRunning;
@@ -40,8 +42,7 @@ namespace Banshee.Lyrics
             PrimarySource music_library = ServiceManager.SourceManager.MusicLibrary;
             CachedList<DatabaseTrackInfo> list = CachedList<DatabaseTrackInfo>.CreateFromSourceModel (music_library.DatabaseTrackModel);
             foreach (DatabaseTrackInfo track_info in list) {
-                Log.Debug ("Fetching lyrics for " + track_info.Artist.Name + " - " + track_info.TrackTitle);
-                LyricsManager.Instance.GetLyrics (track_info.Artist.Name, track_info.TrackTitle, true);
+                LyricsManager.Instance.GetLyrics (track_info.Artist.Name, track_info.TrackTitle, force_refresh);
             }
         }
     }
