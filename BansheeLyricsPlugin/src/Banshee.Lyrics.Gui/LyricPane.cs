@@ -59,7 +59,7 @@ namespace Banshee.Lyrics.Gui
             
             Gtk.Alignment label_align = new Gtk.Alignment (0, 0, 0, 0);
             label_align.TopPadding = 5;
-            label_align.LeftPadding = 9;
+            label_align.LeftPadding = 10;
             label_align.Add (label);
             
             this.scrollPane = new Gtk.ScrolledWindow ();
