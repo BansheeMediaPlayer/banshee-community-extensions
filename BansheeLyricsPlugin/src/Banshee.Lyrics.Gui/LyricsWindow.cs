@@ -27,6 +27,7 @@
 using System;
 using System.IO;
 using System.Threading;
+
 using Mono.Unix;
 
 using Gtk;
@@ -42,6 +43,7 @@ namespace Banshee.Lyrics.Gui
     {
         private string saved_artist;
         private string saved_title;
+
         private int current_mode;
 
         public static int HTML_MODE = 0;
@@ -91,6 +93,7 @@ namespace Banshee.Lyrics.Gui
             if (args.Event != PlayerEvent.StartOfStream && args.Event != PlayerEvent.TrackInfoUpdated) {
                 return;
             }
+
             ForceUpdate ();
         }
 
@@ -127,12 +130,12 @@ namespace Banshee.Lyrics.Gui
             }
         }
 
-        void OnRefresh (object sender, EventArgs args)
+        private void OnRefresh (object sender, EventArgs args)
         {
             this.GetBrowser ().OnRefresh ();
         }
 
-        void ManuallyAddLyric (object sender, EventArgs args)
+        private void ManuallyAddLyric (object sender, EventArgs args)
         {
             this.SwitchTo (INSERT_MODE);
         }

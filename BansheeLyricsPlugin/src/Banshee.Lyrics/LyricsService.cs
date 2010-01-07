@@ -25,13 +25,15 @@
 // 
 
 using System;
-using Gtk;
 using System.IO;
-using Mono.Unix;
-
 using System.Threading;
 
+using Gtk;
+
+using Mono.Unix;
+
 using Banshee.Gui;
+using Banshee.Sources;
 using Banshee.ServiceStack;
 using Banshee.MediaEngine;
 
@@ -55,7 +57,7 @@ namespace Banshee.Lyrics
         private uint ui_manager_id;
         private ActionGroup lyrics_action_group;
 
-        private SimpleAsyncJob job;
+        private LyricsDownloadJob job;
 
         public static String LyricsDir {
             get { return lyrics_dir; }
@@ -73,7 +75,7 @@ namespace Banshee.Lyrics
                 PlayerEvent.EndOfStream |
                 PlayerEvent.TrackInfoUpdated);
 
-            ServiceManager.SourceManager.MusicLibrary.TracksAdded += OnTracksAdded;
+            //ServiceManager.SourceManager.MusicLibrary.TracksAdded += OnTracksAdded;
 
             InstallInterfaceActions ();
 
@@ -101,7 +103,12 @@ namespace Banshee.Lyrics
             actions_service.RemoveActionGroup (lyrics_action_group);
             actions_service.UIManager.RemoveUi (ui_manager_id);
             lyrics_action_group = null;
-            
+
+            /*if (job != null && job.State != JobState.Completed) {
+                job.Stop ();
+            }
+            job = null;*/
+
             this.window.Hide ();
         }
         

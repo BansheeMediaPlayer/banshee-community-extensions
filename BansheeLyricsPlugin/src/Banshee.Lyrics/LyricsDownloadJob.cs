@@ -16,19 +16,18 @@ using Banshee.Sources;
 
 namespace Banshee.Lyrics
 {
-
-
     public class LyricsDownloadJob : SimpleAsyncJob
     {
-
         private bool force_refresh;
 
         public LyricsDownloadJob (bool force_refresh)
         {
-            base.Title = Catalog.GetString ("Downloading Lyrics");
+            Title = Catalog.GetString ("Downloading Lyrics");
             PriorityHints = PriorityHints.LongRunning;
             IsBackground = true;
             CanCancel = true;
+            
+            this.force_refresh = force_refresh;
         }
 
         protected override void Run ()
@@ -37,7 +36,11 @@ namespace Banshee.Lyrics
             OnFinished ();
         }
 
-        private static void FetchLyrics ()
+        public void Stop ()
+        {
+            AbortThread ();
+        }
+        private void FetchLyrics ()
         {
             PrimarySource music_library = ServiceManager.SourceManager.MusicLibrary;
             CachedList<DatabaseTrackInfo> list = CachedList<DatabaseTrackInfo>.CreateFromSourceModel (music_library.DatabaseTrackModel);
