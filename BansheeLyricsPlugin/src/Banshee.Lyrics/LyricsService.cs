@@ -75,8 +75,6 @@ namespace Banshee.Lyrics
                 PlayerEvent.EndOfStream |
                 PlayerEvent.TrackInfoUpdated);
 
-            //ServiceManager.SourceManager.MusicLibrary.TracksAdded += OnTracksAdded;
-
             InstallInterfaceActions ();
 
             /* create the lyrics dir if needed */
@@ -90,8 +88,28 @@ namespace Banshee.Lyrics
                 t.Start ();
                 return;
             }
+
+            if(!ServiceStartup()) {
+                ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
+            }
         }
-        
+
+        private bool ServiceStartup ()
+        {
+            if (ServiceManager.SourceManager.MusicLibrary == null) {
+                return false;
+            }
+
+            InitializeSource ();
+
+            return true;
+        }
+
+        private void InitializeSource ()
+        {
+            ServiceManager.SourceManager.MusicLibrary.TracksAdded += OnTracksAdded;
+        }
+
         public void Dispose ()
         {
             ServiceManager.PlayerEngine.DisconnectEvent (OnPlayerEngineEventChanged);
@@ -104,18 +122,18 @@ namespace Banshee.Lyrics
             actions_service.UIManager.RemoveUi (ui_manager_id);
             lyrics_action_group = null;
 
-            /*if (job != null && job.State != JobState.Completed) {
-                job.Stop ();
+            if (job != null && job.State != JobState.Completed) {
+                ServiceManager.JobScheduler.Cancel (job);
             }
-            job = null;*/
+            job = null;
 
             this.window.Hide ();
         }
-        
+
         string IService.ServiceName {
             get { return "LyricsService"; }
         }
-        
+
         private void OnPlayerEngineEventChanged (PlayerEventArgs args)
         {
             if (args.Event == PlayerEvent.EndOfStream) {
@@ -133,7 +151,7 @@ namespace Banshee.Lyrics
             Thread t = new Thread (new ThreadStart (LyricsManager.Instance.GetLyrics));
             t.Start ();
         }
-        
+
         private void InstallInterfaceActions ()
         {
             InterfaceActionService action_service = ServiceManager.Get<InterfaceActionService> ();
@@ -167,6 +185,7 @@ namespace Banshee.Lyrics
             /*do not force all lyrics to be refreshed.*/
             FetchAllLyrics (false);
         }
+
         private void OnFetchLyrics (object o, EventArgs args)
         {
             /*do not force all lyrics to be refreshed.*/
@@ -197,6 +216,13 @@ namespace Banshee.Lyrics
                 window.Present ();
             } else {
                 window.Hide ();
+            }
+        }
+
+        private void OnSourceAdded (SourceAddedArgs args)
+        {
+            if (ServiceStartup ()) {
+                ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
             }
         }
     }

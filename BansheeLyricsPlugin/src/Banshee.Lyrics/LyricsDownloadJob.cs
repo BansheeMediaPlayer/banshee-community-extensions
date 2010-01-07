@@ -26,7 +26,7 @@ namespace Banshee.Lyrics
             PriorityHints = PriorityHints.LongRunning;
             IsBackground = true;
             CanCancel = true;
-            
+
             this.force_refresh = force_refresh;
         }
 
@@ -36,16 +36,12 @@ namespace Banshee.Lyrics
             OnFinished ();
         }
 
-        public void Stop ()
-        {
-            AbortThread ();
-        }
         private void FetchLyrics ()
         {
             PrimarySource music_library = ServiceManager.SourceManager.MusicLibrary;
             CachedList<DatabaseTrackInfo> list = CachedList<DatabaseTrackInfo>.CreateFromSourceModel (music_library.DatabaseTrackModel);
             foreach (DatabaseTrackInfo track_info in list) {
-                LyricsManager.Instance.GetLyrics (track_info.Artist.Name, track_info.TrackTitle, force_refresh);
+                LyricsManager.Instance.GetLyrics (track_info.Artist.Name, track_info.TrackTitle, this.force_refresh);
             }
         }
     }

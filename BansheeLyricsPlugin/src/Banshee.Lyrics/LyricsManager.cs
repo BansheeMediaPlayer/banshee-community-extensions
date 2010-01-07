@@ -127,7 +127,7 @@ namespace Banshee.Lyrics
         {
             cache.WriteLyric (artist, title, lyric.Replace ("\n", "<br>"));
         }
-
+        
         public string GetLyrics (string artist, string title, bool force)
         {
             if (artist == null || title == null) {
@@ -197,11 +197,12 @@ namespace Banshee.Lyrics
                     Log.Exception (e);
                     continue;
                 }
+
                 if (IsLyricOk (lyric)) {
                     return AttachFooter (lyric, source.Credits);
                 }
             }
-            
+
             return null;
         }
 
@@ -209,7 +210,7 @@ namespace Banshee.Lyrics
         {
             //Obtain suggestions from Lyrc
             ILyricSource lyrc_server = sourceList[0];
-            
+
             string suggestions = lyrc_server.GetSuggestions (artist, title);
             return AttachFooter (suggestions, sourceList[0].Credits);
         }
