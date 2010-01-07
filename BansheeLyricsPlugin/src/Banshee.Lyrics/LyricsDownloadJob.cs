@@ -41,7 +41,7 @@ namespace Banshee.Lyrics
             PrimarySource music_library = ServiceManager.SourceManager.MusicLibrary;
             CachedList<DatabaseTrackInfo> list = CachedList<DatabaseTrackInfo>.CreateFromSourceModel (music_library.DatabaseTrackModel);
             foreach (DatabaseTrackInfo track_info in list) {
-                LyricsManager.Instance.GetLyrics (track_info.Artist.Name, track_info.TrackTitle, this.force_refresh);
+                LyricsManager.Instance.DownloadLyrics (track_info.Artist.Name, track_info.TrackTitle, this.force_refresh);
             }
         }
     }

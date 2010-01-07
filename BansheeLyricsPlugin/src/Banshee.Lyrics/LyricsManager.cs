@@ -84,18 +84,21 @@ namespace Banshee.Lyrics
             get { return instance; }
         }
 
+         /*
+         * Refresh the lyrics for the current track
+         */
         public void RefreshLyrics ()
         {
             string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
             string song_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
             cache.DeleteLyric (artist, song_title);
-            GetLyrics ();
+            FetchLyrics ();
         }
 
-        /**
+        /*
          * Get the lyrics for the current track
          */
-        public void GetLyrics ()
+        public void FetchLyrics ()
         {
             LoadStarted (this, null);
 
@@ -105,8 +108,9 @@ namespace Banshee.Lyrics
             string lyric = null;
             string error = null;
             string suggestion = null;
+
             try {
-                lyric = GetLyrics (artist, song_title);
+                lyric = DownloadLyrics (artist, song_title, false);
                 
                 if (lyric == null) {
                     suggestion = GetSuggestions (artist, song_title);
@@ -128,12 +132,12 @@ namespace Banshee.Lyrics
             cache.WriteLyric (artist, title, lyric.Replace ("\n", "<br>"));
         }
         
-        public string GetLyrics (string artist, string title, bool force)
+        public string DownloadLyrics (string artist, string title, bool force)
         {
             if (artist == null || title == null) {
                 return null;
             }
-            
+
             //check if the lyric is in cache (if force = true force a new fetch of the lyrics)
             if (!force && cache.IsInCache (artist, title)) {
                 return cache.ReadLyric (artist, title);
@@ -145,19 +149,24 @@ namespace Banshee.Lyrics
             }
             
             //download the lyrics
-            string lyric = DownloadLyrics (artist, title);
-            
-            //write Lyrics in cache if possible
-            if (lyric != null) {
-                cache.WriteLyric (artist, title, lyric);
-            }
-            
-            return lyric;
-        }
+            string lyric = null;
+            foreach (ILyricSource source in sourceList) {
+                try {
+                    lyric = source.GetLyrics (artist, title);
+                } catch (Exception e) {
+                    Log.Exception (e);
+                    continue;
+                }
 
-        public string GetLyrics (string artist, string title)
-        {
-            return GetLyrics (artist, title, false);
+                //write Lyrics in cache if ok
+                if (IsLyricOk (lyric)) {
+                    lyric = AttachFooter (lyric, source.Credits);
+                    cache.WriteLyric (artist, title, lyric);
+                    break;
+                }
+            }
+
+            return lyric;
         }
 
         public void GetLyricsFromLyrc (string url)
@@ -183,27 +192,8 @@ namespace Banshee.Lyrics
                 cache.WriteLyric (artist, song_title, lyric);
             }
 
-            /*launch a lyric changed event to notify widgets */
+            /*launch a load finished event to notify observers */
             LoadFinished (this, new LoadFinishedEventArgs (lyric, null, null));
-        }
-
-        private string DownloadLyrics (string artist, string title)
-        {
-            foreach (ILyricSource source in sourceList) {
-                string lyric;
-                try {
-                    lyric = source.GetLyrics (artist, title);
-                } catch (Exception e) {
-                    Log.Exception (e);
-                    continue;
-                }
-
-                if (IsLyricOk (lyric)) {
-                    return AttachFooter (lyric, source.Credits);
-                }
-            }
-
-            return null;
         }
 
         private string GetSuggestions (string artist, string title)
@@ -235,7 +225,6 @@ namespace Banshee.Lyrics
             if (lyric == null) {
                 return null;
             }
-            Log.Debug (credits);
             return string.Format ("{0} <br><br> <i>{1}</i>", lyric, credits);
         }
     }

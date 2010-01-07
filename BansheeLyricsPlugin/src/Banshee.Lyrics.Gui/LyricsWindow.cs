@@ -85,7 +85,7 @@ namespace Banshee.Lyrics.Gui
             }
             window_title += by_str + artist;
             this.Title = window_title;
-            
+
         }
 
         public void OnPlayerEngineEventChanged (PlayerEventArgs args)
@@ -150,18 +150,18 @@ namespace Banshee.Lyrics.Gui
             } else {
                 this.buttonSave.Show ();
                 this.buttonRefresh.Hide ();
-                
+
                 this.lyricsScrollPane.Add (this.textBrowser);
                 this.textBrowser.Buffer.Text = "";
                 this.textBrowser.GrabFocus ();
-                
+
                 this.saved_artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
                 this.saved_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
             }
-            
+
             this.lyricsScrollPane.ResizeChildren ();
             this.lyricsScrollPane.ShowAll ();
-            
+
             current_mode = mode;
         }
 
@@ -169,7 +169,7 @@ namespace Banshee.Lyrics.Gui
         {
             string lyric = this.textBrowser.Buffer.Text;
             LyricsManager.Instance.WriteLyric (saved_artist, saved_title, lyric);
-            
+
             lyricsBrowser.LoadString (lyric);
             this.SwitchTo (HTML_MODE);
         }

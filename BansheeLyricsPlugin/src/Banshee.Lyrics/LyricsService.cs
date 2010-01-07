@@ -84,7 +84,7 @@ namespace Banshee.Lyrics
 
             /*get the lyric of the current played song and update the window */
             if (ServiceManager.PlayerEngine.CurrentTrack != null) {
-                Thread t = new Thread (new ThreadStart (LyricsManager.Instance.GetLyrics));
+                Thread t = new Thread (new ThreadStart (LyricsManager.Instance.FetchLyrics));
                 t.Start ();
                 return;
             }
@@ -123,6 +123,7 @@ namespace Banshee.Lyrics
             lyrics_action_group = null;
 
             if (job != null && job.State != JobState.Completed) {
+                Console.WriteLine ("morete");
                 ServiceManager.JobScheduler.Cancel (job);
             }
             job = null;
@@ -148,7 +149,7 @@ namespace Banshee.Lyrics
             lyrics_action_group.GetAction ("ShowLyricsAction").Sensitive = true;
 
             //Get the lyrics for the current track
-            Thread t = new Thread (new ThreadStart (LyricsManager.Instance.GetLyrics));
+            Thread t = new Thread (new ThreadStart (LyricsManager.Instance.FetchLyrics));
             t.Start ();
         }
 

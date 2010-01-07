@@ -39,10 +39,14 @@ namespace Banshee.Lyrics.Gui
         private Gtk.ScrolledWindow scrollPane;
 
         private string last_track_name;
-        public void SetTrackName (String track_name)
+        private string last_artist_name;
+
+        public void SetTrackName (string artist_name, string track_name)
         {
-            if (!String.IsNullOrEmpty (track_name) && track_name != last_track_name) {
+            if (!String.IsNullOrEmpty (track_name) && track_name != last_track_name || 
+                (!String.IsNullOrEmpty (last_artist_name) && artist_name != last_artist_name))  {
                 last_track_name = track_name;
+                last_artist_name = track_name;
                 label.Text = "<b>" + last_track_name + Catalog.GetString(" lyric") + "</b>";
                 label.UseMarkup = true;
             }
