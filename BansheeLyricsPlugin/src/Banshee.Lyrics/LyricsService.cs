@@ -116,15 +116,13 @@ namespace Banshee.Lyrics
 
             ServiceManager.SourceManager.MusicLibrary.TracksAdded -= OnTracksAdded;
 
+            if (job != null) {
+                ServiceManager.JobScheduler.Cancel (job);
+            }
             InterfaceActionService actions_service = ServiceManager.Get<InterfaceActionService> ();
             actions_service.RemoveActionGroup (lyrics_action_group);
             actions_service.UIManager.RemoveUi (ui_manager_id);
             lyrics_action_group = null;
-
-            if (job != null && job.State != JobState.Completed) {
-                ServiceManager.JobScheduler.Cancel (job);
-            }
-            job = null;
 
             this.window.Hide ();
         }
@@ -149,7 +147,7 @@ namespace Banshee.Lyrics
         private void InstallInterfaceActions ()
         {
             InterfaceActionService action_service = ServiceManager.Get<InterfaceActionService> ();
-            
+
             lyrics_action_group = new ActionGroup ("Lyrics");
 
             lyrics_action_group.Add (new ActionEntry[] {
@@ -168,9 +166,9 @@ namespace Banshee.Lyrics
 
             lyrics_action_group.GetAction ("ShowLyricsAction").Activated += OnToggleWindow;
             lyrics_action_group.GetAction ("ShowLyricsAction").Sensitive = ServiceManager.PlayerEngine.CurrentTrack != null ? true : false;
-            
+
             action_service.AddActionGroup (lyrics_action_group);
-            
+
             ui_manager_id = action_service.UIManager.AddUiFromResource ("LyricsMenu.xml");
         }
 
@@ -188,12 +186,16 @@ namespace Banshee.Lyrics
 
         private void FetchAllLyrics (bool force_refresh)
         {
-            /*check if the netowrk is up */            
+            /*check that there is no job and the netowrk is up */
             if (job != null || !ServiceManager.Get<Banshee.Networking.Network> ().Connected) {
                 return;
             }
-            
+
             job = new LyricsDownloadJob (force_refresh);
+            job.CancelRequested +=delegate {
+                job.Stop();
+                job = null;
+            };
             job.Finished += delegate {
                 job = null;
             };

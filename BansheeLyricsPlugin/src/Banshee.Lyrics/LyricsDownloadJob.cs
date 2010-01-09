@@ -26,6 +26,7 @@ namespace Banshee.Lyrics
             PriorityHints = PriorityHints.LongRunning;
             IsBackground = true;
             CanCancel = true;
+            DelayShow = true;
 
             this.force_refresh = force_refresh;
         }
@@ -43,6 +44,12 @@ namespace Banshee.Lyrics
             foreach (DatabaseTrackInfo track_info in list) {
                 LyricsManager.Instance.DownloadLyrics (track_info.Artist.Name, track_info.TrackTitle, this.force_refresh);
             }
+        }
+
+        public void Stop ()
+        {
+            OnFinished ();
+            AbortThread ();
         }
     }
 }
