@@ -84,47 +84,48 @@ namespace Banshee.Lyrics
             get { return instance; }
         }
 
+
          /*
          * Refresh the lyrics for the current track
          */
-        public void RefreshLyrics ()
+        public void RefreshLyrics (string artist, string track_title)
         {
-            string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
-            string song_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
-            cache.DeleteLyric (artist, song_title);
-            FetchLyrics ();
+            cache.DeleteLyric (ServiceManager.PlayerEngine.CurrentTrack.ArtistName,
+                ServiceManager.PlayerEngine.CurrentTrack.TrackTitle);
+
+            FetchLyrics (artist,track_title);
         }
 
         /*
          * Get the lyrics for the current track
          */
-        public void FetchLyrics ()
+        public void FetchLyrics (string artist, string track_title)
         {
-            LoadStarted (this, null);
-
-            string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
-            string song_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
-
             string lyric = null;
             string error = null;
             string suggestion = null;
 
-            try {
-                lyric = DownloadLyrics (artist, song_title, false);
-                
-                if (lyric == null) {
-                    suggestion = GetSuggestions (artist, song_title);
+            LoadStarted (null, null);
+
+            Banshee.Base.ThreadAssist.SpawnFromMain (delegate {
+                try {
+                    lyric = DownloadLyrics (artist, track_title, false);
+
+                    if (lyric == null) {
+                        suggestion = GetSuggestions (artist, track_title);
+                    }
+
+                    if (LyricOutOfDate (artist, track_title)) {
+                        return;
+                    }
+                } catch (Exception e) {
+                    Hyena.Log.DebugException (e);
+                    error = e.Message;
                 }
 
-                if (LyricOutOfDate (artist, song_title)) {
-                    return;
-                }
-            } catch (Exception e) {
-                Hyena.Log.DebugException (e);
-                error = e.Message;
-            }
-
-            LoadFinished (this, new LoadFinishedEventArgs (lyric, suggestion, error));
+                Banshee.Base.ThreadAssist.ProxyToMain (delegate { 
+                    LoadFinished (this, new LoadFinishedEventArgs (lyric, suggestion, error)); });
+            });
         }
 
         public void WriteLyric (string artist, string title, string lyric)
@@ -177,7 +178,7 @@ namespace Banshee.Lyrics
 
             LoadStarted (this, null);
 
-            /*obtain the lyrc absolute url */
+            /*obtain absolute url for the lyric */
             Lyrc lyrc_server = (Lyrc) sourceList[0];
             if (!url.Contains (lyrc_server.Url)) {
                 url = lyrc_server.Url + "/" + url;
@@ -188,11 +189,10 @@ namespace Banshee.Lyrics
             if ( IsLyricOk (lyric)) {
                 lyric = AttachFooter (lyric, lyrc_server.Credits);
                 string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
-                string song_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
-                cache.WriteLyric (artist, song_title, lyric);
+                string track_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
+                cache.WriteLyric (artist, track_title, lyric);
             }
 
-            /*launch a load finished event to notify observers */
             LoadFinished (this, new LoadFinishedEventArgs (lyric, null, null));
         }
 

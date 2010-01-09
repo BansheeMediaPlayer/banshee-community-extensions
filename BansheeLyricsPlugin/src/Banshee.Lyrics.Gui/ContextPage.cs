@@ -48,20 +48,20 @@ namespace Banshee.Lyrics.Gui
             IconNames = new string[] { "preferences-desktop-font" , "gtk-edit" };
         }
 
+        internal void SetState (ContextState state)
+        {
+            State = state;
+        }
+
         public override void SetTrack (Banshee.Collection.TrackInfo track)
         {
-            lyric_pane.SetTrackName(track.ArtistName, track.TrackTitle);
+            lyric_pane.TrackArtist = track.ArtistName;
+            lyric_pane.TrackTitle = track.TrackTitle;
+            
         }
-        
+
         public override Widget Widget {
-            get {
-                if (lyric_pane == null) {
-                    lyric_pane = new LyricPane();
-					LyricsManager.Instance.LoadStarted += delegate { State = ContextState.Loading; };
-                    LyricsManager.Instance.LoadFinished += delegate { State = ContextState.Loaded; };
-                }
-                return lyric_pane;
-            }
+            get { return lyric_pane ?? (lyric_pane = new LyricPane (this)); }
         }
     }
 }

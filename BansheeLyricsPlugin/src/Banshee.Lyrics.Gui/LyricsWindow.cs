@@ -62,12 +62,14 @@ namespace Banshee.Lyrics.Gui
                 OnClose (this, null);
                 args.RetVal = true;
             };
-            
+
             this.buttonRefresh.Clicked += new EventHandler (OnRefresh);
             this.buttonSave.Clicked += new EventHandler (OnSaveLyric);
             this.buttonClose.Clicked += new EventHandler (OnClose);
-            
+
             this.lyricsBrowser.AddLinkClicked += ManuallyAddLyric;
+            LyricsManager.Instance.LoadStarted += this.lyricsBrowser.OnLoading;
+            LyricsManager.Instance.LoadFinished += this.lyricsBrowser.LoadString;
             this.SwitchTo (HTML_MODE);
         }
 
@@ -76,7 +78,7 @@ namespace Banshee.Lyrics.Gui
             if (ServiceManager.PlayerEngine.CurrentTrack == null) {
                 return;
             }
-            
+
             string window_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
             string by_str = " " + Catalog.GetString ("by") + " ";
             string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;

@@ -41,8 +41,6 @@ namespace Banshee.Lyrics.Gui
     {
         public event AddLinkClickedHandler AddLinkClicked;
 
-        private string browser_str;
-
         private bool insert_mode_available = true;
         
         public bool InsertModeAvailable {
@@ -50,12 +48,6 @@ namespace Banshee.Lyrics.Gui
             set { insert_mode_available = value; }
         }
 
-        public LyricsBrowser ()
-        {
-            LyricsManager.Instance.LoadStarted += OnLoadingLyric;
-            LyricsManager.Instance.LoadFinished += OnLyricChanged;
-        }
-        
         private bool IsValidUri (string uri)
         {
             if (uri == null || uri.Equals ("about:blank")) {
@@ -79,8 +71,8 @@ namespace Banshee.Lyrics.Gui
 
         public void OnRefresh ()
         {
-            Thread t = new Thread (new ThreadStart (LyricsManager.Instance.RefreshLyrics));
-            t.Start ();
+            LyricsManager.Instance.RefreshLyrics (ServiceManager.PlayerEngine.CurrentTrack.ArtistName,
+                ServiceManager.PlayerEngine.CurrentTrack.TrackTitle);
         }
 
         protected override void OnPopulatePopup (Menu menu)
@@ -109,19 +101,21 @@ namespace Banshee.Lyrics.Gui
             menu.ShowAll ();
         }
 
-        public void OnLyricChanged (object o, LoadFinishedEventArgs args)
+        public void LoadString (object o, LoadFinishedEventArgs args)
         {
+            String browser_str;
+
             if (args.error != null) {
-                this.browser_str = args.error;
+                browser_str = args.error;
             } else if (args.suggestion != null) {
-                this.browser_str = GetSuggestionString (args.suggestion);
+                browser_str = GetSuggestionString (args.suggestion);
             } else if (args.lyric != null) {
-                this.browser_str = args.lyric;
+                browser_str = args.lyric;
             } else {
-                this.browser_str = Catalog.GetString ("No lyric found.");
+                browser_str = Catalog.GetString ("No lyric found.");
             }
-            
-            Gtk.Application.Invoke (LoadString);
+
+            LoadString (browser_str);
         }
 
         private string GetSuggestionString (string lyric_suggestion)
@@ -139,17 +133,11 @@ namespace Banshee.Lyrics.Gui
             return sb.ToString ();
         }
 
-        private void OnLoadingLyric (object o, EventArgs args)
+        public void OnLoading (object o, EventArgs args)
         {
-            this.browser_str = "<div style=\"valign:center;float:middle;font-weight:bold;font-size:13px\">" + Catalog.GetString ("Loading...") + "</div>";
-            Gtk.Application.Invoke (LoadString);
-        }
-
-        /*prevent multi threading problems */
-        private void LoadString (object o, EventArgs args)
-        {
-            this.browser_str = this.browser_str == null ? "" : this.browser_str;
-            LoadString (browser_str);
+            Banshee.Base.ThreadAssist.AssertInMainThread ();
+            String str = "<div style=\"valign:center;float:middle;font-weight:bold;font-size:13px\">" + Catalog.GetString ("Loading...") + "</div>";
+            LoadString(str);
         }
 
         public void LoadString (string str)
@@ -158,7 +146,7 @@ namespace Banshee.Lyrics.Gui
                 str = " ";
             }
             str = "<div style=\"margin-left:5px;font-size:12px\">" +  str + "</div>";
-            this.LoadHtmlString (str, null);
+            this.LoadHtmlString (str, "");
         }
     }
 }

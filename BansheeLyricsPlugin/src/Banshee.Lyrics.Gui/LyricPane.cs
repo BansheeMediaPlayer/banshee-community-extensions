@@ -30,51 +30,85 @@ using System;
 
 using Mono.Unix;
 
+using Banshee.ContextPane;
+
 namespace Banshee.Lyrics.Gui
 {
     public class LyricPane : VBox
     {
         private Gtk.Label label;
-        private LyricsBrowser browser;
+        public LyricsBrowser browser;
         private Gtk.ScrolledWindow scrollPane;
 
-        private string last_track_name;
-        private string last_artist_name;
+        private ContextPage context_page;
 
-        public void SetTrackName (string artist_name, string track_name)
+        private string track_title;
+        private string track_artist;
+
+        public LyricPane (ContextPage context_page)
         {
-            if (!String.IsNullOrEmpty (track_name) && track_name != last_track_name || 
-                (!String.IsNullOrEmpty (last_artist_name) && artist_name != last_artist_name))  {
-                last_track_name = track_name;
-                last_artist_name = track_name;
-                label.Text = "<b>" + last_track_name + Catalog.GetString(" lyric") + "</b>";
-                label.UseMarkup = true;
-            }
-            
+            this.context_page = context_page;
+            InitComponents ();
+        }
+
+        public string TrackArtist {
+            get { return track_artist; }
+            set {track_artist = value; }
         }
         
-        public LyricPane ()
+        public string TrackTitle {
+            get { return track_title; }
+            set { track_title = value; UpdateLabel ();}
+        }
+
+        
+        public void InitComponents ()
         {
             this.browser = new LyricsBrowser ();
-            this.browser.InsertModeAvailable = false;
-            
+            LyricsManager.Instance.LoadStarted += this.OnLoadStarted;
+            LyricsManager.Instance.LoadFinished += this.OnLoadFinished;
+
+            browser.InsertModeAvailable = false;
             label = new Label ();
             label.Xalign = 0;
-            
+
             Gtk.Alignment label_align = new Gtk.Alignment (0, 0, 0, 0);
             label_align.TopPadding = 5;
             label_align.LeftPadding = 10;
             label_align.Add (label);
-            
+
             this.scrollPane = new Gtk.ScrolledWindow ();
             this.scrollPane.HscrollbarPolicy = ((Gtk.PolicyType)(2));
             this.scrollPane.ShadowType = Gtk.ShadowType.None;
             this.scrollPane.Add (this.browser);
-            
+
             PackStart (label_align, false, true, 0);
             PackStart (this.scrollPane, true, true, 0);
-            
-            this.ShowAll();
+
+            this.ShowAll ();
+        }
+
+        private void OnLoadStarted (object o, EventArgs args)
+        {
+            context_page.SetState (Banshee.ContextPane.ContextState.Loading);
+        }
+
+        private void OnLoadFinished (object o, LoadFinishedEventArgs args)
+        {
+            this.browser.LoadString (o, args);
+
+            UpdateLabel ();
+
+            context_page.SetState (Banshee.ContextPane.ContextState.Loaded);
+        }
+        
+        private void UpdateLabel ()
+        {
+            if (!string.IsNullOrEmpty (track_title)) {
+                label.Text = "<b>" + track_title + Catalog.GetString (" lyric") + "</b>";
+                label.UseMarkup = true;
+            }
+            this.ShowAll ();
         }
     }
 }

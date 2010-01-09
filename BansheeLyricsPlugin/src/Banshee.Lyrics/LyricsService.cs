@@ -82,15 +82,14 @@ namespace Banshee.Lyrics
                 Directory.CreateDirectory (lyrics_dir);
             }
 
+            if (!ServiceStartup ()) {
+                ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
+            }
+            
             /*get the lyric of the current played song and update the window */
             if (ServiceManager.PlayerEngine.CurrentTrack != null) {
-                Thread t = new Thread (new ThreadStart (LyricsManager.Instance.FetchLyrics));
-                t.Start ();
-                return;
-            }
-
-            if(!ServiceStartup()) {
-                ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
+                LyricsManager.Instance.FetchLyrics (ServiceManager.PlayerEngine.CurrentTrack.ArtistName, 
+                    ServiceManager.PlayerEngine.CurrentTrack.TrackTitle);
             }
         }
 
@@ -123,7 +122,6 @@ namespace Banshee.Lyrics
             lyrics_action_group = null;
 
             if (job != null && job.State != JobState.Completed) {
-                Console.WriteLine ("morete");
                 ServiceManager.JobScheduler.Cancel (job);
             }
             job = null;
@@ -141,16 +139,11 @@ namespace Banshee.Lyrics
                 lyrics_action_group.GetAction ("ShowLyricsAction").Sensitive = false;
                 return;
             }
-            /*
-            if (args.Event != PlayerEvent.StartOfStream && args.Event != PlayerEvent.TrackInfoUpdated) {
-                return;
-            }*/
 
             lyrics_action_group.GetAction ("ShowLyricsAction").Sensitive = true;
 
-            //Get the lyrics for the current track
-            Thread t = new Thread (new ThreadStart (LyricsManager.Instance.FetchLyrics));
-            t.Start ();
+            LyricsManager.Instance.FetchLyrics (ServiceManager.PlayerEngine.CurrentTrack.ArtistName, 
+                    ServiceManager.PlayerEngine.CurrentTrack.TrackTitle);
         }
 
         private void InstallInterfaceActions ()
@@ -189,7 +182,7 @@ namespace Banshee.Lyrics
 
         private void OnFetchLyrics (object o, EventArgs args)
         {
-            /*do not force all lyrics to be refreshed.*/
+            /*force all lyrics to be refreshed.*/
             FetchAllLyrics (true);
         }
 
