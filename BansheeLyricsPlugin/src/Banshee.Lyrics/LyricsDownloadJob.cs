@@ -3,53 +3,98 @@ using System;
 
 using Mono.Unix;
 
+using Banshee.Base;
 using Banshee.ServiceStack;
-
+using Banshee.Collection.Database;
+using Banshee.Sources;
 using Banshee.MediaEngine;
 
 using Hyena.Jobs;
 using Hyena;
-
-using Banshee.Collection.Database;
-
-using Banshee.Sources;
+using Hyena.Data.Sqlite;
 
 namespace Banshee.Lyrics
 {
-    public class LyricsDownloadJob : SimpleAsyncJob
+    public class LyricsDownloadJob : DbIteratorJob
     {
-        private bool force_refresh;
-
-        public LyricsDownloadJob (bool force_refresh)
+        public LyricsDownloadJob (bool force) : base(Catalog.GetString ("Downloading Lyrics"))
         {
-            Title = Catalog.GetString ("Downloading Lyrics");
             PriorityHints = PriorityHints.LongRunning;
             IsBackground = true;
             CanCancel = true;
             DelayShow = true;
+            SetResources (Resource.Database);
 
-            this.force_refresh = force_refresh;
-        }
-
-        protected override void Run ()
-        {
-            FetchLyrics ();
-            OnFinished ();
-        }
-
-        private void FetchLyrics ()
-        {
-            PrimarySource music_library = ServiceManager.SourceManager.MusicLibrary;
-            CachedList<DatabaseTrackInfo> list = CachedList<DatabaseTrackInfo>.CreateFromSourceModel (music_library.DatabaseTrackModel);
-            foreach (DatabaseTrackInfo track_info in list) {
-                LyricsManager.Instance.DownloadLyrics (track_info.Artist.Name, track_info.TrackTitle, this.force_refresh);
+            if (force) {
+                /*remove from Lyrics Downloads trakcs without lyrics */
+                ServiceManager.DbConnection.Execute (new HyenaSqliteCommand (@"
+                DELETE FROM LyricsDownloads WHERE Downloaded = 0"));
             }
+
+            SelectCommand = new HyenaSqliteCommand (@"
+                SELECT CoreTracks.TrackID, CoreArtists.Name, CoreTracks.Title, CoreTracks.Uri
+                    FROM CoreTracks, CoreArtists
+                    WHERE
+                        CoreTracks.PrimarySourceID = ? AND
+                        CoreTracks.ArtistID = CoreArtists.ArtistID AND
+                        CoreTracks.TrackID NOT IN (
+                            SELECT TrackID from LyricsDownloads)",
+            ServiceManager.SourceManager.MusicLibrary.DbId);
+
+            CountCommand = new HyenaSqliteCommand (@"
+                SELECT count(CoreTracks.TrackID)
+                    FROM CoreTracks
+                    WHERE
+                        CoreTracks.PrimarySourceID = ? AND
+                        CoreTracks.TrackID NOT IN (
+                            SELECT TrackID from LyricsDownloads)",
+            ServiceManager.SourceManager.MusicLibrary.DbId);
         }
 
-        public void Stop ()
+        protected override void IterateCore (HyenaDataReader reader)
+        {
+            var track = new LyricsTrackInfo() {
+                ArtistName = reader.Get<string> (1),
+                TrackTitle = reader.Get<string> (2),
+                PrimarySource = ServiceManager.SourceManager.MusicLibrary,
+                Uri = new SafeUri (reader.Get<string> (3)),
+                DbId = reader.Get<int> (0),
+            };
+
+            Status = String.Format (Catalog.GetString ("{0} - {1}"), track.ArtistName, track.TrackTitle);
+            FetchLyric (track);
+        }
+
+        public void Start ()
+        {
+            Register ();
+        }
+
+        private void FetchLyric (DatabaseTrackInfo track)
+        {
+            bool have_lyrics = false;
+
+            string lyric = LyricsManager.Instance.DownloadLyrics (track.ArtistName, track.TrackTitle);
+            if (lyric != null) {
+                have_lyrics = true;
+            }
+
+            ServiceManager.DbConnection.Execute (
+                "INSERT OR REPLACE INTO LyricsDownloads (TrackID, Downloaded) VALUES (?, ?)",
+                track.TrackId, have_lyrics);
+        }
+
+        protected override void OnCancelled ()
         {
             OnFinished ();
             AbortThread ();
+        }
+
+        private class LyricsTrackInfo : DatabaseTrackInfo
+        {
+            public int DbId {
+                set { TrackId = value; }
+            }
         }
     }
 }

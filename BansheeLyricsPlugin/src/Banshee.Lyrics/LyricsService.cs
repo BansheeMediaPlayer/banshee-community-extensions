@@ -65,6 +65,15 @@ namespace Banshee.Lyrics
 
         void IExtensionService.Initialize ()
         {
+            /* check if the lyrics download table exists */
+           if (!ServiceManager.DbConnection.TableExists ("LyricsDownloads")) {
+                ServiceManager.DbConnection.Execute (@"
+                    CREATE TABLE LyricsDownloads (
+                        TrackID     INTEGER UNIQUE,
+                        Downloaded  BOOLEAN
+                    )");
+            }
+
             ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEngineEventChanged,
                 PlayerEvent.StartOfStream |
                 PlayerEvent.EndOfStream |
@@ -184,23 +193,19 @@ namespace Banshee.Lyrics
             FetchAllLyrics (true);
         }
 
-        private void FetchAllLyrics (bool force_refresh)
+        private void FetchAllLyrics (bool force)
         {
             /*check that there is no job and the netowrk is up */
             if (job != null || !ServiceManager.Get<Banshee.Networking.Network> ().Connected) {
                 return;
             }
 
-            job = new LyricsDownloadJob (force_refresh);
-            job.CancelRequested +=delegate {
-                job.Stop();
-                job = null;
-            };
+            job = new LyricsDownloadJob (force);
             job.Finished += delegate {
                 job = null;
             };
 
-            ServiceManager.JobScheduler.Add (job);
+            job.Start ();
         }
 
         private void OnToggleWindow (object o, EventArgs args)

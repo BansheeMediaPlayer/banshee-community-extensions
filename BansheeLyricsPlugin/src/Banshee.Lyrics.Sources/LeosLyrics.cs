@@ -129,8 +129,11 @@ namespace Banshee.Lyrics.Sources
                 return null;
             }
             str = HttpUtility.UrlEncode (str);
-            string[]splitted_strings = str.Split ('+');
+            string[] splitted_strings = str.Split ('+');
             foreach (string substring in splitted_strings) {
+                if (substring.Length == 0) {
+                    continue;
+                }
                 char first_char = substring.ToCharArray ()[0];
                 string new_substring =
                     first_char.ToString ().ToUpper () + substring.Substring (1, substring.Length - 1);

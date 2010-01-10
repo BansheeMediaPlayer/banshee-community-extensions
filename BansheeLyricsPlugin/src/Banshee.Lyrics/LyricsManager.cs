@@ -109,7 +109,7 @@ namespace Banshee.Lyrics
 
             Banshee.Base.ThreadAssist.SpawnFromMain (delegate {
                 try {
-                    lyric = DownloadLyrics (artist, track_title, false);
+                    lyric = DownloadLyrics (artist, track_title);
 
                     if (lyric == null) {
                         suggestion = GetSuggestions (artist, track_title);
@@ -133,14 +133,14 @@ namespace Banshee.Lyrics
             cache.WriteLyric (artist, title, lyric.Replace ("\n", "<br>"));
         }
         
-        public string DownloadLyrics (string artist, string title, bool force)
+        public string DownloadLyrics (string artist, string title)
         {
             if (artist == null || title == null) {
                 return null;
             }
 
             //check if the lyric is in cache (if force = true force a new fetch of the lyrics)
-            if (!force && cache.IsInCache (artist, title)) {
+            if (cache.IsInCache (artist, title)) {
                 return cache.ReadLyric (artist, title);
             }
             
