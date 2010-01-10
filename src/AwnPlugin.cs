@@ -167,6 +167,7 @@ namespace Banshee.Awn
 					}
 					else
 					{
+						UnsetIcon();
 						Log.Debug("BansheeAwn - No Cover");
 					}
 
