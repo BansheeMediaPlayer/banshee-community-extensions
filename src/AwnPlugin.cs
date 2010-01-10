@@ -63,7 +63,7 @@ namespace Banshee.Awn
 	
     public class AwnService : Banshee.ServiceStack.IExtensionService, IDisposable
     {
-		string[] taskName = new string[] {"banshee", "banshee-1"};	
+		string[] taskName = new string[] {"banshee", Banshee.ServiceStack.Application.InternalName};	
 
 		private IAvantWindowNavigator awn;
             
@@ -75,8 +75,9 @@ namespace Banshee.Awn
 		{
 			try 
 			{
+				
 			
-				Log.Debug("BansheeAwn. Starting...");
+				Log.Debug("BansheeAwn. Starting..." + Banshee.ServiceStack.Application.ActiveClient.ClientId);
 
 				awn = NDesk.DBus.Bus.Session.GetObject<IAvantWindowNavigator> ("com.google.code.Awn",
                                                               new NDesk.DBus.ObjectPath ("/com/google/code/Awn"));
@@ -111,19 +112,19 @@ namespace Banshee.Awn
 			Log.Debug("BansheeAwn - " + args.Event.ToString());
             switch (args.Event)
 			{
-			case PlayerEvent.EndOfStream:
-			case PlayerEvent.StartOfStream:
-                UnsetIcon ();
-                SetIcon ();
-                break;
+			//case PlayerEvent.EndOfStream:
+				//    UnsetIcon ();
+            //    break;
+			//case PlayerEvent.StartOfStream:
+            //    SetIcon ();
+            //    break;
             case PlayerEvent.TrackInfoUpdated:
                 SetIcon ();
                 break;
 			case PlayerEvent.StateChange:
 				if (service != null) 
 				{
-					if (service.CurrentState != PlayerState.Playing &&
-					    service.CurrentState != PlayerState.Playing)
+					if (service.CurrentState != PlayerState.Playing)
 						UnsetIcon();
 					else 
 						SetIcon();
@@ -132,6 +133,22 @@ namespace Banshee.Awn
             default:
                 break;
             }
+        }
+        
+        /// <summary>
+        /// This was made as a workaround on new awn and banshee versions.
+        /// Guess that I need to discover window's XID cause taskname changes with music.
+        /// May only work in english gnome.
+        /// </summary>
+        private string PossibleTitle
+        {
+            get 
+			{
+				if (service == null || service.CurrentTrack == null)
+					return "Banshee Media Player";
+				else
+					return string.Format ("{0} by {1}", service.CurrentTrack.TrackTitle, service.CurrentTrack.ArtistName);
+			}
         }
 
 		private void SetIcon ()
@@ -145,6 +162,7 @@ namespace Banshee.Awn
 					{
 						for (int i =0; i < taskName.Length; i++)
 							awn.SetTaskIconByName (taskName[i], fileName);
+						awn.SetTaskIconByName (PossibleTitle, fileName);
 						Log.Debug("BansheeAwn - Setting cover: " + fileName);
 					}
 					else
@@ -201,7 +219,8 @@ namespace Banshee.Awn
             if (awn != null) {
  				for (int i =0; i < taskName.Length; i++)
 					awn.UnsetTaskIconByName (taskName[i]);
-            }
+				awn.UnsetTaskIconByName (this.PossibleTitle);
+           }
         }
 //       	private void UnsetTrackProgress ()
 //		{
