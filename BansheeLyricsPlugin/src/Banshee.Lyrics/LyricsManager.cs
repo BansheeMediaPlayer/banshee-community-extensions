@@ -206,7 +206,7 @@ namespace Banshee.Lyrics
         {
             //Obtain suggestions from Lyrc
             ILyricSource lyrc_server = sourceList[0];
-            
+
             string suggestions = lyrc_server.GetSuggestions (track.ArtistName, track.TrackTitle);
             return AttachFooter (suggestions, sourceList[0].Credits);
         }
