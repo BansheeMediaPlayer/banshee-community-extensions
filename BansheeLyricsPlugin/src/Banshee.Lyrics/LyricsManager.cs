@@ -129,8 +129,8 @@ namespace Banshee.Lyrics
                     error = e.Message;
                 }
 
-                Banshee.Base.ThreadAssist.ProxyToMain (delegate { 
-                    LoadFinished (this, new LoadFinishedEventArgs (lyric, suggestion, error)); });
+                Banshee.Base.ThreadAssist.ProxyToMain (delegate {
+                    LoadFinished (this, new LoadFinishedEventArgs (lyric, suggestion, error));});
             });
         }
 
