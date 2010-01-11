@@ -134,7 +134,6 @@ namespace Banshee.Lyrics.Gui
 
         public void OnLoading (object o, EventArgs args)
         {
-            Banshee.Base.ThreadAssist.AssertInMainThread ();
             String str = "<div style=\"valign:center;float:middle;font-weight:bold;font-size:13px\">" + Catalog.GetString ("Loading...") + "</div>";
             LoadString(str);
         }

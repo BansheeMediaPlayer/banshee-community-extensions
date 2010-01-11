@@ -171,7 +171,11 @@ namespace Banshee.Lyrics.Gui
             string lyric = this.textBrowser.Buffer.Text;
             LyricsManager.Instance.WriteLyric (saved_track, lyric);
 
-            lyricsBrowser.LoadString (lyric);
+            /*refresh all the views. Now the track is taken from the cache */
+            if (saved_track == ServiceManager.PlayerEngine.CurrentTrack) {
+                LyricsManager.Instance.FetchLyric (saved_track);
+            }
+
             this.SwitchTo (HTML_MODE);
         }
     }
