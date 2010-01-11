@@ -33,16 +33,16 @@ using Mono.Unix;
 using Gtk;
 using Gdk;
 
-using Banshee.ServiceStack;
-using Banshee.MediaEngine;
 using Banshee.Gui;
+using Banshee.Collection;
+using Banshee.MediaEngine;
+using Banshee.ServiceStack;
 
 namespace Banshee.Lyrics.Gui
 {
     public partial class LyricsWindow : Gtk.Window
     {
-        private string saved_artist;
-        private string saved_title;
+        private TrackInfo saved_track;
 
         private int current_mode;
 
@@ -157,8 +157,7 @@ namespace Banshee.Lyrics.Gui
                 this.textBrowser.Buffer.Text = "";
                 this.textBrowser.GrabFocus ();
 
-                this.saved_artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
-                this.saved_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
+                this.saved_track = ServiceManager.PlayerEngine.CurrentTrack;
             }
 
             this.lyricsScrollPane.ResizeChildren ();
@@ -170,7 +169,7 @@ namespace Banshee.Lyrics.Gui
         public void OnSaveLyric (object sender, EventArgs args)
         {
             string lyric = this.textBrowser.Buffer.Text;
-            LyricsManager.Instance.WriteLyric (saved_artist, saved_title, lyric);
+            LyricsManager.Instance.WriteLyric (saved_track, lyric);
 
             lyricsBrowser.LoadString (lyric);
             this.SwitchTo (HTML_MODE);

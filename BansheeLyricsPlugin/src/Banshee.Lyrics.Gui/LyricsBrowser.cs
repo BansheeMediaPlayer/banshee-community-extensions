@@ -64,15 +64,14 @@ namespace Banshee.Lyrics.Gui
             if (request.Uri == Catalog.GetString ("add")) {
                 AddLinkClicked (this, null);
             } else {
-                LyricsManager.Instance.GetLyricsFromLyrc (request.Uri);
+                LyricsManager.Instance.FetchLyricFromLyrc (request.Uri);
             }
             return 0;
         }
 
         public void OnRefresh ()
         {
-            LyricsManager.Instance.RefreshLyrics (ServiceManager.PlayerEngine.CurrentTrack.ArtistName,
-                ServiceManager.PlayerEngine.CurrentTrack.TrackTitle);
+            LyricsManager.Instance.RefreshLyric (ServiceManager.PlayerEngine.CurrentTrack);
         }
 
         protected override void OnPopulatePopup (Menu menu)

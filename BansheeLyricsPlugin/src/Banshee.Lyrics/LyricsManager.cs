@@ -64,9 +64,9 @@ namespace Banshee.Lyrics
         public event LoadFinishedEventHandler LoadFinished;
         public event LoadStartedEventHandler LoadStarted;
 
-        private List < ILyricSource > sourceList;       /*the sources for download lyrics */
+        private List < ILyricSource > sourceList;
 
-        private LyricsCache cache = new LyricsCache (); /*object to manage saved lyrics */
+        private LyricsCache cache = new LyricsCache ();
 
         private static LyricsManager instance = new LyricsManager ();
 
@@ -84,38 +84,44 @@ namespace Banshee.Lyrics
             get { return instance; }
         }
 
-
          /*
-         * Refresh the lyrics for the current track
+         * Refresh the lyric for the current track
          */
-        public void RefreshLyrics (string artist, string track_title)
+        public void RefreshLyric (TrackInfo track)
         {
-            cache.DeleteLyric (ServiceManager.PlayerEngine.CurrentTrack.ArtistName,
-                ServiceManager.PlayerEngine.CurrentTrack.TrackTitle);
+            cache.DeleteLyric (track);
 
-            FetchLyrics (artist,track_title);
+            FetchLyric (track);
         }
 
         /*
          * Get the lyrics for the current track
          */
-        public void FetchLyrics (string artist, string track_title)
+        public void FetchLyric (TrackInfo track)
         {
             string lyric = null;
             string error = null;
             string suggestion = null;
+            bool have_lyric = true;
 
             LoadStarted (null, null);
 
             Banshee.Base.ThreadAssist.SpawnFromMain (delegate {
                 try {
-                    lyric = DownloadLyrics (artist, track_title);
-
-                    if (lyric == null) {
-                        suggestion = GetSuggestions (artist, track_title);
+                    if (cache.IsInCache (track)) {
+                        lyric = cache.ReadLyric (track);
+                    } else {
+                        lyric = DownloadLyric (track);
                     }
 
-                    if (LyricOutOfDate (artist, track_title)) {
+                    if (lyric == null) {
+                        have_lyric = false;
+                        suggestion = GetSuggestions (track);
+                    }
+
+                    UpdateDB (track, have_lyric);
+
+                    if (LyricOutOfDate (track)) {
                         return;
                     }
                 } catch (Exception e) {
@@ -128,32 +134,27 @@ namespace Banshee.Lyrics
             });
         }
 
-        public void WriteLyric (string artist, string title, string lyric)
+        public void WriteLyric (TrackInfo track, string lyric)
         {
-            cache.WriteLyric (artist, title, lyric.Replace ("\n", "<br>"));
+            cache.WriteLyric (track, lyric.Replace ("\n", "<br>"));
         }
-        
-        public string DownloadLyrics (string artist, string title)
+
+        public string DownloadLyric (TrackInfo track)
         {
-            if (artist == null || title == null) {
+            if (track == null) {
                 return null;
             }
 
-            //check if the lyric is in cache (if force = true force a new fetch of the lyrics)
-            if (cache.IsInCache (artist, title)) {
-                return cache.ReadLyric (artist, title);
-            }
-            
             //check if the netowrk is up
             if (!ServiceManager.Get<Banshee.Networking.Network> ().Connected) {
                 throw new Exception ("You don't seem to be connected to internet.<br>Check your network connection.");
             }
-            
+
             //download the lyrics
             string lyric = null;
             foreach (ILyricSource source in sourceList) {
                 try {
-                    lyric = source.GetLyrics (artist, title);
+                    lyric = source.GetLyrics (track.ArtistName, track.TrackTitle);
                 } catch (Exception e) {
                     Log.Exception (e);
                     continue;
@@ -162,15 +163,22 @@ namespace Banshee.Lyrics
                 //write Lyrics in cache if ok
                 if (IsLyricOk (lyric)) {
                     lyric = AttachFooter (lyric, source.Credits);
-                    cache.WriteLyric (artist, title, lyric);
+                    cache.WriteLyric (track, lyric);
                     break;
                 }
             }
-
             return lyric;
         }
 
-        public void GetLyricsFromLyrc (string url)
+        private void UpdateDB (TrackInfo track, bool have_lyric) 
+        {
+            int track_id = ServiceManager.SourceManager.MusicLibrary.GetTrackIdForUri (track.Uri.AbsoluteUri);
+            ServiceManager.DbConnection.Execute (
+                        "INSERT OR REPLACE INTO LyricsDownloads (TrackID, Downloaded) VALUES (?, ?)",
+                        track_id, have_lyric);
+        }
+
+        public void FetchLyricFromLyrc (string url)
         {
             if (url == null) {
                 return;
@@ -188,20 +196,18 @@ namespace Banshee.Lyrics
             string lyric = lyrc_server.GetLyrics (url);
             if ( IsLyricOk (lyric)) {
                 lyric = AttachFooter (lyric, lyrc_server.Credits);
-                string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
-                string track_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
-                cache.WriteLyric (artist, track_title, lyric);
+                cache.WriteLyric (ServiceManager.PlayerEngine.CurrentTrack, lyric);
             }
 
             LoadFinished (this, new LoadFinishedEventArgs (lyric, null, null));
         }
 
-        private string GetSuggestions (string artist, string title)
+        private string GetSuggestions (TrackInfo track)
         {
             //Obtain suggestions from Lyrc
             ILyricSource lyrc_server = sourceList[0];
-
-            string suggestions = lyrc_server.GetSuggestions (artist, title);
+            
+            string suggestions = lyrc_server.GetSuggestions (track.ArtistName, track.TrackTitle);
             return AttachFooter (suggestions, sourceList[0].Credits);
         }
 
@@ -210,14 +216,14 @@ namespace Banshee.Lyrics
             return l != null && !l.Equals ("");
         }
 
-        private bool LyricOutOfDate (string artist, string title)
+        private bool LyricOutOfDate (TrackInfo track)
         {
-            if ( ServiceManager.PlayerEngine == null || ServiceManager.PlayerEngine.CurrentTrack == null ) {
+            if (ServiceManager.PlayerEngine == null || ServiceManager.PlayerEngine.CurrentTrack == null) {
                 return true;
             }
             string current_artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
             string current_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
-            return artist != current_artist || title != current_title;
+            return track.ArtistName != current_artist || track.TrackTitle != current_title;
         }
 
         private string AttachFooter (string lyric, string credits)

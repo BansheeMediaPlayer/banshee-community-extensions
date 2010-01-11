@@ -36,6 +36,7 @@ using Banshee.Gui;
 using Banshee.Sources;
 using Banshee.ServiceStack;
 using Banshee.MediaEngine;
+using Banshee.Collection;
 
 using Banshee.Lyrics.Gui;
 using Banshee.Lyrics.IO;
@@ -97,8 +98,7 @@ namespace Banshee.Lyrics
             
             /*get the lyric of the current played song and update the window */
             if (ServiceManager.PlayerEngine.CurrentTrack != null) {
-                LyricsManager.Instance.FetchLyrics (ServiceManager.PlayerEngine.CurrentTrack.ArtistName, 
-                    ServiceManager.PlayerEngine.CurrentTrack.TrackTitle);
+                FetchLyric(ServiceManager.PlayerEngine.CurrentTrack);
             }
         }
 
@@ -146,11 +146,14 @@ namespace Banshee.Lyrics
                 lyrics_action_group.GetAction ("ShowLyricsAction").Sensitive = false;
                 return;
             }
-
             lyrics_action_group.GetAction ("ShowLyricsAction").Sensitive = true;
 
-            LyricsManager.Instance.FetchLyrics (ServiceManager.PlayerEngine.CurrentTrack.ArtistName, 
-                    ServiceManager.PlayerEngine.CurrentTrack.TrackTitle);
+            FetchLyric (ServiceManager.PlayerEngine.CurrentTrack);
+        }
+
+        public void FetchLyric (TrackInfo current_track)
+        {
+            LyricsManager.Instance.FetchLyric (current_track);
         }
 
         private void InstallInterfaceActions ()

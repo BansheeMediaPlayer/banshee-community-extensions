@@ -28,6 +28,8 @@ using System;
 using System.Threading;
 using System.IO;
 
+using Banshee.Collection;
+
 namespace Banshee.Lyrics.IO
 {
     public class LyricsCache
@@ -44,9 +46,9 @@ namespace Banshee.Lyrics.IO
             return LyricsService.LyricsDir + artist + "_" + title + ".lyrics";
         }
 
-        public void DeleteLyric (string artist, string title)
+        public void DeleteLyric (TrackInfo track)
         {
-            string filename = GetLyricsFilename (artist, title);
+            string filename = GetLyricsFilename (track.ArtistName, track.TrackTitle);
             DeleteLyric (filename);
         }
 
@@ -62,9 +64,9 @@ namespace Banshee.Lyrics.IO
             }
         }
 
-        public string ReadLyric (string artist, string title)
+        public string ReadLyric (TrackInfo track)
         {
-            string filename = GetLyricsFilename (artist, title);
+            string filename = GetLyricsFilename (track.ArtistName, track.TrackTitle);
             return ReadLyric (filename);
         }
 
@@ -80,9 +82,9 @@ namespace Banshee.Lyrics.IO
             return null;
         }
 
-        public void WriteLyric (string artist, string title, string lyrics)
+        public void WriteLyric (TrackInfo track, string lyrics)
         {
-            string filename = GetLyricsFilename (artist, title);
+            string filename = GetLyricsFilename (track.ArtistName, track.TrackTitle);
             try {
                 /*delete the file if it exist */
                 if (File.Exists (filename)) {
@@ -102,9 +104,12 @@ namespace Banshee.Lyrics.IO
             return;
         }
 
-        public bool IsInCache (string artist, string title)
+        public bool IsInCache (TrackInfo track)
         {
-            string filename = GetLyricsFilename (artist, title);
+            if (track == null) {
+                return false;
+            }
+            string filename = GetLyricsFilename (track.ArtistName, track.TrackTitle);
             return  File.Exists (filename);
         }
     }
