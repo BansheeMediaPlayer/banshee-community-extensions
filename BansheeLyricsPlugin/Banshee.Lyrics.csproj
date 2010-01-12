@@ -70,6 +70,9 @@
     <Reference Include="Banshee.ThickClient, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-thickclient</Package>
     </Reference>
+    <Reference Include="taglib-sharp, Version=2.0.3.2, Culture=neutral, PublicKeyToken=db62eba44689b5b0">
+      <Package>taglib-sharp</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="src\Banshee.Lyrics.addin.xml" />
@@ -97,6 +100,7 @@
     <Compile Include="src\Banshee.Lyrics.Gui\ContextPage.cs" />
     <Compile Include="src\Banshee.Lyrics.Gui\LyricPane.cs" />
     <Compile Include="src\Banshee.Lyrics\LyricsDownloadJob.cs" />
+    <Compile Include="src\Banshee.Lyrics.IO\TagLibUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

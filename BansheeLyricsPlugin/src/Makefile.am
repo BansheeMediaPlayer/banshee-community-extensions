@@ -23,6 +23,7 @@ SOURCES = \
         Banshee.Lyrics.Gui/gtk-gui/generated.cs \
         Banshee.Lyrics.Gui/gtk-gui/LyricsWindow.cs \
         Banshee.Lyrics.IO/LyricsCache.cs \
+	Banshee.Lyrics.IO/TagLibUtils.cs \
         Banshee.Lyrics.Gui/LyricsBrowser.cs 
 RESOURCES = \
         Banshee.Lyrics.addin.xml \

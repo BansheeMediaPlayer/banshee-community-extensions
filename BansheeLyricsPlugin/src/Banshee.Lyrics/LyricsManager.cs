@@ -120,6 +120,7 @@ namespace Banshee.Lyrics
                     }
 
                     UpdateDB (track, have_lyric);
+                    TagLibUtils.SaveToID3 (track, lyric);
 
                     if (LyricOutOfDate (track)) {
                         return;
