@@ -80,7 +80,7 @@ namespace Banshee.Lyrics
                 return;
             }
 
-            LyricsManager.Instance.SaveLyric (track, lyric);
+            LyricsManager.Instance.SaveLyric (track, lyric, true);
         }
 
         protected override void OnCancelled ()

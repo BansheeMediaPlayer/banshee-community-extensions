@@ -88,7 +88,6 @@ namespace Banshee.Lyrics.Sources
             }
 			
             string lyric = textList.Item (0).InnerText;
-			lyric = Utils.TagLyric (lyric);
             return lyric;
         }
 

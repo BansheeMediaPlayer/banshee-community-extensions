@@ -75,9 +75,9 @@ namespace Banshee.Lyrics
         private LyricsManager () : base()
         {
             sourceList = new List<ILyricSource> ();
-            sourceList.Add (new Lyrc ());
-            sourceList.Add (new LeosLyrics ());
-            sourceList.Add (new Lyriki ());
+            //sourceList.Add (new Lyrc ());
+            //sourceList.Add (new LeosLyrics ());
+            //sourceList.Add (new Lyriki ());
             sourceList.Add (new AutoLyrics ());
             //sourceList.Add (new LyricWiki ());
         }
@@ -114,12 +114,11 @@ namespace Banshee.Lyrics
                         lyric = DownloadLyric (track);
                     }
 
-                    if (lyric == null) {
+                    if (IsLyricOk (lyric)) {
+                        Save (track, lyric);
+                    } else {
                         suggestion = GetSuggestions (track);
                     }
-
-                    /*save the lyric if needed */
-                    SaveLyric (track, lyric);
 
                     if (LyricOutOfDate (track)) {
                         return;
@@ -161,7 +160,7 @@ namespace Banshee.Lyrics
                 }
             }
 
-            return lyric;
+            return Utils.ToNormalString(lyric);
         }
 
         public void UpdateDB (TrackInfo track, string lyric) 
@@ -190,7 +189,7 @@ namespace Banshee.Lyrics
             string lyric = lyrc_server.GetLyrics (url);
             if ( IsLyricOk (lyric)) {
                 lyric = AttachFooter (lyric, lyrc_server.Credits);
-                cache.WriteLyric (ServiceManager.PlayerEngine.CurrentTrack, lyric);
+                Save(ServiceManager.PlayerEngine.CurrentTrack, lyric);
             }
 
             LoadFinished (this, new LoadFinishedEventArgs (lyric, null, null));
@@ -225,18 +224,29 @@ namespace Banshee.Lyrics
             if (lyric == null) {
                 return null;
             }
-            return string.Format ("{0} <br><br> <i>{1}</i>", lyric, credits);
+            return string.Format ("{0} \n {1}", lyric, credits);
         }
 
-        public void SaveLyric (TrackInfo track, string lyric)
+        public void SaveLyric (TrackInfo track, string lyric, bool rewrite)
         {
-            /*save lyrics in cache and in ID3 tags */
-            if (IsLyricOk (lyric)) {
-                if (!cache.IsInCache (track)) {
-                    cache.WriteLyric (track, lyric);
+            Banshee.Base.ThreadAssist.SpawnFromMain (delegate {
+                if (rewrite) {
+                    cache.DeleteLyric (track);
                 }
-                SaveToID3 (track, Utils.DeTagLyric (lyric));
+                Save (track, lyric);
+            });
+        }
+
+        private void Save (TrackInfo track, string lyric)
+        {
+            if (Utils.IsHtml(lyric)) {
+                lyric = Utils.ToNormalString(lyric);
             }
+
+            if (!cache.IsInCache (track)) {
+                cache.WriteLyric (track, lyric);
+            }
+            SaveToID3 (track, lyric);
 
             /*update the db */
             LyricsManager.Instance.UpdateDB (track, lyric);

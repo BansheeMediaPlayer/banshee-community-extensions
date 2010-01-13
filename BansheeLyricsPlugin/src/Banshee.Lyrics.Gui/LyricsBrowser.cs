@@ -109,7 +109,7 @@ namespace Banshee.Lyrics.Gui
             } else if (args.suggestion != null) {
                 browser_str = GetSuggestionString (args.suggestion);
             } else if (args.lyric != null) {
-                browser_str = args.lyric;
+                browser_str = Utils.ToHtml(args.lyric);
             } else {
                 browser_str = Catalog.GetString ("No lyric found.");
             }
