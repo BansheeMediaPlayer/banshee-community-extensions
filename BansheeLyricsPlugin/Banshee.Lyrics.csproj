@@ -100,7 +100,7 @@
     <Compile Include="src\Banshee.Lyrics.Gui\ContextPage.cs" />
     <Compile Include="src\Banshee.Lyrics.Gui\LyricPane.cs" />
     <Compile Include="src\Banshee.Lyrics\LyricsDownloadJob.cs" />
-    <Compile Include="src\Banshee.Lyrics.IO\TagLibUtils.cs" />
+    <Compile Include="src\Banshee.Lyrics\Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

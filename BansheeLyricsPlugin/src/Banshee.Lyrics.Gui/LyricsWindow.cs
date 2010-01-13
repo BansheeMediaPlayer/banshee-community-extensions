@@ -169,7 +169,7 @@ namespace Banshee.Lyrics.Gui
         public void OnSaveLyric (object sender, EventArgs args)
         {
             string lyric = this.textBrowser.Buffer.Text;
-            LyricsManager.Instance.WriteLyric (saved_track, lyric);
+            LyricsManager.Instance.SaveLyric (saved_track, lyric);
 
             /*refresh all the views. Now the track is taken from the cache */
             if (saved_track == ServiceManager.PlayerEngine.CurrentTrack) {

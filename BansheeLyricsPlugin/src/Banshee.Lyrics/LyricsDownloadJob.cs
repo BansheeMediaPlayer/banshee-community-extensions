@@ -72,8 +72,6 @@ namespace Banshee.Lyrics
 
         private void DownloadLyric (DatabaseTrackInfo track)
         {
-            bool have_lyric = false;
-
             string lyric = null;
             try {
                 lyric = LyricsManager.Instance.DownloadLyric (track);
@@ -81,14 +79,9 @@ namespace Banshee.Lyrics
                 Log.Exception (e);
                 return;
             }
-            
-            if (lyric != null) {
-                have_lyric = true;
-            }
 
-            ServiceManager.DbConnection.Execute (
-                "INSERT OR REPLACE INTO LyricsDownloads (TrackID, Downloaded) VALUES (?, ?)",
-                track.TrackId, have_lyric);
+            LyricsManager.Instance.SaveLyric (track, lyric);
+            LyricsManager.Instance.UpdateDB (track, lyric);
         }
 
         protected override void OnCancelled ()

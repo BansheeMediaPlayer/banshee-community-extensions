@@ -88,15 +88,10 @@ namespace Banshee.Lyrics.Sources
             }
 			
             string lyric = textList.Item (0).InnerText;
-			lyric = IndentLyric (lyric);
+			lyric = Utils.TagLyric (lyric);
             return lyric;
         }
-        
-		private string IndentLyric (string lyric) 
-        {
-			return lyric.Replace("\n","<br/>");
-		}
-		
+
         private string GetHid (string xml)
         {
             if (xml == null) {

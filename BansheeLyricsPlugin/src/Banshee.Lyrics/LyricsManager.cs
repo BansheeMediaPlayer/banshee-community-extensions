@@ -37,6 +37,8 @@ using Banshee.Collection;
 using Banshee.Lyrics.Sources;
 using Banshee.Lyrics.IO;
 using Banshee.Lyrics.Gui;
+using Banshee.Streaming;
+
 using Hyena;
 
 namespace Banshee.Lyrics
@@ -102,7 +104,6 @@ namespace Banshee.Lyrics
             string lyric = null;
             string error = null;
             string suggestion = null;
-            bool have_lyric = true;
 
             LoadStarted (null, null);
 
@@ -115,12 +116,14 @@ namespace Banshee.Lyrics
                     }
 
                     if (lyric == null) {
-                        have_lyric = false;
                         suggestion = GetSuggestions (track);
                     }
 
-                    UpdateDB (track, have_lyric);
-                    TagLibUtils.SaveToID3 (track, lyric);
+                    /*save the lyric if needed */
+                    SaveLyric (track, lyric);
+
+                    /*update the db */
+                    UpdateDB (track, lyric);
 
                     if (LyricOutOfDate (track)) {
                         return;
@@ -135,11 +138,6 @@ namespace Banshee.Lyrics
             });
         }
 
-        public void WriteLyric (TrackInfo track, string lyric)
-        {
-            cache.WriteLyric (track, lyric.Replace ("\n", "<br>"));
-        }
-
         public string DownloadLyric (TrackInfo track)
         {
             if (track == null) {
@@ -150,7 +148,7 @@ namespace Banshee.Lyrics
             if (!ServiceManager.Get<Banshee.Networking.Network> ().Connected) {
                 throw new Exception ("You don't seem to be connected to internet.<br>Check your network connection.");
             }
-
+            
             //download the lyrics
             string lyric = null;
             foreach (ILyricSource source in sourceList) {
@@ -161,22 +159,21 @@ namespace Banshee.Lyrics
                     continue;
                 }
 
-                //write Lyrics in cache if ok
                 if (IsLyricOk (lyric)) {
                     lyric = AttachFooter (lyric, source.Credits);
-                    cache.WriteLyric (track, lyric);
                     break;
                 }
             }
+
             return lyric;
         }
 
-        private void UpdateDB (TrackInfo track, bool have_lyric) 
+        public void UpdateDB (TrackInfo track, string lyric) 
         {
             int track_id = ServiceManager.SourceManager.MusicLibrary.GetTrackIdForUri (track.Uri.AbsoluteUri);
             ServiceManager.DbConnection.Execute (
                         "INSERT OR REPLACE INTO LyricsDownloads (TrackID, Downloaded) VALUES (?, ?)",
-                        track_id, have_lyric);
+                        track_id, IsLyricOk(lyric));
         }
 
         public void FetchLyricFromLyrc (string url)
@@ -233,6 +230,32 @@ namespace Banshee.Lyrics
                 return null;
             }
             return string.Format ("{0} <br><br> <i>{1}</i>", lyric, credits);
+        }
+
+        public void SaveLyric (TrackInfo track, string lyric)
+        {
+            //save lyrics in cache and in ID3 tags
+            if (IsLyricOk (lyric)) {
+                if (!cache.IsInCache (track)) {
+                    cache.WriteLyric (track, lyric);
+                }
+                SaveToID3 (track, Utils.DeTagLyric(lyric));
+            }
+        }
+
+        private void SaveToID3 (TrackInfo track, string lyric)
+        {
+            TagLib.File file = StreamTagger.ProcessUri (track.Uri);
+            if (file == null || file.Tag.Lyrics.Equals(lyric)) {
+                return;
+            }
+
+            file.Tag.Lyrics = lyric;
+            file.Save ();
+
+            track.FileSize = Banshee.IO.File.GetSize (track.Uri);
+            track.FileModifiedStamp = Banshee.IO.File.GetModifiedTime (track.Uri);
+            track.LastSyncedStamp = DateTime.Now;
         }
     }
 }
