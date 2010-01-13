@@ -92,7 +92,6 @@ namespace Banshee.Lyrics
         public void RefreshLyric (TrackInfo track)
         {
             cache.DeleteLyric (track);
-
             FetchLyric (track);
         }
 
@@ -231,14 +230,15 @@ namespace Banshee.Lyrics
 
         public void SaveLyric (TrackInfo track, string lyric)
         {
-            //save lyrics in cache and in ID3 tags
+            /*save lyrics in cache and in ID3 tags */
             if (IsLyricOk (lyric)) {
                 if (!cache.IsInCache (track)) {
                     cache.WriteLyric (track, lyric);
                 }
                 SaveToID3 (track, Utils.DeTagLyric (lyric));
             }
-            /*update the db*/
+
+            /*update the db */
             LyricsManager.Instance.UpdateDB (track, lyric);
         }
 

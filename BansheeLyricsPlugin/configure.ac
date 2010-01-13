@@ -1,4 +1,4 @@
-AC_INIT([BansheeLyricsPlugin], [0.8])
+AC_INIT([BansheeLyricsPlugin], [0.8.1])
 AC_CONFIG_SRCDIR([README])
 AC_CANONICAL_TARGET
 
