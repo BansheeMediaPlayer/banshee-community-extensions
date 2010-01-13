@@ -81,7 +81,6 @@ namespace Banshee.Lyrics
             }
 
             LyricsManager.Instance.SaveLyric (track, lyric);
-            LyricsManager.Instance.UpdateDB (track, lyric);
         }
 
         protected override void OnCancelled ()

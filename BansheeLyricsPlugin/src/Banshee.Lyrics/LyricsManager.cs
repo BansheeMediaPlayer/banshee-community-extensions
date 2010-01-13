@@ -122,9 +122,6 @@ namespace Banshee.Lyrics
                     /*save the lyric if needed */
                     SaveLyric (track, lyric);
 
-                    /*update the db */
-                    UpdateDB (track, lyric);
-
                     if (LyricOutOfDate (track)) {
                         return;
                     }
@@ -239,14 +236,16 @@ namespace Banshee.Lyrics
                 if (!cache.IsInCache (track)) {
                     cache.WriteLyric (track, lyric);
                 }
-                SaveToID3 (track, Utils.DeTagLyric(lyric));
+                SaveToID3 (track, Utils.DeTagLyric (lyric));
             }
+            /*update the db*/
+            LyricsManager.Instance.UpdateDB (track, lyric);
         }
 
         private void SaveToID3 (TrackInfo track, string lyric)
         {
             TagLib.File file = StreamTagger.ProcessUri (track.Uri);
-            if (file == null || file.Tag.Lyrics.Equals(lyric)) {
+            if (file == null || lyric.Equals(file.Tag.Lyrics)) {
                 return;
             }
 
