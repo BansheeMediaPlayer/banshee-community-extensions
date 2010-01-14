@@ -33,7 +33,7 @@ namespace Banshee.Lyrics
             l = Regex.Replace(l, @"<(.|\n)*?>", string.Empty);
             l = Regex.Replace(l, @"\n\s*\n", "\n");
             l = Regex.Replace(l, "[\r\t]", String.Empty);
-            return Regex.Replace(l, "[\n]+"," \n");
+            return l;
         }
     }
 }
