@@ -75,11 +75,11 @@ namespace Banshee.Lyrics
         private LyricsManager () : base()
         {
             sourceList = new List<ILyricSource> ();
-            //sourceList.Add (new Lyrc ());
-            //sourceList.Add (new LeosLyrics ());
-            //sourceList.Add (new Lyriki ());
+            sourceList.Add (new Lyrc ());
+            sourceList.Add (new LeosLyrics ());
+            sourceList.Add (new Lyriki ());
             sourceList.Add (new AutoLyrics ());
-            //sourceList.Add (new LyricWiki ());
+            sourceList.Add (new LyricWiki ());
         }
 
         internal static LyricsManager Instance {
@@ -153,14 +153,14 @@ namespace Banshee.Lyrics
                     Log.Exception (e);
                     continue;
                 }
-
+                
                 if (IsLyricOk (lyric)) {
-                    lyric = AttachFooter (lyric, source.Credits);
+                    lyric = AttachFooter (Utils.ToNormalString(lyric), source.Credits);
                     break;
                 }
             }
 
-            return Utils.ToNormalString(lyric);
+            return lyric;
         }
 
         public void UpdateDB (TrackInfo track, string lyric) 
@@ -224,7 +224,7 @@ namespace Banshee.Lyrics
             if (lyric == null) {
                 return null;
             }
-            return string.Format ("{0} \n {1}", lyric, credits);
+            return string.Format ("{0} \n\n {1}", lyric, credits);
         }
 
         public void SaveLyric (TrackInfo track, string lyric, bool rewrite)

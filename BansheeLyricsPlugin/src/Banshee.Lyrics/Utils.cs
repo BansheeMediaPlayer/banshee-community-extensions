@@ -31,10 +31,11 @@ namespace Banshee.Lyrics
             if (html_lyric == null) {
                 return null;
             }
-            string l = Regex.Replace(html_lyric,@"<br\b[^>]*>","\n");
-            l = Regex.Replace(l,@"<(.|\n)*?>",string.Empty);
-            l = Regex.Replace(l,"[\r\t]",String.Empty);
-            return Regex.Replace(l,"[\n]+","\n");
+            string l = Regex.Replace(html_lyric, @"<br\b[^>]*>", "\n");
+            l = Regex.Replace(l, @"<(.|\n)*?>", string.Empty);
+            l = Regex.Replace(l, @"\n\s*\n", "\n");
+            l = Regex.Replace(l, "[\r\t]", String.Empty);
+            return Regex.Replace(l, "[\n]+"," \n");
         }
     }
 }
