@@ -64,10 +64,10 @@ namespace Banshee.Lyrics.Gui
             };
 
             this.buttonRefresh.Clicked += new EventHandler (OnRefresh);
-            this.buttonSave.Clicked += new EventHandler (OnSaveLyric);
+            this.buttonSave.Clicked += new EventHandler (OnSaveLyrics);
             this.buttonClose.Clicked += new EventHandler (OnClose);
 
-            this.lyricsBrowser.AddLinkClicked += ManuallyAddLyric;
+            this.lyricsBrowser.AddLinkClicked += ManuallyAddLyrics;
             LyricsManager.Instance.LoadStarted += this.lyricsBrowser.OnLoading;
             LyricsManager.Instance.LoadFinished += this.lyricsBrowser.LoadString;
             this.SwitchTo (HTML_MODE);
@@ -137,7 +137,7 @@ namespace Banshee.Lyrics.Gui
             this.GetBrowser ().OnRefresh ();
         }
 
-        private void ManuallyAddLyric (object sender, EventArgs args)
+        private void ManuallyAddLyrics (object sender, EventArgs args)
         {
             this.SwitchTo (INSERT_MODE);
         }
@@ -166,14 +166,14 @@ namespace Banshee.Lyrics.Gui
             current_mode = mode;
         }
 
-        public void OnSaveLyric (object sender, EventArgs args)
+        public void OnSaveLyrics (object sender, EventArgs args)
         {
-            string lyric = this.textBrowser.Buffer.Text;
-            LyricsManager.Instance.SaveLyric (saved_track, lyric, true);
+            string lyrics = this.textBrowser.Buffer.Text;
+            LyricsManager.Instance.SaveLyrics (saved_track, lyrics, true);
 
             /*refresh all the views. Now the track is taken from the cache */
             if (saved_track == ServiceManager.PlayerEngine.CurrentTrack) {
-                LyricsManager.Instance.FetchLyric (saved_track);
+                LyricsManager.Instance.FetchLyrics (saved_track);
             }
 
             this.SwitchTo (HTML_MODE);

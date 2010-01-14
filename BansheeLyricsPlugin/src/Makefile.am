@@ -8,17 +8,17 @@ SOURCES = \
         Banshee.Lyrics/LyricsManager.cs \
 	Banshee.Lyrics/LyricsDownloadJob.cs \
         Banshee.Lyrics.Gui/ContextPage.cs \
-	Banshee.Lyrics.Gui/LyricPane.cs \
+	Banshee.Lyrics.Gui/LyricsPane.cs \
         Banshee.Lyrics/LyricsService.cs \
         Banshee.Lyrics.Network/ProxyManager.cs \
 	Banshee.Lyrics.Network/HttpUtils.cs \  
       	Banshee.Lyrics.Sources/Lyrc.cs \
         Banshee.Lyrics.Sources/AutoLyrics.cs \
-        Banshee.Lyrics.Sources/ILyricSource.cs \
+        Banshee.Lyrics.Sources/ILyricsSource.cs \
         Banshee.Lyrics.Sources/LyricWiki.cs \
         Banshee.Lyrics.Sources/Lyriki.cs \
         Banshee.Lyrics.Sources/LeosLyrics.cs \
-        Banshee.Lyrics.Sources/LyricWebSource.cs \
+        Banshee.Lyrics.Sources/LyricsWebSource.cs \
 	Banshee.Lyrics.Gui/LyricsWindow.cs \
         Banshee.Lyrics.Gui/gtk-gui/generated.cs \
         Banshee.Lyrics.Gui/gtk-gui/LyricsWindow.cs \

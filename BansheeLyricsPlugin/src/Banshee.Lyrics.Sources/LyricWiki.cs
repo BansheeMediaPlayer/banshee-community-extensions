@@ -31,7 +31,7 @@ using Banshee.ServiceStack;
 
 namespace Banshee.Lyrics.Sources
 {
-    public class LyricWiki:LyricWebSource
+    public class LyricWiki:LyricsWebSource
     {
         public LyricWiki ()
         {

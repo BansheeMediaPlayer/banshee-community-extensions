@@ -32,7 +32,7 @@ using Mono.Unix;
 
 namespace Banshee.Lyrics.Sources
 {
-    public class Lyrc : LyricWebSource
+    public class Lyrc : LyricsWebSource
     {
     
         public Lyrc ()

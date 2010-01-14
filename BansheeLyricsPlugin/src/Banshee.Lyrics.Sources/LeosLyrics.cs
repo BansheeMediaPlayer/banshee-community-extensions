@@ -32,7 +32,7 @@ using Banshee.Lyrics.Network;
 
 namespace Banshee.Lyrics.Sources
 {
-    public class LeosLyrics:ILyricSource
+    public class LeosLyrics:ILyricsSource
     {
         public string Name {
             get { return "Leo's lyrics"; }

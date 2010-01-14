@@ -39,7 +39,7 @@ namespace Banshee.Lyrics.Gui
 {
     public class ContextPage : BaseContextPage
     {
-        private LyricPane lyric_pane;
+        private LyricsPane lyrics_pane;
 
         public ContextPage ()
         {
@@ -55,13 +55,13 @@ namespace Banshee.Lyrics.Gui
 
         public override void SetTrack (Banshee.Collection.TrackInfo track)
         {
-            lyric_pane.TrackArtist = track.ArtistName;
-            lyric_pane.TrackTitle = track.TrackTitle;
+            lyrics_pane.TrackArtist = track.ArtistName;
+            lyrics_pane.TrackTitle = track.TrackTitle;
             
         }
 
         public override Widget Widget {
-            get { return lyric_pane ?? (lyric_pane = new LyricPane (this)); }
+            get { return lyrics_pane ?? (lyrics_pane = new LyricsPane (this)); }
         }
     }
 }

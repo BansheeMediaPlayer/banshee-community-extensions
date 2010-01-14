@@ -26,7 +26,7 @@
 
 namespace Banshee.Lyrics.Sources
 {
-    public interface ILyricSource
+    public interface ILyricsSource
     {
         string Name {
             get;

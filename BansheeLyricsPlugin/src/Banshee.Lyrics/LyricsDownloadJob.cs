@@ -62,7 +62,7 @@ namespace Banshee.Lyrics
             };
 
             Status = String.Format (Catalog.GetString ("{0} - {1}"), track.ArtistName, track.TrackTitle);
-            DownloadLyric (track);
+            DownloadLyrics (track);
         }
 
         public void Start ()
@@ -70,17 +70,17 @@ namespace Banshee.Lyrics
             Register ();
         }
 
-        private void DownloadLyric (DatabaseTrackInfo track)
+        private void DownloadLyrics (DatabaseTrackInfo track)
         {
-            string lyric = null;
+            string lyrics = null;
             try {
-                lyric = LyricsManager.Instance.DownloadLyric (track);
+                lyrics = LyricsManager.Instance.DownloadLyrics (track);
             } catch (Exception e) {
                 Log.Exception (e);
                 return;
             }
 
-            LyricsManager.Instance.SaveLyric (track, lyric, true);
+            LyricsManager.Instance.SaveLyrics (track, lyrics, true);
         }
 
         protected override void OnCancelled ()

@@ -34,7 +34,7 @@ using Banshee.ContextPane;
 
 namespace Banshee.Lyrics.Gui
 {
-    public class LyricPane : VBox
+    public class LyricsPane : VBox
     {
         private Gtk.Label label;
         public LyricsBrowser browser;
@@ -45,7 +45,7 @@ namespace Banshee.Lyrics.Gui
         private string track_title;
         private string track_artist;
 
-        public LyricPane (ContextPage context_page)
+        public LyricsPane (ContextPage context_page)
         {
             this.context_page = context_page;
             InitComponents ();

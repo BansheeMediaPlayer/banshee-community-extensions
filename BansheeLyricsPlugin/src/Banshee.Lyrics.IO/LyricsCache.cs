@@ -46,43 +46,43 @@ namespace Banshee.Lyrics.IO
             return LyricsService.LyricsDir + artist + "_" + title + ".lyrics";
         }
 
-        public void DeleteLyric (TrackInfo track)
+        public void DeleteLyrics (TrackInfo track)
         {
             string filename = GetLyricsFilename (track.ArtistName, track.TrackTitle);
-            DeleteLyric (filename);
+            DeleteLyrics (filename);
         }
 
-        public void DeleteLyric (string filename)
+        public void DeleteLyrics (string filename)
         {
             try {
                 if (File.Exists (filename)) {
-                    Hyena.Log.Debug ("Deleting lyric: " + filename);
+                    Hyena.Log.Debug ("Deleting lyrics: " + filename);
                     File.Delete (filename);
                 }
             } catch (Exception e) {
-                Hyena.Log.DebugFormat ("Unable to delete lyric {0}: {1} ", filename, e.Message);
+                Hyena.Log.DebugFormat ("Unable to delete lyrics {0}: {1} ", filename, e.Message);
             }
         }
 
-        public string ReadLyric (TrackInfo track)
+        public string ReadLyrics (TrackInfo track)
         {
             string filename = GetLyricsFilename (track.ArtistName, track.TrackTitle);
-            return ReadLyric (filename);
+            return ReadLyrics (filename);
         }
 
-        public string ReadLyric (String filename)
+        public string ReadLyrics (String filename)
         {
             try {
                 if (File.Exists (filename)) {
                     return File.ReadAllText (filename);
                 }
             } catch (Exception e) {
-                Hyena.Log.DebugFormat ("Unable to read lyric {0}: {1} ", filename, e.Message);
+                Hyena.Log.DebugFormat ("Unable to read lyrics {0}: {1} ", filename, e.Message);
             }
             return null;
         }
 
-        public void WriteLyric (TrackInfo track, string lyrics)
+        public void WriteLyrics (TrackInfo track, string lyrics)
         {
             string filename = GetLyricsFilename (track.ArtistName, track.TrackTitle);
             try {
@@ -97,9 +97,9 @@ namespace Banshee.Lyrics.IO
 
                 //write the lyrics
                 File.WriteAllText (filename, lyrics);
-                Hyena.Log.Debug ("Lyric successfully written " + filename);
+                Hyena.Log.Debug ("Lyrics successfully written " + filename);
             } catch (Exception e) {
-                Hyena.Log.DebugFormat ("Unable to save lyric {0}: {1} ", filename, e.Message);
+                Hyena.Log.DebugFormat ("Unable to save lyrics {0}: {1} ", filename, e.Message);
             }
             return;
         }

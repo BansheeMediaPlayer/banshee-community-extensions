@@ -34,7 +34,7 @@ using Banshee.Lyrics.Network;
 
 namespace Banshee.Lyrics.Sources
 {
-    public abstract class LyricWebSource:ILyricSource
+    public abstract class LyricsWebSource: ILyricsSource
     {
         /*regex used to parse html content */
         protected Regex regexLyric;

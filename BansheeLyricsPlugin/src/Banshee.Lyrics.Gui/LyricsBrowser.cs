@@ -64,14 +64,14 @@ namespace Banshee.Lyrics.Gui
             if (request.Uri == Catalog.GetString ("add")) {
                 AddLinkClicked (this, null);
             } else {
-                LyricsManager.Instance.FetchLyricFromLyrc (request.Uri);
+                LyricsManager.Instance.FetchLyricsFromLyrc (request.Uri);
             }
             return 0;
         }
 
         public void OnRefresh ()
         {
-            LyricsManager.Instance.RefreshLyric (ServiceManager.PlayerEngine.CurrentTrack);
+            LyricsManager.Instance.RefreshLyrics (ServiceManager.PlayerEngine.CurrentTrack);
         }
 
         protected override void OnPopulatePopup (Menu menu)
@@ -108,19 +108,19 @@ namespace Banshee.Lyrics.Gui
                 browser_str = args.error;
             } else if (args.suggestion != null) {
                 browser_str = GetSuggestionString (args.suggestion);
-            } else if (args.lyric != null) {
-                browser_str = Utils.ToHtml(args.lyric);
+            } else if (args.lyrics != null) {
+                browser_str = Utils.ToHtml(args.lyrics);
             } else {
-                browser_str = Catalog.GetString ("No lyric found.");
+                browser_str = Catalog.GetString ("No lyrics found.");
             }
 
             LoadString (browser_str);
         }
 
-        private string GetSuggestionString (string lyric_suggestion)
+        private string GetSuggestionString (string lyrics_suggestion)
         {
             StringBuilder sb = new StringBuilder ();
-            sb.Append ("<b>" + Catalog.GetString ("No lyric found.") + "</b>");
+            sb.Append ("<b>" + Catalog.GetString ("No lyrics found.") + "</b>");
             if (InsertModeAvailable) {
                 sb.Append ("<br><a href=\"" + Catalog.GetString ("add") + "\">");
                 sb.Append (Catalog.GetString ("Click here to manually add a new lyric"));
@@ -128,7 +128,7 @@ namespace Banshee.Lyrics.Gui
             }
             sb.Append ("<br><br>");
             sb.Append (Catalog.GetString ("Suggestions:"));
-            sb.Append (lyric_suggestion);
+            sb.Append (lyrics_suggestion);
             return sb.ToString ();
         }
 
