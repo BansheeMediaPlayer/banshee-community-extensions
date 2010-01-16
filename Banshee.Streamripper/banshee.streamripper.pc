@@ -1,0 +1,6 @@
+Name: Banshee.Streamripper
+Description: Banshee.Streamripper
+Version: 0.1
+
+Requires: 
+Libs: -r:/usr/local/lib/banshee-streamripper/Banshee.Streamripper.dll

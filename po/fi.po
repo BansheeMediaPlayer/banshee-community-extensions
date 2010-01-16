@@ -1,0 +1,74 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-08-27 01:26+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../Banshee.Streamripper/Banshee.Streamripper/StreamripperConfigDialog.cs:66
+#, csharp-format
+msgid ""
+"{0}Streamripper configuration\n"
+"{1}"
+msgstr ""
+"{0}Radiokanavien tallentajan asetukset\n"
+"{1}"
+
+#: ../Banshee.Streamripper/Banshee.Streamripper/StreamripperConfigDialog.cs:72
+msgid ""
+"Please select output folder for ripped files and if ripped\n"
+"files should be imported to media library.\n"
+msgstr ""
+"Valitse kansio tallennetuilla tiedostoille ja valitse haluatko\n"
+"tiedostojen tuotavan musiikkikirjastoon.\n"
+
+#: ../Banshee.Streamripper/Banshee.Streamripper/StreamripperConfigDialog.cs:76
+msgid "Output folder:"
+msgstr "Tallennuskansio:"
+
+#: ../Banshee.Streamripper/Banshee.Streamripper/StreamripperConfigDialog.cs:78
+msgid "_Browse"
+msgstr "_Selaa"
+
+#: ../Banshee.Streamripper/Banshee.Streamripper/StreamripperConfigDialog.cs:81
+msgid "_Cancel"
+msgstr "_Peruuta"
+
+#: ../Banshee.Streamripper/Banshee.Streamripper/StreamripperConfigDialog.cs:83
+msgid "_Save"
+msgstr "_Tallenna"
+
+#: ../Banshee.Streamripper/Banshee.Streamripper/StreamripperConfigDialog.cs:85
+msgid "Import files to media library"
+msgstr "Tuo tiedostot musiikkikirjastoon"
+
+#: ../Banshee.Streamripper/Banshee.Streamripper/StreamripperService.cs:87
+msgid "_Streamripper"
+msgstr "Radiokanavien _tallentaja"
+
+#: ../Banshee.Streamripper/Banshee.Streamripper/StreamripperService.cs:91
+msgid "_Configure"
+msgstr "_Asetukset"
+
+#: ../Banshee.Streamripper/Banshee.Streamripper/StreamripperService.cs:92
+msgid "Configure the Streamripper plugin"
+msgstr "Muuta streamripper-laajennuksen asetuksia"
+
+#: ../Banshee.Streamripper/Banshee.Streamripper/StreamripperService.cs:97
+msgid "_Activate streamripper"
+msgstr "_Aktivoi tallennus"
+
+#: ../Banshee.Streamripper/Banshee.Streamripper/StreamripperService.cs:98
+msgid "Activate streamripper process"
+msgstr "Aktivoi tallennus"

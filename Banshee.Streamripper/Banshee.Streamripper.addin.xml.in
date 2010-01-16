@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.Streamripper"
+    version="0.1"
+    compatVersion="1.0"
+    copyright="© 2009 Akseli Mantila. Licensed under the MIT X11 license."
+    name="Streamripper service"
+    category="Service"
+    description="Allows user to rip mp3-files out of internet-radio streams"
+    author="Akseli Mantila"
+    url="http://aksussummerofcode.blogspot.com/"
+    defaultEnabled="true">
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.Streamripper.StreamripperService"/>   
+  </Extension>
+  
+  <Localizer type="Gettext" catalog="@GETTEXT_PACKAGE@" location="@prefix@/share/locale"/>
+</Addin>
