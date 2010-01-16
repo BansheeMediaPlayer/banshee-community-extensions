@@ -52,9 +52,9 @@ namespace Banshee.Lyrics
         private static string lyrics_dir = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + Path.DirectorySeparatorChar +
                 ".cache" + Path.DirectorySeparatorChar + "banshee-1" + Path.DirectorySeparatorChar + 
                 "extensions" + Path.DirectorySeparatorChar + "lyrics" + Path.DirectorySeparatorChar;
-            
+
         private LyricsWindow window = new LyricsWindow ();
-        
+
         private uint ui_manager_id;
         private ActionGroup lyrics_action_group;
 
