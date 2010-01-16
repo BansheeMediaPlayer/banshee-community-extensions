@@ -123,7 +123,7 @@ namespace Banshee.Lyrics.Gui
         void OnClose (object sender, EventArgs args)
         {
             this.Hide ();
-            
+
             /*deselect the toggle action "Show lyrics" in the View menu */
             InterfaceActionService action_service = ServiceManager.Get<InterfaceActionService> ();
             ToggleAction show_lyrics_action = (ToggleAction)action_service.FindAction ("Lyrics.ShowLyricsAction");

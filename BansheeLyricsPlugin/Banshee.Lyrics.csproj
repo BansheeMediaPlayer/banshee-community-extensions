@@ -98,7 +98,7 @@
     <Compile Include="src\Banshee.Lyrics.Gui\LyricsBrowser.cs" />
     <Compile Include="src\Banshee.Lyrics\LyricsService.cs" />
     <Compile Include="src\Banshee.Lyrics.Gui\ContextPage.cs" />
-    <Compile Include="src\Banshee.Lyrics.Gui\LyricPane.cs" />
+    <Compile Include="src\Banshee.Lyrics.Gui\LyricsPane.cs" />
     <Compile Include="src\Banshee.Lyrics\LyricsDownloadJob.cs" />
     <Compile Include="src\Banshee.Lyrics\Utils.cs" />
   </ItemGroup>

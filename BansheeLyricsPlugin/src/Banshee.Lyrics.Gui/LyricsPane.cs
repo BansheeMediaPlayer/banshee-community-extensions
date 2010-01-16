@@ -37,7 +37,7 @@ namespace Banshee.Lyrics.Gui
     public class LyricsPane : VBox
     {
         private Gtk.Label label;
-        public LyricsBrowser browser;
+        private LyricsBrowser browser;
         private Gtk.ScrolledWindow scrollPane;
 
         private ContextPage context_page;

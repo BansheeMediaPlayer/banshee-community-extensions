@@ -98,7 +98,7 @@ namespace Banshee.Lyrics
             
             /*get the lyric of the current played song and update the window */
             if (ServiceManager.PlayerEngine.CurrentTrack != null) {
-                LyricsManager.Instance.FetchLyrics(ServiceManager.PlayerEngine.CurrentTrack);
+                FetchLyrics(ServiceManager.PlayerEngine.CurrentTrack);
             }
         }
 
@@ -148,9 +148,13 @@ namespace Banshee.Lyrics
             }
             lyrics_action_group.GetAction ("ShowLyricsAction").Sensitive = true;
 
-            LyricsManager.Instance.FetchLyrics (ServiceManager.PlayerEngine.CurrentTrack);
+            FetchLyrics (ServiceManager.PlayerEngine.CurrentTrack);
         }
 
+        public void FetchLyrics (TrackInfo track)
+        {
+            LyricsManager.Instance.FetchLyrics (track);
+        }
         public void SaveLyrics (TrackInfo track, string lyrics)
         {
             LyricsManager.Instance.SaveLyrics (track, lyrics, true);
