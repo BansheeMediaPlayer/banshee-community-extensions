@@ -16,6 +16,7 @@ namespace Banshee.Lyrics
             if (IsHtml (lyrics)) {
                 return lyrics;
             }
+
             return lyrics.Replace("\n","<br/>");
         }
 
@@ -26,6 +27,7 @@ namespace Banshee.Lyrics
             }
 
             Match m = Regex.Match(lyrics, @"<(.|\n)*?>");
+
             return m.Success;
         }
 
@@ -34,10 +36,12 @@ namespace Banshee.Lyrics
             if (html_lyrics == null) {
                 return null;
             }
+
             string l = Regex.Replace(html_lyrics, @"<br\b[^>]*>", "\n");
             l = Regex.Replace(l, @"<(.|\n)*?>", string.Empty);
             l = Regex.Replace(l, @"\n\s+\n", "\n");
             l = Regex.Replace(l, "[\r\t]", String.Empty);
+
             return l;
         }
     }
