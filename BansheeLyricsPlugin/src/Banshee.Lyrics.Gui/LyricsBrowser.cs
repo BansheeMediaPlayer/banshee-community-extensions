@@ -107,7 +107,7 @@ namespace Banshee.Lyrics.Gui
             if (args.error != null) {
                 browser_str = args.error;
             } else if (args.suggestion != null) {
-                browser_str = GetSuggestionString (args.suggestion);
+                browser_str = GetSuggestionString (Utils.ToHtml (args.suggestion));
             } else if (args.lyrics != null) {
                 browser_str = Utils.ToHtml(args.lyrics);
             } else {
@@ -122,13 +122,14 @@ namespace Banshee.Lyrics.Gui
             StringBuilder sb = new StringBuilder ();
             sb.Append ("<b>" + Catalog.GetString ("No lyrics found.") + "</b>");
             if (InsertModeAvailable) {
-                sb.Append ("<br><a href=\"" + Catalog.GetString ("add") + "\">");
+                sb.Append ("<br> <a href=\"" + Catalog.GetString ("add") + "\">");
                 sb.Append (Catalog.GetString ("Click here to manually add a new lyric"));
                 sb.Append ("</a>");
             }
             sb.Append ("<br><br>");
             sb.Append (Catalog.GetString ("Suggestions:"));
             sb.Append (lyrics_suggestion);
+
             return sb.ToString ();
         }
 

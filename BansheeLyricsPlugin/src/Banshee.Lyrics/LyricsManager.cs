@@ -187,6 +187,8 @@ namespace Banshee.Lyrics
 
             /* get the lyrics from lyrc */
             string lyrics = lyrc_server.GetLyrics (url);
+
+            LyricsManager.Instance.UpdateDB (ServiceManager.PlayerEngine.CurrentTrack, lyrics);
             if ( IsLyricsOk (lyrics)) {
                 lyrics = AttachFooter (lyrics, lyrc_server.Credits);
                 Save(ServiceManager.PlayerEngine.CurrentTrack, lyrics);
@@ -200,8 +202,7 @@ namespace Banshee.Lyrics
             //Obtain suggestions from Lyrc
             ILyricsSource lyrc_server = sourceList[0];
 
-            string suggestions = lyrc_server.GetSuggestions (track.ArtistName, track.TrackTitle);
-            return AttachFooter (suggestions, sourceList[0].Credits);
+            return lyrc_server.GetSuggestions (track.ArtistName, track.TrackTitle);
         }
 
         private bool IsLyricsOk (string l)
@@ -229,27 +230,31 @@ namespace Banshee.Lyrics
 
         public void SaveLyrics (TrackInfo track, string lyrics, bool rewrite)
         {
+            if (!IsLyricsOk (lyrics)) {
+                /*update the db always */
+                LyricsManager.Instance.UpdateDB (track, lyrics);
+                return;
+            }
+
             Banshee.Base.ThreadAssist.SpawnFromMain (delegate {
                 if (rewrite) {
                     cache.DeleteLyrics (track);
                 }
                 Save (track, lyrics);
+                LyricsManager.Instance.UpdateDB (track, lyrics);
             });
         }
 
         private void Save (TrackInfo track, string lyrics)
         {
-            if (Utils.IsHtml(lyrics)) {
-                lyrics = Utils.ToNormalString(lyrics);
+            if (Utils.IsHtml (lyrics)) {
+                lyrics = Utils.ToNormalString (lyrics);
             }
 
             if (!cache.IsInCache (track)) {
                 cache.WriteLyrics (track, lyrics);
             }
             SaveToID3 (track, lyrics);
-
-            /*update the db */
-            LyricsManager.Instance.UpdateDB (track, lyrics);
         }
 
         private void SaveToID3 (TrackInfo track, string lyrics)
