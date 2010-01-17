@@ -155,7 +155,8 @@ namespace Banshee.Streamrecorder
 
         private bool IsCurrentTrackRecordable () 
         {
-            if (Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsLive 
+            if (Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack != null
+				&& Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsLive 
 				&& Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsPlaying)
                 return true;
             
