@@ -1,0 +1,15 @@
+Package: banshee-extension-streamrecorder
+Version: 0.2.0-1
+Section: sound
+Priority: optional
+Architecture: i386
+Depends: banshee (>= 1.5.1-1), mplayer-nogui, streamripper (>= 1.64.6-1)
+Installed-Size: 122
+Maintainer: Frank Ziegler <funtastix@googlemail.com>
+Description: Extension for banshee that allows users to rip
+ internet radio streams. It supports HTTP protocol (via 
+ streamripper) and rtsp, mms, ... (via mplayer).
+ .
+ This project is based on banshee-streamripper of Akseli Mantila.
+ .
+ This package contains only the Banshee Streamrecorder Extension.
