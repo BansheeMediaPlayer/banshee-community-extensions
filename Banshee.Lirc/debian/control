@@ -1,0 +1,19 @@
+Source: banshee-extension-lirc
+Section: misc
+Priority: extra
+Maintainer: Jean-Baptiste Lab <jeanbaptiste.lab@gmail.com>
+Build-Depends: debhelper (>= 7),
+               scons (>=1.2.0), 
+               banshee (>=1.5.1), 
+               liblircclient-dev (>=0.8.6), 
+               mono-gmcs (>=2.4.2.3),
+               pkg-config (>= 0.22)
+Standards-Version: 3.8.3
+Homepage: None yet
+
+Package: banshee-extension-lirc
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, banshee (>=1.5.1)
+Description: This extension allows you to control banshee with an LIRC device
+ This extensin lets you use an IR remote control supported by LIRC
+ to control Banshee.

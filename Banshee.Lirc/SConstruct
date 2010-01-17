@@ -1,0 +1,8 @@
+env = Environment()
+conf = Configure(env)
+if not conf.CheckCHeader('lirc/lirc_client.h'):
+	print "liblircclient-dev must be installed!"
+	Exit(1)
+env = conf.Finish()
+
+SConscript('src/SConscript', build_dir='bin/Debug')

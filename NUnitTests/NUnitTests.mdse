@@ -1,0 +1,5 @@
+<CombineEntry name="NUnitTests" fileversion="2.0" ctype="NUnitAssemblyGroupProject">
+  <Configurations active="Debug">
+    <Configuration name="Default" ctype="NUnitAssemblyGroupProjectConfiguration" />
+  </Configurations>
+</CombineEntry>

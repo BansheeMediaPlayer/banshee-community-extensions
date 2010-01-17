@@ -1,0 +1,38 @@
+import os
+
+AddOption('--prefix',
+          dest='prefix',
+          type='string',
+          nargs=1,
+          action='store',
+          metavar='DIR',
+          help='installation prefix')
+
+if GetOption('prefix') is None:
+	addons_dir = os.path.join(os.environ['HOME'], '.config', 'banshee-1', 'addins')
+else:
+	addons_dir = os.path.join(GetOption('prefix'), 'usr/lib/banshee-1/Extensions')
+
+env = Environment(TOOLS=['mcs'])
+
+lirc_glue = SharedLibrary('lircglue', 'lirc-glue.c')
+
+sources = ['Banshee.Lirc.cs', 'LircClient.cs', 'ConfigDialog.cs', '#gtk-gui/Banshee.Lirc.ConfigDialog.cs', '#gtk-gui/generated.cs']
+sources += ['ActionMapper.cs', 'IController.cs', 'BansheeController.cs', 'MockController.cs']
+lirc_sharp = env.CLILibrary('Banshee.Lirc.dll', sources, CSCLIBFLAGS=['-res:src/Banshee.Lirc.addin.xml', '-res:src/Ui.xml','-unsafe','-pkg:gtk-sharp-2.0'], CILLIBS=['Hyena', 'Banshee.Services', 'Banshee.ThickClient', 'Banshee.Core', 'Mono.Posix'], CILLIBPATH=['/usr/lib/banshee-1'])
+
+def patch_dll_config(env, target, source):
+  t = open(str(target[0]), 'w')
+  s = open(str(source[0]), 'r')
+  if GetOption('prefix') is None:
+    t.write(s.read().replace('$(PREFIX)', addons_dir))
+  else:
+    # We're cheating a bit here for the debian package's sake
+    t.write(s.read().replace('$(PREFIX)', '/usr/lib/banshee-1/Extensions'))
+  s.close()
+  t.close()
+
+dll_config = Command('Banshee.Lirc.dll.config', 'Banshee.Lirc.dll.config.in', patch_dll_config)
+
+Install(addons_dir, [lirc_glue, lirc_sharp, dll_config])
+Alias('install', addons_dir)

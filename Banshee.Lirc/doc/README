@@ -1,0 +1,116 @@
+Banshee's LIRC extension
+========================
+Jean-Baptiste Lab <jeanbaptiste.lab@gmail.com>
+v0.1, January 2010
+
+************************************************************************
+If this looks like AsciiDoc, well that's because it is.
+************************************************************************
+
+Installation
+------------
+
+Build prerequisites
+~~~~~~~~~~~~~~~~~~~
+- banshee (duh)
+- scons (I don't like autotools)
+- lirc client dev library (again, duh)
+
+Building
+~~~~~~~~
+
+* From the command line:
+--------
+scons 
+--------
+* From Monodevelop: F8 (!)
+
+Installing
+~~~~~~~~~~
+
+For user installation:
+--------
+scons install
+--------
+
+Configuration
+-------------
+LIRC requires you to edit a configuration file, usually `~/.lircrc`.
+This file tells LIRC which command to send to which program (in our case Banshee, or more accurately, the LIRC extension) when you press a defined button.
+
+To configure the LIRC extension, you need to edit this `~/.lircrc` file as follows:
+--------------------------------------
+begin
+  button=<Button Name for your remote>
+  prog=banshee
+  config=<banshee command>
+--------------------------------------
+
+For example, in my `~/.lircrc`, I have the following for the "play" action:
+--------------------------------------
+begin
+  button=Play
+  prog=banshee
+  config=play
+--------------------------------------
+
+The list banshee commands supported by the extension is:
+* play
+* pause
+* stop
+* previous
+* next
+* volume-up
+* volume-down
+* toggle-mute
+
+The values of the `button` field unfortunately depends on your remote control type.
+
+Here is my own `~/.lircrc` for reference:
+--------------------------------------
+begin
+     button = Play
+     prog = banshee
+     config = play
+end
+begin
+     button = Pause
+     prog = banshee
+     config = pause
+end
+begin
+     button = Stop
+     repeat = 1
+     prog = banshee
+     config = stop
+end
+begin
+     button = Replay
+     repeat = 1
+     prog = banshee
+     config = prev
+end
+begin
+     button = Skip
+     repeat = 1
+     prog = banshee
+     config = next
+end
+begin
+     button = VolUp
+     repeat = 1
+     prog = banshee
+     config = volume-up
+end
+begin
+     button = VolDown
+     repeat = 1
+     prog = banshee
+     config = volume-down
+end
+begin
+     button = Mute
+     prog = banshee
+     config = toggle-mute
+end
+--------------------------------------

@@ -1,0 +1,5 @@
+Banshee's LIRC extension todo list
+==================================
+
+* Use our own lircrc file instead of `~/.lircrc`, fallback to `~/.lircrc`.
+* GUI to configure the remote control mappings
