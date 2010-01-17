@@ -1,0 +1,16 @@
+<ui>
+    <menubar name="MainMenu">
+        <menu name="ToolsMenu" action="ToolsMenuAction">
+            <menu name="Streamrecorder" action="StreamrecorderAction">
+                <menuitem name="StreamrecorderEnable" action="StreamrecorderEnableAction" />
+                <separator />
+                <menuitem name="StreamrecorderConfigure" action="StreamrecorderConfigureAction" />
+            </menu>
+        </menu>
+    </menubar>
+    <toolbar name="HeaderToolbar">
+		<placeholder name="SourceActions">
+		<toolitem name="StreamrecorderEnable" action="StreamrecorderEnableAction" />
+		</placeholder>
+	</toolbar>
+</ui>

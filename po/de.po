@@ -22,7 +22,7 @@ msgid ""
 "{0}Streamrecorder configuration\n"
 "{1}"
 msgstr ""
-"{0}Radiokanavien tallentajan asetukset\n"
+"{0}Streamrecorder Konfiguration\n"
 "{1}"
 
 #: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:72
@@ -30,45 +30,45 @@ msgid ""
 "Please select output folder for ripped files and if ripped\n"
 "files should be imported to media library.\n"
 msgstr ""
-"Valitse kansio tallennetuilla tiedostoille ja valitse haluatko\n"
-"tiedostojen tuotavan musiikkikirjastoon.\n"
+"Bitte den Dateiordner für die gerippten Dateien auswählen und\n"
+"ob diese in die Medienbibliothek importiert werden sollen.\n"
 
 #: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:76
 msgid "Output folder:"
-msgstr "Tallennuskansio:"
+msgstr "Augabepfad:"
 
 #: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:78
 msgid "_Browse"
-msgstr "_Selaa"
+msgstr "_Durchsuchen"
 
 #: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:81
 msgid "_Cancel"
-msgstr "_Peruuta"
+msgstr "_Abbrechen"
 
 #: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:83
 msgid "_Save"
-msgstr "_Tallenna"
+msgstr "_Speichern"
 
 #: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:85
 msgid "Import files to media library"
-msgstr "Tuo tiedostot musiikkikirjastoon"
+msgstr "Importiere Dateien in die Medienbibliothek"
 
 #: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:87
 msgid "_Streamrecorder"
-msgstr "Radiokanavien _tallentaja"
+msgstr "_Streamrecorder"
 
 #: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:91
 msgid "_Configure"
-msgstr "_Asetukset"
+msgstr "_Konfigurieren"
 
 #: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:92
 msgid "Configure the Streamrecorder plugin"
-msgstr "Muuta streamrecorder-laajennuksen asetuksia"
+msgstr "Konfiguriere das Streamrecorder plugin"
 
 #: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:97
 msgid "_Activate streamrecorder"
-msgstr "_Aktivoi tallennus"
+msgstr "_Aktiviere Streamrecorder"
 
 #: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:98
 msgid "Activate streamrecorder process"
-msgstr "Aktivoi tallennus"
+msgstr "Aktiviere den Streamrecorder Prozess"

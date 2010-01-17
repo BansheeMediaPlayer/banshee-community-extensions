@@ -6,27 +6,27 @@ EXTRA_DIST =
 if ENABLE_DEBUG
 ASSEMBLY_COMPILER_COMMAND = gmcs
 ASSEMBLY_COMPILER_FLAGS =  -noconfig -codepage:utf8 -warn:4 -optimize- -debug "-define:DEBUG"
-ASSEMBLY = bin/Debug/Banshee.Streamripper.dll
+ASSEMBLY = bin/Debug/Banshee.Streamrecorder.dll
 ASSEMBLY_MDB = $(ASSEMBLY).mdb
 COMPILE_TARGET = library
 PROJECT_REFERENCES = 
 BUILD_DIR = bin/Debug
 
-BANSHEE_STREAMRIPPER_DLL_MDB_SOURCE=bin/Debug/Banshee.Streamripper.dll.mdb
-BANSHEE_STREAMRIPPER_DLL_MDB=$(BUILD_DIR)/Banshee.Streamripper.dll.mdb
+BANSHEE_STREAMRECORDER_DLL_MDB_SOURCE=bin/Debug/Banshee.Streamrecorder.dll.mdb
+BANSHEE_STREAMRECORDER_DLL_MDB=$(BUILD_DIR)/Banshee.Streamrecorder.dll.mdb
 
 endif
 
 if ENABLE_RELEASE
 ASSEMBLY_COMPILER_COMMAND = gmcs
 ASSEMBLY_COMPILER_FLAGS =  -noconfig -codepage:utf8 -warn:4 -optimize-
-ASSEMBLY = bin/Release/Banshee.Streamripper.dll
+ASSEMBLY = bin/Release/Banshee.Streamrecorder.dll
 ASSEMBLY_MDB = 
 COMPILE_TARGET = library
 PROJECT_REFERENCES = 
 BUILD_DIR = bin/Release
 
-BANSHEE_STREAMRIPPER_DLL_MDB=
+BANSHEE_STREAMRECORDER_DLL_MDB=
 
 endif
 
@@ -34,10 +34,10 @@ AL=al2
 SATELLITE_ASSEMBLY_NAME=$(notdir $(basename $(ASSEMBLY))).resources.dll
 
 PROGRAMFILES = \
-	$(BANSHEE_STREAMRIPPER_DLL_MDB)  
+	$(BANSHEE_STREAMRECORDER_DLL_MDB)  
 
 LINUX_PKGCONFIG = \
-	$(BANSHEE_STREAMRIPPER_PC)  
+	$(BANSHEE_STREAMRECORDER_PC)  
 
 
 RESGEN=resgen2
@@ -45,16 +45,17 @@ RESGEN=resgen2
 all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
 
 FILES =  \
-	Banshee.Streamripper/RippedFileScanner.cs \
-	Banshee.Streamripper/StreamripperConfigDialog.cs \
-	Banshee.Streamripper/StreamripperProcess.cs \
-	Banshee.Streamripper/StreamripperService.cs 
+	Banshee.Streamrecorder/RippedFileScanner.cs \
+	Banshee.Streamrecorder/StreamrecorderConfigDialog.cs \
+	Banshee.Streamrecorder/StreamripperProcess.cs \
+	Banshee.Streamrecorder/MplayerProcess.cs \
+	Banshee.Streamrecorder/StreamrecorderService.cs 
 
 DATA_FILES = 
 
 RESOURCES =  \
-	Banshee.Streamripper.addin.xml \
-	Resources/StreamripperMenu.xml,Resources.StreamripperMenu.xml 
+	Banshee.Streamrecorder.addin.xml \
+	Resources/StreamrecorderMenu.xml,Resources.StreamrecorderMenu.xml 
 
 REFERENCES =  \
 	-pkg:banshee-1-core \
@@ -70,9 +71,9 @@ CLEANFILES = $(PROGRAMFILES) $(LINUX_PKGCONFIG)
 
 include $(top_srcdir)/Makefile.include
 
-BANSHEE_STREAMRIPPER_PC = $(BUILD_DIR)/banshee.streamripper.pc
+BANSHEE_STREAMRECORDER_PC = $(BUILD_DIR)/banshee.streamrecorder.pc
 
-$(eval $(call emit-deploy-wrapper,BANSHEE_STREAMRIPPER_PC,banshee.streamripper.pc))
+$(eval $(call emit-deploy-wrapper,BANSHEE_STREAMRECORDER_PC,banshee.streamrecorder.pc))
 
 
 $(eval $(call emit_resgen_targets))

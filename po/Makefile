@@ -17,9 +17,9 @@
 # We have the following line for use by intltoolize:
 # INTLTOOL_MAKEFILE
 
-GETTEXT_PACKAGE = banshee-streamripper
-PACKAGE = banshee-streamripper
-VERSION = 0.1
+GETTEXT_PACKAGE = banshee-streamrecorder
+PACKAGE = banshee-streamrecorder
+VERSION = 0.2
 
 SHELL = /bin/bash
 
@@ -29,14 +29,14 @@ top_builddir = ..
 
 
 prefix = /usr/local
-exec_prefix = /usr/local
+exec_prefix = ${prefix}
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 libdir = ${exec_prefix}/lib
 DATADIRNAME = share
 itlocaledir = $(prefix)/$(DATADIRNAME)/locale
 subdir = po
-install_sh = $(SHELL) /home/dingsi/Dokumente/development/banshee-streamripper-0.1/install-sh
+install_sh = ${SHELL} /home/dingsi/Dokumente/development/banshee-streamrecorder-0.2/install-sh
 # Automake >= 1.8 provides /bin/mkdir -p.
 # Until it can be supposed, use the safe fallback:
 mkdir_p = $(install_sh) -d
@@ -66,10 +66,10 @@ DISTFILES = Makefile.in.in POTFILES.in $(POFILES)
 EXTRA_DISTFILES = ChangeLog POTFILES.skip Makevars LINGUAS
 
 POTFILES = \
-	../Banshee.Streamripper/Banshee.Streamripper/RippedFileScanner.cs \
-	../Banshee.Streamripper/Banshee.Streamripper/StreamripperConfigDialog.cs \
-	../Banshee.Streamripper/Banshee.Streamripper/StreamripperProcess.cs \
-	../Banshee.Streamripper/Banshee.Streamripper/StreamripperService.cs
+	../Banshee.Streamrecorder/Banshee.Streamrecorder/RippedFileScanner.cs \
+	../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs \
+	../Banshee.Streamrecorder/Banshee.Streamrecorder/RipperProcess.cs \
+	../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs
 
 CATALOGS=$(shell LINGUAS="$(USE_LINGUAS)"; for lang in $$LINGUAS; do printf "$$lang.gmo "; done)
 

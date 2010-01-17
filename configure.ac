@@ -1,7 +1,7 @@
 dnl Warning: This is an automatically generated file, do not edit!
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.54])
-AC_INIT([Banshee.Streamripper], [0.1])
+AC_INIT([Banshee.Streamrecorder], [0.2])
 AM_INIT_AUTOMAKE([foreign])
 AM_MAINTAINER_MODE
 
@@ -118,9 +118,9 @@ AC_SUBST(expanded_pluginsdir)
 
 
 AC_CONFIG_FILES([
-Banshee.Streamripper/Banshee.Streamripper.addin.xml
-Banshee.Streamripper/Makefile
-Banshee.Streamripper/banshee.streamripper.pc
+Banshee.Streamrecorder/Banshee.Streamrecorder.addin.xml
+Banshee.Streamrecorder/Makefile
+Banshee.Streamrecorder/banshee.streamrecorder.pc
 po/Makefile.in
 Makefile
 ])

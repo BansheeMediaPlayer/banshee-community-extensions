@@ -42,7 +42,7 @@ using Hyena;
 
 using TagLib;
 
-namespace Banshee.Streamripper
+namespace Banshee.Streamrecorder
 {
     public class RippedFileScanner
     {

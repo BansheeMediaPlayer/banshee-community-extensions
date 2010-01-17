@@ -1,5 +1,5 @@
 //
-// StreamripperService.cs
+// StreamrecorderService.cs
 //
 // Author:
 //   Frank Ziegler
@@ -46,9 +46,9 @@ using Banshee.MediaEngine;
 
 using Hyena;
 
-namespace Banshee.Streamripper
+namespace Banshee.Streamrecorder
 {
-    public class StreamripperService : IExtensionService, IDisposable
+    public class StreamrecorderService : IExtensionService, IDisposable
     {
         private StreamripperProcess streamripper_process = null;
         private MplayerProcess mplayer_process = null;
@@ -62,9 +62,9 @@ namespace Banshee.Streamripper
 		private TrackInfo track = null;
 
         
-        public StreamripperService ()
+        public StreamrecorderService ()
         {
-            Hyena.Log.Debug ("[StreamripperService] <StreamripperService> START");
+            Hyena.Log.Debug ("[StreamrecorderService] <StreamrecorderService> START");
             
             recording = IsRecordingEnabledEntry.Get ().Equals ("True") ? true : false;
             output_directory = OutputDirectoryEntry.Get ();
@@ -73,7 +73,7 @@ namespace Banshee.Streamripper
         
         void IExtensionService.Initialize ()
         {
-            Hyena.Log.Debug ("[StreamripperService] <Initialize> START");
+            Hyena.Log.Debug ("[StreamrecorderService] <Initialize> START");
 
             ServiceManager.PlaybackController.TrackStarted += delegate {
                 if (recording) {
@@ -91,33 +91,33 @@ namespace Banshee.Streamripper
             ServiceManager.PlayerEngine.ConnectEvent ( OnStateChange , PlayerEvent.StateChange) ;
         
             action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
-            actions = new ActionGroup ("Streamripper");
+            actions = new ActionGroup ("Streamrecorder");
             
             actions.Add (new ActionEntry [] {
-                new ActionEntry ("StreamripperAction", null,
-                    AddinManager.CurrentLocalizer.GetString ("_Streamripper"), null,
+                new ActionEntry ("StreamrecorderAction", null,
+                    AddinManager.CurrentLocalizer.GetString ("_Streamrecorder"), null,
                     null, null),
 
-                new ActionEntry ("StreamripperConfigureAction", Stock.Properties,
+                new ActionEntry ("StreamrecorderConfigureAction", Stock.Properties,
                     AddinManager.CurrentLocalizer.GetString ("_Configure"), null,
-                    AddinManager.CurrentLocalizer.GetString ("Configure the Streamripper plugin"), OnConfigure)
+                    AddinManager.CurrentLocalizer.GetString ("Configure the Streamrecorder plugin"), OnConfigure)
             });
                 
             actions.Add (new ToggleActionEntry [] { 
-                new ToggleActionEntry ("StreamripperEnableAction", Stock.MediaRecord,
-                    AddinManager.CurrentLocalizer.GetString ("_Activate streamripper"), null,
-                    AddinManager.CurrentLocalizer.GetString ("Activate streamripper process"), OnActivateStreamripper, recording)
+                new ToggleActionEntry ("StreamrecorderEnableAction", Stock.MediaRecord,
+                    AddinManager.CurrentLocalizer.GetString ("_Activate streamrecorder"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Activate streamrecorder process"), OnActivateStreamrecorder, recording)
             });
 
             action_service.UIManager.InsertActionGroup (actions, 0);
-            ui_manager_id = action_service.UIManager.AddUiFromResource ("Resources.StreamripperMenu.xml");
+            ui_manager_id = action_service.UIManager.AddUiFromResource ("Resources.StreamrecorderMenu.xml");
 
-            Hyena.Log.Debug ("[StreamripperService] <Initialize> END");
+            Hyena.Log.Debug ("[StreamrecorderService] <Initialize> END");
         }
 
-        public void OnActivateStreamripper (object o, EventArgs ea) 
+        public void OnActivateStreamrecorder (object o, EventArgs ea) 
         {
-            Hyena.Log.Debug ("[StreamripperService] <OnActivateStreamripper> START");
+            Hyena.Log.Debug ("[StreamrecorderService] <OnActivateStreamrecorder> START");
                     
             if (!recording) { 
 				StartRecording ();
@@ -129,17 +129,17 @@ namespace Banshee.Streamripper
             recording = !recording;
             IsRecordingEnabledEntry.Set (recording.ToString ());
 
-            Hyena.Log.Debug ("[StreamripperService] <OnActivateStreamripper> END");
+            Hyena.Log.Debug ("[StreamrecorderService] <OnActivateStreamrecorder> END");
         }
         
         public void OnConfigure (object o, EventArgs ea)
         {
-            new StreamripperConfigDialog (this, output_directory, is_importing_enabled);
+            new StreamrecorderConfigDialog (this, output_directory, is_importing_enabled);
         }
             
         public void Dispose ()
         {
-            Log.Debug ("Disposing Streamripper plugin");
+            Log.Debug ("Disposing Streamrecorder plugin");
 
             StopRecording ();
             action_service.UIManager.RemoveUi (ui_manager_id);
@@ -150,7 +150,7 @@ namespace Banshee.Streamripper
         }
         
         string IService.ServiceName {
-            get { return "StreamripperService"; }
+            get { return "StreamrecorderService"; }
         }
 
         private bool IsCurrentTrackRecordable () 
@@ -243,7 +243,7 @@ namespace Banshee.Streamripper
                 
         private bool InitStreamripperProcess (TrackInfo track_in) 
         {
-            Hyena.Log.DebugFormat ("[StreamripperService] <InitStreamripperProcess> START dir: '{0}'", output_directory);
+            Hyena.Log.DebugFormat ("[StreamrecorderService] <InitStreamripperProcess> START dir: '{0}'", output_directory);
                     
             if (String.IsNullOrEmpty (output_directory)) {
                 output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory +
@@ -254,12 +254,12 @@ namespace Banshee.Streamripper
                 streamripper_process = new StreamripperProcess ();
             
             if (track_in == null) {
-                Hyena.Log.Debug ("[StreamripperService] <InitStreamripperProcess> END. Recording not ready");
+                Hyena.Log.Debug ("[StreamrecorderService] <InitStreamripperProcess> END. Recording not ready");
                 return false;
             }
                   
             if (track_in.Uri == null || track_in.Uri.IsLocalPath) {
-                Hyena.Log.Debug ("[StreamripperService] <InitStreamripperProcess> END. Not recording local files");
+                Hyena.Log.Debug ("[StreamrecorderService] <InitStreamripperProcess> END. Not recording local files");
                 return false;
             }
                   
@@ -269,13 +269,13 @@ namespace Banshee.Streamripper
 
             RippedFileScanner.SetScanDirectory (output_directory);
                     
-            Hyena.Log.Debug ("[StreamripperService] <InitStreamripperProcess> END. Recording ready");
+            Hyena.Log.Debug ("[StreamrecorderService] <InitStreamripperProcess> END. Recording ready");
             return true;
         }
                 
         private bool InitMplayerProcess (TrackInfo track_in) 
         {
-            Hyena.Log.DebugFormat ("[StreamripperService] <InitMplayerProcess> START dir: '{0}'", output_directory);
+            Hyena.Log.DebugFormat ("[StreamrecorderService] <InitMplayerProcess> START dir: '{0}'", output_directory);
                     
             if (String.IsNullOrEmpty (output_directory)) {
                 output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory +
@@ -286,12 +286,12 @@ namespace Banshee.Streamripper
                 mplayer_process = new MplayerProcess ();
             
             if (track_in == null) {
-                Hyena.Log.Debug ("[StreamripperService] <InitMplayerProcess> END. Recording not ready");
+                Hyena.Log.Debug ("[StreamrecorderService] <InitMplayerProcess> END. Recording not ready");
                 return false;
             }
 			
             if (track_in.Uri == null || track_in.Uri.IsLocalPath) {
-                Hyena.Log.Debug ("[StreamripperService] <InitStreamripperProcess> END. Not recording local files");
+                Hyena.Log.Debug ("[StreamrecorderService] <InitMplayerProcess> END. Not recording local files");
                 return false;
             }
                   
@@ -304,7 +304,7 @@ namespace Banshee.Streamripper
 
             RippedFileScanner.SetScanDirectory (output_directory);
                     
-            Hyena.Log.Debug ("[StreamripperService] <InitMplayerProcess> END. Recording ready");
+            Hyena.Log.Debug ("[StreamrecorderService] <InitMplayerProcess> END. Recording ready");
             return true;
         }
                 
@@ -318,7 +318,7 @@ namespace Banshee.Streamripper
                     
                 this.output_directory = value;
                
-                Hyena.Log.DebugFormat ("[StreamripperService] <OutputDirectorySetter> ", value);
+                Hyena.Log.DebugFormat ("[StreamrecorderService] <OutputDirectorySetter> ", value);
 
 				bool result = false;
 				track = ServiceManager.PlaybackController.CurrentTrack;
@@ -344,11 +344,11 @@ namespace Banshee.Streamripper
         public bool CheckHttpHeader (TrackInfo track_in)
         {
             if (track_in == null) {
-                Hyena.Log.Debug ("[StreamripperService] <InitMplayerProcess> END. Recording not ready");
+                Hyena.Log.Debug ("[StreamrecorderService] <CheckHttpHeader> END. Recording not ready");
                 return false;
             }
             if (track_in.Uri == null) {
-                Hyena.Log.Debug ("[StreamripperService] <InitMplayerProcess> END. Recording not ready");
+                Hyena.Log.Debug ("[StreamrecorderService] <CheckHttpHeader> END. Recording not ready");
                 return false;
             }
 			return Regex.Match(track_in.Uri.ToString (),"^http://" ).Success;
@@ -361,16 +361,16 @@ namespace Banshee.Streamripper
         }
        
         public static readonly SchemaEntry<string> IsRecordingEnabledEntry = new SchemaEntry<string> (
-            "plugins.streamripper", "is_recording_enabled", "", "Is ripping enabled", "Is ripping enabled"
+            "plugins.streamrecorder", "is_recording_enabled", "", "Is ripping enabled", "Is ripping enabled"
         );
                 
         public static readonly SchemaEntry<string> OutputDirectoryEntry = new SchemaEntry<string> (
-            "plugins.streamripper", "output_directory", "", "Output directory for ripped files", 
+            "plugins.streamrecorder", "output_directory", "", "Output directory for ripped files", 
             "Output directory for ripped files"
         );
                 
         public static readonly SchemaEntry<string> IsImportingEnabledEntry = new SchemaEntry<string> (
-            "plugins.streamripper", "is_importing_enabled", "", "Is importing enabled", "Is importing enabled"
+            "plugins.streamrecorder", "is_importing_enabled", "", "Is importing enabled", "Is importing enabled"
         );
     }
 }

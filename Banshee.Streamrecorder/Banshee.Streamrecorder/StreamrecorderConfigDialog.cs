@@ -1,10 +1,11 @@
 //
-// RippedFileScanner.cs
+// StreamrecorderConfigDialog.cs
 //
-// Author:
-//   Akseli Mantila <aksu@paju.oulu.fi>
+//   Frank Ziegler
+//   based on Banshee-Streamripper by Akseli Mantila <aksu@paju.oulu.fi>
 //
 // Copyright (C) 2009 Akseli Mantila
+// Copyright (C) 2009 Frank Ziegler
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -38,11 +39,11 @@ using Banshee.I18n;
 
 using Hyena;
 
-namespace Banshee.Streamripper
+namespace Banshee.Streamrecorder
 {    
-    public class StreamripperConfigDialog : Gtk.Dialog
+    public class StreamrecorderConfigDialog : Gtk.Dialog
     {   
-        StreamripperService streamripper_service;
+        StreamrecorderService streamrecorder_service;
         Gtk.Image preferences_image = new Gtk.Image ();
         Gtk.Label header_label = new Gtk.Label ();
         Gtk.Label description_label = new Gtk.Label ();
@@ -53,17 +54,17 @@ namespace Banshee.Streamripper
         Gtk.Button cancel_button = new Gtk.Button (Gtk.Stock.Cancel);
         Gtk.Button save_button = new Gtk.Button (Gtk.Stock.Save);
         
-        public StreamripperConfigDialog (StreamripperService service, 
+        public StreamrecorderConfigDialog (StreamrecorderService service, 
                                          string previous_output_folder, 
                                          bool is_importing_enabled)
         {
-            streamripper_service = service;
+            streamrecorder_service = service;
             
             preferences_image.Yalign = 0.0f;
             preferences_image.IconName = "gtk-preferences";
             preferences_image.IconSize = (int) IconSize.Dialog;
             preferences_image.Show ();
-            header_label.Text = String.Format (AddinManager.CurrentLocalizer.GetString ("{0}Streamripper configuration\n{1}"),
+            header_label.Text = String.Format (AddinManager.CurrentLocalizer.GetString ("{0}Streamrecorder configuration\n{1}"),
                 "<span weight=\"bold\" size=\"larger\">", "</span>");
             header_label.UseMarkup = true;
             header_label.Wrap = true;
@@ -83,7 +84,7 @@ namespace Banshee.Streamripper
             save_button.Label = AddinManager.CurrentLocalizer.GetString ("_Save");
             save_button.Image = new Image ("gtk-save", IconSize.Button);
             enable_import_ripped_songs.Label = AddinManager.CurrentLocalizer.GetString ("Import files to media library");
-            enable_import_ripped_songs.Active = StreamripperService.IsImportingEnabledEntry.Get ().Equals ("True")
+            enable_import_ripped_songs.Active = StreamrecorderService.IsImportingEnabledEntry.Get ().Equals ("True")
                 ? true : false;
 
             HBox main_container = new HBox ();
@@ -112,7 +113,7 @@ namespace Banshee.Streamripper
             cancel_button.Clicked += new EventHandler (OnCancelButtonClicked);
             save_button.Clicked += new EventHandler (OnSaveButtonClicked);
             
-            Title = "Streamripper configuration";
+            Title = "Streamrecorder configuration";
             IconName = "gtk-preferences";
             Resizable = false;
             BorderWidth = 6;
@@ -129,15 +130,15 @@ namespace Banshee.Streamripper
         
         private void OnSaveButtonClicked (object o, EventArgs a) 
         {
-            Hyena.Log.DebugFormat ("[StreamripperConfigDialog] <OnSaveButtonClicked> dir: {0}", output_folder.Text);
+            Hyena.Log.DebugFormat ("[StreamrecorderConfigDialog] <OnSaveButtonClicked> dir: {0}", output_folder.Text);
             
-            StreamripperService.IsImportingEnabledEntry.Set (enable_import_ripped_songs.Active.ToString ());
-            streamripper_service.IsImportingEnabled = enable_import_ripped_songs.Active.ToString ().Equals ("True")
+            StreamrecorderService.IsImportingEnabledEntry.Set (enable_import_ripped_songs.Active.ToString ());
+            streamrecorder_service.IsImportingEnabled = enable_import_ripped_songs.Active.ToString ().Equals ("True")
                 ? true : false;
             
             if (ValidateOutputFolderField ()) {
-                streamripper_service.OutputDirectory = output_folder.Text.Trim ();
-                StreamripperService.OutputDirectoryEntry.Set (output_folder.Text.Trim ());    
+                streamrecorder_service.OutputDirectory = output_folder.Text.Trim ();
+                StreamrecorderService.OutputDirectoryEntry.Set (output_folder.Text.Trim ());    
             }
             
             Destroy ();
@@ -163,16 +164,16 @@ namespace Banshee.Streamripper
         private bool ValidateOutputFolderField () 
         {
             if (Banshee.IO.Directory.Exists (output_folder.Text.Trim ())) {
-                Hyena.Log.Debug ("[StreamripperConfigDialog] <ValidateOutputFolderField> VALID!");
+                Hyena.Log.Debug ("[StreamrecorderConfigDialog] <ValidateOutputFolderField> VALID!");
                 return true;
             }
             try {
                 Banshee.IO.Directory.Create (output_folder.Text);
-                Hyena.Log.Debug ("[StreamripperConfigDialog] <ValidateOutputFolderField> VALID!");
+                Hyena.Log.Debug ("[StreamrecorderConfigDialog] <ValidateOutputFolderField> VALID!");
                 return true;
             }
             catch {
-                Hyena.Log.Debug ("[StreamripperConfigDialog] <ValidateOutputFolderField> NOT VALID!");
+                Hyena.Log.Debug ("[StreamrecorderConfigDialog] <ValidateOutputFolderField> NOT VALID!");
                 return false;
             }
         }

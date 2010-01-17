@@ -1,4 +1,4 @@
-	../Banshee.Streamripper/Banshee.Streamripper/RippedFileScanner.cs \
-	../Banshee.Streamripper/Banshee.Streamripper/StreamripperConfigDialog.cs \
-	../Banshee.Streamripper/Banshee.Streamripper/StreamripperProcess.cs \
-	../Banshee.Streamripper/Banshee.Streamripper/StreamripperService.cs
+	../Banshee.Streamrecorder/Banshee.Streamrecorder/RippedFileScanner.cs \
+	../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs \
+	../Banshee.Streamrecorder/Banshee.Streamrecorder/RipperProcess.cs \
+	../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs
