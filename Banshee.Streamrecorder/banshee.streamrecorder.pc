@@ -3,4 +3,4 @@ Description: Banshee.Streamrecorder
 Version: 0.2
 
 Requires: 
-Libs: -r:@expanded_libdir@/banshee-streamrecorder/Banshee.Streamrecorder.dll
+Libs: -r:${exec_prefix}/lib/banshee-streamrecorder/Banshee.Streamrecorder.dll

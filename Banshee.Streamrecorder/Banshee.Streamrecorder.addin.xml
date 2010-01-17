@@ -20,5 +20,5 @@
     <Service class="Banshee.Streamrecorder.StreamrecorderService"/>   
   </Extension>
   
-  <Localizer type="Gettext" catalog="banshee-streamrecorder" location="/usr/local/share/locale"/>
+  <Localizer type="Gettext" catalog="banshee-streamrecorder" location="/usr/share/locale"/>
 </Addin>

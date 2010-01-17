@@ -310,7 +310,7 @@ configure:5724: $PKG_CONFIG --exists --print-errors "banshee-1-hyena >= 1.4.0
                            banshee-1-thickclient >= 1.4.0"
 configure:5730: $? = 0
 configure:5797: result: yes
-configure:6045: creating ./config.status
+configure:6046: creating ./config.status
 
 ## ---------------------- ##
 ## Running config.status. ##
@@ -541,7 +541,7 @@ datarootdir='${prefix}/share'
 docdir='${datarootdir}/doc/${PACKAGE_TARNAME}'
 dvidir='${docdir}'
 exec_prefix='${prefix}'
-expanded_pluginsdir='/usr/local/lib/banshee-1/Extensions'
+expanded_pluginsdir='/usr/lib/banshee-1/Extensions'
 host_alias=''
 htmldir='${docdir}'
 includedir='${prefix}/include'
@@ -555,7 +555,7 @@ mandir='${datarootdir}/man'
 mkdir_p='/bin/mkdir -p'
 oldincludedir='/usr/include'
 pdfdir='${docdir}'
-prefix='/usr/local'
+prefix='/usr'
 program_transform_name='s,x,x,'
 psdir='${docdir}'
 sbindir='${exec_prefix}/sbin'

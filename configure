@@ -5838,6 +5838,7 @@ else
 fi
 
 
+prefix=/usr
 SYSTEM_PLUGINS=`$PKG_CONFIG --variable=bansheedir banshee-1-core`/Extensions
 REL_PLUGINS_DIR=`basename $SYSTEM_PLUGINS`
 REL_BANSHEE_DIR=`echo "$SYSTEM_PLUGINS" | sed -e "s|\/$REL_PLUGINS_DIR||"`

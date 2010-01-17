@@ -90,6 +90,7 @@ AC_SUBST(banshee_libdir)
 AC_ARG_ENABLE(user-extension, AC_HELP_STRING([--enable-user-extension], [Install extension into user-level Banshee extensions directory instead of the Banshee system extensions directory]), , enable_user_extension="no")
 
 dnl Banshee Extensions Path
+prefix=/usr
 SYSTEM_PLUGINS=`$PKG_CONFIG --variable=bansheedir banshee-1-core`/Extensions
 REL_PLUGINS_DIR=`basename $SYSTEM_PLUGINS`
 REL_BANSHEE_DIR=`echo "$SYSTEM_PLUGINS" | sed -e "s|\/$REL_PLUGINS_DIR||"`
