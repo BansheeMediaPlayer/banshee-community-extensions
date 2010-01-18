@@ -65,14 +65,17 @@ namespace Banshee.ClutterFlow
 		}
 
 		public override string CacheKey {
-			get { return album!=null ? CreateCacheKey(album) : ""; }
+			get { return CreateCacheKey(album); }
 			set { 
 				throw new System.NotImplementedException ("CacheKey cannot be set directly in a ClutterFlowAlbum," +
 				                                          "derived from the Album property."); //TODO should use reflection here
 			}
 		}
 		public static string CreateCacheKey(AlbumInfo album) {
-			return album.ArtistName + "\n" + album.Title;
+            if (album==null)
+                return "";
+            else
+                return album.ArtistName + "\n" + album.Title;
 		}
 
 		public override string Label {
