@@ -1,22 +1,28 @@
-//
+// 
 // ClutterFlowAlbum.cs
-//
+//  
 // Author:
-//   Mathijs Dumon <mathijsken@hotmail.com>
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-//
-// A ClutterFlowAlbum is a subclass of the ClutterFlowActor class, containing
-// banshee related Album art fetching code.
-//
-
+//       Mathijs Dumon <mathijsken@hotmail.com>
+// 
+// Copyright (c) 2010 Mathijs Dumon
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 using System;
 
@@ -30,7 +36,10 @@ using ClutterFlow;
 
 namespace Banshee.ClutterFlow
 {	
-	
+	/// <summary>
+    /// A ClutterFlowAlbum is a subclass of the ClutterFlowActor class, containing
+    /// banshee related Album art fetching code.
+    /// </summary>
 	public class ClutterFlowAlbum : ClutterFlowActor,  IEquatable<ClutterFlowAlbum>
 	{
 		#region Fields
@@ -89,11 +98,12 @@ namespace Banshee.ClutterFlow
 		public ClutterFlowAlbum (AlbumInfo album, CoverManager coverManager) : base (coverManager, null)
 		{
 			this.album = album;
+			Lookup.Enqueue(this);
 		}
-		protected override void SetupStatics ()
+		protected override bool SetupStatics ()
 		{
 			if (lookup==null) lookup = new ArtworkLookup (CoverManager);
-			base.SetupStatics ();
+			return base.SetupStatics ();
 		}
 		#endregion
 		
@@ -101,13 +111,7 @@ namespace Banshee.ClutterFlow
 		protected override Gdk.Pixbuf GetDefaultPb ()
 		{
 			return IconThemeUtils.LoadIcon (coverManager.TextureSize, "media-optical", "browser-album-cover");
-		}
-		
-		protected override void SetupActors ()
-		{
-			base.SetupActors ();
-			Lookup.Enqueue(this);
-		}			
+		}	
 
 		protected override void HandleTextureSizeChanged (object sender, System.EventArgs e)
 		{

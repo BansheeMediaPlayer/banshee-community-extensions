@@ -1,23 +1,28 @@
-//
+// 
 // ClutterFlowActor.cs
-//
+//  
 // Author:
-//   Mathijs Dumon <mathijsken@hotmail.com>
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-//
-// A ClutterFlowActor is a group containing the actor texture and it's reflection
-// It does not contain any real animation code, only code to apply animations
-// Animation is provided by the FlowBehaviour class.
-//
-
+//       Mathijs Dumon <mathijsken@hotmail.com>
+// 
+// Copyright (c) 2010 Mathijs Dumon
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 using System;
 using System.Collections;
@@ -26,13 +31,21 @@ using System.Collections.Generic;
 using Gdk;
 using Cairo;
 using Clutter;
+using Cogl;
 
 using GLib;
 
 namespace ClutterFlow
 {
 
+    public interface IIndexable : IComparable<IIndexable> 
+    {
+        int Index { get; }
+        event IndexChangedEventHandler IndexChanged;
+    }
+    
 	public delegate Gdk.Pixbuf NeedPixbuf();
+    public delegate void IndexChangedEventHandler(IIndexable item, int old_index, int new_index);
 	
 	public class TextureHolder {
 		#region Fields
@@ -55,33 +68,35 @@ namespace ClutterFlow
 		protected Gdk.Pixbuf default_pb;
 		public Gdk.Pixbuf DefaultPb {
 			get {
-				if (default_pb==null && GetDefaultPb!=null) default_pb = GetDefaultPb();
+				if (default_pb==null && GetDefaultPb!=null) default_pb = ClutterFlowActor.MakeReflection(GetDefaultPb());
 				return default_pb; 
 			}
 		}
 		
-		protected Texture defltTexture;
-		public Texture DefaultTexture {
+		protected IntPtr defltTexture;
+		public IntPtr DefaultTexture {
 			get {
-				if (defltTexture==null) SetupDefaultTexture ();
+				if (defltTexture==IntPtr.Zero) SetupDefaultTexture ();
 				return defltTexture;
 			}
 		}
 
-		protected CairoTexture shadeTexture;
-		public CairoTexture ShadeTexture {
+		protected IntPtr shadeTexture;
+		public IntPtr ShadeTexture {
 			get {
-				if (shadeTexture==null) SetupShadeTexture ();
+				if (shadeTexture==IntPtr.Zero) SetupShadeTexture ();
 				return shadeTexture;
 			}
 		}
 		
 		public NeedPixbuf GetDefaultPb;
 		#endregion
+        
 		#region Initialisation
 		public TextureHolder (CoverManager coverManager, NeedPixbuf getDefaultPb)
 		{
-			this.CoverManager = coverManager;
+			this.coverManager = coverManager;
+			coverManager.TextureSizeChanged += HandleTextureSizeChanged;
 			this.GetDefaultPb = getDefaultPb;
 			ReloadDefaultTextures ();
 		}
@@ -89,42 +104,63 @@ namespace ClutterFlow
 		public void ReloadDefaultTextures ()
 		{
 			default_pb = null; //reset this so it gets reloaded
-			SetupDefaultTexture (true);
-			SetupShadeTexture (true);
-		}
-		
-		public void SetupDefaultTexture () 
-		{
-			SetupDefaultTexture (false);
-		}
-		public void SetupDefaultTexture (bool forceResize) 
-		{
-			if (defltTexture==null) {
-				defltTexture = new Texture ();
-				defltTexture.SetSize (coverManager.TextureSize, coverManager.TextureSize);
-				coverManager.Add (defltTexture);
-				defltTexture.Hide();
-			} else if (forceResize)
-				defltTexture.SetSize (coverManager.TextureSize, coverManager.TextureSize);
-			if (DefaultPb!=null)
-				GtkUtil.TextureSetFromPixbuf (defltTexture, ClutterFlowActor.MakeReflection (DefaultPb));
+			SetupDefaultTexture ();
+			SetupShadeTexture ();
 		}
 
+		public void SetupDefaultTexture () 
+		{
+			if (defltTexture==IntPtr.Zero) {
+				if (DefaultPb!=null) {
+					Cogl.PixelFormat fm;
+					if (DefaultPb.HasAlpha)
+						fm = PixelFormat.Rgba8888;
+					else
+						fm = PixelFormat.Rgb888;
+					unsafe {
+						defltTexture = ClutterHelper.cogl_texture_new_from_data((uint) DefaultPb.Width, (uint) DefaultPb.Height, Cogl.TextureFlags.None, 
+						                                         fm, Cogl.PixelFormat.Any, (uint) DefaultPb.Rowstride, DefaultPb.Pixels);
+					}
+				} else {
+					defltTexture = Cogl.Texture.NewWithSize ((uint) coverManager.TextureSize, (uint) coverManager.TextureSize,
+					                                         Cogl.TextureFlags.None, Cogl.PixelFormat.Any);
+				}
+			}
+		}
 
 		public void SetupShadeTexture () 
 		{
-			SetupShadeTexture (false);
-		}
-		public void SetupShadeTexture (bool forceResize) 
-		{
-			if (shadeTexture==null) {
-				shadeTexture = new CairoTexture ((uint) coverManager.TextureSize, (uint) coverManager.TextureSize);
-				coverManager.Add (shadeTexture);
-				shadeTexture.Hide();
-				ClutterFlowActor.SetTextureToShade (shadeTexture, coverManager.TextureSize);
-			} else if (forceResize)
-				shadeTexture.SetSize (coverManager.TextureSize, coverManager.TextureSize);
-			ClutterFlowActor.SetTextureToShade (shadeTexture, coverManager.TextureSize);
+			if (shadeTexture==IntPtr.Zero) {
+
+				Gdk.Pixbuf finalPb = new Gdk.Pixbuf(Colorspace.Rgb, true, 8, coverManager.TextureSize, coverManager.TextureSize*2);
+	
+				unsafe {				
+					int dst_rowstride = finalPb.Rowstride;
+					int dst_width = finalPb.Width;
+					int shd_width = (int) ((float) dst_width * 0.25f);
+					int dst_height = finalPb.Height;
+					byte * dst_byte = (byte *) finalPb.Pixels;
+					byte * dst_base = dst_byte;
+		
+					for (int j = 0; j < dst_height; j++) {
+						dst_byte = ((byte *) dst_base) + j * dst_rowstride;
+						for (int i = 0; i < dst_width; i++) {
+							*dst_byte++ = 0x00;
+							*dst_byte++ = 0x00;
+							*dst_byte++ = 0x00;
+							if (i > shd_width)
+								*dst_byte++ = (byte) (255 * (float) (i - shd_width) / (float) (dst_width - shd_width));
+							else
+								*dst_byte++ = 0x00;
+						}
+					}
+				}
+
+				unsafe {
+					shadeTexture = ClutterHelper.cogl_texture_new_from_data((uint) finalPb.Width, (uint) finalPb.Height, Cogl.TextureFlags.None, 
+					                                         PixelFormat.Rgba8888, Cogl.PixelFormat.Any, (uint) finalPb.Rowstride, finalPb.Pixels);
+				}
+			}
 		}
 		#endregion
 		
@@ -134,14 +170,10 @@ namespace ClutterFlow
 		}
 	}
 
-	public interface IIndexable : IComparable<IIndexable> 
-	{
-		int Index { get; }
-		event IndexChangedEventHandler IndexChanged;
-	}
-
-	public delegate void IndexChangedEventHandler(IIndexable item, int old_index, int new_index);
-	
+    /// <summary>
+    /// A ClutterFlowActor is a group containing the actor texture and it's reflection
+    /// It does not contain any animation code, as this is provided by the FlowBehaviour class.
+    /// </summary>
 	public class ClutterFlowActor : Clutter.Group, IIndexable
 	{	
 		#region Fields
@@ -152,31 +184,52 @@ namespace ClutterFlow
 			get { return is_setup; }
 			protected set { is_setup = value; }
 		}
-		
-		protected IntPtr coverMaterial;
+	
 		private bool swapped = false;
+		private bool delayed_cover_swap = false;
+		private bool delayed_shade_swap = false;
 	 	public bool SwappedToDefault {
 			get { return swapped; }
 			set {
 				if (value!=swapped) {
 					swapped = value;
-					if (swapped) {
-						coverMaterial = Cogl.Material.Ref(cover.CoglMaterial);
-						cover.CoglMaterial = textureHolder.DefaultTexture.CoglMaterial;
-					} else {
-						cover.CoglMaterial = coverMaterial;
-						Cogl.Material.Unref(coverMaterial);
-					}
+					if (this.Stage == null)
+						delayed_cover_swap = true;
+					else
+						SetCoverSwap ();
 				}
 			}
 		}
+
+	 	void HandleParentSet(object o, ParentSetArgs args)
+	 	{
+	 		if (this.Stage != null) {
+				if (delayed_shade_swap) SetShadeSwap ();				
+				if (delayed_cover_swap) SetCoverSwap ();
+			}
+	 	}
+
+		private void SetCoverSwap () {
+			if (swapped) {
+				cover.CoglTexture = textureHolder.DefaultTexture;
+			} else {
+				cover.CoglTexture = Cogl.Texture.NewWithSize((uint) coverManager.TextureSize, (uint) coverManager.TextureSize,
+					                                         Cogl.TextureFlags.NoSlicing, Cogl.PixelFormat.Argb8888);
+			}
+			delayed_cover_swap = false;
+		}
+
+		private void SetShadeSwap () {
+			shade.CoglTexture = textureHolder.ShadeTexture;
+			delayed_shade_swap = false;
+		}
 		
-		protected Texture cover = null;
-		public Texture Cover {
+		protected Clutter.Texture cover = null;
+		public Clutter.Texture Cover {
 			get { return cover; }
 		}
-		protected Texture shade = null;
-		public Texture Shade {
+		protected Clutter.Texture shade = null;
+		public Clutter.Texture Shade {
 			get { return shade; }
 		}
 		
@@ -187,10 +240,13 @@ namespace ClutterFlow
 				if (value!=coverManager) {
 					if (coverManager!=null) {
 						coverManager.TextureSizeChanged -= HandleTextureSizeChanged;
+						coverManager.Remove (this);
 					}
 					coverManager = value;
 					if (coverManager!=null) {
 						coverManager.TextureSizeChanged += HandleTextureSizeChanged;
+						coverManager.Add (this);
+						coverManager.Realize ();
 					}
 				}
 			}
@@ -246,16 +302,22 @@ namespace ClutterFlow
 		#region Initialization	
 		public ClutterFlowActor (CoverManager coverManager, NeedPixbuf getDefaultPb) : base ()
 		{
+			this.ParentSet += HandleParentSet;
 			this.CoverManager = coverManager;
 			this.getDefaultPb = getDefaultPb;
-			SetupStatics ();
+
+			IsReactive = true;
+			this.ButtonPressEvent += HandleButtonPressEvent;
+			this.ButtonReleaseEvent += HandleButtonReleaseEvent;
+			
+			IsSetup = SetupStatics ();
 			SetupActors ();
 		}
-		protected virtual void SetupStatics ()
+		protected virtual bool SetupStatics ()
 		{
 			if (textureHolder==null) 
 				textureHolder = new TextureHolder(CoverManager, GetDefaultPb);
-			IsSetup = true;
+			return true;
 		}
 		protected virtual void SetupActors ()
 		{
@@ -272,29 +334,35 @@ namespace ClutterFlow
 		protected virtual void SetupCover ()
 		{
 			if (cover==null) {
-				cover = new Texture();
+				cover = new Clutter.Texture();
 				Add (cover);
 				cover.Show ();
+				cover.Realize ();
 			}
 			cover.SetSize (coverManager.Behaviour.CoverWidth, coverManager.Behaviour.CoverWidth*2);
 			cover.SetPosition (0, 0);
 			cover.Opacity = 255;
+			
 			SwappedToDefault = true;
 		}
 
 		protected virtual void SetupShade ()
 		{
 			if (shade==null) {
-				shade = new Texture();
+				shade = new Clutter.Texture();
 				Add (shade);
 				shade.Show ();
-				shade.CoglMaterial = textureHolder.ShadeTexture.CoglMaterial;
+				shade.Realize ();
+				if (Stage!=null)
+					SetShadeSwap ();
+				else
+					delayed_shade_swap = true;
 			}
 			shade.SetSize (coverManager.Behaviour.CoverWidth, coverManager.Behaviour.CoverWidth*2);
 			shade.SetPosition (0, 0);
 			shade.Opacity = 255;
 
-			if (cover!=null) Raise (cover);
+			if (cover!=null) Shade.Raise (cover);
 		}
 		#endregion
 
@@ -304,10 +372,9 @@ namespace ClutterFlow
 			return (getDefaultPb!=null) ? getDefaultPb() : null;
 		}
 
-		public static void SetTextureToShade (CairoTexture text, float txtre_dim)
+		public static void SetSurfaceToShade (Cairo.ImageSurface surf, float txtre_dim)
 		{
-			text.Clear ();
-			Cairo.Context context = text.Create ();
+			Cairo.Context context = new Cairo.Context (surf);
 			Gradient gr = new LinearGradient (0, 0, txtre_dim, 0);
 			gr.AddColorStop (0.25, new Cairo.Color (0.0, 0.0, 0.0, 0.0));
 			gr.AddColorStop (1.0, new Cairo.Color (0.0, 0.0, 0.0, 0.6));
@@ -421,6 +488,24 @@ namespace ClutterFlow
 				lastAlpha = val;
 			}
 			return lastAlpha;
+		}
+		#endregion
+
+		#region Event Handling
+		private void HandleButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
+		{
+			if (Index>=0) {
+				if (CoverManager.CurrentCover==this) {
+					CoverManager.InvokeCoverActivated (this);
+				} else
+					CoverManager.TargetIndex = Index;
+				args.RetVal = true;
+			}
+		}
+
+		private void HandleButtonPressEvent (object o, ButtonPressEventArgs args)
+		{
+			//should register time for double clicks
 		}
 		#endregion
 	}

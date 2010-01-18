@@ -1,3 +1,29 @@
+// 
+// FlowBehaviour.cs
+//  
+// Author:
+//       Mathijs Dumon <mathijsken@hotmail.com>
+// 
+// Copyright (c) 2010 Mathijs Dumon
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 
 using System;
 using System.Collections.Generic;
@@ -179,7 +205,7 @@ namespace ClutterFlow
 
 		public void UpdateActors () 
 		{
-			if (!holdUpdates && coverManager.Enabled && coverManager.IsVisible) {
+			if (!holdUpdates && /*coverManager.Enabled &&*/ coverManager.IsVisible) {
 				//only update covers that were visible at the previous & current progress:
 				
 				double currentProgress = Progress;
@@ -357,9 +383,9 @@ namespace ClutterFlow
 		protected void HandleClickedCloneCompleted (object sender, EventArgs e)
 		{
 			if (sender is Animation && (sender as Animation).Object is Actor) {
+				//Fixme: we get an error from GObject: assertion `G_IS_OBJECT (object)' failed
 				Actor actor = (Actor) (sender as Animation).Object;
 				actor.Destroy ();
-				actor.Dispose ();
 				(sender as Animation).Completed -= HandleClickedCloneCompleted;
 			}
 		}

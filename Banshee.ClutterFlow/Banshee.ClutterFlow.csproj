@@ -8,7 +8,6 @@
     <ProjectGuid>{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Banshee.ClutterFlow</AssemblyName>
-    <RootNamespace>Banshee.ClutterFlow</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,6 +23,8 @@
         <Command type="Execute" command="cd bin &amp;&amp; ./run_test" workingdir="${ProjectDir}" externalConsole="true" />
       </CustomCommands>
     </CustomCommands>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <additionalargs>/unsafe</additionalargs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -37,6 +38,7 @@
         <Command type="Execute" command="bin/run_test" workingdir="${TargetDir}" externalConsole="true" />
       </CustomCommands>
     </CustomCommands>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -80,16 +82,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ClutterFlowInterface.cs" />
+    <Compile Include="ClutterFlowService.cs" />
     <Compile Include="ClutterFlowContents.cs" />
-    <Compile Include="ClutterFlowSource.cs" />
+    <Compile Include="ClutterFlowSchemas.cs" />
     <Compile Include="ClutterFlowAlbum.cs" />
     <Compile Include="AlbumLoader.cs" />
-    <Compile Include="ClutterFlowWidget.cs" />
+    <Compile Include="ClutterFlowView.cs" />
     <Compile Include="PartyModeButton.cs" />
     <Compile Include="FullscreenButton.cs" />
     <Compile Include="ArtworkLookup.cs" />
-    <Compile Include="IndexedQueue.cs" />
+    <Compile Include="FloatingQueue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

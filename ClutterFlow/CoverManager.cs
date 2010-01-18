@@ -1,8 +1,35 @@
+// 
+// CoverManager.cs
+//  
+// Author:
+//       Mathijs Dumon <mathijsken@hotmail.com>
+// 
+// Copyright (c) 2010 Mathijs Dumon
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 
 using System;
 using System.Collections.Generic;
 
 using Clutter;
+using Gtk;
 using GLib;
 
 namespace ClutterFlow
@@ -11,12 +38,15 @@ namespace ClutterFlow
 	public delegate void CoverEventHandler(ClutterFlowActor actor, EventArgs e);
 	
 	public class CoverManager : Clutter.Group {
-			
+
+		public event CoverEventHandler CoverActivated;
+		internal void InvokeCoverActivated (ClutterFlowActor cover) {
+			if (CoverActivated!=null) CoverActivated (cover, EventArgs.Empty);
+		}
+		
 		public event CoverEventHandler NewCurrentCover;
 		protected void InvokeNewCurrentCover(ClutterFlowActor cover) {
-			if (NewCurrentCover!=null) {
-				NewCurrentCover(cover, EventArgs.Empty);
-			}
+			if (NewCurrentCover!=null) NewCurrentCover(cover, EventArgs.Empty);
 		}
 		
 		public event EventHandler<EventArgs> CoversChanged;
@@ -151,7 +181,7 @@ namespace ClutterFlow
 			internal set { needsReloading = value; }
 		}
 		
-		protected bool enabled = false;
+		/*protected bool enabled = true;
 		public bool Enabled {
 			get { return enabled; }
 			set {
@@ -163,12 +193,12 @@ namespace ClutterFlow
 					needsReloading = false;
 				}
 			}
-		}
+		}*/
 		
 		public CoverManager () : base ()
 		{
 			UpdateTimeline (0);
-			behaviour = new FlowBehaviour (this);
+			behaviour = new FlowBehaviour (this);			
 		}
 		
 		public void UpdateBehaviour () 
@@ -209,7 +239,7 @@ namespace ClutterFlow
 			if (Timeline!=null) Timeline.Halt ();
 			if (covers!=null && covers.Count!=0) {
 				Console.WriteLine("Reloading Covers");
-				behaviour.HoldUpdates = true;		
+				behaviour.HoldUpdates = true;
 				
 				int old_current_index = CurrentCover!=null ? covers.IndexOf (CurrentCover) : 0;
 				List<ClutterFlowActor> old_covers = new List<ClutterFlowActor>();
@@ -223,34 +253,40 @@ namespace ClutterFlow
 				covers = actorLoader.GetActors (delegate (ClutterFlowActor actor) {
 						if (currentCover==actor) keepCurrent = true;
 				});
-				UpdateTimeline();
 
-				//recalculate timeline progression and the target index
-				int newTargetIndex = 0;
-				if (covers.Count > 1) {
-					if (keepCurrent)
-						newTargetIndex = currentCover.Index;
-					else
-						newTargetIndex = (int) Math.Round(Timeline.Progress * (covers.Count-1));
-					Timeline.Progress = (float) newTargetIndex / (float) (covers.Count-1);
-				}
-				
-				List<ClutterFlowActor> new_covers = new List<ClutterFlowActor>(SafeGetRange(covers, newTargetIndex - HalfVisCovers, visibleCovers));
-				behaviour.FadeCoversInAndOut (old_covers, new_covers, Timeline.Progress, delegate (object o, EventArgs e) {
+				if (covers!=null && covers.Count>0) {
+					UpdateTimeline();
+	
+					//recalculate timeline progression and the target index
+					int newTargetIndex = 0;
+					if (covers.Count > 1) {
+						if (keepCurrent)
+							newTargetIndex = currentCover.Index;
+						else
+							newTargetIndex = (int) Math.Round(Timeline.Progress * (covers.Count-1));
+						Timeline.Progress = (float) newTargetIndex / (float) (covers.Count-1);
+					}
+					
+					List<ClutterFlowActor> new_covers = new List<ClutterFlowActor>(SafeGetRange(covers, newTargetIndex - HalfVisCovers, visibleCovers));
+					behaviour.FadeCoversInAndOut (old_covers, new_covers, Timeline.Progress, delegate (object o, EventArgs e) {
+						behaviour.HoldUpdates = false;
+						TargetIndex = newTargetIndex;
+						InvokeCoversChanged();
+					});
+				} else {
 					behaviour.HoldUpdates = false;
-					TargetIndex = newTargetIndex;
-					InvokeCoversChanged();
-				});
-				
+				}
 			} else {
 				Console.WriteLine("Loading Covers");
 				covers = actorLoader.GetActors (delegate (ClutterFlowActor actor) { actor.Hide(); });
-				UpdateTimeline();
-				Timeline.Progress = 0;
-				currentCover = covers[0];
-				TargetIndex = 0;
-				InvokeCoversChanged ();
-				Behaviour.UpdateActors ();
+				if (covers!=null && covers.Count>0) {
+					UpdateTimeline();
+					Timeline.Progress = 0;
+					currentCover = covers[0];
+					TargetIndex = 0;
+					InvokeCoversChanged ();
+					Behaviour.UpdateActors ();
+				}
 			}
 		}
 		

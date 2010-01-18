@@ -1,23 +1,28 @@
-//
-// ClutterFlowAlbum.cs
-//
+// 
+// ArtworkLookup.cs
+//  
 // Author:
-//   Mathijs Dumon <mathijsken@hotmail.com>
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-//
-// The ArtworkLookup class is a static property of the ClutterFlowAlbum
-// instantiated if null or passed with it's constructor. It is an 
-// asynchronous worker thread processing the artwork lookups.
-//
-
+//       Mathijs Dumon <mathijsken@hotmail.com>
+// 
+// Copyright (c) 2010 Mathijs Dumon
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 using System;
 using System.Threading;
@@ -35,83 +40,11 @@ using ClutterFlow;
 namespace Banshee.ClutterFlow
 {
 
-	public class FloatingQueue<T> where T : class, IIndexable
-	{
-		IndexedQueue<T> queue = new IndexedQueue<T> ();
-
-		private int offset = 0;	// the offset from the focus
-		private int sign = 1;		// positive or negative offset
-		private int focus = 0;
-		public int Focus {
-			get { return focus; }
-			set {
-				if (focus!=value) {
-					focus = value;
-					ResetFloaters ();
-				}
-			}
-		}
-
-		public int Count {
-			get { return queue.Count; }
-		}
-		
-		public FloatingQueue ()
-		{
-			queue.Changed += HandleChanged;
-		}
-
-		#region Methods
-
-		protected virtual void ResetFloaters ()
-		{
-			offset = 0;
-			sign = 1;
-		}
-		
-		public virtual void Enqueue (T item)
-		{
-			queue.Add(item);
-		}
-
-		public virtual T Dequeue ()
-		{
-			if (queue.Count==0) {
-				Console.WriteLine("Inside zero count dequeue");
-				return null;
-			} else if (queue.Count==1 && queue.TryKey(-1)!=null) {
-				Console.WriteLine("Inside offscreen dequeue");
-				return queue.PopFrom(-1);
-			} else {
-				Console.WriteLine("Inside normal Dequeue Focus == " + focus + " offset == " + offset);
-				int index = focus + offset * sign;
-				T curr = queue.TryKey(index);
-				while (curr==null || offset == 10000) {
-					//Console.WriteLine("						WHILE WHILE WHILE");
-					sign = -sign;
-					if (sign < 0)
-						offset++;				
-					index = focus + offset * sign;
-					if (sign < 0) //we do not want offscreens to get loaded yet
-						index = Math.Max(1, index);	
-					curr = queue.TryKey(index); //re-assign
-				}
-				return queue.PopFrom(index);
-			}
-		}
-
-
-		void HandleChanged(object sender, EventArgs e)
-		{
-			ResetFloaters ();
-		}
-		#endregion
-	}
-	
+    /// <summary>
+    /// The ArtworkLookup class is an asynchronous worker thread processing artwork lookups.
+    /// </summary>
 	public class ArtworkLookup : IDisposable {
-
-		//PLANNED: add stopped started and iter events that should get invoked on the main loop!
-		
+	
 		#region Fields
 		private ArtworkManager artwork_manager;
 
@@ -129,7 +62,9 @@ namespace Banshee.ClutterFlow
 			}
 		}
 
-		public object LockRoot = new object ();
+		public object SyncRoot {
+			get { return LookupQueue.SyncRoot; }
+		}
 		private FloatingQueue<ClutterFlowAlbum> LookupQueue = new FloatingQueue<ClutterFlowAlbum> ();
 		
 		
@@ -137,13 +72,17 @@ namespace Banshee.ClutterFlow
 	    protected bool stopping = false;					// Whether or not the worker thread has been asked to stop
 	    protected bool stopped = true;						// Whether or not the worker thread has stopped
 	    
-	    // Returns whether the worker thread has been asked to stop.
-	    // This continues to return true even after the thread has stopped.
+		/// <value>
+		/// Returns whether the worker thread has been asked to stop.
+	    /// This continues to return true even after the thread has stopped.
+		/// </value>
 	    public bool Stopping {
 	        get { lock (stopLock) { return stopping; } }
 	    }
 	    
+		//// <value>
 	    // Returns whether the worker thread has stopped.
+		/// </value>
 	    public bool Stopped {
 	        get { lock (stopLock) { return stopped; } }
 	    }
@@ -151,6 +90,7 @@ namespace Banshee.ClutterFlow
 		
 		public ArtworkLookup (CoverManager coverManager) 
 		{
+			Hyena.Log.Information ("ArtworkLookup created!!");
 		 	CoverManager = coverManager;
 			artwork_manager = ServiceManager.Get<ArtworkManager> ();
 		}
@@ -162,20 +102,17 @@ namespace Banshee.ClutterFlow
 		#region Queueing and index hinting	
 		public void Enqueue (ClutterFlowAlbum cover)
 		{
-			Hyena.Log.Information ("Enqueue tries to get a lock");
-			lock (LockRoot) {
-				Hyena.Log.Information ("Enqueue has locked");
-				LookupQueue.Enqueue (cover);
-				Start ();
-				Monitor.Pulse (LockRoot);
-			}
+			LookupQueue.Enqueue (cover);
+			Start ();
 		}
 
 		private int new_focus = -1;
 		private object focusLock = new object ();
 		protected void HandleTargetIndexChanged(object sender, EventArgs e)
 		{
+			//Hyena.Log.Information ("ArtworkLookup HandleTargetIndexChanged locking focusLock");
 			lock (focusLock) {
+				//Hyena.Log.Information ("ArtworkLookup HandleTargetIndexChanged locked focusLock");
 				new_focus = coverManager.TargetIndex;
 			}
 		}
@@ -194,7 +131,6 @@ namespace Banshee.ClutterFlow
 				Thread t = new Thread (new ThreadStart (Run));
 				t.Priority = ThreadPriority.BelowNormal;
 				t.Start ();
-				Hyena.Log.Information("ArtworkLookup Job has started");
 			}
 		}
 	
@@ -204,7 +140,7 @@ namespace Banshee.ClutterFlow
 	    public void Stop ()
 	    {
 	        lock (stopLock) {
-				Monitor.Pulse (LockRoot);
+				Monitor.Pulse (SyncRoot);
 				stopping = true; 
 			}
 	    }
@@ -213,7 +149,6 @@ namespace Banshee.ClutterFlow
 	    protected void SetStopped ()
 	    {
 	        lock (stopLock) { stopped = true; }
-			Hyena.Log.Information("ArtworkLookup Job has finished");
 	    }
 		#endregion
 		
@@ -222,38 +157,44 @@ namespace Banshee.ClutterFlow
 	    {
 	        try {
 	            while (!Stopping) {
-					lock (LockRoot) {
-						lock (focusLock) {
-							if (new_focus>-1)
-								LookupQueue.Focus = new_focus;
-							new_focus = -1;
-						}
-						//Console.WriteLine ("LookupQueue.Count==" + LookupQueue.Count);
-						while (LookupQueue.Count==0) {
-							if (Stopping) return;
-							Monitor.Wait (LockRoot);
-						}
-						//TODO implement a sliding index thingy in tandem with the covermanager behaviour.
-						/* For this to be possible, we should register for
-						 * events on the Behaviour and Timeline classes of the coverManager.
-						 * */
-						Clutter.Threads.Enter ();
-							ClutterFlowAlbum cover = LookupQueue.Dequeue ();
-							float size = cover.CoverManager.TextureSize;
-							string cache_id = cover.PbId;
-							Gdk.Threads.Enter ();
-								Gdk.Pixbuf newPb = artwork_manager.LookupScalePixbuf (cache_id, (int) size);
-								if (newPb!=null) {
-									//it would be faster if we could just lock Gdk, but for some reason we end up with a dead lock,
-									//probably related with banshee code? Should ask on the banshee-list
-									Gtk.Application.Invoke (delegate {
-										cover.SwappedToDefault = false;
-										GtkUtil.TextureSetFromPixbuf (cover.Cover, ClutterFlowActor.MakeReflection(newPb));
-									});
-								}
-							Gdk.Threads.Leave ();
-						Clutter.Threads.Leave ();
+					ClutterFlowAlbum cover; //no API calling here!
+					
+					//Hyena.Log.Information ("ArtworkLookup Run locking focusLock");
+					lock (focusLock) {
+						//Hyena.Log.Information ("ArtworkLookup Run locked focusLock");
+						if (new_focus>-1)
+							LookupQueue.Focus = new_focus;
+						new_focus = -1;
 					}
+					while (LookupQueue.Count==0) {
+						if (Stopping) return;
+						lock (SyncRoot) {
+							Monitor.Wait (SyncRoot);
+						}
+					}
+					cover = LookupQueue.Dequeue ();
+						
+					//Hyena.Log.Information ("ArtworkLookup Run locking Clutter");
+					Clutter.Threads.Enter ();
+						//Hyena.Log.Information ("ArtworkLookup Run locked Clutter");
+						
+						float size = cover.CoverManager.TextureSize;
+						string cache_id = cover.PbId;
+						//Gdk.Threads.Enter ();
+							Gdk.Pixbuf newPb = artwork_manager.LookupScalePixbuf (cache_id, (int) size);
+							if (newPb!=null) {
+								//it would be faster if we could just lock Gdk, but for some reason we end up with a dead lock,
+								//probably related with banshee code? Should ask on the banshee-list
+								//Hyena.Log.Information ("ArtworkLookup invokes Gtk calls");
+								Gtk.Application.Invoke (delegate {
+									cover.SwappedToDefault = false;
+									GtkUtil.TextureSetFromPixbuf (cover.Cover, ClutterFlowActor.MakeReflection(newPb));
+								});
+								
+							}
+						//Gdk.Threads.Leave ();
+					Clutter.Threads.Leave ();
+					//Hyena.Log.Information ("ArtworkLookup Run released Clutter");
 					System.Threading.Thread.Sleep (50); //give the other threads time to do some work
 	            }
 	        } finally {
