@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using Gtk;
 using Mono.Unix;
 
+using Hyena;
 using Hyena.Data;
 using Hyena.Data.Gui;
 using Hyena.Widgets;
@@ -228,7 +229,9 @@ namespace Banshee.ClutterFlow
 			//TODO make this a collabsable thing so the ClutterFlow widget can be bigger, while not fullscreen
             ScrolledWindow window = null;
 
-            if (Banshee.Base.ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
+            // See revision http://git.gnome.org/browse/banshee/commit/?id=2b7789ea563319fa7196e50b76b2b561d699fd71
+            //if (Banshee.Base.ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
+            if (ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
                 window = new SmoothScrolledWindow ();
             } else {
                 window = new ScrolledWindow ();
