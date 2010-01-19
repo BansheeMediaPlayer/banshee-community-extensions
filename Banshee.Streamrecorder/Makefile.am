@@ -47,8 +47,7 @@ all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG)
 FILES =  \
 	Banshee.Streamrecorder/RippedFileScanner.cs \
 	Banshee.Streamrecorder/StreamrecorderConfigDialog.cs \
-	Banshee.Streamrecorder/StreamripperProcess.cs \
-	Banshee.Streamrecorder/MplayerProcess.cs \
+	Banshee.Streamrecorder/StreamrecorderProcessControl.cs \
 	Banshee.Streamrecorder/StreamrecorderService.cs 
 
 DATA_FILES = 

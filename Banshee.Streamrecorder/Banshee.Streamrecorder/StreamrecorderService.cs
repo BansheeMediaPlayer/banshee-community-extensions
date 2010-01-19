@@ -50,15 +50,13 @@ namespace Banshee.Streamrecorder
 {
     public class StreamrecorderService : IExtensionService, IDisposable
     {
-        private StreamripperProcess streamripper_process = null;
-        private MplayerProcess mplayer_process = null;
+        private StreamrecorderProcessControl streamrecorder_process;
         private ActionGroup actions;
         private InterfaceActionService action_service;
         private uint ui_manager_id;
         private bool recording = false;
         private string output_directory;
         private bool is_importing_enabled = true;
-        private bool has_http_header = false;
 		private TrackInfo track = null;
 
         
@@ -69,6 +67,7 @@ namespace Banshee.Streamrecorder
             recording = IsRecordingEnabledEntry.Get ().Equals ("True") ? true : false;
             output_directory = OutputDirectoryEntry.Get ();
             is_importing_enabled = IsImportingEnabledEntry.Get ().Equals ("True") ? true : false;
+            streamrecorder_process = new StreamrecorderProcessControl();
         }
         
         void IExtensionService.Initialize ()
@@ -172,7 +171,6 @@ namespace Banshee.Streamrecorder
 
         private void OnStateChange (PlayerEventArgs args)
         {
-            //Console.WriteLine ("OnStateChange" );
             //Console.WriteLine (ServiceManager.PlayerEngine.CurrentState);
             //Console.WriteLine (ServiceManager.PlayerEngine.LastState);
             if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Idle && recording) {
@@ -190,27 +188,11 @@ namespace Banshee.Streamrecorder
 				 return;
 			}
 			
-			bool result = false;
 			track = ServiceManager.PlaybackController.CurrentTrack;
-			has_http_header = CheckHttpHeader(track);
-			
-			if (has_http_header)
-			{
-				result = InitStreamripperProcess (track) ;
-			}
-			else
-			{
-				result = InitMplayerProcess (track) ;
-			}
-            if (result) {
-				if (has_http_header)
-				{
-					streamripper_process.StartRecording ();
-				}
-				else
-				{
-					mplayer_process.StartRecording ();
-				}
+
+            if (InitStreamrecorderProcess (track)) {
+				streamrecorder_process.StartRecording ();
+				
                 if (is_importing_enabled)
                     StartFolderScanner ();
             }
@@ -218,16 +200,7 @@ namespace Banshee.Streamrecorder
 
         private void StopRecording () 
         {
-			if (has_http_header)
-			{
-				if (streamripper_process != null)
-					streamripper_process.StopRecording ();
-			}
-			else
-			{
-				if (mplayer_process != null)
-					mplayer_process.StopRecording ();
-			}
+			streamrecorder_process.StopRecording ();
 
             StopFolderScanner ();
         }
@@ -242,70 +215,36 @@ namespace Banshee.Streamrecorder
            RippedFileScanner.StopScanner ();
         }
                 
-        private bool InitStreamripperProcess (TrackInfo track_in) 
+        private bool InitStreamrecorderProcess (TrackInfo track_in) 
         {
-            Hyena.Log.DebugFormat ("[StreamrecorderService] <InitStreamripperProcess> START dir: '{0}'", output_directory);
+            Hyena.Log.DebugFormat ("[StreamrecorderService] <InitStreamrecorderProcess> START dir: '{0}'", output_directory);
                     
             if (String.IsNullOrEmpty (output_directory)) {
                 output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory +
                     Path.DirectorySeparatorChar + "ripped";
             }
                     
-            if (streamripper_process == null)
-                streamripper_process = new StreamripperProcess ();
-            
             if (track_in == null) {
-                Hyena.Log.Debug ("[StreamrecorderService] <InitStreamripperProcess> END. Recording not ready");
+                Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> END. Recording not ready");
                 return false;
             }
                   
             if (track_in.Uri == null || track_in.Uri.IsLocalPath) {
-                Hyena.Log.Debug ("[StreamrecorderService] <InitStreamripperProcess> END. Not recording local files");
+                Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> END. Not recording local files");
                 return false;
             }
-                  
-            streamripper_process.SetStreamURI (track_in.Uri.ToString ());
-            streamripper_process.SetOutputDirectory (output_directory);
-            streamripper_process.SetOutputFileFormatPattern ("\"%A/%a/%T\"");
 
-            RippedFileScanner.SetScanDirectory (output_directory);
-                    
-            Hyena.Log.Debug ("[StreamrecorderService] <InitStreamripperProcess> END. Recording ready");
-            return true;
-        }
-                
-        private bool InitMplayerProcess (TrackInfo track_in) 
-        {
-            Hyena.Log.DebugFormat ("[StreamrecorderService] <InitMplayerProcess> START dir: '{0}'", output_directory);
-                    
-            if (String.IsNullOrEmpty (output_directory)) {
-                output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory +
-                    Path.DirectorySeparatorChar + "ripped";
-            }
-                    
-            if (mplayer_process == null)
-                mplayer_process = new MplayerProcess ();
-            
-            if (track_in == null) {
-                Hyena.Log.Debug ("[StreamrecorderService] <InitMplayerProcess> END. Recording not ready");
-                return false;
-            }
-			
-            if (track_in.Uri == null || track_in.Uri.IsLocalPath) {
-                Hyena.Log.Debug ("[StreamrecorderService] <InitMplayerProcess> END. Not recording local files");
-                return false;
-            }
-                  
 			DateTime dt = DateTime.Now;
 			string datestr = String.Format("{0:d_M_yyyy_HH_mm_ss}", dt);
 			string fileext = Regex.Replace(track.Uri.ToString(), @"^.*(\.[^\.]*)$", "$1");
+			string filename = track.TrackTitle + "_" + datestr + fileext;
 
-            mplayer_process.SetStreamURI (track.Uri.ToString ());
-            mplayer_process.SetOutputFile (output_directory + "/" + track.TrackTitle + "_" + datestr + fileext);
+            streamrecorder_process.SetStreamURI (track.Uri.ToString ());
+            streamrecorder_process.SetOutputParameters (output_directory,filename,"\"%A/%a/%T\"");
 
             RippedFileScanner.SetScanDirectory (output_directory);
                     
-            Hyena.Log.Debug ("[StreamrecorderService] <InitMplayerProcess> END. Recording ready");
+            Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> END. Recording ready");
             return true;
         }
                 
@@ -321,40 +260,21 @@ namespace Banshee.Streamrecorder
                
                 Hyena.Log.DebugFormat ("[StreamrecorderService] <OutputDirectorySetter> ", value);
 
-				bool result = false;
-				track = ServiceManager.PlaybackController.CurrentTrack;
-				has_http_header = CheckHttpHeader(track);
-				
-				if (has_http_header)
+				if (String.IsNullOrEmpty (this.output_directory)) 
 				{
-					result = InitStreamripperProcess (track) ;
+					this.output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory +
+						Path.DirectorySeparatorChar + "ripped";
 				}
-				else
-				{
-					result = InitMplayerProcess (track) ;
-				}
-                if (result) {
-                    if (is_importing_enabled)
-                        StartFolderScanner ();
-                    if (recording)
-                        StartRecording ();
-                }
+				RippedFileScanner.SetScanDirectory (this.output_directory);
+
+                if (is_importing_enabled)
+                    StartFolderScanner ();
+
+                if (recording)
+                    StartRecording ();
             }
         }
          
-        public bool CheckHttpHeader (TrackInfo track_in)
-        {
-            if (track_in == null) {
-                Hyena.Log.Debug ("[StreamrecorderService] <CheckHttpHeader> END. Recording not ready");
-                return false;
-            }
-            if (track_in.Uri == null) {
-                Hyena.Log.Debug ("[StreamrecorderService] <CheckHttpHeader> END. Recording not ready");
-                return false;
-            }
-			return Regex.Match(track_in.Uri.ToString (),"^http://" ).Success;
-        }
-
         public bool IsImportingEnabled
         {
             get { return is_importing_enabled; }

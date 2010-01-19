@@ -9,7 +9,7 @@ copyfiles ()
 	mkdir -p debian/usr/share/locale/en/LC_MESSAGES
 	mkdir -p debian/usr/share/locale/de/LC_MESSAGES
 
-	cp Banshee.Streamrecorder/bin/Release/Banshee.Streamrecorder.dll Banshee.Streamrecorder.dll debian/usr/lib/banshee-1/Extensions/Banshee.Streamrecorder.dll
+	cp Banshee.Streamrecorder/bin/Release/Banshee.Streamrecorder.dll debian/usr/lib/banshee-1/Extensions/
 	#cp /usr/share/doc/banshee-extension-streamrecorder/AUTHORS debian/usr/share/doc/banshee-extension-streamrecorder/AUTHORS
 	#cp /usr/share/doc/banshee-extension-streamrecorder/changelog.Debian.gz debian/usr/share/doc/banshee-extension-streamrecorder/changelog.Debian.gz
 	#cp /usr/share/doc/banshee-extension-streamrecorder/copyright debian/usr/share/doc/banshee-extension-streamrecorder/copyright
@@ -22,9 +22,9 @@ copyfiles ()
 
 makedeb ()
 {
-	fakeroot dpkg-deb --build debian
-	mv debian.deb banshee-extension-streamrecorder_0.2.0-1ubuntu_all.deb
-	lintian banshee-extension-streamrecorder_0.2.0-1ubuntu_all.deb 
+	fakeroot dpkg-deb --build debian banshee-extension-streamrecorder_0.2.1-1ubuntu_all.deb
+	#mv debian.deb banshee-extension-streamrecorder_0.2.1-1ubuntu_all.deb
+	lintian banshee-extension-streamrecorder_0.2.1-1ubuntu_all.deb 
 }
 
 printusage ()
