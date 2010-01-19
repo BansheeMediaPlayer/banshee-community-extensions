@@ -129,7 +129,7 @@ namespace Banshee.ClutterFlow
         public ClutterFlowContents ()
         {
 			name = "ClutterFlowView";
-            InitializeViews ();		
+            InitializeInterface ();		
 			Layout ();
 			SetupFullscreenHandling ();
 			SetupPlaybackHandling ();
@@ -197,7 +197,7 @@ namespace Banshee.ClutterFlow
 		#endregion
 		
 		#region View Setup
-        protected void InitializeViews ()
+        protected void InitializeInterface ()
         {
             SetupMainView ();
 			SetupFilterView ();

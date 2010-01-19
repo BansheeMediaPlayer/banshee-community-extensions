@@ -51,6 +51,7 @@ namespace Banshee.ClutterFlow
 		private PreferenceService preference_service;
 		private InterfaceActionService action_service;
 
+        private ActionGroup clutterflow_actions;
 		private ToggleAction browser_action;
 		protected ToggleAction BrowserAction {
 			get {
@@ -161,7 +162,7 @@ namespace Banshee.ClutterFlow
 			action_service = ServiceManager.Get<InterfaceActionService> ();
 
 			if (action_service.FindActionGroup ("ClutterFlowView") == null) {
-            	ActionGroup clutterflow_actions = new ActionGroup ("ClutterFlowView");
+            	clutterflow_actions = new ActionGroup ("ClutterFlowView");
 
 				clutterflow_actions.Add (new ToggleActionEntry [] {
 					new ToggleActionEntry ("ClutterFlowVisibleAction", null,
@@ -173,7 +174,9 @@ namespace Banshee.ClutterFlow
 				action_service.AddActionGroup (clutterflow_actions);
             	action_service.UIManager.AddUiFromString (menu_xml);
 			}
-				
+
+            source_manager.ActiveSourceChanged += HandleActiveSourceChanged;
+
 			BrowserAction.Activated += OnToggleBrowser;
 			CfBrowsAction.Activated += OnToggleClutterFlow;
 
@@ -182,6 +185,14 @@ namespace Banshee.ClutterFlow
 		#endregion
 
 		#region Action Handling
+        private void HandleActiveSourceChanged (SourceEventArgs args)
+        {
+            if (args.Source==music_library)
+                clutterflow_actions.Visible = true;
+           else
+                clutterflow_actions.Visible = false;
+        }
+                
 		private void OnToggleBrowser (object sender, EventArgs e)
 		{
 			if (BrowserAction.Active) {
