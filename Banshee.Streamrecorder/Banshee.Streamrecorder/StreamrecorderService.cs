@@ -301,7 +301,7 @@ namespace Banshee.Streamrecorder
 			string fileext = Regex.Replace(track.Uri.ToString(), @"^.*(\.[^\.]*)$", "$1");
 
             mplayer_process.SetStreamURI (track.Uri.ToString ());
-            mplayer_process.SetOutputFile (output_directory + track.TrackTitle + "_" + datestr + fileext);
+            mplayer_process.SetOutputFile (output_directory + "/" + track.TrackTitle + "_" + datestr + fileext);
 
             RippedFileScanner.SetScanDirectory (output_directory);
                     
