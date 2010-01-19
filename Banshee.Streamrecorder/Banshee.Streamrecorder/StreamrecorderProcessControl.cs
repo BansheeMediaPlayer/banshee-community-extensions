@@ -174,7 +174,7 @@ namespace Banshee.Streamrecorder
 
         private void SetOutputFile (string fullfilename) 
         {
-            output_file =  Regex.Replace(output_directory, @" ", "\\ ") + "/" + Regex.Replace(fullfilename, @" ", "_");
+            output_file =  Regex.Replace(output_directory, @" ", "\\ ") + Path.DirectorySeparatorChar + Regex.Replace(fullfilename, @" ", "_");
         }
 
         public void SetStreamURI (string uri) 
