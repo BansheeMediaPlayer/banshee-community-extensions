@@ -106,7 +106,7 @@ namespace Banshee.Lyrics
 
             LoadStarted (null, null);
 
-            Banshee.Base.ThreadAssist.SpawnFromMain (delegate {
+            ThreadAssist.SpawnFromMain (delegate {
                 try {
                     if (cache.IsInCache (track)) {
                         lyrics = cache.ReadLyrics (track);
@@ -128,7 +128,7 @@ namespace Banshee.Lyrics
                     error = e.Message;
                 }
 
-                Banshee.Base.ThreadAssist.ProxyToMain (delegate {
+                ThreadAssist.ProxyToMain (delegate {
                     LoadFinished (this, new LoadFinishedEventArgs (lyrics, suggestion, error));});
             });
         }
@@ -236,7 +236,7 @@ namespace Banshee.Lyrics
                 return;
             }
 
-            Banshee.Base.ThreadAssist.SpawnFromMain (delegate {
+            ThreadAssist.SpawnFromMain (delegate {
                 if (rewrite) {
                     cache.DeleteLyrics (track);
                 }
