@@ -49,7 +49,7 @@ namespace ClutterFlow
 		}
 	}
 	
-	public class ThrottledTimeline
+	public class ThrottledTimeline : IDisposable
 	{
 		
 		#region fields
@@ -162,16 +162,16 @@ namespace ClutterFlow
 			Clutter.Threads.AddFrameSourceFull (250, 30, RepaintFunc);
 			funcId = Clutter.Threads.AddRepaintFunc (RepaintFunc);
 		}
+        public virtual void Dispose ()
+        {
+            Clutter.Threads.RemoveRepaintFunc (funcId);
+            StopFrameSource ();
+        }
 		
 		public ThrottledTimeline (uint indexCount, double frequency) : this()
 		{
 			SetIndexCount(indexCount);
 			Frequency = frequency;
-		}
-		~ ThrottledTimeline () 
-		{
-			Clutter.Threads.RemoveRepaintFunc (funcId);
-			StopFrameSource ();
 		}
 
 		private object func_lock = new object();
@@ -251,7 +251,6 @@ namespace ClutterFlow
 		public override double Frequency {
 			get {
 				double retval = (double) Math.Max((Delta - (Delta - lastDelta)*0.25 ),1) / (double) CoverManager.MaxAnimationSpan;
-				//Console.WriteLine("Frequency == " + retval);
 				lastDelta = Delta;
 				return retval;
 			}
@@ -267,9 +266,10 @@ namespace ClutterFlow
 						coverManager.TargetIndexChanged -= HandleTargetIndexChanged;
 					}
 					coverManager = value;
-					if (coverManager!=null)
+					if (coverManager!=null) {
 						coverManager.CoversChanged += HandleCoversChanged;
-					coverManager.TargetIndexChanged += HandleTargetIndexChanged;
+                        coverManager.TargetIndexChanged += HandleTargetIndexChanged;
+                    }
 				}
 			}
 		}
@@ -281,6 +281,12 @@ namespace ClutterFlow
 		{
 			this.CoverManager = coverManager;
 		}
+        public override void Dispose ()
+        {
+            CoverManager = null;
+            base.Dispose ();
+        }
+
 		
 		#region Event Handlers
 		protected void HandleCoversChanged(object sender, EventArgs e)

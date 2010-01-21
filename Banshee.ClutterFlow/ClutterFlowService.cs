@@ -25,7 +25,12 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using Gtk;
+
+using Hyena;
+
+using Clutter;
 
 using Banshee.ServiceStack;
 using Banshee.Gui;
@@ -35,8 +40,60 @@ using Banshee.Sources;
 using Banshee.Sources.Gui;
 using Banshee.Preferences;
 
+using ClutterFlow;
+
 namespace Banshee.ClutterFlow
 {
+
+    internal static class ClutterFlowManager
+    {
+        private static int state = 0;
+        public static event EventHandler BeforeQuit;
+        
+        public static void Init ()
+        {
+            if (state < 1) {
+                //TODO provide a static class for initialisation that does not get destroyed when this service is
+                // it should hold reference to the ActorLoader instances, as they hold precious references to texture,
+                // data that apparently remains in memory
+                if (!GLib.Thread.Supported) GLib.Thread.Init();
+                Clutter.Threads.Init();
+                if (ClutterHelper.gtk_clutter_init (IntPtr.Zero, IntPtr.Zero) != InitError.Success)
+                    throw new System.NotSupportedException ("Unable to initialize GtkClutter");
+               System.AppDomain.CurrentDomain.ProcessExit += HandleProcessExit;
+                state = 1;
+            }
+        }
+
+        static void HandleProcessExit(object sender, EventArgs e)
+        {
+            if (state == 1)
+                System.AppDomain.CurrentDomain.ProcessExit -= HandleProcessExit;
+            Quit ();
+        }
+
+        public static void Quit ()
+        {
+            if (state == 1) {
+                if (BeforeQuit!=null) BeforeQuit (null, EventArgs.Empty);
+                Clutter.Application.Quit ();
+                filter_view.Dispose ();
+                System.GC.Collect();
+                state = 2;
+            }
+        }
+
+        private static ClutterFlowView filter_view;
+        public static ClutterFlowView FilterView {
+            get {
+                if (filter_view==null)
+                    filter_view = new ClutterFlowView ();
+                else if (!filter_view.Attached)
+                    filter_view.AttachEvents ();
+                return filter_view;
+            }
+        }
+    }
 		
 	public class ClutterFlowService : IExtensionService, IDisposable
 	{		
@@ -51,6 +108,7 @@ namespace Banshee.ClutterFlow
 		private PreferenceService preference_service;
 		private InterfaceActionService action_service;
 
+         private uint ui_manager_id;
         private ActionGroup clutterflow_actions;
 		private ToggleAction browser_action;
 		protected ToggleAction BrowserAction {
@@ -85,9 +143,15 @@ namespace Banshee.ClutterFlow
 		#endregion
 		
 		#region Initialization
+        
 		public ClutterFlowService ()
 		{
+            ClutterFlowManager.Init ();
 		}
+        ~ ClutterFlowService ()
+        {
+            Dispose ();
+        }
 		
 		void IExtensionService.Initialize ()
 		{	
@@ -159,28 +223,27 @@ namespace Banshee.ClutterFlow
 		private bool SetupInterfaceActions ()
 		{
 			
-			action_service = ServiceManager.Get<InterfaceActionService> ();
+            action_service = ServiceManager.Get<InterfaceActionService> ();
 
-			if (action_service.FindActionGroup ("ClutterFlowView") == null) {
-            	clutterflow_actions = new ActionGroup ("ClutterFlowView");
+            if (action_service.FindActionGroup ("ClutterFlowView") == null) {
+                clutterflow_actions = new ActionGroup ("ClutterFlowView");
 
-				clutterflow_actions.Add (new ToggleActionEntry [] {
-					new ToggleActionEntry ("ClutterFlowVisibleAction", null,
-   					Catalog.GetString ("Show ClutterFlow Browser"), null,
-     				Catalog.GetString ("Show or hide the ClutterFlow browser"),
-   					null, false)
-                });
-				
-				action_service.AddActionGroup (clutterflow_actions);
-            	action_service.UIManager.AddUiFromString (menu_xml);
-			}
+                ToggleActionEntry [] tae = new ToggleActionEntry [] { new ToggleActionEntry ("ClutterFlowVisibleAction", null,
+                    Catalog.GetString ("Show ClutterFlow Browser"), null,
+                    Catalog.GetString ("Show or hide the ClutterFlow browser"),
+                    null, ClutterFlowSchemas.ShowClutterFlow.Get ()) };
+                clutterflow_actions.Add (tae);
+                
+                action_service.AddActionGroup (clutterflow_actions);
+                ui_manager_id = action_service.UIManager.AddUiFromString (menu_xml);
+            }
 
             source_manager.ActiveSourceChanged += HandleActiveSourceChanged;
 
-			BrowserAction.Activated += OnToggleBrowser;
-			CfBrowsAction.Activated += OnToggleClutterFlow;
+            BrowserAction.Activated += OnToggleBrowser;
+            CfBrowsAction.Activated += OnToggleClutterFlow;
 
-			return true;
+            return true;
 		}
 		#endregion
 
@@ -223,15 +286,29 @@ namespace Banshee.ClutterFlow
 
 		private void RemoveClutterFlow ()
 		{
-			Clutter.Threads.Enter ();
-			music_library.Properties.Remove ("Nereid.SourceContents");
-			clutter_flow_contents.Dispose ();
-			Clutter.Threads.Leave ();
-
+            Clutter.Threads.Enter ();
+            music_library.Properties.Remove ("Nereid.SourceContents");
+            Clutter.Threads.Leave ();
+            clutter_flow_contents.Dispose ();
+            clutter_flow_contents = null;
+            
+            source_manager.ActiveSourceChanged -= HandleActiveSourceChanged;
 			BrowserAction.Activated -= OnToggleBrowser;
+            BrowserAction.Active = old_value;
 			CfBrowsAction.Activated -= OnToggleClutterFlow;
-			
-			BrowserAction.Active = old_value;
+            CfBrowsAction.Visible = false;
+
+            action_service.RemoveActionGroup ("ClutterFlowView");
+            action_service.UIManager.RemoveUi (ui_manager_id);
+            clutterflow_actions = null;
+            cfbrows_action = null;
+
+            preference_service = null;
+            source_manager = null;
+            music_library = null;
+            action_service = null;
+            browser_action = null;
+            cfbrows_action = null;
 		}
 		#endregion
 
@@ -329,6 +406,7 @@ namespace Banshee.ClutterFlow
 		
         private void UninstallPreferences ()
         {
+            preference_service.Remove (pref_page);
             pref_page = null;
             general = null;
 			dimensions = null;
@@ -336,14 +414,18 @@ namespace Banshee.ClutterFlow
         }
 		#endregion
 
+        private bool disposed = false;
 		public void Dispose ()
 		{
-			UninstallPreferences ();
-			RemoveClutterFlow ();
-
-			//if they were still setting up:
-			ServiceManager.ServiceStarted -= OnServiceStarted;
-			source_manager.SourceAdded -= OnSourceAdded;
-		}
+            if (disposed)
+                return;
+            disposed = true;
+            
+            ServiceManager.ServiceStarted -= OnServiceStarted;
+            source_manager.SourceAdded -= OnSourceAdded;
+                    
+            UninstallPreferences ();
+            RemoveClutterFlow ();
+ 		}
 	}
 }

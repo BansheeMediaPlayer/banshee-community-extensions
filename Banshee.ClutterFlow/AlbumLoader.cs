@@ -65,15 +65,22 @@ namespace Banshee.ClutterFlow
 		}
 
 		public BansheeActorLoader (CoverManager coverManager) : base (coverManager) { }
+        public override void Dispose ()
+        {
+            Model = null;
+            base.Dispose ();
+        }
 		
 		#region Event Handlers		
         protected void OnModelClearedHandler (object o, EventArgs args)
         {
+            Hyena.Log.Information ("OnModelClearedHandler called, no_reloading is " + no_reloading);
 			if (!no_reloading) RefreshCoverManager ();
         }
         
         protected void OnModelReloadedHandler (object o, EventArgs args)
         {
+            Hyena.Log.Information ("OnModelReloadedHandler called, no_reloading is " + no_reloading);
 			if (!no_reloading) RefreshCoverManager ();
         }
 		#endregion
@@ -82,12 +89,7 @@ namespace Banshee.ClutterFlow
 	public class AlbumLoader : BansheeActorLoader<AlbumInfo>
 	{
 
-		#region Fields
-		protected ArtworkLookup lookup;
-		public ArtworkLookup Lookup {
-			get { return lookup; }
-		}
-		
+		#region Fields	
 		public AlbumInfo CurrentAlbum {
 			get {
 				if (coverManager.CurrentCover!=null && coverManager.CurrentCover is ClutterFlowAlbum)
@@ -108,11 +110,6 @@ namespace Banshee.ClutterFlow
 		
 		public AlbumLoader (CoverManager coverManager) : base (coverManager) 
 		{
-			lookup = new ArtworkLookup (coverManager);	
-		}
-		~AlbumLoader ()
-		{
-			lookup.Stop ();
 		}
 		
 		public override List<ClutterFlowActor> GetActors (System.Action<ClutterFlowActor> method_call)
@@ -136,7 +133,7 @@ namespace Banshee.ClutterFlow
 			string key = ClutterFlowAlbum.CreateCacheKey(generator);
 			ClutterFlowActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
 			if (actor==null) {
-				actor = new ClutterFlowAlbum (generator, coverManager, lookup);
+				actor = new ClutterFlowAlbum (generator, coverManager);
 				Cache.Add (key, actor);
 			}
 			actor.Index = list.Count;

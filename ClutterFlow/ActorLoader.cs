@@ -32,7 +32,7 @@ using Clutter;
 namespace ClutterFlow
 {
 
-	public interface IActorLoader {
+	public interface IActorLoader : IDisposable {
 		CoverManager CoverManager { get; set; }
 		List<ClutterFlowActor> GetActors (System.Action<ClutterFlowActor> method_call);
 	}
@@ -49,7 +49,8 @@ namespace ClutterFlow
 			get { return coverManager; }
 			set {
 				coverManager = value;
-				coverManager.ActorLoader = this;
+                if (coverManager!=null)
+				    coverManager.ActorLoader = this;
 			}
 		}
 		#endregion
@@ -58,6 +59,17 @@ namespace ClutterFlow
 		{
 			this.CoverManager = coverManager;
 		}
+        protected bool disposed = false;
+        public virtual void Dispose ()
+        {
+            if (disposed)
+                return;
+            disposed = true;
+            foreach (ClutterFlowActor actor in cached_covers.Values)
+                actor.Dispose ();
+            cached_covers.Clear ();
+            coverManager = null;
+        }
 
 		protected virtual void RefreshCoverManager () 
 		{
@@ -79,7 +91,7 @@ namespace ClutterFlow
 		{
 			ClutterFlowActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
 			if (actor!=null && coverManager.covers.Contains (actor))
-				coverManager.TargetIndex = coverManager.covers.IndexOf (actor); //replace covers with somethinf faster?
+				coverManager.TargetIndex = actor.Index; //coverManager.covers.IndexOf (actor); //replace covers with something faster?
 		}
 	}
 }

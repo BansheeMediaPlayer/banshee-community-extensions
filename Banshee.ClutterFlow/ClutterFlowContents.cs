@@ -68,7 +68,7 @@ namespace Banshee.ClutterFlow
 			get { return filter_view; }
 		}
 
-		private Gtk.ScrolledWindow main_scrolled_window;
+		private Gtk.Expander main_expander;
 		private TrackListView main_view;
         public TrackListView TrackView {
             get { return main_view; }
@@ -103,21 +103,19 @@ namespace Banshee.ClutterFlow
 
 		//PLAYBACK RELATED:
 		private TrackInfo previous_track;
-		
+
+        private bool IsParentSource {
+            get { return ServiceManager.PlaybackController.Source!=null && ServiceManager.PlaybackController.Source.Parent==source; }
+        }
 		private bool IsActiveSource {
-			get { return ServiceManager.SourceManager.ActiveSource == source; }
+			get { return ServiceManager.SourceManager.ActiveSource==source; }
 		}
 		private bool IsPlaybackSource {
-			get { return ServiceManager.PlaybackController.Source == source; }
-		}
-		private bool InPlaybackMode {
-			get {
-				return (IsActiveSource && IsPlaybackSource);
-			}
+			get { return ServiceManager.PlaybackController.Source==source; }
 		}
 		private bool InPartyMode {
 			get {
-				return (InPlaybackMode && external_filter.Selection.AllSelected);
+				return (external_filter!=null && (IsPlaybackSource || IsParentSource) && IsActiveSource && external_filter.Selection.AllSelected);
 			}
 		}
 
@@ -135,14 +133,34 @@ namespace Banshee.ClutterFlow
 			SetupPlaybackHandling ();
             NoShowAll = true;
         }
-        
+
+        protected bool disposed = false;
         public override void Dispose ()
         {
-			Clutter.Application.Quit();
-			if (filter_view != null) {
-				filter_view.Dispose();
-                filter_view = null;
-            }
+            if (disposed)
+                return;
+            disposed = true;
+            
+            ResetSource ();
+            
+            video_window.Hidden -= OnFullscreenWindowHidden;
+            FilterView.UpdatedAlbum -= HandleUpdatedAlbum;
+            FilterView.PMButton.Toggled -= HandlePMButtonToggled;
+            FilterView.FSButton.Toggled -= HandleFSButtonToggled;
+
+            ServiceManager.SourceManager.ActiveSourceChanged -= HandleActiveSourceChanged;
+            ServiceManager.PlaybackController.TrackStarted -= OnPlaybackControllerTrackStarted;
+            ServiceManager.PlaybackController.SourceChanged -= OnPlaybackSourceChanged;
+
+            Reset ();
+            if (filter_view.Parent!=null) frame.Remove (filter_view);
+            filter_view.DetachEvents ();
+            //filter_view.Dispose (); handled by ClutterFlowManager
+            
+            fullscreen_adapter.Dispose ();
+            screensaver.Dispose ();
+
+            base.Dispose ();
         }
 		#endregion
 
@@ -160,8 +178,11 @@ namespace Banshee.ClutterFlow
 			filter_view.Show();
             frame.Show ();
 
-			container.Pack1 (frame, false, false);			
-            container.Pack2 (main_scrolled_window, true, false);
+			container.Pack1 (frame, false, false);
+            main_expander.Activated += OnExpander;
+            //main_expander.ResizeChecked += HandleResizeChecked;
+            main_expander.SizeRequested += HandleSizeRequested;
+            container.Pack2 (main_expander, true, false);
 
             container.Position = 175;
             PersistentPaneController.Control (container, ControllerName (-1));
@@ -190,7 +211,10 @@ namespace Banshee.ClutterFlow
             // The main container gets destroyed since it will be recreated.
             if (container != null) {
 				if (frame != null) container.Remove (frame);
-				if (main_scrolled_window != null) container.Remove (main_scrolled_window);	
+				if (main_expander != null) container.Remove (main_expander);
+                main_expander.Activated -= OnExpander;
+                //main_expander.ResizeChecked -= HandleResizeChecked;
+                main_expander.SizeRequested -= HandleSizeRequested;
                 Remove (container);
             }
         }
@@ -206,25 +230,21 @@ namespace Banshee.ClutterFlow
         protected void SetupMainView ()
         {
             main_view = new TrackListView ();
-            main_scrolled_window = CreateScrollable (main_view);
-			main_view.HeaderVisible = true;
+            main_view.HeaderVisible = true; //TODO copy this from FilteredListSourceContents?
+            main_expander = CreateScrollableExpander (main_view);
+            main_expander.Expanded = ClutterFlowSchemas.ExpandTrackList.Get ();
         }
 
         protected void SetupFilterView ()
-        {
-			if (!GLib.Thread.Supported) GLib.Thread.Init();
-			/*Gdk.Threads.Init(); FIXME causes weird lockups */
-			Clutter.Threads.Init();
-			Clutter.Application.InitForToolkit();
-			Clutter.Application.Init();
-			
-			filter_view = new ClutterFlowView ();
+        {		
+			filter_view = ClutterFlowManager.FilterView;
 			filter_view.FSButton.IsActive = IsFullscreen;
 			filter_view.PMButton.IsActive = InPartyMode;
-			FilterView.LabelTrackIsVisible = ClutterFlowSchemas.DisplayTitle.Get () && IsFullscreen;
+			filter_view.LabelTrackIsVisible = ClutterFlowSchemas.DisplayTitle.Get () && IsFullscreen;
         }
 		
-        private ScrolledWindow CreateScrollable (Widget view)
+        //private ScrolledWindow CreateScrollable (Widget view)
+        private Expander CreateScrollableExpander (Widget view)
         {
 			//TODO make this a collabsable thing so the ClutterFlow widget can be bigger, while not fullscreen
             ScrolledWindow window = null;
@@ -241,7 +261,23 @@ namespace Banshee.ClutterFlow
             window.HscrollbarPolicy = PolicyType.Automatic;
             window.VscrollbarPolicy = PolicyType.Automatic;
 
-            return window;
+            Expander expander = new Expander(Catalog.GetString ("Track list"));
+            expander.Add(window);
+            
+            return expander;
+        }
+
+        private void OnExpander(object sender, EventArgs e)
+        {
+            ClutterFlowSchemas.ExpandTrackList.Set (main_expander.Expanded);
+            if (main_expander.Expanded)
+                container.Position = -1;
+        }
+
+        void HandleSizeRequested(object o, SizeRequestedArgs args)
+        {
+            if (!main_expander.Expanded)
+                container.Position = container.Allocation.Height - main_expander.LabelWidget.HeightRequest;
         }
 		#endregion
 
@@ -467,9 +503,10 @@ namespace Banshee.ClutterFlow
         {
 			if ((source as MusicLibrarySource) == null)
 				return false;
-			if ((source as MusicLibrarySource)==this.source)
+			if ((source as MusicLibrarySource)==this.source) {
+                SelectAllTracks ();
 				return true;
-			else
+			} else
 				ResetSource ();
 			
 			this.source = (source as MusicLibrarySource);
@@ -499,13 +536,13 @@ namespace Banshee.ClutterFlow
 		private void HandleTracksAdded (Source sender, TrackEventArgs args)
 		{
 			SelectAllTracks ();
-			internal_filter.Reload (false);
+			internal_filter.Reload (true);
 		}
 
 		private void HandleTracksDeleted (Source sender, TrackEventArgs args)
 		{
 			SelectAllTracks ();
-			internal_filter.Reload (false);
+			internal_filter.Reload (true);
 		}
 		
 		private void HandleModelReload (object o, EventArgs args)
@@ -517,6 +554,8 @@ namespace Banshee.ClutterFlow
         public void ResetSource ()
         {
 			if (source!=null) {
+                source.TracksAdded -= HandleTracksAdded;
+                source.TracksDeleted -= HandleTracksDeleted;
 				TrackModel.Reloaded -= HandleModelReload;
 	            source = null;
 			}
@@ -530,13 +569,14 @@ namespace Banshee.ClutterFlow
 			if (album!=null) {
 				external_filter.Selection.Clear (false);
 				external_filter.Selection.Select (FilterView.ActiveIndex+1);
+                //TrackView.QueueResize ();
 			}
         }
 		protected void SelectAllTracks () 
 		{
-			if (!external_filter.Selection.AllSelected) {
-				external_filter.Selection.SelectAll ();
-			}
+            internal_filter.Selection.SelectAll ();
+			external_filter.Selection.SelectAll ();
+            //TrackView.QueueResize ();
 		}
 
 		// TODO: FilterQueries etc. now need to be set on the TrackListModel inside ClutterFlowContents

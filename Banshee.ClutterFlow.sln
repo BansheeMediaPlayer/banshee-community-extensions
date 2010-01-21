@@ -37,5 +37,12 @@ Global
 		$3.NoTabsAfterNonTabs = False
 		$3.RemoveTrailingWhitespace = True
 		$3.EolMarker = Native
+		$0.VersionControlPolicy = $4
+		$4.inheritsSet = Mono
+		$0.ChangeLogPolicy = $5
+		$5.UpdateMode = None
+		$5.MessageStyle = $6
+		$6.LineAlign = 0
+		$5.inheritsSet = Mono
 	EndGlobalSection
 EndGlobal

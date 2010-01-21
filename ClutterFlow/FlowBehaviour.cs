@@ -32,7 +32,7 @@ using Clutter;
 namespace ClutterFlow
 {
 
-	public class FlowBehaviour {
+	public class FlowBehaviour : IDisposable {
 				
 		#region Fields
 		private int zFar = 50;
@@ -114,7 +114,10 @@ namespace ClutterFlow
 		protected bool holdUpdates = false;
 		public bool HoldUpdates {
 			get { return holdUpdates; }
-			set { holdUpdates = value; }
+			set {
+                Console.WriteLine ("FlowBehaviour.HoldUpdates is set to " + value.ToString ());
+                holdUpdates = value; 
+            }
 		}
 		
 		protected void UpdateXStepAndSideWidth ()
@@ -183,6 +186,19 @@ namespace ClutterFlow
 		{
 			this.CoverManager = coverManager;
 		}
+        public virtual void Dispose ()
+        {
+            CoverManager = null;
+            if (fadeInAnim!=null) {
+                fadeInAnim.CompleteAnimation ();
+                fadeInAnim = null;
+            }
+            if (fadeOutAnim!=null) {
+                fadeOutAnim.CompleteAnimation ();
+                fadeOutAnim = null;
+            }
+        }
+
 		
 		#region Event Handling
 		void HandleNewFrame (object sender, NewFrameEventArgs e)
@@ -205,7 +221,7 @@ namespace ClutterFlow
 
 		public void UpdateActors () 
 		{
-			if (!holdUpdates && /*coverManager.Enabled &&*/ coverManager.IsVisible) {
+			if (/*!holdUpdates && coverManager.Enabled &&*/ coverManager.IsVisible) {
 				//only update covers that were visible at the previous & current progress:
 				
 				double currentProgress = Progress;
@@ -351,12 +367,12 @@ namespace ClutterFlow
 			EventHandler wrappedOnFadeOutCompleted = delegate (object sender, EventArgs e) {
 				tSlide.Start ();
 			};
-			if (fadeOutAnim!=null) fadeOutAnim.Completed += wrappedOnFadeOutCompleted;
+			if (fadeOutAnim!=null && fadeOutAnim.Timeline.Progress<1) fadeOutAnim.Completed += wrappedOnFadeOutCompleted;
 			else wrappedOnFadeOutCompleted (this, EventArgs.Empty);
 
-			if (tSlide!=null)
-				tSlide.Completed += onCompleted;
-			else if (fadeOutAnim!=null)
+			if (tSlide!=null && tSlide.Progress<1) {
+                 tSlide.Completed += onCompleted;
+			} else if (fadeOutAnim!=null && fadeOutAnim.Timeline.Progress<1)
 				fadeOutAnim.Completed += onCompleted;
 			else onCompleted (this, EventArgs.Empty);
 		}

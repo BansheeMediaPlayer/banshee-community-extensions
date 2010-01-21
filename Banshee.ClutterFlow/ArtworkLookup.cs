@@ -78,32 +78,34 @@ namespace Banshee.ClutterFlow
 		/// </value>
 	    public bool Stopping {
 	        get { lock (stopLock) { return stopping; } }
+            protected set { lock (stopLock) { stopping = value; } }
 	    }
 	    
 		//// <value>
 	    // Returns whether the worker thread has stopped.
 		/// </value>
 	    public bool Stopped {
-	        get { lock (stopLock) { return stopped; } }
+	        get { return t!=null ? (t.ThreadState == ThreadState.Stopped) : true; }
 	    }
 		#endregion
-		
+
+        Thread t;
 		public ArtworkLookup (CoverManager coverManager) 
 		{
-			Hyena.Log.Information ("ArtworkLookup created!!");
+			//Hyena.Log.Information ("ArtworkLookup ctor ()");
 		 	CoverManager = coverManager;
 			artwork_manager = ServiceManager.Get<ArtworkManager> ();
-		}
-		~ArtworkLookup ()
-		{
-			Stop ();
+            //Start ();
 		}
 
 		#region Queueing and index hinting	
 		public void Enqueue (ClutterFlowAlbum cover)
 		{
-			LookupQueue.Enqueue (cover);
-			Start ();
+            if (!cover.Enqueued) {
+                cover.Enqueued = true;
+                LookupQueue.Enqueue (cover);
+                Start ();
+            }
 		}
 
 		private int new_focus = -1;
@@ -119,86 +121,87 @@ namespace Banshee.ClutterFlow
 		#endregion
 		
 		#region  Start/Stop Handling
-		public void Dispose ()
+        protected bool disposed = false;
+		public virtual void Dispose ()
 		{
+            if (disposed)
+                return;
+            disposed = true;
+            Hyena.Log.Information ("ArtworkLookup Dispose ()");
 			Stop ();
-		}
-		
-		public void Start () 
-		{
-			if (Stopped)  {
-				stopped = false;
-				Thread t = new Thread (new ThreadStart (Run));
-				t.Priority = ThreadPriority.BelowNormal;
-				t.Start ();
-			}
-		}
+            LookupQueue.Dispose ();
+		}		
 	
 	    // Tells the worker thread to stop, typically after completing its 
 	    // current work item. (The thread is *not* guaranteed to have stopped
 	    // by the time this method returns.)
 	    public void Stop ()
 	    {
-	        lock (stopLock) {
-				Monitor.Pulse (SyncRoot);
-				stopping = true; 
-			}
+            Hyena.Log.Information ("ArtworkLookup Stop ()");
+            Stopping = true;
+            if (SyncRoot!=null) lock (SyncRoot) {
+                Monitor.Pulse (SyncRoot);
+            }
+	        if (t!=null) t.Join ();
 	    }
-	
-	    // Called by the worker thread to indicate when it has stopped.
-	    protected void SetStopped ()
-	    {
-	        lock (stopLock) { stopped = true; }
-	    }
+
+        public void Start ()
+        {
+            if (t==null) {
+                t = new Thread (new ThreadStart (Run));
+                t.Priority = ThreadPriority.BelowNormal;
+                stopping = false;
+                t.Start ();
+            } else if (t.ThreadState == ThreadState.Unstarted) {
+                stopping = false;
+                t.Start ();
+            }
+        }
 		#endregion
 		
 	    // Main work loop of the class.
 	    public void Run ()
 	    {
-	        try {
+            if (!disposed) try {
+                Hyena.Log.Information ("ArtworkLookup Run ()");
 	            while (!Stopping) {
-					ClutterFlowAlbum cover; //no API calling here!
-					
-					//Hyena.Log.Information ("ArtworkLookup Run locking focusLock");
-					lock (focusLock) {
-						//Hyena.Log.Information ("ArtworkLookup Run locked focusLock");
-						if (new_focus>-1)
-							LookupQueue.Focus = new_focus;
-						new_focus = -1;
-					}
-					while (LookupQueue.Count==0) {
-						if (Stopping) return;
+                    //Hyena.Log.Information ("ArtworkLookup Run locking focusLock");
+                    lock (focusLock) {
+                        //Hyena.Log.Information ("ArtworkLookup Run locked focusLock");
+                        if (new_focus>-1)
+                            LookupQueue.Focus = new_focus;
+                        new_focus = -1;
+                    }
+
+					while (!Stopping && LookupQueue!=null && LookupQueue.Count==0) {
 						lock (SyncRoot) {
-							Monitor.Wait (SyncRoot);
+                            //Hyena.Log.Information ("ArtworkLookup Run - waiting for pulse");
+							bool ret = Monitor.Wait (SyncRoot, 5000);
+                            if (!ret) Stopping = true;
+                            //Hyena.Log.Information ("ArtworkLookup Run - pulsed");
 						}
 					}
-					cover = LookupQueue.Dequeue ();
-						
-					//Hyena.Log.Information ("ArtworkLookup Run locking Clutter");
-					Clutter.Threads.Enter ();
-						//Hyena.Log.Information ("ArtworkLookup Run locked Clutter");
-						
-						float size = cover.CoverManager.TextureSize;
-						string cache_id = cover.PbId;
-						//Gdk.Threads.Enter ();
-							Gdk.Pixbuf newPb = artwork_manager.LookupScalePixbuf (cache_id, (int) size);
-							if (newPb!=null) {
-								//it would be faster if we could just lock Gdk, but for some reason we end up with a dead lock,
-								//probably related with banshee code? Should ask on the banshee-list
-								//Hyena.Log.Information ("ArtworkLookup invokes Gtk calls");
-								Gtk.Application.Invoke (delegate {
-									cover.SwappedToDefault = false;
-									GtkUtil.TextureSetFromPixbuf (cover.Cover, ClutterFlowActor.MakeReflection(newPb));
-								});
-								
-							}
-						//Gdk.Threads.Leave ();
-					Clutter.Threads.Leave ();
-					//Hyena.Log.Information ("ArtworkLookup Run released Clutter");
-					System.Threading.Thread.Sleep (50); //give the other threads time to do some work
+                    if (Stopping) return;
+                    t.IsBackground = false;
+					ClutterFlowAlbum cover = LookupQueue.Dequeue ();
+					float size = cover.CoverManager.TextureSize;
+					string cache_id = cover.PbId;
+					Gdk.Pixbuf pb = artwork_manager.LookupScalePixbuf (cache_id, (int) size);
+					if (pb!=null) {
+                        Gtk.Application.Invoke (delegate {
+                            cover.Enqueued = false;
+                            cover.SwappedToDefault = false;
+                            pb = ClutterFlowActor.MakeReflection(pb);
+                            
+                            GtkUtil.TextureSetFromPixbuf (cover.Cover, pb);
+                            pb.Dispose ();
+                        });
+					}
+                    t.IsBackground = true;
 	            }
 	        } finally {
-	            SetStopped ();
+	           Hyena.Log.Information ("ArtworkLookup stopped");
+               t = null;
 	        }
 	    }
 	}

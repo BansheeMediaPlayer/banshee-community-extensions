@@ -200,6 +200,20 @@ namespace ClutterFlow
 			UpdateTimeline (0);
 			behaviour = new FlowBehaviour (this);			
 		}
+
+        public override void Dispose ()
+        {           
+            ActorLoader.Dispose ();
+            Behaviour.Dispose ();
+            timeline.Dispose ();
+            
+            covers.Clear ();
+            covers = null;
+            currentCover = null;
+            
+            base.Dispose ();
+        }
+
 		
 		public void UpdateBehaviour () 
 		{
@@ -242,8 +256,7 @@ namespace ClutterFlow
 				behaviour.HoldUpdates = true;
 				
 				int old_current_index = CurrentCover!=null ? covers.IndexOf (CurrentCover) : 0;
-				List<ClutterFlowActor> old_covers = new List<ClutterFlowActor>();
-				old_covers.AddRange(SafeGetRange(covers, old_current_index - HalfVisCovers, visibleCovers));
+				List<ClutterFlowActor> old_covers = new List<ClutterFlowActor>(SafeGetRange(covers, old_current_index - HalfVisCovers, visibleCovers));
 				foreach (ClutterFlowActor cover in covers) {
 					cover.Index = -1;
 					if (!old_covers.Contains(cover)) cover.Hide();

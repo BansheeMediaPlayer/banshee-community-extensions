@@ -29,7 +29,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Gdk;
-using Cairo;
+//using Cairo;
 using Clutter;
 using Cogl;
 
@@ -47,7 +47,7 @@ namespace ClutterFlow
 	public delegate Gdk.Pixbuf NeedPixbuf();
     public delegate void IndexChangedEventHandler(IIndexable item, int old_index, int new_index);
 	
-	public class TextureHolder {
+	public class TextureHolder : IDisposable {
 		#region Fields
 		protected CoverManager coverManager;
 		public CoverManager CoverManager {
@@ -95,11 +95,28 @@ namespace ClutterFlow
 		#region Initialisation
 		public TextureHolder (CoverManager coverManager, NeedPixbuf getDefaultPb)
 		{
-			this.coverManager = coverManager;
-			coverManager.TextureSizeChanged += HandleTextureSizeChanged;
+			this.CoverManager = coverManager;
 			this.GetDefaultPb = getDefaultPb;
 			ReloadDefaultTextures ();
 		}
+        ~ TextureHolder () {
+            Dispose ();
+        }
+        protected bool disposed = false;
+        public virtual void Dispose ()
+        {
+            if (disposed)
+                return;
+            disposed = true;
+            CoverManager = null;
+            GetDefaultPb = null;
+            default_pb.Dispose ();
+            Cogl.Handle.Unref (defltTexture);
+            Cogl.Handle.Unref (shadeTexture);
+            defltTexture = IntPtr.Zero;
+            shadeTexture = IntPtr.Zero;
+        }
+
 
 		public void ReloadDefaultTextures ()
 		{
@@ -313,12 +330,38 @@ namespace ClutterFlow
 			IsSetup = SetupStatics ();
 			SetupActors ();
 		}
+        ~ ClutterFlowActor ()
+        {
+            Dispose ();
+        }
+        protected bool disposed = false;
+        public override void Dispose ()
+        {
+            if (disposed)
+                return;
+            disposed = true;
+            //Console.WriteLine("ClutterFlowActor.Dispose ()");
+            
+            CoverManager = null;
+            this.ParentSet -= HandleParentSet;
+            this.ButtonPressEvent -= HandleButtonPressEvent;
+            this.ButtonReleaseEvent -= HandleButtonReleaseEvent;
+            getDefaultPb = null;
+            
+            DisposeStatics ();
+        }
 		protected virtual bool SetupStatics ()
 		{
 			if (textureHolder==null) 
 				textureHolder = new TextureHolder(CoverManager, GetDefaultPb);
 			return true;
 		}
+        protected virtual void DisposeStatics ()
+        {
+            if (textureHolder!=null)
+                textureHolder.Dispose ();
+            textureHolder = null;
+        }
 		protected virtual void SetupActors ()
 		{
 			SetAnchorPoint (0, 0);
@@ -372,7 +415,7 @@ namespace ClutterFlow
 			return (getDefaultPb!=null) ? getDefaultPb() : null;
 		}
 
-		public static void SetSurfaceToShade (Cairo.ImageSurface surf, float txtre_dim)
+		/*public static void SetSurfaceToShade (Cairo.ImageSurface surf, float txtre_dim)
 		{
 			Cairo.Context context = new Cairo.Context (surf);
 			Gradient gr = new LinearGradient (0, 0, txtre_dim, 0);
@@ -407,7 +450,7 @@ namespace ClutterFlow
 			}
 
 			context.Restore ();
-		}
+		}*/
 
 		public static Gdk.Pixbuf MakeReflection (Pixbuf pb) {
 			Gdk.Pixbuf finalPb = new Gdk.Pixbuf(Colorspace.Rgb, true, pb.BitsPerSample, pb.Width, pb.Height*2);

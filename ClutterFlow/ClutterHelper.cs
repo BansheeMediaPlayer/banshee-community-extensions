@@ -47,6 +47,9 @@ namespace ClutterFlow
 		[DllImport ("libclutter-glx-1.0.so.0")]
 		public static extern void clutter_texture_set_cogl_texture (IntPtr texture, IntPtr cogl_tex);
 
+        [DllImport ("libclutter-gtk-0.10.so.0")]
+        public static extern Clutter.InitError gtk_clutter_init (IntPtr argc, IntPtr argv);
+
 		public static void DestroyActor(Clutter.Actor actor) {
 			clutter_actor_destroy(actor.Handle);
 		}
@@ -56,5 +59,6 @@ namespace ClutterFlow
 		public static void RemoveFromGroup(System.IntPtr group, Clutter.Actor actor) {
 			clutter_container_remove(group, actor.Handle);
 		}
+        
 	}
 }

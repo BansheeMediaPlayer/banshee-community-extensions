@@ -37,6 +37,13 @@ namespace Banshee.ClutterFlow
    /// Static class providing ClutterFlow with setting schema's
    /// </summary>
 	public static class ClutterFlowSchemas {
+        internal static readonly SchemaEntry<bool> ExpandTrackList = new SchemaEntry<bool>(
+            "clutterflow", "expand_track_list",
+            true,
+            Catalog.GetString ("Unfolds the track list"),
+            Catalog.GetString ("If checked it will display the track list when not in fullscreen mode")
+        );
+        
         internal static readonly SchemaEntry<bool> ShowClutterFlow = new SchemaEntry<bool>(
             "clutterflow", "show_clutterflow",
             false,

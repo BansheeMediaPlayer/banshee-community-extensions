@@ -48,7 +48,8 @@ namespace Banshee.ClutterFlow
 	
 	public class ClutterFlowView : Clutter.Embed
 	{
-		
+        #region Fields
+        #region Active/Current Album Related
 		public event EventHandler UpdatedAlbum;
 
 		private AlbumInfo activeAlbum = null;
@@ -67,8 +68,9 @@ namespace Banshee.ClutterFlow
 		public int CurrentIndex {
 			get { return albumLoader.CurrentIndex; }
 		}
+        #endregion
 
-		
+        #region General
 		protected AlbumLoader albumLoader;
 		public AlbumLoader AlbumLoader {
 			get { return albumLoader; }
@@ -86,7 +88,13 @@ namespace Banshee.ClutterFlow
         {
             albumLoader.Model = value;
         }
-		
+        protected bool attached = false;
+        public bool Attached {
+            get { return attached; }
+        }
+        #endregion
+
+        #region User Interface & Interaction
 		private bool dragging = false;			// wether or not we are currently dragging the viewport around
 		private double mouse_x, mouse_y;
 		private float drag_x0, drag_y0;		// initial coordinates when the mouse button was pressed down
@@ -163,28 +171,68 @@ namespace Banshee.ClutterFlow
 				}
 			}
 		}
+        #endregion
+        #endregion
 
 		#region Initialisation
         public ClutterFlowView () : base ()
         {
 			SetSizeRequest (500, 300);
 			Clutter.Global.MotionEventsEnabled = true;
-
+            
 			coverManager = new CoverManager();
-			coverManager.CoverActivated += HandleCoverActivated;
 			albumLoader = new AlbumLoader (coverManager);
-			
-			Stage.AllocationChanged += HandleAllocationChanged;
-			Stage.ScrollEvent += HandleScroll;
-			Stage.ButtonReleaseEvent += HandleButtonReleaseEvent;
-			Stage.ButtonPressEvent += HandleButtonPressEvent;
-			Stage.MotionEvent += HandleMotionEvent;
-			
+            
+            AttachEvents ();
+            
 			SetupViewport ();
 			SetupSlider ();
 			SetupLabels ();
 			SetupWidgetBar ();
 		}
+
+        public void AttachEvents ()
+        {
+            if (attached)
+                return;
+            attached = true;
+            
+            Stage.AllocationChanged += HandleAllocationChanged;
+            Stage.ScrollEvent += HandleScroll;
+            Stage.ButtonReleaseEvent += HandleButtonReleaseEvent;
+            Stage.ButtonPressEvent += HandleButtonPressEvent;
+            Stage.MotionEvent += HandleMotionEvent;
+            coverManager.CoverActivated += HandleCoverActivated;
+        }
+
+        public void DetachEvents ()
+        {
+            if (!attached)
+                return;
+            
+            Stage.AllocationChanged -= HandleAllocationChanged;
+            Stage.ScrollEvent -= HandleScroll;
+            Stage.ButtonReleaseEvent -= HandleButtonReleaseEvent;
+            Stage.ButtonPressEvent -= HandleButtonPressEvent;
+            Stage.MotionEvent -= HandleMotionEvent;
+            coverManager.CoverActivated -= HandleCoverActivated;
+            
+            attached = false;
+        }
+        
+        protected bool disposed = false;
+        public override void Dispose ()
+        {
+            if (disposed)
+                return;
+            disposed = true;
+            
+            DetachEvents ();            
+            CoverManager.Dispose ();
+
+            //base.Dispose ();
+        }
+
 
 		protected void SetupViewport ()
 		{

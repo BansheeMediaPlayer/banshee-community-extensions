@@ -37,7 +37,7 @@ namespace Banshee.ClutterFlow
 	/// The FloatingQueue class runs an IndexedQueue under the hood. It provides you
 	/// with fast, focused enqueue and dequeue methods. Thread-safe class.
 	/// </summary>
-	public class FloatingQueue<T> where T : class, IIndexable
+	public class FloatingQueue<T> : IDisposable where T : class, IIndexable
 	{
 		IndexedQueue<T> queue = new IndexedQueue<T> ();
 
@@ -70,6 +70,19 @@ namespace Banshee.ClutterFlow
 				queue.Changed += HandleChanged;
 			}
 		}
+
+        protected bool disposed = false;
+        public virtual void Dispose ()
+        {
+            if (disposed)
+                return;
+            disposed = true;
+            lock (SyncRoot) {
+                queue.Changed -= HandleChanged;
+                queue.Dispose ();
+            }
+        }
+
 
 		#region Methods
 
@@ -129,7 +142,7 @@ namespace Banshee.ClutterFlow
 	/// The IndexedQueue class runs a SortedDictionary under the hood. It provides you
 	/// with fast, indexed enqueue and dequeue methods. Not a thread-safe class.
 	/// </summary>
-	internal class IndexedQueue<T> where T : class, IIndexable
+	internal class IndexedQueue<T> : IDisposable where T : class, IIndexable
 	{
 		#region Fields
 		private SortedDictionary<int, List<T>> queue = new SortedDictionary<int, List<T>> ();
@@ -159,6 +172,15 @@ namespace Banshee.ClutterFlow
 		public IndexedQueue () : base () 
 		{
 		}
+        protected bool disposed = false;
+        public virtual void Dispose ()
+        {
+            if (disposed)
+                return;
+            disposed = true;
+            queue.Clear ();
+        }
+
 
 		#region Methods
 		public T TryKey (int key) 
@@ -200,10 +222,6 @@ namespace Banshee.ClutterFlow
 		public T PopFrom (int key)
 		{
 			if (!queue.ContainsKey (key) || queue[key].Count==0) {
-				/*if (queue.ContainsKey (key))
-					Hyena.Log.Information ("PopFrom was called but key held no values");
-				else
-					Hyena.Log.Information ("PopFrom was called but did not contain key " + key);*/
 				throw new InvalidOperationException ("Value not found in IndexedQueue");
 			}
 			T value = queue[key][0];
@@ -232,12 +250,14 @@ namespace Banshee.ClutterFlow
 		}
 
 		protected void HandleIndexChanged(IIndexable item, int old_index, int new_index)
-		{
-			if (item is T) {
-				Remove (old_index, (T) item, false);
-				Add (new_index, (T) item, false);
-				OnChanged ();
-			}
+        {
+            lock (SyncRoot) {
+                if (item is T && queue.ContainsKey (old_index) && queue[old_index].Contains ((T) item)) {
+  				    Remove (old_index, (T) item, false);
+    				Add (new_index, (T) item, false);
+    				OnChanged ();
+                }
+            }         
 		}
 		
 		protected virtual void OnChanged () 

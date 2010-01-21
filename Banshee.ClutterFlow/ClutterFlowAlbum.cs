@@ -91,13 +91,16 @@ namespace Banshee.ClutterFlow
 				throw new System.NotImplementedException ("SortLabel cannot be set directly in a ClutterFlowAlbum, derived from the Album property.");
 			}
 		}
+
+        object sync = new object();
+        bool enqueued = false;
+        public bool Enqueued {
+            get { lock (sync) { return enqueued; } }
+            internal set { lock (sync) { enqueued = value; } }
+        }
 		#endregion
 
 		#region Initialization
-		public ClutterFlowAlbum (AlbumInfo album, CoverManager coverManager, ArtworkLookup lookup) : this (album, coverManager)
-		{
-			ClutterFlowAlbum.lookup = lookup;
-		}
 		public ClutterFlowAlbum (AlbumInfo album, CoverManager coverManager) : base (coverManager, null)
 		{
 			this.album = album;
@@ -108,6 +111,12 @@ namespace Banshee.ClutterFlow
 			if (lookup==null) lookup = new ArtworkLookup (CoverManager);
 			return base.SetupStatics ();
 		}
+        protected override void DisposeStatics ()
+        {
+            if (lookup!=null) lookup.Dispose ();
+            lookup = null;
+            base.DisposeStatics ();
+        }
 		#endregion
 		
 		#region Texture Handling
