@@ -32,6 +32,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System.Runtime.InteropServices;
 
 using Mono.Unix;
 using Mono.Addins;

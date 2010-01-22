@@ -112,6 +112,11 @@ namespace Banshee.Streamrecorder
         {
             Hyena.Log.Debug ("[StreamrecorderProcessControl] <StopRecording> STOPPED");
 
+			if (streamrecorder_process == null)
+			{
+				return;
+			}
+
             try {
                 if (!streamrecorder_process.HasExited)
                 {
@@ -203,7 +208,7 @@ namespace Banshee.Streamrecorder
         {
             if (!String.IsNullOrEmpty(outLine.Data))
             {
-				Console.WriteLine("[StreamrecorderProcessControl Info]" + outLine.Data) ;
+				Hyena.Log.Information("[StreamrecorderProcessControl Info]" + outLine.Data) ;
             }
         }
         
@@ -215,32 +220,26 @@ namespace Banshee.Streamrecorder
 				bool ogg_error = Regex.Match(errLine.Data, oggstream_error_text ).Success ;
 				if (ogg_error)
 				{
-					Console.WriteLine("[StreamrecorderProcessControl Error Caught]: " + errLine.Data) ;
+					Hyena.Log.Warning("[StreamrecorderProcessControl Error Caught]: " + errLine.Data) ;
 					streamripper_oggstream_workaround_enabled = true;
 					if (!streamrecorder_process_restarted)
 					{
-						Console.WriteLine("[StreamrecorderProcessControl]: Restarting");
+						Hyena.Log.Warning("[StreamrecorderProcessControl]: Restarting");
 						StopRecording();
 						StartRecording();
 					}
 					else
 					{
-						Console.WriteLine("[StreamrecorderProcessControl]: Restarting already tried. Exiting.");
+						Hyena.Log.Error("[StreamrecorderProcessControl]: Restarting already tried. Exiting.");
 					}
 					streamrecorder_process_restarted = true;
 				} else {
-					Console.WriteLine("[StreamrecorderProcessControl Uncaught Error]: " + errLine.Data) ;
+					Hyena.Log.Error("[StreamrecorderProcessControl Uncaught Error]: " + errLine.Data) ;
 				}
 
             }
         }
 
-        /*void StreamripperExitedHandler (object sendingProcess, 
-            System.EventArgs eventArgs) 
-        {
-				Console.WriteLine("[StreamrecorderProcessControl Info]: Recording Stopped on Error... Should be restarting");
-		}*/
-		
     }
 
 }
