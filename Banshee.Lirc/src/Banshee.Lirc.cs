@@ -40,7 +40,8 @@ namespace Banshee.Lirc
 		void IExtensionService.Initialize()
 		{
             lirc = new LircClient ("banshee");
-            poll = ThreadAssist.Spawn(PollThread);
+            poll = new Thread(new ThreadStart(PollThread));
+			poll.Start();
 		}
 
 		public void Dispose ()
