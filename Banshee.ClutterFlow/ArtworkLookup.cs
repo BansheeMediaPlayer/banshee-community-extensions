@@ -67,7 +67,11 @@ namespace Banshee.ClutterFlow
 		}
 		private FloatingQueue<ClutterFlowAlbum> LookupQueue = new FloatingQueue<ClutterFlowAlbum> ();
 		
-		
+        protected bool threaded = false;
+        public bool Threaded {
+            get { return threaded; }
+        }
+        
 	    protected readonly object stopLock = new object ();	// Lock covering stopping and stopped
 	    protected bool stopping = false;					// Whether or not the worker thread has been asked to stop
 	    protected bool stopped = true;						// Whether or not the worker thread has stopped
@@ -95,6 +99,8 @@ namespace Banshee.ClutterFlow
 			//Hyena.Log.Information ("ArtworkLookup ctor ()");
 		 	CoverManager = coverManager;
 			artwork_manager = ServiceManager.Get<ArtworkManager> ();
+
+            threaded = ClutterFlowSchemas.ThreadedArtwork.Get ();
             //Start ();
 		}
 
@@ -103,8 +109,11 @@ namespace Banshee.ClutterFlow
 		{
             if (!cover.Enqueued) {
                 cover.Enqueued = true;
-                LookupQueue.Enqueue (cover);
-                Start ();
+                if (threaded) {
+                    LookupQueue.Enqueue (cover);
+                    Start ();
+                } else
+                    LoadUnthreaded (cover);
             }
 		}
 
@@ -160,7 +169,7 @@ namespace Banshee.ClutterFlow
 		#endregion
 		
 	    // Main work loop of the class.
-	    public void Run ()
+	    private void Run ()
 	    {
             if (!disposed) try {
                 Hyena.Log.Information ("ArtworkLookup Run ()");
@@ -188,21 +197,37 @@ namespace Banshee.ClutterFlow
 					string cache_id = cover.PbId;
 					Gdk.Pixbuf pb = artwork_manager.LookupScalePixbuf (cache_id, (int) size);
 					if (pb!=null) {
+                        pb = ClutterFlowActor.MakeReflection(pb);
                         Gtk.Application.Invoke (delegate {
-                            cover.Enqueued = false;
-                            cover.SwappedToDefault = false;
-                            pb = ClutterFlowActor.MakeReflection(pb);
-                            
-                            GtkUtil.TextureSetFromPixbuf (cover.Cover, pb);
-                            pb.Dispose ();
+                            GtkInvoke (cover, pb);
                         });
 					}
                     t.IsBackground = true;
 	            }
 	        } finally {
 	           Hyena.Log.Information ("ArtworkLookup stopped");
+               threaded = ClutterFlowSchemas.ThreadedArtwork.Get ();
                t = null;
 	        }
 	    }
+
+        private void LoadUnthreaded (ClutterFlowAlbum cover)
+        {
+            float size = cover.CoverManager.TextureSize;
+            string cache_id = cover.PbId;
+            Gdk.Pixbuf pb = artwork_manager.LookupScalePixbuf (cache_id, (int) size);
+            if (pb!=null) {
+                pb = ClutterFlowActor.MakeReflection(pb);
+                GtkInvoke (cover, pb);
+            }
+        }
+        
+        private void GtkInvoke (ClutterFlowAlbum cover, Gdk.Pixbuf pb)
+        {
+            cover.Enqueued = false;
+            cover.SwappedToDefault = false;
+            GtkUtil.TextureSetFromPixbuf (cover.Cover, pb);
+            pb.Dispose ();
+        }
 	}
 }

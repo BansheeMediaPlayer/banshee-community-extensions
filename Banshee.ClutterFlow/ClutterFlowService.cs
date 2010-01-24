@@ -326,15 +326,11 @@ namespace Banshee.ClutterFlow
 				
 	            general = pref_page.Add (new Section ("general", 
 	                Catalog.GetString ("General"), 1));
-				
-	            general.Add (new SchemaPreference<bool> (ClutterFlowSchemas.InstantPlayback, 
-	                ClutterFlowSchemas.InstantPlayback.ShortDescription, ClutterFlowSchemas.InstantPlayback.LongDescription, UpdateLabelVisibility));
-	            general.Add (new SchemaPreference<bool> (ClutterFlowSchemas.DisplayLabel, 
-	                ClutterFlowSchemas.DisplayLabel.ShortDescription, ClutterFlowSchemas.DisplayLabel.LongDescription, UpdateLabelVisibility));
-				general.Add (new SchemaPreference<bool> (ClutterFlowSchemas.DisplayTitle, 
-	                ClutterFlowSchemas.DisplayTitle.ShortDescription, ClutterFlowSchemas.DisplayTitle.LongDescription, UpdateTitleVisibility));
-				general.Add (new SchemaPreference<int> (ClutterFlowSchemas.VisibleCovers, 
-	                ClutterFlowSchemas.VisibleCovers.ShortDescription, ClutterFlowSchemas.VisibleCovers.LongDescription, UpdateVisibleCovers));
+                ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.ThreadedArtwork, UpdateThreadedArtwork);
+                ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.InstantPlayback, UpdateLabelVisibility);
+                ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DisplayLabel, UpdateLabelVisibility);
+                ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DisplayTitle, UpdateTitleVisibility);
+                ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.VisibleCovers, UpdateVisibleCovers);
 				
 				dimensions = pref_page.Add (new Section ("dimensions", 
 	                Catalog.GetString ("Dimensions"), 2));
@@ -361,7 +357,12 @@ namespace Banshee.ClutterFlow
 			UpdateMaxCoverSize ();
 			UpdateTextureSize ();
 		}
-		
+
+        private void UpdateThreadedArtwork ()
+        {
+            
+        }
+        
 		private void UpdateLabelVisibility ()
 		{
 			if (clutter_flow_contents != null)

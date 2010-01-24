@@ -37,6 +37,18 @@ namespace Banshee.ClutterFlow
    /// Static class providing ClutterFlow with setting schema's
    /// </summary>
 	public static class ClutterFlowSchemas {
+        internal static void AddToSection<T> (Section section, SchemaEntry<T> entry, SchemaPreferenceUpdatedHandler func)
+        {
+            section.Add (new SchemaPreference<T> (entry, entry.ShortDescription, entry.LongDescription, func));
+        }
+        
+        internal static readonly SchemaEntry<bool> ThreadedArtwork = new SchemaEntry<bool>(
+            "clutterflow", "threaded_artwork",
+            true,
+            Catalog.GetString ("Enable threaded loading of artwork"),
+            Catalog.GetString ("If enabled ClutterFlow will use threading to load it's artwork")
+        );
+        
         internal static readonly SchemaEntry<bool> ExpandTrackList = new SchemaEntry<bool>(
             "clutterflow", "expand_track_list",
             true,
