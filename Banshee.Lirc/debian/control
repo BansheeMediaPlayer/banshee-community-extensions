@@ -9,7 +9,7 @@ Build-Depends: debhelper (>= 7),
                mono-gmcs (>=2.4.2.3),
                pkg-config (>= 0.22)
 Standards-Version: 3.8.3
-Homepage: None yet
+Homepage: http://code.google.com/p/banshee-unofficial-plugins/
 
 Package: banshee-extension-lirc
 Architecture: any
