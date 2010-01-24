@@ -30,6 +30,7 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
+using System.Runtime.InteropServices;
 
 using System.Text.RegularExpressions;
 
@@ -53,17 +54,21 @@ namespace Banshee.Streamrecorder
         private bool streamripper_oggstream_workaround_enabled;
         private bool streamrecorder_process_restarted;
         private Process streamrecorder_process;
+        
+        private IntPtr playbin;
+        private IntPtr audiotee;
+        private IntPtr encoder_bin;
+        
         private static string oggstream_error_text = "SR_ERROR_CANT_WRITE_TO_FILE" ;
         private static string mplayer_process_name = "mplayer" ;
         private static string streamripper_process_name = "streamripper" ;
 
         public StreamrecorderProcessControl () 
         {
-			streamripper_oggstream_workaround_enabled = false;
-			streamrecorder_process_restarted = false;
-			is_streamripper = false;
-			is_mplayer = false;
-        }
+			IntPtr [] elements = ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements();
+			playbin = elements[0];
+			audiotee = elements[2];
+			encoder_bin = gst_parse_bin_from_description ("lame name=audio_encoder ! gnomevfssink name=file_sink", true) ;        }
 
 		private Process InitProcess()
 		{
@@ -239,6 +244,67 @@ namespace Banshee.Streamrecorder
 
             }
         }
+
+        [DllImport ("gstreamer.so")]
+        private static extern IntPtr gst_parse_bin_from_description (string desc, bool ukn);
+
+/*
+
+	def on_extra_metadata_notify (self, db, entry, field, metadata):
+		self.streaming_title = metadata
+
+		# set a new filename on the sink so it splits streaming audio
+		# automatically into tracks
+		teepad = self.ghostpad.get_peer ()
+		teepad.set_blocked (True)
+		self.encoder_bin.send_event (gst.event_new_eos())
+		self.encoder_bin.set_state (gst.STATE_NULL)
+		self.set_recording_uri ()
+		self.encoder_bin.set_state (gst.STATE_READY)
+		if self.recording:
+			self.encoder_bin.set_state (gst.STATE_PLAYING)
+		teepad.set_blocked (False)
+
+	def create_recorder (self):
+		#self.encoder_bin = gst.parse_bin_from_description ('lame name=audio_encoder ! gnomevfssink name=file_sink', True)
+		#self.encoder_bin = gst.parse_bin_from_description ('lame name=audio_encoder ! id3v2mux name=tagger ! gnomevfssink name=file_sink', True)
+		#print 'Using AudioProfile: %s, %s, %s' % (self.audio_profile[0], self.audio_profile[1], self.audio_profile[2])
+		
+		self.encoder_bin = gst.parse_bin_from_description ('audioresample ! audioconvert ! %s ! gnomevfssink name=file_sink' % (self.audio_profile[1]), True)
+		#print '%s' % (self.audio_profile[0])
+		print '%s' % (self.audio_profile[1])
+		#print '%s' % (self.audio_profile[2])
+
+		#self.audio_encoder = self.encoder_bin.get_by_name ('audio_encoder')
+		self.tagger = self.encoder_bin.get_by_interface (gst.TagSetter)
+		print self.tagger
+		self.file_sink.set_property ('location', file_uri)
+		self.file_sink = self.encoder_bin.get_by_name ('file_sink')
+
+		# This prevents gnomevfs totally screwing up rhythmbox (gst 0.10.15+)
+		if gst.version()[1] == 10 and gst.version()[2] >= 15:
+			self.file_sink.set_property ('sync', True)
+			self.file_sink.set_property ('async', False)
+		self.file_sink.connect ('allow-overwrite', self.allow_overwrite_cb)
+
+		self.ghostpad = self.encoder_bin.get_pad ('sink')
+
+	def set_recording (self, enabled):
+		self.recording = enabled
+		p = self.shell.get_player ().get_property ('player')
+		if enabled:
+			p.add_tee (self.encoder_bin)
+		else:
+			p.remove_tee (self.encoder_bin)
+		
+	def get_preferred_audio_profile (self):
+		profile_id = self.client.get_string ('/apps/rhythmbox/library_preferred_format')
+		gdir = GCONF_GST_AUDIO_PROFILE % (profile_id)
+		pipeline = self.client.get_string (gdir + '/pipeline')
+		extension = self.client.get_string (gdir + '/extension')
+		return [profile_id, pipeline, extension]
+
+ */
 
     }
 
