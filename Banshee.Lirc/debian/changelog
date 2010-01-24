@@ -1,3 +1,9 @@
+banshee-extension-lirc (0.0.2-0~ppa0) karmic; urgency=low
+
+  * Use standard threading API
+
+ -- Jean-Baptiste Lab <jeanbaptiste.lab@gmail.com>  Sun, 24 Jan 2010 13:03:42 +0100
+
 banshee-extension-lirc (0.0.1-0~ppa4) karmic; urgency=low
 
   * Initial Release in my PPA
