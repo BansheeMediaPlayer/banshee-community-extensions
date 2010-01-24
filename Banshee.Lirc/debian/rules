@@ -35,10 +35,10 @@ build-stamp: configure-stamp
 clean: 
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp configure-stamp
-
+	
 	# Add here commands to clean up after the build process.
 	scons -c
+	rm -rf build-stamp configure-stamp .sconf_temp .sconsign.dblite
 
 	dh_clean 
 
@@ -60,7 +60,7 @@ binary-indep: install
 binary-arch: install
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs 
+	dh_installchangelogs debian/changelog
 	dh_installdocs
 	dh_installexamples
 #	dh_install

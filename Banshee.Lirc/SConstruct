@@ -5,4 +5,6 @@ if not conf.CheckCHeader('lirc/lirc_client.h'):
 	Exit(1)
 env = conf.Finish()
 
-SConscript('src/SConscript', build_dir='bin/Debug')
+env.Clean('#', 'config.log')
+
+SConscript('src/SConscript', variant_dir='bin/Debug', duplicate=0)
