@@ -128,6 +128,8 @@ namespace ClutterFlow
 		}
 
 		protected static double time_threshold = 1000; //threshold to assure visible animations
+        protected static double target_fps = 30; //target fps
+        protected static double target_tmd = 1000 / target_fps;  // target timestep in ms;
 		
 		protected double frequency = 0.004;	//indeces per millisecond
 		public virtual double Frequency {
@@ -159,7 +161,7 @@ namespace ClutterFlow
 		
 		public ThrottledTimeline ()
 		{
-			Clutter.Threads.AddFrameSourceFull (250, 30, RepaintFunc);
+			Clutter.Threads.AddFrameSourceFull (250, (uint) target_fps, RepaintFunc);
 			funcId = Clutter.Threads.AddRepaintFunc (RepaintFunc);
 		}
         public virtual void Dispose ()
@@ -187,27 +189,29 @@ namespace ClutterFlow
 					}
 					return true;
 				}
-				if (timeDelta > time_threshold) timeDelta = time_threshold;
-				if (IsPlaying) {
-					if (direction==TimelineDirection.Forward) {
-						progress +=	timeDelta * Frequency / (double) (indexCount-1);
-						if (target<=AbsoluteProgress) {
-							isPlaying = false;
-							progress = RelativeTarget;
-							InvokeTargetReached();
-						}
-					} else {
-						progress -= timeDelta * Frequency / (double) (indexCount-1);
-						if (target>=AbsoluteProgress) {
-							isPlaying = false;
-							progress = RelativeTarget;
-							InvokeTargetReached();
-						}
-					}
-					delta = (int) Math.Abs(AbsoluteProgress - Target);
-				}
-				lastTime = now;
-				InvokeNewFrameEvent ();
+                if (timeDelta > time_threshold) timeDelta = time_threshold;
+                if (timeDelta >= target_tmd) { //if smaller we are at a higher fps than targetted
+    				if (IsPlaying) {
+    					if (direction==TimelineDirection.Forward) {
+    						progress +=	timeDelta * Frequency / (double) (indexCount-1);
+    						if (target<=AbsoluteProgress) {
+    							isPlaying = false;
+    							progress = RelativeTarget;
+    							InvokeTargetReached();
+    						}
+    					} else {
+    						progress -= timeDelta * Frequency / (double) (indexCount-1);
+    						if (target>=AbsoluteProgress) {
+    							isPlaying = false;
+    							progress = RelativeTarget;
+    							InvokeTargetReached();
+    						}
+    					}
+    					delta = (int) Math.Abs(AbsoluteProgress - Target);
+    				}
+                    lastTime = now;
+                    InvokeNewFrameEvent ();
+                }
 				return run_frame_source; //keep on calling this function
 			}
 		}
