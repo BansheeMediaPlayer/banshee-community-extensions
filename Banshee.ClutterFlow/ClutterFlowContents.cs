@@ -91,15 +91,12 @@ namespace Banshee.ClutterFlow
         public ISource Source {
             get { return source; }
         }
-		
+        
         public TrackListModel TrackModel {
             get { return source.TrackModel; }
         }
-
-		protected bool ignore_reload = true;
-		
-		protected FilterListModel<AlbumInfo> external_filter; //this is actually tied to the MusicLibrary
-		protected DatabaseAlbumListModel internal_filter;	//this is a duplicate not added using AddFilter
+        
+        protected FilterListModel<AlbumInfo> external_filter; //this is actually fetched from the MusicLibrary
 
 		//PLAYBACK RELATED:
 		private TrackInfo previous_track;
@@ -155,7 +152,6 @@ namespace Banshee.ClutterFlow
             Reset ();
             if (filter_view.Parent!=null) frame.Remove (filter_view);
             filter_view.DetachEvents ();
-            //filter_view.Dispose (); handled by ClutterFlowManager
             
             fullscreen_adapter.Dispose ();
             screensaver.Dispose ();
@@ -180,7 +176,6 @@ namespace Banshee.ClutterFlow
 
 			container.Pack1 (frame, false, false);
             main_expander.Activated += OnExpander;
-            //main_expander.ResizeChecked += HandleResizeChecked;
             main_expander.SizeRequested += HandleSizeRequested;
             container.Pack2 (main_expander, true, false);
 
@@ -213,7 +208,6 @@ namespace Banshee.ClutterFlow
 				if (frame != null) container.Remove (frame);
 				if (main_expander != null) container.Remove (main_expander);
                 main_expander.Activated -= OnExpander;
-                //main_expander.ResizeChecked -= HandleResizeChecked;
                 main_expander.SizeRequested -= HandleSizeRequested;
                 Remove (container);
             }
@@ -243,15 +237,16 @@ namespace Banshee.ClutterFlow
 			filter_view.LabelTrackIsVisible = ClutterFlowSchemas.DisplayTitle.Get () && IsFullscreen;
         }
 		
-        //private ScrolledWindow CreateScrollable (Widget view)
         private Expander CreateScrollableExpander (Widget view)
         {
-			//TODO make this a collabsable thing so the ClutterFlow widget can be bigger, while not fullscreen
             ScrolledWindow window = null;
 
             // See revision http://git.gnome.org/browse/banshee/commit/?id=2b7789ea563319fa7196e50b76b2b561d699fd71
-            //if (Banshee.Base.ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
+#if BANSHEE_V152
+            if (Banshee.Base.ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
+#else
             if (ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
+#endif
                 window = new SmoothScrolledWindow ();
             } else {
                 window = new ScrolledWindow ();
@@ -514,9 +509,6 @@ namespace Banshee.ClutterFlow
 			this.source.TracksAdded += HandleTracksAdded;
 			this.source.TracksDeleted += HandleTracksDeleted;
 
-			internal_filter = new DatabaseAlbumListModel(this.source, (DatabaseTrackListModel) this.source.TrackModel, ServiceManager.DbConnection, this.source.UniqueId);
-			internal_filter.Reload (false);
-			
 			foreach (IFilterListModel list_model in this.source.CurrentFilters) {
 				list_model.Clear (); //clear selections, we need all albums!!
 				if (list_model is FilterListModel<AlbumInfo>) {
@@ -526,9 +518,7 @@ namespace Banshee.ClutterFlow
 			}
 			
 			TrackView.SetModel (TrackModel);
-			FilterView.SetModel (internal_filter);
-
-			TrackModel.Reloaded += HandleModelReload;
+			FilterView.SetModel (external_filter);
 			
 			return true;
         }
@@ -536,19 +526,11 @@ namespace Banshee.ClutterFlow
 		private void HandleTracksAdded (Source sender, TrackEventArgs args)
 		{
 			SelectAllTracks ();
-			internal_filter.Reload (true);
 		}
 
 		private void HandleTracksDeleted (Source sender, TrackEventArgs args)
 		{
 			SelectAllTracks ();
-			internal_filter.Reload (true);
-		}
-		
-		private void HandleModelReload (object o, EventArgs args)
-		{
-			internal_filter.Reload (true);
-			TrackModel.Reloaded -= HandleModelReload;
 		}
 
         public void ResetSource ()
@@ -556,7 +538,6 @@ namespace Banshee.ClutterFlow
 			if (source!=null) {
                 source.TracksAdded -= HandleTracksAdded;
                 source.TracksDeleted -= HandleTracksDeleted;
-				TrackModel.Reloaded -= HandleModelReload;
 	            source = null;
 			}
             TrackView.SetModel (null);
@@ -569,35 +550,12 @@ namespace Banshee.ClutterFlow
 			if (album!=null) {
 				external_filter.Selection.Clear (false);
 				external_filter.Selection.Select (FilterView.ActiveIndex+1);
-                //TrackView.QueueResize ();
 			}
         }
 		protected void SelectAllTracks () 
 		{
-            internal_filter.Selection.SelectAll ();
 			external_filter.Selection.SelectAll ();
-            //TrackView.QueueResize ();
-		}
-
-		// TODO: FilterQueries etc. now need to be set on the TrackListModel inside ClutterFlowContents
-		// this should invoke a reload event on the internal_filter also so that it displays the correct albums
-		
-        /*public override string FilterQuery {
-            get { return (clutter_flow_interface.TrackModel as DatabaseTrackListModel).UserQuery / *Parent.Properties.Get<string> ("FilterQuery")* /; }
-            set {
-				(clutter_flow_interface.TrackModel as DatabaseTrackListModel).UserQuery = value;
-				clutter_flow_interface.TrackModel.Reload();
-			}
-        }
-        
-        new public TrackFilterType FilterType {
-            get { return (TrackFilterType) clutter_flow_interface.Source.Properties.GetInteger ("FilterType"); }
-            set { 
-				clutter_flow_interface.Source.Properties.SetInteger ("FilterType", (int) value);
-				clutter_flow_interface.TrackModel.Reload();
-			}
-        }*/
-		
+		}		
 		#endregion
     }
 }
