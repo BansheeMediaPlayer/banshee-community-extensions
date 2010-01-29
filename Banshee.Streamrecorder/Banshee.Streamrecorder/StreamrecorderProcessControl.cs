@@ -49,19 +49,10 @@ namespace Banshee.Streamrecorder
         private string output_directory;
         private string uri;
         private string output_file;
-        private bool is_streamripper;
-        private bool is_mplayer;
-        private bool streamripper_oggstream_workaround_enabled;
-        private bool streamrecorder_process_restarted;
-        private Process streamrecorder_process;
         
         private IntPtr playbin;
         private IntPtr audiotee;
         private IntPtr encoder_bin;
-        
-        private static string oggstream_error_text = "SR_ERROR_CANT_WRITE_TO_FILE" ;
-        private static string mplayer_process_name = "mplayer" ;
-        private static string streamripper_process_name = "streamripper" ;
 
         public StreamrecorderProcessControl () 
         {
@@ -70,46 +61,49 @@ namespace Banshee.Streamrecorder
 			audiotee = elements[2];
 			encoder_bin = gst_parse_bin_from_description ("lame name=audio_encoder ! gnomevfssink name=file_sink", true) ;        }
 
-		private Process InitProcess()
+		private InitControl()
 		{
-            Process p = new Process();
-            if (is_streamripper)
-            {
-				p.StartInfo.FileName = streamripper_process_name;
-			}
-			if (is_mplayer)
-			{
-				p.StartInfo.FileName = mplayer_process_name;
-			}
-            p.EnableRaisingEvents = true;
-			p.StartInfo.RedirectStandardError = true;
-			p.StartInfo.RedirectStandardOutput = true;
-			p.StartInfo.UseShellExecute = false;
-			p.ErrorDataReceived += new DataReceivedEventHandler(StreamripperErrorDataHandler) ;
-            p.OutputDataReceived += new DataReceivedEventHandler(StreamripperOutputDataHandler) ;
-            //p.Exited += new EventHandler (StreamripperExitedHandler) ;
-            return p;
+			/*
+			def create_recorder (self):
+				#self.encoder_bin = gst.parse_bin_from_description ('lame name=audio_encoder ! gnomevfssink name=file_sink', True)
+				#self.encoder_bin = gst.parse_bin_from_description ('lame name=audio_encoder ! id3v2mux name=tagger ! gnomevfssink name=file_sink', True)
+				#print 'Using AudioProfile: %s, %s, %s' % (self.audio_profile[0], self.audio_profile[1], self.audio_profile[2])
+				
+				self.encoder_bin = gst.parse_bin_from_description ('audioresample ! audioconvert ! %s ! gnomevfssink name=file_sink' % (self.audio_profile[1]), True)
+				#print '%s' % (self.audio_profile[0])
+				print '%s' % (self.audio_profile[1])
+				#print '%s' % (self.audio_profile[2])
+
+				#self.audio_encoder = self.encoder_bin.get_by_name ('audio_encoder')
+				self.tagger = self.encoder_bin.get_by_interface (gst.TagSetter)
+				print self.tagger
+				self.file_sink.set_property ('location', file_uri)
+				self.file_sink = self.encoder_bin.get_by_name ('file_sink')
+
+				# This prevents gnomevfs totally screwing up rhythmbox (gst 0.10.15+)
+				if gst.version()[1] == 10 and gst.version()[2] >= 15:
+					self.file_sink.set_property ('sync', True)
+					self.file_sink.set_property ('async', False)
+				self.file_sink.connect ('allow-overwrite', self.allow_overwrite_cb)
+
+				self.ghostpad = self.encoder_bin.get_pad ('sink')
+			*/
 		}
 
         public void StartRecording () 
         {
             Hyena.Log.Debug ("[StreamrecorderProcessControl] <StartRecording> START");
             
-            streamrecorder_process = InitProcess();
-
             if (!SetParameters ())
                 return;
 
-            try {
-                streamrecorder_process.Start ();
-				streamrecorder_process.BeginOutputReadLine();
-				streamrecorder_process.BeginErrorReadLine();
-            }
-            catch (Exception e) {
-                Hyena.Log.Exception ("[StreamrecorderProcessControl] <StartRecording> Couldn't start", e);
-            }
+			//add tee
+			//* request a pad from tee
+			//* set it blocked
+			//* link recording branch
+			//* set it to playing
+			//* unset pad-block         
                 
-            Hyena.Log.DebugFormat ("[StreamrecorderProcessControl] <StartRecording> Arguments {0}", streamrecorder_process.StartInfo.Arguments);
             Hyena.Log.Debug ("[StreamrecorderProcessControl] <StartRecording> END");
         }
 
@@ -117,20 +111,13 @@ namespace Banshee.Streamrecorder
         {
             Hyena.Log.Debug ("[StreamrecorderProcessControl] <StopRecording> STOPPED");
 
-			if (streamrecorder_process == null)
-			{
-				return;
-			}
+			//remove tee
+			//* set recording_branch to paused
+			//* request a pad from tee
+			//* set it blocked
+			//* unlink recording branch
+			//* unset pad-block         
 
-            try {
-                if (!streamrecorder_process.HasExited)
-                {
-                    streamrecorder_process.Kill ();
-                    streamrecorder_process.Close ();
-				}
-            } catch (Exception e) {
-                Hyena.Log.Exception ("[StreamrecorderProcessControl] <StopRecording> Couldn't stop", e);
-            }
         }
 
         public bool SetParameters () 
@@ -138,30 +125,8 @@ namespace Banshee.Streamrecorder
             if (String.IsNullOrEmpty (uri))
                 return false;
 
-			if (is_streamripper)
-			{
-				streamrecorder_process.StartInfo.Arguments = uri;
-
-				if (!String.IsNullOrEmpty (output_file_format_pattern))
-					streamrecorder_process.StartInfo.Arguments += " -t -D " + output_file_format_pattern + " ";
-
-				if (!String.IsNullOrEmpty (output_directory))
-					streamrecorder_process.StartInfo.Arguments += " -d " + output_directory + " ";
-					
-				if (this.streamripper_oggstream_workaround_enabled)
-					streamrecorder_process.StartInfo.Arguments += " -A -a ";
-			}
-			if (is_mplayer)
-			{
-				streamrecorder_process.StartInfo.Arguments = " -noframedrop -noconfig all -nolirc -slave -dumpstream " + uri;
-
-				if (!String.IsNullOrEmpty (output_file))
-				{
-					streamrecorder_process.StartInfo.Arguments += " -dumpfile " + output_file;
-				}
-				else return false;
-			}
-
+			//set up file for recording
+			
             return true;
         }
         
@@ -189,60 +154,7 @@ namespace Banshee.Streamrecorder
 
         public void SetStreamURI (string uri) 
         {
-			if (this.uri == null || !this.uri.Equals(uri))
-			{
-				streamripper_oggstream_workaround_enabled = false;
-				streamrecorder_process_restarted = false;
-			}
-			is_streamripper = CheckHttpHeader(uri);
-			is_mplayer = !is_streamripper;
             this.uri = uri;
-        }
-
-        public bool CheckHttpHeader (string uri)
-        {
-            if (uri == null) {
-                Hyena.Log.Debug ("[StreamrecorderService] <CheckHttpHeader> END. Recording not ready");
-                return false;
-            }
-			return Regex.Match(uri,"^http://" ).Success;
-        }
-
-        void StreamripperOutputDataHandler(object sendingProcess, 
-            DataReceivedEventArgs outLine)
-        {
-            if (!String.IsNullOrEmpty(outLine.Data))
-            {
-				Hyena.Log.Information("[StreamrecorderProcessControl Info]" + outLine.Data) ;
-            }
-        }
-        
-        void StreamripperErrorDataHandler(object sendingProcess, 
-            DataReceivedEventArgs errLine)
-        {
-            if (!String.IsNullOrEmpty(errLine.Data))
-            {
-				bool ogg_error = Regex.Match(errLine.Data, oggstream_error_text ).Success ;
-				if (ogg_error)
-				{
-					Hyena.Log.Warning("[StreamrecorderProcessControl Error Caught]: " + errLine.Data) ;
-					streamripper_oggstream_workaround_enabled = true;
-					if (!streamrecorder_process_restarted)
-					{
-						Hyena.Log.Warning("[StreamrecorderProcessControl]: Restarting");
-						StopRecording();
-						StartRecording();
-					}
-					else
-					{
-						Hyena.Log.Error("[StreamrecorderProcessControl]: Restarting already tried. Exiting.");
-					}
-					streamrecorder_process_restarted = true;
-				} else {
-					Hyena.Log.Error("[StreamrecorderProcessControl Uncaught Error]: " + errLine.Data) ;
-				}
-
-            }
         }
 
         [DllImport ("gstreamer.so")]
@@ -265,38 +177,6 @@ namespace Banshee.Streamrecorder
 			self.encoder_bin.set_state (gst.STATE_PLAYING)
 		teepad.set_blocked (False)
 
-	def create_recorder (self):
-		#self.encoder_bin = gst.parse_bin_from_description ('lame name=audio_encoder ! gnomevfssink name=file_sink', True)
-		#self.encoder_bin = gst.parse_bin_from_description ('lame name=audio_encoder ! id3v2mux name=tagger ! gnomevfssink name=file_sink', True)
-		#print 'Using AudioProfile: %s, %s, %s' % (self.audio_profile[0], self.audio_profile[1], self.audio_profile[2])
-		
-		self.encoder_bin = gst.parse_bin_from_description ('audioresample ! audioconvert ! %s ! gnomevfssink name=file_sink' % (self.audio_profile[1]), True)
-		#print '%s' % (self.audio_profile[0])
-		print '%s' % (self.audio_profile[1])
-		#print '%s' % (self.audio_profile[2])
-
-		#self.audio_encoder = self.encoder_bin.get_by_name ('audio_encoder')
-		self.tagger = self.encoder_bin.get_by_interface (gst.TagSetter)
-		print self.tagger
-		self.file_sink.set_property ('location', file_uri)
-		self.file_sink = self.encoder_bin.get_by_name ('file_sink')
-
-		# This prevents gnomevfs totally screwing up rhythmbox (gst 0.10.15+)
-		if gst.version()[1] == 10 and gst.version()[2] >= 15:
-			self.file_sink.set_property ('sync', True)
-			self.file_sink.set_property ('async', False)
-		self.file_sink.connect ('allow-overwrite', self.allow_overwrite_cb)
-
-		self.ghostpad = self.encoder_bin.get_pad ('sink')
-
-	def set_recording (self, enabled):
-		self.recording = enabled
-		p = self.shell.get_player ().get_property ('player')
-		if enabled:
-			p.add_tee (self.encoder_bin)
-		else:
-			p.remove_tee (self.encoder_bin)
-		
 	def get_preferred_audio_profile (self):
 		profile_id = self.client.get_string ('/apps/rhythmbox/library_preferred_format')
 		gdir = GCONF_GST_AUDIO_PROFILE % (profile_id)
