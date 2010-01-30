@@ -1,4 +1,4 @@
-AC_INIT([banshee-alarm-extension], [0.4.3])
+AC_INIT([banshee-alarm-extension], [0.4.4])
 AC_CONFIG_SRCDIR([README])
 
 AC_SUBST([ACLOCAL_AMFLAGS], ["-I build/m4/shamrock \${ACLOCAL_FLAGS}"])
