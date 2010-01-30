@@ -51,14 +51,14 @@ namespace Banshee.AlarmClock
                 bool thread_interrupted = false;
                 while (true) {
                     int delay = (int)TimeUntilAlarm().TotalMilliseconds;
-                    
+
                     try {
                         Thread.Sleep(delay);
                     } catch(ThreadInterruptedException) {
                         Log.Debug("Alarm Plugin: sleep interrupted");
                         thread_interrupted = true;
                     }
-                    
+
                     if (thread_interrupted) {
                         // The alarm time was changed, we don't play and go back to sleep
                         thread_interrupted = false;
@@ -86,17 +86,17 @@ namespace Banshee.AlarmClock
             // PlayerEngine.Play() only works if we are paused in a track
             // PlayerEngine.TogglePlaying() starts the first track if we're not paused in a track
             ServiceManager.PlayerEngine.TogglePlaying();
-            
+
             if (!String.IsNullOrEmpty (plugin.AlarmCommand)) {
                 System.Diagnostics.Process.Start(plugin.AlarmCommand);
             }
         }
-        
+
         private TimeSpan TimeUntilAlarm()
         {
             DateTime now = DateTime.Now;
             DateTime alarmTime = new DateTime(now.Year, now.Month, now.Day, plugin.AlarmHour, plugin.AlarmMinute, 0);
-            
+
             TimeSpan delay = alarmTime - now;
             if (delay < TimeSpan.Zero) {
                 alarmTime = alarmTime.AddDays(1);

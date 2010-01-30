@@ -39,15 +39,15 @@ namespace Banshee.AlarmClock
         private SpinButton spbHour;
         private SpinButton spbMinute;
         private CheckButton isEnabled;
-        
+
         public AlarmConfigDialog (AlarmClockService plugin) : base ()
         {
             this.plugin = plugin;
-            
+
             Title = "Alarm";
             WidthRequest = 250;
             HeightRequest = 150;
-            
+
             BuildWidget ();
             ShowAll ();
         }

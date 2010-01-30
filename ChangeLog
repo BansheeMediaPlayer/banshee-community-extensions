@@ -1,5 +1,14 @@
 2010-01-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>
 
+	* configure.ac, src/Alarm.cs, src/VolumeFade.cs,
+	  src/AlarmClockService.cs, src/AlarmConfigDialog.cs,
+	  src/ConfigurationDialog.cs, src/ConfigurationSchema.cs,
+	  src/SleepTimerConfigDialog.cs,
+	  src/Banshee.AlarmClock.addin.xml.in: Remove trailing
+	  whitespace
+
+2010-01-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>
+
 	* configure.ac: Bump version to 0.4.4.
 
 2010-01-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>

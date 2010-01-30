@@ -38,12 +38,12 @@ REL_PLUGINS_DIR=$REL_BANSHEE_DIR/$REL_PLUGINS_DIR
 expanded_libdir=`( case $prefix in NONE) prefix=$ac_default_prefix ;; *) ;; esac
 		   case $exec_prefix in NONE) exec_prefix=$prefix ;; *) ;; esac
 		   eval echo $libdir )`
-		   
+
 PLUGINDIR=$libdir/$REL_PLUGINS_DIR
 expanded_pluginsdir=$expanded_libdir/$REL_PLUGINS_DIR
 
 if test "x$enable_user_extension" = "xyes"; then
- 	PLUGINDIR=${XDG_CONFIG_HOME:-~/.config}/banshee-1/addins
+	PLUGINDIR=${XDG_CONFIG_HOME:-~/.config}/banshee-1/addins
 	PLUGINDIR=`echo "$PLUGINDIR" | sed -e "s|\~|$HOME|"`
 	expanded_pluginsdir=$PLUGINDIR
 fi
@@ -54,8 +54,7 @@ AC_SUBST(PLUGINDIR)
 dnl GNOME (optionnal)
 AC_ARG_ENABLE(gnome, 
 	AC_HELP_STRING([--disable-gnome], 
-		[Disable GNOME support]), 
-	, enable_gnome="yes")
+		[Disable GNOME support]), , enable_gnome="yes")
 if test "x$enable_gnome" = "xyes"; then
 	AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
 	AM_GCONF_SOURCE_2

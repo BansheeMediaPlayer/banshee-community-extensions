@@ -49,59 +49,59 @@ namespace Banshee.AlarmClock
         uint ui_manager_id;
         uint sleep_timer_id;
         int sleep_timer_value;
-        
+
         public AlarmClockService ()
         {}
-        
+
         void IExtensionService.Initialize ()
         {
             Log.Debug("Initializing Alarm Plugin");
 
-            AlarmClockService.alarm_service = this;            
+            AlarmClockService.alarm_service = this;
             ThreadStart alarmThreadStart = new ThreadStart (AlarmClockService.DoWait);
             alarm_thread = new Thread (alarmThreadStart);
             alarm_thread.Start ();
-            
+
             action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
-            
+
             actions = new ActionGroup ("AlarmClock");
-            
+
             actions.Add (new ActionEntry [] {
                 new ActionEntry ("AlarmClockAction", null,
                     Catalog.GetString ("Alarm Clock"), null,
                     null, null),
-                
+
                 new ActionEntry ("SetSleepTimerAction", null,
                     Catalog.GetString ("Sleep Timer..."), null,
                     Catalog.GetString ("Set the sleep timer value"), OnSetSleepTimer),
-                
+
                 new ActionEntry ("SetAlarmAction", null,
                     Catalog.GetString ("Alarm..."), null,
                     Catalog.GetString ("Set the alarm time"), OnSetAlarm),
-                
+
                 new ActionEntry ("AlarmClockConfigureAction", Stock.Properties,
                     Catalog.GetString ("_Configure..."), null,
                     Catalog.GetString ("Configure the Alarm Clock plugin"), OnConfigure)
             });
-            
+
             action_service.UIManager.InsertActionGroup (actions, 0);
             ui_manager_id = action_service.UIManager.AddUiFromResource ("AlarmMenu.xml");
         }
-        
+
         public void Dispose ()
         {
             Log.Debug ("Disposing Alarm Plugin");
             action_service.UIManager.RemoveUi (ui_manager_id);
             action_service.UIManager.RemoveActionGroup (actions);
             actions = null;
-            
+
             if (sleep_timer_id > 0) {
                 GLib.Source.Remove (sleep_timer_id);
                 Log.Debug ("Disabling old sleep timer");
             }
             alarm_thread.Abort ();
         }
-            
+
         public static void DoWait ()
         {
             Log.Debug ("Alarm thread started");
@@ -119,7 +119,7 @@ namespace Banshee.AlarmClock
             // The alarm thread has to be re-initialized to take into account the new alarm time
             alarm_thread.Interrupt ();
         }
-        
+
         protected void OnSetSleepTimer (object o, EventArgs a)
         {
             if (sleep_timer_id > 0) {
@@ -128,12 +128,12 @@ namespace Banshee.AlarmClock
             }
             new SleepTimerConfigDialog(this);
         }
-        
+
         public int GetSleepTimer()
         {
             return this.sleep_timer_value;
         }
-        
+
         public void SetSleepTimer(int timervalue)
         {
             if (timervalue != 0) {
@@ -149,7 +149,7 @@ namespace Banshee.AlarmClock
                 Log.Debug ("Sleep Timer has gone off.  Fading out till end of song.");
                 new VolumeFade (ServiceManager.PlayerEngine.Volume, 0,
                         (ushort) (ServiceManager.PlayerEngine.Length - ServiceManager.PlayerEngine.Position));
-                GLib.Timeout.Add ((ServiceManager.PlayerEngine.Length - ServiceManager.PlayerEngine.Position) * 1000, 
+                GLib.Timeout.Add ((ServiceManager.PlayerEngine.Length - ServiceManager.PlayerEngine.Position) * 1000,
                     delegate {
                         Log.Debug ("Sleep Timer: Pausing.");
                         ServiceManager.PlayerEngine.Pause ();
@@ -168,7 +168,7 @@ namespace Banshee.AlarmClock
             dialog.Run ();
             dialog.Destroy ();
         }
-        
+
         #region Configuration properties
         internal bool AlarmEnabled
         {
@@ -212,7 +212,7 @@ namespace Banshee.AlarmClock
             set { ConfigurationSchema.FadeDuration.Set (value); }
         }
         #endregion
-            
+
         string IService.ServiceName {
             get { return "AlarmClockService"; }
         }

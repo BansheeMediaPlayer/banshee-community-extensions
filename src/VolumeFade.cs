@@ -51,20 +51,20 @@ namespace Banshee.AlarmClock
             curVolume = start;
             GLib.Timeout.Add ((uint) sleep, VolumeFadeTick);
         }
-        
+
         private bool VolumeFadeTick ()
         {
             if (curVolume == endVolume) {
                 Log.Debug("Volume Fade: Done.");
                 return false;
             }
-            
+
             if (increment == 1) {
                 curVolume++;
             } else {
                 curVolume--;
             }
-            
+
             ServiceManager.PlayerEngine.Volume = curVolume;
             Log.DebugFormat ("Volume Fade: Fading a notch. Vol={0}, curVol={1}, End={2}, inc={3}, TickTime={4}ms",
                 ServiceManager.PlayerEngine.Volume, curVolume, endVolume, increment, sleep);

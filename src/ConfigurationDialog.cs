@@ -31,7 +31,7 @@ using System;
 using Gtk;
 using Mono.Unix;
 
-namespace Banshee.AlarmClock 
+namespace Banshee.AlarmClock
 {
     public class ConfigurationDialog : Gtk.Dialog
     {
@@ -49,7 +49,7 @@ namespace Banshee.AlarmClock
             Title = Catalog.GetString ("Alarm Clock configuration");
             HasSeparator = false;
             BorderWidth = 5;
-            
+
             fade_start = new VScale (0, 100, 1);
             fade_start.Inverted = true;
             fade_start.HeightRequest = volumeSliderHeight;
@@ -95,22 +95,22 @@ namespace Banshee.AlarmClock
             command_box.PackStart (new Label (Catalog.GetString ("Command:")), false, false, 3);
             command_entry = new Entry ();
             command_box.PackStart (command_entry, true, true, 3);
-            
+
             Frame alarm_misc_frame = new Frame (Catalog.GetString ("Command To Execute:"));
             alarm_misc_frame.Add (command_box);
             alarm_misc_frame.ShowAll ();
 
             VBox.PackStart (alarm_fade_frame, false, false, 3);
             VBox.PackStart (alarm_misc_frame, false, false, 3);
-            
+
             AddButton (Stock.Close, ResponseType.Close);
-            
+
             // initialize values
             command_entry.Text = plugin.AlarmCommand;
             fade_start.Value = plugin.FadeStartVolume;
             fade_end.Value = plugin.FadeEndVolume;
             fade_duration.Value = plugin.FadeDuration;
-            
+
             // attach change handlers
             command_entry.Changed += new EventHandler (AlarmCommand_Changed);
             fade_start.ValueChanged += new EventHandler (FadeStartVolume_Changed);

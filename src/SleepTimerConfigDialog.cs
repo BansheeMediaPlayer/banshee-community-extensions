@@ -31,33 +31,33 @@ using System;
 using Gtk;
 using Mono.Unix;
 
-namespace Banshee.AlarmClock 
+namespace Banshee.AlarmClock
 {
     public class SleepTimerConfigDialog : Dialog
     {
         AlarmClockService plugin;
-        
+
         SpinButton sleepHour;
-        SpinButton sleepMin;        
-        
+        SpinButton sleepMin;
+
         public SleepTimerConfigDialog (AlarmClockService plugin) : base ()
         {
             this.plugin = plugin;
-            
+
             Title = Catalog.GetString ("Sleep Timer");
             WidthRequest = 250;
             HeightRequest = 150;
             VBox.Spacing = 10;
-            
+
             BuildWidget ();
             ShowAll ();
         }
-        
+
         private void BuildWidget ()
         {
             sleepHour = new SpinButton (0,23,1);
             sleepMin  = new SpinButton (0,59,1);
-            
+
             sleepHour.Value = (int) plugin.GetSleepTimer () / 60 ;
             sleepMin.Value = plugin.GetSleepTimer () - (sleepHour.Value * 60);
 
@@ -84,7 +84,7 @@ namespace Banshee.AlarmClock
             this.VBox.PackStart (topbox);
             this.VBox.PackStart (comment);
         }
-        
+
         public void OnSleepTimerOK (object o, EventArgs a)
         {
             int timervalue = (int)sleepHour.Value * 60 + (int)sleepMin.Value;

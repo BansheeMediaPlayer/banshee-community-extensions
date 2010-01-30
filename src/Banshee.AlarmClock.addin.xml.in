@@ -18,5 +18,5 @@
   <Extension path="/Banshee/ServiceManager/Service">
     <Service class="Banshee.AlarmClock.AlarmClockService"/>
   </Extension>
-  
+
 </Addin>
