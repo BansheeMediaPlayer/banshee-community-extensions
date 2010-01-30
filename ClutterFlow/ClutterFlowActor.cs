@@ -257,6 +257,7 @@ namespace ClutterFlow
 				if (value!=coverManager) {
 					if (coverManager!=null) {
 						coverManager.TextureSizeChanged -= HandleTextureSizeChanged;
+                        System.GC.SuppressFinalize (this);
 						coverManager.Remove (this);
 					}
 					coverManager = value;
@@ -301,6 +302,7 @@ namespace ClutterFlow
 				if (value!=index) {
 					int old_index = index;
 					index = value;
+                    IsReactive = !(index < 0);
 					if (IndexChanged!=null) IndexChanged (this, old_index, index);
 				}
 			}
@@ -323,7 +325,6 @@ namespace ClutterFlow
 			this.CoverManager = coverManager;
 			this.getDefaultPb = getDefaultPb;
 
-			IsReactive = true;
 			this.ButtonPressEvent += HandleButtonPressEvent;
 			this.ButtonReleaseEvent += HandleButtonReleaseEvent;
 			
@@ -537,13 +538,14 @@ namespace ClutterFlow
 		#region Event Handling
 		private void HandleButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
 		{
-			if (Index>=0) {
+			if (Index>=0 && Opacity > 0) {
+                //Console.WriteLine ("HandleButtonReleaseEvent in ClutterFlowActor with index " + Index + " current cover is " + ((CoverManager.CurrentCover!=null) ? CoverManager.CurrentCover.Index.ToString():"null") + " and lc_index is " + index);
 				if (CoverManager.CurrentCover==this) {
 					CoverManager.InvokeCoverActivated (this);
 				} else
 					CoverManager.TargetIndex = Index;
-				args.RetVal = true;
 			}
+            args.RetVal = true;
 		}
 
 		private void HandleButtonPressEvent (object o, ButtonPressEventArgs args)

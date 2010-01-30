@@ -30,279 +30,276 @@ using Clutter;
 
 namespace ClutterFlow
 {
-	
-	public class NewFrameEventArgs : EventArgs 
-	{
-		public double Progress;
-		public NewFrameEventArgs (double progress) : base ()
-		{ 
-			Progress = progress;
-		}
-	}
-	
-	public class TargetReachedEventArgs : EventArgs 
-	{
-		public uint Target;
-		public TargetReachedEventArgs (uint target) : base ()
-		{ 
-			Target = target;
-		}
-	}
-	
-	public class ThrottledTimeline : IDisposable
-	{
-		
-		#region fields
-		public event EventHandler<NewFrameEventArgs> NewFrame;
-		protected void InvokeNewFrameEvent () 
-		{
-			if (NewFrame!=null) NewFrame (this, new NewFrameEventArgs (progress));
-		}
-		
-		public event EventHandler<TargetReachedEventArgs> TargetMarkerReached;
-		protected void InvokeTargetReached() {
-			if (TargetMarkerReached!=null) TargetMarkerReached(this, new TargetReachedEventArgs(Target));
-		}
-		
-		protected uint funcId;
-		protected bool stop_timeout = false;
-		
-		protected TimelineDirection direction = TimelineDirection.Forward;
-		public TimelineDirection Direction {
-			get { return direction; }
-		}
-		
-		protected uint target = 0;
-		public virtual uint Target {
-			get { return target; }
-			set {
-				if (value >= indexCount) value = indexCount-1;
-				if (value < 0) value = 0;
-				if (value > AbsoluteProgress) {
-					target = value;
-					direction = TimelineDirection.Forward;
-				} else if (value < AbsoluteProgress) {
-					target = value;
-					direction = TimelineDirection.Backward;
-				} else {
-					InvokeNewFrameEvent ();
-					InvokeTargetReached ();
-				}
-				delta = (int) Math.Abs(AbsoluteProgress - Target);
-			}
-		}
-		
-		public double RelativeTarget {
-			get { return target / (double) (indexCount-1); }
-		}
-		
-		protected double progress = 0;
-		public virtual double Progress {
-			get { return progress; }
-			set { 
-				if (value > 1) value = 1;
-				if (value < 0) value = 0;
-				progress = value;
-				delta = (int) Math.Abs(AbsoluteProgress - Target);
-			}
-		}
-		
-		public double AbsoluteProgress {
-			get { return (double) (progress*(indexCount-1)); }
-		}
-		
-		protected int delta = 0;
-		public int Delta {
-			get { return delta;	}
-		}
-
-		protected int timeout = -1;
-		public virtual int Timeout {
-			get { lock (func_lock) { return timeout; } }
-			set {
-				lock (func_lock) {
-					lastTime = DateTime.Now;
-					timeout = value; 
-				}
-			}
-		}
-
-		protected static double time_threshold = 1000; //threshold to assure visible animations
-        protected static double target_fps = 30; //target fps
-        protected static double target_tmd = 1000 / target_fps;  // target timestep in ms;
-		
-		protected double frequency = 0.004;	//indeces per millisecond
-		public virtual double Frequency {
-			get { return frequency; }
-			set { 
-				if (value < 0) value = 0;
-				frequency = value;
-			}
-		}
-		protected DateTime lastTime = DateTime.Now;		//last iteration timestamp
-		
-		protected uint indexCount = 0;
-		public uint IndexCount {
-			get { return indexCount; }
-		}
-		
-		protected bool isPlaying = false;
-		public bool IsPlaying {
-			get { return isPlaying; }
-			set { isPlaying = value; }
-		}
-
-		private bool run_frame_source = true;
-		protected void StopFrameSource () {
-			lock (func_lock) { run_frame_source = false; }
-		}
-		
-		#endregion
-		
-		public ThrottledTimeline ()
-		{
-			Clutter.Threads.AddFrameSourceFull (250, (uint) target_fps, RepaintFunc);
-			funcId = Clutter.Threads.AddRepaintFunc (RepaintFunc);
-		}
-        public virtual void Dispose ()
-        {
-            Clutter.Threads.RemoveRepaintFunc (funcId);
-            StopFrameSource ();
+    
+    public class NewFrameEventArgs : EventArgs 
+    {
+        public double Progress;
+        public NewFrameEventArgs (double progress) : base ()
+        { 
+            Progress = progress;
         }
-		
-		public ThrottledTimeline (uint indexCount, double frequency) : this()
-		{
-			SetIndexCount(indexCount);
-			Frequency = frequency;
-		}
-
-		private object func_lock = new object();
-		protected virtual bool RepaintFunc ()
-		{
-			lock (func_lock) {
-				DateTime now = DateTime.Now;
-				double timeDelta = (now - lastTime).Milliseconds;
-				if (timeout != -1) {
-					if (timeout <= timeDelta) {
-						timeout = -1;
-						lastTime = now;
-					}
-					return true;
-				}
-                if (timeDelta > time_threshold) timeDelta = time_threshold;
-                if (timeDelta >= target_tmd) { //if smaller we are at a higher fps than targetted
-    				if (IsPlaying) {
-    					if (direction==TimelineDirection.Forward) {
-    						progress +=	timeDelta * Frequency / (double) (indexCount-1);
-    						if (target<=AbsoluteProgress) {
-    							isPlaying = false;
-    							progress = RelativeTarget;
-    							InvokeTargetReached();
-    						}
-    					} else {
-    						progress -= timeDelta * Frequency / (double) (indexCount-1);
-    						if (target>=AbsoluteProgress) {
-    							isPlaying = false;
-    							progress = RelativeTarget;
-    							InvokeTargetReached();
-    						}
-    					}
-    					delta = (int) Math.Abs(AbsoluteProgress - Target);
-    				}
-                    lastTime = now;
+    }
+    
+    public class TargetReachedEventArgs : EventArgs 
+    {
+        public uint Target;
+        public TargetReachedEventArgs (uint target) : base ()
+        { 
+            Target = target;
+        }
+    }
+    
+    public class ThrottledTimeline : IDisposable
+    {
+        
+        #region Fields
+        public event EventHandler<NewFrameEventArgs> NewFrame;
+        protected void InvokeNewFrameEvent () 
+        {
+            if (NewFrame!=null) NewFrame (this, new NewFrameEventArgs (progress));
+        }
+        
+        public event EventHandler<TargetReachedEventArgs> TargetMarkerReached;
+        protected void InvokeTargetReached() {
+            if (TargetMarkerReached!=null) TargetMarkerReached(this, new TargetReachedEventArgs(Target));
+        }        
+        
+        protected TimelineDirection direction = TimelineDirection.Forward;
+        public TimelineDirection Direction {
+            get { return direction; }
+        }
+        
+        protected uint target = 0;
+        public virtual uint Target {
+            get { return target; }
+            set {
+                Console.WriteLine ("IndexCount is " + IndexCount + " value is " + value);
+                if (value >= IndexCount) value = IndexCount-1;
+                if (value < 0) value = 0;
+                target = value;
+                delta = (int) Math.Abs(AbsoluteProgress - Target);
+                if (target == AbsoluteProgress) {
+                    InvokeNewFrameEvent ();
+                    InvokeTargetReached ();
+                }
+            }
+        }
+        
+        public double RelativeTarget {
+            get { return (double) (IndexCount > 0 ? Target / (double) (IndexCount-1) : 0); }
+        }
+        
+        protected double progress = 0;
+        public virtual double Progress {
+            get { return progress; }
+            set { 
+                if (value > 1) value = 1;
+                if (value < 0) value = 0;
+                progress = value;
+                delta = (int) Math.Abs(AbsoluteProgress - Target);
+                if (progress == RelativeTarget) {
+                    InvokeNewFrameEvent ();
+                    InvokeTargetReached ();
+                }
+            }
+        }
+        
+        public double AbsoluteProgress {
+            get { return (double) (IndexCount > 0 ? (progress*(IndexCount-1)) : 0); }
+        }
+        
+        protected int delta = 0;
+        public int Delta {
+            get { return delta; }
+        }
+        
+        protected int timeout = -1;
+        public virtual int Timeout {
+            get { return timeout; }
+            set {
+                last_time = DateTime.Now;
+                timeout = value; 
+            }
+        }
+        
+        protected static double time_threshold = 1000;          // threshold to assure visible animations
+        protected static double target_fps = 30;                // target fps, TODO needs a setting
+        protected static double target_tmd = 1000 / target_fps; // target timestep in ms;
+        
+        private readonly double frequency;
+        protected virtual double Frequency {
+            get { return frequency; }
+        }
+        protected DateTime last_time = DateTime.Now;   // last iteration timestamp
+        
+        protected uint index_count = 0;
+        //// <value>
+        /// The number of indeces currently set on this Timeline. This should be equal
+        /// to the CoverManager.TotalCovers value.
+        /// </value>
+        public virtual uint IndexCount {
+            set {
+                if (value!= index_count) {
+                    index_count = value;
                     InvokeNewFrameEvent ();
                 }
-				return run_frame_source; //keep on calling this function
-			}
-		}
-		
-		public void Start ()
-		{
-			lastTime = DateTime.Now;
-			IsPlaying = true;
-		}
-		
-		public void Halt ()
-		{
-			IsPlaying = false;
-		}
-		
-		public void AdvanceToTarget (uint target)
-		{
-			Target = target;
-			if (!IsPlaying) IsPlaying = true;
-		}
-		
-		public void SetIndexCount (uint newCount) 
-		{
-			SetIndexCount (newCount, true, true);
-		}
-		public virtual void SetIndexCount (uint newCount, bool scaleProgress, bool scaleTarget)
-		{
-			if (IndexCount > 0)
-				Target = (uint) (RelativeTarget * newCount);
-			else 
-				Target = 0;
-			indexCount = newCount;
-		}
-	}
-	
-	public class ClutterFlowTimeline : ThrottledTimeline
-	{
-		#region Fields
-		protected int lastDelta = 0;
-
-		public override double Frequency {
-			get {
-				double retval = (double) Math.Max((Delta - (Delta - lastDelta)*0.25 ),1) / (double) CoverManager.MaxAnimationSpan;
-				lastDelta = Delta;
-				return retval;
-			}
-		}
-				
-		protected CoverManager coverManager;
-		public CoverManager CoverManager {
-			get { return coverManager; }
-			set {
-				if (value!=coverManager) {
-					if (coverManager!=null) {
-						coverManager.CoversChanged -= HandleCoversChanged;
-						coverManager.TargetIndexChanged -= HandleTargetIndexChanged;
-					}
-					coverManager = value;
-					if (coverManager!=null) {
-						coverManager.CoversChanged += HandleCoversChanged;
-                        coverManager.TargetIndexChanged += HandleTargetIndexChanged;
+            }
+            get { return index_count; }
+        }
+        
+        protected bool is_paused = false;
+        public bool IsPaused {
+            get { return is_paused; }
+            set { is_paused = value; }
+        }
+        
+        public bool CanPlay {
+            get { return (Target != AbsoluteProgress); }
+        }
+        
+        private bool run_frame_source = false;
+        protected bool RunFrameSource {
+            set {
+                if (run_frame_source!=value) {
+                    run_frame_source = value;
+                    if (value)
+                        Clutter.Threads.AddFrameSourceFull (250, (uint) target_fps, RepaintFunc);
+                }
+            }
+        }
+        
+        protected uint func_id;
+        protected bool stop_timeout = false;
+        #endregion
+        
+        public ThrottledTimeline ()
+        {
+            RunFrameSource = true;
+            func_id = Clutter.Threads.AddRepaintFunc (RepaintFunc);
+        }
+        public virtual void Dispose ()
+        {
+            Clutter.Threads.RemoveRepaintFunc (func_id);
+            RunFrameSource = false;
+        }
+        
+        public ThrottledTimeline (uint index_count, double frequency) : this()
+        {
+            this.index_count = index_count;
+            this.frequency = frequency;
+        }
+        
+        protected virtual bool RepaintFunc ()
+        {
+            DateTime now = DateTime.Now;
+            double time_delta = (now - last_time).Milliseconds;
+            if (timeout != -1) {
+                if (timeout <= time_delta) {
+                    timeout = -1;
+                    last_time = now;
+                }
+                return true;
+            }
+            if (time_delta > time_threshold) time_delta = time_threshold;
+            if (time_delta >= target_tmd) { //if smaller we are at a higher fps than targetted
+                //Console.Write ("RepaintFunc with IndexCount = " + IndexCount + "\t Target = " + Target + "\t AbsoluteProgress = " + AbsoluteProgress + " CanPlay == " + CanPlay + " IsPaused == " + IsPaused);
+                if (!IsPaused && CanPlay) {
+                    //Console.Write (" Moving ");
+                    if (Target>AbsoluteProgress) {
+                        //Console.Write (" Forward");
+                        Progress +=	time_delta * Frequency / (double) (IndexCount-1);
+                        if (Target<=AbsoluteProgress) {
+                            Progress = RelativeTarget;
+                        }
+                    } else if (Target<AbsoluteProgress) {
+                        //Console.Write (" Backward");
+                        Progress -= time_delta * Frequency / (double) (IndexCount-1);
+                        if (Target>=AbsoluteProgress) {
+                            Progress = RelativeTarget;
+                        }
                     }
-				}
-			}
-		}
-
-
-		#endregion
-		
-		public ClutterFlowTimeline (CoverManager coverManager) : base((uint) coverManager.TotalCovers, 1 / (double) CoverManager.MaxAnimationSpan)
-		{
-			this.CoverManager = coverManager;
-		}
+                }
+                //Console.Write ("\n");
+                last_time = now;
+                InvokeNewFrameEvent ();
+            }
+            return run_frame_source; //keep on calling this function
+        }
+        
+        public void Play ()
+        {
+            if (IsPaused) {
+                last_time = DateTime.Now;
+                IsPaused = false;
+            }
+        }
+        
+        public void Pause ()
+        {
+            IsPaused = true;
+        }
+    }
+    
+    public class ClutterFlowTimeline : ThrottledTimeline
+    {
+        #region Fields
+        protected int last_delta = 0;
+        protected override double Frequency {
+            get {
+        		double retval = (double) Math.Max((Delta - (Delta - last_delta)*0.25 ),1) / (double) CoverManager.MaxAnimationSpan;
+        		last_delta = Delta;
+        		return retval;
+        	}
+        }
+        		
+        protected CoverManager coverManager;
+        public CoverManager CoverManager {
+        	get { return coverManager; }
+        	set {
+        		if (value!=coverManager) {
+        			/*if (coverManager!=null) {
+        				coverManager.CoversChanged -= HandleCoversChanged;
+        				coverManager.TargetIndexChanged -= HandleTargetIndexChanged;
+        			}*/
+        			coverManager = value;
+        			/*if (coverManager!=null) {
+        				coverManager.CoversChanged += HandleCoversChanged;
+                        coverManager.TargetIndexChanged += HandleTargetIndexChanged;
+                    }*/
+        		}
+        	}
+        }
+    
+        public override uint Target {
+            get {
+                return (uint) (CoverManager!=null ? CoverManager.TargetIndex : 0);
+            }
+            set {
+                throw new System.NotImplementedException();
+            }
+        }
+    
+        public override uint IndexCount {
+            get {
+                return (uint) (CoverManager!=null ? CoverManager.TotalCovers : 0);
+            }
+            set {
+                throw new System.NotImplementedException();
+            }
+        }
+    
+    
+    
+        #endregion
+        
+        public ClutterFlowTimeline (CoverManager coverManager) : base((uint) coverManager.TotalCovers, 1 / (double) CoverManager.MaxAnimationSpan)
+        {
+            this.CoverManager = coverManager;
+        }
         public override void Dispose ()
         {
             CoverManager = null;
             base.Dispose ();
         }
-
-		
-		#region Event Handlers
-		protected void HandleCoversChanged(object sender, EventArgs e)
-		{
-			SetIndexCount ((uint) coverManager.TotalCovers, false, false);
-		}
-		
-		protected void HandleTargetIndexChanged(object sender, EventArgs e)
-		{
-			AdvanceToTarget((uint) coverManager.TargetIndex);
-		}
-		#endregion
-		
-	}
+    }
 }

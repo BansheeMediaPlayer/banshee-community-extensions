@@ -132,8 +132,8 @@ namespace ClutterFlow.Buttons
 			if (textures==null||textures.Length==0) InitTextures();
 			for (int i=0; i < textures.Length; i++) {
 				if (textures[i]!=null) {
+                    GC.SuppressFinalize (textures[i]);
 					if (textures[i].Parent!=null) ((Container) textures[i].Parent).Remove(textures[i]);
-					textures[i].Dispose();
 				}
 				textures[i] = new Clutter.CairoTexture((uint) Width,(uint) Height);
 				Add(textures[i]);

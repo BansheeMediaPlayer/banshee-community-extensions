@@ -51,12 +51,16 @@ namespace ClutterFlow
         public static extern Clutter.InitError gtk_clutter_init (IntPtr argc, IntPtr argv);
 
 		public static void DestroyActor(Clutter.Actor actor) {
+            GC.SuppressFinalize (actor);
 			clutter_actor_destroy(actor.Handle);
 		}
 		public static void RemoveAllFromGroup(Clutter.Group group) {
+            foreach (Actor actor in group)
+                GC.SuppressFinalize (actor);
 			clutter_group_remove_all(group.Handle);
 		}
 		public static void RemoveFromGroup(System.IntPtr group, Clutter.Actor actor) {
+            GC.SuppressFinalize (actor);
 			clutter_container_remove(group, actor.Handle);
 		}
         
