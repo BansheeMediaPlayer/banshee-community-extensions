@@ -34,6 +34,8 @@ using System.Text;
 using Mono.Addins;
 
 using Hyena;
+using Hyena.Widgets;
+using Banshee.Base;
 using Banshee.Collection.Database;
 using Banshee.ServiceStack;
 using Banshee.Sources;
@@ -74,8 +76,8 @@ namespace Banshee.Mirage
 
             // debugging option: check if we need to load a different database
             // file.
-            if (Banshee.Base.ApplicationContext.CommandLine.Contains ("mirage-db")) {
-                 dbfile = Banshee.Base.ApplicationContext.CommandLine["mirage-db"];
+            if (ApplicationContext.CommandLine.Contains ("mirage-db")) {
+                 dbfile = ApplicationContext.CommandLine["mirage-db"];
             } else {
                 string xdgcachedir = Environment.GetEnvironmentVariable("XDG_CACHE_HOME");
                 if (xdgcachedir == null) {
