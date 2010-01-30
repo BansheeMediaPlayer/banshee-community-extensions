@@ -189,6 +189,10 @@ namespace Banshee.Mirage
                     suggested.Clear();
                     while ((i < Math.Min(playlist.Length, length_wanted)) && (pi < playlist.Length)) {
                         DatabaseTrackInfo track = DatabaseTrackInfo.Provider.FetchSingle(playlist[pi]);
+                        if (track == null) {
+                            pi++;
+                            continue;
+                        }
                         bool sameArtist = track.Artist.Equals(seeds[seeds.Count-1].Artist);
                         pi++;
                         

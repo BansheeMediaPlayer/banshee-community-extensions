@@ -371,6 +371,9 @@ namespace Banshee.Mirage
                 dupes.AddRange(currentDupes);
 
                 DatabaseTrackInfo track = DatabaseTrackInfo.Provider.FetchSingle(trackId);
+                if (track == null) {
+                    continue;
+                }
                 Log.DebugFormat ("Mirage - Processing {0}-{1}-{2}", track.TrackId, track.ArtistName, track.TrackTitle);
                 userJob.Status = String.Format("{0} - {1}", track.ArtistName, track.TrackTitle);
 
@@ -378,8 +381,10 @@ namespace Banshee.Mirage
                     dupePlaylist.Add(track);
                     foreach (int dupeId in currentDupes) {
                         DatabaseTrackInfo qtrack = DatabaseTrackInfo.Provider.FetchSingle(dupeId);
-                        Log.DebugFormat ("Mirage - Duplicate: {0} - {1} : {2}", qtrack.ArtistName, qtrack.TrackTitle, qtrack.Uri);
-                        dupePlaylist.Add(qtrack);
+                        if (qtrack != null) {
+                            Log.DebugFormat ("Mirage - Duplicate: {0} - {1} : {2}", qtrack.ArtistName, qtrack.TrackTitle, qtrack.Uri);
+                            dupePlaylist.Add(qtrack);
+                        }
                     }
                     dupePlaylist.NotifyUser ();
                 }
