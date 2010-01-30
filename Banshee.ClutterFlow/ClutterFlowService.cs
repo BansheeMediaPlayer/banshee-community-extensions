@@ -138,7 +138,6 @@ namespace Banshee.ClutterFlow
 			</ui>
 		";
 
-		private bool old_value = FilteredListSourceContents.BrowserVisible.Get ();
 		private ClutterFlowContents clutter_flow_contents;
 		#endregion
 		
@@ -259,7 +258,7 @@ namespace Banshee.ClutterFlow
 		private void OnToggleBrowser (object sender, EventArgs e)
 		{
 			if (BrowserAction.Active) {
-				old_value = true;
+                ClutterFlowSchemas.OldShowBrowser.Set (true);
 				CfBrowsAction.Active = false;
 				ClutterFlowSchemas.ShowClutterFlow.Set (false);
 			}
@@ -270,7 +269,7 @@ namespace Banshee.ClutterFlow
 		{
 			if (CfBrowsAction.Active) {
 				ClutterFlowSchemas.ShowClutterFlow.Set (true);
-				old_value = BrowserAction.Active;
+                ClutterFlowSchemas.OldShowBrowser.Set (BrowserAction.Active);
 				BrowserAction.Active = false;
 				Clutter.Threads.Enter ();
 				music_library.Properties.Set<ISourceContents> ("Nereid.SourceContents", clutter_flow_contents);
@@ -280,7 +279,7 @@ namespace Banshee.ClutterFlow
 				Clutter.Threads.Enter ();
 				music_library.Properties.Remove ("Nereid.SourceContents");
 				Clutter.Threads.Leave ();
-				BrowserAction.Active = old_value;
+				BrowserAction.Active = ClutterFlowSchemas.OldShowBrowser.Get ();
 			}
 		}
 
@@ -294,7 +293,7 @@ namespace Banshee.ClutterFlow
             
             source_manager.ActiveSourceChanged -= HandleActiveSourceChanged;
 			BrowserAction.Activated -= OnToggleBrowser;
-            BrowserAction.Active = old_value;
+            BrowserAction.Active = ClutterFlowSchemas.OldShowBrowser.Get ();
 			CfBrowsAction.Activated -= OnToggleClutterFlow;
             CfBrowsAction.Visible = false;
 
