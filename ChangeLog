@@ -1,5 +1,10 @@
 2010-01-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>
 
+	* src/Banshee.AlarmClock.addin.xml.in: Add the category so
+	  that the extension is displayed in Banshee 1.5.3.
+
+2010-01-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>
+
 	* src/Alarm.cs, src/VolumeFade.cs, src/AlarmConfigDialog.cs,
 	  src/AlarmClockService.cs, src/ConfigurationSchema.cs,
 	  src/ConfigurationDialog.cs, src/SleepTimerConfigDialog.cs:

@@ -4,6 +4,7 @@
     version="@VERSION@"
     copyright="© 2008 Bertrand Lorentz, Patrick van Staveren. Licensed under the MIT X11 license."
     name="Alarm and Sleep Timer"
+    category="Utilities"
     description="Gives Banshee alarm clock type functions."
     author="Bertrand Lorentz, Patrick van Staveren"
     url="http://code.google.com/p/banshee-unofficial-plugins/"
