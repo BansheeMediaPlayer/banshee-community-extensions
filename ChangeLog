@@ -1,3 +1,8 @@
+2010-01-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>
+
+	* Banshee.AlarmClock.sln, Banshee.AlarmClock.csproj: Update
+	  sln and csproj files.
+
 2008-05-30  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
 
 	Version 0.4.3 released. 

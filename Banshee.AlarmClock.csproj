@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <AssemblyName>Alarm</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <RootNamespace>Banshee.AlarmClock</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -71,20 +72,22 @@
     <Folder Include="build\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="src\Banshee.AlarmClock.addin.xml" />
+    <EmbeddedResource Include="src\Banshee.AlarmClock.addin.xml">
+      <LogicalName>Banshee.AlarmClock.addin.xml</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\AlarmMenu.xml">
       <LogicalName>AlarmMenu.xml</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="gtk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System" />
-    <Reference Include="Banshee.Core, Version=1.4.0.0, Culture=neutral">
+    <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-core</Package>
     </Reference>
-    <Reference Include="Banshee.Services, Version=1.4.0.0, Culture=neutral">
+    <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-services</Package>
     </Reference>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
