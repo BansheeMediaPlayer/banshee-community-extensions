@@ -400,16 +400,16 @@ namespace Banshee.Mirage
             actions.Add(new ActionEntry [] {
                     new ActionEntry ("MirageAction", null,
                         AddinManager.CurrentLocalizer.GetString ("Mirage Playlist Generator"), null,
-                        AddinManager.CurrentLocalizer.GetString ("Manage the Mirage plugin"), null),
+                        AddinManager.CurrentLocalizer.GetString ("Manage the Mirage extension"), null),
 
                     new ActionEntry("MirageRescanMusicAction", null,
-                        AddinManager.CurrentLocalizer.GetString ("Rescan the Music Collection"), null,
-                        AddinManager.CurrentLocalizer.GetString ("Rescans the Music Collection for new Songs"),
+                        AddinManager.CurrentLocalizer.GetString ("Rescan the Music Library"), null,
+                        AddinManager.CurrentLocalizer.GetString ("Rescans the Music Library for new songs"),
                         OnMirageRescanMusicHandler),
 
                     new ActionEntry("MirageDuplicateSearchAction", null,
                         AddinManager.CurrentLocalizer.GetString ("Duplicate Search (Experimental)"), null,
-                        AddinManager.CurrentLocalizer.GetString ("Searches your Music Collection for possible duplicates"),
+                        AddinManager.CurrentLocalizer.GetString ("Searches your Music Library for possible duplicates"),
                         OnMirageDuplicateSearchHandler),
 
                     new ActionEntry("MirageResetAction", null,
@@ -427,9 +427,9 @@ namespace Banshee.Mirage
         {
             MessageDialog md = new MessageDialog (null, DialogFlags.Modal, MessageType.Question,
                     ButtonsType.Cancel, AddinManager.CurrentLocalizer.GetString (
-                        "<b>Mirage can search your music collection for duplicate music pieces.</b>\n\n"+
-                        "· To do so, your music collection needs to be analyzed completely from Mirage.\n" +
-                        "· This process will take a long time depending on the size of your collection."));
+                        "<b>Mirage can search your music library for duplicate music pieces.</b>\n\n"+
+                        "· To do so, your music library needs to be analyzed completely from Mirage.\n" +
+                        "· This process will take a long time depending on the size of your library."));
             md.AddButton (AddinManager.CurrentLocalizer.GetString ("Scan for Duplicates"), ResponseType.Yes);
             ResponseType result = (ResponseType)md.Run();
             md.Destroy();

@@ -1,3 +1,10 @@
+2010-01-30  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/MiragePlugin.cs:
+	* Banshee/PlaylistGeneratorSource.cs: Use the term "music
+	library" instead of "music collection" in all user-visible
+	strings, to be consistent with Banshee. Fixes issue #48.
+
 2009-08-26  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
 	* Banshee/Banshee.Plugins.Mirage.addin.xml.in: Have configure

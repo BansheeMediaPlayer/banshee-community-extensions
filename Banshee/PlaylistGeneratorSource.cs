@@ -170,7 +170,7 @@ namespace Banshee.Mirage
         {
             Gtk.Application.Invoke(delegate {
                 if (playlist == null) {
-                    SetStatus (AddinManager.CurrentLocalizer.GetString ("Error building playlist. You might need to rescan your music collection."), true);
+                    SetStatus (AddinManager.CurrentLocalizer.GetString ("Error building playlist. You might need to rescan your music library."), true);
                     return;
                 }
                 
