@@ -31,16 +31,14 @@ using System;
 using Gtk;
 using Mono.Unix;
 
-using Banshee.Base;
-
 namespace Banshee.AlarmClock 
 {
     public class SleepTimerConfigDialog : Dialog
     {
         AlarmClockService plugin;
         
-        private SpinButton sleepHour;
-        private SpinButton sleepMin;        
+        SpinButton sleepHour;
+        SpinButton sleepMin;        
         
         public SleepTimerConfigDialog (AlarmClockService plugin) : base ()
         {

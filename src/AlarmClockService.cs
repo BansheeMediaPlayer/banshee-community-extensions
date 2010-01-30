@@ -42,13 +42,13 @@ namespace Banshee.AlarmClock
 {
     public class AlarmClockService : IExtensionService, IDisposable
     {
-        public Thread alarmThread;
-        private static AlarmClockService theService;
-        private ActionGroup actions;
-        private InterfaceActionService action_service;
-        private uint ui_manager_id;
+        static AlarmClockService alarm_service;
+        Thread alarm_thread;
+        ActionGroup actions;
+        InterfaceActionService action_service;
+        uint ui_manager_id;
         uint sleep_timer_id;
-        private int sleep_timer_value;
+        int sleep_timer_value;
         
         public AlarmClockService ()
         {}
@@ -57,10 +57,10 @@ namespace Banshee.AlarmClock
         {
             Log.Debug("Initializing Alarm Plugin");
 
-            AlarmClockService.theService = this;            
+            AlarmClockService.alarm_service = this;            
             ThreadStart alarmThreadStart = new ThreadStart (AlarmClockService.DoWait);
-            alarmThread = new Thread (alarmThreadStart);
-            alarmThread.Start ();
+            alarm_thread = new Thread (alarmThreadStart);
+            alarm_thread.Start ();
             
             action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
             
@@ -99,13 +99,13 @@ namespace Banshee.AlarmClock
                 GLib.Source.Remove (sleep_timer_id);
                 Log.Debug ("Disabling old sleep timer");
             }
-            alarmThread.Abort ();
+            alarm_thread.Abort ();
         }
             
         public static void DoWait ()
         {
             Log.Debug ("Alarm thread started");
-            AlarmThread theAlarm = new AlarmThread (AlarmClockService.theService);
+            AlarmThread theAlarm = new AlarmThread (AlarmClockService.alarm_service);
             theAlarm.MainLoop ();
         }
 
@@ -114,6 +114,12 @@ namespace Banshee.AlarmClock
             new AlarmConfigDialog (this);
         }
 
+        public void ReloadAlarm ()
+        {
+            // The alarm thread has to be re-initialized to take into account the new alarm time
+            alarm_thread.Interrupt ();
+        }
+        
         protected void OnSetSleepTimer (object o, EventArgs a)
         {
             if (sleep_timer_id > 0) {

@@ -29,7 +29,6 @@
 
 using System;
 
-using Banshee.Base;
 using Banshee.Configuration;
 
 namespace Banshee.AlarmClock

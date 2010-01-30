@@ -28,11 +28,8 @@
 //
 
 using System;
-using System.Threading;
 using Gtk;
 using Mono.Unix;
-
-using Banshee.Base;
 
 namespace Banshee.AlarmClock
 {
@@ -77,14 +74,13 @@ namespace Banshee.AlarmClock
             Button OK = new Button (Gtk.Stock.Ok);
             OK.Clicked += new EventHandler (OnOKClicked);
 
-            this.AddActionWidget (OK, 0);
-            this.VBox.PackStart (time_box_outer, true, false, 6);
+            AddActionWidget (OK, 0);
+            VBox.PackStart (time_box_outer, true, false, 6);
 
-            #region Initialize with current values
+            // Initialize with current values
             spbHour.Value = plugin.AlarmHour;
             spbMinute.Value = plugin.AlarmMinute;
             isEnabled.Active = plugin.AlarmEnabled;
-            #endregion
 
             isEnabled.Toggled += new EventHandler (AlarmEnabled_Changed);
             spbHour.ValueChanged += new EventHandler (AlarmHour_Changed);
@@ -94,8 +90,8 @@ namespace Banshee.AlarmClock
         private void OnOKClicked (object o, EventArgs e)
         {
             // The alarm thread has to be re-initialized to take into account the new alarm time
-            this.plugin.alarmThread.Interrupt ();
-            this.Destroy ();
+            plugin.ReloadAlarm ();
+            Destroy ();
         }
 
         private void AlarmEnabled_Changed (object source, System.EventArgs args)

@@ -31,7 +31,6 @@ using System;
 using System.Threading;
 
 using Hyena;
-using Banshee.Base;
 using Banshee.MediaEngine;
 using Banshee.ServiceStack;
 
@@ -39,7 +38,7 @@ namespace Banshee.AlarmClock
 {
     public class AlarmThread
     {
-        private AlarmClockService plugin;
+        AlarmClockService plugin;
 
         public AlarmThread(AlarmClockService plugin)
         {

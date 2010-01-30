@@ -31,8 +31,6 @@ using System;
 using Gtk;
 using Mono.Unix;
 
-using Banshee.Base;
-
 namespace Banshee.AlarmClock 
 {
     public class ConfigurationDialog : Gtk.Dialog
