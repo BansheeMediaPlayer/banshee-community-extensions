@@ -27,7 +27,7 @@ Global
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		description = "@ClutterFlow is a CoverFlow clone for the Banshee media player. \nIt uses the Clutter toolkit to harness the OpenGL powers. "
-		version = 0.3.5
+		version = 0.3.6
 		StartupItem = Banshee.ClutterFlow\Banshee.ClutterFlow.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
