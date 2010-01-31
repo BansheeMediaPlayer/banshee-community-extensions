@@ -332,7 +332,11 @@ namespace Banshee.Mirage
             MiragePlaylistSource playlist = new MiragePlaylistSource ();
             playlist.Save ();
             playlist.PrimarySource.AddChildSource (playlist);
+            // FIXME : There's probably a better way to keep the same track order in the playlist
+            playlist.DatabaseTrackModel.ForcedSortQuery = "CorePlaylistEntries.ViewOrder ASC, CorePlaylistEntries.EntryID ASC";
             playlist.AddTracks (DatabaseTrackModel);
+            playlist.DatabaseTrackModel.Reload ();
+            playlist.DatabaseTrackModel.ForcedSortQuery = null;
             playlist.NotifyUser ();
 
             //SourceView.BeginRenameSource (playlist);

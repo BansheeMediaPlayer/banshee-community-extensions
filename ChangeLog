@@ -1,3 +1,11 @@
+2010-01-31  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/PlaylistGeneratorSource.cs: Keep the same track
+	order while exporting to a playlist. Fixes issue #46.
+
+	* Banshee/MiragePlugin.cs: Keep the duplicates playlist
+	unsorted, so that potential duplicates are next to each other.
+
 2010-01-30  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
 	* Banshee/MiragePlugin.cs:

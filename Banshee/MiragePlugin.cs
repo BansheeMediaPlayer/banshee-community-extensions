@@ -348,6 +348,8 @@ namespace Banshee.Mirage
             DupePlaylistSource dupePlaylist = new DupePlaylistSource ();
             dupePlaylist.Save ();
             dupePlaylist.PrimarySource.AddChildSource (dupePlaylist);
+            // FIXME : There's probably a better way to keep the same track order in the playlist
+            dupePlaylist.DatabaseTrackModel.ForcedSortQuery = "CorePlaylistEntries.ViewOrder ASC, CorePlaylistEntries.EntryID ASC";
 
             int tracksProcessed = 0;
 
@@ -389,6 +391,8 @@ namespace Banshee.Mirage
                     dupePlaylist.NotifyUser ();
                 }
             }
+            dupePlaylist.DatabaseTrackModel.Reload ();
+            dupePlaylist.DatabaseTrackModel.ForcedSortQuery = null;
 
             userJob.Finish();
 
