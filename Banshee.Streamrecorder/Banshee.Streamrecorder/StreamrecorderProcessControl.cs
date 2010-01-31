@@ -30,7 +30,6 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
-using System.Runtime.InteropServices;
 
 using System.Text.RegularExpressions;
 
@@ -59,9 +58,10 @@ namespace Banshee.Streamrecorder
 			IntPtr [] elements = ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements();
 			playbin = elements[0];
 			audiotee = elements[2];
-			encoder_bin = gst_parse_bin_from_description ("lame name=audio_encoder ! gnomevfssink name=file_sink", true) ;        }
+			encoder_bin = Gst.ParseBinFromDescription ("lame name=audio_encoder ! gnomevfssink name=file_sink", true) ;
+        }
 
-		private InitControl()
+		private void InitControl()
 		{
 			/*
 			def create_recorder (self):
@@ -156,9 +156,6 @@ namespace Banshee.Streamrecorder
         {
             this.uri = uri;
         }
-
-        [DllImport ("gstreamer.so")]
-        private static extern IntPtr gst_parse_bin_from_description (string desc, bool ukn);
 
 /*
 
