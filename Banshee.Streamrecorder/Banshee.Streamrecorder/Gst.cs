@@ -50,11 +50,20 @@ namespace Banshee.Streamrecorder
         {
         }
 
-        [DllImport ("libgstreamer-0.10.dll")]
+        [DllImport ("libgstreamer-0.10.so.0")]
         private static extern IntPtr gst_parse_bin_from_description (string desc, bool ukn);
         
         public static IntPtr ParseBinFromDescription(string description, bool unknown) {
-			return gst_parse_bin_from_description (description, unknown);
+			try 
+			{
+				return gst_parse_bin_from_description (description, unknown);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.ToString());
+				Console.WriteLine(e.Message);
+			}
+			return new IntPtr();
         }
 
     }
