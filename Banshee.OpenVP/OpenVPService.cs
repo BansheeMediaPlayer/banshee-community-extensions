@@ -31,6 +31,7 @@ using Banshee.ServiceStack;
 using Banshee.NowPlaying;
 using Banshee.Sources;
 using Gtk;
+using Mono.Addins;
 
 namespace Banshee.OpenVP
 {
@@ -45,6 +46,11 @@ namespace Banshee.OpenVP
         
 		public void Initialize ()
 		{
+            // Hack alert!
+            Addin visualizations = AddinManager.Registry.GetAddin("Banshee.OpenVP.Visualizations");
+            if (visualizations != null)
+                visualizations.Enabled = true;
+            
 		    contents = new VisualizationDisplayWidget();
             
             ServiceManager.SourceManager.SourceAdded += OnSourceAdded;

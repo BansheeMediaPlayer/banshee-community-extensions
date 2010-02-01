@@ -4,7 +4,7 @@
     version="1.0"
     compatVersion="1.0"
     copyright="© 2008 Chris Howie. Licensed under the MIT X11 license."
-    name="OpenVP Visualizer"
+    name="Visualizer"
     category="Visualizations"
     description="Draws patterns to your music using the Open Visualization Platform."
     author="Chris Howie"
