@@ -66,6 +66,7 @@ EXTRAS = \
 REFERENCES =  \
 	Mono.Posix \
 	-pkg:banshee-1-core \
+	-pkg:banshee-1-hyena \
 	-pkg:banshee-1-nowplaying \
 	-pkg:banshee-1-services \
 	-pkg:banshee-1-thickclient \

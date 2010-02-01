@@ -207,7 +207,7 @@ namespace Banshee.OpenVP
                     this.haveDataSlice = true;
                     
                     this.renderLock.Reset();
-                    Banshee.Base.ThreadAssist.ProxyToMain(this.glWidget.QueueDraw);
+                    Hyena.ThreadAssist.ProxyToMain(this.glWidget.QueueDraw);
                     this.renderLock.WaitOne(500, false);
                 }
             }

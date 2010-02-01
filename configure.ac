@@ -46,6 +46,7 @@ fi
 
 dnl package checks, common for all configs
 PKG_CHECK_MODULES([BANSHEE_1_CORE], [banshee-1-core])
+PKG_CHECK_MODULES([BANSHEE_1_HYENA], [banshee-1-hyena])
 PKG_CHECK_MODULES([BANSHEE_1_NOWPLAYING], [banshee-1-nowplaying])
 PKG_CHECK_MODULES([BANSHEE_1_SERVICES], [banshee-1-services])
 PKG_CHECK_MODULES([BANSHEE_1_THICKCLIENT], [banshee-1-thickclient])
@@ -69,3 +70,4 @@ Banshee.OpenVP/Makefile
 ])
 
 AC_OUTPUT
+
