@@ -68,29 +68,12 @@ namespace Gtk
         }
 
         Gdk.Visual visual = null;
-        static GLWidget globalSharedContextWidget = null;
-        GLWidget sharedContextWidget;
 
         public GLWidget()
-             : this(null)
-        {
-            if( globalSharedContextWidget == null)
-            {
-                globalSharedContextWidget = this;
-            }
-            else
-            {
-                sharedContextWidget = globalSharedContextWidget;
-            }
-        }
-
-        public GLWidget(GLWidget sharedContextWidget)
         {
             base.DoubleBuffered = false;
             Realized += new EventHandler(HandleRealized);
             ExposeEvent += new ExposeEventHandler(HandleExposeEvent);
-            
-            this.sharedContextWidget = sharedContextWidget;
         }
 
         public override void Dispose()
@@ -149,22 +132,6 @@ namespace Gtk
                     renderingContextHandle = new HandleRef(this, renderingContext);
 
                     ReleaseDC(windowHandle, deviceContext);
-
-                    if (sharedContextWidget != null)
-                    {
-                        GLWidget primaryWidget = sharedContextWidget;
-                        while (primaryWidget.sharedContextWidget != null) primaryWidget = primaryWidget.sharedContextWidget;
-
-                        if (primaryWidget.RenderingContextHandle.Handle != IntPtr.Zero)
-                        {
-                            wglShareLists(primaryWidget.RenderingContextHandle.Handle, RenderingContextHandle.Handle);
-                        }
-                        else
-                        {
-                            this.sharedContextWidget = null;
-                            primaryWidget.sharedContextWidget = this;
-                        }
-                    }
 
                     break;
 
@@ -231,26 +198,7 @@ namespace Gtk
                     IntPtr xRenderingContext = IntPtr.Zero;
 
 
-                    if (sharedContextWidget != null)
-                    {
-                        GLWidget primaryWidget = sharedContextWidget;
-                        while (primaryWidget.sharedContextWidget != null) primaryWidget = primaryWidget.sharedContextWidget;
-
-                        if (primaryWidget.RenderingContextHandle.Handle != IntPtr.Zero)
-                        {
-                            xRenderingContext = glXCreateContext(xDisplay, visualIntPtr, primaryWidget.RenderingContextHandle, true);
-                        }
-                        else
-                        {
-                            xRenderingContext = glXCreateContext(xDisplay, visualIntPtr, new HandleRef(null, IntPtr.Zero), true);
-                            this.sharedContextWidget = null;
-                            primaryWidget.sharedContextWidget = this;
-                        }
-                    }
-                    else
-                    {
-                        xRenderingContext = glXCreateContext(xDisplay, visualIntPtr, new HandleRef(null, IntPtr.Zero), true);
-                    }
+                    xRenderingContext = glXCreateContext(xDisplay, visualIntPtr, new HandleRef(null, IntPtr.Zero), true);
 
                     if (xRenderingContext == IntPtr.Zero)
                     {
