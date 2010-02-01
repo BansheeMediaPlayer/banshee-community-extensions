@@ -1,6 +1,10 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=@libdir@
+
 Name: OpenVP
 Description: OpenVP
 Version: 
 
 Requires: 
-Libs: -r:@expanded_libdir@/@PACKAGE@/OpenVP.dll
+Libs: -r:${libdir}/@PACKAGE@/OpenVP.dll

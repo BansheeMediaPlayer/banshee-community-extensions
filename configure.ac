@@ -45,10 +45,18 @@ fi
 
 
 dnl package checks, common for all configs
-PKG_CHECK_MODULES([TAO_OPENGL], [tao-opengl])
-PKG_CHECK_MODULES([TAO_SDL], [tao-sdl])
+
 PKG_CHECK_MODULES([NUNIT], [nunit])
-PKG_CHECK_MODULES([TAO_FREEGLUT], [tao-freeglut])
+
+dnl First package naming style is used on SUSE, second is used on Ubuntu
+PKG_CHECK_MODULES(TAOOPENGL, tao-opengl,, [PKG_CHECK_MODULES(TAOOPENGL, Tao.Opengl)])
+AC_SUBST(TAOOPENGL_LIBS)
+
+PKG_CHECK_MODULES(TAOFREEGLUT, tao-freeglut,, [PKG_CHECK_MODULES(TAOFREEGLUT, Tao.Freeglut)])
+AC_SUBST(TAOFREEGLUT_LIBS)
+
+PKG_CHECK_MODULES(TAOSDL, tao-sdl,, [PKG_CHECK_MODULES(TAOSDL, Tao.Sdl)])
+AC_SUBST(TAOSDL_LIBS)
 
 dnl package checks, per config
 

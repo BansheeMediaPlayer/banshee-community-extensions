@@ -86,8 +86,10 @@ REFERENCES =  \
 	../build/OpenVP.dll \
 	../build/OpenVP.Scripting.dll \
 	Mono.Posix \
-	-pkg:tao-freeglut \
-	-pkg:tao-opengl \
+	$(SUSE_TAOFREEGLUT_LIBS) \
+	$(SUSE_TAOOPENGL_LIBS) \
+	$(TAOFREEGLUT_LIBS) \
+	$(TAOOPENGL_LIBS) \
 	System
 
 DLL_REFERENCES = 

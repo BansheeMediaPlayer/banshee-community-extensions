@@ -77,9 +77,12 @@ EXTRAS = \
 	openvp.pc.in 
 
 REFERENCES =  \
-	-pkg:tao-freeglut \
-	-pkg:tao-opengl \
-	-pkg:tao-sdl \
+	$(SUSE_TAOFREEGLUT_LIBS) \
+	$(SUSE_TAOOPENGL_LIBS) \
+	$(SUSE_TAOSDL_LIBS) \
+	$(TAOFREEGLUT_LIBS) \
+	$(TAOOPENGL_LIBS) \
+	$(TAOSDL_LIBS) \
 	System
 
 DLL_REFERENCES = 

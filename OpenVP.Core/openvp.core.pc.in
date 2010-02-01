@@ -1,6 +1,10 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=@libdir@
+
 Name: OpenVP.Core
 Description: OpenVP.Core
 Version: 
 
 Requires: 
-Libs: -r:@expanded_libdir@/@PACKAGE@/OpenVP.Core.dll
+Libs: -r:${libdir}/@PACKAGE@/OpenVP.Core.dll
