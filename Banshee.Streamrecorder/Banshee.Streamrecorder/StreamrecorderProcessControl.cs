@@ -58,7 +58,15 @@ namespace Banshee.Streamrecorder
 			IntPtr [] elements = ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements();
 			playbin = elements[0];
 			audiotee = elements[2];
-			encoder_bin = Gst.ParseBinFromDescription ("lame name=audio_encoder ! gnomevfssink name=file_sink", true) ;
+			encoder_bin = Gst.ParseBinFromDescription ("audioresample ! audioconvert ! lame name=audio_encoder ! gnomevfssink name=file_sink", true) ;
+			if (Gst.Initialize()) 
+			{
+				Console.WriteLine("initialized");
+			}
+			else
+			{
+				Console.WriteLine("an error occurred during initialization, aborting.");
+			}
         }
 
 		private void InitControl()

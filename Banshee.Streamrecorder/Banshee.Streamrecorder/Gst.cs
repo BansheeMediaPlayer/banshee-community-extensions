@@ -46,24 +46,40 @@ namespace Banshee.Streamrecorder
     public class Gst
     {
 
+		private static string gst_version;
+		
         public Gst () 
         {
         }
-
-        [DllImport ("libgstreamer-0.10.so.0")]
-        private static extern IntPtr gst_parse_bin_from_description (string desc, bool ukn);
         
-        public static IntPtr ParseBinFromDescription(string description, bool unknown) {
+        public static bool Initialize () {
 			try 
 			{
-				return gst_parse_bin_from_description (description, unknown);
+				 gst_version = VersionString ();
+				 Console.WriteLine("gstreamer version found: " + gst_version);
+				 return true;
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine(e.ToString());
 				Console.WriteLine(e.Message);
 			}
-			return new IntPtr();
+			return false;
+		}
+        
+        [DllImport ("libgstreamer-0.10.so.0")]
+        private static extern IntPtr gst_parse_bin_from_description (string bin_description, bool ghost_unlinked_pads, IntPtr gerror);
+        
+        public static IntPtr ParseBinFromDescription(string bin_description, bool ghost_unlinked_pads) {
+			IntPtr gerror = new IntPtr();
+			return gst_parse_bin_from_description (bin_description, ghost_unlinked_pads, gerror);
+        }
+
+        [DllImport ("libgstreamer-0.10.so.0")]
+        private static extern string gst_version_string ();
+        
+        public static string VersionString () {
+			return gst_version_string ();
         }
 
     }
