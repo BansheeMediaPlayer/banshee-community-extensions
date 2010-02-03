@@ -149,6 +149,9 @@ namespace Banshee.OpenVP
                 }
 
                 menu.Activated += delegate {
+                    if (!menu.Active)
+                        return;
+
                     activeVisualization = node;
                     ConnectVisualization();
 
