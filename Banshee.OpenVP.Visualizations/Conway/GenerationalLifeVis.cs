@@ -35,8 +35,8 @@ namespace Banshee.OpenVP.Visualizations.Conway
 {
     public class GenerationalLifeVis : IRenderer
     {
-        private const float MAX_COVER = 0.5f;
-        private const float COVER_TOLERANCE = 0.05f;
+        private const float MAX_COVER = 0.75f;
+        private const float COVER_TOLERANCE = 0.025f;
 
         private GenerationalLifeBoard board;
         private Random rand = new Random();

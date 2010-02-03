@@ -58,15 +58,15 @@ namespace Banshee.OpenVP.Visualizations.Conway
             int alive = 0;
             int dead = 0;
 
-            int minGeneration = int.MaxValue;
-
-            float aliveHues = 0f;
+            float[] aliveHues = new float[3];
+            int aliveHuesIndex = 0;
 
             foreach (var i in neighbors) {
                 if (i.Alive) {
                     alive++;
-                    aliveHues += i.Hue;
-                    minGeneration = Math.Min(minGeneration, i.Generation);
+
+                    if (aliveHuesIndex < aliveHues.Length)
+                        aliveHues[aliveHuesIndex++] = i.Hue;
                 } else {
                     dead++;
                 }
@@ -75,12 +75,38 @@ namespace Banshee.OpenVP.Visualizations.Conway
             if (alive < 2 || alive > 3) {
                 nextGeneration = 0;
             } else if (!Alive && alive == 3) {
-                nextGeneration = minGeneration + 1;
-                nextHue = aliveHues / 3;
+                nextGeneration = 1;
+                nextHue = MixHues(aliveHues);
             } else if (Alive) {
                 nextGeneration = Generation + 1;
                 nextHue = Hue;
             }
+        }
+
+        private float MixHues(float[] hues)
+        {
+            int north = 0;
+            int south = 0;
+
+            foreach (var i in hues) {
+                if (i < 45 || i >= 225)
+                    north++;
+                else
+                    south++;
+            }
+
+            float avg = 0;
+
+            bool translate = north > south;
+
+            foreach (var i in hues) {
+                avg += i;
+
+                if (translate && i > 180)
+                    avg -= 360;
+            }
+
+            return avg / hues.Length;
         }
 
         public void Birth(float hue)
@@ -97,7 +123,7 @@ namespace Banshee.OpenVP.Visualizations.Conway
         public void Commit()
         {
             Generation = nextGeneration;
-            Hue = nextHue;
+            Hue = nextHue % 360;
         }
 	}
 }
