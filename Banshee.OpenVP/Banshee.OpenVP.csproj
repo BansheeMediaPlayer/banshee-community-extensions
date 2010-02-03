@@ -88,6 +88,7 @@
     <Compile Include="VisualizationExtensionNode.cs" />
     <Compile Include="Gtk\GLWidget.cs" />
     <Compile Include="OpenVPService.cs" />
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="resources\Banshee.OpenVP.addin.xml" />

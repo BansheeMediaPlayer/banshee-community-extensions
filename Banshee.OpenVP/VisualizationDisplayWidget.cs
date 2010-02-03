@@ -38,6 +38,8 @@ using Gtk;
 using OpenVP;
 using OpenVP.Core;
 using Tao.OpenGl;
+using Banshee.Collection;
+using Banshee.Configuration;
 
 namespace Banshee.OpenVP
 {
@@ -53,6 +55,7 @@ namespace Banshee.OpenVP
         
         private VisualizationExtensionNode activeVisualization;
         private MenuItem noVisualizationsMenuItem;
+        private bool restoreFromSchema = true;
 
         private GLWidget glWidget = null;
 
@@ -128,16 +131,30 @@ namespace Banshee.OpenVP
                         new RadioMenuItem(node.Label);
                 
                 menu.Show();
-                menu.Activated += delegate {
-                    activeVisualization = node;
-                    ConnectVisualization();
-                };
                 
                 visualizationMenuMap[node] = menu;
                 visualizationMenu.Add(menu);
-                
-                if (group == null)
-                    menu.Activate();
+
+                bool force = false;
+
+                if (restoreFromSchema && node.IsSchemaSelected) {
+                    restoreFromSchema = false;
+                    force = true;
+                }
+
+                if (force || group == null) {
+                    menu.Active = true;
+                    activeVisualization = node;
+                    ConnectVisualization();
+                }
+
+                menu.Activated += delegate {
+                    activeVisualization = node;
+                    ConnectVisualization();
+
+                    restoreFromSchema = false;
+                    Banshee.OpenVP.Settings.SelectedVisualizationSchema.Set(node.Type.FullName);
+                };
                 
                 noVisualizationsMenuItem.Hide();
             } else {
@@ -150,6 +167,8 @@ namespace Banshee.OpenVP
                 bool haveVis = visualizationMenu.Children.Length != 1;
                 
                 if (node == activeVisualization) {
+                    restoreFromSchema = true;
+
                     if (haveVis) {
                         ((MenuItem) visualizationMenu.Children[1]).Activate();
                     } else {

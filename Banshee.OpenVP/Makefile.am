@@ -50,6 +50,7 @@ FILES =  \
 	Gtk/GLWidget.cs \
 	gtk-gui/generated.cs \
 	OpenVPService.cs \
+	Settings.cs \
 	VisualizationDisplayWidget.cs \
 	VisualizationExtensionNode.cs 
 

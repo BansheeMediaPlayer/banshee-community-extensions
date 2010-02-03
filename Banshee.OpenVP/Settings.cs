@@ -1,10 +1,10 @@
 // 
-// VisualizationExtensionNode.cs
+// Settings.cs
 //  
 // Author:
 //       Chris Howie <cdhowie@gmail.com>
 // 
-// Copyright (c) 2009 Chris Howie
+// Copyright (c) 2010 Chris Howie
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,42 +25,16 @@
 // THE SOFTWARE.
 
 using System;
-using Mono.Addins;
-using OpenVP;
+using Banshee.Configuration;
 
 namespace Banshee.OpenVP
 {
-    public class VisualizationExtensionNode : ExtensionNode
+    public static class Settings
     {
-        [NodeAttribute]
-        private string type = null;
-
-        [NodeAttribute]
-        private string label = null;
-
-        private Type typeObject = null;
-
-        public Type Type {
-            get {
-                if (this.typeObject == null) {
-                    this.typeObject = this.Addin.GetType(this.type, true);
-                }
-
-                return this.typeObject;
-            }
-        }
-
-        public bool IsSchemaSelected {
-            get { return Settings.SelectedVisualizationSchema.Get() == Type.FullName; }
-        }
-
-        public string Label {
-            get { return this.label; }
-        }
-
-        public IRenderer CreateObject()
-        {
-            return (IRenderer) Activator.CreateInstance(this.Type);
-        }
+        public static readonly SchemaEntry<string> SelectedVisualizationSchema =
+            new SchemaEntry<string>("plugins.openvp", "selected_visualization",
+                                    "Banshee.OpenVP.Visualizations.SpinningGrid",
+                                    "Selected visualization",
+                                    "The last user-selected visualization");
     }
 }
