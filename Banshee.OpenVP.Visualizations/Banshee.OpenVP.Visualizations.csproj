@@ -40,6 +40,7 @@
     <Reference Include="OpenVP, Version=0.0.1.0, Culture=neutral">
       <Package>openvp</Package>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -52,6 +53,9 @@
     <Compile Include="Core.cs" />
     <Compile Include="GreenFlower.cs" />
     <Compile Include="SpinningGrid.cs" />
+    <Compile Include="Conway\GenerationalLifeBoard.cs" />
+    <Compile Include="Conway\GenerationalLifeSquare.cs" />
+    <Compile Include="Conway\GenerationalLifeVis.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -60,6 +64,9 @@
   <ProjectExtensions>
     <MonoDevelop>
       <Properties InternalTargetFrameworkVersion="3.5">
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="Hierarchical" ResourceNamePolicy="FileFormatDefault" />
+        </Policies>
         <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" SyncReferences="true" IsAutotoolsProject="true" RelativeConfigureInPath="..">
           <BuildFilesVar Sync="true" Name="FILES" />
           <DeployFilesVar />
@@ -72,4 +79,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="Conway\" />
+  </ItemGroup>
 </Project>

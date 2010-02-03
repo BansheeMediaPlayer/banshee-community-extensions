@@ -30,5 +30,6 @@
   	<Visualization type="Banshee.OpenVP.Visualizations.GlassWall" label="Glass wall" />
   	<Visualization type="Banshee.OpenVP.Visualizations.Core" label="Power core" />
   	<Visualization type="Banshee.OpenVP.Visualizations.GreenFlower" label="Green flower" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.Conway.GenerationalLifeVis" label="Conway" />
   </Extension>
 </Addin>

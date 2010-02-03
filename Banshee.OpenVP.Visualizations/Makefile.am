@@ -46,6 +46,9 @@ all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG)
 
 FILES =  \
 	AssemblyInfo.cs \
+	Conway/GenerationalLifeBoard.cs \
+	Conway/GenerationalLifeSquare.cs \
+	Conway/GenerationalLifeVis.cs \
 	Core.cs \
 	GlassWall.cs \
 	GreenFlower.cs \
@@ -67,7 +70,8 @@ REFERENCES =  \
 	-pkg:openvp \
 	-pkg:openvp.core \
 	-pkg:tao-opengl \
-	System
+	System \
+	System.Core
 
 DLL_REFERENCES = 
 
