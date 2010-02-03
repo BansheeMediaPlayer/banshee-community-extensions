@@ -56,23 +56,21 @@ namespace Banshee.OpenVP.Visualizations.Conway
         public void NextGeneration(IEnumerable<GenerationalLifeSquare> neighbors)
         {
             int alive = 0;
-            int dead = 0;
 
             float[] aliveHues = new float[3];
-            int aliveHuesIndex = 0;
 
             foreach (var i in neighbors) {
                 if (i.Alive) {
-                    alive++;
+                    if (alive == 3) {
+                        nextGeneration = 0;
+                        return;
+                    }
 
-                    if (aliveHuesIndex < aliveHues.Length)
-                        aliveHues[aliveHuesIndex++] = i.Hue;
-                } else {
-                    dead++;
+                    aliveHues[alive++] = i.Hue;
                 }
             }
 
-            if (alive < 2 || alive > 3) {
+            if (alive < 2) {
                 nextGeneration = 0;
             } else if (!Alive && alive == 3) {
                 nextGeneration = 1;
