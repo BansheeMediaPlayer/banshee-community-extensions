@@ -8,7 +8,7 @@
     description="Gives Banshee alarm clock type functions."
     author="Bertrand Lorentz, Patrick van Staveren"
     url="http://code.google.com/p/banshee-unofficial-plugins/"
-    defaultEnabled="true">
+    defaultEnabled="false">
 
   <Dependencies>
     <Addin id="Banshee.Services" version="1.0"/>
