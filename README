@@ -1,1 +1,9 @@
-Banshee Community Extensions provides several extensions for the Banshee media player.
+Banshee Community Extensions is a repository and project for extensions to the
+Banshee media player that are community contributed and maintained.
+
+By bringing various third-party extensions into this one project, we can help
+each other maintain them and keep them up to date with the latest Banshee API.
+
+This is meant to be a low-barrier-to-entry way to start, develop, and publish
+a Banshee extension.
+
