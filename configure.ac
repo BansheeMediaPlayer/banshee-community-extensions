@@ -24,6 +24,8 @@ SHAMROCK_FIND_MONO_RUNTIME
 dnl Banshee deps
 PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.0)
 AC_SUBST(BANSHEE_LIBS)
+BANSHEE_LIBDIR=`$PKG_CONFIG banshee-1-core --variable=bansheedir`
+AC_SUBST(BANSHEE_LIBDIR)
 
 dnl GNOME (optional)
 AC_ARG_ENABLE(gnome, 
@@ -100,6 +102,7 @@ ${PACKAGE}-${VERSION}
     Install Prefix:    ${prefix}
     Datadir:           ${expanded_datadir}
     Libdir:            ${expanded_libdir}
+    Extensions libdir: ${BANSHEE_LIBDIR}/Extensions
 
     C Compiler:        ${CC}
     Mono C# Compiler:  ${MCS} ${GMCS_FLAGS}

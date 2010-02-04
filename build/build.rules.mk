@@ -23,7 +23,7 @@ OUTPUT_FILES = \
 	$(ASSEMBLY_FILE) \
 	$(ASSEMBLY_FILE).mdb
 
-moduledir = $(INSTALL_DIR_RESOLVED)
+moduledir = $(BANSHEE_LIBDIR)/Extensions
 module_SCRIPTS = $(OUTPUT_FILES)
 
 all: $(ASSEMBLY_FILE) theme-icons
