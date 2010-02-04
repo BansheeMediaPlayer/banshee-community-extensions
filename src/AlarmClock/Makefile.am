@@ -1,6 +1,5 @@
 ASSEMBLY = Banshee.AlarmClock
-TARGET = library
-LINK = $(REF_EXTENSION_ALARMCLOCK)
+LINK = $(BANSHEE_LIBS)
 ASSEMBLY_GCONF_SCHEMA = banshee-plugin-alarm.schemas.in
 
 SOURCES = \
