@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- TODO Describe what good values for the attributes below are -->
+<Addin 
+    id="Banshee.EXTENSION-NAME"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="Copyright © 2010 AUTHOR. Licensed under the MIT X11 license."
+    name="NICE-NAME-HERE"
+    category="CATEGORY-HERE"
+    description="DESCRIPTION-HERE"
+    author="YOU-HERE"
+    url="http://banshee-project.org/"
+    defaultEnabled="true">
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <!-- The source list is the TreeView on the left of Banshee that lists
+       Now Playing, Music, Podcasts, etc.  If your extension needs to add
+       a source, you can define an extension source.  Alternatively, you could
+       programmatically create a source, and add it to the source manager with:
+       Banshee.ServiceStack.ServiceManager.SourceManager.AddSource (your_source);
+  <Extension path="/Banshee/SourceManager/Source">
+    <Source class="Banshee.EXTENSION-NAME.EXTENSION-NAMESource"/>
+  </Extension> -->
+
+  <!-- TODO describe other/common extension types -->
+
+</Addin>

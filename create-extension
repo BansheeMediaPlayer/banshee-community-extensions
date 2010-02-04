@@ -1,0 +1,47 @@
+#!/usr/bin/perl
+
+my $name = $ARGV[0];
+if (!$name || $name eq '') {
+    print "name: $name\n";
+    print "Usage:  ./create-extension EXTENSION_NAME\n\n";
+    print "Example: ./create-extension AlarmClock\n";
+    exit ();
+}
+
+my $dir = "src/$name";
+
+if (-d $dir || -e dir) {
+    print "$dir already exists; remove it or choose a new name\n";
+    exit ();
+}
+
+sub replace {
+    my $file = shift;
+    my $old = shift;
+    my $new = shift;
+    print `sed -i "s/$old/$new/" $file`;
+}
+
+print "Making directory $dir\n";
+print `mkdir -p $dir`;
+
+print "Copying template to $dir\n";
+print `cp -R template/* $dir/`;
+
+# Rename files appropriately
+print `mv $dir/Banshee.Template/ $dir/Banshee.$name`;
+print `mv $dir/Template.addin.xml $dir/$name.addin.xml`;
+print `mv $dir/Template.csproj $dir/$name.csproj`;
+
+# Replace the GUID
+my $guid = `mono build/gen-guid.exe`; chomp($guid); $guid = uc($guid);
+replace ("$dir/$name.csproj", "TEMPLATE-GUID", $guid);
+
+# Replace the extension name
+replace ("$dir/Makefile.am", "EXTENSION-NAME", $name);
+replace ("$dir/$name.addin.xml", "EXTENSION-NAME", $name);
+replace ("$dir/$name.csproj", "EXTENSION-NAME", $name);
+
+print "\nCreated new extension\n";
+print "Name: $name\n";
+print "Dir : $dir\n";

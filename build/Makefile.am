@@ -6,3 +6,5 @@ EXTRA_DIST = \
 CLEANFILES = *.exe *.mdb
 MAINTAINERCLEANFILES = Makefile.in
 
+all:
+	gmcs gen-guid.cs

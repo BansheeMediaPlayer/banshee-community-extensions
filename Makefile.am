@@ -1,6 +1,5 @@
 SUBDIRS = \
 	build \
-	template \
 	src \
 	po
 
