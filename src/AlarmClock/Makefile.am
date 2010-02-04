@@ -1,39 +1,19 @@
-SUBDIRS = \
-    build \
-    po \
-    src
+ASSEMBLY = Banshee.AlarmClock
+TARGET = library
+LINK = $(REF_EXTENSION_ALARMCLOCK)
+ASSEMBLY_GCONF_SCHEMA = banshee-plugin-alarm.schemas.in
 
-EXTRA_DIST = \
-	intltool-extract.in \
-	intltool-merge.in \
-	intltool-update.in \
-	mkinstalldirs \
-	AUTHORS
+SOURCES = \
+	Banshee.AlarmClock/Alarm.cs \
+	Banshee.AlarmClock/AlarmClockService.cs \
+	Banshee.AlarmClock/AlarmConfigDialog.cs \
+	Banshee.AlarmClock/ConfigurationDialog.cs \
+	Banshee.AlarmClock/ConfigurationSchema.cs \
+	Banshee.AlarmClock/SleepTimerConfigDialog.cs \
+	Banshee.AlarmClock/VolumeFade.cs
 
-CLEANFILES = \
-	intltool-extract \
-	intltool-update \
-	intltool-merge
+RESOURCES = \
+	Banshee.AlarmClock.addin.xml \
+	Resources/AlarmMenu.xml
 
-DISTCLEANFILES = \
-	*.bak \
-	*~ \
-	*.pidb
-
-MAINTAINERCLEANFILES = \
-	compile \
-	INSTALL \
-	config.h.in \
-	aclocal.m4 \
-	ltmain.sh \
-	Makefile.in \
-	depcomp \
-	missing \
-	install-sh \
-	configure \
-	config.sub \
-	config.guess \
-	intltool-extract.in \
-	intltool-merge.in   \
-	intltool-update.in  \
-	mkinstalldirs
+include $(top_srcdir)/build/build.mk
