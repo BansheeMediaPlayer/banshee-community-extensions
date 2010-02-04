@@ -56,7 +56,8 @@ replace ("src/Makefile.am", " \$", "");
 # run autogen.sh
 
 # Add everything to git, ready to commit
-#print `git add $dir/`;
+print `git add $dir/`;
+print `git add configure.ac src/Makefile.am`;
 #print `git commit -m "Initial skeleton for $name"`;
 
 print "\nCreated new extension\n";
