@@ -1,7 +1,7 @@
 SUBDIRS = \
 	build \
 	template \
-	extensions \
+	src \
 	po
 
 EXTRA_DIST = \
