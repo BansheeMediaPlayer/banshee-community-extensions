@@ -1,3 +1,8 @@
+Mirage 0.6 - February 4, 2010
+   * Duplicate search based on acoustic similarity.
+   * Compiles and runs with the latest Banshee release.
+   * Bug fixes
+
 Mirage 0.5 - March 9, 2009
    * Much faster song-analysis and playlist generation.
    * Improved music similarity models.

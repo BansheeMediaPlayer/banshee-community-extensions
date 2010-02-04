@@ -1,5 +1,9 @@
 2010-02-04  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
+	* NEWS: Mirage 0.6 released.
+
+2010-02-04  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
 	* Banshee/MiragePlugin.cs: Fix the formatting of some
 	messages.
 
