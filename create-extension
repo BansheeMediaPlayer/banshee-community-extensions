@@ -1,5 +1,15 @@
 #!/usr/bin/perl
 
+# Functions
+sub replace {
+    my $file = shift;
+    my $old = shift;
+    my $new = shift;
+    print "sed -i \"s/$old/$new/\" $file\n";
+    print `sed -i "s/$old/$new/" $file`;
+}
+
+# Execution starts here
 my $name = $ARGV[0];
 if (!$name || $name eq '') {
     print "name: $name\n";
@@ -13,13 +23,6 @@ my $dir = "src/$name";
 if (-d $dir || -e dir) {
     print "$dir already exists; remove it or choose a new name\n";
     exit ();
-}
-
-sub replace {
-    my $file = shift;
-    my $old = shift;
-    my $new = shift;
-    print `sed -i "s/$old/$new/" $file`;
 }
 
 print "Making directory $dir\n";
@@ -38,10 +41,29 @@ my $guid = `mono build/gen-guid.exe`; chomp($guid); $guid = uc($guid);
 replace ("$dir/$name.csproj", "TEMPLATE-GUID", $guid);
 
 # Replace the extension name
-replace ("$dir/Makefile.am", "EXTENSION-NAME", $name);
+replace ("$dir/Makefile.am",     "EXTENSION-NAME", $name);
 replace ("$dir/$name.addin.xml", "EXTENSION-NAME", $name);
-replace ("$dir/$name.csproj", "EXTENSION-NAME", $name);
+replace ("$dir/$name.csproj",    "EXTENSION-NAME", $name);
+
+# Add to configure.ac
+replace ("configure.ac", 'src\\/Makefile', 'src\\/Makefile\nsrc\\/' . $name. '\\/Makefile');
+
+# Add to src/Makefile.am
+my $subdirs = "SUBDIRS = \\\\\\";
+replace ("src/Makefile.am", $subdirs, $subdirs . ' \n    ' . $name . ' \\\\\\');
+replace ("src/Makefile.am", " \$", "");
+
+# run autogen.sh
+
+# Add everything to git, ready to commit
+#print `git add $dir/`;
+#print `git commit -m "Initial skeleton for $name"`;
 
 print "\nCreated new extension\n";
 print "Name: $name\n";
 print "Dir : $dir\n";
+
+print "Your extension has been committed to git, and is ready to customize!\n";
+
+print "\nYou can undo the creation of this extension, and revert to the last commit with\n";
+print "git reset --hard origin/master\n";
