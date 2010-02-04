@@ -113,7 +113,7 @@ namespace Mirage
                     }
                 }
             }
-            Array.Sort(framepos, frameselection);
+            Array.Sort(frameselection, framepos);
 
             // Save the high energy frames to the Matrix 
             int copyframes = frames / 2;

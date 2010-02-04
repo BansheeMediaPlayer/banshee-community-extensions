@@ -1,3 +1,8 @@
+2009-08-10  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Mirage/AudioDecoder.cs: Frame selection did not work.
+	Fixes issue #52
+
 2010-01-31  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
 
 	* configure.ac: Bump version to 0.6.0.
