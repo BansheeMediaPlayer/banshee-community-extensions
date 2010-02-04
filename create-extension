@@ -25,8 +25,8 @@ sub replace {
 print "Making directory $dir\n";
 print `mkdir -p $dir`;
 
-print "Copying template to $dir\n";
-print `cp -R template/* $dir/`;
+print "Copying build/extension-template/* to $dir\n";
+print `cp -R build/extension-template/* $dir/`;
 
 # Rename files appropriately
 print `mv $dir/Banshee.Template/ $dir/Banshee.$name`;
