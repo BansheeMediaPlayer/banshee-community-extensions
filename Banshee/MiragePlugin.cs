@@ -251,9 +251,9 @@ namespace Banshee.Mirage
             // Banshee user job
             UserJob userJob = new UserJob("Mirage", AddinManager.CurrentLocalizer.GetString ("Mirage: Analyzing Songs"), "audio-x-generic");
             userJob.CancelMessage = AddinManager.CurrentLocalizer.GetString (
-                @"Are you sure you want to stop Mirage? 
-                Automatic Playlist Generation will only work for the tracks which are already analyzed. 
-                The operation can be resumed at any time from the <i>Tools</i> menu.");
+                "Are you sure you want to stop Mirage?\n" +
+                "Automatic Playlist Generation will only work for the tracks which are already analyzed. " +
+                "The operation can be resumed at any time from the <i>Tools</i> menu.");
             userJob.CanCancel = true;
             userJob.Progress = 0;
             userJob.Register();
@@ -467,8 +467,9 @@ namespace Banshee.Mirage
         private void OnMirageResetHandler(object sender, EventArgs args)
         {
             MessageDialog md = new MessageDialog (null, DialogFlags.Modal, MessageType.Question,
-                    ButtonsType.Cancel, AddinManager.CurrentLocalizer.GetString (@"Do you really want to reset the Mirage Automatic Playlist Generation Extension? 
-                    All extracted information will be lost. Your music will have to be re-analyzed to use Mirage again."));
+                    ButtonsType.Cancel, AddinManager.CurrentLocalizer.GetString (
+                        "Do you really want to reset the Mirage Extension?\n" +
+                        "All extracted information will be lost. Your music will have to be re-analyzed to use Mirage again."));
             md.AddButton (AddinManager.CurrentLocalizer.GetString ("Reset Mirage"), ResponseType.Yes);
             ResponseType result = (ResponseType)md.Run();
             md.Destroy();

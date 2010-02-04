@@ -1,3 +1,8 @@
+2010-02-04  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/MiragePlugin.cs: Fix the formatting of some
+	messages.
+
 2009-08-10  Dominik Schnitzer <dominik@schnitzer.at>
 
 	* Mirage/AudioDecoder.cs: Frame selection did not work.
