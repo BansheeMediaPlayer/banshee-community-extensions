@@ -84,7 +84,8 @@ template/Makefile
 
 po/Makefile.in
 
-extensions/Makefile
+src/Makefile
+src/AlarmClock/Makefile
 ])
 
 cat <<EOF
