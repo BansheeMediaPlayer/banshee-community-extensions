@@ -86,8 +86,6 @@ build/m4/Makefile
 build/m4/shave/shave
 build/m4/shave/shave-libtool
 
-template/Makefile
-
 po/Makefile.in
 
 src/Makefile

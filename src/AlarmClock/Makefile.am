@@ -2,7 +2,7 @@ ASSEMBLY = Banshee.AlarmClock
 LINK = $(BANSHEE_LIBS)
 ASSEMBLY_GCONF_SCHEMA = banshee-plugin-alarm.schemas.in
 
-SOURCES = \
+SOURCES =  \
 	Banshee.AlarmClock/Alarm.cs \
 	Banshee.AlarmClock/AlarmClockService.cs \
 	Banshee.AlarmClock/AlarmConfigDialog.cs \
@@ -11,7 +11,7 @@ SOURCES = \
 	Banshee.AlarmClock/SleepTimerConfigDialog.cs \
 	Banshee.AlarmClock/VolumeFade.cs
 
-RESOURCES = \
+RESOURCES =  \
 	AlarmClock.addin.xml \
 	Resources/AlarmMenu.xml
 
