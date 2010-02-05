@@ -4,7 +4,7 @@
     version="1.0"
     compatVersion="1.0"
     copyright="Copyright © 2010 Cool Extension Author. Licensed under the MIT X11 license."
-    name="Concise Name"
+    name="Concise Title for EXTENSION-NAME"
     category="Choose-A-Category-From-Below"
     description="Describe your extension, ideally starting with an action verb.  Keep it brief and avoid tech jargon."
     author="Cool Extension Author"
@@ -73,15 +73,15 @@
   -->
 
   <!-- Define a Service extension.  This will instantiate the specified class on startup,
-       letting us do whatever we want. -->
+       letting us do whatever we want.
   <Extension path="/Banshee/ServiceManager/Service">
     <Service class="Banshee.EXTENSION-NAME.EXTENSION-NAMEService"/>
-  </Extension>
+  </Extension>-->
 
   <!-- Define a Source extension.  This will instantiate a new Source object,
        listed in the left-most Source TreeView. -->
   <Extension path="/Banshee/SourceManager/Source">
-    <Source class="Banshee.EXTENSION-NAME.EXTENSION-NAMSource"/>
+    <Source class="Banshee.EXTENSION-NAME.EXTENSION-NAMESource"/>
   </Extension>
 
 </Addin>

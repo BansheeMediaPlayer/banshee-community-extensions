@@ -1,13 +1,8 @@
 ASSEMBLY = Banshee.EXTENSION-NAME
 LINK = $(BANSHEE_LIBS)
 
-SOURCES = \
-	Banshee.EXTENSION-NAME/Alarm.cs \
-	Banshee.EXTENSION-NAME/VolumeFade.cs
+SOURCES = Banshee.EXTENSION-NAME/EXTENSION-NAMESource.cs
 
-RESOURCES = \
-	EXTENSION-NAME.addin.xml \
-	Resources/ActiveSourceUI.xml \
-	Resources/GlobalUI.xml
+RESOURCES = EXTENSION-NAME.addin.xml
 
 include $(top_srcdir)/build/build.mk

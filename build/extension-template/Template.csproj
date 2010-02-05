@@ -62,10 +62,12 @@
     <Reference Include="Mono.Cairo" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="EXTENSION-NAME.addin.xml" />
+    <EmbeddedResource Include="EXTENSION-NAME.addin.xml">
+      <LogicalName>EXTENSION-NAME.addin.xml</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Banshee.EXTENSION-NAME\SampleSource.cs" />
+    <Compile Include="Banshee.EXTENSION-NAME\EXTENSION-NAMESource.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

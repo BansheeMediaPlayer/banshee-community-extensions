@@ -6,7 +6,7 @@ sub replace {
     my $old = shift;
     my $new = shift;
     #print "sed -i \"s/$old/$new/\" $file\n";
-    print `sed -i "s/$old/$new/" $file`;
+    print `sed -i "s/$old/$new/g" $file`;
 }
 
 # Execution starts here
@@ -35,6 +35,8 @@ print `mkdir -p $dir`;
 print `cp -R build/extension-template/* $dir/`;
 
 # Rename files appropriately
+my $name_source = $name . 'Source';
+print `mv $dir/Banshee.Template/TemplateSource.cs $dir/Banshee.Template/$name_source.cs`;
 print `mv $dir/Banshee.Template/ $dir/Banshee.$name`;
 print `mv $dir/Template.addin.xml $dir/$name.addin.xml`;
 print `mv $dir/Template.csproj $dir/$name.csproj`;
@@ -44,9 +46,10 @@ my $guid = `mono build/gen-guid.exe`; chomp($guid); $guid = uc($guid);
 replace ("$dir/$name.csproj", "TEMPLATE-GUID", $guid);
 
 # Replace the extension name
-replace ("$dir/Makefile.am",     "EXTENSION-NAME", $name);
-replace ("$dir/$name.addin.xml", "EXTENSION-NAME", $name);
-replace ("$dir/$name.csproj",    "EXTENSION-NAME", $name);
+replace ("$dir/Makefile.am",                    "EXTENSION-NAME", $name);
+replace ("$dir/$name.addin.xml",                "EXTENSION-NAME", $name);
+replace ("$dir/$name.csproj",                   "EXTENSION-NAME", $name);
+replace ("$dir/Banshee.$name/$name_source.cs",  "EXTENSION-NAME", $name);
 
 # Add to configure.ac
 replace ("configure.ac", 'src\\/Makefile', 'src\\/Makefile\nsrc\\/' . $name. '\\/Makefile');
@@ -57,9 +60,18 @@ my $subdirs = "SUBDIRS = \\\\\\";
 replace ("src/Makefile.am", $subdirs, $subdirs . ' \n    ' . $name . ' \\\\\\');
 replace ("src/Makefile.am", " \$", "");
 
+# Add to Extensions.sln
+replace ("Extensions.sln", "EndProject", 'EndProject\n' . 
+         'Project(\"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}\") = \"' . $name . '\", \"src\\\\\\'. $name . '\\\\\\' . $name . '.csproj\", \"{' . $guid . '}\"\nEndProject');
+replace ("Extensions.sln", "postSolution", 'postSolution\n'.
+        "\t\t{$guid}.Debug|x86.ActiveCfg = Debug|Any CPU".'\n'.
+		"\t\t{$guid}.Debug|x86.Build.0 = Debug|Any CPU".'\n'.
+		"\t\t{$guid}.Release|x86.ActiveCfg = Release|Any CPU".'\n'.
+		"\t\t{$guid}.Release|x86.Build.0 = Release|Any CPU");
+
 # Add everything to git, ready to commit
+print `git add configure.ac src/Makefile.am Extensions.sln`;
 print `git add $dir/`;
-print `git add configure.ac src/Makefile.am`;
 #print `git commit -m "[$name] Initial skeleton"`;
 
 # run autogen.sh
@@ -67,22 +79,24 @@ print "Running ./autogen.sh\n";
 `./autogen.sh` || die "Failed running ./autogen.sh - run it yourself to get the error";
 
 # run make
-print "Running 'make'";
-`make`;
+print "Running make";
+`make -s`;
 
 print "\n\n";
 print ("=" x 80);
 print "\n";
 print ("=" x 80);
 print "\nYour extension has been created, and all the necessary files ready \n";
-print "to commit to git:\n";
+print "to commit to git:\n\n";
 
 print `git status`;
 
-print "\nCommit now, or after you've started customizing it!\n\n";
-
-print "Its files are in $dir\n";
-print "It is available in MonoDevelop within the Extensions.sln\n";
+print "\nYou can commit it now, or after you've started customizing it!\n";
 
 print "\nYou can undo the creation of this extension, and revert to the last commit with\n";
-print "git reset --hard origin/master\n";
+print "git reset --hard HEAD\n";
+
+print "\nYou can run Banshee with your newely created extension right now!  Just run:\n";
+print "make run\n";
+
+print "\nNOTE: Do not forget to enable your extension within Preferences > Extensions\n";

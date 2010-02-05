@@ -36,3 +36,9 @@ MAINTAINERCLEANFILES = \
 	intltool-merge.in   \
 	intltool-update.in  \
 	mkinstalldirs
+
+# Running Banshee with --uninstalled makes it create an addin db in the current directory.
+# Mono.Addins looks for addins in a 'addins' folder in the addin db directory; so, we 
+# copy the extension dlls to such a folder so Banshee will pick them up.
+run:
+	(cd bin; mkdir -p addins; cp *.dll* addins/; banshee-1 --uninstalled --debug $(BANSHEE_DEV_OPTIONS))

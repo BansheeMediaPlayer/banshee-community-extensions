@@ -27,15 +27,12 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using Mono.Unix;
 
-using Hyena;
-
 using Banshee.Base;
 using Banshee.Sources;
+using Banshee.Sources.Gui;
 
 // Other namespaces you might want:
 using Banshee.ServiceStack;
@@ -55,20 +52,27 @@ namespace Banshee.EXTENSION-NAME
         // In the sources TreeView, sets the order value for this source, small on top
         const int sort_order = 190;
 
-        // For a playlist, its specific name is given by the user,
-        // and its generic_name is "Playlist"
-        const string specific_name = Catalog.GetString ("EXTENSION-NAME");
-        const string generic_name = specific_name;
-
-        public EXTENSION-NAMESource () : base (generic_name, specific_name, source-order)
+        public EXTENSION-NAMESource () : base (Catalog.GetString ("EXTENSION-NAME"), Catalog.GetString ("EXTENSION-NAME"), sort_order)
         {
-            Properties.Set<Widget> ("Nereid.SourceContents",
-                new Label ("Excellent, this custom view for the EXTENSION-NAME extension is working!"));
+            Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
+
+            Hyena.Log.Information ("Testing!  EXTENSION-NAME source has been instantiated!");
         }
 
         // A count of 0 will be hidden in the source TreeView
         public override int Count {
             get { return 0; }
         }
+
+        private class CustomView : ISourceContents
+        {
+            Gtk.Label label = new Gtk.Label ("Custom view for EXTENSION-NAME extension is working!");
+
+            public bool SetSource (ISource source) { return true; }
+            public void ResetSource () { }
+            public Gtk.Widget Widget { get { return label; } }
+            public ISource Source { get { return null; } }
+        }
+
     }
 }
