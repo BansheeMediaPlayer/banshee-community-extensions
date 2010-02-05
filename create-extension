@@ -27,10 +27,11 @@ if (-d $dir || -e dir) {
 
 # TODO ensure the working copy of git is clean
 
-print "Making directory $dir\n";
+print "Creating new extension: '$name'\n";
+print ('=' x 80);
+print "\n\n";
 print `mkdir -p $dir`;
 
-print "Copying build/extension-template/* to $dir\n";
 print `cp -R build/extension-template/* $dir/`;
 
 # Rename files appropriately
@@ -59,13 +60,26 @@ replace ("src/Makefile.am", " \$", "");
 # Add everything to git, ready to commit
 print `git add $dir/`;
 print `git add configure.ac src/Makefile.am`;
-print `git commit -m "[$name] Initial skeleton"`;
+#print `git commit -m "[$name] Initial skeleton"`;
 
 # run autogen.sh
-print "Running ./autogen.sh to refresh Makefiles\n";
+print "Running ./autogen.sh\n";
 `./autogen.sh` || die "Failed running ./autogen.sh - run it yourself to get the error";
 
-print "Your extension has been committed to git, and is ready to customize!\n\n";
+# run make
+print "Running 'make'";
+`make`;
+
+print "\n\n";
+print ("=" x 80);
+print "\n";
+print ("=" x 80);
+print "\nYour extension has been created, and all the necessary files ready \n";
+print "to commit to git:\n";
+
+print `git status`;
+
+print "\nCommit now, or after you've started customizing it!\n\n";
 
 print "Its files are in $dir\n";
 print "It is available in MonoDevelop within the Extensions.sln\n";

@@ -7,3 +7,8 @@ each other maintain them and keep them up to date with the latest Banshee API.
 This is meant to be a low-barrier-to-entry way to start, develop, and publish
 a Banshee extension.
 
+To create a new extension simply run:
+
+./create-extension Foo
+
+Where Foo is the name (with no spaces) of the extension.
