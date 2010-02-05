@@ -110,4 +110,7 @@ ${PACKAGE}-${VERSION}
     Release Build:     ${enable_release}
     Vendor Build ID:   ${vendor_build_id}
 
+  Extensions:
+    Alarm Clock:       yes
+
 EOF

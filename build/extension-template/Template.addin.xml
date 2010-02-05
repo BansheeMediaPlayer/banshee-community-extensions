@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!-- TODO Describe what good values for the attributes below are -->
 <Addin 
     id="Banshee.EXTENSION-NAME"
     version="1.0"
     compatVersion="1.0"
-    copyright="Copyright © 2010 AUTHOR. Licensed under the MIT X11 license."
-    name="NICE-NAME-HERE"
-    category="CATEGORY-HERE"
-    description="DESCRIPTION-HERE"
-    author="YOU-HERE"
+    copyright="Copyright © 2010 Cool Extension Author. Licensed under the MIT X11 license."
+    name="Concise Name"
+    category="Choose-A-Category-From-Below"
+    description="Describe your extension, ideally starting with an action verb.  Keep it brief and avoid tech jargon."
+    author="Cool Extension Author"
     url="http://banshee-project.org/"
-    defaultEnabled="true">
+    defaultEnabled="false">
+    <!-- Category names can be anything, but choose one of the following if possible:
+          * Context Pane
+          * Online Sources
+          * Sources
+          * Utilities -->
 
   <Dependencies>
     <Addin id="Banshee.Services" version="1.0"/>

@@ -5,7 +5,7 @@ sub replace {
     my $file = shift;
     my $old = shift;
     my $new = shift;
-    print "sed -i \"s/$old/$new/\" $file\n";
+    #print "sed -i \"s/$old/$new/\" $file\n";
     print `sed -i "s/$old/$new/" $file`;
 }
 
@@ -24,6 +24,8 @@ if (-d $dir || -e dir) {
     print "$dir already exists; remove it or choose a new name\n";
     exit ();
 }
+
+# TODO ensure the working copy of git is clean
 
 print "Making directory $dir\n";
 print `mkdir -p $dir`;
@@ -47,24 +49,26 @@ replace ("$dir/$name.csproj",    "EXTENSION-NAME", $name);
 
 # Add to configure.ac
 replace ("configure.ac", 'src\\/Makefile', 'src\\/Makefile\nsrc\\/' . $name. '\\/Makefile');
+replace ("configure.ac", "Extensions:", 'Extensions:\n    ' . $name . ':' . (' ' x (18 - length($name))) . "yes");
 
 # Add to src/Makefile.am
 my $subdirs = "SUBDIRS = \\\\\\";
 replace ("src/Makefile.am", $subdirs, $subdirs . ' \n    ' . $name . ' \\\\\\');
 replace ("src/Makefile.am", " \$", "");
 
-# run autogen.sh
-
 # Add everything to git, ready to commit
 print `git add $dir/`;
 print `git add configure.ac src/Makefile.am`;
-#print `git commit -m "Initial skeleton for $name"`;
+print `git commit -m "[$name] Initial skeleton"`;
 
-print "\nCreated new extension\n";
-print "Name: $name\n";
-print "Dir : $dir\n";
+# run autogen.sh
+print "Running ./autogen.sh to refresh Makefiles\n";
+`./autogen.sh` || die "Failed running ./autogen.sh - run it yourself to get the error";
 
-print "Your extension has been committed to git, and is ready to customize!\n";
+print "Your extension has been committed to git, and is ready to customize!\n\n";
+
+print "Its files are in $dir\n";
+print "It is available in MonoDevelop within the Extensions.sln\n";
 
 print "\nYou can undo the creation of this extension, and revert to the last commit with\n";
 print "git reset --hard origin/master\n";
