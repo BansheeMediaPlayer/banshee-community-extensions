@@ -12,7 +12,7 @@ SOURCES = \
 	Banshee.AlarmClock/VolumeFade.cs
 
 RESOURCES = \
-	Banshee.AlarmClock.addin.xml \
+	AlarmClock.addin.xml \
 	Resources/AlarmMenu.xml
 
 include $(top_srcdir)/build/build.mk
