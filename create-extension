@@ -18,6 +18,11 @@ if (!$name || $name eq '') {
     exit ();
 }
 
+if ($name !~ m/^[A-Z][a-zA-Z0-9]+$/) {
+    print "name should start with upper-case letter, and consist only of letters and numbers\n";
+    exit ();
+}
+
 my $dir = "src/$name";
 
 if (-d $dir || -e dir) {
