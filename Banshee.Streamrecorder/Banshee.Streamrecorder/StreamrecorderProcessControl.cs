@@ -46,19 +46,16 @@ namespace Banshee.Streamrecorder
     {
         private string output_file_format_pattern;
         private string output_directory;
-        private string uri;
         private string output_file;
         
         private IntPtr playbin;
         private IntPtr audiotee;
-        private IntPtr encoder_bin;
+        private GstBin encoder_bin;
+        private IntPtr tagger;
+        private IntPtr file_sink;
 
         public StreamrecorderProcessControl () 
         {
-			IntPtr [] elements = ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements();
-			playbin = elements[0];
-			audiotee = elements[2];
-			encoder_bin = Gst.ParseBinFromDescription ("audioresample ! audioconvert ! lame name=audio_encoder ! gnomevfssink name=file_sink", true) ;
 			if (Gst.Initialize()) 
 			{
 				Console.WriteLine("initialized");
@@ -69,8 +66,16 @@ namespace Banshee.Streamrecorder
 			}
         }
 
-		private void InitControl()
+		public void InitControl()
 		{
+			IntPtr [] elements = ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements();
+			playbin = elements[0];
+			audiotee = elements[2];
+			encoder_bin = new GstBin(Gst.ParseBinFromDescription ("audioresample ! audioconvert ! lame name=audio_encoder ! id3v2mux name=tagger ! gnomevfssink name=file_sink", true)) ;
+			tagger = encoder_bin.GetByInterface(Gst.TagSetterGetType());
+			file_sink = encoder_bin.GetByName("file_sink");
+			Gst.GObjectSetStringProperty(file_sink,"location",output_file);
+
 			/*
 			def create_recorder (self):
 				#self.encoder_bin = gst.parse_bin_from_description ('lame name=audio_encoder ! gnomevfssink name=file_sink', True)
@@ -130,9 +135,6 @@ namespace Banshee.Streamrecorder
 
         public bool SetParameters () 
         {
-            if (String.IsNullOrEmpty (uri))
-                return false;
-
 			//set up file for recording
 			
             return true;
@@ -158,11 +160,6 @@ namespace Banshee.Streamrecorder
         private void SetOutputFile (string fullfilename) 
         {
             output_file =  Regex.Replace(output_directory, @" ", "\\ ") + Path.DirectorySeparatorChar + Regex.Replace(fullfilename, @" ", "_");
-        }
-
-        public void SetStreamURI (string uri) 
-        {
-            this.uri = uri;
         }
 
 /*

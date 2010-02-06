@@ -230,6 +230,7 @@ FILES = \
 	Banshee.Streamrecorder/StreamrecorderConfigDialog.cs \
 	Banshee.Streamrecorder/StreamrecorderProcessControl.cs \
 	Banshee.Streamrecorder/Gst.cs \
+	Banshee.Streamrecorder/GstBin.cs \
 	Banshee.Streamrecorder/StreamrecorderService.cs 
 
 DATA_FILES = 

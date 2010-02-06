@@ -1,5 +1,5 @@
 //
-// StreamrecorderProcessControl.cs
+// Gst.cs
 //
 // Author:
 //   Frank Ziegler
@@ -56,6 +56,7 @@ namespace Banshee.Streamrecorder
 			try 
 			{
 				 gst_version = VersionString ();
+				 DebugSetActive(true);
 				 Console.WriteLine("gstreamer version found: " + gst_version);
 				 return true;
 			}
@@ -73,6 +74,37 @@ namespace Banshee.Streamrecorder
         public static IntPtr ParseBinFromDescription(string bin_description, bool ghost_unlinked_pads) {
 			IntPtr gerror = new IntPtr();
 			return gst_parse_bin_from_description (bin_description, ghost_unlinked_pads, gerror);
+        }
+
+        [DllImport ("libgstreamer-0.10.so.0")]
+		private static extern uint gst_tag_setter_get_type ();
+
+		public static uint TagSetterGetType ()
+		{
+			return gst_tag_setter_get_type ();
+		}		
+		
+		[DllImport ("libc.so.6")]
+        private static extern void g_object_set_property (IntPtr gobject, string property_name, string value);
+		
+        public static void GObjectSetStringProperty (IntPtr gobject, string property_name, string value)
+        {
+			try 
+			{
+				g_object_set_property (gobject, property_name, value);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.ToString());
+				Console.WriteLine(e.Message);
+			}
+        }
+
+        [DllImport ("libgstreamer-0.10.so.0")]
+        private static extern void gst_debug_set_active (bool active);
+
+        public static void DebugSetActive (bool active) {
+			gst_debug_set_active (active);
         }
 
         [DllImport ("libgstreamer-0.10.so.0")]

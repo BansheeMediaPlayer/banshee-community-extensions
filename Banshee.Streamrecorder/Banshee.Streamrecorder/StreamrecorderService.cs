@@ -239,8 +239,8 @@ namespace Banshee.Streamrecorder
 			string fileext = Regex.Replace(track.Uri.ToString(), @"^.*(\.[^\.]*)$", "$1");
 			string filename = track.TrackTitle + "_" + datestr + fileext;
 
-            streamrecorder_process.SetStreamURI (track.Uri.ToString ());
             streamrecorder_process.SetOutputParameters (output_directory,filename,"\"%A/%a/%T\"");
+            streamrecorder_process.InitControl() ;
 
             RippedFileScanner.SetScanDirectory (output_directory);
                     
