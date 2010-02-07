@@ -20,6 +20,12 @@
     <DebugType>full</DebugType>
     <OutputPath>..\..\..\bin</OutputPath>
     <AssemblyKeyFile>.</AssemblyKeyFile>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Build" command="make" workingdir="${SolutionDir}" />
+        <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

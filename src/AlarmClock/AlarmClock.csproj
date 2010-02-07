@@ -23,6 +23,12 @@
     <OutputPath>..\..\..\bin</OutputPath>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Build" command="make" workingdir="${SolutionDir}" />
+        <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
