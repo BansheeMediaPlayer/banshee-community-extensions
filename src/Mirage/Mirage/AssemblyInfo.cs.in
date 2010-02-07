@@ -1,0 +1,9 @@
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
+[assembly: AssemblyTitle("mirage")]
+[assembly: AssemblyDescription("Music Similarity and Automatic Playlist Generation library")]
+[assembly: AssemblyVersion("@VERSION@")]
+[assembly: AssemblyDelaySign(false)]
+[assembly: AssemblyKeyFile("")]
+

@@ -1,0 +1,27 @@
+mirage (0.2.1) gutsy; urgency=low
+
+  * New upstream version.
+  * Better similarity models and playlists.
+  * Various crasher fixes
+
+ -- Dominik Schnitzer <dominik@haydn.ofai.at>  Tue, 15 Jan 2008 12:16:18 +0100
+
+mirage (0.2) feisty; urgency=low
+
+  * New upstream version. Better Banshee integration, GStreamer Backend.
+
+ -- Dominik Schnitzer <dominik@haydn.ofai.at>  Tue, 15 Jan 2008 12:11:07 +0100
+
+mirage (0.1.1-1) feisty; urgency=low
+
+  * added fftw3-dev as dependency. Thanks to Marc Novel
+    <Marc.Novel@uni-konstanz.de> for pointing this out.
+
+ -- Dominik Schnitzer <dominik@haydn.ofai.at>  Tue, 18 Sep 2007 16:49:30 +0200
+
+mirage (0.1-1) unstable; urgency=low
+
+  * Initial release
+
+ -- Dominik Schnitzer <dominik@schnitzer.at>  Mon, 27 Aug 2007 18:52:40 +0200
+

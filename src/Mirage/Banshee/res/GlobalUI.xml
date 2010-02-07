@@ -1,0 +1,6 @@
+<ui>
+    <popup name="PlaylistContextMenu">
+        <menuitem action="ClearMiragePlaylistAction"></menuitem>
+        <menuitem action="ClearMiragePlaylistOnQuitAction"></menuitem>
+    </popup>
+</ui>

@@ -1,0 +1,625 @@
+2010-02-04  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* NEWS: Mirage 0.6 released.
+
+2010-02-04  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/MiragePlugin.cs: Fix the formatting of some
+	messages.
+
+2009-08-10  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Mirage/AudioDecoder.cs: Frame selection did not work.
+	Fixes issue #52
+
+2010-01-31  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* configure.ac: Bump version to 0.6.0.
+
+2010-01-31  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/Banshee.Plugins.Mirage.addin.xml.in: Add the
+	extension to the "Sources" category.
+
+2010-01-31  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/PlaylistGeneratorSource.cs: Keep the same track
+	order while exporting to a playlist. Fixes issue #46.
+
+	* Banshee/MiragePlugin.cs: Keep the duplicates playlist
+	unsorted, so that potential duplicates are next to each other.
+
+2010-01-30  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/MiragePlugin.cs:
+	* Banshee/PlaylistGeneratorSource.cs: Avoid potential crashes
+	if the mirage database is out of sync with the banshee
+	database.
+
+2010-01-30  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/MiragePlugin.cs: Fix compilation with Banshee 1.5.3.
+
+2010-01-30  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/MiragePlugin.cs:
+	* Banshee/PlaylistGeneratorSource.cs: Use the term "music
+	library" instead of "music collection" in all user-visible
+	strings, to be consistent with Banshee. Fixes issue #48.
+
+2009-08-26  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/Banshee.Plugins.Mirage.addin.xml.in: Have configure
+	automatically set the catalog name.
+
+	* Banshee/MiragePlugin.cs: Remove unnecessary using statement.
+
+2009-08-10  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* configure.ac: Bump version to 0.5.1
+
+	* Mirage/Mir.cs: Include Music duplicate search functions.
+
+	* Banshee/MiragePlugin.cs:
+	* Banshee/res/MirageMenu.xml: Song duplicate search based on acoustic
+	music similarity properties. First experimental gui.
+
+	* po/de.po: Updated German translation from
+	Daniel Schindler <daniel@vcard24.de>
+
+2009-07-22  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/PlaylistGeneratorSource.cs: Do not allow the source
+	to be deleted.
+
+	* Banshee/MiragePlugin.cs: Fix debug message.
+
+2009-03-13  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* configure.ac: Use banshee-mirage for naming the translation
+	files, to avoid conflicts.
+
+2009-03-08  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* NEWS: Release Mirage 0.5.
+
+2009-03-08  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/MirageConfiguration.cs: First step towards automatic scanning of
+	the music collection.
+
+2009-03-07  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/SimilarityCalculator.cs:
+	* Banshee/PlaylistGeneratorSource.cs: Fix issue #28: "more manually added
+	songs are removed and not integrated". Manually added songs are appended
+	to the current playlist, they are added to the "played" list so they are
+	not removed, new suggestions for these songs are computed and appended.
+
+2009-03-07  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/MiragePlugin.cs: Add "--mirage-db=" debugging helper. Use the
+	command line parameter if you want Banshee to use a different Mirage
+	database.
+
+	* Banshee/res/ActiveSourceUI.xml:
+	* Banshee/PlaylistGeneratorSource.cs: Playlist generation fixes. Not
+	finished yet.
+
+2009-03-05  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/res/ActiveSourceUI.xml:
+	* Banshee/Makefile.am:
+	* Banshee/PlaylistGeneratorSource.cs: Add "Clear" and "Save Playlist"
+	button and implementation to the Playlist menu-bar.
+
+2009-03-04  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Mirage/MirageDbMigrator.cs: Bump model database version
+	* Banshee/PlaylistGeneratorSource.cs: Fix skipped list, only take last
+	song as a seed song for further playlists
+
+2009-03-03  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Mirage/CovarianceMatrix.cs: deleted, no longer needed integrated in
+	Scms.
+	* Mirage/Makefile.am: Remove CovarianceMatrix.cs
+	* Mirage/res/dct.filter, Mirage/res/writefilters.m: Update binary filters.
+	* Mirage/Db.cs: Update to work with the new Scms Object.
+	* Mirage/Scms.cs, Mirage/Mir.cs: Serialization Updates, Update KLD.
+	* Mirage/Mfcc.cs: Indentation fixes
+
+2009-02-27  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Mirage/Mfcc.cs: Performance optimization of MFCC computation.
+	MFCCs now take only 10% of the time to compute
+	* Mirage/res/writefilters.m: Include the 0th MFCC coefficient.
+	This will improve the similarity models. ATTENTION: The filters
+	are not yet written to the binary files.
+
+2009-02-16  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/MirageConfiguration.cs:
+	* Banshee/SimilarityCalculator.cs: DistanceCeiling needed to
+	be a SchemaEntry<double> in order to work.
+
+2009-02-14  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Mirage/Mir.cs: Add a parameter to the SimilarTracks method
+	to ignore tracks whose distance to the seeds is below this
+	threshold. Inspired by a patch by Wade Menard.
+
+	* Banshee/Makefile.am:
+	* Banshee/MiragePlugin.cs:
+	* Banshee/MirageConfiguration.cs: Move configuration to its
+	own file.
+
+	* Banshee/SimilarityCalculator.cs: Use the playlist length and
+	distance ceiling values from the configuration. Rename the
+	delegate for clarity.
+
+	* Banshee/PlaylistGeneratorSource.cs: Use MirageConfiguration,
+	and make the playlist length configurable.
+
+2009-02-14  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Banshee/PlaylistGeneratorSource.cs: Exclude tracks that are
+	removed manually. Patch from Wade Menard, with some
+	modifications by me (Issue #22).
+
+2009-02-12  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* Test/Makefile.am:
+	* Mirage/Makefile.am:
+	* Banshee/Makefile.am: Add the specific references that are needed.
+
+	* build/build.mk: Do not automatically reference the banshee libs.
+
+2009-02-08  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* autogen.sh: Properly detect when libtool and libtoolize are needed.
+	Should fix compilation issues with recent libtool versions.
+
+2009-01-30  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* configure.ac: Use mirage instead of Mirage for the language files
+	name.
+
+2009-01-30  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* ChangeLog: Fix my identification info.
+
+	* configure.ac: Version bump
+
+2009-01-30  Bertrand Lorentz <bertrand.lorentz@gmail.com>
+
+	* Banshee/Banshee.Plugins.Mirage.addin.xml.in: Let configure set the
+	version automatically and remove compatVersion attribute.
+
+2008-12-28  Bertrand Lorentz  <bertrand.lorentz@gmail.com>
+
+	* configure.ac:
+	* Banshee/MiragePlugin.cs:
+	* Banshee/PlaylistGeneratorSource.cs:
+	* Banshee/Banshee.Plugins.Mirage.addin.xml:
+	* Banshee/Banshee.Plugins.Mirage.addin.xml.in: Use the localization
+	through Mono.Addins, doing it directly breaks banshee's translations
+	(Issue #27).
+
+	* Banshee/Makefile.am:
+	* Banshee/Config.cs.in: Remove the Config class that is now useless.
+
+2008-12-23  Bertrand Lorentz <bertrand.lorentz@gmail.com>
+
+	* configure.ac:
+	* build/build.mk:
+	* Test/Makefile.am: Respect GMCS variable passed to configure. Patch by
+	Iain Lane, from the debian package.
+
+2008-12-02  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* po/it.po, po/LINGUAS: Add Italian translation. Thanks to Gianvito
+	Cavasoli <janvitus@ubuntu-it.org> for the translation.
+	* po/de.po, po/Mirage.pot: Update the German translation.
+	* Banshee/MiragePlugin.cs: Remove spaces before "?" ("Hello ?" ->
+	"Hello?") in two strings.
+
+2008-11-14  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* configure.ac: Update minimum gstreamer version to 0.10.15.
+
+2008-11-10  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	Mirage 0.4 released.
+
+2008-11-09  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/MiragePlugin.cs: Fix a crash when a file not analyzed was
+	  deleted.
+
+2008-11-09  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/PlaylistGeneratorSource.cs: Select proper range to remove all
+	  tracks after the current one.
+
+2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* NEWS: Update for upcoming release.
+
+2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/MiragePlugin.cs, Banshee/PlaylistGeneratorSource.cs,
+	  Banshee/res/GlobalUI.xml: Make the "Clear on quit" option not crash
+	  and actually work. Properly remove the actions when the extension
+	  is disabled.
+
+2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Mirage/Db.cs: Set the was_reset flag when the database is reset.
+	* Test/Makefile.am, Test/AssemblyInfo.cs.in, configure.ac,
+	  build/build.mk, Banshee/Makefile.am: Several build clean-ups. Bump
+	  version to 0.4.0.
+
+2008-11-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Mirage/MirageDbMigrator.cs: Update database version, to reset it.
+
+2008-11-05  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Test/Main.cs: Automatic genre classification test program. Ran the
+	current codebase on a small 100 songs collection. Reached 58% genre
+	classification accuracy.
+	* Banshee/SimilarityCalculator.cs: Increase the playlist length.
+
+2008-11-05  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Mirage/Mir.cs: Array.Sort is no c++ partial_sort()
+
+2008-11-05  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Mirage/Mir.cs, Banshee/SimilarityCalculator.cs: Truncate the playlist to
+	the given length, so the Banshee UI does not hang with large collections. 
+
+2008-11-05  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Mirage/Mir.cs: skip faulty models for the playlist
+
+2008-11-05  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Test/Main.cs: Modify the Testcase
+	* Mirage/Matrix.cs: Remove tabs, unsafe {} changes
+	* Mirage/Scms.cs: Faster distance computations, remove tabs
+	* Mirage/AudioDecoder.cs: Change AudioDecoder to match the new libmirageaudio.
+	* Mirage/Mir.cs: Adopt to the new AudioDecoder
+	* Mirage/Mfcc.cs: remove tabs
+	* libmirageaudio/gst-mirageaudio.c: Fix memory leaks with gstreamer.
+
+2008-10-31  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Mirage/AudioDecoder.cs: Implement the FrameSelection method, this should
+	  improve the quality of the song models. Feature extraction also got faster
+	  by ~300ms on my machine. Work in progress.
+
+2008-10-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* configure.ac: Update required banshee version. Should have done that
+	  earlier.
+
+2008-10-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/PlaylistGeneratorSource.cs: Make the error message a bit more
+	  informative.
+
+2008-10-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Mirage/MirageDbMigrator.cs, Mirage/Db.cs, Banshee/MiragePlugin.cs:
+	  Add and use the WasReset property so that the extension knows when
+	  the mirage database has been emptied.
+
+2008-10-17  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Mirage/MirageDbMigrator.cs, Mirage/Matrix.cs, Mirage/Db.cs,
+	  Mirage/Scms.cs, Mirage/AudioDecoder.cs, Mirage/Mir.cs,
+	  Mirage/Mfcc.cs: Use format strings in the debug output.
+
+2008-10-17  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Mirage/Dbg.cs: Handle format strings in the debug output.
+	* Mirage/MirageDbMigrator.cs, Mirage/Db.cs, Mirage/Makefile.am: Handle
+	  database migration, with a lot of borrowing from the banshee code.
+	* Banshee/SimilarityCalculator.cs, Banshee/MiragePlugin.cs,
+	  Banshee/PlaylistGeneratorSource.cs: Update copyright.
+
+2008-10-17  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	This commit brings a big code reorganisation in Banshee/ and makes the 
+	Mirage source a PlaylistSource.
+
+	* Banshee/ContinuousGeneratorSource.cs: Merged into
+	  PlaylistGeneratorSource.
+	* Banshee/SimilarityCalculator.cs, Banshee/Config.cs.in: Change the
+	  namespace.
+	* Banshee/Banshee.Plugins.Mirage.addin.xml: The extension is now
+	  enabled by default.
+	* Banshee/MiragePlugin.cs, Banshee/PlaylistGeneratorSource.cs: The two
+	  playlist classes are merged into one, and it's now a
+	  PlaylistSource.
+	* Banshee/res/GlobalUI.xml: Context menu items.
+	* Banshee/Makefile.am: File addition and deletion.
+
+2008-10-14  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/PlaylistGeneratorSource.cs: Update to compile with banshee
+	  1.3.2.
+
+2008-08-10  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/ContinuousGeneratorSource.cs: Also refresh the playlist when we
+	  start playing the last track (Issue #6). Moved the refresh code to a
+	  method.
+
+2008-08-09  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/PlaylistGeneratorSource.cs: Make the "previous" button work (Issue
+	  #7).
+
+2008-08-09  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/ContinuousGeneratorSource.cs: Reset the current track after the
+	  playlist has been modified, so that the next track will be the right one
+	  (Issue #5).
+
+2008-08-08  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* build/build.mk, libmirageaudio/Makefile.am: Allow parallel build with make
+	  -j2. Thanks to Nick for the report.
+
+2008-08-07  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* configure.ac: Bump version.
+	* libmirageaudio/gst-mirageaudio.c: Do not hang if a track cannot be
+	  processed. Fix a small memory leak.
+
+2008-08-04  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	Mirage 0.3 released.
+
+2008-08-04  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* README: Update and spelling fix.
+	* Banshee/Banshee.Plugins.Mirage.addin.xml: Fix version, add author.
+	* NEWS: Update for 0.3.
+
+2008-07-30  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Test/Makefile.am: Do not install Test.exe.
+
+2008-07-28  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* configure.ac: Require banshee 1.2 or above.
+
+2008-07-27  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/ContinuousGeneratorSource.cs, Banshee/PlaylistGeneratorSource.cs:
+	  Ugly fix to avoid crashes. It's because we are using DatabaseTrackInfo
+	  objects but not in a DatabaseSource, so we're not using the cache.
+
+2008-07-27  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/ContinuousGeneratorSource.cs, Banshee/MiragePlugin.cs,
+	  Banshee/PlaylistGeneratorSource.cs: Remove the tracks list, as it was
+	  redundant with the track_model. A bit of code clean up.
+
+2008-07-27  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/MiragePlugin.cs: Fix the SQL error when re-processing a track that
+	  was already in MirageProcessed. Some code formatting fixes.
+
+2008-07-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/PlaylistGeneratorSource.cs: Remove unused method.
+
+2008-07-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/MiragePlugin.cs: Implement the clean up of deleted tracks.
+
+2008-07-19  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/SimilarityCalculator.cs, Banshee/PlaylistGeneratorSource.cs: Do
+	  not crash if the seed track has not been analyzed, but show an error
+	  message in the source's status.
+
+2008-06-25  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Mirage/res/Makefile.am, Banshee/res/Makefile.am: Remove files that are now
+	  useless.
+
+2008-06-25  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* AUTHORS: Adding myself
+	* Banshee/Banshee.Plugins.Mirage.addin.xml: Add Mono.Addins metadata.
+	* Banshee/PlaylistGeneratorView.cs, Banshee/PlaylistModel.cs,
+	  Banshee/TrackView.Columns, Banshee/TrackView.Columns/AlbumColumn.cs,
+	  Banshee/TrackView.Columns/ArtistColumn.cs,
+	  Banshee/TrackView.Columns/DateAddedColumn.cs,
+	  Banshee/TrackView.Columns/DurationColumn.cs,
+	  Banshee/TrackView.Columns/GenreColumn.cs,
+	  Banshee/TrackView.Columns/LastPlayedColumn.cs,
+	  Banshee/TrackView.Columns/PlayCountColumn.cs,
+	  Banshee/TrackView.Columns/RatingColumn.cs,
+	  Banshee/TrackView.Columns/TitleColumn.cs,
+	  Banshee/TrackView.Columns/TrackNumberColumn.cs,
+	  Banshee/TrackView.Columns/TrackViewColumn.cs,
+	  Banshee/TrackView.Columns/UriColumn.cs,
+	  Banshee/TrackView.Columns/YearColumn.cs: Remove obsolete stuff.
+	* Banshee/SimilarityCalculator.cs: Put the SimilarityCalculator in its own
+	  file.
+	* Test/AssemblyInfo.cs.in: Add file, to make build system happy.
+	* Banshee/ContinuousGeneratorSource.cs, Banshee/MiragePlugin.cs,
+	  Banshee/PlaylistGeneratorSource.cs: Major changes to make it work with
+	  the new banshee.
+	* build, build/build.mk: Add file included by Makefile.am.
+	* Banshee/Makefile.am, Mirage/Makefile.am, Test/Makefile.am: Update the
+	  automake stuff. Use the common build.mk file. "make distcheck" should
+	  work now.
+	* libmirageaudio/Makefile.am: Use the proper variable from configure.
+	* configure.ac: Rework banshee path detection and fix "make distcheck".
+	  Version updated to 0.3.0.
+
+2008-06-25  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
+
+	* Banshee/AssemblyInfo.cs.in: Use "Extension".
+
+2007-10-04 12:43  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* AUTHORS: authors
+
+2007-10-03 14:36  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* ChangeLog: add changelog
+
+2007-10-03 14:32  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/res/Makefile.am: add source-mirage.png to Makefile.am
+
+2007-10-03 14:29  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/res/Makefile.am: delete mirage.png
+
+2007-10-03 13:56  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/Config.cs: remove autogenerated file
+
+2007-10-03 13:56  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/Config.cs, debian/control, debian/copyright, debian/docs,
+	  debian/files, debian/rules: update debian package
+
+2007-10-03 13:29  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* po/POTFILES.in: forgot source file
+
+2007-10-03 13:27  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* AUTHORS, COPYING, NEWS, README, tools: package stuff
+
+2007-10-03 13:01  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/Config.cs: configuration class
+
+2007-10-03 13:00  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/PlaylistColumns.cs, Banshee/res/source-mirage.png: forgot
+	  two files
+
+2007-10-03 12:57  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/Makefile.am, Banshee/MiragePlugin.cs,
+	  Banshee/PlaylistGeneratorSource.cs,
+	  Banshee/PlaylistGeneratorView.cs,
+	  Banshee/res/cd-action-rip-16.png, Banshee/res/mirage.png,
+	  Banshee/res/source-localqueue.png,
+	  libmirageaudio/gst-mirageaudio.c: Fix import-thread bugs, update
+	  playlistgenerator view, fix resource not found
+	  in libmirageaudio
+
+2007-09-28 15:43  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/PlaylistGeneratorSource.cs, debian/changelog,
+	  debian/control, debian/files, po/de.po: update debian package
+
+2007-09-28 15:41  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/res/cd-action-rip-16.png: forgot rip icon
+
+2007-09-28 14:56  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/PlaylistModel.cs: playlistmodel from Banshee
+
+2007-09-28 14:46  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/Config.cs.in, Banshee/Makefile.am,
+	  Banshee/MiragePlugin.cs, Banshee/PlaylistGeneratorSource.cs,
+	  Banshee/PlaylistGeneratorView.cs, Banshee/TrackView.Columns,
+	  Banshee/TrackView.Columns/AlbumColumn.cs,
+	  Banshee/TrackView.Columns/ArtistColumn.cs,
+	  Banshee/TrackView.Columns/DateAddedColumn.cs,
+	  Banshee/TrackView.Columns/DurationColumn.cs,
+	  Banshee/TrackView.Columns/GenreColumn.cs,
+	  Banshee/TrackView.Columns/LastPlayedColumn.cs,
+	  Banshee/TrackView.Columns/PlayCountColumn.cs,
+	  Banshee/TrackView.Columns/RatingColumn.cs,
+	  Banshee/TrackView.Columns/TitleColumn.cs,
+	  Banshee/TrackView.Columns/TrackNumberColumn.cs,
+	  Banshee/TrackView.Columns/TrackViewColumn.cs,
+	  Banshee/TrackView.Columns/UriColumn.cs,
+	  Banshee/TrackView.Columns/YearColumn.cs, Makefile.am, autogen.sh,
+	  configure.ac, libmirageaudio/gst-mirageaudio.c, po, po/LINGUAS,
+	  po/POTFILES.in, po/de.po: * internationalization
+	  * new PlaylistView using Banhsee Playlistview columns
+
+2007-09-28 10:47  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/res/MirageMenu.xml: add missing glade xml
+
+2007-09-21 10:17  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/Makefile.am, Banshee/MiragePlugin.cs: userinterface
+	  updates
+
+2007-09-18 14:57  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/MiragePlugin.cs, Mirage/AudioDecoder.cs, Mirage/Db.cs,
+	  Mirage/Mir.cs, debian/changelog, debian/control, debian/files,
+	  libmirageaudio/gst-mirageaudio.c,
+	  libmirageaudio/gst-mirageaudio.h,
+	  libmirageaudio/mirageaudiotest.c: update the banshee mirage
+	  plugin to use the gstreamer backend.
+	  Fixes various deadlock issues, segfaults with the gstreamer
+	  backend.
+
+2007-09-14 13:57  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/ContinuousGeneratorSource.cs, Banshee/MiragePlugin.cs,
+	  Banshee/PlaylistGeneratorSource.cs: update the Banshee plugin to
+	  integrate in a nicer way
+
+2007-09-14 09:29  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* Banshee/PlaylistGeneratorSource.cs: deleted console.writeln
+
+2007-09-12 15:13  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* .Makefile.include.swp, Banshee/Banshee.Plugins.Mirage.mdp,
+	  Banshee/Banshee.Plugins.Mirage.pidb, Mirage/Mirage.mdp,
+	  Mirage/Mirage.pidb, Test/.deps, Test/Test.mdp, Test/Test.pidb:
+	  cleanup
+
+2007-09-12 15:10  Dominik Schnitzer <dominik@schnitzer.at>
+
+	* .Makefile.include.swp, Banshee, Banshee/AssemblyInfo.cs.in,
+	  Banshee/Banshee.Plugins.Mirage.mdp,
+	  Banshee/Banshee.Plugins.Mirage.pidb,
+	  Banshee/ContinuousGeneratorSource.cs, Banshee/Makefile.am,
+	  Banshee/MiragePlugin.cs, Banshee/PlaylistColumns.cs,
+	  Banshee/PlaylistGeneratorSource.cs,
+	  Banshee/PlaylistGeneratorView.cs, Banshee/res,
+	  Banshee/res/Makefile.am, Banshee/res/cp.png,
+	  Banshee/res/mirage.png, Banshee/res/source-localqueue.png,
+	  Makefile.am, Mirage, Mirage/AssemblyInfo.cs.in,
+	  Mirage/AudioDecoder.cs, Mirage/CovarianceMatrix.cs, Mirage/Db.cs,
+	  Mirage/Dbg.cs, Mirage/Makefile.am, Mirage/Matrix.cs,
+	  Mirage/Mfcc.cs, Mirage/Mir.cs, Mirage/Mirage.mdp,
+	  Mirage/Mirage.pidb, Mirage/Scms.cs, Mirage/Timer.cs,
+	  Mirage/Vector.cs, Mirage/res, Mirage/res/Makefile.am,
+	  Mirage/res/dct.filter, Mirage/res/filterweights.filter, Test,
+	  Test/.deps, Test/.deps/$(ASSEMBLY).Po, Test/.deps/Test.Po,
+	  Test/Main.cs, Test/Makefile.am, Test/Test.mdp, Test/Test.pidb,
+	  autogen.sh, configure.ac, debian, debian/changelog,
+	  debian/compat, debian/control, debian/copyright, debian/dirs,
+	  debian/docs, debian/files, debian/rules, libmirageaudio,
+	  libmirageaudio/Makefile.am, libmirageaudio/gst-mirageaudio.c,
+	  libmirageaudio/gst-mirageaudio.h,
+	  libmirageaudio/mirageaudiotest.c, tools, tools/banshee-reset.sh:
+	  Import
+

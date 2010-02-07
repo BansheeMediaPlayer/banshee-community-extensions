@@ -1,0 +1,22 @@
+ASSEMBLY = Banshee.Mirage
+TARGET = library
+
+SOURCES = \
+	MirageConfiguration.cs \
+	MiragePlugin.cs \
+	PlaylistGeneratorSource.cs \
+	SimilarityCalculator.cs
+
+RESOURCES = \
+	res/cp.png \
+	res/source-mirage.png \
+	res/MirageMenu.xml \
+	res/GlobalUI.xml \
+	res/ActiveSourceUI.xml \
+	Banshee.Plugins.Mirage.addin.xml
+
+REFERENCES =  \
+	$(BANSHEE_LIBS) \
+	-r:../Mirage/Mirage.dll
+
+include $(top_srcdir)/build/build.mk

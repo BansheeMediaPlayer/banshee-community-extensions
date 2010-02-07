@@ -1,0 +1,17 @@
+Source: mirage
+Section: sound
+Priority: extra
+Maintainer: Dominik Schnitzer <dominik@schnitzer.at>
+Build-Depends: debhelper (>= 5), autotools-dev, banshee, mono-gmcs (>= 1.2.3), fftw3-dev, libsamplerate0-dev, libmono-sqlite2.0-cil
+Standards-Version: 3.7.2
+
+Package: banshee-mirage
+Architecture: any
+Depends: ${shlibs:Depends}, libmono-sqlite2.0-cil, banshee
+Description: Automatic Playlist Generation Plugin for Banshee
+ Mirage is an automatic playlist generation plugin for the Banshee
+ Media Player. After having analyzed your music collection it is
+ able to automatically find sinilar sounding music.
+ Mirage does only look at the audio signal in its similarity search.
+ .
+ http://hop.at/mirage/

@@ -1,0 +1,5 @@
+Mirage is an extension for the Banshee media player, written in
+Mono / C#. It is an automatic playlist generation plugin.
+The Banshee Mirage extension is distributed under the GPL License Version 2.
+
+http://hop.at/mirage

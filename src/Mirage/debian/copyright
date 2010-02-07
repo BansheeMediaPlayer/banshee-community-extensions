@@ -1,0 +1,52 @@
+This package was debianized by Dominik Schnitzer <dominik@schnitzer.at> on
+Mon, 27 Aug 2007 18:52:40 +0200.
+
+It was downloaded from http://hop.at/mirage
+
+Upstream Author: Dominik Schnitzer
+
+Copyright: 2007, Dominik Schnitzer
+
+License:
+
+Mirage - High Performance Music Similarity and Automatic Playlist Generator
+http://hop.at/mirage
+
+Copyright (C) 2007 Dominik Schnitzer <dominik@schnitzer.at>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor,
+Boston, MA  02110-1301, USA.
+
+The Debian packaging is (C) 2007, Dominik Schnitzer <dominik@schnitzer.at> and
+is licensed under the GPL Version 2, see `/usr/share/common-licenses/GPL-2'.
+
+
+The files
+	Banshee/TrackView.Columns/AlbumColumn.cs
+	Banshee/TrackView.Columns/DurationColumn.cs
+	Banshee/TrackView.Columns/RatingColumn.cs
+	Banshee/TrackView.Columns/TrackViewColumn.cs
+	Banshee/TrackView.Columns/PlayCountColumn.cs
+	Banshee/TrackView.Columns/TitleColumn.cs
+	Banshee/TrackView.Columns/ArtistColumn.cs
+	Banshee/TrackView.Columns/UriColumn.cs
+	Banshee/TrackView.Columns/TrackNumberColumn.cs
+	Banshee/TrackView.Columns/LastPlayedColumn.cs
+	Banshee/TrackView.Columns/DateAddedColumn.cs
+	Banshee/TrackView.Columns/GenreColumn.cs
+	Banshee/TrackView.Columns/YearColumn.cs
+	Banshee/PlaylistModel.cs
+Are taken from Banshee http://banshee-project.org/ and are licensed
+under the MIT License as outlined in the source files
