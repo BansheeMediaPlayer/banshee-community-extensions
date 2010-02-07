@@ -54,3 +54,4 @@ release-rc
 C:\\NUnitPrimaryTrace.txt
 tests/Performance/Performance.dll
 tests/results/
+src/Mirage/libmirageaudio/mirageaudiotest

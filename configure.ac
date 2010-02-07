@@ -105,6 +105,12 @@ po/Makefile.in
 
 src/Makefile
 src/AlarmClock/Makefile
+
+src/Mirage/Makefile
+src/Mirage/libmirageaudio/Makefile
+src/Mirage/Mirage/Makefile
+src/Mirage/Banshee.Mirage/Makefile
+src/Mirage/Test/Makefile
 ])
 
 cat <<EOF
@@ -127,5 +133,6 @@ ${PACKAGE}-${VERSION}
 
   Extensions:
     Alarm Clock:       yes
+    Mirage:            yes
 
 EOF

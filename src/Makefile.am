@@ -1,4 +1,5 @@
 SUBDIRS = \
-    AlarmClock
+    AlarmClock \
+	Mirage
 
 MAINTAINERCLEANFILES = Makefile.in

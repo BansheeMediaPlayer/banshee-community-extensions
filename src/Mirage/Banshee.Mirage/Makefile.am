@@ -1,5 +1,5 @@
 ASSEMBLY = Banshee.Mirage
-TARGET = library
+LINK = $(BANSHEE_LIBS) -r:$(DIR_BIN)/Mirage.dll
 
 SOURCES = \
 	MirageConfiguration.cs \
@@ -13,10 +13,6 @@ RESOURCES = \
 	res/MirageMenu.xml \
 	res/GlobalUI.xml \
 	res/ActiveSourceUI.xml \
-	Banshee.Plugins.Mirage.addin.xml
-
-REFERENCES =  \
-	$(BANSHEE_LIBS) \
-	-r:../Mirage/Mirage.dll
+	Banshee.Mirage.addin.xml
 
 include $(top_srcdir)/build/build.mk

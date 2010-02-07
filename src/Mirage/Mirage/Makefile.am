@@ -1,5 +1,9 @@
 ASSEMBLY = Mirage
-TARGET = library
+LINK =  \
+	-r:System \
+	-r:System.Data \
+	-r:Mono.Data.SqliteClient
+GMCS_FLAGS = -unsafe
 
 SOURCES = \
 	AudioDecoder.cs \
@@ -15,10 +19,5 @@ SOURCES = \
 RESOURCES = \
 	res/dct.filter \
 	res/filterweights.filter 
-
-REFERENCES =  \
-	-r:System \
-	-r:System.Data \
-	-r:Mono.Data.SqliteClient
 
 include $(top_srcdir)/build/build.mk

@@ -41,4 +41,7 @@ MAINTAINERCLEANFILES = \
 # Mono.Addins looks for addins in a 'addins' folder in the addin db directory; so, we 
 # copy the extension dlls to such a folder so Banshee will pick them up.
 run:
-	(cd bin; mkdir -p addins; cp *.dll* addins/; banshee-1 --uninstalled --debug $(BANSHEE_DEV_OPTIONS))
+	(cp src/Mirage/libmirageaudio/.libs/libmirageaudio.so bin/; \
+		cd bin; mkdir -p addins; cp *.dll* addins/; \
+		banshee-1 --uninstalled --debug $(BANSHEE_DEV_OPTIONS) \
+	)
