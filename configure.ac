@@ -58,6 +58,21 @@ else
 fi
 AC_SUBST(GMCS_FLAGS)
 
+dnl Mirage
+PKG_CHECK_MODULES(FFTW3F, fftw3f)
+PKG_CHECK_MODULES(SQLITE3, sqlite3 >= 3.3)
+PKG_CHECK_MODULES(LIBSAMPLERATE, samplerate)
+GSTREAMER_REQUIRED_VERSION=0.10.15
+AC_SUBST(GSTREAMER_REQUIRED_VERSION)
+PKG_CHECK_MODULES(GST,
+    gstreamer-0.10 >= $GSTREAMER_REQUIRED_VERSION
+    gstreamer-base-0.10 >= $GSTREAMER_REQUIRED_VERSION
+    gstreamer-plugins-base-0.10 >= $GSTREAMER_REQUIRED_VERSION)
+AC_SUBST(GST_CFLAGS)
+AC_SUBST(GST_LIBS)
+PKG_CHECK_MODULES(GLIB, glib-2.0)
+
+
 AC_ARG_WITH(vendor-build-id,
 	AC_HELP_STRING([--with-vendor-build-id=<vendor-build-id>],
 		[Set a vendor build ID, recommended for packagers]),
