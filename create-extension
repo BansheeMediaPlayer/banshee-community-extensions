@@ -47,7 +47,10 @@ print `mv $dir/Template.addin.xml $dir/$name.addin.xml`;
 print `mv $dir/Template.csproj $dir/$name.csproj`;
 
 # Replace the GUID
-my $guid = `gmcs build/gen-guid.cs && mono build/gen-guid.exe`; chomp($guid); $guid = uc($guid);
+if (not -f "build/gen-guid.exe") {
+    `gmcs build/gen-guid.cs`;
+}
+my $guid = `mono build/gen-guid.exe`; chomp($guid); $guid = uc($guid);
 replace ("$dir/$name.csproj", "TEMPLATE-GUID", $guid);
 
 # Replace the extension name
