@@ -64,7 +64,9 @@ namespace Banshee.Telepathy.Data
     public class ContactSource : PrimarySource, IContactSource
     {
         private const int chunk_length = 250;
-        private readonly LibraryDownloadMonitor download_monitor = new LibraryDownloadMonitor ();
+        //private readonly LibraryDownloadMonitor download_monitor = new LibraryDownloadMonitor ();
+		private readonly TubeManager tube_manager;
+		private readonly IDictionary<LibraryDownload, ContactPlaylistSource> playlist_map = new Dictionary<LibraryDownload, ContactPlaylistSource> ();
         private ContactRequestDialog dialog;
         
         private delegate bool GetBoolPropertyCaller ();
@@ -117,7 +119,9 @@ namespace Banshee.Telepathy.Data
                 CleanUpData ();
             }
             SavedCount = 0;
-
+			
+			tube_manager = new TubeManager (contact);
+			
             ContactSourceInitialize ();
             AfterInitialized ();
         }
@@ -198,34 +202,40 @@ namespace Banshee.Telepathy.Data
 
         private bool downloading_allowed = true;
         public bool IsDownloadingAllowed {
-            get { return downloading_allowed; }
+            get { 
+				if (tube_manager != null) {
+					return tube_manager.IsDownloadingAllowed; 
+				} else {
+					return false;
+				}
+			}
         }
             
-        public static void StopSharing (ContactSource source)
-        {
-            if (source == null) {
-                return;
-            }
-            
-            if (source.CurrentActivity != null) {
-                source.CurrentActivity.Close ();
-            }
-            
-            StopStreaming (source);
-        }
+//        public static void StopSharing (ContactSource source)
+//        {
+//            if (source == null) {
+//                return;
+//            }
+//            
+//            if (source.CurrentActivity != null) {
+//                source.CurrentActivity.Close ();
+//            }
+//            
+//            StopStreaming (source);
+//        }
         
-        public static void StopStreaming (ContactSource source)
-        {
-            if (source == null) {
-                return;
-            }
-            
-            Contact contact = source.Contact;
-            Activity activity = contact.DispatchManager.Get <StreamActivityListener> (contact, StreamingServer.ServiceName);
-            if (activity != null) {
-                activity.Close ();
-            }
-        }
+//        public static void StopStreaming (ContactSource source)
+//        {
+//            if (source == null) {
+//                return;
+//            }
+//            
+//            Contact contact = source.Contact;
+//            Activity activity = contact.DispatchManager.Get <StreamActivityListener> (contact, StreamingServer.ServiceName);
+//            if (activity != null) {
+//                activity.Close ();
+//            }
+//        }
         
         protected override void Initialize ()
         { 
@@ -241,7 +251,7 @@ namespace Banshee.Telepathy.Data
         public void CleanUpData ()
         {
             PurgeTracks ();
-
+			
             List<Source> children = new List<Source> (Children);
             foreach (Source child in children) {
                 if (child is Banshee.Sources.IUnmapableSource) {
@@ -256,11 +266,11 @@ namespace Banshee.Telepathy.Data
         {
             can_activate = false;
             
-            if (contact != null) {
-                contact.DispatchManager.Dispatched -= OnDispatched;
+            if (tube_manager != null) {
+                tube_manager.Dispose ();
             }
             
-            UnregisterHandlers ();
+            //UnregisterHandlers ();
             CleanUpData ();
 
             if (is_temporary) {
@@ -272,13 +282,15 @@ namespace Banshee.Telepathy.Data
         
         private void ContactSourceInitialize ()
         {
-            // let's listen for requests from our contacts
-            if (contact != null) {
-                contact.DispatchManager.Dispatched += OnDispatched;
-            }
-
-            download_monitor.AllFinished += OnAllDownloadsFinished;
-            download_monitor.AllProcessed += OnAllDownloadsProcessed;
+			tube_manager.StateChanged += OnTubeManagerStateChanged;
+			tube_manager.ResponseRequired += OnTubeManagerResponseRequired;
+			tube_manager.TracksDownloaded += OnTubeManagerTracksDownloaded;
+			tube_manager.PlaylistTracksDownloaded += OnTubeManagerPlaylistTracksDownloaded;
+			tube_manager.Closed += OnTubeManagerClosed;
+			tube_manager.Error += OnTubeManagerError;
+			
+//            download_monitor.AllFinished += OnAllDownloadsFinished;
+//            download_monitor.AllProcessed += OnAllDownloadsProcessed;
 
             TrackExternalObjectHandler = GetContactTrackInfoObject;
         }
@@ -296,30 +308,7 @@ namespace Banshee.Telepathy.Data
 			
             Hyena.Log.DebugFormat ("{0} selected", Contact.Name);
 
-            EnsureDBusActivity ();
-            
-            if (current_activity != null) {
-                // user clicked to browse a contact, but contact on the other end sent a 
-                // request also. The tube is probably slow and states have not changed yet,
-                // so set waiting
-                // TODO there is probably a race condition here - TEST                
-                if (current_activity.State == ActivityState.RemotePending) {
-                    SetWaiting ();
-                } else {
-                    LoadData (current_activity);
-                }
-                
-            } else {
-                if (Contact.SupportedChannels.GetChannelInfo <DBusTubeChannelInfo> (MetadataProviderService.BusName) != null) {
-                    if (state == ContactSourceState.Unloaded) {
-                        SetWaiting ();
-                        RequestDBusTube ();                    
-                    }
-                } else {
-                    SetStatus (Catalog.GetString ("Contact does not support Telepathy extension"), true);
-                }
-            }
-
+			tube_manager.Browse ();
             base.Activate ();
         }
 
@@ -335,88 +324,50 @@ namespace Banshee.Telepathy.Data
             });
         }
         
-        private void EnsureDBusActivity ()
-        {
-            if (Contact == null) {
-                return;
-            }
-            
-            if (current_activity == null) {
-                DispatchManager dm = Contact.DispatchManager;
-                current_activity = dm.Get <DBusActivity> (contact, MetadataProviderService.BusName);
-            }
-        }
-        
-        private void RequestDBusTube ()
-        {
-            IDictionary <string, object> properties = new Dictionary <string, object> ();
-            properties.Add ("ServiceName", MetadataProviderService.BusName);
-
-            try {
-                Contact.DispatchManager.Request <DBusActivity> (Contact, properties);
-            } catch (Exception e) {
-                Hyena.Log.Exception (e);
-            }
-        }
-        
-        private void RequestStreamTube ()
-        {
-            try {
-                if (!Contact.DispatchManager.Exists <StreamActivityListener> (Contact, StreamingServer.ServiceName)) {
-                    IDictionary <string, object> properties = new Dictionary <string, object> ();
-                    properties.Add ("Service", StreamingServer.ServiceName);
-                
-                    Contact.DispatchManager.Request <StreamActivityListener> (Contact, properties);
-                }
-            } catch (Exception e) {
-                Hyena.Log.Exception (e);
-            }
-        }
-        
 #region Activity Interaction
         
-        private void RegisterActivityServices (DBusActivity activity)
-        {
-            RegisterActivityServices (activity, true);
-        }
-
-        private void RegisterActivityServices (DBusActivity activity, bool permission)
-        {
-            if (activity == null) {
-                return;
-            }
-            
-            IMetadataProviderService provider_service = new MetadataProviderService (activity, permission);
-			(provider_service as MetadataProviderService).PermissionRequired += (o, a) => {
-				ShowResponseMessage (o as MetadataProviderService);
-			};
-			
-            activity.RegisterDBusObject (provider_service, MetadataProviderService.ObjectPath);
-        }
-
-        private void GetDownloadingAllowedCallback (IAsyncResult result)
-        {
-            GetBoolPropertyCaller caller = (GetBoolPropertyCaller) result.AsyncState;
-            downloading_allowed = caller.EndInvoke (result);
-        }
-        
-        private void GetPermissionCallback (IAsyncResult result)
-        {
-            if (state != ContactSourceState.Waiting) {
-                return;
-            }
-            
-            GetBoolPropertyCaller caller = (GetBoolPropertyCaller) result.AsyncState;
-            bool granted = caller.EndInvoke (result);
-            
-            if (granted) {
-                state = ContactSourceState.PermissionGranted;                
-            } else {
-                state = ContactSourceState.PermissionNotGranted;
-            }
-            
-            LoadData (current_activity);
-        }
+//        private void RegisterActivityServices (DBusActivity activity)
+//        {
+//            RegisterActivityServices (activity, true);
+//        }
+//
+//        private void RegisterActivityServices (DBusActivity activity, bool permission)
+//        {
+//            if (activity == null) {
+//                return;
+//            }
+//            
+//            IMetadataProviderService provider_service = new MetadataProviderService (activity, permission);
+//			(provider_service as MetadataProviderService).PermissionRequired += (o, a) => {
+//				ShowResponseMessage (o as MetadataProviderService);
+//			};
+//			
+//            activity.RegisterDBusObject (provider_service, MetadataProviderService.ObjectPath);
+//        }
+//
+//        private void GetDownloadingAllowedCallback (IAsyncResult result)
+//        {
+//            GetBoolPropertyCaller caller = (GetBoolPropertyCaller) result.AsyncState;
+//            downloading_allowed = caller.EndInvoke (result);
+//        }
+//        
+//        private void GetPermissionCallback (IAsyncResult result)
+//        {
+//            if (state != ContactSourceState.Waiting) {
+//                return;
+//            }
+//            
+//            GetBoolPropertyCaller caller = (GetBoolPropertyCaller) result.AsyncState;
+//            bool granted = caller.EndInvoke (result);
+//            
+//            if (granted) {
+//                state = ContactSourceState.PermissionGranted;                
+//            } else {
+//                state = ContactSourceState.PermissionNotGranted;
+//            }
+//            
+//            LoadData (current_activity);
+//        }
 
 		private void ResetResponseMessage ()
 		{
@@ -428,11 +379,6 @@ namespace Banshee.Telepathy.Data
 		}
 		
 		private void ShowResponseMessage ()
-		{
-			ShowResponseMessage (null);
-		}
-		
-		private void ShowResponseMessage (MetadataProviderService provider_service)
 		{
 			getting_response = true;
 			
@@ -454,26 +400,14 @@ namespace Banshee.Telepathy.Data
             
             response_message.AddAction (new MessageAction (Catalog.GetString ("Accept"),
                 delegate { 
-				if (current_activity != null) {
-					if (provider_service == null) {
-						current_activity.Accept ();
-					} else {
-						provider_service.Permission = true;
-					}
+					tube_manager.AcceptBrowseRequest ();
 					ResetResponseMessage ();
-				}
-			}));
+				}));
             response_message.AddAction (new MessageAction (Catalog.GetString ("Reject"),
                 delegate { 
-				if (current_activity != null) {
-					if (provider_service == null) {
-						current_activity.Reject ();
-					} else {
-						provider_service.Permission = false;
-					}
+					tube_manager.RejectBrowseRequest ();
 					ResetResponseMessage ();
-				}
-			}));
+				}));
 
             response_message.ThawNotify ();
 			TelepathyNotification.Create ().Show (Contact.Name, 
@@ -506,179 +440,173 @@ namespace Banshee.Telepathy.Data
             timer.Start ();
 		}
 		
-        private void SetWaiting ()
-        {
-            state = ContactSourceState.Waiting;
-            SetStatus (Catalog.GetString ("Waiting for response from contact"), false);
-        }
-        
-        private void LoadData (DBusActivity activity)
-        {
-            if (state >= ContactSourceState.LoadingMetadata) {
-                return;
-            } else if (activity == null) {
-                return;
-            } else if (activity.State != ActivityState.Connected) {
-                Hyena.Log.Debug (String.Format ("activity state {0} is invalid.", activity.State));
-                return;
-            }
-        
-            IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
-            if (service == null) {
-                Hyena.Log.Debug ("ContactSource.LoadData found service null");
-                return;
-            }
-
-            try {
-                // call MetadataProviderService.PermissionGranted () asynchronously to prevent blocking the UI
-                // when Telepathy tubes are slow
-                if (state <= ContactSourceState.Waiting) {
-                    SetWaiting ();
-                    permission_caller = new GetBoolPropertyCaller (service.PermissionGranted);
-                    permission_caller.BeginInvoke (new AsyncCallback (GetPermissionCallback), permission_caller);
-    
-                } else if (state == ContactSourceState.PermissionGranted) {
-                    service.DownloadingAllowedChanged += delegate (bool allowed) {
-                        downloading_allowed = allowed;            
-                    };
-                
-                    // determine if downloading is allowed asynchronously
-                    downloading_caller = new GetBoolPropertyCaller  (service.DownloadsAllowed);
-                    downloading_caller.BeginInvoke (new AsyncCallback (GetDownloadingAllowedCallback), downloading_caller);
-                    
-                    // clean up any residual tracks
-                    download_monitor.Reset ();
-                    SetStatus (Catalog.GetString ("Loading..."), false);
-                    state = ContactSourceState.LoadingMetadata;
-                    CleanUpData ();
-    
-                    string metadata_path = service.CreateMetadataProvider (LibraryType.Music).ToString ();
-                    IMetadataProvider library_provider = activity.GetDBusObject <IMetadataProvider> (MetadataProvider.BusName, metadata_path);
-
-                    LibraryDownload download = new LibraryDownload ();
-                    download_monitor.Add (metadata_path, download);
-
-                    download.ProcessIncomingPayloads (delegate (object sender, object [] o) {
-
-                        IDictionary <string, object> [] chunk = o as IDictionary <string, object> [];
-                        if (chunk == null) {
-                            return;
-                        }
-                        
-                        HyenaSqliteConnection conn = ServiceManager.DbConnection;
-                        conn.BeginTransaction ();
-                        
-                        for (int i = 0; i < chunk.Length; i++) {
-                            IDictionary <string, object> track = chunk[i];
-                            ContactTrackInfo contact_track = new ContactTrackInfo (track, this);
-        
-                            // notify once per chunk
-                            if (i == chunk.Length - 1) {
-                                conn.CommitTransaction ();
-                                contact_track.Save (true);
-                            } else {
-                                contact_track.Save (false);
-                            }
-                        }
-                    });
-
-                    library_provider.ChunkReady += OnLibraryChunkReady;
-                    library_provider.GetChunks (chunk_length);
-    
-                    download_monitor.Start ();
-                
-                } else if (state == ContactSourceState.PermissionNotGranted) {
-                    SetWaiting ();
-                    service.PermissionSet += OnPermissionSet;
-                    service.RequestPermission ();
-                }
-            } catch (Exception e) {
-                Hyena.Log.Exception (e);
-                ResetState (false);
-                SetStatus (Catalog.GetString ("An error occurred while loading data"), true);
-            }
-        }
-
-        private void LoadPlaylists (DBusActivity activity)
-        {
-            if (activity == null) {
-                return;
-            } else if (activity.State != ActivityState.Connected) {
-                Hyena.Log.Debug (String.Format ("activity state {0} is invalid.", activity.State));
-                return;
-            } else if (state != ContactSourceState.LoadedMetadata) {
-                Hyena.Log.Debug (String.Format ("state {0} is invalid.", state));
-                return;
-            }
-
-            try {
-                IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
-                int [] playlist_ids = service.GetPlaylistIds (LibraryType.Music);
-    
-                download_monitor.Reset ();
-                
-                if (playlist_ids.Length == 0) {
-                    state = ContactSourceState.Loaded;
-                    HideStatus ();
-                } else {
-                    foreach (int id in playlist_ids) {
-                        string playlist_path = service.CreatePlaylistProvider (id).ToString ();
-                        IPlaylistProvider playlist_provider = activity.GetDBusObject <IPlaylistProvider>
-                        (PlaylistProvider.BusName, playlist_path);
-
-                        LibraryDownload download = new LibraryDownload ();
-                        download_monitor.Add (playlist_path, download);
-                        download_monitor.AssociateObject (playlist_path, new ContactPlaylistSource (playlist_provider.GetName (), this));
-                        
-                        download.ProcessIncomingPayloads (delegate (object sender, object [] o) {
-                            IDictionary <string, object> [] chunk = o as IDictionary <string, object> [];
-                            if (chunk == null) {
-                                return;
-                            }
-
-                            LibraryDownload d = sender as LibraryDownload;
-                            ContactPlaylistSource source = download_monitor.GetAssociatedObject (d) as ContactPlaylistSource;
-                
-                            if (source != null) {
-                                source.AddTracks (chunk);
-                            }
-
-                            ThreadAssist.ProxyToMain (delegate {
-                                if (d != null && d.IsFinished) {
-                                    Hyena.Log.DebugFormat ("Download complete for {0}", playlist_path);
-                                    AddChildSource (source);
-                                    HideStatus ();
-                                }
-                            });
-                        });
-                        
-                        playlist_provider.ChunkReady += OnPlaylistChunkReady;
-                        playlist_provider.GetChunks (chunk_length);
-                    }
-    
-                    download_monitor.Start ();
-                }
-            } catch (Exception e) {
-                Hyena.Log.Exception (e);
-                ResetState (false);
-                SetStatus (Catalog.GetString ("An error occurred while loading playlists"), true);
-            }
-        }
-        
-        private void ResetState ()
-        {
-            ResetState (true);
-        }
-        
-        private void ResetState (bool hide_status)
-        {
-            state = ContactSourceState.Unloaded;
-            download_monitor.Reset ();
-            
-            if (hide_status) {
-                HideStatus ();
-            }
-        }
+//        private void LoadData (DBusActivity activity)
+//        {
+//            if (state >= ContactSourceState.LoadingMetadata) {
+//                return;
+//            } else if (activity == null) {
+//                return;
+//            } else if (activity.State != ActivityState.Connected) {
+//                Hyena.Log.Debug (String.Format ("activity state {0} is invalid.", activity.State));
+//                return;
+//            }
+//        
+//            IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
+//            if (service == null) {
+//                Hyena.Log.Debug ("ContactSource.LoadData found service null");
+//                return;
+//            }
+//
+//            try {
+//                // call MetadataProviderService.PermissionGranted () asynchronously to prevent blocking the UI
+//                // when Telepathy tubes are slow
+//                if (state <= ContactSourceState.Waiting) {
+//                    SetWaiting ();
+//                    permission_caller = new GetBoolPropertyCaller (service.PermissionGranted);
+//                    permission_caller.BeginInvoke (new AsyncCallback (GetPermissionCallback), permission_caller);
+//    
+//                } else if (state == ContactSourceState.PermissionGranted) {
+//                    service.DownloadingAllowedChanged += delegate (bool allowed) {
+//                        downloading_allowed = allowed;            
+//                    };
+//                
+//                    // determine if downloading is allowed asynchronously
+//                    downloading_caller = new GetBoolPropertyCaller  (service.DownloadsAllowed);
+//                    downloading_caller.BeginInvoke (new AsyncCallback (GetDownloadingAllowedCallback), downloading_caller);
+//                    
+//                    // clean up any residual tracks
+//                    download_monitor.Reset ();
+//                    SetStatus (Catalog.GetString ("Loading..."), false);
+//                    state = ContactSourceState.LoadingMetadata;
+//                    CleanUpData ();
+//    
+//                    string metadata_path = service.CreateMetadataProvider (LibraryType.Music).ToString ();
+//                    IMetadataProvider library_provider = activity.GetDBusObject <IMetadataProvider> (MetadataProvider.BusName, metadata_path);
+//
+//                    LibraryDownload download = new LibraryDownload ();
+//                    download_monitor.Add (metadata_path, download);
+//
+//                    download.ProcessIncomingPayloads (delegate (object sender, object [] o) {
+//
+//                        IDictionary <string, object> [] chunk = o as IDictionary <string, object> [];
+//                        if (chunk == null) {
+//                            return;
+//                        }
+//                        
+//                        HyenaSqliteConnection conn = ServiceManager.DbConnection;
+//                        conn.BeginTransaction ();
+//                        
+//                        for (int i = 0; i < chunk.Length; i++) {
+//                            IDictionary <string, object> track = chunk[i];
+//                            ContactTrackInfo contact_track = new ContactTrackInfo (track, this);
+//        
+//                            // notify once per chunk
+//                            if (i == chunk.Length - 1) {
+//                                conn.CommitTransaction ();
+//                                contact_track.Save (true);
+//                            } else {
+//                                contact_track.Save (false);
+//                            }
+//                        }
+//                    });
+//
+//                    library_provider.ChunkReady += OnLibraryChunkReady;
+//                    library_provider.GetChunks (chunk_length);
+//    
+//                    download_monitor.Start ();
+//                
+//                } else if (state == ContactSourceState.PermissionNotGranted) {
+//                    SetWaiting ();
+//                    service.PermissionSet += OnPermissionSet;
+//                    service.RequestPermission ();
+//                }
+//            } catch (Exception e) {
+//                Hyena.Log.Exception (e);
+//                ResetState (false);
+//                SetStatus (Catalog.GetString ("An error occurred while loading data"), true);
+//            }
+//        }
+//
+//        private void LoadPlaylists (DBusActivity activity)
+//        {
+//            if (activity == null) {
+//                return;
+//            } else if (activity.State != ActivityState.Connected) {
+//                Hyena.Log.Debug (String.Format ("activity state {0} is invalid.", activity.State));
+//                return;
+//            } else if (state != ContactSourceState.LoadedMetadata) {
+//                Hyena.Log.Debug (String.Format ("state {0} is invalid.", state));
+//                return;
+//            }
+//
+//            try {
+//                IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
+//                int [] playlist_ids = service.GetPlaylistIds (LibraryType.Music);
+//    
+//                download_monitor.Reset ();
+//                
+//                if (playlist_ids.Length == 0) {
+//                    state = ContactSourceState.Loaded;
+//                    HideStatus ();
+//                } else {
+//                    foreach (int id in playlist_ids) {
+//                        string playlist_path = service.CreatePlaylistProvider (id).ToString ();
+//                        IPlaylistProvider playlist_provider = activity.GetDBusObject <IPlaylistProvider>
+//                        (PlaylistProvider.BusName, playlist_path);
+//
+//                        LibraryDownload download = new LibraryDownload ();
+//                        download_monitor.Add (playlist_path, download);
+//                        download_monitor.AssociateObject (playlist_path, new ContactPlaylistSource (playlist_provider.GetName (), this));
+//                        
+//                        download.ProcessIncomingPayloads (delegate (object sender, object [] o) {
+//                            IDictionary <string, object> [] chunk = o as IDictionary <string, object> [];
+//                            if (chunk == null) {
+//                                return;
+//                            }
+//
+//                            LibraryDownload d = sender as LibraryDownload;
+//                            ContactPlaylistSource source = download_monitor.GetAssociatedObject (d) as ContactPlaylistSource;
+//                
+//                            if (source != null) {
+//                                source.AddTracks (chunk);
+//                            }
+//
+//                            ThreadAssist.ProxyToMain (delegate {
+//                                if (d != null && d.IsFinished) {
+//                                    Hyena.Log.DebugFormat ("Download complete for {0}", playlist_path);
+//                                    AddChildSource (source);
+//                                    HideStatus ();
+//                                }
+//                            });
+//                        });
+//                        
+//                        playlist_provider.ChunkReady += OnPlaylistChunkReady;
+//                        playlist_provider.GetChunks (chunk_length);
+//                    }
+//    
+//                    download_monitor.Start ();
+//                }
+//            } catch (Exception e) {
+//                Hyena.Log.Exception (e);
+//                ResetState (false);
+//                SetStatus (Catalog.GetString ("An error occurred while loading playlists"), true);
+//            }
+//        }
+//        
+//        private void ResetState ()
+//        {
+//            ResetState (true);
+//        }
+//        
+//        private void ResetState (bool hide_status)
+//        {
+//            state = ContactSourceState.Unloaded;
+//            download_monitor.Reset ();
+//            
+//            if (hide_status) {
+//                HideStatus ();
+//            }
+//        }
 
 #endregion
 
@@ -693,83 +621,127 @@ namespace Banshee.Telepathy.Data
         
 #region Download Events
 
-        private void OnAllDownloadsFinished (object sender, EventArgs args)
-        {
-            if (state == ContactSourceState.LoadingMetadata) {
-                state = ContactSourceState.LoadedMetadata;
-                
-                SetStatus (Catalog.GetString ("All tracks downloaded. Loading..."), false);
-            } else {
-                state = ContactSourceState.Loaded;
-            }
-        }
+//        private void OnAllDownloadsFinished (object sender, EventArgs args)
+//        {
+//            if (state == ContactSourceState.LoadingMetadata) {
+//                state = ContactSourceState.LoadedMetadata;
+//                
+//                SetStatus (Catalog.GetString ("All tracks downloaded. Loading..."), false);
+//            } else {
+//                state = ContactSourceState.Loaded;
+//            }
+//        }
 
-        private void OnAllDownloadsProcessed (object sender, EventArgs args)
-        {
-            if (state == ContactSourceState.LoadedMetadata) {
-
-                SetStatus (Catalog.GetString ("Loading playlists"), false);
-                
-                //FIXME delay required to let tracks save to database
-                //after download
-                GLib.Timeout.Add (1000, delegate {
-                    LoadPlaylists (current_activity);
-					return false;
-                });
-            }
-        }
+//        private void OnAllDownloadsProcessed (object sender, EventArgs args)
+//        {
+//            if (state == ContactSourceState.LoadedMetadata) {
+//
+//                SetStatus (Catalog.GetString ("Loading playlists"), false);
+//                
+//                //FIXME delay required to let tracks save to database
+//                //after download
+//                GLib.Timeout.Add (1000, delegate {
+//                    LoadPlaylists (current_activity);
+//					return false;
+//                });
+//            }
+//        }
 
 #endregion        
         
 #region Activity Events
 
-        private void OnDispatched (object sender, EventArgs args)
-        {
-            DBusActivity activity = sender as DBusActivity;
-            if (activity != null && 
-                activity.Contact.Equals (contact) && 
-                activity.Service.Equals (MetadataProviderService.BusName)) {
-                
-                //Hyena.Log.Debug ("Registering event handlers");
-                activity.ResponseRequired += OnActivityResponseRequired;
-                activity.Ready += OnActivityReady;
-                activity.Closed += OnActivityClosed;
-                
-                current_activity = activity;
-            }
-        }
+//        private void OnDispatched (object sender, EventArgs args)
+//        {
+//            DBusActivity activity = sender as DBusActivity;
+//            if (activity != null && 
+//                activity.Contact.Equals (contact) && 
+//                activity.Service.Equals (MetadataProviderService.BusName)) {
+//                
+//                //Hyena.Log.Debug ("Registering event handlers");
+//                activity.ResponseRequired += OnActivityResponseRequired;
+//                activity.Ready += OnActivityReady;
+//                activity.Closed += OnActivityClosed;
+//                
+//                current_activity = activity;
+//            }
+//        }
 
-        private void OnActivityReady (object sender, EventArgs args)
-        {
-            DBusActivity activity = sender as DBusActivity;
-            Hyena.Log.DebugFormat ("ContactSource OnReady for {0}", Contact.Name);
+//        private void OnActivityReady (object sender, EventArgs args)
+//        {
+//            DBusActivity activity = sender as DBusActivity;
+//            Hyena.Log.DebugFormat ("ContactSource OnReady for {0}", Contact.Name);
+//
+//            // TODO decide if this is the right place for this
+//            // one contact may not stream, so the tube may not be
+//            // necessary. But, the OnReady and OnPermissionRequired events
+//            // only get raised for one contact.
+//            RequestStreamTube ();
+//        
+//            if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
+//                RegisterActivityServices (current_activity);
+//                
+//                // tube was not ready at the time user clicked source
+//                // so it was put into waiting state
+//                if (state == ContactSourceState.Waiting) {
+//                    LoadData (current_activity);
+//                }
+//            } else {
+//                RegisterActivityServices (current_activity, false);
+//                LoadData (current_activity);
+//            }
+//        }
 
-            // TODO decide if this is the right place for this
-            // one contact may not stream, so the tube may not be
-            // necessary. But, the OnReady and OnPermissionRequired events
-            // only get raised for one contact.
-            RequestStreamTube ();
-        
-            if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
-                RegisterActivityServices (current_activity);
-                
-                // tube was not ready at the time user clicked source
-                // so it was put into waiting state
-                if (state == ContactSourceState.Waiting) {
-                    LoadData (current_activity);
-                }
-            } else {
-                RegisterActivityServices (current_activity, false);
-                LoadData (current_activity);
-            }
-        }
-
-        private void OnActivityClosed (object sender, EventArgs args)
+		private void OnTubeManagerStateChanged (object sender, EventArgs args)
         {
-            DBusActivity activity = sender as DBusActivity;
-            ResetState ();
+			TubeManagerStateChangedEventArgs state_args = args as TubeManagerStateChangedEventArgs;
+			Hyena.Log.DebugFormat ("OnTubeManagerStateChanged: {0}", state_args.state.ToString ());
+			
+			switch (state_args.state) {
+			case TubeManager.State.Unloaded:
+				HideStatus ();
+				break;
+			case TubeManager.State.Waiting:
+				SetStatus (Catalog.GetString ("Waiting for response from contact..."), false);
+				break;
+			//case TubeManager.State.PermissionNotGranted:
+			//case TubeManager.State.PermissionGranted:
+			case TubeManager.State.LoadingMetadata:
+				SetStatus (Catalog.GetString ("Loading..."), false);
+				break;
+			case TubeManager.State.LoadedMetadata:
+				SetStatus (Catalog.GetString ("All tracks downloaded. Loading..."), false);
+				break;
+			case TubeManager.State.LoadingPlaylists:
+				SetStatus (Catalog.GetString ("Loading playlists..."), false);
+				break;
+			//case TubeManager.State.Loaded:
+			}
+		}
+		
+		private void OnTubeManagerError (object sender, EventArgs args)
+		{
+			TubeManagerErrorEventArgs error_args = args as TubeManagerErrorEventArgs;
+			
+			switch (error_args.error) {
+			case TubeManager.ErrorReason.ClosedBeforeDownloaded:
+				SetStatus (Catalog.GetString ("A problem occured while downloading this contact's library"), true);
+				break;
+			case TubeManager.ErrorReason.ErrorDuringLoad:
+				SetStatus (Catalog.GetString ("An error occurred while loading data"), true);
+				break;
+			case TubeManager.ErrorReason.ErrorDuringPlaylistLoad:
+				SetStatus (Catalog.GetString ("An error occurred while loading playlists"), true);
+				break;
+			}
+		}
+		
+        private void OnTubeManagerClosed (object sender, EventArgs args)
+        {
+            TubeManager manager = sender as TubeManager;
+            //ResetState ();
             
-            if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
+            if (manager.CurrentActivity.InitiatorHandle != Contact.Connection.SelfHandle) {
 //                if (dialog != null) {
 //                    dialog.Destroy ();
 //                    dialog = null;
@@ -778,27 +750,86 @@ namespace Banshee.Telepathy.Data
 					ResetResponseMessage ();
 				}
             } else {
-                StopStreaming (this);
+                //StopStreaming (this);
                 
                 // the tube was closed before the library was fully downloaded
                 // this seems to occur randomly
-                if (!download_monitor.ProcessingFinished ()) {
-                    SetStatus (Catalog.GetString ("A problem occured while downloading this contact's library"), true);
-                }
+//                if (!download_monitor.ProcessingFinished ()) {
+//                    SetStatus (Catalog.GetString ("A problem occured while downloading this contact's library"), true);
+//                }
                 
-                TelepathyNotification.Create ().Show (activity.Contact.Name, 
+                TelepathyNotification.Create ().Show (Contact.Name, 
                     Catalog.GetString ("is no longer sharing their Banshee library with you"));
             }
             
-            UnregisterHandlers ();
+            //UnregisterHandlers ();
         }
         
-        private void OnActivityResponseRequired (object sender, EventArgs args)
+		private void OnTubeManagerPlaylistTracksDownloaded (object sender, EventArgs args)
+		{
+			DownloadedTracksEventArgs track_args = args as DownloadedTracksEventArgs;
+			IDictionary <string, object> [] chunk = track_args.tracks as IDictionary <string, object> [];
+            if (chunk == null) {
+                return;
+            }
+
+            LibraryDownload d = track_args.download as LibraryDownload;
+			SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), d.TotalDownloaded, d.TotalExpected), false);
+            ContactPlaylistSource source = null;
+			if (playlist_map.ContainsKey (d)) {	
+				source = playlist_map[d];
+			} else {
+				source = new ContactPlaylistSource (track_args.name, this);
+				playlist_map.Add (d, source);
+            } 
+
+			source.AddTracks (chunk);
+			
+            ThreadAssist.ProxyToMain (delegate {
+                if (d != null && d.IsFinished) {
+                    Hyena.Log.DebugFormat ("Download complete for {0}", source.Name);
+                    AddChildSource (source);
+					playlist_map.Remove (d);
+                    HideStatus ();
+                }
+            });			
+		}
+		
+		private void OnTubeManagerTracksDownloaded (object sender, EventArgs args)
+		{
+			DownloadedTracksEventArgs track_args = args as DownloadedTracksEventArgs;
+			
+			IDictionary <string, object> [] chunk = track_args.tracks as IDictionary <string, object> [];
+            if (chunk == null) {
+                return;
+            }
+            
+			LibraryDownload d = track_args.download as LibraryDownload;
+			SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), d.TotalDownloaded, d.TotalExpected), false);
+			
+            HyenaSqliteConnection conn = ServiceManager.DbConnection;
+            conn.BeginTransaction ();
+            
+            for (int i = 0; i < chunk.Length; i++) {
+                IDictionary <string, object> track = chunk[i];
+                ContactTrackInfo contact_track = new ContactTrackInfo (track, this);
+
+                // notify once per chunk
+                if (i == chunk.Length - 1) {
+                    conn.CommitTransaction ();
+                    contact_track.Save (true);
+                } else {
+                    contact_track.Save (false);
+                }
+            }
+		}
+		
+        private void OnTubeManagerResponseRequired (object sender, EventArgs args)
         {
-            DBusActivity activity = sender as DBusActivity;
-            Hyena.Log.DebugFormat ("OnActivityResponseRequired from {0} for {1}", activity.Contact.Handle, activity.Contact.Name);
+//            DBusActivity activity = sender as DBusActivity;
+//            Hyena.Log.DebugFormat ("OnActivityResponseRequired from {0} for {1}", activity.Contact.Handle, activity.Contact.Name);
                              
-            if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
+            //if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
                 Hyena.Log.DebugFormat ("{0} handle {1} accepting tube from ContactSource", Contact.Name, Contact.Handle);
                                           
 				ShowResponseMessage ();
@@ -821,76 +852,76 @@ namespace Banshee.Telepathy.Data
 //                    }
 //                };
                 
-            }
+            //}
         }
         
-        private void UnregisterHandlers ()
-        {
-            //Hyena.Log.Debug ("UnregisterHandlers");
-            if (current_activity != null) {
-                //Hyena.Log.Debug ("unregistering event handlers");
-                current_activity.ResponseRequired -= OnActivityResponseRequired;
-                current_activity.Ready -= OnActivityReady;
-                current_activity.Closed -= OnActivityClosed;
-                current_activity = null;    
-            }
-        }
+//        private void UnregisterHandlers ()
+//        {
+//            //Hyena.Log.Debug ("UnregisterHandlers");
+//            if (current_activity != null) {
+//                //Hyena.Log.Debug ("unregistering event handlers");
+//                current_activity.ResponseRequired -= OnActivityResponseRequired;
+//                current_activity.Ready -= OnActivityReady;
+//                current_activity.Closed -= OnActivityClosed;
+//                current_activity = null;    
+//            }
+//        }
         
 #endregion
         
 #region MetadataServiceProvider Events
         
-        private void OnPermissionSet (bool granted)
-        {
-            if (granted) {
-                Hyena.Log.Debug ("Permission granted");
-                state = ContactSourceState.PermissionGranted;
-                LoadData (current_activity);
-            } else {
-                Hyena.Log.Debug ("Permission denied");
-                ResetState ();
-            }
-        }
+//        private void OnPermissionSet (bool granted)
+//        {
+//            if (granted) {
+//                Hyena.Log.Debug ("Permission granted");
+//                state = ContactSourceState.PermissionGranted;
+//                LoadData (current_activity);
+//            } else {
+//                Hyena.Log.Debug ("Permission denied");
+//                ResetState ();
+//            }
+//        }
 
-        private void OnLibraryChunkReady (string object_path, IDictionary<string, object>[] chunk, 
-                           long timestamp, int seq_num, int total)
-        {
-            Hyena.Log.DebugFormat ("Library Chunk Ready timestamp {0} seq {1} tracks {2} path {3}",
-                       timestamp, seq_num, chunk.Length, object_path);
-            
-            LibraryDownload current_download = download_monitor.Get (object_path);
-            if (current_download != null)  {
-                if (!current_download.IsStarted) {
-                    Hyena.Log.Debug ("Initializing download");
-                    current_download.Timestamp = timestamp;
-                    current_download.TotalExpected = total;
-                }
-
-                SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), current_download.TotalDownloaded, total), false);
-
-                current_download.UpdateDownload (timestamp, seq_num, chunk.Length, chunk);
-            }
-        }
-
-        private void OnPlaylistChunkReady (string object_path, IDictionary<string, object>[] chunk, 
-                           long timestamp, int seq_num, int total)
-        {
-            Hyena.Log.DebugFormat ("Playlist Chunk Ready timestamp {0} seq {1} tracks {2} path {3}",
-                       timestamp, seq_num, chunk.Length, object_path);
-
-            LibraryDownload current_download = download_monitor.Get (object_path);
-            if (current_download != null) {            
-                if (!current_download.IsStarted) {
-                    Hyena.Log.Debug ("Initializing download");
-                    current_download.Timestamp = timestamp;
-                    current_download.TotalExpected = total;
-                }
-
-                SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), current_download.TotalDownloaded, total), false);
-                
-                current_download.UpdateDownload (timestamp, seq_num, chunk.Length, chunk);
-            }
-        }
+//        private void OnLibraryChunkReady (string object_path, IDictionary<string, object>[] chunk, 
+//                           long timestamp, int seq_num, int total)
+//        {
+//            Hyena.Log.DebugFormat ("Library Chunk Ready timestamp {0} seq {1} tracks {2} path {3}",
+//                       timestamp, seq_num, chunk.Length, object_path);
+//            
+//            LibraryDownload current_download = download_monitor.Get (object_path);
+//            if (current_download != null)  {
+//                if (!current_download.IsStarted) {
+//                    Hyena.Log.Debug ("Initializing download");
+//                    current_download.Timestamp = timestamp;
+//                    current_download.TotalExpected = total;
+//                }
+//
+//                SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), current_download.TotalDownloaded, total), false);
+//
+//                current_download.UpdateDownload (timestamp, seq_num, chunk.Length, chunk);
+//            }
+//        }
+//
+//        private void OnPlaylistChunkReady (string object_path, IDictionary<string, object>[] chunk, 
+//                           long timestamp, int seq_num, int total)
+//        {
+//            Hyena.Log.DebugFormat ("Playlist Chunk Ready timestamp {0} seq {1} tracks {2} path {3}",
+//                       timestamp, seq_num, chunk.Length, object_path);
+//
+//            LibraryDownload current_download = download_monitor.Get (object_path);
+//            if (current_download != null) {            
+//                if (!current_download.IsStarted) {
+//                    Hyena.Log.Debug ("Initializing download");
+//                    current_download.Timestamp = timestamp;
+//                    current_download.TotalExpected = total;
+//                }
+//
+//                SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), current_download.TotalDownloaded, total), false);
+//                
+//                current_download.UpdateDownload (timestamp, seq_num, chunk.Length, chunk);
+//            }
+//        }
 
 #endregion
         

@@ -86,7 +86,12 @@ namespace Banshee.Telepathy.Data
             //DateTime = long
             //Uri = string
 
-            this.ExternalId = (long) (int) track["TrackId"];    // needed for playlists
+			if (track.ContainsKey ("TrackId")) {
+            	this.ExternalId = (long) (int) track["TrackId"];    // needed for playlists
+			} else {
+				ExternalId = -1;
+			}
+			
             MediaAttributes = TrackMediaAttributes.AudioStream | TrackMediaAttributes.Music;
             
             // dictionary key will match up to keyValuePair key = ExportName 

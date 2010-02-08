@@ -37,7 +37,7 @@ namespace Banshee.Telepathy.Data
     internal class LibraryDownloadMonitor
     {
         private readonly IDictionary <string, LibraryDownload> downloads = new Dictionary <string, LibraryDownload> ();
-        private readonly IDictionary <LibraryDownload, object> associated = new Dictionary <LibraryDownload, object> ();
+        //private readonly IDictionary <LibraryDownload, object> associated = new Dictionary <LibraryDownload, object> ();
         
         public event EventHandler <EventArgs> AllFinished;
         public event EventHandler <EventArgs> AllProcessed;
@@ -89,43 +89,43 @@ namespace Banshee.Telepathy.Data
             }
         }
 
-        public void AssociateObject (string key, object o)
-        {
-            AssociateObject (Get (key), o);
-        }
-        
-        public void AssociateObject (LibraryDownload d, object o)
-        {
-            if (d == null) {
-                throw new ArgumentNullException ("d");
-            }
-            
-            lock (associated) {
-                if (!associated.ContainsKey (d)) {
-                    associated.Add (d, o);
-                }
-            }
-        }
-
-        public object GetAssociatedObject (string key)
-        {
-            return GetAssociatedObject (Get (key));
-        }
-        
-        public object GetAssociatedObject (LibraryDownload d)
-        {
-            if (d == null) {
-                throw new ArgumentNullException ("d");
-            }
-            
-            lock (associated) {
-                if (associated.ContainsKey (d)) {
-                    return associated[d];
-                }
-            }
-
-            return null;
-        }
+//        public void AssociateObject (string key, object o)
+//        {
+//            AssociateObject (Get (key), o);
+//        }
+//        
+//        public void AssociateObject (LibraryDownload d, object o)
+//        {
+//            if (d == null) {
+//                throw new ArgumentNullException ("d");
+//            }
+//            
+//            lock (associated) {
+//                if (!associated.ContainsKey (d)) {
+//                    associated.Add (d, o);
+//                }
+//            }
+//        }
+//
+//        public object GetAssociatedObject (string key)
+//        {
+//            return GetAssociatedObject (Get (key));
+//        }
+//        
+//        public object GetAssociatedObject (LibraryDownload d)
+//        {
+//            if (d == null) {
+//                throw new ArgumentNullException ("d");
+//            }
+//            
+//            lock (associated) {
+//                if (associated.ContainsKey (d)) {
+//                    return associated[d];
+//                }
+//            }
+//
+//            return null;
+//        }
         
         public LibraryDownload Get (string key)
         {
@@ -157,7 +157,7 @@ namespace Banshee.Telepathy.Data
                 downloads.Clear ();
             }
             
-            associated.Clear ();
+            //associated.Clear ();
             
             monitoring = false;
         }
@@ -225,9 +225,9 @@ namespace Banshee.Telepathy.Data
         }
     }
 
-    internal delegate void PayloadHandler (object sender, object [] o);
+    public delegate void PayloadHandler (object sender, object [] o);
     
-    internal class LibraryDownload
+    public class LibraryDownload
     {
         private long timestamp = 0;
         private int last_sequence_num;

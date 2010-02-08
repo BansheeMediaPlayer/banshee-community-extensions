@@ -9,6 +9,8 @@
     <AssemblyName>Banshee.Sample</AssemblyName>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C6F7D7EA-0245-4A29-AC8E-714E1677F0FC}</ProjectGuid>
+    <RootNamespace>Banshee.Telepathy</RootNamespace>
+    <AssemblyOriginatorKeyFile>.</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,7 +26,6 @@
         <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>
-    <AssemblyKeyFile>.</AssemblyKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -118,6 +119,7 @@
     <Compile Include="Banshee.Telepathy.Data\TelepathyDownload.cs" />
     <Compile Include="Banshee.Telepathy.Gui\TelepathyNotification.cs" />
     <Compile Include="Banshee.Telepathy.Data\TelepathyDownloadManager.cs" />
+    <Compile Include="Banshee.Telepathy.Data\TubeManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

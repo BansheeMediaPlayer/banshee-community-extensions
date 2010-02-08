@@ -102,6 +102,7 @@ FILES =  \
 	Banshee.Telepathy.Data/TelepathyUpload.cs \
 	Banshee.Telepathy.Data/Transfer.cs \
 	Banshee.Telepathy.Data/TransferList.cs \
+	Banshee.Telepathy.Data/TubeManager.cs \
 	Banshee.Telepathy.Gui/ColumnCellContactStatusIndicator.cs \
 	Banshee.Telepathy.Gui/ContactRequestDialog.cs \
 	Banshee.Telepathy.Gui/DownloadManagerUi.cs \
