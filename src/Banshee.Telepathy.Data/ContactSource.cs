@@ -64,7 +64,6 @@ namespace Banshee.Telepathy.Data
     public class ContactSource : PrimarySource, IContactSource
     {
         private const int chunk_length = 250;
-        //private readonly LibraryDownloadMonitor download_monitor = new LibraryDownloadMonitor ();
 		private readonly TubeManager tube_manager;
 		private readonly IDictionary<LibraryDownload, ContactPlaylistSource> playlist_map = new Dictionary<LibraryDownload, ContactPlaylistSource> ();
         private ContactRequestDialog dialog;
@@ -438,6 +437,16 @@ namespace Banshee.Telepathy.Data
             }
         }
         
+		private long CalculateLoadingTracks (int track_count, long expected)
+		{
+			long loading = Count + track_count;
+			if (loading > expected) {
+				loading = expected;
+			}
+		
+			return loading;
+		}
+		
 		private void OnTubeManagerPlaylistTracksDownloaded (object sender, EventArgs args)
 		{
 			DownloadedTracksEventArgs track_args = args as DownloadedTracksEventArgs;
@@ -447,8 +456,12 @@ namespace Banshee.Telepathy.Data
             }
 
             LibraryDownload d = track_args.download as LibraryDownload;
-			SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), d.TotalDownloaded, d.TotalExpected), false);
-            ContactPlaylistSource source = null;
+			
+			SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), 
+				CalculateLoadingTracks (chunk.Length, d.TotalExpected), 
+			    d.TotalExpected), false);
+            
+			ContactPlaylistSource source = null;
 			if (playlist_map.ContainsKey (d)) {	
 				source = playlist_map[d];
 			} else {
@@ -478,7 +491,10 @@ namespace Banshee.Telepathy.Data
             }
             
 			LibraryDownload d = track_args.download as LibraryDownload;
-			SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), d.TotalDownloaded, d.TotalExpected), false);
+			
+			SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), 
+				CalculateLoadingTracks (chunk.Length, d.TotalExpected), 
+			    d.TotalExpected), false);
 			
             HyenaSqliteConnection conn = ServiceManager.DbConnection;
             conn.BeginTransaction ();
