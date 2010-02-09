@@ -1,5 +1,6 @@
 SUBDIRS = \
     AlarmClock \
-	Mirage
+	Mirage \
+    RadioStationFetcher
 
 MAINTAINERCLEANFILES = Makefile.in

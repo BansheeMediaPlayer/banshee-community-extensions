@@ -1,5 +1,5 @@
 ASSEMBLY = Banshee.RadioStationFetcher
-LINK = $(BANSHEE_LIBS) System.Xml
+LINK = $(BANSHEE_LIBS) -r:System.Xml
 
 SOURCES =  \
 	Banshee.RadioStationFetcher/FetcherDialog.cs \

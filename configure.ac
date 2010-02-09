@@ -147,7 +147,8 @@ ${PACKAGE}-${VERSION}
     Vendor Build ID:   ${vendor_build_id}
 
   Extensions:
-    Alarm Clock:       yes
-    Mirage:            yes
+    Alarm Clock:         yes
+    Mirage:              yes
+    RadioStationFetcher: yes
 
 EOF
