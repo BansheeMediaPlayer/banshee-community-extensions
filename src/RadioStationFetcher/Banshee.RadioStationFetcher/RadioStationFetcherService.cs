@@ -81,7 +81,7 @@ namespace Banshee.RadioStationFetcher
             actions.Add (source_actions);
             
             action_service.UIManager.InsertActionGroup (actions, 0);
-            ui_manager_id = action_service.UIManager.AddUiFromResource ("Resources.RadioStationFetcherMenu.xml");
+            ui_manager_id = action_service.UIManager.AddUiFromResource ("RadioStationFetcherMenu.xml");
             
             Log.Debug ("[RadioStationFetcherService] <Initialize> END");
         }

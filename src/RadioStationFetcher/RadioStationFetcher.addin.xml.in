@@ -5,11 +5,11 @@
     compatVersion="1.0"
     copyright="© 2009 Akseli Mantila. Licensed under the MIT X11 license."
     name="RadioStationFetcher service"
-    category="Service"
+    category="Online Sources"
     description="Allows user to fetch radiostations from services like www.shoutcast.com"
     author="Akseli Mantila"
     url="http://aksussummerofcode.blogspot.com/"
-    defaultEnabled="true">
+    defaultEnabled="false">
 
   <Localizer type="Gettext" catalog="@GETTEXT_PACKAGE@" location="@prefix@/share/locale"/>
 
