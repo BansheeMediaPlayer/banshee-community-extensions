@@ -119,12 +119,13 @@ po/Makefile.in
 
 src/Makefile
 src/AlarmClock/Makefile
-
 src/Mirage/Makefile
 src/Mirage/libmirageaudio/Makefile
 src/Mirage/Mirage/Makefile
 src/Mirage/Banshee.Mirage/Makefile
 src/Mirage/Test/Makefile
+src/RadioStationFetcher/Makefile
+src/RadioStationFetcher/RadioStationFetcher.addin.xml
 ])
 
 cat <<EOF

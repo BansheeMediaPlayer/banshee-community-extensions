@@ -1,12 +1,16 @@
+ASSEMBLY = Banshee.RadioStationFetcher
+LINK = $(BANSHEE_LIBS) System.Xml
 
-EXTRA_DIST =  expansions.m4
+SOURCES =  \
+	Banshee.RadioStationFetcher/FetcherDialog.cs \
+	Banshee.RadioStationFetcher/IFreetextSearchable.cs \
+	Banshee.RadioStationFetcher/IGenreSearchable.cs \
+	Banshee.RadioStationFetcher/RadioStationFetcherService.cs \
+	Banshee.RadioStationFetcher/Shoutcast.cs \
+	Banshee.RadioStationFetcher/Xiph.cs 
 
-#Warning: This is an automatically generated file, do not edit!
-if ENABLE_DEBUG
- SUBDIRS =  Banshee.RadioStationFetcher \
-            po
-endif
-if ENABLE_RELEASE
- SUBDIRS =  Banshee.RadioStationFetcher \
-            po
-endif
+RESOURCES =  \
+	RadioStationFetcher.addin.xml \
+	Resources/RadioStationFetcherMenu.xml
+
+include $(top_srcdir)/build/build.mk
