@@ -1,5 +1,5 @@
 Package: banshee-extension-streamrecorder
-Version: 0.2.1-1ubuntu
+Version: 0.2.1-2ubuntu
 Section: sound
 Priority: optional
 Architecture: all
