@@ -1,6 +1,6 @@
 Name: Banshee.Streamrecorder
 Description: Banshee.Streamrecorder
-Version: 0.2
+Version: 0.2.1
 
 Requires: 
 Libs: -r:${exec_prefix}/lib/banshee-streamrecorder/Banshee.Streamrecorder.dll
