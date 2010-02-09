@@ -1,0 +1,276 @@
+# German translation of banshee-community-extensions.
+# Copyright (C) 2010 banshee-community-extensions's copyright holders.
+# This file is distributed under the same license as the banshee-community-extensions package.
+# Dominik Schnitzer <dominik@schnitzer.at>, 2007.
+# , fuzzy
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: banshee-community-extensions 0.1\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
+"POT-Creation-Date: 2010-02-09 22:57+0100\n"
+"PO-Revision-Date: 2009-03-11 23:04+0100\n"
+"Last-Translator: Daniel Schindler <daniel@vcard24.de>\n"
+"Language-Team: German <gnome-de@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:71
+msgid "Alarm Clock"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:75
+msgid "Sleep Timer..."
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:76
+msgid "Set the sleep timer value"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:79
+msgid "Alarm..."
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:80
+msgid "Set the alarm time"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:83
+msgid "_Configure..."
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:84
+msgid "Configure the Alarm Clock plugin"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmConfigDialog.cs:62
+msgid "Enable Alarm"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmConfigDialog.cs:65
+msgid "Set Time: "
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:49
+msgid "Alarm Clock configuration"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:65
+msgid "Start"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:69
+msgid "End"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:76
+msgid "<b>Volume</b>"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:80
+msgid "Duration:"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:81
+msgid " <i>(seconds)</i>"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:90
+msgid "Fade-In Adjustment"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:95
+msgid "Command:"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:99
+msgid "Command To Execute:"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:47
+msgid "Sleep Timer"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:67
+msgid "Sleep Timer :"
+msgstr ""
+
+#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:69
+msgid "<i>(set to 0:00 to disable)</i>"
+msgstr ""
+
+#. Banshee user job
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:252
+msgid "Mirage: Analyzing Songs"
+msgstr "Mirage: Lieder werden analysiert"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:254
+msgid ""
+"Are you sure you want to stop Mirage?\n"
+"Automatic Playlist Generation will only work for the tracks which are "
+"already analyzed. The operation can be resumed at any time from the "
+"<i>Tools</i> menu."
+msgstr ""
+"Wollen Sie Mirage tatsächlich abbrechen?\n"
+"Das automatische Erzeugen von Wiedergabelisten wird nur für "
+"die bereits analysierten Titel funktionieren. \n"
+"Der Vorgang kann jederzeit wieder aus dem <i>Werkzeuge</i> "
+"Menü aufgenommen werden."
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:320
+#, fuzzy
+msgid "Mirage Duplicates"
+msgstr "Mirage Wiedergabeliste"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:335
+msgid "Mirage: Duplicate Search"
+msgstr ""
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:338
+msgid "Are you sure you want to stop the Duplicate Search? "
+msgstr ""
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:403
+msgid ""
+"The Mirage Duplicate Search finished. Check the newly created <i>Mirage "
+"Duplicates</i> playlist for possible duplicates."
+msgstr ""
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:413
+msgid "Mirage Playlist Generator"
+msgstr "Mirage Wiedergabelisten-Generator"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:414
+#, fuzzy
+msgid "Manage the Mirage extension"
+msgstr "Verwaltung des Mirage Plugins"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:417
+#, fuzzy
+msgid "Rescan the Music Library"
+msgstr "Musiksammlung neu einlesen"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:418
+#, fuzzy
+msgid "Rescans the Music Library for new songs"
+msgstr ""
+"Scannt die Musiksammlung nach neuen Liedern und analysiert diese mit Mirage."
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:422
+msgid "Duplicate Search (Experimental)"
+msgstr ""
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:423
+msgid "Searches your Music Library for possible duplicates"
+msgstr ""
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:427
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:473
+msgid "Reset Mirage"
+msgstr "Mirage zurücksetzen"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:428
+msgid ""
+"Resets the Mirage Playlist Generation Plugin. All songs have to be analyzed "
+"again to use Automatic Playlist Generation."
+msgstr ""
+"Setzt Mirage zurück. Alle Lieder müssen nochmals analysiert werden um wieder "
+"automatisch Playlisten mit Mirage generieren zu können."
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:441
+msgid ""
+"<b>Mirage can search your music library for duplicate music pieces.</b>\n"
+"\n"
+"· To do so, your music library needs to be analyzed completely from Mirage.\n"
+"· This process will take a long time depending on the size of your library."
+msgstr ""
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:444
+msgid "Scan for Duplicates"
+msgstr ""
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:471
+#, fuzzy
+msgid ""
+"Do you really want to reset the Mirage Extension?\n"
+"All extracted information will be lost. Your music will have to be re-"
+"analyzed to use Mirage again."
+msgstr ""
+"Wollen Sie tatsächlich die Mirage Automatische Wiedergabenlisten-Generator-"
+"Erweiterung zurücksetzen?\n"
+"Alle extrahierten Informationen geht dabei verloren. "
+"Ihre Musiksammlung muss neu analysiert werden, um Mirage wieder zu verwenden."
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:484
+msgid ""
+"Mirage was reset. Your music will have to be re-analyzed to use Mirage again."
+msgstr ""
+"Mirage wurde zurückgesetzt. Ihre Musiksammlung muss reanalysiert werden um "
+"Mirage wieder zu verwenden."
+
+#: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:71
+msgid "Playlist Generator"
+msgstr "Wiedergabenlisten-Generator"
+
+#: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:97
+msgid "Clear"
+msgstr "Leeren"
+
+#: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:98
+msgid "Remove all tracks from the play queue"
+msgstr "Alle Titel aus der Warteschlange entfernen"
+
+#: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:111
+msgid "Save as Playlist"
+msgstr "Als Wiedergabeliste speichern"
+
+#: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:112
+msgid "Save the Playlist to your Music Library"
+msgstr "Die Wiedergabeliste in Ihrer Musikbibliothek speichern"
+
+#: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:118
+msgid "Clear on Quit"
+msgstr "Beim Beenden leeren"
+
+#: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:119
+msgid "Clear the play queue when quitting"
+msgstr "Die Warteschlage beim Beenden leeren"
+
+#: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:136
+msgid "Ready. Drag a song on the Playlist Generator to start!"
+msgstr ""
+"Bereit. Ziehen Sie eine Lied auf den Wiedergabelisten-Generator um zu "
+"beginnen."
+
+#: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:173
+#, fuzzy
+msgid "Error building playlist. You might need to rescan your music library."
+msgstr ""
+"Fehler beim Erstellen der Wiedergabeliste. Sie müssen vielleicht die "
+"Musiksammlung neu einlesen."
+
+#: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:211
+msgid "Playlist ready."
+msgstr "Wiedergabeliste ist bereit."
+
+#: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:319
+msgid "Mirage Playlist"
+msgstr "Mirage Wiedergabeliste"
+
+#~ msgid "Automatic Playlist Generator"
+#~ msgstr "Automatischer Playlist Generator"
+
+#~ msgid ""
+#~ "Drag a song on the automatic playlist generator, Mirage will then try to "
+#~ "automatically generate a playlist of similar songs.\n"
+#~ "Mirage only looks at the audio signal!"
+#~ msgstr ""
+#~ "Ziehen Sie eine Lied auf den automatischen Playlist Generator, Mirage "
+#~ "versucht dann automatisch eine Playliste von ähnlich klingenden Liedern "
+#~ "zu erstellen.\n"
+#~ "Mirage zieht bei der Generierung von Playlisten nur das Audiosignal in "
+#~ "Betracht, keine Meta-Daten"
+
+#~ msgid "Generating the playlist..."
+#~ msgstr "Generiere die Playliste..."
