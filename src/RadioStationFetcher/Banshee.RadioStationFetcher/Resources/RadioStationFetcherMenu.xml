@@ -1,0 +1,10 @@
+<ui>
+    <menubar name="MainMenu">
+        <menu name="ToolsMenu" action="ToolsMenuAction">
+            <menu name="RadioStationFetcher" action="RadioStationFetcherAction">                
+                <menuitem name="Xiph" action="XiphAction" />
+                <menuitem name="Shoutcast" action="ShoutcastAction" />
+            </menu>
+        </menu>
+    </menubar>
+</ui>
