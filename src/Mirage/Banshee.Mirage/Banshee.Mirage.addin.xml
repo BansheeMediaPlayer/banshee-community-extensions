@@ -4,7 +4,7 @@
     version="0.1"
     copyright="© 2007 Dominik Schnitzer. Licensed under the GPL license."
     name="Mirage Automatic Playlist Generator"
-    category="Sources"
+    category="Community Extensions"
     description="Drag a song on the automatic playlist generator, Mirage will then try to automatically generate a playlist of similar songs. Mirage only looks at the audio signal!"
     author="Dominik Schnitzer, Bertrand Lorentz"
     url="http://hop.at/mirage/"
