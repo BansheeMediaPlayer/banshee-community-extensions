@@ -236,7 +236,8 @@ namespace Banshee.Streamrecorder
 
 			DateTime dt = DateTime.Now;
 			string datestr = String.Format("{0:d_M_yyyy_HH_mm_ss}", dt);
-			string fileext = Regex.Replace(track.Uri.ToString(), @"^.*(\.[^\.]*)$", "$1");
+			string fileext = Regex.Replace(track.Uri.ToString(), @"^.*(\.[^\.\/]*)$", "$1");
+			if (fileext.Equals(track.Uri.ToString())) fileext = ".mp3" ;
 			string filename = track.TrackTitle + "_" + datestr + fileext;
 
             streamrecorder_process.SetStreamURI (track.Uri.ToString ());

@@ -179,7 +179,13 @@ namespace Banshee.Streamrecorder
 
         private void SetOutputFile (string fullfilename) 
         {
-            output_file =  Regex.Replace(output_directory, @" ", "\\ ") + Path.DirectorySeparatorChar + Regex.Replace(fullfilename, @" ", "_");
+            string cleanfilename = fullfilename;
+            char[] invalid_chars = Path.GetInvalidFileNameChars ();
+            foreach (char invalid_char in invalid_chars)
+            {
+				cleanfilename = cleanfilename.Replace(invalid_char.ToString (), "_");
+			}
+            output_file =  Regex.Replace(output_directory, @" ", "\\ ") + Path.DirectorySeparatorChar + Regex.Replace(cleanfilename, @" ", "\\ ");
         }
 
         public void SetStreamURI (string uri) 
@@ -235,6 +241,8 @@ namespace Banshee.Streamrecorder
 					streamrecorder_process_restarted = true;
 				} else {
 					Hyena.Log.Error("[StreamrecorderProcessControl Uncaught Error]: " + errLine.Data) ;
+					Hyena.Log.Debug("[StreamrecorderProcessControl Uncaught Error Data]:\nOutput File: " + this.output_file + 
+									"\nURI:" + this.uri) ;
 				}
 
             }
