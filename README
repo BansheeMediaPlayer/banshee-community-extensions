@@ -7,7 +7,28 @@ each other maintain them and keep them up to date with the latest Banshee API.
 This is meant to be a low-barrier-to-entry way to start, develop, and publish
 a Banshee extension.
 
-To create a new extension simply run:
+=======================
+Points of Contact
+=======================
+
+* Website
+  http://banshee-project.org/
+
+* File bugs
+  https://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions
+
+* Mailing list/forum
+  http://mail.gnome.org/mailman/listinfo/banshee-list
+  http://banshee-project.org/support/forum/
+
+* IRC
+  #banshee on irc.gnome.org
+
+=======================
+Create a New Extension
+=======================
+
+Simply run:
 
 ./create-extension Foo
 
