@@ -9,8 +9,7 @@
     <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
     <AssemblyName>Banshee.Lyrics</AssemblyName>
     <SchemaVersion>2.0</SchemaVersion>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <OutputPath>..\..\..\bin</OutputPath>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
@@ -26,7 +25,7 @@
         <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>..\..\..\bin</OutputPath>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
   </PropertyGroup>
@@ -34,7 +33,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
-    <OutputPath>bin\Windows</OutputPath>
+    <OutputPath>..\..\..\bin</OutputPath>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
   </PropertyGroup>
@@ -42,7 +41,6 @@
     <Reference Include="Mono.Posix" />
     <Reference Include="System" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Web" />
     <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <Package>mono-addins-0.2</Package>
     </Reference>
@@ -75,32 +73,34 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="src\Banshee.Lyrics.addin.xml" />
-    <EmbeddedResource Include="src\Resources\LyricsMenu.xml">
+    <EmbeddedResource Include="Lyrics.addin.xml">
+      <LogicalName>Lyrics.addin.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\LyricsMenu.xml">
       <LogicalName>LyricsMenu.xml</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\Banshee.Lyrics\LyricsManager.cs" />
-    <Compile Include="src\Banshee.Lyrics.Network\ProxyManager.cs" />
-    <Compile Include="src\Banshee.Lyrics.Network\HttpUtils.cs" />
-    <Compile Include="src\Banshee.Lyrics.Sources\Lyrc.cs" />
-    <Compile Include="src\Banshee.Lyrics.Sources\AutoLyrics.cs" />
-    <Compile Include="src\Banshee.Lyrics.Sources\ILyricSource.cs" />
-    <Compile Include="src\Banshee.Lyrics.Sources\LyricWiki.cs" />
-    <Compile Include="src\Banshee.Lyrics.Sources\Lyriki.cs" />
-    <Compile Include="src\Banshee.Lyrics.Sources\LeosLyrics.cs" />
-    <Compile Include="src\Banshee.Lyrics.Sources\LyricWebSource.cs" />
-    <Compile Include="src\Banshee.Lyrics.Gui\LyricsWindow.cs" />
-    <Compile Include="src\Banshee.Lyrics.Gui\gtk-gui\generated.cs" />
-    <Compile Include="src\Banshee.Lyrics.Gui\gtk-gui\LyricsWindow.cs" />
-    <Compile Include="src\Banshee.Lyrics.IO\LyricsCache.cs" />
-    <Compile Include="src\Banshee.Lyrics.Gui\LyricsBrowser.cs" />
-    <Compile Include="src\Banshee.Lyrics\LyricsService.cs" />
-    <Compile Include="src\Banshee.Lyrics.Gui\ContextPage.cs" />
-    <Compile Include="src\Banshee.Lyrics.Gui\LyricsPane.cs" />
-    <Compile Include="src\Banshee.Lyrics\LyricsDownloadJob.cs" />
-    <Compile Include="src\Banshee.Lyrics\Utils.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics\LyricsManager.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Network\ProxyManager.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Network\HttpUtils.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\Lyrc.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\AutoLyrics.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\ILyricSource.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\LyricWiki.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\Lyriki.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\LeosLyrics.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\LyricWebSource.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\LyricsWindow.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\gtk-gui\generated.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\gtk-gui\LyricsWindow.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.IO\LyricsCache.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\LyricsBrowser.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics\LyricsService.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\ContextPage.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\LyricsPane.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics\LyricsDownloadJob.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics\Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

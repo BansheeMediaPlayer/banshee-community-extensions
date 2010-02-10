@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlarmClock", "src\AlarmClock\AlarmClock.csproj", "{8850F596-7FD9-4583-A524-BAFEDD1F474C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyrics", "src\Lyrics\Lyrics.csproj", "{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +15,10 @@ Global
 		{8850F596-7FD9-4583-A524-BAFEDD1F474C}.Debug|x86.Build.0 = Debug|Any CPU
 		{8850F596-7FD9-4583-A524-BAFEDD1F474C}.Release|x86.ActiveCfg = Release|Any CPU
 		{8850F596-7FD9-4583-A524-BAFEDD1F474C}.Release|x86.Build.0 = Release|Any CPU
+		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Debug|x86.Build.0 = Debug|Any CPU
+		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Release|x86.ActiveCfg = Release|Any CPU
+		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = src\AlarmClock\AlarmClock.csproj
