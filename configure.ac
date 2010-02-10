@@ -25,6 +25,10 @@ dnl Banshee deps
 PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.0)
 AC_SUBST(BANSHEE_LIBS)
 
+dnl Needed by Lyrics
+PKG_CHECK_MODULES(GCONF_SHARP_20, gconf-sharp-2.0)
+PKG_CHECK_MODULES(WEBKIT_SHARP, webkit-sharp-1.0 >= 0.2)
+
 dnl Banshee Extensions Path
 BANSHEE_LIBDIR=`$PKG_CONFIG banshee-1-core --variable=bansheedir`
 SYSTEM_EXTENSIONS=$BANSHEE_LIBDIR/Extensions
@@ -85,7 +89,6 @@ PKG_CHECK_MODULES(GST,
 AC_SUBST(GST_CFLAGS)
 AC_SUBST(GST_LIBS)
 PKG_CHECK_MODULES(GLIB, glib-2.0)
-
 
 AC_ARG_WITH(vendor-build-id,
 	AC_HELP_STRING([--with-vendor-build-id=<vendor-build-id>],
