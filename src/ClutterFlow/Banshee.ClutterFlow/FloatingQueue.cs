@@ -147,7 +147,9 @@ namespace Banshee.ClutterFlow
 		#region Fields
 		private SortedDictionary<int, List<T>> queue = new SortedDictionary<int, List<T>> ();
 
+#pragma warning disable 0067
 		public event EventHandler Changed;
+#pragma warning restore 0067
 		
 		public T this [int index] {
 			get { return queue[index][0]; }
