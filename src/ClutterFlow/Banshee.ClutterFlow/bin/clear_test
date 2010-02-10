@@ -1,0 +1,4 @@
+#!/bin/sh
+sudo rm -v /usr/lib/banshee-1/Extensions/Banshee.Clutter*
+sudo rm -v /usr/lib/banshee-1/Extensions/Clutter*
+sudo rm -v /usr/lib/banshee-1/Extensions/clutter*
