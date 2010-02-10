@@ -1,5 +1,6 @@
 SUBDIRS = \
     AlarmClock \
+	Lyrics \
 	Mirage \
     RadioStationFetcher
 

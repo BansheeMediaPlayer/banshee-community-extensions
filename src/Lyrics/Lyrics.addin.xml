@@ -1,12 +1,14 @@
-<Addin  id="Banshee.Lyrics"
-        name="Lyrics Support"
-        description="Fetch song lyrics"
-        category="Utilities"
-        copyright="© 2009 Christian Martellini. Licensed under the MIT X11 license."
-        author = "Christian Martellini"
-        url="http://banshee-project.org/"
-        version="1.0"
-        compatVersion="1.0">
+<Addin
+    id="Banshee.Lyrics"
+    name="Lyrics"
+    description="Fetch song lyrics"
+    category="Community Extensions"
+    copyright="© 2009 Christian Martellini. Licensed under the MIT X11 license."
+    author = "Christian Martellini"
+    url="http://banshee-project.org/"
+    version="1.0"
+    compatVersion="1.0"
+    defaultEnabled="false">
   
   <Dependencies>
     <Addin version="1.0" id="Banshee.Services"/>

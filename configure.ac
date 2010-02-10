@@ -122,6 +122,7 @@ po/Makefile.in
 
 src/Makefile
 src/AlarmClock/Makefile
+src/Lyrics/Makefile
 src/Mirage/Makefile
 src/Mirage/libmirageaudio/Makefile
 src/Mirage/Mirage/Makefile
@@ -151,6 +152,7 @@ ${PACKAGE}-${VERSION}
 
   Extensions:
     Alarm Clock:         yes
+    Lyrics:              yes
     Mirage:              yes
     RadioStationFetcher: yes
 
