@@ -29,6 +29,10 @@ dnl Needed by Lyrics
 PKG_CHECK_MODULES(GCONF_SHARP_20, gconf-sharp-2.0)
 PKG_CHECK_MODULES(WEBKIT_SHARP, webkit-sharp-1.0 >= 0.2)
 
+dnl Needed by ClutterFlow
+PKG_CHECK_MODULES(BANSHEE_NOWPLAYING, banshee-1-nowplaying >= 1.5.3)
+AC_SUBST(BANSHEE_NOWPLAYING_LIBS)
+
 dnl Banshee Extensions Path
 BANSHEE_LIBDIR=`$PKG_CONFIG banshee-1-core --variable=bansheedir`
 SYSTEM_EXTENSIONS=$BANSHEE_LIBDIR/Extensions
@@ -122,6 +126,9 @@ po/Makefile.in
 
 src/Makefile
 src/AlarmClock/Makefile
+src/ClutterFlow/Makefile
+src/ClutterFlow/Banshee.ClutterFlow/Makefile
+src/ClutterFlow/ClutterFlow/Makefile
 src/Lyrics/Makefile
 src/Mirage/Makefile
 src/Mirage/libmirageaudio/Makefile
@@ -152,6 +159,7 @@ ${PACKAGE}-${VERSION}
 
   Extensions:
     Alarm Clock:         yes
+    ClutterFlow:         yes
     Lyrics:              yes
     Mirage:              yes
     RadioStationFetcher: yes

@@ -13,7 +13,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>..\..\..\..\bin</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -29,7 +29,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>..\..\..\..\bin</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -43,7 +43,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_Banshee152|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release_Banshee152</OutputPath>
+    <OutputPath>..\..\..\..\bin</OutputPath>
     <DefineConstants>BANSHEE_V152</DefineConstants>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -101,15 +101,15 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="..\Banshee.ClutterFlow.Addin.xml" />
-    <None Include="..\Banshee.ClutterFlow.addin.xml" />
+    <EmbeddedResource Include="ClutterFlow.addin.xml">
+      <LogicalName>ClutterFlow.addin.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ThemeIcons\22x22\clutterflow-icon.png">
+      <LogicalName>clutterflow-icon.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Banshee.ClutterFlow.addin.xml" />
-    <EmbeddedResource Include="..\ThemeIcons\22x22\clutterflow-icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ClutterFlow\ClutterFlow.csproj">
+    <ProjectReference Include="..\lutterFlow\ClutterFlow.csproj">
       <Project>{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}</Project>
       <Name>ClutterFlow</Name>
     </ProjectReference>

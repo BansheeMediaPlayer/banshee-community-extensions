@@ -5,11 +5,11 @@
     compatVersion="1.0"
     copyright="© 2009 Mathijs Dumon Licensed under the MIT X11 license."
     name="ClutterFlow"
-    category="User Interface"
-    description="Provides a CoverFlow like album broser"
+    category="Community Extensions"
+    description="Provides a CoverFlow like album browser"
     author="Mathijs Dumon"
-    url=""
-    defaultEnabled="true">
+    url="http://banshee-project.org/"
+    defaultEnabled="false">
 
   <Dependencies>
     <Addin id="Banshee.Services" version="1.0"/>
