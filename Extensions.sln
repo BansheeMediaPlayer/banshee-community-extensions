@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlarmClock", "src\AlarmCloc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyrics", "src\Lyrics\Lyrics.csproj", "{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadioStationFetcher", "src\RadioStationFetcher\RadioStationFetcher.csproj", "{1FD50427-9F74-412E-89EB-0F33B889C6A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -19,6 +21,10 @@ Global
 		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Debug|x86.Build.0 = Debug|Any CPU
 		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Release|x86.ActiveCfg = Release|Any CPU
 		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Release|x86.Build.0 = Release|Any CPU
+		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Debug|x86.Build.0 = Debug|Any CPU
+		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Release|x86.ActiveCfg = Release|Any CPU
+		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = src\AlarmClock\AlarmClock.csproj
