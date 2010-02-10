@@ -1,5 +1,5 @@
 AC_PREREQ(2.52)
-AC_INIT([banshee-community-extensions], 0.1,
+AC_INIT([banshee-community-extensions], 1.5.4,
 	[http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions])
 
 AM_INIT_AUTOMAKE([1.9 dist-bzip2 tar-ustar dist-zip foreign])
@@ -22,7 +22,7 @@ SHAMROCK_FIND_MONO_2_0_COMPILER
 SHAMROCK_FIND_MONO_RUNTIME
 
 dnl Banshee deps
-PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.0)
+PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.5.3)
 AC_SUBST(BANSHEE_LIBS)
 
 dnl Needed by Lyrics
