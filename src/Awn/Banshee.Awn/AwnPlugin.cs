@@ -27,7 +27,6 @@
 
 using System;
 using System.IO;
-using Mono.Unix;
 using Banshee.Base;
 using Banshee.Configuration;
 using Banshee.MediaEngine;
