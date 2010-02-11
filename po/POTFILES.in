@@ -6,5 +6,17 @@ src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs
 src/AlarmClock/Banshee.AlarmClock/AlarmConfigDialog.cs
 src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs
 src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs
+src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs
+src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs
+src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs
+src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs
+src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs
+src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsPane.cs
+src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs
+src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs
+src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs
 src/Mirage/Banshee.Mirage/MiragePlugin.cs
 src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs
+src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs
+src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs
+src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs
