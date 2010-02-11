@@ -32,208 +32,180 @@ using Banshee.Configuration;
 using Banshee.MediaEngine;
 using Banshee.ServiceStack;
 using Hyena;
-	
+
 namespace Banshee.Awn
 {
-	
-	[NDesk.DBus.Interface("com.google.code.Awn")]
-	public interface IAvantWindowNavigator
-	{
-		void SetTaskIconByName (string TaskName, string ImageFileLocation);
-		void UnsetTaskIconByName (string TaskName);
-		void SetProgressByName (string TaskName, int SomePercent);
-		void SetInfoByName (string TaskName, string SomeText);
-		void UnsetInfoByName (string app);
-		
-		//int AddTaskMenuItemByName (string TaskName, string stock_id, string item_name);
-		//int AddTaskCheckItemByName (string TaskName, string item_name, bool active);
-		//void SetTaskCheckItemByName (string TaskName, int id, bool active);
+    [NDesk.DBus.Interface("com.google.code.Awn")]
+    public interface IAvantWindowNavigator
+    {
+        void SetTaskIconByName (string TaskName, string ImageFileLocation);
+        void UnsetTaskIconByName (string TaskName);
+        void SetProgressByName (string TaskName, int SomePercent);
+        void SetInfoByName (string TaskName, string SomeText);
+        void UnsetInfoByName (string app);
 
-		//event MenuItemClickedHandler MenuItemClicked;
-		//event CheckItemClickedHandler CheckItemClicked;
+        //int AddTaskMenuItemByName (string TaskName, string stock_id, string item_name);
+        //int AddTaskCheckItemByName (string TaskName, string item_name, bool active);
+        //void SetTaskCheckItemByName (string TaskName, int id, bool active);
 
-		void SetTaskIconByXid (long xid, string ImageFileLocation);
-		void UnsetTaskIconByXid (long xid);
+        //event MenuItemClickedHandler MenuItemClicked;
+        //event CheckItemClickedHandler CheckItemClicked;
 
-	}
-    
-	public delegate void MenuItemClickedHandler (int id);
-	public delegate void CheckItemClickedHandler (int id, bool active);
-	
+        void SetTaskIconByXid (long xid, string ImageFileLocation);
+        void UnsetTaskIconByXid (long xid);
+    }
+
+    public delegate void MenuItemClickedHandler (int id);
+    public delegate void CheckItemClickedHandler (int id, bool active);
+
     public class AwnService : Banshee.ServiceStack.IExtensionService, IDisposable
     {
-		string[] taskName = new string[] {"banshee", Banshee.ServiceStack.Application.InternalName};	
+        string[] taskName = new string[] { "banshee", Banshee.ServiceStack.Application.InternalName };
 
-		private IAvantWindowNavigator awn;
-            
-        public string ServiceName { get { return "Avant Window Navigator"; } }
-   
-		PlayerEngineService service = null;				
-				
-		void IExtensionService.Initialize ()
-		{
-			try 
-			{
-				
-			
-				Log.Debug("BansheeAwn. Starting..." + Banshee.ServiceStack.Application.ActiveClient.ClientId);
+        private IAvantWindowNavigator awn;
 
-				awn = NDesk.DBus.Bus.Session.GetObject<IAvantWindowNavigator> ("com.google.code.Awn",
-                                                              new NDesk.DBus.ObjectPath ("/com/google/code/Awn"));
-				if (awn == null)
-					throw new NullReferenceException();
-				service = ServiceManager.PlayerEngine;
-		
-				service.ConnectEvent(new PlayerEventHandler(this.OnEventChanged));
-				
-				Log.Debug("BansheeAwn - Initialized");
-	
-			}
-			catch (Exception ex)
-			{
-				Log.Debug("BansheeAwn - Failed loading Awn Extension. " + ex.Message);
-			}
-		}
-		
-
-        void IDisposable.Dispose()
-        {
-            UnsetIcon ();
-            //UnsetTrackProgress();
-			service = null;
-			awn = null;
+        public string ServiceName {
+            get { return "Avant Window Navigator"; }
         }
 
-        
-			
-		private void OnEventChanged (PlayerEventArgs args)
+        PlayerEngineService service = null;
+
+        void IExtensionService.Initialize ()
         {
-			Log.Debug("BansheeAwn - " + args.Event.ToString());
-            switch (args.Event)
-			{
-			//case PlayerEvent.EndOfStream:
-				//    UnsetIcon ();
-            //    break;
-			//case PlayerEvent.StartOfStream:
-            //    SetIcon ();
-            //    break;
-            case PlayerEvent.TrackInfoUpdated:
-                SetIcon ();
-                break;
-			case PlayerEvent.StateChange:
-				if (service != null) 
-				{
-					if (service.CurrentState != PlayerState.Playing)
-						UnsetIcon();
-					else 
-						SetIcon();
-				}
-				break;
-            default:
-                break;
+            try {
+                Log.Debug ("BansheeAwn. Starting..." + Banshee.ServiceStack.Application.ActiveClient.ClientId);
+
+                awn = NDesk.DBus.Bus.Session.GetObject<IAvantWindowNavigator> ("com.google.code.Awn",
+                        new NDesk.DBus.ObjectPath ("/com/google/code/Awn"));
+
+                if (awn == null)
+                    throw new NullReferenceException ();
+
+                service = ServiceManager.PlayerEngine;
+                service.ConnectEvent (new PlayerEventHandler (this.OnEventChanged));
+
+                Log.Debug ("BansheeAwn - Initialized");
+
+            } catch (Exception ex) {
+                Log.Debug ("BansheeAwn - Failed loading Awn Extension. " + ex.Message);
             }
         }
-        
+
+        void IDisposable.Dispose ()
+        {
+            UnsetIcon ();
+            //UnsetTrackProgress ();
+            service = null;
+            awn = null;
+        }
+
+        private void OnEventChanged (PlayerEventArgs args)
+        {
+            Log.Debug ("BansheeAwn - " + args.Event.ToString ());
+            switch (args.Event) {
+                //case PlayerEvent.EndOfStream:
+                //    UnsetIcon ();
+                //    break;
+                //case PlayerEvent.StartOfStream:
+                //    SetIcon ();
+                //    break;
+                case PlayerEvent.TrackInfoUpdated:
+                    SetIcon ();
+                    break;
+                case PlayerEvent.StateChange:
+                    if (service != null) {
+                        if (service.CurrentState != PlayerState.Playing)
+                            UnsetIcon ();
+                        else
+                            SetIcon ();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
         /// <summary>
         /// This was made as a workaround on new awn and banshee versions.
         /// Guess that I need to discover window's XID cause taskname changes with music.
         /// May only work in english gnome.
         /// </summary>
-        private string PossibleTitle
+        private string PossibleTitle {
+            get {
+                if (service == null || service.CurrentTrack == null)
+                    return "Banshee Media Player";
+                else
+                    return string.Format ("{0} by {1}", service.CurrentTrack.TrackTitle, service.CurrentTrack.ArtistName);
+            }
+        }
+
+        private void SetIcon ()
         {
-            get 
-			{
-				if (service == null || service.CurrentTrack == null)
-					return "Banshee Media Player";
-				else
-					return string.Format ("{0} by {1}", service.CurrentTrack.TrackTitle, service.CurrentTrack.ArtistName);
-			}
+            try {
+                if (awn != null && service != null && service.CurrentTrack != null) {
+                    string fileName = CoverArtSpec.GetPath (service.CurrentTrack.ArtworkId);
+                    if (File.Exists (fileName)) {
+                        for (int i = 0; i < taskName.Length; i++)
+                            awn.SetTaskIconByName (taskName[i], fileName);
+                        awn.SetTaskIconByName (PossibleTitle, fileName);
+                        Log.Debug ("BansheeAwn - Setting cover: " + fileName);
+                    } else {
+                        UnsetIcon ();
+                        Log.Debug ("BansheeAwn - No Cover");
+                    }
+                }
+            } catch {
+            }
+        }
+        /*
+        private void SetTrackProgress ()
+        {
+            if (awn != null && service != null) {
+                if (service.CurrentTrack == null) {
+                    UnsetTrackProgress();
+                }
+                else {
+                    uint total = Convert.ToUInt32(service.CurrentTrack.Duration.TotalSeconds);
+                    uint current = service.Position;
+                    int progress = 100;
+                    if (total > 0)
+                        progress = Convert.ToInt32(current * 100 / total);
+                    //awn.SetProgressByName(taskName, progress);
+                    awn.SetInfoByName(taskName, progress.ToString());
+                    Console.WriteLine("{0} - {1} - {2}", current, total, progress);
+                }
+            }
         }
 
-		private void SetIcon ()
-		{
-			try 
-			{
-				if (awn != null && service != null && service.CurrentTrack != null)
-				{	
-					string fileName = CoverArtSpec.GetPath(service.CurrentTrack.ArtworkId);
-					if(File.Exists (fileName))
-					{
-						for (int i =0; i < taskName.Length; i++)
-							awn.SetTaskIconByName (taskName[i], fileName);
-						awn.SetTaskIconByName (PossibleTitle, fileName);
-						Log.Debug("BansheeAwn - Setting cover: " + fileName);
-					}
-					else
-					{
-						UnsetIcon();
-						Log.Debug("BansheeAwn - No Cover");
-					}
 
-				}
+        private void Progress (object sender, EventArgs e)
+        {
+            SetTrackProgress ();
+            System.Threading.Thread.Sleep (1000);
+        }
 
-			}
-			catch 
-			{
-			}
-		}
-			/*
-		private void SetTrackProgress()
-		{
-			if (awn != null && service != null) 
-			{
-				if (service.CurrentTrack == null) 
-				{
-					UnsetTrackProgress();
-				}
-				else
-				{
-					uint total = Convert.ToUInt32(service.CurrentTrack.Duration.TotalSeconds);
-					uint current = service.Position;
-					int progress = 100;
-					if (total > 0)
-						progress = Convert.ToInt32(current * 100 / total); 
-					//awn.SetProgressByName(taskName, progress); 
-					awn.SetInfoByName(taskName, progress.ToString());
-					Console.WriteLine("{0} - {1} - {2}", current, total, progress);
-				}
-			}
-		}
-		
+        private void ProgressCallback (IAsyncResult ar)
+        {
+            //timer.EndInvoke (ar);
+            //timer.BeginInvoke (new AsyncCallback (this.ProgressCallback), timer);
+        }
+        */
 
-		private void Progress(object sender, EventArgs e) 
-		{
-			SetTrackProgress();
-			System.Threading.Thread.Sleep(1000);
-		}
-
-		private void ProgressCallback(IAsyncResult ar) 
-		{
-			//timer.EndInvoke(ar);
-			//timer.BeginInvoke(new AsyncCallback(this.ProgressCallback), timer);
-		}
-		*/
-		
-		private void UnsetIcon ()
-		{
+        private void UnsetIcon ()
+        {
             if (awn != null) {
- 				for (int i =0; i < taskName.Length; i++)
-					awn.UnsetTaskIconByName (taskName[i]);
-				awn.UnsetTaskIconByName (this.PossibleTitle);
-           }
+                for (int i = 0; i < taskName.Length; i++)
+                    awn.UnsetTaskIconByName (taskName[i]);
+                awn.UnsetTaskIconByName (this.PossibleTitle);
+            }
         }
-//       	private void UnsetTrackProgress ()
-//		{
-//            if (awn != null)
-//			{
-//				awn.SetProgressByName(taskName, 100);
-//				awn.UnsetInfoByName(taskName);
+
+//        private void UnsetTrackProgress ()
+//        {
+//            if (awn != null) {
+//                awn.SetProgressByName(taskName, 100);
+//                awn.UnsetInfoByName(taskName);
 //            }
-//        } 
-        public static readonly SchemaEntry<bool> EnabledSchema = new SchemaEntry<bool> (
-            "plugins.awn", "enabled",
-            true,
-            "Plugin enabled",
-            "Awn plugin enabled");
-	}
+//        }
+    }
 }
