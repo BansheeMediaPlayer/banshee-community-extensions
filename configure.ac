@@ -126,6 +126,7 @@ po/Makefile.in
 
 src/Makefile
 src/AlarmClock/Makefile
+src/Awn/Makefile
 src/ClutterFlow/Makefile
 src/ClutterFlow/Banshee.ClutterFlow/Makefile
 src/ClutterFlow/ClutterFlow/Makefile
@@ -159,6 +160,7 @@ ${PACKAGE}-${VERSION}
 
   Extensions:
     Alarm Clock:         yes
+    Awn:                 yes
     ClutterFlow:         yes
     Lyrics:              yes
     Mirage:              yes
