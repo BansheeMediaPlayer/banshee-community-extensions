@@ -21,7 +21,7 @@
     <CompileTarget>SharedLibrary</CompileTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>.libs</OutputPath>
     <DefineSymbols>MONODEVELOP</DefineSymbols>
     <SourceDirectory>.</SourceDirectory>
     <OptimizationLevel>3</OptimizationLevel>
