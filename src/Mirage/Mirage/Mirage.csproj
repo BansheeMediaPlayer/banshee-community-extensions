@@ -79,4 +79,10 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <ProjectReference Include="..\libmirageaudio\libmirageaudio.cproj">
+      <Project>{D8618AEA-5F05-48DE-86BB-0A1F601AE5DC}</Project>
+      <Name>libmirageaudio</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
