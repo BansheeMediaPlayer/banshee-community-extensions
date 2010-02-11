@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyrics", "src\Lyrics\Lyrics
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadioStationFetcher", "src\RadioStationFetcher\RadioStationFetcher.csproj", "{1FD50427-9F74-412E-89EB-0F33B889C6A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClutterFlow", "src\ClutterFlow\ClutterFlow\ClutterFlow.csproj", "{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.ClutterFlow", "src\ClutterFlow\Banshee.ClutterFlow\Banshee.ClutterFlow.csproj", "{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -25,6 +29,14 @@ Global
 		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Debug|x86.Build.0 = Debug|Any CPU
 		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Release|x86.ActiveCfg = Release|Any CPU
 		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Release|x86.Build.0 = Release|Any CPU
+		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Debug|x86.Build.0 = Debug|Any CPU
+		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Release|x86.ActiveCfg = Release|Any CPU
+		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Release|x86.Build.0 = Release|Any CPU
+		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Debug|x86.Build.0 = Debug|Any CPU
+		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Release|x86.ActiveCfg = Release|Any CPU
+		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = src\AlarmClock\AlarmClock.csproj
