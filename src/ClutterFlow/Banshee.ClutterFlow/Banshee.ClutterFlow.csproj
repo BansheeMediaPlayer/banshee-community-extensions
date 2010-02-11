@@ -15,14 +15,13 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Build" command="make" workingdir="${SolutionDir}" />
         <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>
@@ -32,13 +31,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Build" command="make" workingdir="${SolutionDir}" />
         <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>

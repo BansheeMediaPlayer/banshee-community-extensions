@@ -20,28 +20,29 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <OutputPath>..\..\..\bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Build" command="make" workingdir="${SolutionDir}" />
         <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <OutputPath>..\..\..\bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SqliteClient" />
+    <Reference Include="Mono.Data.SqliteClient" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\dct.filter">
@@ -66,7 +67,7 @@
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
-        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="./Makefile.am">
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" BuildTargetName="" CleanTargetName="">
           <BuildFilesVar Sync="true" Name="SOURCES" />
           <DeployFilesVar />
           <ResourcesVar Sync="true" Name="RESOURCES" />

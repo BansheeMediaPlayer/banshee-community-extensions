@@ -20,10 +20,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <OutputPath>..\..\..\bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Build" command="make" workingdir="${SolutionDir}" />
         <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>
@@ -33,7 +32,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <OutputPath>..\..\..\bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
@@ -45,6 +44,16 @@
     <Reference Include="Mono.Posix" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Mono.Cairo" />
+    <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-core</Package>
+    </Reference>
+    <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-services</Package>
+    </Reference>
+    <Reference Include="Banshee.ThickClient, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-thickclient</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="RadioStationFetcher.addin.xml">
@@ -66,7 +75,7 @@
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
-        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="./Makefile.am">
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" BuildTargetName="" CleanTargetName="">
           <BuildFilesVar Sync="true" Name="SOURCES" />
           <DeployFilesVar />
           <ResourcesVar Sync="true" Name="RESOURCES" />

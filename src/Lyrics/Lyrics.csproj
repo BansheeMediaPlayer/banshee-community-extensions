@@ -21,11 +21,10 @@
     <DebugType>full</DebugType>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Build" command="make" workingdir="${SolutionDir}" />
         <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>
-    <OutputPath>..\..\..\bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
   </PropertyGroup>
@@ -33,7 +32,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
-    <OutputPath>..\..\..\bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
   </PropertyGroup>
@@ -101,7 +100,7 @@
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
-        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="./Makefile.am">
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" BuildTargetName="" CleanTargetName="">
           <BuildFilesVar Sync="true" Name="SOURCES" />
           <DeployFilesVar />
           <ResourcesVar Sync="true" Name="RESOURCES" />
