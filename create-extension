@@ -61,7 +61,7 @@ replace ("$dir/Banshee.$name/$name_source.cs",  "EXTENSION-NAME", $name);
 
 # Add to configure.ac
 replace ("configure.ac", 'src\\/Makefile', 'src\\/Makefile\nsrc\\/' . $name. '\\/Makefile');
-replace ("configure.ac", "Extensions:", 'Extensions:\n    ' . $name . ':' . (' ' x (18 - length($name))) . "yes");
+replace ("configure.ac", "Extensions:", 'Extensions:\n    ' . $name . ':' . (' ' x (20 - length($name))) . "yes");
 
 # Add to src/Makefile.am
 my $subdirs = "SUBDIRS = \\\\\\";
@@ -69,7 +69,7 @@ replace ("src/Makefile.am", $subdirs, $subdirs . ' \n    ' . $name . ' \\\\\\');
 replace ("src/Makefile.am", " \$", "");
 
 # Add to Extensions.sln
-replace ("Extensions.sln", "EndProject", 'EndProject\n' . 
+replace ("Extensions.sln", "Studio 2008", 'Studio 2008\n' . 
          'Project(\"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}\") = \"' . $name . '\", \"src\\\\\\'. $name . '\\\\\\' . $name . '.csproj\", \"{' . $guid . '}\"\nEndProject');
 replace ("Extensions.sln", "postSolution", 'postSolution\n'.
         "\t\t{$guid}.Debug|x86.ActiveCfg = Debug|Any CPU".'\n'.
