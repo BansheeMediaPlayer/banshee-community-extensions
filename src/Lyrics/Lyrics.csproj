@@ -42,17 +42,13 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <Package>mono-addins-0.2</Package>
     </Reference>
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gtkhtml-sharp, Version=3.16.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtkhtml-sharp-3.14</Package>
     </Reference>
     <Reference Include="gconf-sharp, Version=2.24.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gconf-sharp-2.0</Package>
     </Reference>
     <Reference Include="webkit-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=eaa1d335d2e19745">
-      <Package>webkit-sharp-1.0</Package>
     </Reference>
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -69,7 +65,6 @@
       <Package>banshee-1-thickclient</Package>
     </Reference>
     <Reference Include="taglib-sharp, Version=2.0.3.2, Culture=neutral, PublicKeyToken=db62eba44689b5b0">
-      <Package>taglib-sharp</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -86,11 +81,9 @@
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Network\HttpUtils.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\Lyrc.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\AutoLyrics.cs" />
-    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\ILyricSource.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\LyricWiki.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\Lyriki.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\LeosLyrics.cs" />
-    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\LyricWebSource.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\LyricsWindow.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\gtk-gui\generated.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\gtk-gui\LyricsWindow.cs" />
@@ -101,6 +94,8 @@
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\LyricsPane.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics\LyricsDownloadJob.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics\Utils.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\ILyricsSource.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\LyricsWebSource.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
