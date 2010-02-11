@@ -41,38 +41,91 @@ using Banshee.Collection;
 
 using Hyena;
 
-namespace Banshee.Streamrecorder
+namespace Banshee.Streamrecorder.Gst
 {
-    public class GstBin
+    public class Bin
     {
 
 		private IntPtr bin;
 		
-        public GstBin (IntPtr bin) 
+        [DllImport ("libgstreamer-0.10.so.0")]
+		private static extern IntPtr gst_bin_new (IntPtr name);
+
+		public Bin ()
+		{
+			this.bin = gst_bin_new (IntPtr.Zero);
+		}
+		
+        public Bin (IntPtr bin) 
         {
 			this.bin = bin;
         }
         
-        public IntPtr GstBinPtr
+        public IntPtr BinPtr
         {
 			get { return bin; }
 			set { this.bin = value ; }
 		}
 
         [DllImport ("libgstreamer-0.10.so.0")]
-		private static extern IntPtr gst_bin_get_by_interface (IntPtr bin, uint iface);
-		public IntPtr GetByInterface(uint iface)
+		private static extern IntPtr gst_bin_get_by_interface (IntPtr bin, GLib.GType iface);
+
+		public IntPtr GetByInterface(GLib.GType iface)
 		{
 			return gst_bin_get_by_interface(bin, iface);
 		}
 
         [DllImport ("libgstreamer-0.10.so.0")]
-		private static extern IntPtr gst_bin_get_by_name (IntPtr bin, string name);
+		private static extern IntPtr gst_bin_get_by_name (IntPtr bin, IntPtr name);
 		
 		public IntPtr GetByName (string name)
 		{
-			return gst_bin_get_by_name(bin, name);
+			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+			return gst_bin_get_by_name(bin, native_name);
 		}
+
+        [DllImport ("libgstreamer-0.10.so.0")]
+		static extern IntPtr gst_element_get_pad (IntPtr element, IntPtr name);
+		
+		public IntPtr GetPad (string name)
+		{
+			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+			return gst_element_get_pad(bin, native_name);
+		}
+		
+        [DllImport ("libgstreamer-0.10.so.0")]
+		static extern bool gst_element_add_pad (IntPtr element, IntPtr pad);
+		
+		public bool AddPad (IntPtr pad)
+		{
+			return gst_element_add_pad(bin, pad);
+		}
+		
+        [DllImport ("libgstreamer-0.10.so.0")]
+		static extern bool gst_bin_add (IntPtr bin, IntPtr element);
+		
+		public bool Add (IntPtr element)
+		{
+			return gst_bin_add(bin, element);
+		}
+		
+		public void AddMany(IntPtr[] elements)
+		{
+			bool ret;
+			foreach (IntPtr element in elements)
+			{
+				ret = Add(element);
+			}
+		}
+
+        [DllImport ("libgstreamer-0.10.so.0")]
+		static extern bool gst_bin_remove (IntPtr bin, IntPtr element);
+		
+		public bool Remove (IntPtr element)
+		{
+			return gst_bin_remove(bin, element);
+		}
+		
     }
 
 }

@@ -180,7 +180,8 @@ namespace Banshee.Streamrecorder
 
         private void StartRecording () 
         {
-            if (recording) {
+
+            if (recording ) {
                 StopRecording ();
             }
 			
@@ -191,6 +192,10 @@ namespace Banshee.Streamrecorder
 			track = ServiceManager.PlaybackController.CurrentTrack;
 
             if (InitStreamrecorderProcess (track)) {
+				if (!streamrecorder_process.Initialized )
+				{
+					streamrecorder_process.InitControl() ;
+				}
 				streamrecorder_process.StartRecording ();
 				
                 if (is_importing_enabled)
@@ -200,7 +205,10 @@ namespace Banshee.Streamrecorder
 
         private void StopRecording () 
         {
-			streamrecorder_process.StopRecording ();
+            if (streamrecorder_process.Initialized ) {
+                streamrecorder_process.StopRecording ();
+
+            }
 
             StopFolderScanner ();
         }
@@ -240,7 +248,6 @@ namespace Banshee.Streamrecorder
 			string filename = track.TrackTitle + "_" + datestr + fileext;
 
             streamrecorder_process.SetOutputParameters (output_directory,filename,"\"%A/%a/%T\"");
-            streamrecorder_process.InitControl() ;
 
             RippedFileScanner.SetScanDirectory (output_directory);
                     

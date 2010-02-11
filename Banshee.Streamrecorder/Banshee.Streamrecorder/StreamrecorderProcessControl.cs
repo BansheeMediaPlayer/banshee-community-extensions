@@ -48,33 +48,49 @@ namespace Banshee.Streamrecorder
         private string output_directory;
         private string output_file;
         
-        private IntPtr playbin;
-        private IntPtr audiotee;
-        private GstBin encoder_bin;
+        private Gst.Bin playbin;
+        private Gst.Bin audiotee;
+        private Gst.Bin encoder_bin;
         private IntPtr tagger;
         private IntPtr file_sink;
+        private IntPtr ghost_pad;
+        
+        private bool initialized;
 
         public StreamrecorderProcessControl () 
         {
-			if (Gst.Initialize()) 
+			if (Gst.Marshaller.Initialize()) 
 			{
-				Console.WriteLine("initialized");
+				Hyena.Log.Debug("gstreamer initialized");
 			}
 			else
 			{
-				Console.WriteLine("an error occurred during initialization, aborting.");
+				Hyena.Log.Debug("an error occurred during gstreamer initialization, aborting.");
 			}
+			initialized = false;
         }
 
 		public void InitControl()
 		{
+			Hyena.Log.Debug("<Streamrecorder:InitControl> START");
 			IntPtr [] elements = ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements();
-			playbin = elements[0];
-			audiotee = elements[2];
-			encoder_bin = new GstBin(Gst.ParseBinFromDescription ("audioresample ! audioconvert ! lame name=audio_encoder ! id3v2mux name=tagger ! gnomevfssink name=file_sink", true)) ;
-			tagger = encoder_bin.GetByInterface(Gst.TagSetterGetType());
+			foreach (IntPtr element in elements)
+			{
+				Hyena.Log.Debug("<Streamrecorder:InitControl> got pipeline element: " + Gst.Marshaller.ObjectGetPathString(element));
+			}			
+			playbin = new Gst.Bin(elements[0]);
+			audiotee = new Gst.Bin(elements[2]);
+			encoder_bin = new Gst.Bin(Gst.Marshaller.ParseBinFromDescription ("audioresample ! audioconvert ! lame name=audio_encoder ! id3v2mux name=tagger ! gnomevfssink name=file_sink", true)) ;
+			Hyena.Log.Debug("<Streamrecorder:InitControl> encoder_bin created: " + Gst.Marshaller.ObjectGetPathString(encoder_bin.BinPtr));
+			tagger = encoder_bin.GetByInterface(Gst.Marshaller.TagSetterGetType());
 			file_sink = encoder_bin.GetByName("file_sink");
-			Gst.GObjectSetStringProperty(file_sink,"location",output_file);
+			Gst.Marshaller.GObjectSetLocationProperty(file_sink,output_file);
+			
+			Gst.Marshaller.ObjectSetBooleanProperty(file_sink, "sync", true);
+			Gst.Marshaller.ObjectSetBooleanProperty(file_sink, "async", false);
+			
+			GLib.Object.GetObject(file_sink).AddNotification ("allow-overwrite", OnAllowOverwrite); //this is a handler to catch existing files
+			ghost_pad = encoder_bin.GetPad("sink");
 
 			/*
 			def create_recorder (self):
@@ -101,22 +117,23 @@ namespace Banshee.Streamrecorder
 
 				self.ghostpad = self.encoder_bin.get_pad ('sink')
 			*/
+			
+			initialized = true;
+			Hyena.Log.Debug("<Streamrecorder:InitControl> END");
+		}
+
+		private void OnAllowOverwrite(object o, GLib.NotifyArgs args)
+		{
+			Hyena.Log.Debug ("[StreamrecorderProcessControl] <OnAllowOverwrite> Called");
 		}
 
         public void StartRecording () 
         {
             Hyena.Log.Debug ("[StreamrecorderProcessControl] <StartRecording> START");
             
-            if (!SetParameters ())
-                return;
-
-			//add tee
-			//* request a pad from tee
-			//* set it blocked
-			//* link recording branch
-			//* set it to playing
-			//* unset pad-block         
-                
+			Gst.Marshaller.PlayerAddTee(audiotee,encoder_bin,true);
+			//Gst.Marshaller.PlayerAddTee(audiotee,encoder_bin,false);
+			
             Hyena.Log.Debug ("[StreamrecorderProcessControl] <StartRecording> END");
         }
 
@@ -124,20 +141,14 @@ namespace Banshee.Streamrecorder
         {
             Hyena.Log.Debug ("[StreamrecorderProcessControl] <StopRecording> STOPPED");
 
-			//remove tee
-			//* set recording_branch to paused
-			//* request a pad from tee
-			//* set it blocked
-			//* unlink recording branch
-			//* unset pad-block         
+			Gst.Marshaller.PlayerRemoveTee(audiotee,encoder_bin,true);
+			//Gst.Marshaller.PlayerRemoveTee(audiotee,encoder_bin,false);
 
         }
 
-        public bool SetParameters () 
+        public bool Initialized
         {
-			//set up file for recording
-			
-            return true;
+			get { return initialized; }
         }
         
         public void SetOutputParameters (string directory, string filename, string pattern) 
