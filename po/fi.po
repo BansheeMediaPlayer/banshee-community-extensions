@@ -1,17 +1,17 @@
-# Italian translation of banshee-community-extensions.
-# Copyright (C) 2010 banshee-community-extensions's copyright holders.
-# This file is distributed under the same license as the banshee-community-extensions package.
-# Gianvito Cavasoli <janvitus@ubuntu-it.org>, 2008, 2009, 2010.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: banshee-community-extensions 0.1\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-02-11 11:40-0800\n"
-"PO-Revision-Date: 2010-02-05 01:12+0100\n"
-"Last-Translator: Gianvito Cavasoli <janvitus@ubuntu-it.org>\n"
-"Language-Team: Italiana <tp@lists.linux.it>\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -333,7 +333,7 @@ msgstr ""
 #. Banshee user job
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:252
 msgid "Mirage: Analyzing Songs"
-msgstr "Mirage: analisi dei brani"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:254
 msgid ""
@@ -342,67 +342,59 @@ msgid ""
 "already analyzed. The operation can be resumed at any time from the "
 "<i>Tools</i> menu."
 msgstr ""
-"Interrompere Mirage?\n"
-"Il generatore automatico di scaletta funzionerà solo per le tracce già "
-"analizzate. L'operazione può essere ripresa in qualsiasi momento dal menù "
-"«<i>Strumenti</i>»."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:320
 msgid "Mirage Duplicates"
-msgstr "Duplicati di Mirage"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:335
 msgid "Mirage: Duplicate Search"
-msgstr "Mirage: cerca duplicato"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:338
 msgid "Are you sure you want to stop the Duplicate Search? "
-msgstr "Interrompere la ricerca del duplicato?"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:403
 msgid ""
 "The Mirage Duplicate Search finished. Check the newly created <i>Mirage "
 "Duplicates</i> playlist for possible duplicates."
 msgstr ""
-"Ricerca dei duplicati terminata. Controllare la nuova scaletta «<i>Duplicati "
-"di Mirage</i>» per possibili duplicati."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:413
 msgid "Mirage Playlist Generator"
-msgstr "Generatore di scalette Mirage"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:414
 msgid "Manage the Mirage extension"
-msgstr "Gestisci l'estensione Mirage"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:417
 msgid "Rescan the Music Library"
-msgstr "Scansiona nuovamente la collezione musicale"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:418
 msgid "Rescans the Music Library for new songs"
-msgstr "Scansiona nuovamente la collezione musicale per nuovi brani"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:422
 msgid "Duplicate Search (Experimental)"
-msgstr "Ricerca duplicato (sperimentale)"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:423
 msgid "Searches your Music Library for possible duplicates"
-msgstr "Cerca nella collezione musicale per possibili duplicati"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:427
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:473
 msgid "Reset Mirage"
-msgstr "Azzera Mirage"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:428
 msgid ""
 "Resets the Mirage Playlist Generation Plugin. All songs have to be analyzed "
 "again to use Automatic Playlist Generation."
 msgstr ""
-"Azzera il plugin generazione di scaletta Mirage. Tutti i brani devono essere "
-"analizzati di nuovo per usare la generazione di scaletta automatica."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:441
 msgid ""
@@ -411,16 +403,10 @@ msgid ""
 "· To do so, your music library needs to be analyzed completely from Mirage.\n"
 "· This process will take a long time depending on the size of your library."
 msgstr ""
-"<b>Mirage può cercare brani duplicati nella collezione musicale.</b>\n"
-"\n"
-"Per fare ciò, la collezione musicale deve essere analizzata completamente da "
-"Mirage.\n"
-"Questo processo richiederà molto tempo e dipende dalla grandezza della "
-"collezione."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:444
 msgid "Scan for Duplicates"
-msgstr "Scansiona per duplicati"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:471
 msgid ""
@@ -428,62 +414,55 @@ msgid ""
 "All extracted information will be lost. Your music will have to be re-"
 "analyzed to use Mirage again."
 msgstr ""
-"Azzerare l'estensione Mirage?\n"
-"Tutte le informazioni estratte verranno perse. La musica dovrà essere "
-"rianalizzata per poter usare di nuovo Mirage."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:484
 msgid ""
 "Mirage was reset. Your music will have to be re-analyzed to use Mirage again."
 msgstr ""
-"Mirage è stato azzerato. La musica dovrà essere rianalizzata per utilizzare "
-"l'applicazione nuovamente."
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:71
 msgid "Playlist Generator"
-msgstr "Generatore di scaletta"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:97
 msgid "Clear"
-msgstr "Svuota"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:98
 msgid "Remove all tracks from the play queue"
-msgstr "Rimuove tutte le tracce dalla coda di riproduzione"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:111
 msgid "Save as Playlist"
-msgstr "Salva come scaletta"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:112
 msgid "Save the Playlist to your Music Library"
-msgstr "Salva la scaletta nella collezione musicale"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:118
 msgid "Clear on Quit"
-msgstr "Svuota all'uscita"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:119
 msgid "Clear the play queue when quitting"
-msgstr "Svuota la coda di riproduzione quando esce"
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:136
 msgid "Ready. Drag a song on the Playlist Generator to start!"
-msgstr "Pronto. Trascinare un brano nel generatore di scaletta per cominciare."
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:173
 msgid "Error building playlist. You might need to rescan your music library."
 msgstr ""
-"Errore nella costruzione della scaletta. Potrebbe essere necessario "
-"scansionare nuovamente la collezione musicale."
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:211
 msgid "Playlist ready."
-msgstr "Scaletta pronta."
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:319
 msgid "Mirage Playlist"
-msgstr "Scaletta Mirage"
+msgstr ""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:109
 #, csharp-format
@@ -491,67 +470,71 @@ msgid ""
 "{0}Radiostation fetcher{1}\n"
 "({2})"
 msgstr ""
+"{0}Radiokanavien hakija{1}\n"
+"({2})"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:118
 msgid ""
 "Choose a genre or enter a text that you wish to be queried, then press the "
 "Get stations button. Found stations will be added to internet-radio source."
 msgstr ""
+"Valitse genre tai vapaa teksti. Paina hae asemat -nappia. Kaikki löydetyt "
+"asemat lisätään internet-radio-laajennukseen."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:131
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:132
 msgid "Get stations"
-msgstr ""
+msgstr "Hae asemat"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:151
 msgid "Query by genre:"
-msgstr ""
+msgstr "Hae genre:"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:155
 msgid "Query by free text:"
-msgstr ""
+msgstr "Vapaa tekstihaku:"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:173
 msgid "_Close"
-msgstr ""
+msgstr "_Sulje"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:207
 #, csharp-format
 msgid "Querying genre \"{0}\""
-msgstr ""
+msgstr "Haetaan genreä \"{0}\""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:212
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:233
 #, csharp-format
 msgid "Query done. Fetched {0} stations."
-msgstr ""
+msgstr "Haku suoritettu. {0} kanavaa haettu."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:216
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:237
 #, csharp-format
 msgid "ERROR: Internet-radio extension not available."
-msgstr ""
+msgstr "VIRHE: Internet-radio-laajennus ei ole aktivoitu"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:219
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:240
 #, csharp-format
 msgid "ERROR: Network error."
-msgstr ""
+msgstr "VIRHE: Verkko-ongelma."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:222
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:243
 #, csharp-format
 msgid "ERROR"
-msgstr ""
+msgstr "VIRHE"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:228
 #, csharp-format
 msgid "Querying freetext \"{0}\""
-msgstr ""
+msgstr "Haetaan vapaata tekstiä \"{0}\""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:69
 msgid "_Radiostation fetcher"
-msgstr ""
+msgstr "_Radiokanavien hakija"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:72
 msgid "_Shoutcast"
@@ -559,7 +542,7 @@ msgstr ""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:73
 msgid "Fetch stations from shoutcast"
-msgstr ""
+msgstr "Hae asemia shoutcast-palvelusta"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:76
 msgid "_Xiph"
@@ -567,9 +550,9 @@ msgstr ""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:77
 msgid "Fetch stations from Xiph"
-msgstr ""
+msgstr "Hae asemia Xiph-palvelusta"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs:288
 #, csharp-format
 msgid "www.xiph.org {0} stations available."
-msgstr ""
+msgstr "www.xiph.org {0} asemaa tarjolla."

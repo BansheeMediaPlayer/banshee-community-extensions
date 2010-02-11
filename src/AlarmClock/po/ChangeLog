@@ -1,4 +1,0 @@
-2008-03-24  Bertrand Lorentz <bertrand.lorentz@gmail.com> 
-
-	* POTFILES.in: Fix make distcheck.
-

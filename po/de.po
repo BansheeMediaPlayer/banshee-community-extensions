@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: banshee-community-extensions 0.1\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
-"POT-Creation-Date: 2010-02-09 22:57+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-11 11:40-0800\n"
 "PO-Revision-Date: 2009-03-11 23:04+0100\n"
 "Last-Translator: Daniel Schindler <daniel@vcard24.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -100,6 +100,236 @@ msgstr ""
 msgid "<i>(set to 0:00 to disable)</i>"
 msgstr ""
 
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs:259
+msgid "Track list"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:48
+msgid "Enable threaded loading of artwork"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:49
+msgid "If enabled ClutterFlow will use threading to load it's artwork"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:55
+msgid "Unfolds the track list"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:56
+msgid "If checked it will display the track list when not in fullscreen mode"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:62
+msgid "Saved value for Show Browser"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:63
+msgid ""
+"If checked displays the Browser will be displayed when ClutterFlow is made "
+"invisible"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:69
+msgid "Display ClutterFlow"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:70
+msgid "If checked displays the ClutterFlow browser instead of the default one"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:76
+msgid "Immediately apply playback mode changes"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:77
+msgid ""
+"Starts playing a new song immediately after the playback mode changed (Party "
+"Mode or Album Mode)"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:83
+msgid "Display album _label"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:84
+msgid "Wether or not the album label needs to be shown above the artwork"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:90
+msgid "Display track _title"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:91
+msgid ""
+"Wether or not the album title needs to be shown above the artwork in "
+"fullscreen mode"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:97
+msgid "Texture size in pixels"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:98
+msgid "The in-memory size of the cover textures in pixels"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:104
+msgid "Minimal cover size in pixels"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:105
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:112
+msgid "The on-stage minimal cover size in pixels"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:111
+msgid "Maximal cover size in pixels"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:118
+msgid "Number of visible covers at the side"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:119
+msgid ""
+"The number of covers that need to be displayed on the stage (at one side)"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:231
+msgid "Show ClutterFlow Browser"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:232
+msgid "Show or hide the ClutterFlow browser"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:324
+msgid "ClutterFlow"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:327
+msgid "General"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:335
+msgid "Dimensions"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs:47
+msgid "Lyrics"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:64
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:125
+#: ../src/Lyrics/Banshee.Lyrics/Constants.cs:101
+msgid "add"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:114
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:123
+msgid "No lyrics found."
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:126
+#: ../src/Lyrics/Banshee.Lyrics/Constants.cs:102
+msgid "Click here to manually add a new lyric"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:130
+#: ../src/Lyrics/Banshee.Lyrics/LyricsManager.cs:184
+msgid "Suggestions:"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:138
+msgid "Loading..."
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsPane.cs:108
+msgid " lyric"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:83
+#: ../src/Lyrics/Banshee.Lyrics/Constants.cs:104
+msgid "by"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:86
+#: ../src/Lyrics/Banshee.Lyrics/Constants.cs:107
+msgid "Unknown Artist"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:20
+msgid "Downloading Lyrics"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:64
+#, csharp-format
+msgid "{0} - {1}"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:171
+msgid "L_yrics"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:172
+msgid "Manage Lyrics"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:174
+msgid "_Download Lyrics"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:175
+msgid "Download lyrics for all tracks"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:180
+#: ../src/Lyrics/Banshee.Lyrics/Constants.cs:105
+msgid "Show Lyrics"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:181
+msgid "Show Lyrics in a separate window"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Constants.cs:96
+msgid "<b>Lyric not found</b>"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Constants.cs:97
+msgid "Error downloading lyric..."
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Constants.cs:98
+msgid "Error downloading suggestions..."
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Constants.cs:99
+msgid "Loading lyric..."
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Constants.cs:100
+msgid ""
+"You don't seem to be connected to internet.<br>Check your network connection."
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Constants.cs:103
+msgid "from"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Constants.cs:106
+msgid "A Banshee plugin that retrieves and displays lyrics"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/Constants.cs:108
+msgid "Unknown Title"
+msgstr ""
+
+#: ../src/Lyrics/Banshee.Lyrics/LyricBaseSource.cs:58
+msgid "Unable to contact server!"
+msgstr ""
+
 #. Banshee user job
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:252
 msgid "Mirage: Analyzing Songs"
@@ -113,10 +343,10 @@ msgid ""
 "<i>Tools</i> menu."
 msgstr ""
 "Wollen Sie Mirage tatsächlich abbrechen?\n"
-"Das automatische Erzeugen von Wiedergabelisten wird nur für "
-"die bereits analysierten Titel funktionieren. \n"
-"Der Vorgang kann jederzeit wieder aus dem <i>Werkzeuge</i> "
-"Menü aufgenommen werden."
+"Das automatische Erzeugen von Wiedergabelisten wird nur für die bereits "
+"analysierten Titel funktionieren. \n"
+"Der Vorgang kann jederzeit wieder aus dem <i>Werkzeuge</i> Menü aufgenommen "
+"werden."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:320
 #, fuzzy
@@ -199,8 +429,8 @@ msgid ""
 msgstr ""
 "Wollen Sie tatsächlich die Mirage Automatische Wiedergabenlisten-Generator-"
 "Erweiterung zurücksetzen?\n"
-"Alle extrahierten Informationen geht dabei verloren. "
-"Ihre Musiksammlung muss neu analysiert werden, um Mirage wieder zu verwenden."
+"Alle extrahierten Informationen geht dabei verloren. Ihre Musiksammlung muss "
+"neu analysiert werden, um Mirage wieder zu verwenden."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:484
 msgid ""
@@ -257,6 +487,95 @@ msgstr "Wiedergabeliste ist bereit."
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:319
 msgid "Mirage Playlist"
 msgstr "Mirage Wiedergabeliste"
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:109
+#, csharp-format
+msgid ""
+"{0}Radiostation fetcher{1}\n"
+"({2})"
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:118
+msgid ""
+"Choose a genre or enter a text that you wish to be queried, then press the "
+"Get stations button. Found stations will be added to internet-radio source."
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:131
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:132
+msgid "Get stations"
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:151
+msgid "Query by genre:"
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:155
+msgid "Query by free text:"
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:173
+msgid "_Close"
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:207
+#, csharp-format
+msgid "Querying genre \"{0}\""
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:212
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:233
+#, csharp-format
+msgid "Query done. Fetched {0} stations."
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:216
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:237
+#, csharp-format
+msgid "ERROR: Internet-radio extension not available."
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:219
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:240
+#, csharp-format
+msgid "ERROR: Network error."
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:222
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:243
+#, csharp-format
+msgid "ERROR"
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:228
+#, csharp-format
+msgid "Querying freetext \"{0}\""
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:69
+msgid "_Radiostation fetcher"
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:72
+msgid "_Shoutcast"
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:73
+msgid "Fetch stations from shoutcast"
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:76
+msgid "_Xiph"
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:77
+msgid "Fetch stations from Xiph"
+msgstr ""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs:288
+#, csharp-format
+msgid "www.xiph.org {0} stations available."
+msgstr ""
 
 #~ msgid "Automatic Playlist Generator"
 #~ msgstr "Automatischer Playlist Generator"

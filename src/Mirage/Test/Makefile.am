@@ -5,7 +5,7 @@ SOURCES = Main.cs
 
 REFERENCES =  \
 	$(BANSHEE_LIBS) \
-	-r:../Mirage/Mirage.dll
+	-r:$(DIR_BIN)/Mirage.dll
 
 SOURCES_BUILD = $(addprefix $(srcdir)/, $(SOURCES))
 

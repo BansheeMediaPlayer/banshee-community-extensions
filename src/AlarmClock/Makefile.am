@@ -1,6 +1,5 @@
 ASSEMBLY = Banshee.AlarmClock
 LINK = $(BANSHEE_LIBS)
-ASSEMBLY_GCONF_SCHEMA = banshee-plugin-alarm.schemas.in
 
 SOURCES =  \
 	Banshee.AlarmClock/Alarm.cs \
