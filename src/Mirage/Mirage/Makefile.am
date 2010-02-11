@@ -5,7 +5,7 @@ LINK =  \
 	-r:Mono.Data.SqliteClient
 GMCS_FLAGS = -unsafe
 
-SOURCES = \
+SOURCES =  \
 	AudioDecoder.cs \
 	Db.cs \
 	Dbg.cs \
@@ -16,8 +16,8 @@ SOURCES = \
 	Scms.cs \
 	Vector.cs
 
-RESOURCES = \
-	res/dct.filter \
-	res/filterweights.filter 
+RESOURCES =  \
+	Resources/dct.filter \
+	Resources/filterweights.filter
 
 include $(top_srcdir)/build/build.mk

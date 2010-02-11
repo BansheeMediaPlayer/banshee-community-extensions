@@ -1,18 +1,18 @@
 ASSEMBLY = Banshee.Mirage
 LINK = $(BANSHEE_LIBS) -r:$(DIR_BIN)/Mirage.dll
 
-SOURCES = \
+SOURCES =  \
 	MirageConfiguration.cs \
 	MiragePlugin.cs \
 	PlaylistGeneratorSource.cs \
 	SimilarityCalculator.cs
 
-RESOURCES = \
-	res/cp.png \
-	res/source-mirage.png \
-	res/MirageMenu.xml \
-	res/GlobalUI.xml \
-	res/ActiveSourceUI.xml \
-	Banshee.Mirage.addin.xml
+RESOURCES =  \
+	Banshee.Mirage.addin.xml \
+	Resources/ActiveSourceUI.xml \
+	Resources/cp.png \
+	Resources/GlobalUI.xml \
+	Resources/MirageMenu.xml \
+	Resources/source-mirage.png
 
 include $(top_srcdir)/build/build.mk

@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClutterFlow", "src\ClutterF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.ClutterFlow", "src\ClutterFlow\Banshee.ClutterFlow\Banshee.ClutterFlow.csproj", "{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirage", "src\Mirage\Mirage\Mirage.csproj", "{D43EB678-542B-4B0B-8A3B-F6CA6181C81F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.Mirage", "src\Mirage\Banshee.Mirage\Banshee.Mirage.csproj", "{DB994058-F7F4-494F-BEBC-11ADF056DF68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -37,6 +41,14 @@ Global
 		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Debug|x86.Build.0 = Debug|Any CPU
 		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Release|x86.ActiveCfg = Release|Any CPU
 		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Release|x86.Build.0 = Release|Any CPU
+		{D43EB678-542B-4B0B-8A3B-F6CA6181C81F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D43EB678-542B-4B0B-8A3B-F6CA6181C81F}.Debug|x86.Build.0 = Debug|Any CPU
+		{D43EB678-542B-4B0B-8A3B-F6CA6181C81F}.Release|x86.ActiveCfg = Release|Any CPU
+		{D43EB678-542B-4B0B-8A3B-F6CA6181C81F}.Release|x86.Build.0 = Release|Any CPU
+		{DB994058-F7F4-494F-BEBC-11ADF056DF68}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DB994058-F7F4-494F-BEBC-11ADF056DF68}.Debug|x86.Build.0 = Debug|Any CPU
+		{DB994058-F7F4-494F-BEBC-11ADF056DF68}.Release|x86.ActiveCfg = Release|Any CPU
+		{DB994058-F7F4-494F-BEBC-11ADF056DF68}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = src\AlarmClock\AlarmClock.csproj
