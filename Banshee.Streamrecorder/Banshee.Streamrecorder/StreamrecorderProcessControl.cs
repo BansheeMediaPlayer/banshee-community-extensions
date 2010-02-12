@@ -130,6 +130,10 @@ namespace Banshee.Streamrecorder
         public void StartRecording () 
         {
             Hyena.Log.Debug ("[StreamrecorderProcessControl] <StartRecording> START");
+			//if ( this.audiotee == null || this.audiotee.BinPtr == IntPtr.Zero )
+			//{
+				InitControl() ;
+			//}
             
 			Gst.Marshaller.PlayerAddTee(audiotee,encoder_bin,true);
 			//Gst.Marshaller.PlayerAddTee(audiotee,encoder_bin,false);
@@ -170,8 +174,14 @@ namespace Banshee.Streamrecorder
 
         private void SetOutputFile (string fullfilename) 
         {
-            output_file =  Regex.Replace(output_directory, @" ", "\\ ") + Path.DirectorySeparatorChar + Regex.Replace(fullfilename, @" ", "_");
-        }
+			string cleanfilename = fullfilename;
+			char[] invalid_chars = Path.GetInvalidFileNameChars ();
+			foreach (char invalid_char in invalid_chars)
+			{
+				cleanfilename = cleanfilename.Replace(invalid_char.ToString (), "_");
+			}
+			output_file =  output_directory + Path.DirectorySeparatorChar + cleanfilename;
+		}
 
 /*
 

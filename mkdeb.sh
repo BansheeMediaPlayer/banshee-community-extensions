@@ -22,9 +22,9 @@ copyfiles ()
 
 makedeb ()
 {
-	fakeroot dpkg-deb --build debian banshee-extension-streamrecorder_0.2.1-1ubuntu_all.deb
-	#mv debian.deb banshee-extension-streamrecorder_0.2.1-1ubuntu_all.deb
-	lintian banshee-extension-streamrecorder_0.2.1-1ubuntu_all.deb 
+	version = "0.2.2alpha-0ubuntu0"
+	fakeroot dpkg-deb --build "debian banshee-extension-streamrecorder_"$version"_any.deb"
+	lintian "debian banshee-extension-streamrecorder_"$version"_any.deb"
 }
 
 printusage ()

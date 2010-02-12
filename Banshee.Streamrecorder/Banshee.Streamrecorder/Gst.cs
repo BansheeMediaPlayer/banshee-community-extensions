@@ -91,7 +91,7 @@ namespace Banshee.Streamrecorder.Gst
 			// send a very unimaginative new segment through the new pad
 			segment = gst_event_new_new_segment (true,1.0, Gst.Format.Default, 0, (long)ClockTimeNone, 0);
 			gst_pad_send_event(new_pad, segment);
-			gst_object_unref (new_pad);
+			//gst_object_unref (new_pad);
 		}
 
 		private static void ReallyAddTee(IntPtr pad, bool blocked, IntPtr user_data)
@@ -112,7 +112,16 @@ namespace Banshee.Streamrecorder.Gst
 			Gst.Bin parent_bin;
 			IntPtr sink_pad;
 			IntPtr ghost_pad;
+			IntPtr element_parent;
 			
+			element_parent = gst_object_get_parent(element.BinPtr);
+			if (element_parent != IntPtr.Zero)
+			{
+				Hyena.Log.Information("[Gst.Marshaller]<ReallyAddTee>element already linked, exiting. assume double function call");
+				return;
+			}
+			gst_object_unref(element_parent);
+
 			Hyena.Log.Information("[Gst.Marshaller]<ReallyAddTee>adding tee " + ObjectGetPathString(element.BinPtr));
 			
 			/* set up containing bin */
@@ -120,7 +129,6 @@ namespace Banshee.Streamrecorder.Gst
 			queue = ElementFactoryMake("queue");
 			audioconvert = ElementFactoryMake("audioconvert");
 			Hyena.Log.Information("[Gst.Marshaller]<ReallyAddTee> path for audioconvert: " + ObjectGetPathString(audioconvert));
-			if (ObjectGetPathString(audioconvert).Contains("audioconvert6")) return;
 			
 			ObjectSetBooleanProperty(bin.BinPtr, "async-handling", true);
 			ObjectSetIntegerProperty(queue, "max-size-buffers", 3);
@@ -145,10 +153,12 @@ namespace Banshee.Streamrecorder.Gst
 				
 				ElementSetState(parent_bin.BinPtr,Gst.State.Playing);
 				gst_object_ref(ghost_pad);
+				gst_object_unref(parent_bin.BinPtr);
 				PadSetBlockedAsync(pad,false,PlayerAddRemoveTeeDone,ghost_pad);				
 			} else {
 				ElementSetState(parent_bin.BinPtr,Gst.State.Paused);
 				gst_object_ref(ghost_pad);
+				gst_object_unref(parent_bin.BinPtr);
 				PlayerAddRemoveTeeDone(IntPtr.Zero,false,ghost_pad);
 			}
 
@@ -196,9 +206,15 @@ namespace Banshee.Streamrecorder.Gst
 			Hyena.Log.Information("removing tee " + ObjectGetName(element));
 			
 			bin = new Gst.Bin(gst_object_get_parent(element.BinPtr));
+
+			Hyena.Log.Information("parent of tee " + ObjectGetName(bin.BinPtr));
+
 			gst_object_ref (bin.BinPtr);
 
 			parent_bin = new Gst.Bin(gst_object_get_parent(bin.BinPtr));
+
+			Hyena.Log.Information("parent of bin " + ObjectGetName(parent_bin.BinPtr));
+
 			parent_bin.Remove(bin.BinPtr);
 
 			ElementSetState(bin.BinPtr,Gst.State.Null);
@@ -416,6 +432,9 @@ namespace Banshee.Streamrecorder.Gst
         [DllImport ("libgstreamer-0.10.so.0")]
         private static extern unsafe IntPtr gst_element_get_static_pad (IntPtr element, IntPtr name);
         
+        [DllImport ("libgstreamer-0.10.so.0")]
+        private static extern unsafe bool gst_object_has_ancestor (IntPtr element, IntPtr ancestor);
+
     }
 
 	/* Helper Classes*/

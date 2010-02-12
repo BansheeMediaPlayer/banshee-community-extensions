@@ -192,10 +192,6 @@ namespace Banshee.Streamrecorder
 			track = ServiceManager.PlaybackController.CurrentTrack;
 
             if (InitStreamrecorderProcess (track)) {
-				if (!streamrecorder_process.Initialized )
-				{
-					streamrecorder_process.InitControl() ;
-				}
 				streamrecorder_process.StartRecording ();
 				
                 if (is_importing_enabled)
@@ -244,7 +240,8 @@ namespace Banshee.Streamrecorder
 
 			DateTime dt = DateTime.Now;
 			string datestr = String.Format("{0:d_M_yyyy_HH_mm_ss}", dt);
-			string fileext = Regex.Replace(track.Uri.ToString(), @"^.*(\.[^\.]*)$", "$1");
+			string fileext = ".,p3";//Regex.Replace(track.Uri.ToString(), @"^.*(\.[^\.\/]*)$", "$1");
+			//if (fileext.Equals(track.Uri.ToString())) fileext = ".mp3" ;
 			string filename = track.TrackTitle + "_" + datestr + fileext;
 
             streamrecorder_process.SetOutputParameters (output_directory,filename,"\"%A/%a/%T\"");

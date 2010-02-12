@@ -25,3 +25,5 @@ po/Makefile.in.in
 po/stamp-it
 stamp-h1
 *.userprefs
+*.addin.xml
+*.pc
