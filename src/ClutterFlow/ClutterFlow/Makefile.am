@@ -1,5 +1,5 @@
 ASSEMBLY = ClutterFlow
-LINK = -pkg:clutter-sharp -pkg:clutter-gtk-sharp -r:Mono.Cairo -pkg:gtk-sharp-2.0
+LINK = $(CLUTTER_SHARP_LIBS) -r:Mono.Cairo -pkg:gtk-sharp-2.0
 GMCS_FLAGS = -unsafe
 
 SOURCES =  \
@@ -23,4 +23,8 @@ SOURCES =  \
     TrackCaption.cs \
     Caption.cs
 
+if ENABLE_CLUTTERFLOW
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif

@@ -4,7 +4,7 @@ INCLUDES = \
 	-ggdb3 \
 	-D_FORTIFY_SOURCE=2 \
 	$(GLIB_CFLAGS) \
-	$(GST_CFLAGS) \
+	$(GSTREAMER_CFLAGS) \
 	$(LIBSAMPLERATE_CFLAGS) \
 	$(FFTW3F_CFLAGS)
 
@@ -22,7 +22,7 @@ libmirageaudio_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(LIBSAMPLERATE_LIBS) \
 	$(FFTW3F_LIBS) \
-	$(GST_LIBS)
+	$(GSTREAMER_LIBS)
 
 mirageaudiotest_SOURCES = \
 	mirageaudiotest.c

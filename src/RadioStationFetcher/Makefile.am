@@ -13,4 +13,8 @@ RESOURCES =  \
 	RadioStationFetcher.addin.xml \
 	Resources/RadioStationFetcherMenu.xml
 
+if ENABLE_RADIOSTATIONFETCHER
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif

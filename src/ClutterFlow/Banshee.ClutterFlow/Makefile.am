@@ -1,5 +1,5 @@
 ASSEMBLY = Banshee.ClutterFlow
-LINK = $(BANSHEE_LIBS) $(BANSHEE_NOWPLAYING_LIBS) -pkg:clutter-sharp -pkg:clutter-gtk-sharp -r:$(DIR_BIN)/ClutterFlow.dll
+LINK = $(BANSHEE_LIBS) $(BANSHEE_NOWPLAYING_LIBS) $(CLUTTER_SHARP_LIBS) -r:$(DIR_BIN)/ClutterFlow.dll
 ASSEMBLY_GCONF_SCHEMA = banshee-plugin-alarm.schemas.in
 
 SOURCES =  \
@@ -18,4 +18,8 @@ SOURCES =  \
 RESOURCES =  \
 	ClutterFlow.addin.xml
 
+if ENABLE_CLUTTERFLOW
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif

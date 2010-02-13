@@ -14,4 +14,8 @@ RESOURCES =  \
 	AlarmClock.addin.xml \
 	Resources/AlarmMenu.xml
 
+if ENABLE_ALARMCLOCK
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif

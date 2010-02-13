@@ -1,6 +1,5 @@
 ASSEMBLY = Banshee.Lyrics
 LINK = $(BANSHEE_LIBS) $(WEBKIT_SHARP_LIBS) $(GCONF_SHARP_20_LIBS) -r:System.Web.Services -r:System.Xml 
-GMCS_FLAGS = -unsafe
 
 SOURCES =  \
 	Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs \
@@ -28,4 +27,8 @@ RESOURCES =  \
 	Lyrics.addin.xml \
 	Resources/LyricsMenu.xml
 
+if ENABLE_LYRICS
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif
