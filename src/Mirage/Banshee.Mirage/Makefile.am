@@ -2,6 +2,7 @@ ASSEMBLY = Banshee.Mirage
 LINK = $(BANSHEE_LIBS) -r:$(DIR_BIN)/Mirage.dll
 
 SOURCES =  \
+	AnalyzeLibraryJob.cs \
 	MirageConfiguration.cs \
 	MiragePlugin.cs \
 	PlaylistGeneratorSource.cs \
