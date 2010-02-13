@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.Linq;
 using System.Data;
 using System.Threading;
 using System.Collections;
@@ -49,7 +50,7 @@ namespace Mirage
             ad.CancelDecode();
         }
 
-        public static Scms Analyze(string file)
+        public static Scms Analyze (string file)
         {
             
             try {
@@ -71,51 +72,52 @@ namespace Mirage
             }
         }
 
-        public static int[] SimilarTracks(int[] id, int[] exclude, Db db, int length)
+        public static int [] SimilarTracks (int [] seed_track_ids, int [] exclude_track_ids, Db db, int length)
         {
-            return SimilarTracks(id, exclude, db, length, 0);
+            return SimilarTracks (seed_track_ids, exclude_track_ids, db, length, 0);
         }
         
-        public static int[] SimilarTracks(int[] id, int[] exclude, Db db, int length, float distceiling)
+        public static int [] SimilarTracks (int [] seed_track_ids, int [] exclude_track_ids, Db db, int length, float distceiling)
         {
             DbgTimer t = new DbgTimer();
             t.Start();
 
             // Get Seed-Song SCMS
-            Scms[] seedScms = new Scms[id.Length];
+            Scms [] seedScms = new Scms[seed_track_ids.Length];
             for (int i = 0; i < seedScms.Length; i++) {
                 seedScms[i] = new Scms(mfcccoefficients);
-                db.GetTrack(id[i], ref seedScms[i]);
+                db.GetTrack (seed_track_ids[i], ref seedScms[i]);
             }
 
             // Get all tracks from the DB except the seedSongs
-            Hashtable ht = new Hashtable();
+            Hashtable ht = new Hashtable ();
             Scms[] scmss = new Scms[100];
             for (int i = 0; i < 100; i++) {
-                scmss[i] = new Scms(mfcccoefficients);
+                scmss[i] = new Scms (mfcccoefficients);
             }
-            int[] mapping = new int[100];
+
+            int [] mapping = new int[100];
             int read = 1;
             
             // Allocate the Scms Distance cache
-            ScmsConfiguration c = new ScmsConfiguration(mfcccoefficients);
+            ScmsConfiguration c = new ScmsConfiguration (mfcccoefficients);
             
-            IDataReader r = db.GetTracks(exclude);
+            IDataReader r = db.GetTracks (exclude_track_ids);
             while (read > 0) {
-                read = db.GetNextTracks(ref r, ref scmss, ref mapping, 100);
+                read = db.GetNextTracks (ref r, ref scmss, ref mapping, 100);
                 for (int i = 0; i < read; i++) {
 
                     float d = 0;
                     int count = 0;
                     for (int j = 0; j < seedScms.Length; j++) {
-                        float dcur = Scms.Distance(ref seedScms[j], ref scmss[i], ref c);
+                        float dcur = Scms.Distance (ref seedScms[j], ref scmss[i], ref c);
                         
                         // Possible negative numbers indicate faulty scms models..
                         if (dcur >= 0) {
                             d += dcur;
                             count++;
                         } else {
-                            Dbg.WriteLine("Mirage - Faulty SCMS id={0} d={1}", mapping[i], d);
+                            Dbg.WriteLine ("Mirage - Faulty SCMS id={0} d={1}", mapping[i], d);
                             d = float.MaxValue;
                             break;
                         }
@@ -123,38 +125,38 @@ namespace Mirage
                     
                     // Exclude track if it's too close to the seeds
                     if (d > distceiling) {
-                        ht.Add(mapping[i], d/count);
-                    }
-                    else {
-                        Dbg.WriteLine("Mirage - ignoring {0}", mapping[i]);
+                        ht.Add (mapping[i], d/count);
+                    } else {
+                        Dbg.WriteLine ("Mirage - ignoring {0}", mapping[i]);
                     }
                 }
             }
-            db.GetTracksFinished();
+
+            db.GetTracksFinished ();
             
-            float[] items = new float[ht.Count];
-            int[] keys = new int[ht.Keys.Count];
+            float [] items = new float[ht.Count];
+            int [] keys = new int[ht.Keys.Count];
             
-            ht.Keys.CopyTo(keys, 0);
-            ht.Values.CopyTo(items, 0);
+            ht.Keys.CopyTo (keys, 0);
+            ht.Values.CopyTo (items, 0);
             
-            Array.Sort(items, keys);
-            Array.Resize(ref keys, length);
+            Array.Sort (items, keys);
+            Array.Resize (ref keys, length);
             
             long stop = 0;
-            t.Stop(ref stop);
-            Dbg.WriteLine("Mirage - playlist in: {0}ms", stop);
+            t.Stop (ref stop);
+            Dbg.WriteLine ("Mirage - playlist in: {0}ms", stop);
             
             return keys;
         }
 
-        public static Dictionary<int, Scms> LoadLibrary(ref Db db)
+        public static Dictionary<int, Scms> LoadLibrary (ref Db db)
         {
-            int[] mapping = new int[100];
-            int[] exclude = new int[0];
-            Dictionary<int, Scms> loadedDb = new Dictionary<int, Scms>();
+            int [] mapping = new int[100];
+            int [] exclude = new int[0];
+            Dictionary<int, Scms> loadedDb = new Dictionary<int, Scms> ();
 
-            IDataReader r = db.GetTracks(exclude);
+            IDataReader r = db.GetTracks (exclude);
             int read;
             do {
                 Scms[] scmss = new Scms[100];

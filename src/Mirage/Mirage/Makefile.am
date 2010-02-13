@@ -6,12 +6,12 @@ LINK =  \
 GMCS_FLAGS = -unsafe
 
 SOURCES =  \
+	Analyzer.cs \
 	AudioDecoder.cs \
 	Db.cs \
 	Dbg.cs \
 	Matrix.cs \
 	Mfcc.cs \
-	Analyzer.cs \
 	MirageDbMigrator.cs \
 	Scms.cs \
 	Vector.cs

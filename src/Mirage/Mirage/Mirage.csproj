@@ -43,6 +43,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="Mono.Data.SqliteClient" />
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\dct.filter">
@@ -58,10 +59,10 @@
     <Compile Include="Dbg.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="Mfcc.cs" />
-    <Compile Include="Mir.cs" />
     <Compile Include="MirageDbMigrator.cs" />
     <Compile Include="Scms.cs" />
     <Compile Include="Vector.cs" />
+    <Compile Include="Analyzer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

@@ -30,23 +30,23 @@ namespace Banshee.Mirage
 {
     public class SimilarityCalculator
     {
-        int[] trackId;
-        int[] excludeTrackId;
+        int[] seek_track_ids;
+        int[] exclude_track_ids;
         PlaylistGeneratorSource.UpdatePlaylistDelegate update_playlist_delegate;
         Db db;
         bool append;
-        
-        public SimilarityCalculator(int [] trackId, int [] excludeTrackId,
-                Db db, PlaylistGeneratorSource.UpdatePlaylistDelegate playlist_delegate,
+
+        public SimilarityCalculator(int [] seed_track_ids, int [] exclude_track_ids,
+                Db db, PlaylistGeneratorSource.UpdatePlaylistDelegate update_playlist_delegate,
                 bool append)
         {
-            this.trackId = trackId;
-            this.excludeTrackId = excludeTrackId;
-            this.update_playlist_delegate = playlist_delegate;
+            this.seek_track_ids = seed_track_ids;
+            this.exclude_track_ids = exclude_track_ids;
+            this.update_playlist_delegate = update_playlist_delegate;
             this.db = db;
             this.append = append;
         }
-        
+
         public void Compute()
         {
             int[] playlist_track_ids;
@@ -55,14 +55,14 @@ namespace Banshee.Mirage
                 int generated_length = 4 * MirageConfiguration.PlaylistLength.Get ();
                 float distceiling = (float)MirageConfiguration.DistanceCeiling.Get ();
 
-                Log.DebugFormat ("Distance ceiling is {0}", distceiling);
+                //Log.DebugFormat ("Distance ceiling is {0}", distceiling);
 
-                playlist_track_ids = Analyzer.SimilarTracks (trackId, excludeTrackId, db, generated_length, distceiling);
+                playlist_track_ids = Analyzer.SimilarTracks (seek_track_ids, exclude_track_ids, db, generated_length, distceiling);
 
                 update_playlist_delegate (playlist_track_ids, append);
             } catch (DbTrackNotFoundException) {
-                Log.Error ("Mirage: ERROR. Track not found in Mirage DB");
-                update_playlist_delegate(null, false);
+                //Log.Error ("Mirage: ERROR. Track not found in Mirage DB");
+                update_playlist_delegate (null, false);
             }
         }
     }
