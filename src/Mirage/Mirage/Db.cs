@@ -207,7 +207,7 @@ namespace Mirage
             return dbcmd.ExecuteReader ();
         }
 
-        public int GetNextTracks (ref IDataReader tracksIterator, ref Scms[] tracks, ref int[] mapping, int len)
+        public int GetNextTracks (IDataReader tracksIterator, Scms[] tracks, int[] mapping, int len)
         {
             int i = 0;
             

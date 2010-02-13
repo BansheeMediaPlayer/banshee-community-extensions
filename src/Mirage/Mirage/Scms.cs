@@ -54,7 +54,7 @@ namespace Mirage
         }
 
         // Computes a Scms model from the MFCC representation of a song.
-        public static Scms GetScms (ref Matrix mfcc)
+        public static Scms GetScms (Matrix mfcc)
         {
             DbgTimer t = new DbgTimer();
             t.Start();
@@ -98,7 +98,7 @@ namespace Mirage
          *  This is a fast implementation of the symmetrized Kullback Leibler
          *  Divergence.
          */
-        public static float Distance (ref Scms s1, ref Scms s2, ref ScmsConfiguration c)
+        public static float Distance (Scms s1, Scms s2, ScmsConfiguration c)
         {
             float val = 0;
             int i;
