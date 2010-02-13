@@ -14,6 +14,7 @@ SOURCES =  \
 	Mfcc.cs \
 	MirageDbMigrator.cs \
 	Scms.cs \
+	ScmsConfiguration.cs \
 	Vector.cs
 
 RESOURCES =  \

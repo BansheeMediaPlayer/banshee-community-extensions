@@ -28,27 +28,25 @@ using System.Reflection;
 
 namespace Mirage
 {
-
     public class MfccFailedException : Exception
     {
     }
 
     public class Mfcc
     {
-
         Matrix filterWeights;
         Matrix dct;
         int[,] fwFT;
         
-        public Mfcc(int winsize, int srate, int filters, int cc)
+        public Mfcc (int winsize, int srate, int filters, int cc)
         {
-            Assembly assem = this.GetType().Assembly;
+            Assembly assem = this.GetType ().Assembly;
             
             // Load the DCT
-            dct = Matrix.Load(assem.GetManifestResourceStream("dct.filter"));
+            dct = Matrix.Load (assem.GetManifestResourceStream ("dct.filter"));
                 
             // Load the MFCC filters from the filter File.
-            filterWeights = Matrix.Load(assem.GetManifestResourceStream("filterweights.filter"));
+            filterWeights = Matrix.Load (assem.GetManifestResourceStream ("filterweights.filter"));
 
             fwFT = new int[filterWeights.rows, 2];
             for (int i = 0; i < filterWeights.rows; i++) {
@@ -61,27 +59,26 @@ namespace Mirage
                     }
                     last = filterWeights.d[i, j];
                 }
+
                 if (last != 0) {
                     fwFT[i, 1] = filterWeights.columns;
                 }
             }
         }
         
-        public Matrix Apply(ref Matrix m)
+        public Matrix Apply (ref Matrix m)
         {
+            DbgTimer t = new DbgTimer ();
+            t.Start ();
 
-            DbgTimer t = new DbgTimer();
-            t.Start();
+            Matrix mel = new Matrix (filterWeights.rows, m.columns);
 
-            Matrix mel = new Matrix(filterWeights.rows, m.columns);
-            
+            int mc = m.columns;
+            int melcolumns = mel.columns;
+            int fwc = filterWeights.columns;
+            int fwr = filterWeights.rows;
+
             unsafe {
-
-                int mc = m.columns;
-                int melcolumns = mel.columns;
-                int fwc = filterWeights.columns;
-                int fwr = filterWeights.rows;
-                
                 fixed (float* md = m.d, fwd = filterWeights.d, meld = mel.d) {
                     for (int i = 0; i < mc; i++) {
                         for (int k = 0; k < fwr; k++) {
@@ -97,25 +94,22 @@ namespace Mirage
                             meld[idx] = (meld[idx] < 1.0f ?
                                     0 : (float)(10.0 * Math.Log10(meld[idx])));
                         }
-                        
                     }
                 }
             }
 
             try {
-                Matrix mfcc = dct.Multiply(mel);
+                Matrix mfcc = dct.Multiply (mel);
                 
                 long stop = 0;
-                t.Stop(ref stop);
-                Dbg.WriteLine("Mirage - mfcc Execution Time: {0}ms", stop);
+                t.Stop (ref stop);
+                Dbg.WriteLine ("Mirage - mfcc Execution Time: {0}ms", stop);
                 
                 return mfcc;
                 
             } catch (MatrixDimensionMismatchException) {
-                throw new MfccFailedException();
+                throw new MfccFailedException ();
             }
         }
-        
     }
-
 }

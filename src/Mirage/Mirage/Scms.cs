@@ -32,78 +32,29 @@ namespace Mirage
     {
     }
 
-    /** Utility class storing a cache and Configuration variables for the Scms
-     *  distance computation.
-     */
-    public class ScmsConfiguration
-    {
-        private int dim;
-        private int covlen;
-        private float[] mdiff;
-        private float[] aicov;
-
-        public ScmsConfiguration(int dimension)
-        {
-            dim = dimension;
-            covlen = (dim*dim + dim)/2;
-            mdiff = new float[dim];
-            aicov = new float[covlen];
-        }
-
-        public int Dimension
-        {
-            get {
-                return dim;
-            }
-        }
-
-        public int CovarianceLength
-        {
-            get {
-                return covlen;
-            }
-        }
-
-        public float[] AddInverseCovariance
-        {
-            get {
-                return aicov;
-            }
-        }
-
-        public float[] MeanDiff
-        {
-            get {
-                return mdiff;
-            }
-        }
-    }
-   
-
     /** Statistical Cluster Model Similarity class. A Gaussian representation
      *  of a song. The distance between two models is computed with the
      *  symmetrized Kullback Leibler Divergence.
      */
     public class Scms
     {
-        private float[] mean;
-        private float[] cov;
-        private float[] icov;
+        private float [] mean;
+        private float [] cov;
+        private float [] icov;
         private int dim;
 
-        public Scms(int dimension)
+        public Scms (int dimension)
         {
             dim = dimension;
             int symDim = (dim * dim + dim) / 2;
 
-            mean = new float[dim];
-            cov = new float[symDim];
-            icov = new float[symDim];
+            mean = new float [dim];
+            cov  = new float [symDim];
+            icov = new float [symDim];
         }
 
-        /** Computes a Scms model from the MFCC representation of a song.
-         */
-        public static Scms GetScms(ref Matrix mfcc)
+        // Computes a Scms model from the MFCC representation of a song.
+        public static Scms GetScms (ref Matrix mfcc)
         {
             DbgTimer t = new DbgTimer();
             t.Start();
@@ -122,8 +73,7 @@ namespace Mirage
                 throw new ScmsImpossibleException();
             }
 
-            // Store the Mean, Covariance, Inverse Covariance in an optimal
-            // format.
+            // Store the Mean, Covariance, Inverse Covariance in an optimal format.
             int dim = m.rows;
             Scms s = new Scms(dim);
             int l = 0;
@@ -148,17 +98,17 @@ namespace Mirage
          *  This is a fast implementation of the symmetrized Kullback Leibler
          *  Divergence.
          */
-        public static float Distance(ref Scms s1, ref Scms s2, ref ScmsConfiguration c)
+        public static float Distance (ref Scms s1, ref Scms s2, ref ScmsConfiguration c)
         {
             float val = 0;
+            int i;
+            int k;
+            int idx = 0;
+            int dim = c.Dimension;
+            int covlen = c.CovarianceLength;
+            float tmp1;
 
             unsafe {
-                int i;
-                int k;
-                int idx = 0;
-                int dim = c.Dimension;
-                int covlen = c.CovarianceLength;
-                float tmp1;
 
                 fixed (float* s1cov = s1.cov, s2icov = s2.icov,
                         s1icov = s1.icov, s2cov = s2.cov,
@@ -204,51 +154,55 @@ namespace Mirage
 
             // FIXME: fix the negative return values
             //val = Math.Max(0.0f, (val/2 - s1.cov.dim));
-            val = val/4 - c.Dimension/2;
+            val = val / 4 - c.Dimension / 2;
 
             return val;
         }
 
-        /** Manual serialization of a Scms object to a byte array
-         */
-        public byte[] ToBytes()
+        // Manual serialization of a Scms object to a byte array
+        public byte [] ToBytes ()
         {
-            MemoryStream stream = new MemoryStream();
-            BinaryWriter bw = new BinaryWriter(stream);
-            bw.Write((Int32)dim);
-            for (int i = 0; i < mean.Length; i++) {
-                bw.Write(mean[i]);
-            }
-            for (int i = 0; i < cov.Length; i++) {
-                bw.Write(cov[i]);
-            }
-            for (int i = 0; i < icov.Length; i++) {
-                bw.Write(icov[i]);
-            }
+            using (var stream = new MemoryStream ()) {
+                using (var bw = new BinaryWriter(stream)) {
+                    bw.Write ((Int32)dim);
+        
+                    for (int i = 0; i < mean.Length; i++) {
+                        bw.Write (mean[i]);
+                    }
+        
+                    for (int i = 0; i < cov.Length; i++) {
+                        bw.Write (cov[i]);
+                    }
+        
+                    for (int i = 0; i < icov.Length; i++) {
+                        bw.Write (icov[i]);
+                    }
 
-            stream.Close();
-            return stream.ToArray();
+                    return stream.ToArray ();
+                }
+            }
         }
 
-        /** Manual deserialization of an Scms from a byte array
-         */
+        // Manual deserialization of an Scms from a byte array
         public static void FromBytes(byte[] buf, ref Scms s)
         {
-            MemoryStream stream = new MemoryStream(buf);
-            BinaryReader br = new BinaryReader(stream);
-            s.dim = br.ReadInt32();
-            for (int i = 0; i < s.mean.Length; i++) {
-                s.mean[i] = br.ReadSingle();
-            }
-            for (int i = 0; i < s.cov.Length; i++) {
-                s.cov[i] = br.ReadSingle();
-            }
-            for (int i = 0; i < s.icov.Length; i++) {
-                s.icov[i] = br.ReadSingle();
-            }
+            using (var stream = new MemoryStream (buf)) {
+                using (var br = new BinaryReader (stream)) {
+                    s.dim = br.ReadInt32 ();
 
-            stream.Close();
+                    for (int i = 0; i < s.mean.Length; i++) {
+                        s.mean[i] = br.ReadSingle ();
+                    }
+
+                    for (int i = 0; i < s.cov.Length; i++) {
+                        s.cov[i] = br.ReadSingle ();
+                    }
+
+                    for (int i = 0; i < s.icov.Length; i++) {
+                        s.icov[i] = br.ReadSingle ();
+                    }
+                }
+            }
         }
     }
-
 }

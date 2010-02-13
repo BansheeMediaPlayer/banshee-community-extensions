@@ -63,6 +63,7 @@
     <Compile Include="Scms.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="Analyzer.cs" />
+    <Compile Include="ScmsConfiguration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

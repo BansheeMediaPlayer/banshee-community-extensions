@@ -20,20 +20,15 @@
  * Boston, MA  02110-1301, USA.
  */
 
-
 using System;
 
 namespace Mirage
 {
-
-[Serializable]
-public class Vector : Matrix
-{
-    
-    public Vector(int rows) : base(rows, 1)
+    [Serializable]
+    public class Vector : Matrix
     {
+        public Vector (int rows) : base (rows, 1)
+        {
+        }
     }
-
-}
-    
 }
