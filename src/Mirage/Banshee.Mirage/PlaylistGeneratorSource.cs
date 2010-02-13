@@ -22,6 +22,7 @@
  */
 
 using System;
+using System.Linq;
 using System.Data;
 using System.Collections;
 using System.Collections.Generic;
@@ -404,24 +405,15 @@ namespace Banshee.Mirage
             }
         }
 
-        private void SimilarTracks(List<DatabaseTrackInfo> tracks,
-                List<DatabaseTrackInfo> exclude, bool append)
+        private void SimilarTracks(List<DatabaseTrackInfo> seed_tracks, List<DatabaseTrackInfo> exclude_tracks, bool append)
         {
-            int[] trackIds = new int[tracks.Count];
-            for (int i = 0; i < tracks.Count; i++) {
-                Log.DebugFormat ("Mirage - Looking for similars to {0}-{1}", tracks[i].TrackId, tracks[i].TrackTitle);
-                trackIds[i] = tracks[i].TrackId;
-            }
+            var seed_track_ids    = seed_tracks.Select    (t => t.TrackId).ToArray ();
+            var exclude_track_ids = exclude_tracks.Select (t => t.TrackId).ToArray ();
 
-            int[] excludeTrackIds = new int[exclude.Count];
-            for (int i = 0; i < exclude.Count; i++) {
-                Log.DebugFormat ("Mirage - Excluding {0}-{1}", exclude[i].TrackId, exclude[i].TrackTitle);
-                excludeTrackIds[i] = exclude[i].TrackId;
-            }
+            var sc = new SimilarityCalculator (seed_track_ids, exclude_track_ids, db, UpdatePlaylist, append);
 
-            SimilarityCalculator sc = new SimilarityCalculator(trackIds, excludeTrackIds, db, UpdatePlaylist, append);
-            Thread similarityCalculatorThread = new Thread(new ThreadStart(sc.Compute));
-            similarityCalculatorThread.Start();
+            var similarity_calc_thread = new Thread (new ThreadStart(sc.Compute));
+            similarity_calc_thread.Start();
         }
 
         private void OnPlayerEvent(PlayerEventArgs args)

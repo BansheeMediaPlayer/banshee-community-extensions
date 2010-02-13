@@ -138,7 +138,7 @@ namespace Banshee.Mirage
             }
 
             try {
-                Mir.CancelAnalyze();
+                Analyzer.CancelAnalyze();
             } catch (Exception) {
             }
 
@@ -153,7 +153,6 @@ namespace Banshee.Mirage
 
         private void ScanLibrary ()
         {
-            Console.WriteLine ("Mirage.ScanLibrary called, analysis_job state {0}", analysis_job != null ? analysis_job.State.ToString () : "(null)");
             if (analysis_job == null) {
                 analysis_job = new AnalyzeLibraryJob (db);
                 analysis_job.Finished += delegate { analysis_job = null; };
@@ -194,7 +193,7 @@ namespace Banshee.Mirage
             userJob.Progress = 0;
             userJob.Register();
 
-            Dictionary<int, Scms> loadedDb = Mir.LoadLibrary(ref db);
+            Dictionary<int, Scms> loadedDb = Analyzer.LoadLibrary(ref db);
             List<int> dupes = new List<int>();
             Log.Debug("Mirage - Database fully loaded!");
 
@@ -223,7 +222,7 @@ namespace Banshee.Mirage
                     continue;
                 }
 
-                List<int> currentDupes = Mir.DuplicateSearch(loadedDb, trackId, 1);
+                List<int> currentDupes = Analyzer.DuplicateSearch(loadedDb, trackId, 1);
                 dupes.AddRange(currentDupes);
 
                 DatabaseTrackInfo track = DatabaseTrackInfo.Provider.FetchSingle(trackId);
@@ -324,7 +323,7 @@ namespace Banshee.Mirage
 
             if (result == ResponseType.Yes) {
                 try {
-                    Mir.CancelAnalyze();
+                    Analyzer.CancelAnalyze();
                     ResetMirageProcessed();
                     db.Reset();
 

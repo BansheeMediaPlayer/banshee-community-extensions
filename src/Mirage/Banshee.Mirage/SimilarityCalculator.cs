@@ -32,35 +32,37 @@ namespace Banshee.Mirage
     {
         int[] trackId;
         int[] excludeTrackId;
-        PlaylistGeneratorSource.UpdatePlaylistDelegate play_delegate;
+        PlaylistGeneratorSource.UpdatePlaylistDelegate update_playlist_delegate;
         Db db;
         bool append;
         
-        public SimilarityCalculator(int[] trackId, int[] excludeTrackId,
+        public SimilarityCalculator(int [] trackId, int [] excludeTrackId,
                 Db db, PlaylistGeneratorSource.UpdatePlaylistDelegate playlist_delegate,
                 bool append)
         {
             this.trackId = trackId;
             this.excludeTrackId = excludeTrackId;
-            this.play_delegate = playlist_delegate;
+            this.update_playlist_delegate = playlist_delegate;
             this.db = db;
             this.append = append;
         }
         
         public void Compute()
         {
-            int[] playlist;
+            int[] playlist_track_ids;
             try {
                 // We generate a longer playlist because some tracks might be thrown away later
                 int generated_length = 4 * MirageConfiguration.PlaylistLength.Get ();
                 float distceiling = (float)MirageConfiguration.DistanceCeiling.Get ();
+
                 Log.DebugFormat ("Distance ceiling is {0}", distceiling);
-                playlist = Mir.SimilarTracks(trackId, excludeTrackId, db, generated_length, 
-                                             distceiling);
-                play_delegate(playlist, append);
+
+                playlist_track_ids = Analyzer.SimilarTracks (trackId, excludeTrackId, db, generated_length, distceiling);
+
+                update_playlist_delegate (playlist_track_ids, append);
             } catch (DbTrackNotFoundException) {
                 Log.Error ("Mirage: ERROR. Track not found in Mirage DB");
-                play_delegate(null, false);
+                update_playlist_delegate(null, false);
             }
         }
     }

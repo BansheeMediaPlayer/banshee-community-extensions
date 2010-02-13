@@ -11,7 +11,7 @@ SOURCES =  \
 	Dbg.cs \
 	Matrix.cs \
 	Mfcc.cs \
-	Mir.cs \
+	Analyzer.cs \
 	MirageDbMigrator.cs \
 	Scms.cs \
 	Vector.cs

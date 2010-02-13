@@ -60,6 +60,7 @@
     <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-hyena</Package>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Banshee.Mirage.addin.xml">
@@ -87,6 +88,7 @@
     <Compile Include="PlaylistGeneratorSource.cs" />
     <Compile Include="SimilarityCalculator.cs" />
     <Compile Include="AnalyzeLibraryJob.cs" />
+    <Compile Include="RandomByMirage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

@@ -65,7 +65,7 @@ namespace Banshee.Mirage
                     Log.DebugFormat ("Mirage - Processing {0}-{1}-{2}", track.TrackId, track.ArtistName, track.TrackTitle);
                     Status = String.Format("{0} - {1}", track.ArtistName, track.TrackTitle);
 
-                    db.AddTrack (track.TrackId, Mir.Analyze (track.Uri.LocalPath));
+                    db.AddTrack (track.TrackId, Analyzer.Analyze (track.Uri.LocalPath));
                 } catch (DbFailureException) {
                     status = -2;
                 } catch (MirAnalysisImpossibleException) {

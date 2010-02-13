@@ -32,7 +32,7 @@ namespace Mirage
     {
     }
 
-    public class Mir
+    public class Analyzer
     {
         private const int samplingrate = 22050;
         private const int windowsize = 1024;
