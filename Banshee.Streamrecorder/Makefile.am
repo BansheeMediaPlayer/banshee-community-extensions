@@ -48,6 +48,7 @@ FILES =  \
 	Banshee.Streamrecorder/RippedFileScanner.cs \
 	Banshee.Streamrecorder/StreamrecorderConfigDialog.cs \
 	Banshee.Streamrecorder/StreamrecorderProcessControl.cs \
+	Banshee.Streamrecorder/Encoder.cs \
 	Banshee.Streamrecorder/Gst.cs \
 	Banshee.Streamrecorder/GstBin.cs \
 	Banshee.Streamrecorder/StreamrecorderService.cs 

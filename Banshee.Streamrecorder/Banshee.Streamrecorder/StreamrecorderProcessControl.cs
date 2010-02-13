@@ -30,13 +30,16 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
+using System.Collections.Generic;
 
 using System.Text.RegularExpressions;
 
 using Mono.Addins;
 
+using Banshee.Streaming;
 using Banshee.ServiceStack;
 using Banshee.Collection;
+using Banshee.Collection.Database;
 
 using Hyena;
 
@@ -44,83 +47,177 @@ namespace Banshee.Streamrecorder
 {
     public class StreamrecorderProcessControl
     {
-        private string output_file_format_pattern;
         private string output_directory;
         private string output_file;
         
-        private Gst.Bin playbin;
         private Gst.Bin audiotee;
         private Gst.Bin encoder_bin;
         private IntPtr tagger;
         private IntPtr file_sink;
         private IntPtr ghost_pad;
         
-        private bool initialized;
-
+        private Gst.Bin silence_pipeline;
+        private IntPtr silence_ghost_pad;
+        private IntPtr bus;
+        
+        private List<Encoder> encoders = new List<Encoder> ();
+        private bool has_lame;
+        private const string lame_name = "LAME MP3 Audio Encoder";
+        private const string lame_pipeline = "! lame name=audio_encoder ! id3v2mux name=tagger ";
+        private const string lame_extension = ".mp3";
+        private bool has_vorbis;
+        private const string vorbis_name = "Ogg/Vorbis Audio Encoder";
+        private const string vorbis_pipeline = "! vorbisenc name=audio_encoder ! vorbistag name=tagger ! oggmux ";
+        private const string vorbis_extension = ".ogg";
+        private bool has_flac;
+        private const string flac_name = "FLAC Audio Encoder";
+        private const string flac_pipeline = "! flacenc name=audio_encoder ! flactag name=tagger ";
+        private const  string flac_extension = ".flac";
+        private bool has_level;
+        
         public StreamrecorderProcessControl () 
         {
 			if (Gst.Marshaller.Initialize()) 
 			{
+				has_lame = Gst.Marshaller.CheckGstPlugin("lame") && Gst.Marshaller.CheckGstPlugin("id3v2mux");
+				Hyena.Log.Information("[Streamrecorder] GstPlugin lame" + (has_lame ? "" : " not") + " found");
+				encoders.Add(new Encoder(lame_name, lame_pipeline, lame_extension));
+				
+				has_vorbis = Gst.Marshaller.CheckGstPlugin("vorbisenc") && Gst.Marshaller.CheckGstPlugin("oggmux") && Gst.Marshaller.CheckGstPlugin("oggmux");
+				Hyena.Log.Information("[Streamrecorder] GstPlugin vorbis" + (has_vorbis ? "" : " not") + " found");
+				encoders.Add(new Encoder(vorbis_name, vorbis_pipeline, vorbis_extension, true));
+
+				has_flac = Gst.Marshaller.CheckGstPlugin("flacenc") && Gst.Marshaller.CheckGstPlugin("flactag");
+				Hyena.Log.Information("[Streamrecorder] GstPlugin flac" + (has_flac ? "" : " not") + " found");
+				encoders.Add(new Encoder(flac_name, flac_pipeline, flac_extension));
+
+				has_level = Gst.Marshaller.CheckGstPlugin("level");
+				Hyena.Log.Information("[Streamrecorder] GstPlugin level" + (has_level ? "" : " not") + " found");
 				Hyena.Log.Debug("gstreamer initialized");
 			}
 			else
 			{
 				Hyena.Log.Debug("an error occurred during gstreamer initialization, aborting.");
 			}
-			initialized = false;
         }
 
-		public void InitControl()
+		public bool CreateRecorder()
 		{
 			Hyena.Log.Debug("<Streamrecorder:InitControl> START");
-			IntPtr [] elements = ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements();
-			foreach (IntPtr element in elements)
+			audiotee = new Gst.Bin ( ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements()[2] );
+
+			string pipeline = BuildPipeline();
+
+			if (pipeline.Equals(""))
 			{
-				Hyena.Log.Debug("<Streamrecorder:InitControl> got pipeline element: " + Gst.Marshaller.ObjectGetPathString(element));
-			}			
-			playbin = new Gst.Bin(elements[0]);
-			audiotee = new Gst.Bin(elements[2]);
-			encoder_bin = new Gst.Bin(Gst.Marshaller.ParseBinFromDescription ("audioresample ! audioconvert ! lame name=audio_encoder ! id3v2mux name=tagger ! gnomevfssink name=file_sink", true)) ;
+				return false;
+			}
+			
+			encoder_bin = new Gst.Bin(Gst.Marshaller.ParseBinFromDescription (pipeline, true)) ;
+
 			Hyena.Log.Debug("<Streamrecorder:InitControl> encoder_bin created: " + Gst.Marshaller.ObjectGetPathString(encoder_bin.BinPtr));
+			
 			tagger = encoder_bin.GetByInterface(Gst.Marshaller.TagSetterGetType());
 			file_sink = encoder_bin.GetByName("file_sink");
-			Gst.Marshaller.GObjectSetLocationProperty(file_sink,output_file);
 			
+			Gst.Marshaller.GObjectSetLocationProperty(file_sink,output_file);
 			Gst.Marshaller.ObjectSetBooleanProperty(file_sink, "sync", true);
 			Gst.Marshaller.ObjectSetBooleanProperty(file_sink, "async", false);
 			
-			GLib.Object.GetObject(file_sink).AddNotification ("allow-overwrite", OnAllowOverwrite); //this is a handler to catch existing files
+			GLib.Object.GetObject(file_sink).AddNotification ("allow-overwrite", OnAllowOverwrite); 
+
 			ghost_pad = encoder_bin.GetPad("sink");
 
-			/*
-			def create_recorder (self):
-				#self.encoder_bin = gst.parse_bin_from_description ('lame name=audio_encoder ! gnomevfssink name=file_sink', True)
-				#self.encoder_bin = gst.parse_bin_from_description ('lame name=audio_encoder ! id3v2mux name=tagger ! gnomevfssink name=file_sink', True)
-				#print 'Using AudioProfile: %s, %s, %s' % (self.audio_profile[0], self.audio_profile[1], self.audio_profile[2])
-				
-				self.encoder_bin = gst.parse_bin_from_description ('audioresample ! audioconvert ! %s ! gnomevfssink name=file_sink' % (self.audio_profile[1]), True)
-				#print '%s' % (self.audio_profile[0])
-				print '%s' % (self.audio_profile[1])
-				#print '%s' % (self.audio_profile[2])
-
-				#self.audio_encoder = self.encoder_bin.get_by_name ('audio_encoder')
-				self.tagger = self.encoder_bin.get_by_interface (gst.TagSetter)
-				print self.tagger
-				self.file_sink.set_property ('location', file_uri)
-				self.file_sink = self.encoder_bin.get_by_name ('file_sink')
-
-				# This prevents gnomevfs totally screwing up rhythmbox (gst 0.10.15+)
-				if gst.version()[1] == 10 and gst.version()[2] >= 15:
-					self.file_sink.set_property ('sync', True)
-					self.file_sink.set_property ('async', False)
-				self.file_sink.connect ('allow-overwrite', self.allow_overwrite_cb)
-
-				self.ghostpad = self.encoder_bin.get_pad ('sink')
-			*/
-			
-			initialized = true;
 			Hyena.Log.Debug("<Streamrecorder:InitControl> END");
+			
+			return true;
 		}
+
+		private string BuildPipeline ()
+		{
+			string pipeline = "";
+			string pipeline_start = "audioresample ! audioconvert ";
+			string pipeline_end = "! gnomevfssink name=file_sink";
+			Encoder encoder = GetFirstAvailableEncoder ();
+			
+			if (encoder != null)
+			{
+				pipeline = pipeline_start + encoder.Pipeline + pipeline_end;
+			}
+			
+			return pipeline;
+		}
+		
+		public List<Encoder> Encoders
+		{
+			get { return encoders; }
+		}
+		
+		private Encoder GetFirstPreferredEncoder()
+		{
+			foreach (Encoder encoder in encoders)
+			{
+				if (encoder.IsPreferred) return encoder;
+			}
+			return null;
+		}
+		
+		private Encoder GetFirstAvailableEncoder()
+		{
+			Encoder encoder = GetFirstPreferredEncoder ();
+			if (encoder == null && encoders.Count >= 1 )
+			{
+				encoder = encoders[0];
+			}
+			return encoder;
+		}
+
+		/*
+		 * Silence Detection
+		 */
+		
+		private void AddSilenceDetector()
+		{
+			Hyena.Log.Information("[StreamrecorderProcessControl]<AddSilenceDetector> START");
+			if (has_level)
+			{
+				silence_pipeline = new Gst.Bin(Gst.Marshaller.ParseLaunch("audioconvert ! level message=true interval=1000000 ! fakesink name=fake_sink"));
+				//silence_pipeline = new Gst.Bin(Gst.Marshaller.ParseLaunch("audioconvert ! cutter ! fakesink name=fake_sink"));
+				silence_ghost_pad = Gst.Marshaller.GhostPadNew("silenceghostpad",silence_pipeline.GetPad("fake_sink"));
+				
+				IntPtr fake_sink = silence_pipeline.GetByName("fake_sink");
+				Gst.Marshaller.ObjectSetBooleanProperty(fake_sink, "sync", false);
+  
+				bus = Gst.Marshaller.gst_element_get_bus (silence_pipeline.BinPtr);
+
+				Hyena.Log.Information("[StreamrecorderProcessControl]<AddSilenceDetector> connecting bus " + Gst.Marshaller.ObjectGetPathString(bus));
+
+				//if (bus == IntPtr.Zero) return;
+				//Gst.Marshaller.gst_bus_add_signal_watch(bus);
+				
+				//IntPtr native_message = GLib.Marshaller.StringToPtrGStrdup ("message::level");
+				//Gst.Marshaller.g_signal_connect_data(bus, native_message, BusEventCallback, IntPtr.Zero, IntPtr.Zero, 1);
+				//Gst.Marshaller.PlayerAddTee(audiotee,silence_pipeline,true);
+			}
+
+			Hyena.Log.Information("[StreamrecorderProcessControl]<AddSilenceDetector> END");
+
+		}
+
+		private bool BusEventCallback (IntPtr bus, IntPtr message, IntPtr user_data)
+		{
+			Hyena.Log.Information("[StreamrecorderProcessControl]<BusEventCallback> START");
+			IntPtr structure = Gst.Marshaller.gst_message_get_structure(message);
+			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup ("peak");
+			GLib.Value val = Gst.Marshaller.gst_structure_get_value(structure, native_name);
+			GLib.ValueArray peaks = val.Val as GLib.ValueArray;
+			int peak = (int)peaks[0];
+			if (peak < -50) Hyena.Log.Information("[StreamrecorderProcessControl]<BusEventCallback> Silence detected");
+
+			Hyena.Log.Information("[StreamrecorderProcessControl]<BusEventCallback> END");
+
+			return true;
+		}				
 
 		private void OnAllowOverwrite(object o, GLib.NotifyArgs args)
 		{
@@ -130,13 +227,12 @@ namespace Banshee.Streamrecorder
         public void StartRecording () 
         {
             Hyena.Log.Debug ("[StreamrecorderProcessControl] <StartRecording> START");
-			//if ( this.audiotee == null || this.audiotee.BinPtr == IntPtr.Zero )
-			//{
-				InitControl() ;
-			//}
-            
-			Gst.Marshaller.PlayerAddTee(audiotee,encoder_bin,true);
-			//Gst.Marshaller.PlayerAddTee(audiotee,encoder_bin,false);
+
+			if (CreateRecorder())
+			{
+				Gst.Marshaller.PlayerAddTee(audiotee,encoder_bin,true);
+				//AddSilenceDetector();
+			}
 			
             Hyena.Log.Debug ("[StreamrecorderProcessControl] <StartRecording> END");
         }
@@ -145,27 +241,60 @@ namespace Banshee.Streamrecorder
         {
             Hyena.Log.Debug ("[StreamrecorderProcessControl] <StopRecording> STOPPED");
 
-			Gst.Marshaller.PlayerRemoveTee(audiotee,encoder_bin,true);
-			//Gst.Marshaller.PlayerRemoveTee(audiotee,encoder_bin,false);
+			if (ghost_pad != IntPtr.Zero)
+			{
+				Gst.Marshaller.PlayerRemoveTee(audiotee,encoder_bin,true);
+			}
+			
+			//Silence Detector Message Test
+			//IntPtr msg = Gst.Marshaller.gst_bus_pop(bus);
+			//if (msg == IntPtr.Zero) Hyena.Log.Information ("[StreamrecorderProcessControl] <StopRecording> No Messages");
 
-        }
-
-        public bool Initialized
-        {
-			get { return initialized; }
         }
         
-        public void SetOutputParameters (string directory, string filename, string pattern) 
+        public bool AddStreamTags(TrackInfo track)
         {
-            SetOutputFileFormatPattern(pattern);
+			Hyena.Log.Information("[StreamrecorderProcessControl]<AddStreamTags> START");
+			if (track == null) return false;
+			
+			Hyena.Log.Debug("[StreamrecorderProcessControl]<AddStreamTags>caught metadata ArtistName:" + track.ArtistName);
+			Hyena.Log.Debug("[StreamrecorderProcessControl]<AddStreamTags>caught metadata Genre:" + track.Genre);
+			Hyena.Log.Debug("[StreamrecorderProcessControl]<AddStreamTags>caught metadata TrackTitle:" + track.TrackTitle);
+			Hyena.Log.Debug("[StreamrecorderProcessControl]<AddStreamTags>caught metadata AlbumArtist:" + track.AlbumArtist);
+			RadioTrackInfo radio_track = track as RadioTrackInfo;
+			Hyena.Log.Debug("[StreamrecorderProcessControl]<AddStreamTags>caught metadata Station:" + radio_track.ParentTrack.TrackTitle);
+
+			if (tagger == IntPtr.Zero)
+			{
+				Hyena.Log.Information("[StreamrecorderProcessControl]<AddStreamTags>tagger is null, not tagging!");
+				return false;
+			}
+
+			
+			IntPtr taglist = Gst.Marshaller.TagListNew();
+			Gst.Marshaller.TagListAddStringValue(taglist,Gst.TagMergeMode.ReplaceAll,"title",track.TrackTitle);
+			Gst.Marshaller.TagListAddStringValue(taglist,Gst.TagMergeMode.ReplaceAll,"genre",track.Genre);
+			Gst.Marshaller.TagListAddStringValue(taglist,Gst.TagMergeMode.ReplaceAll,"artist",track.ArtistName);
+			Gst.Marshaller.TagListAddStringValue(taglist,Gst.TagMergeMode.ReplaceAll,"album-artist",track.AlbumArtist);
+			
+			Gst.Marshaller.TagSetterMergeTags(tagger, taglist, Gst.TagMergeMode.ReplaceAll);
+
+			Hyena.Log.Information("[StreamrecorderProcessControl]<AddStreamTags> END");
+
+			return true;
+		}
+
+        public void SetOutputParameters (string directory, string filename) 
+        {
+            //SetOutputFileFormatPattern(pattern);
             SetOutputDirectory(directory);
             SetOutputFile(filename);
         }
         
-        private void SetOutputFileFormatPattern (string pattern) 
-        {
-            output_file_format_pattern = pattern;
-        }
+        //private void SetOutputFileFormatPattern (string pattern) 
+        //{
+        //    output_file_format_pattern = pattern;
+        //}
 
         private void SetOutputDirectory (string directory) 
         {
@@ -200,12 +329,6 @@ namespace Banshee.Streamrecorder
 			self.encoder_bin.set_state (gst.STATE_PLAYING)
 		teepad.set_blocked (False)
 
-	def get_preferred_audio_profile (self):
-		profile_id = self.client.get_string ('/apps/rhythmbox/library_preferred_format')
-		gdir = GCONF_GST_AUDIO_PROFILE % (profile_id)
-		pipeline = self.client.get_string (gdir + '/pipeline')
-		extension = self.client.get_string (gdir + '/extension')
-		return [profile_id, pipeline, extension]
 
  */
 

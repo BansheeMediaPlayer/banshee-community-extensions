@@ -85,12 +85,12 @@ namespace Banshee.Streamrecorder.Gst
 		}
 
         [DllImport ("libgstreamer-0.10.so.0")]
-		static extern IntPtr gst_element_get_pad (IntPtr element, IntPtr name);
+		static extern IntPtr gst_element_get_static_pad (IntPtr element, IntPtr name);
 		
 		public IntPtr GetPad (string name)
 		{
 			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-			return gst_element_get_pad(bin, native_name);
+			return gst_element_get_static_pad(bin, native_name);
 		}
 		
         [DllImport ("libgstreamer-0.10.so.0")]
@@ -111,10 +111,9 @@ namespace Banshee.Streamrecorder.Gst
 		
 		public void AddMany(IntPtr[] elements)
 		{
-			bool ret;
 			foreach (IntPtr element in elements)
 			{
-				ret = Add(element);
+				Add(element);
 			}
 		}
 

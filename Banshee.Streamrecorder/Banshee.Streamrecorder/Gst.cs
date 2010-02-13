@@ -68,11 +68,11 @@ namespace Banshee.Streamrecorder.Gst
 			if (use_pad_block)
 			{
 				string whatpad = ObjectGetPathString(block_pad);
-				Hyena.Log.Information("blockin pad " + whatpad + " to perform an operation");
+				Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<PlayerAddTee> blockin pad " + whatpad + " to perform an operation");
 
 				PadSetBlockedAsync(block_pad, true, ReallyAddTee, user_data);
 			} else {
-				Hyena.Log.Information("not using blockin pad, calling operation directly");
+				Hyena.Log.Debug("Streamrecorder.Gst.Marshaller]<PlayerAddTee> not using blockin pad, calling operation directly");
 				ReallyAddTee(block_pad, false, user_data);
 			}
 			gst_object_unref (block_pad);
@@ -96,15 +96,15 @@ namespace Banshee.Streamrecorder.Gst
 
 		private static void ReallyAddTee(IntPtr pad, bool blocked, IntPtr user_data)
 		{
-			Hyena.Log.Information("[Gst.Marshaller]<ReallyAddTee> START");
+			Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<ReallyAddTee> START");
 			
 			GCHandle gch = GCHandle.FromIntPtr(user_data);
 			Gst.Bin[] user_bins = (Gst.Bin[])gch.Target;
 			Gst.Bin fixture = user_bins[0];
 			Gst.Bin element = user_bins[1];
 			
-			Hyena.Log.Information("[Gst.Marshaller]<ReallyAddTee> path for fixture: " + ObjectGetPathString(fixture.BinPtr));
-			Hyena.Log.Information("[Gst.Marshaller]<ReallyAddTee> path for element: " + ObjectGetPathString(element.BinPtr));
+			Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<ReallyAddTee> path for fixture: " + ObjectGetPathString(fixture.BinPtr));
+			Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<ReallyAddTee> path for element: " + ObjectGetPathString(element.BinPtr));
 
 			IntPtr queue;
 			IntPtr audioconvert;
@@ -117,25 +117,22 @@ namespace Banshee.Streamrecorder.Gst
 			element_parent = gst_object_get_parent(element.BinPtr);
 			if (element_parent != IntPtr.Zero)
 			{
-				Hyena.Log.Information("[Gst.Marshaller]<ReallyAddTee>element already linked, exiting. assume double function call");
+				Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<ReallyAddTee>element already linked, exiting. assume double function call");
+				gst_object_unref(element_parent);
 				return;
 			}
-			gst_object_unref(element_parent);
-
-			Hyena.Log.Information("[Gst.Marshaller]<ReallyAddTee>adding tee " + ObjectGetPathString(element.BinPtr));
+			
+			Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<ReallyAddTee>adding tee " + ObjectGetPathString(element.BinPtr));
 			
 			/* set up containing bin */
 			bin = new Bin ();
 			queue = ElementFactoryMake("queue");
 			audioconvert = ElementFactoryMake("audioconvert");
-			Hyena.Log.Information("[Gst.Marshaller]<ReallyAddTee> path for audioconvert: " + ObjectGetPathString(audioconvert));
 			
 			ObjectSetBooleanProperty(bin.BinPtr, "async-handling", true);
 			ObjectSetIntegerProperty(queue, "max-size-buffers", 3);
 
-			Hyena.Log.Information("[Gst.Marshaller]<ReallyAddTee>adding many");
 			bin.AddMany( new IntPtr[3] { queue, audioconvert, element.BinPtr } );
-			Hyena.Log.Information("[Gst.Marshaller]<ReallyAddTee>linking many");
 			ElementLinkMany( new IntPtr[3] { queue, audioconvert, element.BinPtr } );
 			
 			sink_pad = ElementGetStaticPad(queue, "sink");
@@ -149,7 +146,7 @@ namespace Banshee.Streamrecorder.Gst
 			
 			if (blocked)
 			{
-				Hyena.Log.Information("unblocking pad after adding tee");
+				Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<ReallyAddTee> unblocking pad after adding tee");
 				
 				ElementSetState(parent_bin.BinPtr,Gst.State.Playing);
 				gst_object_ref(ghost_pad);
@@ -162,7 +159,7 @@ namespace Banshee.Streamrecorder.Gst
 				PlayerAddRemoveTeeDone(IntPtr.Zero,false,ghost_pad);
 			}
 
-			Hyena.Log.Information("[Gst.Marshaller]<ReallyAddTee> END");
+			Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<ReallyAddTee> END");
 
 		}
 		
@@ -182,11 +179,11 @@ namespace Banshee.Streamrecorder.Gst
 			if (use_pad_block)
 			{
 				string whatpad = ObjectGetPathString(block_pad);
-				Hyena.Log.Information("blockin pad " + whatpad + " to perform an operation");
+				Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<PlayerRemoveTee> blockin pad " + whatpad + " to perform an operation");
 
 				PadSetBlockedAsync(block_pad, true, ReallyRemoveTee, user_data);
 			} else {
-				Hyena.Log.Information("not using blockin pad, calling operation directly");
+				Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<PlayerRemoveTee> not using blockin pad, calling operation directly");
 				ReallyRemoveTee(block_pad, false, user_data);
 			}
 			gst_object_unref (block_pad);
@@ -197,24 +194,18 @@ namespace Banshee.Streamrecorder.Gst
 		{
 			GCHandle gch = GCHandle.FromIntPtr(user_data);
 			Gst.Bin[] user_bins = (Gst.Bin[])gch.Target;
-			Gst.Bin fixture = user_bins[0];
+			//Gst.Bin fixture = user_bins[0];
 			Gst.Bin element = user_bins[1];
 
 			Gst.Bin bin;
 			Gst.Bin parent_bin;
 			
-			Hyena.Log.Information("removing tee " + ObjectGetName(element));
+			Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<ReallyRemoveTee> removing tee " + ObjectGetName(element));
 			
 			bin = new Gst.Bin(gst_object_get_parent(element.BinPtr));
-
-			Hyena.Log.Information("parent of tee " + ObjectGetName(bin.BinPtr));
-
 			gst_object_ref (bin.BinPtr);
 
 			parent_bin = new Gst.Bin(gst_object_get_parent(bin.BinPtr));
-
-			Hyena.Log.Information("parent of bin " + ObjectGetName(parent_bin.BinPtr));
-
 			parent_bin.Remove(bin.BinPtr);
 
 			ElementSetState(bin.BinPtr,Gst.State.Null);
@@ -223,7 +214,7 @@ namespace Banshee.Streamrecorder.Gst
 
 			/* if we're supposed to be playing, unblock the sink */
 			if (blocked) {
-				Hyena.Log.Information("unblocking pad after removing tee");
+				Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<ReallyRemoveTee>unblocking pad after removing tee");
 				PadSetBlockedAsync(pad,false,PlayerAddRemoveTeeDone,IntPtr.Zero);
 			}
 					
@@ -238,6 +229,28 @@ namespace Banshee.Streamrecorder.Gst
         }
         
         /*
+         * Tagging
+         */
+        public static IntPtr TagListNew()
+        {
+			return gst_tag_list_new();
+		}
+		
+        public static void TagListAddStringValue (IntPtr taglist, Gst.TagMergeMode mode, string tag, string value)
+		{
+			GLib.Value val = new GLib.Value (GLib.GType.String);
+			val.Val = value;
+			IntPtr native_tag = GLib.Marshaller.StringToPtrGStrdup (tag);
+			gst_tag_list_add_value (taglist, mode, native_tag, ref val);
+			GLib.Marshaller.Free (native_tag);
+		}
+
+		public static void TagSetterMergeTags(IntPtr tagsetter, IntPtr taglist, Gst.TagMergeMode mode)
+		{
+			gst_tag_setter_merge_tags(tagsetter, taglist, mode);
+		}
+        
+        /*
          * Initialization
          */
         public static bool Initialize () {
@@ -245,18 +258,34 @@ namespace Banshee.Streamrecorder.Gst
 			{
 				 gst_version = VersionString ();
 				 DebugSetActive(true);
-				 Console.WriteLine("gstreamer version found: " + gst_version);
+				 Hyena.Log.Information("[Streamrecorder.Gst.Marshaller] gstreamer version found: " + gst_version);
 				 return true;
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e.ToString());
-				Console.WriteLine(e.Message);
+				Hyena.Log.Error(e.ToString());
+				Hyena.Log.Error(e.Message);
 			}
 			return false;
 		}
 
 		/* Helper Import Wrappers */
+		public static bool CheckGstPlugin (string name)
+		{
+			bool ret = false;
+			IntPtr element_factory;
+			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+			element_factory = gst_element_factory_find (native_name);
+			Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller] looking for factory : " + name);
+			if (element_factory != IntPtr.Zero) 
+			{
+				ret = true;
+				gst_object_unref(element_factory);
+				Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller] found factory for : " + name);
+			}
+			return ret;
+		}
+		
         private static IntPtr ElementGetStaticPad(IntPtr element, string name)
         {
 			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
@@ -303,7 +332,7 @@ namespace Banshee.Streamrecorder.Gst
 			}
 		}
 		
-        private static IntPtr GhostPadNew(string name, IntPtr target)
+        public static IntPtr GhostPadNew(string name, IntPtr target)
         {
 			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
 			return gst_ghost_pad_new(native_name, target);
@@ -317,11 +346,11 @@ namespace Banshee.Streamrecorder.Gst
 		}
         
 		public static bool PadSetBlockedAsync(IntPtr pad, bool blocked, PadBlockCallback cb, IntPtr user_data) {
-			Hyena.Log.Information("[Gst.Marshaller]<PadSetBlockedAsync> START");
+			Hyena.Log.Debug("[Gst.Marshaller]<PadSetBlockedAsync> START");
 			PadBlockCallbackWrapper cb_wrapper = new PadBlockCallbackWrapper (cb);
 			bool raw_ret = gst_pad_set_blocked_async(pad, blocked, cb_wrapper.NativeDelegate, user_data);
 			bool ret = raw_ret;
-			Hyena.Log.Information("[Gst.Marshaller]<PadSetBlockedAsync> END");
+			Hyena.Log.Debug("[Gst.Marshaller]<PadSetBlockedAsync> END");
 			return ret;
 		}
 
@@ -334,6 +363,15 @@ namespace Banshee.Streamrecorder.Gst
 			IntPtr native_bin_description = GLib.Marshaller.StringToPtrGStrdup (bin_description);
 			IntPtr error = IntPtr.Zero;
 			IntPtr raw_ret = gst_parse_bin_from_description(native_bin_description, ghost_unlinked_pads, out error);
+			GLib.Marshaller.Free (native_bin_description);
+			if (error != IntPtr.Zero) throw new GLib.GException (error);
+			return raw_ret;
+        }
+
+        public static unsafe IntPtr ParseLaunch(string bin_description) {
+			IntPtr native_bin_description = GLib.Marshaller.StringToPtrGStrdup (bin_description);
+			IntPtr error = IntPtr.Zero;
+			IntPtr raw_ret = gst_parse_launch(native_bin_description, out error);
 			GLib.Marshaller.Free (native_bin_description);
 			if (error != IntPtr.Zero) throw new GLib.GException (error);
 			return raw_ret;
@@ -384,11 +422,20 @@ namespace Banshee.Streamrecorder.Gst
 		[DllImport ("libgobject-2.0.so.0")]
         private static extern void g_object_set_property (IntPtr gobject, IntPtr property_name, ref GLib.Value value);
 		
+		[DllImport ("libgobject-2.0.so.0")]
+        public static extern void g_signal_connect_data (IntPtr instance, IntPtr detailed_signal, BusFunc cb, IntPtr data, IntPtr zero, uint flags);
+		
+        [DllImport ("libgstreamer-0.10.so.0")]
+		public static extern IntPtr gst_bus_pop (IntPtr bus);
+
         [DllImport ("libgstreamer-0.10.so.0")]
 		private static extern GLib.GType gst_tag_setter_get_type ();
 
         [DllImport ("libgstreamer-0.10.so.0")]
         private static extern unsafe IntPtr gst_parse_bin_from_description (IntPtr bin_description, bool ghost_unlinked_pads, out IntPtr gerror);
+        
+        [DllImport ("libgstreamer-0.10.so.0")]
+        private static extern unsafe IntPtr gst_parse_launch (IntPtr bin_description, out IntPtr gerror);
         
 		[DllImport("libgstreamer-0.10.so.0", CallingConvention = CallingConvention.Cdecl)]
 		static extern bool gst_pad_set_blocked_async(IntPtr pad, bool blocked, PadBlockCallbackNative cb, IntPtr user_data);
@@ -408,9 +455,6 @@ namespace Banshee.Streamrecorder.Gst
         [DllImport ("libgstreamer-0.10.so.0")]
         private static extern unsafe IntPtr gst_element_factory_make (IntPtr factoryname, IntPtr name);
         
-        [DllImport ("libgstreamer-0.10.so.0")]
-        private static extern unsafe IntPtr gst_object_get_name (IntPtr gobject);
-
         [DllImport ("libgstreamer-0.10.so.0")]
 		private static extern IntPtr gst_event_new_new_segment (bool update, double rate, Gst.Format format, long start, long stop,long position);
 
@@ -433,11 +477,104 @@ namespace Banshee.Streamrecorder.Gst
         private static extern unsafe IntPtr gst_element_get_static_pad (IntPtr element, IntPtr name);
         
         [DllImport ("libgstreamer-0.10.so.0")]
-        private static extern unsafe bool gst_object_has_ancestor (IntPtr element, IntPtr ancestor);
+        private static extern unsafe IntPtr gst_tag_list_new ();
+        
+        [DllImport ("libgstreamer-0.10.so.0")]
+        private static extern unsafe void gst_tag_list_add_value (IntPtr taglist, Gst.TagMergeMode mode, IntPtr tag, ref GLib.Value value);
+        
+        [DllImport ("libgstreamer-0.10.so.0")]
+        private static extern unsafe void gst_tag_setter_merge_tags (IntPtr tagsetter, IntPtr taglist, Gst.TagMergeMode mode);
 
-    }
+        [DllImport ("libgstreamer-0.10.so.0")]
+        private static extern unsafe IntPtr gst_element_factory_find (IntPtr name);
+
+        [DllImport ("libgstreamer-0.10.so.0")]
+        public static extern unsafe IntPtr gst_element_get_bus (IntPtr element);
+
+        [DllImport ("libgstreamer-0.10.so.0")]
+        public static extern unsafe void gst_bus_add_signal_watch (IntPtr bus);
+
+        [DllImport ("libgstreamer-0.10.so.0")]
+        public static extern unsafe GLib.Value gst_structure_get_value (IntPtr structure, IntPtr name);
+
+        [DllImport ("libgstreamer-0.10.so.0")]
+        public static extern unsafe IntPtr gst_message_get_structure (IntPtr message);
+
+	}
 
 	/* Helper Classes*/
+
+	public delegate bool BusFunc(IntPtr bus, IntPtr message, IntPtr user_data);
+
+	[UnmanagedFunctionPointer (CallingConvention.Cdecl)]
+	internal delegate bool BusFuncNative(IntPtr bus, IntPtr message, IntPtr user_data);
+
+	internal class BusFuncInvoker {
+
+		BusFuncNative native_cb;
+
+		~BusFuncInvoker () {}
+
+		internal BusFuncInvoker (BusFuncNative native_cb) {}
+
+		internal Gst.BusFunc Handler {
+			get {
+				return new Gst.BusFunc(InvokeNative);
+			}
+		}
+
+		bool InvokeNative (IntPtr bus, IntPtr message, IntPtr user_data)
+		{
+			bool result = native_cb (bus, message , user_data);
+			return result;
+		}
+	}
+
+	internal class BusFuncWrapper {
+
+		public bool NativeCallback (IntPtr bus, IntPtr message, IntPtr user_data)
+		{
+			try {
+				bool __ret = managed (bus, message, user_data);
+				if (release_on_call)
+					gch.Free ();
+				return __ret;
+			} catch (Exception e) {
+				GLib.ExceptionManager.RaiseUnhandledException (e, false);
+				return false;
+			}
+		}
+
+		bool release_on_call = false;
+		GCHandle gch;
+
+		public void PersistUntilCalled ()
+		{
+			release_on_call = true;
+			gch = GCHandle.Alloc (this);
+		}
+
+		internal BusFuncNative NativeDelegate;
+		BusFunc managed;
+
+		public BusFuncWrapper (Gst.BusFunc managed)
+		{
+			this.managed = managed;
+			if (managed != null)
+				NativeDelegate = new BusFuncNative (NativeCallback);
+		}
+
+		public static BusFunc GetManagedDelegate (BusFuncNative native)
+		{
+			if (native == null)
+				return null;
+			BusFuncWrapper wrapper = (BusFuncWrapper) native.Target;
+			if (wrapper == null)
+				return null;
+			return wrapper.managed;
+		}
+	}
+
 	public delegate void PadBlockCallback(IntPtr pad, bool blocked, IntPtr user_data);
     
     [UnmanagedFunctionPointer (CallingConvention.Cdecl)]
@@ -533,5 +670,23 @@ namespace Banshee.Streamrecorder.Gst
 		Buffers = 4,
 		Percent = 5,
 	}
+
+	public enum TagMergeMode {
+
+		Undefined,
+		ReplaceAll,
+		Replace,
+		Append,
+		Prepend,
+		Keep,
+		KeepAll,
+		Count,
+	}
+	
+	public enum GstPadDirection {
+		Unknown,
+		Source,
+		Sink
+	} 
 
 }

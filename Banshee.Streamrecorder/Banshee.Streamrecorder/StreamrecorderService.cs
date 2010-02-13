@@ -88,6 +88,7 @@ namespace Banshee.Streamrecorder
         
             ServiceManager.PlayerEngine.ConnectEvent ( OnEndOfStream , PlayerEvent.EndOfStream) ;
             ServiceManager.PlayerEngine.ConnectEvent ( OnStateChange , PlayerEvent.StateChange) ;
+			ServiceManager.PlayerEngine.ConnectEvent ( OnMetadata, PlayerEvent.TrackInfoUpdated );
         
             action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
             actions = new ActionGroup ("Streamrecorder");
@@ -162,6 +163,12 @@ namespace Banshee.Streamrecorder
             return false;
         }
 
+        private void OnMetadata (PlayerEventArgs args)
+        {
+			TrackInfo track = ServiceManager.PlayerEngine.CurrentTrack;
+			streamrecorder_process.AddStreamTags(track);
+        }
+
         private void OnEndOfStream (PlayerEventArgs args)
         {
             if (recording) {
@@ -193,6 +200,7 @@ namespace Banshee.Streamrecorder
 
             if (InitStreamrecorderProcess (track)) {
 				streamrecorder_process.StartRecording ();
+				streamrecorder_process.AddStreamTags(track);
 				
                 if (is_importing_enabled)
                     StartFolderScanner ();
@@ -201,10 +209,7 @@ namespace Banshee.Streamrecorder
 
         private void StopRecording () 
         {
-            if (streamrecorder_process.Initialized ) {
-                streamrecorder_process.StopRecording ();
-
-            }
+            streamrecorder_process.StopRecording ();
 
             StopFolderScanner ();
         }
@@ -240,11 +245,11 @@ namespace Banshee.Streamrecorder
 
 			DateTime dt = DateTime.Now;
 			string datestr = String.Format("{0:d_M_yyyy_HH_mm_ss}", dt);
-			string fileext = ".,p3";//Regex.Replace(track.Uri.ToString(), @"^.*(\.[^\.\/]*)$", "$1");
+			string fileext = ".mp3";//Regex.Replace(track.Uri.ToString(), @"^.*(\.[^\.\/]*)$", "$1");
 			//if (fileext.Equals(track.Uri.ToString())) fileext = ".mp3" ;
 			string filename = track.TrackTitle + "_" + datestr + fileext;
 
-            streamrecorder_process.SetOutputParameters (output_directory,filename,"\"%A/%a/%T\"");
+            streamrecorder_process.SetOutputParameters (output_directory,filename);
 
             RippedFileScanner.SetScanDirectory (output_directory);
                     
