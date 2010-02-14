@@ -1,5 +1,5 @@
 //
-// Encoder.cs
+// GhostPad.cs
 //
 // Author:
 //   Frank Ziegler
@@ -27,56 +27,32 @@
 //
 
 using System;
+using System.IO;
+using System.Diagnostics;
+using System.Threading;
+using System.Runtime.InteropServices;
 
-namespace Banshee.Streamrecorder
+
+using Mono.Addins;
+
+using Hyena;
+namespace Banshee.Streamrecorder.Gst
 {
-    public class Encoder
-    {
 
-		private string name;
-		private string pipeline;
-		private string file_extension;
-		private bool is_preferred;
-
-		public Encoder (string name, string pipeline, string file_extension) : this(name, pipeline, file_extension, false) {}
-
-		public Encoder (string name, string pipeline, string file_extension, bool is_preferred)
-		{
-			this.name = name;
-			this.pipeline = pipeline;
-			this.file_extension = file_extension;
-			this.is_preferred = is_preferred;
-		}
-
-		public string Name
-		{
-			get { return name; }
-			set { name = value; }
-		}
+	public class GhostPad : Pad
+	{
 		
-		public string Pipeline
-		{
-			get { return pipeline; }
-			set { pipeline = value; }
-		}
-		
-		public string FileExtension
-		{
-			get { return file_extension; }
-			set { file_extension = value; }
-		}
-		
-		public bool IsPreferred
-		{
-			get {return is_preferred; }
-			set {is_preferred = value; }
-		}
-		
-		public string ToString()
-		{
-			return name;
+		public GhostPad(IntPtr ghostpad) : base (ghostpad) {}
+
+		[DllImport ("libgstreamer-0.10.so.0")]
+        private static extern unsafe IntPtr gst_ghost_pad_new (IntPtr name, IntPtr target);
+        
+        public GhostPad(string name, Pad target) : base (IntPtr.Zero)
+        {
+			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+			this.raw = gst_ghost_pad_new(native_name, target.ToIntPtr ());
+			GLib.Marshaller.Free (native_name);
 		}
 
-    }
-
+	}
 }

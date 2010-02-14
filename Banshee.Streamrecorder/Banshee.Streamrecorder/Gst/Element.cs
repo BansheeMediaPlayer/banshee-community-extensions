@@ -1,5 +1,5 @@
 //
-// GstBin.cs
+// Element.cs
 //
 // Author:
 //   Frank Ziegler
@@ -32,99 +32,68 @@ using System.Diagnostics;
 using System.Threading;
 using System.Runtime.InteropServices;
 
-using System.Text.RegularExpressions;
-
 using Mono.Addins;
 
-using Banshee.ServiceStack;
-using Banshee.Collection;
-
 using Hyena;
-
 namespace Banshee.Streamrecorder.Gst
 {
-    public class Bin
-    {
-
-		private IntPtr bin;
+	
+	public class Element : GstObject
+	{
 		
-        [DllImport ("libgstreamer-0.10.so.0")]
-		private static extern IntPtr gst_bin_new (IntPtr name);
-
-		public Bin ()
-		{
-			this.bin = gst_bin_new (IntPtr.Zero);
-		}
+		public Element (IntPtr element) : base (element) {}
 		
-        public Bin (IntPtr bin) 
-        {
-			this.bin = bin;
-        }
-        
-        public IntPtr BinPtr
-        {
-			get { return bin; }
-			set { this.bin = value ; }
-		}
-
-        [DllImport ("libgstreamer-0.10.so.0")]
-		private static extern IntPtr gst_bin_get_by_interface (IntPtr bin, GLib.GType iface);
-
-		public IntPtr GetByInterface(GLib.GType iface)
-		{
-			return gst_bin_get_by_interface(bin, iface);
-		}
-
-        [DllImport ("libgstreamer-0.10.so.0")]
-		private static extern IntPtr gst_bin_get_by_name (IntPtr bin, IntPtr name);
-		
-		public IntPtr GetByName (string name)
-		{
-			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-			return gst_bin_get_by_name(bin, native_name);
-		}
-
         [DllImport ("libgstreamer-0.10.so.0")]
 		static extern IntPtr gst_element_get_static_pad (IntPtr element, IntPtr name);
 		
-		public IntPtr GetStaticPad (string name)
+		public Pad GetStaticPad (string name)
 		{
 			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-			return gst_element_get_static_pad(bin, native_name);
+			Pad ret = new Pad(gst_element_get_static_pad(raw, native_name));
+			GLib.Marshaller.Free (native_name);
+			return ret;
 		}
 		
         [DllImport ("libgstreamer-0.10.so.0")]
 		static extern bool gst_element_add_pad (IntPtr element, IntPtr pad);
 		
-		public bool AddPad (IntPtr pad)
+		public bool AddPad (Pad pad)
 		{
-			return gst_element_add_pad(bin, pad);
+			return gst_element_add_pad(raw, pad.ToIntPtr ());
 		}
 		
-        [DllImport ("libgstreamer-0.10.so.0")]
-		static extern bool gst_bin_add (IntPtr bin, IntPtr element);
-		
-		public bool Add (IntPtr element)
-		{
-			return gst_bin_add(bin, element);
+		[DllImport("libgstreamer-0.10.so.0", CallingConvention = CallingConvention.Cdecl)]
+		static extern bool gst_element_link(IntPtr src, IntPtr dest);
+
+		public bool Link(Element dest) {
+			bool ret = gst_element_link(raw, dest.ToIntPtr ());
+			return ret;
 		}
 		
-		public void AddMany(IntPtr[] elements)
+		public void LinkMany(Element[] elements)
 		{
-			foreach (IntPtr element in elements)
+			if (elements.Length < 1) return;
+			this.Link(elements[0]);
+			for (int i = 0; i < elements.Length - 1; i++)
 			{
-				Add(element);
+				elements[i].Link(elements[i+1]);
 			}
 		}
-
-        [DllImport ("libgstreamer-0.10.so.0")]
-		static extern bool gst_bin_remove (IntPtr bin, IntPtr element);
 		
-		public bool Remove (IntPtr element)
+        [DllImport ("libgstreamer-0.10.so.0")]
+		static extern int gst_element_set_state(IntPtr element, int state);
+		
+		public StateChangeReturn SetState(State state)
 		{
-			return gst_bin_remove(bin, element);
+			int raw_ret = gst_element_set_state(raw, (int) state);
+			StateChangeReturn ret = (StateChangeReturn) raw_ret;
+			return ret;
 		}
 		
-    }
-
+		public FileSink ToFileSink()
+		{
+			return new FileSink(raw);
+		}
+        
+	}
 }

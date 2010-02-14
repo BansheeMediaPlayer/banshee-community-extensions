@@ -1,5 +1,5 @@
 //
-// Encoder.cs
+// TagSetter.cs
 //
 // Author:
 //   Frank Ziegler
@@ -27,56 +27,38 @@
 //
 
 using System;
+using System.IO;
+using System.Diagnostics;
+using System.Threading;
+using System.Runtime.InteropServices;
 
-namespace Banshee.Streamrecorder
+
+using Mono.Addins;
+
+using Hyena;
+namespace Banshee.Streamrecorder.Gst
 {
-    public class Encoder
-    {
-
-		private string name;
-		private string pipeline;
-		private string file_extension;
-		private bool is_preferred;
-
-		public Encoder (string name, string pipeline, string file_extension) : this(name, pipeline, file_extension, false) {}
-
-		public Encoder (string name, string pipeline, string file_extension, bool is_preferred)
-		{
-			this.name = name;
-			this.pipeline = pipeline;
-			this.file_extension = file_extension;
-			this.is_preferred = is_preferred;
-		}
-
-		public string Name
-		{
-			get { return name; }
-			set { name = value; }
-		}
+	
+	public class TagSetter : GstObject
+	{
 		
-		public string Pipeline
-		{
-			get { return pipeline; }
-			set { pipeline = value; }
-		}
+		public TagSetter(IntPtr tagsetter) : base (tagsetter) {}
 		
-		public string FileExtension
+		[DllImport ("libgstreamer-0.10.so.0")]
+		private static extern GLib.GType gst_tag_setter_get_type ();
+
+		new public static GLib.GType GetType ()
 		{
-			get { return file_extension; }
-			set { file_extension = value; }
-		}
-		
-		public bool IsPreferred
+			return gst_tag_setter_get_type ();
+		}		
+
+		[DllImport ("libgstreamer-0.10.so.0")]
+        private static extern unsafe void gst_tag_setter_merge_tags (IntPtr tagsetter, IntPtr taglist, TagMergeMode mode);
+
+		public void MergeTags(TagList taglist, Gst.TagMergeMode mode)
 		{
-			get {return is_preferred; }
-			set {is_preferred = value; }
-		}
-		
-		public string ToString()
-		{
-			return name;
+			gst_tag_setter_merge_tags(raw, taglist.ToIntPtr (), mode);
 		}
 
-    }
-
+	}
 }

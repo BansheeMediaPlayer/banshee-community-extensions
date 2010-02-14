@@ -1,5 +1,5 @@
 //
-// Encoder.cs
+// Pipeline.cs
 //
 // Author:
 //   Frank Ziegler
@@ -27,56 +27,30 @@
 //
 
 using System;
+using System.IO;
+using System.Diagnostics;
+using System.Threading;
+using System.Runtime.InteropServices;
 
-namespace Banshee.Streamrecorder
+using Mono.Addins;
+
+using Hyena;
+namespace Banshee.Streamrecorder.Gst
 {
-    public class Encoder
-    {
 
-		private string name;
-		private string pipeline;
-		private string file_extension;
-		private bool is_preferred;
-
-		public Encoder (string name, string pipeline, string file_extension) : this(name, pipeline, file_extension, false) {}
-
-		public Encoder (string name, string pipeline, string file_extension, bool is_preferred)
-		{
-			this.name = name;
-			this.pipeline = pipeline;
-			this.file_extension = file_extension;
-			this.is_preferred = is_preferred;
-		}
-
-		public string Name
-		{
-			get { return name; }
-			set { name = value; }
-		}
+	public class Pipeline : Bin
+	{
 		
-		public string Pipeline
+		public Pipeline(IntPtr pipeline) : base (pipeline) {}
+
+		[DllImport ("libgstreamer-0.10.so.0")]
+        public static extern unsafe IntPtr gst_pipeline_get_bus (IntPtr pipeline);
+
+		public Bus GetBus()
 		{
-			get { return pipeline; }
-			set { pipeline = value; }
-		}
-		
-		public string FileExtension
-		{
-			get { return file_extension; }
-			set { file_extension = value; }
-		}
-		
-		public bool IsPreferred
-		{
-			get {return is_preferred; }
-			set {is_preferred = value; }
-		}
-		
-		public string ToString()
-		{
-			return name;
+			return new Bus(gst_pipeline_get_bus(raw));
 		}
 
-    }
+	}
 
 }

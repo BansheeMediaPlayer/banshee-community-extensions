@@ -32,6 +32,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 using Mono.Unix;
 using Mono.Addins;
@@ -43,6 +44,7 @@ using Banshee.Collection;
 using Banshee.Gui;
 using Banshee.Configuration;
 using Banshee.MediaEngine;
+using Banshee.Streaming;
 
 using Hyena;
 
@@ -50,14 +52,16 @@ namespace Banshee.Streamrecorder
 {
     public class StreamrecorderService : IExtensionService, IDisposable
     {
-        private StreamrecorderProcessControl streamrecorder_process;
+        private Recorder recorder;
         private ActionGroup actions;
         private InterfaceActionService action_service;
         private uint ui_manager_id;
         private bool recording = false;
         private string output_directory;
         private bool is_importing_enabled = true;
+		private bool is_splitting_enabled = false;
 		private TrackInfo track = null;
+		private string active_encoder;
 
         
         public StreamrecorderService ()
@@ -67,7 +71,10 @@ namespace Banshee.Streamrecorder
             recording = IsRecordingEnabledEntry.Get ().Equals ("True") ? true : false;
             output_directory = OutputDirectoryEntry.Get ();
             is_importing_enabled = IsImportingEnabledEntry.Get ().Equals ("True") ? true : false;
-            streamrecorder_process = new StreamrecorderProcessControl();
+            is_splitting_enabled = IsFileSplittingEnabledEntry.Get ().Equals ("True") ? true : false;
+            active_encoder = ActiveEncoderEntry.Get ();
+            recorder = new Recorder();
+			active_encoder = recorder.SetActiveEncoder(active_encoder);
         }
         
         void IExtensionService.Initialize ()
@@ -134,7 +141,7 @@ namespace Banshee.Streamrecorder
         
         public void OnConfigure (object o, EventArgs ea)
         {
-            new StreamrecorderConfigDialog (this, output_directory, is_importing_enabled);
+            new StreamrecorderConfigDialog (this, output_directory, active_encoder, is_importing_enabled, is_splitting_enabled);
         }
             
         public void Dispose ()
@@ -166,7 +173,7 @@ namespace Banshee.Streamrecorder
         private void OnMetadata (PlayerEventArgs args)
         {
 			TrackInfo track = ServiceManager.PlayerEngine.CurrentTrack;
-			streamrecorder_process.AddStreamTags(track);
+			recorder.AddStreamTags(track);
         }
 
         private void OnEndOfStream (PlayerEventArgs args)
@@ -199,8 +206,8 @@ namespace Banshee.Streamrecorder
 			track = ServiceManager.PlaybackController.CurrentTrack;
 
             if (InitStreamrecorderProcess (track)) {
-				streamrecorder_process.StartRecording ();
-				streamrecorder_process.AddStreamTags(track);
+				recorder.StartRecording ();
+				recorder.AddStreamTags(track);
 				
                 if (is_importing_enabled)
                     StartFolderScanner ();
@@ -209,7 +216,7 @@ namespace Banshee.Streamrecorder
 
         private void StopRecording () 
         {
-            streamrecorder_process.StopRecording ();
+            recorder.StopRecording ();
 
             StopFolderScanner ();
         }
@@ -227,8 +234,10 @@ namespace Banshee.Streamrecorder
         private bool InitStreamrecorderProcess (TrackInfo track_in) 
         {
             Hyena.Log.DebugFormat ("[StreamrecorderService] <InitStreamrecorderProcess> START dir: '{0}'", output_directory);
-                    
-            if (String.IsNullOrEmpty (output_directory)) {
+            
+			active_encoder = recorder.SetActiveEncoder(active_encoder);
+            
+			if (String.IsNullOrEmpty (output_directory)) {
                 output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory +
                     Path.DirectorySeparatorChar + "ripped";
             }
@@ -245,18 +254,28 @@ namespace Banshee.Streamrecorder
 
 			DateTime dt = DateTime.Now;
 			string datestr = String.Format("{0:d_M_yyyy_HH_mm_ss}", dt);
-			string fileext = ".mp3";//Regex.Replace(track.Uri.ToString(), @"^.*(\.[^\.\/]*)$", "$1");
-			//if (fileext.Equals(track.Uri.ToString())) fileext = ".mp3" ;
-			string filename = track.TrackTitle + "_" + datestr + fileext;
+			RadioTrackInfo radio_track = track as RadioTrackInfo;
+			string filename = radio_track.ParentTrack.TrackTitle + "_" + datestr;
 
-            streamrecorder_process.SetOutputParameters (output_directory,filename);
+            recorder.SetOutputParameters (output_directory,filename);
 
             RippedFileScanner.SetScanDirectory (output_directory);
                     
             Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> END. Recording ready");
             return true;
         }
-                
+				
+		public string[] GetEncoders()
+		{
+			List<Encoder> encoders = recorder.Encoders;
+			string[] encoder_names = new string[encoders.Count];
+			for(int i = 0; i < encoders.Count ; i++)
+			{
+				encoder_names[i] = encoders[i].ToString();
+			}
+			return encoder_names;
+		}
+				
         public string OutputDirectory 
         {
             get { return output_directory; }
@@ -284,12 +303,24 @@ namespace Banshee.Streamrecorder
             }
         }
          
+        public string ActiveEncoder
+        {
+            get { return active_encoder; }
+            set { active_encoder = value; }
+        }
+				
         public bool IsImportingEnabled
         {
             get { return is_importing_enabled; }
             set { is_importing_enabled = value; }
         }
-       
+				
+        public bool IsFileSplittingEnabled
+        {
+            get { return is_splitting_enabled; }
+            set { is_splitting_enabled = value; }
+        }
+				
         public static readonly SchemaEntry<string> IsRecordingEnabledEntry = new SchemaEntry<string> (
             "plugins.streamrecorder", "is_recording_enabled", "", "Is ripping enabled", "Is ripping enabled"
         );
@@ -302,5 +333,13 @@ namespace Banshee.Streamrecorder
         public static readonly SchemaEntry<string> IsImportingEnabledEntry = new SchemaEntry<string> (
             "plugins.streamrecorder", "is_importing_enabled", "", "Is importing enabled", "Is importing enabled"
         );
-    }
+                
+        public static readonly SchemaEntry<string> IsFileSplittingEnabledEntry = new SchemaEntry<string> (
+            "plugins.streamrecorder", "is_splitting_enabled", "", "Is splitting enabled", "Is splitting enabled"
+        );
+
+		public static readonly SchemaEntry<string> ActiveEncoderEntry = new SchemaEntry<string> (
+            "plugins.streamrecorder", "active_encoder", "", "Active Encoder", "Active Encoder"
+        );
+	}
 }

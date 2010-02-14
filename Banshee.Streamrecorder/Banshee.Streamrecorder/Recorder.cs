@@ -1,5 +1,5 @@
 //
-// StreamrecorderProcessControl.cs
+// Recorder.cs
 //
 // Author:
 //   Frank Ziegler
@@ -40,25 +40,27 @@ using Banshee.Streaming;
 using Banshee.ServiceStack;
 using Banshee.Collection;
 using Banshee.Collection.Database;
+using Banshee.Streamrecorder.Gst;
 
 using Hyena;
 
 namespace Banshee.Streamrecorder
 {
-    public class StreamrecorderProcessControl
+    public class Recorder
     {
         private string output_directory;
         private string output_file;
+        private string file_extension;
         
-        private Gst.Bin audiotee;
-        private Gst.Bin encoder_bin;
-        private IntPtr tagger;
-        private IntPtr file_sink;
-        private IntPtr ghost_pad;
+        private PlayerAudioTee audiotee;
+        private Bin encoder_bin;
+        private TagSetter tagger;
+        private FileSink file_sink;
+        private GhostPad ghost_pad;
         
-        private Gst.Bin silence_pipeline;
-        private IntPtr silence_ghost_pad;
-        private IntPtr bus;
+        private Pipeline silence_pipeline;
+        private GhostPad silence_ghost_pad;
+        private Bus bus;
         
         private List<Encoder> encoders = new List<Encoder> ();
         private bool has_lame;
@@ -75,23 +77,23 @@ namespace Banshee.Streamrecorder
         private const  string flac_extension = ".flac";
         private bool has_level;
         
-        public StreamrecorderProcessControl () 
+        public Recorder () 
         {
-			if (Gst.Marshaller.Initialize()) 
+			if (Marshaller.Initialize()) 
 			{
-				has_lame = Gst.Marshaller.CheckGstPlugin("lame") && Gst.Marshaller.CheckGstPlugin("id3v2mux");
+				has_lame = Marshaller.CheckGstPlugin("lame") && Marshaller.CheckGstPlugin("id3v2mux");
 				Hyena.Log.Information("[Streamrecorder] GstPlugin lame" + (has_lame ? "" : " not") + " found");
 				encoders.Add(new Encoder(lame_name, lame_pipeline, lame_extension));
 				
-				has_vorbis = Gst.Marshaller.CheckGstPlugin("vorbisenc") && Gst.Marshaller.CheckGstPlugin("oggmux") && Gst.Marshaller.CheckGstPlugin("oggmux");
+				has_vorbis = Marshaller.CheckGstPlugin("vorbisenc") && Marshaller.CheckGstPlugin("oggmux") && Marshaller.CheckGstPlugin("oggmux");
 				Hyena.Log.Information("[Streamrecorder] GstPlugin vorbis" + (has_vorbis ? "" : " not") + " found");
 				encoders.Add(new Encoder(vorbis_name, vorbis_pipeline, vorbis_extension, true));
 
-				has_flac = Gst.Marshaller.CheckGstPlugin("flacenc") && Gst.Marshaller.CheckGstPlugin("flactag");
+				has_flac = Marshaller.CheckGstPlugin("flacenc") && Marshaller.CheckGstPlugin("flactag");
 				Hyena.Log.Information("[Streamrecorder] GstPlugin flac" + (has_flac ? "" : " not") + " found");
 				encoders.Add(new Encoder(flac_name, flac_pipeline, flac_extension));
 
-				has_level = Gst.Marshaller.CheckGstPlugin("level");
+				has_level = Marshaller.CheckGstPlugin("level");
 				Hyena.Log.Information("[Streamrecorder] GstPlugin level" + (has_level ? "" : " not") + " found");
 				Hyena.Log.Debug("gstreamer initialized");
 			}
@@ -101,34 +103,34 @@ namespace Banshee.Streamrecorder
 			}
         }
 
-		public bool CreateRecorder()
+		public bool Create()
 		{
-			Hyena.Log.Debug("<Streamrecorder:InitControl> START");
-			audiotee = new Gst.Bin ( ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements()[2] );
+			Hyena.Log.Debug("[Streamrecoder.Recorder]<Create> START");
+			audiotee = new PlayerAudioTee ( ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements()[2] );
 
-			string pipeline = BuildPipeline();
+			string bin_description = BuildPipeline();
 
-			if (pipeline.Equals(""))
+			if (bin_description.Equals(""))
 			{
 				return false;
 			}
 			
-			encoder_bin = new Gst.Bin(Gst.Marshaller.ParseBinFromDescription (pipeline, true)) ;
+			encoder_bin = Parse.BinFromDescription (bin_description, true) ;
 
-			Hyena.Log.Debug("<Streamrecorder:InitControl> encoder_bin created: " + Gst.Marshaller.ObjectGetPathString(encoder_bin.BinPtr));
+			Hyena.Log.Debug("[Streamrecoder.Recorder]<Create> encoder_bin created: " + encoder_bin.GetPathString ());
 			
-			tagger = encoder_bin.GetByInterface(Gst.Marshaller.TagSetterGetType());
-			file_sink = encoder_bin.GetByName("file_sink");
-			
-			Gst.Marshaller.GObjectSetLocationProperty(file_sink,output_file);
-			Gst.Marshaller.ObjectSetBooleanProperty(file_sink, "sync", true);
-			Gst.Marshaller.ObjectSetBooleanProperty(file_sink, "async", false);
-			
-			GLib.Object.GetObject(file_sink).AddNotification ("allow-overwrite", OnAllowOverwrite); 
+			tagger = new TagSetter(encoder_bin.GetByInterface(TagSetter.GetType()));
+			file_sink = encoder_bin.GetByName("file_sink").ToFileSink();
 
-			ghost_pad = encoder_bin.GetStaticPad("sink");
+			file_sink.Location = output_file + file_extension;
+			file_sink.SetBooleanProperty("sync",true);
+			file_sink.SetBooleanProperty("async",false);
+			
+			GLib.Object.GetObject(file_sink.ToIntPtr ()).AddNotification ("allow-overwrite", OnAllowOverwrite); 
 
-			Hyena.Log.Debug("<Streamrecorder:InitControl> END");
+			ghost_pad = encoder_bin.GetStaticPad("sink") as GhostPad;
+
+			Hyena.Log.Debug("[Streamrecoder.Recorder]<Create> END");
 			
 			return true;
 		}
@@ -143,6 +145,7 @@ namespace Banshee.Streamrecorder
 			if (encoder != null)
 			{
 				pipeline = pipeline_start + encoder.Pipeline + pipeline_end;
+				file_extension = encoder.FileExtension;
 			}
 			
 			return pipeline;
@@ -151,6 +154,27 @@ namespace Banshee.Streamrecorder
 		public List<Encoder> Encoders
 		{
 			get { return encoders; }
+		}
+		
+		public string SetActiveEncoder(string active_encoder)
+		{
+			string ret = null;
+			if (active_encoder == null) return null;
+			foreach(Encoder encoder in encoders)
+			{
+				if (encoder.ToString().Equals(active_encoder))
+				{
+					encoder.IsPreferred = true;
+					ret = encoder.ToString();
+				} else {
+					encoder.IsPreferred = false;
+				}
+			}
+			if (ret == null)
+			{
+				ret = GetFirstAvailableEncoder().ToString();
+			}
+			return ret;
 		}
 		
 		private Encoder GetFirstPreferredEncoder()
@@ -162,7 +186,7 @@ namespace Banshee.Streamrecorder
 			return null;
 		}
 		
-		private Encoder GetFirstAvailableEncoder()
+		public Encoder GetFirstAvailableEncoder()
 		{
 			Encoder encoder = GetFirstPreferredEncoder ();
 			if (encoder == null && encoders.Count >= 1 )
@@ -178,125 +202,125 @@ namespace Banshee.Streamrecorder
 		
 		private void AddSilenceDetector()
 		{
-			Hyena.Log.Information("[StreamrecorderProcessControl]<AddSilenceDetector> START");
+			Hyena.Log.Information("[Recorder]<AddSilenceDetector> START");
 			if (has_level)
 			{
-				silence_pipeline = new Gst.Bin(Gst.Marshaller.ParseLaunch("audioconvert name=src0 ! level message=true interval=1000000 ! filesink location=/home/dingsi/test.out name=fake_sink"));
-				//silence_pipeline = new Gst.Bin(Gst.Marshaller.ParseLaunch("audioconvert ! cutter ! fakesink name=fake_sink"));
+				silence_pipeline = Parse.Launch("audioconvert name=src0 ! level message=true interval=1000000 ! filesink location=/home/dingsi/test.out name=fake_sink");
+				//silence_pipeline = Parse.Launch("audioconvert name=src0 ! cutter ! fakesink name=fake_sink"));
 				
-				silence_ghost_pad = Gst.Marshaller.GhostPadNew("src", new Gst.Bin(silence_pipeline.GetByName("src0")).GetStaticPad( "src"));
+				silence_ghost_pad = new GhostPad("src", silence_pipeline.GetByName("src0").GetStaticPad("src"));
 				
-				IntPtr fake_sink = silence_pipeline.GetByName("fake_sink");
-				Gst.Marshaller.ObjectSetBooleanProperty(fake_sink, "sync", false);
+				Element fake_sink = silence_pipeline.GetByName("fake_sink");
+				fake_sink.SetBooleanProperty("sync",false);
   
-				bus = Gst.Marshaller.gst_element_get_bus (silence_pipeline.BinPtr);
+				bus = silence_pipeline.GetBus ();
 
-				Hyena.Log.Information("[StreamrecorderProcessControl]<AddSilenceDetector> connecting bus " + Gst.Marshaller.ObjectGetPathString(bus));
+				Hyena.Log.Information("[Recorder]<AddSilenceDetector> connecting bus " + bus.GetPathString ());
 
-				if (bus == IntPtr.Zero) return;
-				Gst.Marshaller.gst_bus_add_signal_watch(bus);
+				if (bus.ToIntPtr() == IntPtr.Zero) 
+				{
+					return;
+				}
+
+				bus.AddSignalWatch();
 				
 				IntPtr native_message = GLib.Marshaller.StringToPtrGStrdup ("message::level");
-				Gst.Marshaller.g_signal_connect_data(bus, native_message, BusEventCallback, IntPtr.Zero, IntPtr.Zero, 1);
-				Gst.Marshaller.PlayerAddTee(audiotee,silence_pipeline,true);
+				Gst.Marshaller.g_signal_connect_data(bus.ToIntPtr (), native_message, BusEventCallback, IntPtr.Zero, IntPtr.Zero, 1);
+				audiotee.AddBin(silence_pipeline,true);
+				GLib.Marshaller.Free (native_message);
 			}
 
-			Hyena.Log.Information("[StreamrecorderProcessControl]<AddSilenceDetector> END");
+			Hyena.Log.Information("[Recorder]<AddSilenceDetector> END");
 
 		}
 
 		private bool BusEventCallback (IntPtr bus, IntPtr message, IntPtr user_data)
 		{
-			Hyena.Log.Information("[StreamrecorderProcessControl]<BusEventCallback> START");
+			Hyena.Log.Information("[Recorder]<BusEventCallback> START");
 			IntPtr structure = Gst.Marshaller.gst_message_get_structure(message);
 			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup ("peak");
 			GLib.Value val = Gst.Marshaller.gst_structure_get_value(structure, native_name);
 			GLib.ValueArray peaks = val.Val as GLib.ValueArray;
 			int peak = (int)peaks[0];
-			if (peak < -50) Hyena.Log.Information("[StreamrecorderProcessControl]<BusEventCallback> Silence detected");
+			if (peak < -50) Hyena.Log.Information("[Recorder]<BusEventCallback> Silence detected");
+			GLib.Marshaller.Free (native_name);
 
-			Hyena.Log.Information("[StreamrecorderProcessControl]<BusEventCallback> END");
+			Hyena.Log.Information("[Recorder]<BusEventCallback> END");
 
 			return true;
 		}				
 
 		private void OnAllowOverwrite(object o, GLib.NotifyArgs args)
 		{
-			Hyena.Log.Debug ("[StreamrecorderProcessControl] <OnAllowOverwrite> Called");
+			Hyena.Log.Debug ("[Recorder] <OnAllowOverwrite> Called");
 		}
 
         public void StartRecording () 
         {
-            Hyena.Log.Debug ("[StreamrecorderProcessControl] <StartRecording> START");
+            Hyena.Log.Debug ("[Recorder] <StartRecording> START");
 
-			if (CreateRecorder())
+			if (Create())
 			{
-				Gst.Marshaller.PlayerAddTee(audiotee,encoder_bin,true);
+				audiotee.AddBin(encoder_bin,true);
 				//AddSilenceDetector();
 			}
 			
-            Hyena.Log.Debug ("[StreamrecorderProcessControl] <StartRecording> END");
+            Hyena.Log.Debug ("[Recorder] <StartRecording> END");
         }
 
         public void StopRecording () 
         {
-            Hyena.Log.Debug ("[StreamrecorderProcessControl] <StopRecording> STOPPED");
+            Hyena.Log.Debug ("[Recorder] <StopRecording> STOPPED");
 
-			if (ghost_pad != IntPtr.Zero)
+			if (ghost_pad != null && !ghost_pad.IsNull())
 			{
-				Gst.Marshaller.PlayerRemoveTee(audiotee,encoder_bin,true);
+				audiotee.RemoveBin(encoder_bin,true);
 			}
 			
 			//Silence Detector Message Test
-			//IntPtr msg = Gst.Marshaller.gst_bus_pop(bus);
-			//if (msg == IntPtr.Zero) Hyena.Log.Information ("[StreamrecorderProcessControl] <StopRecording> No Messages");
+			//IntPtr msg = bus.Pop ();
+			//if (msg == IntPtr.Zero) Hyena.Log.Information ("[Recorder] <StopRecording> No Messages");
 
         }
         
         public bool AddStreamTags(TrackInfo track)
         {
-			Hyena.Log.Information("[StreamrecorderProcessControl]<AddStreamTags> START");
-			if (track == null) return false;
+			Hyena.Log.Debug("[Recorder]<AddStreamTags> START");
+			if (track == null || tagger == null) return false;
 			
-			Hyena.Log.Debug("[StreamrecorderProcessControl]<AddStreamTags>caught metadata ArtistName:" + track.ArtistName);
-			Hyena.Log.Debug("[StreamrecorderProcessControl]<AddStreamTags>caught metadata Genre:" + track.Genre);
-			Hyena.Log.Debug("[StreamrecorderProcessControl]<AddStreamTags>caught metadata TrackTitle:" + track.TrackTitle);
-			Hyena.Log.Debug("[StreamrecorderProcessControl]<AddStreamTags>caught metadata AlbumArtist:" + track.AlbumArtist);
+			Hyena.Log.Debug("[Recorder]<AddStreamTags>caught metadata ArtistName:" + track.ArtistName);
+			Hyena.Log.Debug("[Recorder]<AddStreamTags>caught metadata Genre:" + track.Genre);
+			Hyena.Log.Debug("[Recorder]<AddStreamTags>caught metadata TrackTitle:" + track.TrackTitle);
+			Hyena.Log.Debug("[Recorder]<AddStreamTags>caught metadata AlbumArtist:" + track.AlbumArtist);
 			RadioTrackInfo radio_track = track as RadioTrackInfo;
-			Hyena.Log.Debug("[StreamrecorderProcessControl]<AddStreamTags>caught metadata Station:" + radio_track.ParentTrack.TrackTitle);
+			Hyena.Log.Debug("[Recorder]<AddStreamTags>caught metadata Station:" + radio_track.ParentTrack.TrackTitle);
 
-			if (tagger == IntPtr.Zero)
+			if (tagger.IsNull())
 			{
-				Hyena.Log.Information("[StreamrecorderProcessControl]<AddStreamTags>tagger is null, not tagging!");
+				Hyena.Log.Debug("[Recorder]<AddStreamTags>tagger is null, not tagging!");
 				return false;
 			}
 
 			
-			IntPtr taglist = Gst.Marshaller.TagListNew();
-			Gst.Marshaller.TagListAddStringValue(taglist,Gst.TagMergeMode.ReplaceAll,"title",track.TrackTitle);
-			Gst.Marshaller.TagListAddStringValue(taglist,Gst.TagMergeMode.ReplaceAll,"genre",track.Genre);
-			Gst.Marshaller.TagListAddStringValue(taglist,Gst.TagMergeMode.ReplaceAll,"artist",track.ArtistName);
-			Gst.Marshaller.TagListAddStringValue(taglist,Gst.TagMergeMode.ReplaceAll,"album-artist",track.AlbumArtist);
+			TagList taglist = new TagList ();
+			taglist.AddStringValue(TagMergeMode.ReplaceAll,"title",track.TrackTitle);
+			taglist.AddStringValue(TagMergeMode.ReplaceAll,"genre",track.Genre);
+			taglist.AddStringValue(TagMergeMode.ReplaceAll,"artist",track.ArtistName);
+			taglist.AddStringValue(TagMergeMode.ReplaceAll,"album-artist",track.AlbumArtist);
 			
-			Gst.Marshaller.TagSetterMergeTags(tagger, taglist, Gst.TagMergeMode.ReplaceAll);
+			tagger.MergeTags(taglist, TagMergeMode.ReplaceAll);
 
-			Hyena.Log.Information("[StreamrecorderProcessControl]<AddStreamTags> END");
+			Hyena.Log.Debug("[Recorder]<AddStreamTags> END");
 
 			return true;
 		}
 
         public void SetOutputParameters (string directory, string filename) 
         {
-            //SetOutputFileFormatPattern(pattern);
             SetOutputDirectory(directory);
             SetOutputFile(filename);
         }
         
-        //private void SetOutputFileFormatPattern (string pattern) 
-        //{
-        //    output_file_format_pattern = pattern;
-        //}
-
         private void SetOutputDirectory (string directory) 
         {
             output_directory = directory;
