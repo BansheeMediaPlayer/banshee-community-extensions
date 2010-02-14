@@ -15,9 +15,7 @@ src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsPane.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs
-src/Lyrics/Banshee.Lyrics/Constants.cs
-src/Lyrics/Banshee.Lyrics/LyricBaseSource.cs
-src/Lyrics/Banshee.Lyrics/LyricsManager.cs
+src/Mirage/Banshee.Mirage/AnalyzeLibraryJob.cs
 src/Mirage/Banshee.Mirage/MiragePlugin.cs
 src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs
