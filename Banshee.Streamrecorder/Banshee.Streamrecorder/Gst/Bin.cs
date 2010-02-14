@@ -72,7 +72,6 @@ namespace Banshee.Streamrecorder.Gst
 		
 		public bool Add (Element element)
 		{
-			Hyena.Log.Information("[Streamrecorder.Gst.Bin]<Add> adding element: " + element.GetPathString());
 			return gst_bin_add(raw, element.ToIntPtr ());
 		}
 		

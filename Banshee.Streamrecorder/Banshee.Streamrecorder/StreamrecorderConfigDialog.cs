@@ -181,7 +181,7 @@ namespace Banshee.Streamrecorder
         private void OnSaveButtonClicked (object o, EventArgs a) 
         {
             Hyena.Log.DebugFormat ("[StreamrecorderConfigDialog] <OnSaveButtonClicked> dir: {0}", output_folder.Text);
-            Hyena.Log.InformationFormat ("[StreamrecorderConfigDialog] <OnSaveButtonClicked> enc: {0}", encoderbox.ActiveText);
+            Hyena.Log.DebugFormat ("[StreamrecorderConfigDialog] <OnSaveButtonClicked> enc: {0}", encoderbox.ActiveText);
             
             StreamrecorderService.IsImportingEnabledEntry.Set (enable_import_ripped_songs.Active.ToString ());
             streamrecorder_service.IsImportingEnabled = enable_import_ripped_songs.Active.ToString ().Equals ("True")

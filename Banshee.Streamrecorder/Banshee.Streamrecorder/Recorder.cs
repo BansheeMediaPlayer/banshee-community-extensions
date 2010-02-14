@@ -255,26 +255,26 @@ namespace Banshee.Streamrecorder
 			Hyena.Log.Debug ("[Recorder] <OnAllowOverwrite> Called");
 		}
 
-        public void StartRecording () 
+        public void StartRecording (bool blocked) 
         {
             Hyena.Log.Debug ("[Recorder] <StartRecording> START");
 
 			if (Create())
 			{
-				audiotee.AddBin(encoder_bin,true);
+				audiotee.AddBin(encoder_bin,blocked);
 				//AddSilenceDetector();
 			}
 			
             Hyena.Log.Debug ("[Recorder] <StartRecording> END");
         }
 
-        public void StopRecording () 
+        public void StopRecording (bool blocked) 
         {
             Hyena.Log.Debug ("[Recorder] <StopRecording> STOPPED");
 
 			if (ghost_pad != null && !ghost_pad.IsNull())
 			{
-				audiotee.RemoveBin(encoder_bin,true);
+				audiotee.RemoveBin(encoder_bin,blocked);
 			}
 			
 			//Silence Detector Message Test

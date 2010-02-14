@@ -75,7 +75,7 @@ namespace Banshee.Streamrecorder
 		
 		private static void ReallyAddBin(IntPtr pad, bool blocked, IntPtr user_data)
 		{
-			Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<ReallyAddTee> START");
+			Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller]<ReallyAddTee> START" + (blocked ? " (blocked)" : " (unblocked)"));
 			
 			GCHandle gch = GCHandle.FromIntPtr(user_data);
 			Bin[] user_bins = (Gst.Bin[])gch.Target;
@@ -109,7 +109,7 @@ namespace Banshee.Streamrecorder
 			audioconvert = ElementFactory.Make("audioconvert");
 			
 			bin.SetBooleanProperty("async-handling", true);
-			queue.SetIntegerProperty("max-size-buffers", 3);
+			queue.SetIntegerProperty("max-size-buffers", 10);
 
 			bin.AddMany( new Element[3] { queue, audioconvert, element } );
 			queue.LinkMany( new Element[2] { audioconvert, element } );

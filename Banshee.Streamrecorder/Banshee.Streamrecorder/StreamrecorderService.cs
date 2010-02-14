@@ -206,7 +206,7 @@ namespace Banshee.Streamrecorder
 			track = ServiceManager.PlaybackController.CurrentTrack;
 
             if (InitStreamrecorderProcess (track)) {
-				recorder.StartRecording ();
+				recorder.StartRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
 				recorder.AddStreamTags(track);
 				
                 if (is_importing_enabled)
@@ -216,7 +216,7 @@ namespace Banshee.Streamrecorder
 
         private void StopRecording () 
         {
-            recorder.StopRecording ();
+            recorder.StopRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
 
             StopFolderScanner ();
         }
