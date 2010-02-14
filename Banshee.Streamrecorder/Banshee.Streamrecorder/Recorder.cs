@@ -272,7 +272,7 @@ namespace Banshee.Streamrecorder
         {
             Hyena.Log.Debug ("[Recorder] <StopRecording> STOPPED");
 
-			if (ghost_pad != null && !ghost_pad.IsNull())
+			if (encoder_bin != null && !encoder_bin.IsNull())
 			{
 				audiotee.RemoveBin(encoder_bin,blocked);
 			}
