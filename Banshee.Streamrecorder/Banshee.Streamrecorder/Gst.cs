@@ -61,7 +61,7 @@ namespace Banshee.Streamrecorder.Gst
 			GCHandle gch = GCHandle.Alloc(user_bins);
 			IntPtr user_data = GCHandle.ToIntPtr(gch);
 			
-			IntPtr fixture_pad = ElementGetStaticPad (audiotee.BinPtr, "sink");
+			IntPtr fixture_pad = audiotee.GetStaticPad("sink");
 			IntPtr block_pad = gst_pad_get_peer(fixture_pad);
 			gst_object_unref(fixture_pad);
 
@@ -135,7 +135,7 @@ namespace Banshee.Streamrecorder.Gst
 			bin.AddMany( new IntPtr[3] { queue, audioconvert, element.BinPtr } );
 			ElementLinkMany( new IntPtr[3] { queue, audioconvert, element.BinPtr } );
 			
-			sink_pad = ElementGetStaticPad(queue, "sink");
+			sink_pad = new Gst.Bin(queue).GetStaticPad("sink");
 			ghost_pad = GhostPadNew ("sink", sink_pad);
 			bin.AddPad(ghost_pad);
 			//gst_object_unref (sink_pad);
@@ -172,7 +172,7 @@ namespace Banshee.Streamrecorder.Gst
 			GCHandle gch = GCHandle.Alloc(user_bins);
 			IntPtr user_data = GCHandle.ToIntPtr(gch);
 			
-			IntPtr fixture_pad = ElementGetStaticPad (audiotee.BinPtr, "sink");
+			IntPtr fixture_pad = audiotee.GetStaticPad("sink");
 			IntPtr block_pad = gst_pad_get_peer(fixture_pad);
 			gst_object_unref(fixture_pad);
 
@@ -286,12 +286,6 @@ namespace Banshee.Streamrecorder.Gst
 			return ret;
 		}
 		
-        private static IntPtr ElementGetStaticPad(IntPtr element, string name)
-        {
-			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-			return gst_element_get_static_pad(element,native_name);
-		}
-
 		public static string ObjectGetPathString(IntPtr gobject)
 		{
 			IntPtr raw_ret = gst_object_get_path_string(gobject);
@@ -473,9 +467,6 @@ namespace Banshee.Streamrecorder.Gst
         [DllImport ("libgstreamer-0.10.so.0")]
         private static extern unsafe IntPtr gst_object_get_path_string (IntPtr gobject);
 
-        [DllImport ("libgstreamer-0.10.so.0")]
-        private static extern unsafe IntPtr gst_element_get_static_pad (IntPtr element, IntPtr name);
-        
         [DllImport ("libgstreamer-0.10.so.0")]
         private static extern unsafe IntPtr gst_tag_list_new ();
         

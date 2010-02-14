@@ -126,7 +126,7 @@ namespace Banshee.Streamrecorder
 			
 			GLib.Object.GetObject(file_sink).AddNotification ("allow-overwrite", OnAllowOverwrite); 
 
-			ghost_pad = encoder_bin.GetPad("sink");
+			ghost_pad = encoder_bin.GetStaticPad("sink");
 
 			Hyena.Log.Debug("<Streamrecorder:InitControl> END");
 			
@@ -181,9 +181,10 @@ namespace Banshee.Streamrecorder
 			Hyena.Log.Information("[StreamrecorderProcessControl]<AddSilenceDetector> START");
 			if (has_level)
 			{
-				silence_pipeline = new Gst.Bin(Gst.Marshaller.ParseLaunch("audioconvert ! level message=true interval=1000000 ! fakesink name=fake_sink"));
+				silence_pipeline = new Gst.Bin(Gst.Marshaller.ParseLaunch("audioconvert name=src0 ! level message=true interval=1000000 ! filesink location=/home/dingsi/test.out name=fake_sink"));
 				//silence_pipeline = new Gst.Bin(Gst.Marshaller.ParseLaunch("audioconvert ! cutter ! fakesink name=fake_sink"));
-				silence_ghost_pad = Gst.Marshaller.GhostPadNew("silenceghostpad",silence_pipeline.GetPad("fake_sink"));
+				
+				silence_ghost_pad = Gst.Marshaller.GhostPadNew("src", new Gst.Bin(silence_pipeline.GetByName("src0")).GetStaticPad( "src"));
 				
 				IntPtr fake_sink = silence_pipeline.GetByName("fake_sink");
 				Gst.Marshaller.ObjectSetBooleanProperty(fake_sink, "sync", false);
@@ -192,12 +193,12 @@ namespace Banshee.Streamrecorder
 
 				Hyena.Log.Information("[StreamrecorderProcessControl]<AddSilenceDetector> connecting bus " + Gst.Marshaller.ObjectGetPathString(bus));
 
-				//if (bus == IntPtr.Zero) return;
-				//Gst.Marshaller.gst_bus_add_signal_watch(bus);
+				if (bus == IntPtr.Zero) return;
+				Gst.Marshaller.gst_bus_add_signal_watch(bus);
 				
-				//IntPtr native_message = GLib.Marshaller.StringToPtrGStrdup ("message::level");
-				//Gst.Marshaller.g_signal_connect_data(bus, native_message, BusEventCallback, IntPtr.Zero, IntPtr.Zero, 1);
-				//Gst.Marshaller.PlayerAddTee(audiotee,silence_pipeline,true);
+				IntPtr native_message = GLib.Marshaller.StringToPtrGStrdup ("message::level");
+				Gst.Marshaller.g_signal_connect_data(bus, native_message, BusEventCallback, IntPtr.Zero, IntPtr.Zero, 1);
+				Gst.Marshaller.PlayerAddTee(audiotee,silence_pipeline,true);
 			}
 
 			Hyena.Log.Information("[StreamrecorderProcessControl]<AddSilenceDetector> END");

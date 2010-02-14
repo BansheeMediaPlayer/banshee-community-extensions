@@ -87,7 +87,7 @@ namespace Banshee.Streamrecorder.Gst
         [DllImport ("libgstreamer-0.10.so.0")]
 		static extern IntPtr gst_element_get_static_pad (IntPtr element, IntPtr name);
 		
-		public IntPtr GetPad (string name)
+		public IntPtr GetStaticPad (string name)
 		{
 			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
 			return gst_element_get_static_pad(bin, native_name);
