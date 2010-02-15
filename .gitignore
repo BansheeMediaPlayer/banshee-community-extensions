@@ -1,3 +1,5 @@
+*.pidb
+*.usertasks
 *.dll
 *.swp
 *.gmo

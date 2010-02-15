@@ -19,7 +19,7 @@ endif
 
 if ENABLE_RELEASE
 ASSEMBLY_COMPILER_COMMAND = gmcs
-ASSEMBLY_COMPILER_FLAGS =  -noconfig -codepage:utf8 -warn:4 -optimize-
+ASSEMBLY_COMPILER_FLAGS =  -noconfig -codepage:utf8 -warn:4 -optimize- -unsafe
 ASSEMBLY = bin/Release/Banshee.Streamrecorder.dll
 ASSEMBLY_MDB = 
 COMPILE_TARGET = library
@@ -45,15 +45,37 @@ RESGEN=resgen2
 all: $(ASSEMBLY) $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
 
 FILES =  \
+	Banshee.Streamrecorder/Encoder.cs \
+	Banshee.Streamrecorder/Gst/Bin.cs \
+	Banshee.Streamrecorder/Gst/Bus.cs \
+	Banshee.Streamrecorder/Gst/BusFunc.cs \
+	Banshee.Streamrecorder/Gst/Element.cs \
+	Banshee.Streamrecorder/Gst/ElementFactory.cs \
+	Banshee.Streamrecorder/Gst/FileSink.cs \
+	Banshee.Streamrecorder/Gst/Format.cs \
+	Banshee.Streamrecorder/Gst/GhostPad.cs \
+	Banshee.Streamrecorder/Gst/GstObject.cs \
+	Banshee.Streamrecorder/Gst/Marshaller.cs \
+	Banshee.Streamrecorder/Gst/Pad.cs \
+	Banshee.Streamrecorder/Gst/PadBlockCallback.cs \
+	Banshee.Streamrecorder/Gst/PadDirection.cs \
+	Banshee.Streamrecorder/Gst/Parse.cs \
+	Banshee.Streamrecorder/Gst/Pipeline.cs \
+	Banshee.Streamrecorder/Gst/State.cs \
+	Banshee.Streamrecorder/Gst/StateChangeReturn.cs \
+	Banshee.Streamrecorder/Gst/TagList.cs \
+	Banshee.Streamrecorder/Gst/TagMergeMode.cs \
+	Banshee.Streamrecorder/Gst/TagSetter.cs \
+	Banshee.Streamrecorder/PlayerAudioTee.cs \
+	Banshee.Streamrecorder/Recorder.cs \
 	Banshee.Streamrecorder/RippedFileScanner.cs \
 	Banshee.Streamrecorder/StreamrecorderConfigDialog.cs \
-	Banshee.Streamrecorder/StreamrecorderProcessControl.cs \
 	Banshee.Streamrecorder/StreamrecorderService.cs 
 
 DATA_FILES = 
 
 RESOURCES =  \
-	Banshee.Streamrecorder.addin.xml \
+	Banshee.Streamrecorder.addin.xml,Streamrecorder.addin.xml \
 	Resources/StreamrecorderMenu.xml,Resources.StreamrecorderMenu.xml 
 
 REFERENCES =  \

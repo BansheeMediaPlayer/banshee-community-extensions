@@ -4,9 +4,10 @@ Mono / C#.
 The Banshee Streamrecorder extension is distributed under the MIT License.
 
 The extension allows users to rip internet radio streams.
-It supports HTTP protocol (via streamripper) and rtsp, mms, … (via mplayer).
+It can record any radio stream the Banshee player can play.
 
-This project is based on banshee-streamripper http://gitorious.org/banshee-streamripper.
+This project was originally based on banshee-streamripper 
+http://gitorious.org/banshee-streamripper.
 
 http://gitorious.org/banshee-stream-recorder
 
