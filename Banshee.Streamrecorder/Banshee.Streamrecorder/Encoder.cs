@@ -72,7 +72,7 @@ namespace Banshee.Streamrecorder
 			set {is_preferred = value; }
 		}
 		
-		public string ToString()
+		override public string ToString()
 		{
 			return name;
 		}

@@ -53,8 +53,8 @@ namespace Banshee.Streamrecorder.Gst
 			return (raw == IntPtr.Zero);
 		}
 		
-		[DllImport ("libgobject-2.0.so.0")]
-        private static extern void g_object_get_property (IntPtr gobject, IntPtr property_name, ref GLib.Value value);
+		//[DllImport ("libgobject-2.0.so.0")]
+        //private static extern void g_object_get_property (IntPtr gobject, IntPtr property_name, ref GLib.Value value);
 
 		public GLib.Value GetProperty(string name)
 		{
