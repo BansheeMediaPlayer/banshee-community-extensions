@@ -85,5 +85,17 @@ namespace Banshee.Streamrecorder.Gst
 			return ret;
 		}
 
+        [DllImport ("libgstreamer-0.10.so.0")]
+		private static extern bool gst_pad_set_blocked (IntPtr pad, bool blocked);
+
+		public bool SetBlocked(bool blocked)
+		{
+			return gst_pad_set_blocked(raw,blocked);
+		}
+		
+		public GhostPad ToGhostPad()
+		{
+			return new GhostPad(raw);
+		}
 	}
 }

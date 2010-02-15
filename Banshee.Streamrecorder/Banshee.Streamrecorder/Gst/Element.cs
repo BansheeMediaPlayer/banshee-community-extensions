@@ -90,6 +90,14 @@ namespace Banshee.Streamrecorder.Gst
 			return ret;
 		}
 		
+        [DllImport ("libgstreamer-0.10.so.0")]
+		static extern bool gst_element_send_event(IntPtr element, IntPtr gstevent);
+		
+		public bool SendEvent(IntPtr gstevent)
+		{
+			return gst_element_send_event(raw,gstevent);
+		}
+		
 		public FileSink ToFileSink()
 		{
 			return new FileSink(raw);

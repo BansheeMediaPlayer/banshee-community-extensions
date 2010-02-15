@@ -59,7 +59,7 @@ namespace Banshee.Streamrecorder.Gst
 			try 
 			{
 				 gst_version = VersionString ();
-				 DebugSetActive(true);
+				 DebugSetActive(false);
 				 Hyena.Log.Information("[Streamrecorder.Gst.Marshaller] gstreamer version found: " + gst_version);
 				 return true;
 			}
@@ -99,6 +99,11 @@ namespace Banshee.Streamrecorder.Gst
         public static string VersionString () {
 			return gst_version_string ();
         }
+		
+		public static IntPtr NewEOSEvent()
+		{
+			return gst_event_new_eos();
+		}
 
 		/* Helper Imports*/
         [DllImport ("libgstreamer-0.10.so.0")]
@@ -119,6 +124,9 @@ namespace Banshee.Streamrecorder.Gst
         [DllImport ("libgstreamer-0.10.so.0")]
         public static extern unsafe IntPtr gst_message_get_structure (IntPtr message);
 
+		[DllImport ("libgstreamer-0.10.so.0")]
+        public static extern unsafe IntPtr gst_event_new_eos();
+		
 	}
 
 }

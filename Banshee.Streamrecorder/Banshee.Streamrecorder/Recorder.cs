@@ -128,7 +128,7 @@ namespace Banshee.Streamrecorder
 			
 			GLib.Object.GetObject(file_sink.ToIntPtr ()).AddNotification ("allow-overwrite", OnAllowOverwrite); 
 
-			ghost_pad = encoder_bin.GetStaticPad("sink") as GhostPad;
+			ghost_pad = encoder_bin.GetStaticPad("sink").ToGhostPad();
 
 			Hyena.Log.Debug("[Streamrecoder.Recorder]<Create> END");
 			
@@ -283,7 +283,7 @@ namespace Banshee.Streamrecorder
 
         }
         
-        public bool AddStreamTags(TrackInfo track)
+        public bool AddStreamTags(TrackInfo track, bool splitfiles)
         {
 			Hyena.Log.Debug("[Recorder]<AddStreamTags> START");
 			if (track == null || tagger == null) return false;
@@ -300,7 +300,6 @@ namespace Banshee.Streamrecorder
 				Hyena.Log.Debug("[Recorder]<AddStreamTags>tagger is null, not tagging!");
 				return false;
 			}
-
 			
 			TagList taglist = new TagList ();
 			taglist.AddStringValue(TagMergeMode.ReplaceAll,"title",track.TrackTitle);
@@ -309,10 +308,31 @@ namespace Banshee.Streamrecorder
 			taglist.AddStringValue(TagMergeMode.ReplaceAll,"album-artist",track.AlbumArtist);
 			
 			tagger.MergeTags(taglist, TagMergeMode.ReplaceAll);
+			
+			if (splitfiles && file_sink != null && track.ArtistName.Length > 0)
+			{
+				SetMetadataFilename(track.TrackTitle, track.ArtistName);
+				SetNewTrackLocation(output_file + file_extension);
+			}
 
 			Hyena.Log.Debug("[Recorder]<AddStreamTags> END");
 
 			return true;
+		}
+				
+		public string SetMetadataFilename(string title, string artist)
+		{
+			string new_name = artist + "_-_" + title;
+			string test_name = new_name;
+			int i = 0;
+			while (File.Exists(output_directory + Path.DirectorySeparatorChar + SetOutputFile(test_name) + file_extension))
+			{
+				i++;
+				test_name = new_name + "(" + i + ")";
+			}
+			new_name = test_name;
+			SetOutputFile(new_name);
+			return output_file;
 		}
 
         public void SetOutputParameters (string directory, string filename) 
@@ -326,36 +346,32 @@ namespace Banshee.Streamrecorder
             output_directory = directory;
         }
 
-        private void SetOutputFile (string fullfilename) 
+        private string SetOutputFile (string fullfilename) 
         {
 			string cleanfilename = fullfilename;
 			char[] invalid_chars = Path.GetInvalidFileNameChars ();
 			foreach (char invalid_char in invalid_chars)
 			{
-				cleanfilename = cleanfilename.Replace(invalid_char.ToString (), "_");
+				cleanfilename = cleanfilename.Replace(invalid_char.ToString (), "_").Trim('_');
 			}
-			output_file =  output_directory + Path.DirectorySeparatorChar + cleanfilename;
+			output_file =  output_directory + Path.DirectorySeparatorChar + cleanfilename + file_extension;
+			return cleanfilename;
 		}
 
-/*
-
-	def on_extra_metadata_notify (self, db, entry, field, metadata):
-		self.streaming_title = metadata
-
-		# set a new filename on the sink so it splits streaming audio
-		# automatically into tracks
-		teepad = self.ghostpad.get_peer ()
-		teepad.set_blocked (True)
-		self.encoder_bin.send_event (gst.event_new_eos())
-		self.encoder_bin.set_state (gst.STATE_NULL)
-		self.set_recording_uri ()
-		self.encoder_bin.set_state (gst.STATE_READY)
-		if self.recording:
-			self.encoder_bin.set_state (gst.STATE_PLAYING)
-		teepad.set_blocked (False)
-
-
- */
+		
+		private void SetNewTrackLocation(string new_location)
+		{
+			Pad teepad = ghost_pad.GetPeer();
+			teepad.SetBlocked(true);
+			encoder_bin.SendEvent(Marshaller.NewEOSEvent());
+			encoder_bin.SetState(State.Null);
+			file_sink.Location = new_location;
+			encoder_bin.SetState(State.Ready);
+			//if (recording) {
+			encoder_bin.SetState(State.Playing);
+			//}
+			teepad.SetBlocked(false);
+		}
 
     }
 

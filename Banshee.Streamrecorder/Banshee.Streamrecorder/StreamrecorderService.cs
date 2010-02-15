@@ -173,7 +173,7 @@ namespace Banshee.Streamrecorder
         private void OnMetadata (PlayerEventArgs args)
         {
 			TrackInfo track = ServiceManager.PlayerEngine.CurrentTrack;
-			recorder.AddStreamTags(track);
+			recorder.AddStreamTags(track,is_splitting_enabled);
         }
 
         private void OnEndOfStream (PlayerEventArgs args)
@@ -207,7 +207,7 @@ namespace Banshee.Streamrecorder
 
             if (InitStreamrecorderProcess (track)) {
 				recorder.StartRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
-				recorder.AddStreamTags(track);
+				recorder.AddStreamTags(track,false);
 				
                 if (is_importing_enabled)
                     StartFolderScanner ();
@@ -254,8 +254,16 @@ namespace Banshee.Streamrecorder
 
 			DateTime dt = DateTime.Now;
 			string datestr = String.Format("{0:d_M_yyyy_HH_mm_ss}", dt);
+			string filename;
 			RadioTrackInfo radio_track = track as RadioTrackInfo;
-			string filename = radio_track.ParentTrack.TrackTitle + "_" + datestr;
+			//split only if Artist AND Title are present, i.e. stream sends complete metadata
+			//do not set extension, will be done by recorder!
+			if (is_splitting_enabled && track.ArtistName.Length > 0)
+			{
+				filename = recorder.SetMetadataFilename(track.TrackTitle, track.ArtistName);
+			} else {
+				filename = radio_track.ParentTrack.TrackTitle + "_" + datestr;
+			}
 
             recorder.SetOutputParameters (output_directory,filename);
 

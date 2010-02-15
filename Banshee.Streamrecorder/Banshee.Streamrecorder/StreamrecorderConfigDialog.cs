@@ -149,7 +149,7 @@ namespace Banshee.Streamrecorder
 			all_choosing.PackStart (box_choosing, true, true, 0);
 
 			action_container.PackStart (all_choosing, true, true, 5);
-			//action_container.PackStart (enable_automatic_splitting, true, true, 5);
+			action_container.PackStart (enable_automatic_splitting, true, true, 5);
             action_container.PackStart (enable_import_ripped_songs, true, true, 5);
 
             main_container.PackStart (preferences_image, true, true, 5);
