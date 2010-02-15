@@ -1,0 +1,74 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-01-17 01:26+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:66
+#, csharp-format
+msgid ""
+"{0}Streamrecorder configuration\n"
+"{1}"
+msgstr ""
+"{0}Streamrecorder Konfiguration\n"
+"{1}"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:72
+msgid ""
+"Please select output folder for ripped files and if ripped\n"
+"files should be imported to media library.\n"
+msgstr ""
+"Bitte den Dateiordner für die gerippten Dateien auswählen und\n"
+"ob diese in die Medienbibliothek importiert werden sollen.\n"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:76
+msgid "Output folder:"
+msgstr "Augabepfad:"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:78
+msgid "_Browse"
+msgstr "_Durchsuchen"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:81
+msgid "_Cancel"
+msgstr "_Abbrechen"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:83
+msgid "_Save"
+msgstr "_Speichern"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:85
+msgid "Import files to media library"
+msgstr "Importiere Dateien in die Medienbibliothek"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:87
+msgid "_Streamrecorder"
+msgstr "_Streamrecorder"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:91
+msgid "_Configure"
+msgstr "_Konfigurieren"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:92
+msgid "Configure the Streamrecorder plugin"
+msgstr "Konfiguriere das Streamrecorder plugin"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:97
+msgid "_Activate streamrecorder"
+msgstr "_Aktiviere Streamrecorder"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:98
+msgid "Activate streamrecorder process"
+msgstr "Aktiviere den Streamrecorder Prozess"
