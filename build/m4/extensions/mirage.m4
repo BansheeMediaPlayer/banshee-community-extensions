@@ -2,6 +2,10 @@ AC_DEFUN([BCE_MIRAGE],
 [
 	BCE_ARG_DISABLE([Mirage], [try])
 
+	BCE_CHECK_EXTENSION_DEP([Mirage], [BANSHEE_MONO_DATA_SQLITE],
+		[banshee-1-mono-data-sqlite],
+		[The banshee-1-mono-data-sqlite package was not found. It is contained in Banshee git master or 1.5.4.  Please install it or disable the Mirage extension by passing --disable-mirage])
+
 	BCE_CHECK_EXTENSION_DEP([Mirage], [GLIB],
 		[glib-2.0],
 		[The glib library was not found. Please install it or disable the Mirage extension by passing --disable-mirage])
@@ -26,6 +30,7 @@ AC_DEFUN([BCE_MIRAGE],
 		[GStreamer >= $GSTREAMER_REQUIRED_VERSION not found. Please install it or disable the Mirage extension by passing --disable-mirage])
 
 	if test "x$enable_Mirage" = "xtry" \
+		&& test "x$have_BANSHEE_MONO_DATA_SQLITE" = "xyes" \
 		&& test "x$have_GLIB" = "xyes" \
 		&& test "x$have_SQLITE3" = "xyes" \
 		&& test "x$have_FFTW3F" = "xyes" \
