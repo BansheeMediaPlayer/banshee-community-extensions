@@ -61,6 +61,9 @@
       <Package>banshee-1-hyena</Package>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="Mono.Data.Sqlite, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-mono-data-sqlite</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Banshee.Mirage.addin.xml">
@@ -89,6 +92,7 @@
     <Compile Include="SimilarityCalculator.cs" />
     <Compile Include="AnalyzeLibraryJob.cs" />
     <Compile Include="RandomByMirage.cs" />
+    <Compile Include="SqliteFunctions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

@@ -94,6 +94,15 @@ namespace Mirage
             return s;
         }
 
+        public static float Distance (byte [] a, byte [] b)
+        {
+            return Distance (
+                FromBytes (a),
+                FromBytes (b),
+                new ScmsConfiguration (Analyzer.MFCC_COEFFICIENTS)
+            );
+        }
+
         /** Function to compute the spectral distance between two song models.
          *  This is a fast implementation of the symmetrized Kullback Leibler
          *  Divergence.
@@ -109,13 +118,11 @@ namespace Mirage
             float tmp1;
 
             unsafe {
-
                 fixed (float* s1cov = s1.cov, s2icov = s2.icov,
                         s1icov = s1.icov, s2cov = s2.cov,
                         s1mean = s1.mean, s2mean = s2.mean,
                         mdiff = c.MeanDiff, aicov = c.AddInverseCovariance)
                 {
-
                     for (i = 0; i < covlen; i++) {
                         aicov[i] = s1icov[i] + s2icov[i];
                     }
@@ -183,8 +190,15 @@ namespace Mirage
             }
         }
 
+        public static Scms FromBytes (byte [] buf)
+        {
+            var scms = new Scms (Analyzer.MFCC_COEFFICIENTS);
+            FromBytes (buf, scms);
+            return scms;
+        }
+
         // Manual deserialization of an Scms from a byte array
-        public static void FromBytes(byte[] buf, ref Scms s)
+        public static void FromBytes (byte[] buf, Scms s)
         {
             using (var stream = new MemoryStream (buf)) {
                 using (var br = new BinaryReader (stream)) {

@@ -38,7 +38,7 @@ namespace Mirage
         private const int SAMPLING_RATE = 22050;
         private const int WINDOW_SIZE = 1024;
         private const int MEL_COEFFICIENTS = 36;
-        private const int MFCC_COEFFICIENTS = 20;
+        public const int MFCC_COEFFICIENTS = 20;
         private const int SECONDS_TO_ANALYZE = 120;
 
         private static Mfcc mfcc = new Mfcc (WINDOW_SIZE, SAMPLING_RATE, MEL_COEFFICIENTS, MFCC_COEFFICIENTS);
@@ -84,7 +84,7 @@ namespace Mirage
             Scms[] seedScms = new Scms[seed_track_ids.Length];
             for (int i = 0; i < seedScms.Length; i++) {
                 seedScms[i] = new Scms (MFCC_COEFFICIENTS);
-                db.GetTrack (seed_track_ids[i], ref seedScms[i]);
+                db.GetTrack (seed_track_ids[i], seedScms[i]);
             }
 
             // Get all tracks from the DB except the seedSongs
@@ -101,12 +101,16 @@ namespace Mirage
             ScmsConfiguration c = new ScmsConfiguration (MFCC_COEFFICIENTS);
 
             IDataReader r = db.GetTracks (exclude_track_ids);
+            //double total_ms = 0;
+            //long total_distance_calls = 0;
+            //long total_successful_calls = 0;
             while (read > 0) {
                 read = db.GetNextTracks (r, scmss, mapping, 100);
                 for (int i = 0; i < read; i++) {
 
                     float d = 0;
                     int count = 0;
+                    //var start = DateTime.Now;
                     for (int j = 0; j < seedScms.Length; j++) {
                         float dcur = Scms.Distance (seedScms[j], scmss[i], c);
                         
@@ -120,6 +124,9 @@ namespace Mirage
                             break;
                         }
                     }
+                    //total_ms += (DateTime.Now - start).TotalMilliseconds;
+                    //total_distance_calls += seedScms.Length;
+                    //total_successful_calls += count;
 
                     // Exclude track if it's too close to the seeds
                     if (d > distceiling) {
@@ -129,6 +136,7 @@ namespace Mirage
                     }
                 }
             }
+            //Console.WriteLine ("----->>>>> Mirage took {0}ms for {1} Scms.Distance calls ({2}ms per on avg, {3} calls non-negative)", total_ms, total_distance_calls, (total_ms / total_distance_calls), total_successful_calls);
 
             db.GetTracksFinished ();
 
