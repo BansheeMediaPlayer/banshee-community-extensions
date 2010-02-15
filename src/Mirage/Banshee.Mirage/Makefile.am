@@ -6,7 +6,7 @@ SOURCES =  \
 	MirageConfiguration.cs \
 	MiragePlugin.cs \
 	PlaylistGeneratorSource.cs \
-	RandomByMirage.cs \
+	RandomBySimilar.cs \
 	SimilarityCalculator.cs \
 	SqliteFunctions.cs
 

@@ -91,8 +91,8 @@
     <Compile Include="PlaylistGeneratorSource.cs" />
     <Compile Include="SimilarityCalculator.cs" />
     <Compile Include="AnalyzeLibraryJob.cs" />
-    <Compile Include="RandomByMirage.cs" />
     <Compile Include="SqliteFunctions.cs" />
+    <Compile Include="RandomBySimilar.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

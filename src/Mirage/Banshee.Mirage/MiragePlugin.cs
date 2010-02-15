@@ -49,8 +49,8 @@ namespace Banshee.Mirage
 {
     public class MiragePlugin : IExtensionService, IDisposable
     {
-        Db db;
-        PlaylistGeneratorSource continuousPlaylist;
+        //Db db;
+        //PlaylistGeneratorSource continuousPlaylist;
         AnalyzeLibraryJob analysis_job;
         Thread dupesearchThread;
         ActionGroup actions;
@@ -68,36 +68,38 @@ namespace Banshee.Mirage
             if (ApplicationContext.CommandLine.Contains ("mirage-db")) {
                  dbfile = ApplicationContext.CommandLine["mirage-db"];
             } else {
-                string xdgcachedir = Environment.GetEnvironmentVariable("XDG_CACHE_HOME");
+                string xdgcachedir = Environment.GetEnvironmentVariable ("XDG_CACHE_HOME");
                 if (xdgcachedir == null) {
-                    xdgcachedir = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + 
+                    xdgcachedir = Environment.GetFolderPath (Environment.SpecialFolder.Personal) +
                         "/.cache";
                 }
                 string dbdir = xdgcachedir + "/banshee-mirage";
-                if (!Directory.Exists(dbdir)) {
-                    Directory.CreateDirectory(dbdir);
+                if (!Directory.Exists (dbdir)) {
+                    Directory.CreateDirectory (dbdir);
                 }
                 dbfile = dbdir + "/mirage.db";
             }
 
-            db = new Db(dbfile);
+            ServiceManager.DbConnection.Execute ("ATTACH DATABASE ? AS Mirage", dbfile);
+
+            /*db = new Db (dbfile);
             Log.DebugFormat ("Mirage - Database Initialize (dbfile: {0})", dbfile);
 
-            ServiceManager.DbConnection.Execute(
+            ServiceManager.DbConnection.Execute (
                     "CREATE TABLE IF NOT EXISTS MirageProcessed"
                     + " (TrackID INTEGER PRIMARY KEY, Status INTEGER)");
             
             if (db.WasReset) {
-                ResetMirageProcessed();
-            }
+                ResetMirageProcessed ();
+            }*/
             
-            InstallInterfaceActions();
+            InstallInterfaceActions ();
             
             if (!ServiceStartup ()) {
                 ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
             }
 
-            Log.Debug("Mirage - Initialized");
+            Log.Debug ("Mirage - Initialized");
         }
         
         private void OnSourceAdded (SourceAddedArgs args)
@@ -112,17 +114,17 @@ namespace Banshee.Mirage
             if (ServiceManager.SourceManager.MusicLibrary == null)
                 return false;
 
-            ScanLibrary ();
+            //ScanLibrary ();
             
-            if (continuousPlaylist == null) {
-                ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
+            //if (continuousPlaylist == null) {
+                //ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
 
-                ServiceManager.SourceManager.MusicLibrary.TracksAdded += OnLibraryTracksAdded;
-                ServiceManager.SourceManager.MusicLibrary.TracksDeleted += OnLibraryTracksDeleted;
+                //ServiceManager.SourceManager.MusicLibrary.TracksAdded += OnLibraryTracksAdded;
+                //ServiceManager.SourceManager.MusicLibrary.TracksDeleted += OnLibraryTracksDeleted;
                 
-                continuousPlaylist = new PlaylistGeneratorSource (db);
-                ServiceManager.SourceManager.AddSource (continuousPlaylist);
-            }
+                //continuousPlaylist = new PlaylistGeneratorSource (db);
+                //ServiceManager.SourceManager.AddSource (continuousPlaylist);
+            //}
             
             return true;
         }
@@ -138,14 +140,14 @@ namespace Banshee.Mirage
             }
 
             try {
-                Analyzer.CancelAnalyze();
+                Analyzer.CancelAnalyze ();
             } catch (Exception) {
             }
 
-            if (continuousPlaylist != null) {
+            /*if (continuousPlaylist != null) {
                 continuousPlaylist.Dispose ();
-                ServiceManager.SourceManager.MusicLibrary.RemoveChildSource(continuousPlaylist);
-            }
+                ServiceManager.SourceManager.MusicLibrary.RemoveChildSource (continuousPlaylist);
+            }*/
 
             action_service.UIManager.RemoveUi (uiManagerId);
             action_service.UIManager.RemoveActionGroup (actions);
@@ -153,15 +155,15 @@ namespace Banshee.Mirage
 
         private void ScanLibrary ()
         {
-            if (analysis_job == null) {
+            /*if (analysis_job == null) {
                 analysis_job = new AnalyzeLibraryJob (db);
                 analysis_job.Finished += delegate { analysis_job = null; };
-            }
+            }*/
         }
 
         private void DuplicateSearch ()
         {
-            dupesearchThread = new Thread(DuplicateSearchThread);
+            dupesearchThread = new Thread (DuplicateSearchThread);
             dupesearchThread.IsBackground = true;
             dupesearchThread.Priority = ThreadPriority.Lowest;
             dupesearchThread.Start();
@@ -182,7 +184,7 @@ namespace Banshee.Mirage
 
         private void DuplicateSearchThread()
         {
-            Log.Debug("Mirage - Scanning library for duplicate tracks");
+            /*Log.Debug("Mirage - Scanning library for duplicate tracks");
 
             UserJob userJob = new UserJob("Mirage",
                 AddinManager.CurrentLocalizer.GetString (@"Mirage: Duplicate Search"),
@@ -191,11 +193,11 @@ namespace Banshee.Mirage
                 @"Are you sure you want to stop the Duplicate Search? ");
             userJob.CanCancel = true;
             userJob.Progress = 0;
-            userJob.Register();
+            userJob.Register ();
 
-            Dictionary<int, Scms> loadedDb = Analyzer.LoadLibrary(ref db);
-            List<int> dupes = new List<int>();
-            Log.Debug("Mirage - Database fully loaded!");
+            Dictionary<int, Scms> loadedDb = Analyzer.LoadLibrary (ref db);
+            List<int> dupes = new List<int> ();
+            Log.Debug ("Mirage - Database fully loaded!");
 
 
             DupePlaylistSource dupePlaylist = new DupePlaylistSource ();
@@ -218,7 +220,7 @@ namespace Banshee.Mirage
 
                 // skip if we have already identified the track as a dupe of another
                 // track.
-                if (dupes.Contains(trackId)) {
+                if (dupes.Contains (trackId)) {
                     continue;
                 }
 
@@ -254,7 +256,7 @@ namespace Banshee.Mirage
                         MessageType.Info, ButtonsType.Ok, "Duplicate Search finished.", 
                         AddinManager.CurrentLocalizer.GetString (
                             "The Mirage Duplicate Search finished. Check the newly created <i>Mirage Duplicates</i> playlist for possible duplicates."));
-            });
+            });*/
         }
 
         private void InstallInterfaceActions()
@@ -313,7 +315,7 @@ namespace Banshee.Mirage
 
         private void OnMirageResetHandler(object sender, EventArgs args)
         {
-            MessageDialog md = new MessageDialog (null, DialogFlags.Modal, MessageType.Question,
+            /*MessageDialog md = new MessageDialog (null, DialogFlags.Modal, MessageType.Question,
                     ButtonsType.Cancel, AddinManager.CurrentLocalizer.GetString (
                         "Do you really want to reset the Mirage Extension?\n" +
                         "All extracted information will be lost. Your music will have to be re-analyzed to use Mirage again."));
@@ -334,7 +336,7 @@ namespace Banshee.Mirage
                 } catch (Exception) {
                     Log.Warning("Mirage - Error resetting Mirage.");
                 }
-            }
+            }*/
 
         }
 
@@ -345,7 +347,7 @@ namespace Banshee.Mirage
 
         private void OnLibraryTracksDeleted (object o, TrackEventArgs args)
         {
-            IDataReader reader = ServiceManager.DbConnection.Query (
+            /*IDataReader reader = ServiceManager.DbConnection.Query (
                 @"SELECT TrackID FROM MirageProcessed WHERE TrackID NOT IN 
                     (SELECT TrackID from CoreTracks WHERE PrimarySourceID = ?)", 
                 ServiceManager.SourceManager.MusicLibrary.DbId);
@@ -365,13 +367,13 @@ namespace Banshee.Mirage
                 }
                 removeSql.Append (")");
                 ServiceManager.DbConnection.Execute (removeSql.ToString());
-            }
+            }*/
         }
         
-        private void ResetMirageProcessed()
+        /*private void ResetMirageProcessed()
         {
             ServiceManager.DbConnection.Execute("DELETE FROM MirageProcessed");
-        }
+        }*/
 
         string IService.ServiceName {
             get { return "MirageService"; }
