@@ -354,7 +354,7 @@ namespace Banshee.Streamrecorder
 			{
 				cleanfilename = cleanfilename.Replace(invalid_char.ToString (), "_").Trim('_');
 			}
-			output_file =  output_directory + Path.DirectorySeparatorChar + cleanfilename + file_extension;
+			output_file =  output_directory + Path.DirectorySeparatorChar + cleanfilename;
 			return cleanfilename;
 		}
 
