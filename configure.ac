@@ -98,6 +98,7 @@ build/m4/shave/shave-libtool
 po/Makefile.in
 
 src/Makefile
+src/LCD/Makefile
 src/AlarmClock/Makefile
 src/Awn/Makefile
 src/ClutterFlow/Makefile
@@ -132,6 +133,7 @@ ${PACKAGE}-${VERSION}
     Vendor Build ID:   ${vendor_build_id}
 
   Extensions:
+    LCD:                 yes
     Alarm Clock:         ${enable_AlarmClock}
     Awn:                 ${enable_Awn}
     ClutterFlow:         ${enable_ClutterFlow}

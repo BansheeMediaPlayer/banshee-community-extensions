@@ -1,4 +1,5 @@
 SUBDIRS = \
+    LCD \
 	AlarmClock \
 	Awn \
 	ClutterFlow \
