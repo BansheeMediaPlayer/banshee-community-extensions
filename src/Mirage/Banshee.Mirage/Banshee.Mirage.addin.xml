@@ -20,5 +20,9 @@
   <Extension path="/Banshee/ServiceManager/Service">
     <Service class="Banshee.Mirage.MiragePlugin"/>
   </Extension>
+
+  <Extension path="/Banshee/PlaybackController/ShuffleModes">
+    <ShuffleMode class="Banshee.Mirage.RandomBySimilar"/>
+  </Extension>
   
 </Addin>

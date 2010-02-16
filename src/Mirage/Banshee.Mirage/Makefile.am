@@ -7,8 +7,7 @@ SOURCES =  \
 	MiragePlugin.cs \
 	PlaylistGeneratorSource.cs \
 	RandomBySimilar.cs \
-	SimilarityCalculator.cs \
-	SqliteFunctions.cs
+	SimilarityCalculator.cs
 
 RESOURCES =  \
 	Banshee.Mirage.addin.xml \

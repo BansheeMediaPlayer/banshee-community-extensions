@@ -81,6 +81,7 @@ namespace Banshee.Mirage
             }
 
             ServiceManager.DbConnection.Execute ("ATTACH DATABASE ? AS Mirage", dbfile);
+            Hyena.Data.Sqlite.BinaryFunction.Add ("MIRAGE_DISTANCE", Distance);
 
             /*db = new Db (dbfile);
             Log.DebugFormat ("Mirage - Database Initialize (dbfile: {0})", dbfile);
@@ -100,6 +101,27 @@ namespace Banshee.Mirage
             }
 
             Log.Debug ("Mirage - Initialized");
+        }
+
+        internal static long total_count = 0;
+        internal static double total_ms = 0;
+        internal static double total_read_ms = 0;
+        private object Distance (object a_obj, object b_obj)
+        {
+            var start = DateTime.Now;
+            var a = a_obj as byte[];
+            var b = b_obj as byte[];
+            if (a == null || b == null)
+                return Double.MaxValue;
+
+            var a_s = Scms.FromBytes (a);
+            var b_s = Scms.FromBytes (b);
+            total_read_ms += (DateTime.Now - start).TotalMilliseconds;
+            var c = new ScmsConfiguration (Analyzer.MFCC_COEFFICIENTS);
+            var ret = Scms.Distance (a_s, b_s, c);
+            total_ms += (DateTime.Now - start).TotalMilliseconds;
+            total_count++;
+            return ret;
         }
         
         private void OnSourceAdded (SourceAddedArgs args)

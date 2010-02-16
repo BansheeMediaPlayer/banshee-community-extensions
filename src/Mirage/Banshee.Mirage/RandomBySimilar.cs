@@ -32,10 +32,12 @@ using Banshee.Collection.Database;
 using Banshee.Collection;
 using Banshee.PlaybackController;
 using Banshee.ServiceStack;
+using Mono.Unix;
+using Mirage;
 
 namespace Banshee.Mirage
 {
-    public class RandomBySimilar : RandomBy
+    public class RandomBySimilar : RandomBy, IDisposable
     {
         // At a high level, what we're trying to do is get the most similar track
         // to the seed tracks, excluding played/skipped ones[, and ones too similar to skipped ones].
@@ -47,12 +49,16 @@ namespace Banshee.Mirage
 
         private long last_track_id;
 
-        public RandomBySimilar (Shuffler shuffler) : base (PlaybackShuffleMode.Similar, shuffler)
+        public RandomBySimilar (Shuffler shuffler) : base ("mirage_similar", shuffler)
         {
+            Label = Catalog.GetString ("Shuffle by Similar");
+            Adverb = Catalog.GetString ("by similar");
+            Description = Catalog.GetString ("Play songs similar to those already played");
+
             // TODO Mirage's PlaylistGeneratorSource ensures no more than 50% of tracks are by same artist
-            //Condition = "";
+            Condition = "1=1";
             From = "LEFT OUTER JOIN mirage ON (mirage.TrackID = CoreTracks.TrackID) ";
-            Select = ", BANSHEE_MIRAGE_DISTANCE (mirage.Scms, ?) as Distance";
+            Select = ", HYENA_BINARY_FUNCTION ('MIRAGE_DISTANCE', mirage.Scms, ?) as Distance";
             OrderBy = "Distance ASC, RANDOM ()";
         }
 
@@ -64,6 +70,11 @@ namespace Banshee.Mirage
             } else {
                 last_track_id = 0;
             }
+        }
+
+        public void Dispose ()
+        {
+
         }
 
         public override bool Next (DateTime after)
@@ -82,13 +93,17 @@ namespace Banshee.Mirage
         public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
         {
             var seed_scms = ServiceManager.DbConnection.Query<byte[]> (String.Format (
-                "SELECT Scms FROM mirage {0}",
+                "SELECT Scms FROM mirage {0} LIMIT 1",
                 last_track_id == 0
-                    ? "ORDER BY RANDOM ();"
+                    ? "ORDER BY RANDOM ()"
                     : String.Format ("WHERE TrackID = {0}", last_track_id)
             ));
 
+            MiragePlugin.total_count = 0;
+            MiragePlugin.total_ms = 0;
+            MiragePlugin.total_read_ms = 0;
             var track = GetTrack (ShufflerQuery, seed_scms, after) as DatabaseTrackInfo;
+            Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} - ms spent reading: {1}; total calls: {2}", MiragePlugin.total_ms, MiragePlugin.total_read_ms, MiragePlugin.total_count);
             if (track != null) {
                 last_track_id = track.TrackId;
             }
