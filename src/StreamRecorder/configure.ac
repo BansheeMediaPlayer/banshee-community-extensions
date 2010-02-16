@@ -118,9 +118,8 @@ AC_SUBST(expanded_pluginsdir)
 
 
 AC_CONFIG_FILES([
-Banshee.Streamrecorder/Banshee.Streamrecorder.addin.xml
-Banshee.Streamrecorder/Makefile
-Banshee.Streamrecorder/banshee.streamrecorder.pc
+Banshee.Streamrecorder.addin.xml
+banshee.streamrecorder.pc
 po/Makefile.in
 Makefile
 ])
