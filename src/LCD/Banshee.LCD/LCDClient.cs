@@ -146,14 +146,6 @@ namespace Banshee.LCD
                 client.SendString("client_set -name Banshee\n");
                 client.connecting=false;
 
-                /*LCDScreen scr=new LCDScreen("trackinfo",LCDScreen.Prio.Foreground,32);
-                LCDWidget title=new LCDWidgetString("title", 1, 1, "Nothing so far");
-                LCDWidget damn=new LCDWidgetScroller("damn", 1, 2, 16, 1, LCDWidgetScroller.Direction.Horizontal, 3, "Nothing so far in here damnit!");
-
-                client.RegScreen(scr);
-                client.RegWidget(scr, title);
-                client.RegWidget(scr, damn);*/
-
                 client.Connected();
 
             }
