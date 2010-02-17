@@ -11,6 +11,8 @@
     url="http://gitorious.org/banshee-stream-recorder"
     defaultEnabled="true">
 
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
   <Dependencies>
     <Addin id="Banshee.Services" version="1.0"/>
     <Addin id="Banshee.ThickClient" version="1.0"/>
@@ -20,5 +22,4 @@
     <Service class="Banshee.Streamrecorder.StreamrecorderService"/>   
   </Extension>
   
-  <Localizer type="Gettext" catalog="@GETTEXT_PACKAGE@" location="@prefix@/share/locale"/>
 </Addin>

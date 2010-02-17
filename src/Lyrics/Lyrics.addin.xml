@@ -10,6 +10,8 @@
     compatVersion="1.0"
     defaultEnabled="false">
   
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
   <Dependencies>
     <Addin version="1.0" id="Banshee.Services"/>
     <Addin version="1.0" id="Banshee.ThickClient"/>

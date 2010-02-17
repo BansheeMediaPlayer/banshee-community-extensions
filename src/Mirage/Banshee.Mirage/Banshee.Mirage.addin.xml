@@ -10,7 +10,7 @@
     url="http://hop.at/mirage/"
     defaultEnabled="false">
 
-    <Localizer type="Gettext" catalog="banshee-mirage" location="/usr/share/locale"/>
+    <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
 
   <Dependencies>
     <Addin id="Banshee.Services" version="1.0"/>

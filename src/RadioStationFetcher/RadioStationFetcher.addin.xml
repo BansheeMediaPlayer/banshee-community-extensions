@@ -11,7 +11,7 @@
     url="http://aksussummerofcode.blogspot.com/"
     defaultEnabled="false">
 
-  <Localizer type="Gettext" catalog="@GETTEXT_PACKAGE@" location="@prefix@/share/locale"/>
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
 
   <Dependencies>
     <Addin id="Banshee.Services" version="1.0"/>
