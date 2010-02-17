@@ -57,7 +57,7 @@ namespace Banshee.Mirage
             // TODO Mirage's PlaylistGeneratorSource ensures no more than 50% of tracks are by same artist
             Condition = "Distance > 0";
             From = "LEFT OUTER JOIN mirage ON (mirage.TrackID = CoreTracks.TrackID) ";
-            Select = ", HYENA_BINARY_FUNCTION ('MIRAGE_DISTANCE', mirage.Scms, ?) as Distance";
+            Select = ", HYENA_BINARY_FUNCTION ('MIRAGE_DISTANCE', ?, mirage.Scms) as Distance";
             OrderBy = "Distance ASC, RANDOM ()";
 
             //cache_select = "HYENA_BINARY_FUNCTION ('MIRAGE_DISTANCE', mirage.Scms, ?) as Distance
@@ -81,40 +81,40 @@ namespace Banshee.Mirage
 
         public override TrackInfo GetPlaybackTrack (DateTime after)
         {
-            MiragePlugin.total_count = 0;
-            MiragePlugin.total_ms = 0;
-            MiragePlugin.total_read_ms = 0;
-            // FIXME - hard to do - need to add mirage to FROM, etc
-            var track = Cache.GetSingle (Select, From, cache_condition, GetSeed (), after, after) as DatabaseTrackInfo;
-            Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} ms - spent reading: {1} ms; total calls: {2}", MiragePlugin.total_ms, MiragePlugin.total_read_ms, MiragePlugin.total_count);
-            if (track != null) {
-                last_track_id = track.TrackId;
+            DistanceCalculator.total_count = 0;
+            DistanceCalculator.total_ms = 0;
+            DistanceCalculator.total_read_ms = 0;
+
+            using (var seed = GetSeed ()) {
+                // FIXME - hard to do - need to add mirage to FROM, etc
+                var track = Cache.GetSingle (Select, From, cache_condition, seed.Id, after, after) as DatabaseTrackInfo;
+                Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} ms - spent reading: {1} ms; total calls: {2}", DistanceCalculator.total_ms, DistanceCalculator.total_read_ms, DistanceCalculator.total_count);
+                if (track != null) {
+                    last_track_id = track.TrackId;
+                }
+                return track;
             }
-            return track;
         }
 
-        private byte [] GetSeed ()
+        private BaseSeed GetSeed ()
         {
-            return ServiceManager.DbConnection.Query<byte[]> (String.Format (
+            return new SingleSeed (Scms.FromBytes (ServiceManager.DbConnection.Query<byte[]> (String.Format (
                 "SELECT Scms FROM mirage {0} LIMIT 1",
                 last_track_id == 0
                     ? "ORDER BY RANDOM ()"
                     : String.Format ("WHERE TrackID = {0}", last_track_id)
-            ));
+            ))));
         }
 
         public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
         {
-            var seed = GetSeed ();
-            MiragePlugin.total_count = 0;
-            MiragePlugin.total_ms = 0;
-            MiragePlugin.total_read_ms = 0;
-            var track = GetTrack (ShufflerQuery, seed, after) as DatabaseTrackInfo;
-            Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} ms - spent reading: {1} ms; total calls: {2}", MiragePlugin.total_ms, MiragePlugin.total_read_ms, MiragePlugin.total_count);
-            if (track != null) {
-                last_track_id = track.TrackId;
+            using (var seed = GetSeed ()) {
+                var track = GetTrack (ShufflerQuery, seed.Id, after) as DatabaseTrackInfo;
+                if (track != null) {
+                    last_track_id = track.TrackId;
+                }
+                return track;
             }
-            return track;
         }
     }
 }

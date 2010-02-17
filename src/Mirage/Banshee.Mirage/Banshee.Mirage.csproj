@@ -92,6 +92,9 @@
     <Compile Include="SimilarityCalculator.cs" />
     <Compile Include="AnalyzeLibraryJob.cs" />
     <Compile Include="RandomBySimilar.cs" />
+    <Compile Include="DistanceCalculator.cs" />
+    <Compile Include="BaseSeed.cs" />
+    <Compile Include="SingleSeed.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

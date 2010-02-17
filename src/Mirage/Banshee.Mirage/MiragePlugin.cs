@@ -81,7 +81,7 @@ namespace Banshee.Mirage
             }
 
             ServiceManager.DbConnection.Execute ("ATTACH DATABASE ? AS Mirage", dbfile);
-            Hyena.Data.Sqlite.BinaryFunction.Add ("MIRAGE_DISTANCE", Distance);
+            DistanceCalculator.Init ();
 
             /*db = new Db (dbfile);
             Log.DebugFormat ("Mirage - Database Initialize (dbfile: {0})", dbfile);
@@ -101,37 +101,6 @@ namespace Banshee.Mirage
             }
 
             Log.Debug ("Mirage - Initialized");
-        }
-
-        internal static long total_count = 0;
-        internal static double total_ms = 0;
-        internal static double total_read_ms = 0;
-        private static float min_distance = Single.MaxValue, max_distance = 0;
-        private object Distance (object a_obj, object b_obj)
-        {
-            var start = DateTime.Now;
-            var a = a_obj as byte[];
-            var b = b_obj as byte[];
-            if (a == null || b == null)
-                return Double.MaxValue;
-
-            var a_s = Scms.FromBytes (a);
-            var b_s = Scms.FromBytes (b);
-            total_read_ms += (DateTime.Now - start).TotalMilliseconds;
-            var c = new ScmsConfiguration (Analyzer.MFCC_COEFFICIENTS);
-            var ret = Scms.Distance (a_s, b_s, c);
-            if (ret < min_distance) {
-                min_distance = ret;
-                Console.WriteLine ("New min distance: {0}", ret);
-            }
-            if (ret > max_distance) {
-                max_distance = ret;
-                Console.WriteLine ("New max distance: {0}", ret);
-            }
-            //Console.WriteLine ("Distance: {0}", ret);
-            total_ms += (DateTime.Now - start).TotalMilliseconds;
-            total_count++;
-            return ret;
         }
         
         private void OnSourceAdded (SourceAddedArgs args)
@@ -170,6 +139,8 @@ namespace Banshee.Mirage
                 ServiceManager.JobScheduler.Cancel (analysis_job);
                 analysis_job = null;
             }
+
+            DistanceCalculator.Dispose ();
 
             try {
                 Analyzer.CancelAnalyze ();
