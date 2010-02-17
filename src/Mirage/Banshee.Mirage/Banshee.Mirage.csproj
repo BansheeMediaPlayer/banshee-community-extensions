@@ -88,8 +88,6 @@
   <ItemGroup>
     <Compile Include="MirageConfiguration.cs" />
     <Compile Include="MiragePlugin.cs" />
-    <Compile Include="PlaylistGeneratorSource.cs" />
-    <Compile Include="SimilarityCalculator.cs" />
     <Compile Include="AnalyzeLibraryJob.cs" />
     <Compile Include="RandomBySimilar.cs" />
     <Compile Include="DistanceCalculator.cs" />

@@ -7,9 +7,7 @@ SOURCES =  \
 	DistanceCalculator.cs \
 	MirageConfiguration.cs \
 	MiragePlugin.cs \
-	PlaylistGeneratorSource.cs \
 	RandomBySimilar.cs \
-	SimilarityCalculator.cs \
 	SingleSeed.cs \
 	TrackAnalysis.cs
 
