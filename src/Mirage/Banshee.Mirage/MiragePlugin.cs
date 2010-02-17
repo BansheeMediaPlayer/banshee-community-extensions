@@ -106,6 +106,7 @@ namespace Banshee.Mirage
         internal static long total_count = 0;
         internal static double total_ms = 0;
         internal static double total_read_ms = 0;
+        private static float min_distance = Single.MaxValue, max_distance = 0;
         private object Distance (object a_obj, object b_obj)
         {
             var start = DateTime.Now;
@@ -119,6 +120,15 @@ namespace Banshee.Mirage
             total_read_ms += (DateTime.Now - start).TotalMilliseconds;
             var c = new ScmsConfiguration (Analyzer.MFCC_COEFFICIENTS);
             var ret = Scms.Distance (a_s, b_s, c);
+            if (ret < min_distance) {
+                min_distance = ret;
+                Console.WriteLine ("New min distance: {0}", ret);
+            }
+            if (ret > max_distance) {
+                max_distance = ret;
+                Console.WriteLine ("New max distance: {0}", ret);
+            }
+            //Console.WriteLine ("Distance: {0}", ret);
             total_ms += (DateTime.Now - start).TotalMilliseconds;
             total_count++;
             return ret;

@@ -81,8 +81,12 @@ namespace Banshee.Mirage
 
         public override TrackInfo GetPlaybackTrack (DateTime after)
         {
+            MiragePlugin.total_count = 0;
+            MiragePlugin.total_ms = 0;
+            MiragePlugin.total_read_ms = 0;
             // FIXME - hard to do - need to add mirage to FROM, etc
             var track = Cache.GetSingle (Select, From, cache_condition, GetSeed (), after, after) as DatabaseTrackInfo;
+            Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} ms - spent reading: {1} ms; total calls: {2}", MiragePlugin.total_ms, MiragePlugin.total_read_ms, MiragePlugin.total_count);
             if (track != null) {
                 last_track_id = track.TrackId;
             }
@@ -106,7 +110,7 @@ namespace Banshee.Mirage
             MiragePlugin.total_ms = 0;
             MiragePlugin.total_read_ms = 0;
             var track = GetTrack (ShufflerQuery, seed, after) as DatabaseTrackInfo;
-            Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} - ms spent reading: {1}; total calls: {2}", MiragePlugin.total_ms, MiragePlugin.total_read_ms, MiragePlugin.total_count);
+            Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} ms - spent reading: {1} ms; total calls: {2}", MiragePlugin.total_ms, MiragePlugin.total_read_ms, MiragePlugin.total_count);
             if (track != null) {
                 last_track_id = track.TrackId;
             }
