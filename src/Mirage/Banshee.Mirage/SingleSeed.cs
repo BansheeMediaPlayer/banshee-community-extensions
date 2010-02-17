@@ -29,16 +29,21 @@ namespace Banshee.Mirage
 
         public override IEnumerable<float> Distance (Scms from)
         {
+            bool any = false;
+
             foreach (var ret in seeds.Select (seed => Scms.Distance (seed, from, Config)).Where (v => v > 0)) {
                 if (ret < min_distance) {
                     min_distance = ret;
-                    Console.WriteLine ("New min distance: {0}", ret);
                 } else if (ret > max_distance) {
                     max_distance = ret;
-                    Console.WriteLine ("New max distance: {0}", ret);
                 }
 
                 yield return ret;
+                any = true;
+            }
+
+            if (!any) {
+                yield return 0f;
             }
         }
     }

@@ -34,7 +34,7 @@ namespace Banshee.Mirage
             DistanceCalculator.RemoveSeed (seed_id);
             Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} ms - spent reading: {1} ms; total calls: {2}",
                                DistanceCalculator.total_ms, DistanceCalculator.total_read_ms, DistanceCalculator.total_count);
-            Console.WriteLine (">>>>>>>>>>>>>> Distance min, max = {0} - {1}", min_distance, max_distance);
+            Console.WriteLine (">>>>>>>>>>>>>> Distance [min, max] = [{0}, {1}]", min_distance, max_distance);
         }
     }
 }

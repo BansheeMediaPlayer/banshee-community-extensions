@@ -22,7 +22,7 @@ namespace Banshee.Mirage
 
         public static void Dispose ()
         {
-            Hyena.Data.Sqlite.BinaryFunction.Add (FUNC_NAME, Distance);
+            Hyena.Data.Sqlite.BinaryFunction.Remove (FUNC_NAME);
         }
 
         private static Dictionary<int, BaseSeed> seeds = new Dictionary<int, BaseSeed> ();
@@ -49,7 +49,8 @@ namespace Banshee.Mirage
 
         private static object Distance (object seed_id_obj, object scms_obj)
         {
-            var seed = seeds[(int) seed_id_obj];
+            int seed_id = Convert.ToInt32 (seed_id_obj);
+            var seed = seeds[seed_id];
             var scms_bytes = scms_obj as byte[];
             if (seed == null || scms_bytes == null)
                 return Double.MaxValue;

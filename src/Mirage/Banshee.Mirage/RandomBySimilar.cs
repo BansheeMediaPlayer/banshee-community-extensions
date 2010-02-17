@@ -81,14 +81,19 @@ namespace Banshee.Mirage
 
         public override TrackInfo GetPlaybackTrack (DateTime after)
         {
-            DistanceCalculator.total_count = 0;
-            DistanceCalculator.total_ms = 0;
-            DistanceCalculator.total_read_ms = 0;
-
             using (var seed = GetSeed ()) {
-                // FIXME - hard to do - need to add mirage to FROM, etc
                 var track = Cache.GetSingle (Select, From, cache_condition, seed.Id, after, after) as DatabaseTrackInfo;
-                Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} ms - spent reading: {1} ms; total calls: {2}", DistanceCalculator.total_ms, DistanceCalculator.total_read_ms, DistanceCalculator.total_count);
+                if (track != null) {
+                    last_track_id = track.TrackId;
+                }
+                return track;
+            }
+        }
+
+        public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
+        {
+            using (var seed = GetSeed ()) {
+                var track = GetTrack (ShufflerQuery, seed.Id, after) as DatabaseTrackInfo;
                 if (track != null) {
                     last_track_id = track.TrackId;
                 }
@@ -104,17 +109,6 @@ namespace Banshee.Mirage
                     ? "ORDER BY RANDOM ()"
                     : String.Format ("WHERE TrackID = {0}", last_track_id)
             ))));
-        }
-
-        public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
-        {
-            using (var seed = GetSeed ()) {
-                var track = GetTrack (ShufflerQuery, seed.Id, after) as DatabaseTrackInfo;
-                if (track != null) {
-                    last_track_id = track.TrackId;
-                }
-                return track;
-            }
         }
     }
 }
