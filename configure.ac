@@ -111,8 +111,6 @@ src/Mirage/Mirage/Makefile
 src/Mirage/Banshee.Mirage/Makefile
 src/Mirage/Test/Makefile
 src/RadioStationFetcher/Makefile
-src/RadioStationFetcher/RadioStationFetcher.addin.xml
-src/StreamRecorder/Banshee.Streamrecorder.addin.xml
 src/StreamRecorder/Makefile
 ])
 
