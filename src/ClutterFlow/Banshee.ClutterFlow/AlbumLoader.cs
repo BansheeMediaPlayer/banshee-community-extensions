@@ -113,11 +113,11 @@ namespace Banshee.ClutterFlow
         {
         }
         
-        public override List<ClutterFlowActor> GetActors (System.Action<ClutterFlowActor> method_call)
+        public override List<ClutterFlowBaseActor> GetActors (System.Action<ClutterFlowBaseActor> method_call)
         {
-            List<ClutterFlowActor> list = new List<ClutterFlowActor>();
+            List<ClutterFlowBaseActor> list = new List<ClutterFlowBaseActor>();
             if (Model!=null) for (int i = 1; i < Model.Count; i++) {
-                ClutterFlowActor actor = AddActorToList(Model[i], list);
+                ClutterFlowBaseActor actor = AddActorToList(Model[i], list);
                 if (method_call!=null) method_call(actor);
             }
             return list;
@@ -129,10 +129,10 @@ namespace Banshee.ClutterFlow
             ScrollTo (ClutterFlowAlbum.CreateCacheKey (generator));
         }
         
-        protected override ClutterFlowActor AddActorToList (AlbumInfo generator, List<ClutterFlowActor> list)
+        protected override ClutterFlowBaseActor AddActorToList (AlbumInfo generator, List<ClutterFlowBaseActor> list)
         {
             string key = ClutterFlowAlbum.CreateCacheKey(generator);
-            ClutterFlowActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
+            ClutterFlowBaseActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
             if (actor==null) {
                 actor = new ClutterFlowAlbum (generator, coverManager);
                 Cache.Add (key, actor);

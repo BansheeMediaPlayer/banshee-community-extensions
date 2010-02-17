@@ -34,13 +34,13 @@ namespace ClutterFlow
 
 	public interface IActorLoader : IDisposable {
 		CoverManager CoverManager { get; set; }
-		List<ClutterFlowActor> GetActors (System.Action<ClutterFlowActor> method_call);
+		List<ClutterFlowBaseActor> GetActors (System.Action<ClutterFlowBaseActor> method_call);
 	}
 	
 	public class ActorLoader<TKey, TGen> : IActorLoader {
 		#region Fields	
-		protected Dictionary<TKey, ClutterFlowActor> cached_covers = new Dictionary<TKey, ClutterFlowActor> ();
-		public virtual Dictionary<TKey, ClutterFlowActor> Cache {
+		protected Dictionary<TKey, ClutterFlowBaseActor> cached_covers = new Dictionary<TKey, ClutterFlowBaseActor> ();
+		public virtual Dictionary<TKey, ClutterFlowBaseActor> Cache {
 			get { return cached_covers; }
 		}
 		
@@ -65,7 +65,7 @@ namespace ClutterFlow
             if (disposed)
                 return;
             disposed = true;
-            foreach (ClutterFlowActor actor in cached_covers.Values)
+            foreach (ClutterFlowBaseActor actor in cached_covers.Values)
                 actor.Dispose ();
             cached_covers.Clear ();
             coverManager = null;
@@ -78,18 +78,18 @@ namespace ClutterFlow
 			else coverManager.NeedsReloading = true;*/
 		}
 		
-		public virtual List<ClutterFlowActor> GetActors (System.Action<ClutterFlowActor> method_call)
+		public virtual List<ClutterFlowBaseActor> GetActors (System.Action<ClutterFlowBaseActor> method_call)
 		{
 			throw new System.NotImplementedException();
 		}
 		
-		protected virtual ClutterFlowActor AddActorToList(TGen generator, List<ClutterFlowActor> list) {
+		protected virtual ClutterFlowBaseActor AddActorToList(TGen generator, List<ClutterFlowBaseActor> list) {
 			throw new System.NotImplementedException();
 		}
 
 		public virtual void ScrollTo (TKey key)
 		{
-			ClutterFlowActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
+			ClutterFlowBaseActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
 			if (actor!=null && coverManager.covers.Contains (actor))
 				coverManager.TargetIndex = actor.Index; //coverManager.covers.IndexOf (actor); //replace covers with something faster?
 		}

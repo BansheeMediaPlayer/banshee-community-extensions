@@ -64,9 +64,8 @@ namespace ClutterFlow
             if (TargetMarkerReached!=null) TargetMarkerReached(this, new TargetReachedEventArgs(Target));
         }        
         
-        protected TimelineDirection direction = TimelineDirection.Forward;
         public TimelineDirection Direction {
-            get { return direction; }
+            get { return Target>AbsoluteProgress ? TimelineDirection.Forward : TimelineDirection.Backward; }
         }
         
         protected uint target = 0;
@@ -86,26 +85,27 @@ namespace ClutterFlow
         }
         
         public double RelativeTarget {
-            get { return (double) (IndexCount > 0 ? Target / (double) (IndexCount-1) : 0); }
+            get { return (IndexCount > 0 ? (double) Target / (double) (IndexCount-1) : 0.0); }
         }
         
         protected double progress = 0;
         public virtual double Progress {
             get { return progress; }
-            set { 
+            set {
                 if (value > 1) value = 1;
                 if (value < 0) value = 0;
                 progress = value;
                 delta = (int) Math.Abs(AbsoluteProgress - Target);
-                if (progress == RelativeTarget) {
-                    InvokeNewFrameEvent ();
-                    InvokeTargetReached ();
-                }
+                if (delta==0) InvokeTargetReached ();
             }
         }
-        
+
+        //// <value>
+        /// This is the progress expressed as an index number. Returned as a double to prevent
+        /// rounding errors in the code.
+        /// </value>
         public double AbsoluteProgress {
-            get { return (double) (IndexCount > 0 ? (progress*(IndexCount-1)) : 0); }
+            get { return (IndexCount > 0 ? (progress*(double)(IndexCount-1)) : 0); }
         }
         
         protected int delta = 0;
@@ -159,6 +159,7 @@ namespace ClutterFlow
         
         private bool run_frame_source = false;
         protected bool RunFrameSource {
+            get { return run_frame_source; }
             set {
                 if (run_frame_source!=value) {
                     run_frame_source = value;
@@ -188,6 +189,16 @@ namespace ClutterFlow
             this.index_count = index_count;
             this.frequency = frequency;
         }
+
+        public void JumpToIndex (uint value)
+        {
+            Progress = (double) value / (IndexCount-1);
+        }
+
+        public void JumpToTarget ()
+        {
+            JumpToIndex (Target);
+        }
         
         protected virtual bool RepaintFunc ()
         {
@@ -206,24 +217,22 @@ namespace ClutterFlow
                 if (!IsPaused && CanPlay) {
                     //Console.Write (" Moving ");
                     if (Target>AbsoluteProgress) {
-                        //Console.Write (" Forward");
+                        //Console.Write (" Forward - Target is " + Target + " AbsoluteProgress is " + AbsoluteProgress + "\n");
                         Progress +=	time_delta * Frequency / (double) (IndexCount-1);
-                        if (Target<=AbsoluteProgress) {
+                        if (Target<=AbsoluteProgress)
                             Progress = RelativeTarget;
-                        }
                     } else if (Target<AbsoluteProgress) {
-                        //Console.Write (" Backward");
+                        //Console.Write (" Backward - Target is " + Target + " AbsoluteProgress is " + AbsoluteProgress + "\n");
                         Progress -= time_delta * Frequency / (double) (IndexCount-1);
-                        if (Target>=AbsoluteProgress) {
+                        //Console.Write (" - Afterwards progress is " + Progress + "\n");
+                        if (Target>=AbsoluteProgress)
                             Progress = RelativeTarget;
-                        }
                     }
                 }
-                //Console.Write ("\n");
                 last_time = now;
                 InvokeNewFrameEvent ();
             }
-            return run_frame_source; //keep on calling this function
+            return RunFrameSource; //keep on calling this function
         }
         
         public void Play ()
@@ -255,19 +264,7 @@ namespace ClutterFlow
         protected CoverManager coverManager;
         public CoverManager CoverManager {
         	get { return coverManager; }
-        	set {
-        		if (value!=coverManager) {
-        			/*if (coverManager!=null) {
-        				coverManager.CoversChanged -= HandleCoversChanged;
-        				coverManager.TargetIndexChanged -= HandleTargetIndexChanged;
-        			}*/
-        			coverManager = value;
-        			/*if (coverManager!=null) {
-        				coverManager.CoversChanged += HandleCoversChanged;
-                        coverManager.TargetIndexChanged += HandleTargetIndexChanged;
-                    }*/
-        		}
-        	}
+        	set { coverManager = value; }
         }
     
         public override uint Target {

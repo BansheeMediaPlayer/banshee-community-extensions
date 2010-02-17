@@ -49,10 +49,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="clutter-gtk-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=87b7d16e3a31768b">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-gtk-sharp.dll</HintPath>
-    </Reference>
     <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-core</Package>
     </Reference>
@@ -75,15 +71,19 @@
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.Transactions" />
-    <Reference Include="clutter-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=87b7d16e3a31768b">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-sharp.dll</HintPath>
-    </Reference>
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Banshee.NowPlaying, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-nowplaying</Package>
+    </Reference>
+    <Reference Include="clutter-gtk-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=87b7d16e3a31768b">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-gtk-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="clutter-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=87b7d16e3a31768b">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-sharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +105,9 @@
     <None Include="..\Banshee.ClutterFlow.addin.xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\ThemeIcons\256x256\clutterflow-large.png">
+      <Gettext-ScanForTranslations>false</Gettext-ScanForTranslations>
+    </EmbeddedResource>
     <EmbeddedResource Include="Banshee.ClutterFlow.addin.xml" />
     <EmbeddedResource Include="..\ThemeIcons\22x22\clutterflow-icon.png" />
   </ItemGroup>

@@ -86,8 +86,9 @@ namespace ClutterFlow.Captions
 			}
 		}
 
-		protected void SetTextFromCover(ClutterFlowActor cover) 
+		protected void SetTextFromCover(ClutterFlowBaseActor cover) 
 		{
+            Console.WriteLine ("SetTextFromCover called");
 			if (cover!=null && cover.Label!="")
 				Value = cover.Label;
 			else
@@ -96,7 +97,7 @@ namespace ClutterFlow.Captions
 		#endregion
 
 		#region Event Handling
-		protected virtual void HandleNewCurrentCover (ClutterFlowActor cover, EventArgs e)
+		protected virtual void HandleNewCurrentCover (ClutterFlowBaseActor cover, EventArgs e)
 		{
 			if (Opacity>0) FadeOut ();
 			Update ();

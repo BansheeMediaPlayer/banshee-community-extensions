@@ -187,144 +187,219 @@ namespace ClutterFlow
 		}
 	}
 
+    public abstract class ClutterFlowBaseActor : Clutter.Group, IIndexable
+    {
+        #region Fields
+        protected CoverManager coverManager;
+        public virtual CoverManager CoverManager {
+            get { return coverManager; }
+            set {
+                if (value!=coverManager) {
+                    if (coverManager!=null) {
+                        System.GC.SuppressFinalize (this);
+                        coverManager.Remove (this);
+                    }
+                    coverManager = value;
+                    if (coverManager!=null) {
+                        coverManager.Add (this);
+                        coverManager.Realize ();
+                    }
+                }
+            }
+        }
+
+        protected string cache_key = "";
+        public virtual string CacheKey {
+            get { return cache_key; }
+            set { cache_key = value; }
+        }
+        
+        protected string label = "";
+        public virtual string Label {
+            get { return label; }
+            set { label = value; }
+        }
+
+        protected string sort_label = "";
+        public virtual string SortLabel {
+            get { return sort_label; }
+            set { sort_label = value; }
+        }
+        
+        protected double last_alpha = 0;
+        public double LastAlpha {
+            get { return last_alpha; }
+        }
+
+        public virtual event IndexChangedEventHandler IndexChanged;
+        
+        protected int index = -1; //-1 = not visible
+        public virtual int Index {
+            get { return index; }
+            set { 
+                if (value!=index) {
+                    int old_index = index;
+                    index = value;
+                    IsReactive = !(index < 0);
+                    if (IndexChanged!=null) IndexChanged (this, old_index, index);
+                }
+            }
+        }
+
+        public int CompareTo (IIndexable obj) {
+            if (obj.Index==-1 && this.Index!=-1)
+                return 1;
+            return obj.Index - this.Index;
+        }
+        #endregion
+
+        public ClutterFlowBaseActor (CoverManager cover_manager) : base ()
+        {
+            this.CoverManager = cover_manager;
+        }
+
+        ~ ClutterFlowBaseActor ()
+        {
+            Dispose ();
+        }
+        protected bool disposed = false;
+        public override void Dispose ()
+        {
+            if (disposed)
+                return;
+            disposed = true;
+            
+            CoverManager = null;
+        }
+
+        #region Texture Handling
+        public static Gdk.Pixbuf MakeReflection (Pixbuf pb) {
+            Gdk.Pixbuf finalPb = new Gdk.Pixbuf(Colorspace.Rgb, true, pb.BitsPerSample, pb.Width, pb.Height*2);
+            if (pb.BitsPerSample != 8)
+                throw new System.Exception ("Invalid bits per sample");
+
+            unsafe {
+
+                bool alpha = pb.HasAlpha;
+                int src_rowstride = pb.Rowstride;
+                int src_width = pb.Width;
+                int src_height = pb.Height;
+                byte * src_byte = (byte *) pb.Pixels;
+                byte * src_base = src_byte;
+                
+                int dst_rowstride = finalPb.Rowstride;
+                int dst_width = finalPb.Width;
+                int dst_height = finalPb.Height;
+                byte * dst_byte = (byte *) finalPb.Pixels;
+                byte * dst_base = dst_byte;
+    
+                byte * refl_byte = dst_base + (dst_height-1) * dst_rowstride + (dst_width-1) * 4  + 3;
+
+                for (int j = 0; j < src_height; j++) {
+                    src_byte = ((byte *) src_base) + j * src_rowstride;
+                    dst_byte = ((byte *) dst_base) + j * dst_rowstride;
+                    refl_byte = ((byte *) dst_base) + (dst_height-1-j) * dst_rowstride;
+                    for (int i = 0; i < src_width; i++) {
+                        byte r = *(src_byte++);
+                        byte g = *(src_byte++);
+                        byte b = *(src_byte++);
+                        byte a = 0xff;
+                        if (alpha)
+                            a = *(src_byte++);
+                        
+                        *dst_byte++ = r;
+                        *dst_byte++ = g;
+                        *dst_byte++ = b;
+                        *dst_byte++ = a;
+                        *refl_byte++ = r;
+                        *refl_byte++ = g;
+                        *refl_byte++ = b;
+                        *refl_byte++ = (byte) ((float) a * (float) (Math.Max(0, j - 0.3*src_height) / src_height));
+                    }
+                }
+            }
+            return finalPb;
+        }
+        #endregion
+    }
+    
     /// <summary>
     /// A ClutterFlowActor is a group containing the actor texture and it's reflection
     /// It does not contain any animation code, as this is provided by the FlowBehaviour class.
     /// </summary>
-	public class ClutterFlowActor : Clutter.Group, IIndexable
+	public class ClutterFlowActor : ClutterFlowBaseActor
 	{	
 		#region Fields
-		protected static TextureHolder textureHolder;
+        protected static TextureHolder textureHolder;
 
-		private static bool is_setup = false;
-		public static bool IsSetup {
-			get { return is_setup; }
-			protected set { is_setup = value; }
-		}
-	
-		private bool swapped = false;
-		private bool delayed_cover_swap = false;
-		private bool delayed_shade_swap = false;
-	 	public bool SwappedToDefault {
-			get { return swapped; }
-			set {
-				if (value!=swapped) {
-					swapped = value;
-					if (this.Stage == null)
-						delayed_cover_swap = true;
-					else
-						SetCoverSwap ();
-				}
-			}
-		}
+        private static bool is_setup = false;
+        public static bool IsSetup {
+            get { return is_setup; }
+            protected set { is_setup = value; }
+        }
+    
+        private bool swapped = false;
+        private bool delayed_cover_swap = false;
+        private bool delayed_shade_swap = false;
+        public bool SwappedToDefault {
+            get { return swapped; }
+            set {
+                if (value!=swapped) {
+                    swapped = value;
+                    if (this.Stage == null)
+                        delayed_cover_swap = true;
+                    else
+                        SetCoverSwap ();
+                }
+            }
+        }
 
-	 	void HandleParentSet(object o, ParentSetArgs args)
-	 	{
-	 		if (this.Stage != null) {
-				if (delayed_shade_swap) SetShadeSwap ();				
-				if (delayed_cover_swap) SetCoverSwap ();
-			}
-	 	}
+        private void SetCoverSwap () {
+            if (swapped) {
+                cover.CoglTexture = textureHolder.DefaultTexture;
+            } else {
+                cover.CoglTexture = Cogl.Texture.NewWithSize((uint) coverManager.TextureSize, (uint) coverManager.TextureSize,
+                                                             Cogl.TextureFlags.NoSlicing, Cogl.PixelFormat.Argb8888);
+            }
+            delayed_cover_swap = false;
+        }
 
-		private void SetCoverSwap () {
-			if (swapped) {
-				cover.CoglTexture = textureHolder.DefaultTexture;
-			} else {
-				cover.CoglTexture = Cogl.Texture.NewWithSize((uint) coverManager.TextureSize, (uint) coverManager.TextureSize,
-					                                         Cogl.TextureFlags.NoSlicing, Cogl.PixelFormat.Argb8888);
-			}
-			delayed_cover_swap = false;
-		}
+        private void SetShadeSwap () {
+            shade.CoglTexture = textureHolder.ShadeTexture;
+            delayed_shade_swap = false;
+        }
+        
+        protected Clutter.Texture cover = null;
+        public Clutter.Texture Cover {
+            get { return cover; }
+        }
+        protected Clutter.Texture shade = null;
+        public Clutter.Texture Shade {
+            get { return shade; }
+        }
 
-		private void SetShadeSwap () {
-			shade.CoglTexture = textureHolder.ShadeTexture;
-			delayed_shade_swap = false;
-		}
-		
-		protected Clutter.Texture cover = null;
-		public Clutter.Texture Cover {
-			get { return cover; }
-		}
-		protected Clutter.Texture shade = null;
-		public Clutter.Texture Shade {
-			get { return shade; }
-		}
-		
-		protected CoverManager coverManager;
-		public CoverManager CoverManager {
-			get { return coverManager; }
-			set {
-				if (value!=coverManager) {
-					if (coverManager!=null) {
-						coverManager.TextureSizeChanged -= HandleTextureSizeChanged;
-                        System.GC.SuppressFinalize (this);
-						coverManager.Remove (this);
-					}
-					coverManager = value;
-					if (coverManager!=null) {
-						coverManager.TextureSizeChanged += HandleTextureSizeChanged;
-						coverManager.Add (this);
-						coverManager.Realize ();
-					}
-				}
-			}
-		}
+        
+        public override CoverManager CoverManager {
+            get { return base.CoverManager; }
+            set {
+                if (coverManager!=null)
+                    coverManager.TextureSizeChanged -= HandleTextureSizeChanged;
+                base.CoverManager = value;
+                if (coverManager!=null)
+                    coverManager.TextureSizeChanged += HandleTextureSizeChanged;
+            }
+        }
 
-		protected string cache_key = "";
-		public virtual string CacheKey {
-			get { return cache_key; }
-			set { cache_key = value; }
-		}
-		
-		protected string label = "";
-		public virtual string Label {
-			get { return label; }
-			set { label = value; }
-		}
-
-		protected string sort_label = "";
-		public virtual string SortLabel {
-			get { return sort_label; }
-			set { sort_label = value; }
-		}
-		
-		protected double lastAlpha = 0;
-		public double LastAlpha {
-			get { return lastAlpha; }
-		}
-
-		public virtual event IndexChangedEventHandler IndexChanged;
-		
-		protected int index = -1; //-1 = not visible
-		public virtual int Index {
-			get { return index; }
-			set { 
-				if (value!=index) {
-					int old_index = index;
-					index = value;
-                    IsReactive = !(index < 0);
-					if (IndexChanged!=null) IndexChanged (this, old_index, index);
-				}
-			}
-		}
-
-		public int CompareTo (IIndexable obj) {
-			if (obj.Index==-1 && this.Index!=-1)
-				return 1;
-			return obj.Index - this.Index;
-		}
-
+        
 		private NeedPixbuf getDefaultPb;
-
 		#endregion
 		
 		#region Initialization	
-		public ClutterFlowActor (CoverManager coverManager, NeedPixbuf getDefaultPb) : base ()
+		public ClutterFlowActor (CoverManager cover_manager, NeedPixbuf getDefaultPb) : base (cover_manager)
 		{
-			this.ParentSet += HandleParentSet;
-			this.CoverManager = coverManager;
 			this.getDefaultPb = getDefaultPb;
 
+            this.ParentSet += HandleParentSet;
 			this.ButtonPressEvent += HandleButtonPressEvent;
 			this.ButtonReleaseEvent += HandleButtonReleaseEvent;
 			
@@ -335,15 +410,10 @@ namespace ClutterFlow
         {
             Dispose ();
         }
-        protected bool disposed = false;
-        public override void Dispose ()
+        public sealed override void Dispose ()
         {
-            if (disposed)
-                return;
-            disposed = true;
-            //Console.WriteLine("ClutterFlowActor.Dispose ()");
-            
-            CoverManager = null;
+            base.Dispose ();
+
             this.ParentSet -= HandleParentSet;
             this.ButtonPressEvent -= HandleButtonPressEvent;
             this.ButtonReleaseEvent -= HandleButtonReleaseEvent;
@@ -416,91 +486,6 @@ namespace ClutterFlow
 			return (getDefaultPb!=null) ? getDefaultPb() : null;
 		}
 
-		/*public static void SetSurfaceToShade (Cairo.ImageSurface surf, float txtre_dim)
-		{
-			Cairo.Context context = new Cairo.Context (surf);
-			Gradient gr = new LinearGradient (0, 0, txtre_dim, 0);
-			gr.AddColorStop (0.25, new Cairo.Color (0.0, 0.0, 0.0, 0.0));
-			gr.AddColorStop (1.0, new Cairo.Color (0.0, 0.0, 0.0, 0.6));
-			context.Pattern = gr;
-			context.Rectangle(new Cairo.Rectangle (0, 0, txtre_dim, txtre_dim));
-			context.Fill ();
-			MakeReflection (context, txtre_dim);
-
-			((IDisposable) gr).Dispose ();
-			((IDisposable) context.Target).Dispose ();
-			((IDisposable) context).Dispose ();
-		}
-		
-		protected static void MakeReflection (Context context, float txtre_dim) {
-			context.Save ();
-				
-			double alpha = 0.65;
-    		double step = 1 / txtre_dim;
-  
-    		context.Translate (0, 2 * txtre_dim);
-    		context.Scale (1, -1);
-    
-			for (int i = 0; i < txtre_dim; i++) {
-				context.Rectangle (0, txtre_dim-i, txtre_dim, 1);
-				context.Clip ();
-				context.SetSource (context.Target);
-				alpha = alpha - step;
-				context.PaintWithAlpha (alpha);
-				context.ResetClip ();
-			}
-
-			context.Restore ();
-		}*/
-
-		public static Gdk.Pixbuf MakeReflection (Pixbuf pb) {
-			Gdk.Pixbuf finalPb = new Gdk.Pixbuf(Colorspace.Rgb, true, pb.BitsPerSample, pb.Width, pb.Height*2);
-			if (pb.BitsPerSample != 8)
-				throw new System.Exception ("Invalid bits per sample");
-
-			unsafe {
-
-				bool alpha = pb.HasAlpha;
-				int src_rowstride = pb.Rowstride;
-				int src_width = pb.Width;
-				int src_height = pb.Height;
-				byte * src_byte = (byte *) pb.Pixels;
-				byte * src_base = src_byte;
-				
-				int dst_rowstride = finalPb.Rowstride;
-				int dst_width = finalPb.Width;
-				int dst_height = finalPb.Height;
-				byte * dst_byte = (byte *) finalPb.Pixels;
-				byte * dst_base = dst_byte;
-	
-				byte * refl_byte = dst_base + (dst_height-1) * dst_rowstride + (dst_width-1) * 4  + 3;
-
-				for (int j = 0; j < src_height; j++) {
-					src_byte = ((byte *) src_base) + j * src_rowstride;
-					dst_byte = ((byte *) dst_base) + j * dst_rowstride;
-					refl_byte = ((byte *) dst_base) + (dst_height-1-j) * dst_rowstride;
-					for (int i = 0; i < src_width; i++) {
-						byte r = *(src_byte++);
-						byte g = *(src_byte++);
-						byte b = *(src_byte++);
-						byte a = 0xff;
-						if (alpha)
-							a = *(src_byte++);
-						
-						*dst_byte++ = r;
-						*dst_byte++ = g;
-						*dst_byte++ = b;
-						*dst_byte++ = a;
-						*refl_byte++ = r;
-						*refl_byte++ = g;
-						*refl_byte++ = b;
-						*refl_byte++ = (byte) ((float) a * (float) (Math.Max(0, j - 0.3*src_height) / src_height));
-					}
-				}
-			}
-			return finalPb;
-		}
-
 		protected virtual void HandleTextureSizeChanged(object sender, EventArgs e)
 		{
 			SetupActors();
@@ -524,31 +509,48 @@ namespace ClutterFlow
 		public double AlphaFunction (double progress)
 		{
 			if (index < 0)
-				lastAlpha = 0;
+				last_alpha = 0;
 			else {
 				double val = (CoverManager.HalfVisCovers - (CoverManager.TotalCovers-1) * progress + index) / (CoverManager.VisibleCovers-1);
-				if (val<0) { val=0; }
-				if (val>1) { val=1; }
-				lastAlpha = val;
+				if (val<0) val=0;
+				if (val>1) val=1;
+				last_alpha = val;
 			}
-			return lastAlpha;
+			return last_alpha;
 		}
 		#endregion
 
+        /* TODO
+         * use Cogl.General.AreFeaturesAvailable(FeatureFlags.ShadersGlsl) to check
+         * if we can use vertex shaders for the shadow effect:
+         *  gl_FrontColor = gl_Color;
+         * if not available use the current implementation
+         */
+        
 		#region Event Handling
-		private void HandleButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
+        void HandleParentSet(object o, ParentSetArgs args)
+        {
+            if (this.Stage != null) {
+                if (delayed_shade_swap) SetShadeSwap ();                
+                if (delayed_cover_swap) SetCoverSwap ();
+            }
+        }
+        
+		protected virtual void HandleButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
 		{
 			if (Index>=0 && Opacity > 0) {
                 //Console.WriteLine ("HandleButtonReleaseEvent in ClutterFlowActor with index " + Index + " current cover is " + ((CoverManager.CurrentCover!=null) ? CoverManager.CurrentCover.Index.ToString():"null") + " and lc_index is " + index);
 				if (CoverManager.CurrentCover==this) {
+                    CreateClickClone ();
 					CoverManager.InvokeCoverActivated (this);
 				} else
 					CoverManager.TargetIndex = Index;
 			}
             args.RetVal = true;
+            
 		}
 
-		private void HandleButtonPressEvent (object o, ButtonPressEventArgs args)
+		protected virtual void HandleButtonPressEvent (object o, ButtonPressEventArgs args)
 		{
 			//should register time for double clicks
 		}
