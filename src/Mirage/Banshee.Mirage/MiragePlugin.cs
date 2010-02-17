@@ -339,7 +339,11 @@ namespace Banshee.Mirage
 
                 // Migrate the status info from the already-local MirageProcessed table
                 if (db.TableExists ("MirageProcessed")) {
-                    db.Execute (String.Format ("INSERT OR IGNORE INTO {0} (TrackID, ScmsData, Status) SELECT TrackID, NULL, Status FROM MirageProcessed WHERE Status != 0", TrackAnalysis.Provider.TableName));
+                    db.Execute (String.Format (
+                        @"INSERT OR IGNORE INTO {0} (TrackID, ScmsData, Status) SELECT TrackID, NULL,
+                        CASE Status WHEN 0 THEN 0 WHEN -1 THEN {1} WHEN -2 THEN {2} END FROM MirageProcessed WHERE Status != 0",
+                        TrackAnalysis.Provider.TableName, (int)AnalysisStatus.Failed, (int)AnalysisStatus.UnknownFailure
+                    ));
                     db.Execute ("DROP TABLE MirageProcessed");
                 }
             } catch (Exception e) {

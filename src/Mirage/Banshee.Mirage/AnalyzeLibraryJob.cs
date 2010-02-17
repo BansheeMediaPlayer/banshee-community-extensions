@@ -56,18 +56,35 @@ namespace Banshee.Mirage
         protected override void IterateCore (HyenaDataReader reader)
         {
             var track = DatabaseTrackInfo.Provider.FetchSingle (reader.Get<long> (0));
-            if (track.Uri != null && track.Uri.IsLocalPath) {
+            bool cancelled = false;
+            if (track != null && track.Uri != null && track.Uri.IsLocalPath) {
                 analysis.TrackId = track.TrackId;
                 try {
-                    Log.DebugFormat ("Mirage - Processing {0}-{1}-{2}", track.TrackId, track.ArtistName, track.TrackTitle);
-                    Status = String.Format("{0} - {1}", track.ArtistName, track.TrackTitle);
-                    analysis.ScmsData = Analyzer.Analyze (track.Uri.LocalPath).ToBytes ();
-                    analysis.Status = AnalysisStatus.Succeeded;
-                } catch (Exception) {
+                    if (Banshee.IO.File.Exists (track.Uri)) {
+                        Log.DebugFormat ("Mirage - Processing {0}-{1}-{2}", track.TrackId, track.ArtistName, track.TrackTitle);
+                        Status = String.Format("{0} - {1}", track.ArtistName, track.TrackTitle);
+                        analysis.ScmsData = Analyzer.Analyze (track.Uri.LocalPath).ToBytes ();
+                        analysis.Status = AnalysisStatus.Succeeded;
+                    } else {
+                        analysis.Status = AnalysisStatus.FileMissing;
+                    }
+                } catch (AudioDecoderCanceledException) {
+                    cancelled = true;
+                } catch (AudioDecoderErrorException) {
                     analysis.Status = AnalysisStatus.Failed;
+                } catch (Exception e) {
+                    analysis.Status = AnalysisStatus.UnknownFailure;
+                    Log.Exception ("Unexpected exception doing Mirage analysis", e);
                 } finally {
-                    TrackAnalysis.Provider.Delete (analysis.TrackId);
-                    TrackAnalysis.Provider.Save (analysis, true);
+                    if (!cancelled) {
+                        TrackAnalysis.Provider.Delete (analysis.TrackId);
+                        // Manually do this query instead of using Save since we need to be able to specify
+                        // the primarykey value
+                        TrackAnalysis.Provider.Connection.Execute (
+                            "INSERT INTO MirageTrackAnalysis (TrackID, ScmsData, Status) VALUES (?, ?, ?)",
+                            analysis.TrackId, analysis.ScmsData, (int)analysis.Status
+                        );
+                    }
                 }
             }
         }

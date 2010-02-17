@@ -8,7 +8,9 @@ namespace Banshee.Mirage
     public enum AnalysisStatus
     {
         Succeeded = 0,
-        Failed = -1
+        Failed = 1,
+        FileMissing = 2,
+        UnknownFailure = 3
     }
 
     public class TrackAnalysis

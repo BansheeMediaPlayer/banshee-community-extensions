@@ -55,7 +55,7 @@ namespace Banshee.Mirage
             Description = Catalog.GetString ("Play songs similar to those already played");
 
             // TODO Mirage's PlaylistGeneratorSource ensures no more than 50% of tracks are by same artist
-            Condition = "Distance > 0";
+            Condition = "mirage.Status = 0 AND Distance > 0";
             From = "LEFT OUTER JOIN MirageTrackAnalysis mirage ON (mirage.TrackID = CoreTracks.TrackID) ";
             Select = ", HYENA_BINARY_FUNCTION ('MIRAGE_DISTANCE', ?, mirage.ScmsData) as Distance";
             OrderBy = "Distance ASC, RANDOM ()";
@@ -103,10 +103,10 @@ namespace Banshee.Mirage
         private BaseSeed GetSeed ()
         {
             return new SingleSeed (Scms.FromBytes (ServiceManager.DbConnection.Query<byte[]> (String.Format (
-                "SELECT ScmsData FROM MirageTrackAnalysis {0} LIMIT 1",
+                "SELECT ScmsData FROM MirageTrackAnalysis WHERE Status = 0 {0} LIMIT 1",
                 last_track_id == 0
                     ? "ORDER BY RANDOM ()"
-                    : String.Format ("WHERE TrackID = {0}", last_track_id)
+                    : String.Format ("AND TrackID = {0}", last_track_id)
             ))));
         }
     }

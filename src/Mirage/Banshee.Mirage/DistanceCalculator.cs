@@ -50,11 +50,16 @@ namespace Banshee.Mirage
 
         private static object Distance (object seed_id_obj, object scms_obj)
         {
-            int seed_id = Convert.ToInt32 (seed_id_obj);
-            var seed = seeds[seed_id];
+            BaseSeed seed;
+            if (!seeds.TryGetValue (Convert.ToInt32 (seed_id_obj), out seed))
+                throw new ArgumentException ("seed_id not found", "seed_id_obj");
+
             var scms_bytes = scms_obj as byte[];
-            if (seed == null || scms_bytes == null)
+            if (scms_bytes == null) {
+                // TODO raise an event to notify the user (one time only) that
+                // there are un-analyzed tracks?
                 return Double.MaxValue;
+            }
 
             var start = DateTime.Now;
             Scms.FromBytes (scms_bytes, seed.TestScms);
