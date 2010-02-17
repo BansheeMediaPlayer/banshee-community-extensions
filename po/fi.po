@@ -556,3 +556,60 @@ msgstr "Hae asemia Xiph-palvelusta"
 #, csharp-format
 msgid "www.xiph.org {0} stations available."
 msgstr "www.xiph.org {0} asemaa tarjolla."
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:66
+#, csharp-format
+msgid ""
+"{0}Streamrecorder configuration\n"
+"{1}"
+msgstr ""
+"{0}Radiokanavien tallentajan asetukset\n"
+"{1}"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:72
+msgid ""
+"Please select output folder for ripped files and if ripped\n"
+"files should be imported to media library.\n"
+msgstr ""
+"Valitse kansio tallennetuilla tiedostoille ja valitse haluatko\n"
+"tiedostojen tuotavan musiikkikirjastoon.\n"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:76
+msgid "Output folder:"
+msgstr "Tallennuskansio:"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:78
+msgid "_Browse"
+msgstr "_Selaa"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:81
+msgid "_Cancel"
+msgstr "_Peruuta"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:83
+msgid "_Save"
+msgstr "_Tallenna"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:85
+msgid "Import files to media library"
+msgstr "Tuo tiedostot musiikkikirjastoon"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:87
+msgid "_Streamrecorder"
+msgstr "Radiokanavien _tallentaja"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:91
+msgid "_Configure"
+msgstr "_Asetukset"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:92
+msgid "Configure the Streamrecorder plugin"
+msgstr "Muuta streamrecorder-laajennuksen asetuksia"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:97
+msgid "_Activate streamrecorder"
+msgstr "_Aktivoi tallennus"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:98
+msgid "Activate streamrecorder process"
+msgstr "Aktivoi tallennus"
