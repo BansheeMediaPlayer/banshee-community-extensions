@@ -59,7 +59,7 @@ namespace Banshee.Mirage
         
         void IExtensionService.Initialize ()
         {
-            action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
+            action_service = ServiceManager.Get<InterfaceActionService> ();
 
             string dbfile;
 

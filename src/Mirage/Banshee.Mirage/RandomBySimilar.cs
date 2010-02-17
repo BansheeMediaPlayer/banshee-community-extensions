@@ -37,7 +37,7 @@ using Mirage;
 
 namespace Banshee.Mirage
 {
-    public class RandomBySimilar : RandomBy, IDisposable
+    public class RandomBySimilar : RandomBy
     {
         // At a high level, what we're trying to do is get the most similar track
         // to the seed tracks, excluding played/skipped ones[, and ones too similar to skipped ones].
@@ -45,8 +45,7 @@ namespace Banshee.Mirage
         // The RANDOM_CONDITION will exclude the played/skipped items for us, but we need to
         // add the Similarity-based selection[, exclusion], and ordering.
 
-        //private static string last_played_condition = String.Format ("AND CoreTracks.AlbumID = ? {0} ORDER BY Disc ASC, TrackNumber ASC", RANDOM_CONDITION);
-
+        private string cache_condition;
         private long last_track_id;
 
         public RandomBySimilar (Shuffler shuffler) : base ("mirage_similar", shuffler)
@@ -56,10 +55,13 @@ namespace Banshee.Mirage
             Description = Catalog.GetString ("Play songs similar to those already played");
 
             // TODO Mirage's PlaylistGeneratorSource ensures no more than 50% of tracks are by same artist
-            Condition = "1=1";
+            Condition = "Distance > 0";
             From = "LEFT OUTER JOIN mirage ON (mirage.TrackID = CoreTracks.TrackID) ";
             Select = ", HYENA_BINARY_FUNCTION ('MIRAGE_DISTANCE', mirage.Scms, ?) as Distance";
             OrderBy = "Distance ASC, RANDOM ()";
+
+            //cache_select = "HYENA_BINARY_FUNCTION ('MIRAGE_DISTANCE', mirage.Scms, ?) as Distance
+            cache_condition = String.Format ("AND {0} {1} ORDER BY {2}", Condition, RANDOM_CONDITION, OrderBy);
         }
 
         public override void Reset ()
@@ -72,11 +74,6 @@ namespace Banshee.Mirage
             }
         }
 
-        public void Dispose ()
-        {
-
-        }
-
         public override bool Next (DateTime after)
         {
             return true;
@@ -85,24 +82,30 @@ namespace Banshee.Mirage
         public override TrackInfo GetPlaybackTrack (DateTime after)
         {
             // FIXME - hard to do - need to add mirage to FROM, etc
-            //return Cache.GetSingle (track_condition, after, after);
-            // last_track_id = track.TrackId;
-            return null;
+            var track = Cache.GetSingle (Select, From, cache_condition, GetSeed (), after, after) as DatabaseTrackInfo;
+            if (track != null) {
+                last_track_id = track.TrackId;
+            }
+            return track;
         }
 
-        public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
+        private byte [] GetSeed ()
         {
-            var seed_scms = ServiceManager.DbConnection.Query<byte[]> (String.Format (
+            return ServiceManager.DbConnection.Query<byte[]> (String.Format (
                 "SELECT Scms FROM mirage {0} LIMIT 1",
                 last_track_id == 0
                     ? "ORDER BY RANDOM ()"
                     : String.Format ("WHERE TrackID = {0}", last_track_id)
             ));
+        }
 
+        public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
+        {
+            var seed = GetSeed ();
             MiragePlugin.total_count = 0;
             MiragePlugin.total_ms = 0;
             MiragePlugin.total_read_ms = 0;
-            var track = GetTrack (ShufflerQuery, seed_scms, after) as DatabaseTrackInfo;
+            var track = GetTrack (ShufflerQuery, seed, after) as DatabaseTrackInfo;
             Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} - ms spent reading: {1}; total calls: {2}", MiragePlugin.total_ms, MiragePlugin.total_read_ms, MiragePlugin.total_count);
             if (track != null) {
                 last_track_id = track.TrackId;
