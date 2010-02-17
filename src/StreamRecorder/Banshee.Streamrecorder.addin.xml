@@ -5,11 +5,11 @@
     compatVersion="1.0"
     copyright="© 2009 Frank Ziegler. Licensed under the MIT X11 license."
     name="Streamrecorder service"
-    category="Service"
+    category="Community Extensions"
     description="Allows user to record internet-radio streams"
     author="Frank Ziegler, Akseli Mantila"
     url="http://gitorious.org/banshee-stream-recorder"
-    defaultEnabled="true">
+    defaultEnabled="false">
 
   <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
 
