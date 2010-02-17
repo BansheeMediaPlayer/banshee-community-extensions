@@ -10,7 +10,8 @@ SOURCES =  \
 	PlaylistGeneratorSource.cs \
 	RandomBySimilar.cs \
 	SimilarityCalculator.cs \
-	SingleSeed.cs
+	SingleSeed.cs \
+	TrackAnalysis.cs
 
 RESOURCES =  \
 	Banshee.Mirage.addin.xml \

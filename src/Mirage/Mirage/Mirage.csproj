@@ -41,8 +41,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="Mono.Data.SqliteClient" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
@@ -55,11 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioDecoder.cs" />
-    <Compile Include="Db.cs" />
     <Compile Include="Dbg.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="Mfcc.cs" />
-    <Compile Include="MirageDbMigrator.cs" />
     <Compile Include="Scms.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="Analyzer.cs" />

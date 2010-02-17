@@ -29,10 +29,6 @@ using System.Collections.Generic;
 
 namespace Mirage
 {
-    public class MirAnalysisImpossibleException : Exception
-    {
-    }
-
     public class Analyzer
     {
         private const int SAMPLING_RATE = 22050;
@@ -42,7 +38,6 @@ namespace Mirage
         private const int SECONDS_TO_ANALYZE = 120;
 
         private static Mfcc mfcc = new Mfcc (WINDOW_SIZE, SAMPLING_RATE, MEL_COEFFICIENTS, MFCC_COEFFICIENTS);
-
         private static AudioDecoder ad = new AudioDecoder (SAMPLING_RATE, SECONDS_TO_ANALYZE, WINDOW_SIZE);
 
         public static void CancelAnalyze ()
@@ -50,152 +45,20 @@ namespace Mirage
             ad.CancelDecode ();
         }
 
-        public static Scms Analyze (string file)
-        {
-            try {
-                DbgTimer t = new DbgTimer ();
-                t.Start ();
-                
-                Matrix stftdata = ad.Decode (file);
-                Matrix mfccdata = mfcc.Apply (ref stftdata);
-                Scms scms = Scms.GetScms (mfccdata);
-                
-                long stop = 0;
-                t.Stop (ref stop);
-                Dbg.WriteLine ("Mirage - Total Execution Time: {0}ms", stop);
-
-                return scms;
-            } catch (Exception) {
-                throw new MirAnalysisImpossibleException ();
-            }
-        }
-
-        public static int [] SimilarTracks (int [] seed_track_ids, int [] exclude_track_ids, Db db, int length)
-        {
-            return SimilarTracks (seed_track_ids, exclude_track_ids, db, length, 0);
-        }
-
-        public static int [] SimilarTracks (int [] seed_track_ids, int [] exclude_track_ids, Db db, int length, float distceiling)
+        public static Scms Analyze (string file_path)
         {
             DbgTimer t = new DbgTimer ();
             t.Start ();
-
-            // Get Seed-Song SCMS
-            Scms[] seedScms = new Scms[seed_track_ids.Length];
-            for (int i = 0; i < seedScms.Length; i++) {
-                seedScms[i] = new Scms (MFCC_COEFFICIENTS);
-                db.GetTrack (seed_track_ids[i], seedScms[i]);
-            }
-
-            // Get all tracks from the DB except the seedSongs
-            Hashtable ht = new Hashtable ();
-            Scms[] scmss = new Scms[100];
-            for (int i = 0; i < 100; i++) {
-                scmss[i] = new Scms (MFCC_COEFFICIENTS);
-            }
-
-            int [] mapping = new int[100];
-            int read = 1;
-
-            // Allocate the Scms Distance cache
-            ScmsConfiguration c = new ScmsConfiguration (MFCC_COEFFICIENTS);
-
-            IDataReader r = db.GetTracks (exclude_track_ids);
-            //double total_ms = 0;
-            //long total_distance_calls = 0;
-            //long total_successful_calls = 0;
-            while (read > 0) {
-                read = db.GetNextTracks (r, scmss, mapping, 100);
-                for (int i = 0; i < read; i++) {
-
-                    float d = 0;
-                    int count = 0;
-                    //var start = DateTime.Now;
-                    for (int j = 0; j < seedScms.Length; j++) {
-                        float dcur = Scms.Distance (seedScms[j], scmss[i], c);
-                        
-                        // Possible negative numbers indicate faulty scms models..
-                        if (dcur >= 0) {
-                            d += dcur;
-                            count++;
-                        } else {
-                            Dbg.WriteLine ("Mirage - Faulty SCMS id={0} d={1}", mapping[i], d);
-                            d = float.MaxValue;
-                            break;
-                        }
-                    }
-                    //total_ms += (DateTime.Now - start).TotalMilliseconds;
-                    //total_distance_calls += seedScms.Length;
-                    //total_successful_calls += count;
-
-                    // Exclude track if it's too close to the seeds
-                    if (d > distceiling) {
-                        ht.Add (mapping[i], d / count);
-                    } else {
-                        Dbg.WriteLine ("Mirage - ignoring {0}", mapping[i]);
-                    }
-                }
-            }
-            //Console.WriteLine ("----->>>>> Mirage took {0}ms for {1} Scms.Distance calls ({2}ms per on avg, {3} calls non-negative)", total_ms, total_distance_calls, (total_ms / total_distance_calls), total_successful_calls);
-
-            db.GetTracksFinished ();
-
-            float [] items = new float[ht.Count];
-            int [] keys = new int[ht.Keys.Count];
-
-            ht.Keys.CopyTo (keys, 0);
-            ht.Values.CopyTo (items, 0);
-
-            Array.Sort (items, keys);
-            Array.Resize (ref keys, length);
-
+            
+            Matrix stftdata = ad.Decode (file_path);
+            Matrix mfccdata = mfcc.Apply (ref stftdata);
+            Scms scms = Scms.GetScms (mfccdata);
+            
             long stop = 0;
             t.Stop (ref stop);
-            Dbg.WriteLine ("Mirage - playlist in: {0}ms", stop);
-            
-            return keys;
-        }
+            Dbg.WriteLine ("Mirage - Total Execution Time: {0}ms", stop);
 
-        public static Dictionary<int, Scms> LoadLibrary (ref Db db)
-        {
-            int [] mapping = new int[100];
-            int [] exclude = new int[0];
-            Dictionary<int, Scms> loadedDb = new Dictionary<int, Scms> ();
-            
-            IDataReader r = db.GetTracks (exclude);
-            int read;
-            do {
-                Scms[] scmss = new Scms[100];
-                for (int i = 0; i < 100; i++) {
-                    scmss[i] = new Scms (MFCC_COEFFICIENTS);
-                }
-
-                read = db.GetNextTracks (r, scmss, mapping, 100);
-                for (int i = 0; i < read; i++) {
-                    loadedDb.Add (mapping[i], scmss[i]);
-                }
-            } while (read > 0);
-            
-            return loadedDb;
-        }
-
-        public static List<int> DuplicateSearch (Dictionary<int, Scms> loadedDb, int trackId, float threshold)
-        {
-            Scms seed = loadedDb[trackId];
-            ScmsConfiguration c = new ScmsConfiguration (MFCC_COEFFICIENTS);
-            List<int> duplicates = new List<int> ();
-            foreach (KeyValuePair<int, Scms> item in loadedDb) {
-                Scms song = item.Value;
-                int songId = item.Key;
-                if (songId != trackId) {
-                    float dcur = Scms.Distance (seed, song, c);
-                    if (dcur <= threshold) {
-                        duplicates.Add (item.Key);
-                    }
-                }
-            }
-
-            return duplicates;
+            return scms;
         }
     }
 }

@@ -24,17 +24,17 @@
 using Gtk;
 
 using System;
-using System.IO;
+using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using System.Data;
 using System.Text;
 
 using Mono.Addins;
 
 using Hyena;
 using Hyena.Widgets;
+
+using Banshee.IO;
 using Banshee.Base;
 using Banshee.Collection.Database;
 using Banshee.ServiceStack;
@@ -49,8 +49,6 @@ namespace Banshee.Mirage
 {
     public class MiragePlugin : IExtensionService, IDisposable
     {
-        //Db db;
-        //PlaylistGeneratorSource continuousPlaylist;
         AnalyzeLibraryJob analysis_job;
         Thread dupesearchThread;
         ActionGroup actions;
@@ -61,75 +59,38 @@ namespace Banshee.Mirage
         {
             action_service = ServiceManager.Get<InterfaceActionService> ();
 
-            string dbfile;
-
-            // debugging option: check if we need to load a different database
-            // file.
-            if (ApplicationContext.CommandLine.Contains ("mirage-db")) {
-                 dbfile = ApplicationContext.CommandLine["mirage-db"];
-            } else {
-                string xdgcachedir = Environment.GetEnvironmentVariable ("XDG_CACHE_HOME");
-                if (xdgcachedir == null) {
-                    xdgcachedir = Environment.GetFolderPath (Environment.SpecialFolder.Personal) +
-                        "/.cache";
-                }
-                string dbdir = xdgcachedir + "/banshee-mirage";
-                if (!Directory.Exists (dbdir)) {
-                    Directory.CreateDirectory (dbdir);
-                }
-                dbfile = dbdir + "/mirage.db";
-            }
-
-            ServiceManager.DbConnection.Execute ("ATTACH DATABASE ? AS Mirage", dbfile);
+            TrackAnalysis.Init ();
+            MigrateLegacyDb ();
             DistanceCalculator.Init ();
 
-            /*db = new Db (dbfile);
-            Log.DebugFormat ("Mirage - Database Initialize (dbfile: {0})", dbfile);
-
-            ServiceManager.DbConnection.Execute (
-                    "CREATE TABLE IF NOT EXISTS MirageProcessed"
-                    + " (TrackID INTEGER PRIMARY KEY, Status INTEGER)");
-            
-            if (db.WasReset) {
-                ResetMirageProcessed ();
-            }*/
-            
             InstallInterfaceActions ();
-            
+
             if (!ServiceStartup ()) {
                 ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
             }
-
-            Log.Debug ("Mirage - Initialized");
         }
-        
+
         private void OnSourceAdded (SourceAddedArgs args)
         {
             if (ServiceStartup ()) {
                 ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
             }
         }
-        
+
         private bool ServiceStartup ()
         {
-            if (ServiceManager.SourceManager.MusicLibrary == null)
+            var music_library = ServiceManager.SourceManager.MusicLibrary;
+            if (music_library == null) {
                 return false;
+            }
 
-            //ScanLibrary ();
-            
-            //if (continuousPlaylist == null) {
-                //ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
+            music_library.TracksAdded += OnLibraryTracksAdded;
+            music_library.TracksDeleted += OnLibraryTracksDeleted;
+            ScanLibrary ();
 
-                //ServiceManager.SourceManager.MusicLibrary.TracksAdded += OnLibraryTracksAdded;
-                //ServiceManager.SourceManager.MusicLibrary.TracksDeleted += OnLibraryTracksDeleted;
-                
-                //continuousPlaylist = new PlaylistGeneratorSource (db);
-                //ServiceManager.SourceManager.AddSource (continuousPlaylist);
-            //}
-            
             return true;
         }
-        
+
         public void Dispose ()
         {
             ServiceManager.SourceManager.MusicLibrary.TracksAdded -= OnLibraryTracksAdded;
@@ -147,21 +108,16 @@ namespace Banshee.Mirage
             } catch (Exception) {
             }
 
-            /*if (continuousPlaylist != null) {
-                continuousPlaylist.Dispose ();
-                ServiceManager.SourceManager.MusicLibrary.RemoveChildSource (continuousPlaylist);
-            }*/
-
             action_service.UIManager.RemoveUi (uiManagerId);
             action_service.UIManager.RemoveActionGroup (actions);
         }
 
         private void ScanLibrary ()
         {
-            /*if (analysis_job == null) {
-                analysis_job = new AnalyzeLibraryJob (db);
+            if (analysis_job == null) {
+                analysis_job = new AnalyzeLibraryJob ();
                 analysis_job.Finished += delegate { analysis_job = null; };
-            }*/
+            }
         }
 
         private void DuplicateSearch ()
@@ -350,36 +306,45 @@ namespace Banshee.Mirage
 
         private void OnLibraryTracksDeleted (object o, TrackEventArgs args)
         {
-            /*IDataReader reader = ServiceManager.DbConnection.Query (
-                @"SELECT TrackID FROM MirageProcessed WHERE TrackID NOT IN 
-                    (SELECT TrackID from CoreTracks WHERE PrimarySourceID = ?)", 
-                ServiceManager.SourceManager.MusicLibrary.DbId);
-            
-            List<int> track_ids = new List<int> ();
-            while(reader.Read()) {
-                track_ids.Add (Convert.ToInt32(reader["TrackID"]));
-            }
-            
-            if (track_ids.Count > 0) {
-                db.RemoveTracks (track_ids.ToArray());
-                
-                StringBuilder removeSql = new StringBuilder ("DELETE FROM MirageProcessed WHERE TrackID IN (");
-                removeSql.Append (track_ids[0].ToString());
-                for (int i = 1; i < track_ids.Count; i++) {
-                    removeSql.AppendFormat(", {0}", track_ids[i]);
-                }
-                removeSql.Append (")");
-                ServiceManager.DbConnection.Execute (removeSql.ToString());
-            }*/
+            TrackAnalysis.Provider.Delete (
+                "TrackID NOT IN (SELECT TrackID from CoreTracks WHERE PrimarySourceID = ?)",
+                ServiceManager.SourceManager.MusicLibrary.DbId
+            );
         }
-        
-        /*private void ResetMirageProcessed()
-        {
-            ServiceManager.DbConnection.Execute("DELETE FROM MirageProcessed");
-        }*/
 
         string IService.ServiceName {
             get { return "MirageService"; }
+        }
+
+        private void MigrateLegacyDb ()
+        {
+            string db_path = Paths.Combine (XdgBaseDirectorySpec.GetUserDirectory ("XDG_CACHE_HOME", ".cache"), "banshee-mirage", "mirage.db");
+            var db_uri = new SafeUri (db_path);
+            if (!Banshee.IO.File.Exists (db_uri)) {
+                return;
+            }
+
+            long analysis_count = ServiceManager.DbConnection.Query<long> (String.Format ("SELECT COUNT(*) FROM {0}", TrackAnalysis.Provider.TableName));
+            if (analysis_count > 0) {
+                return;
+            }
+
+            try {
+                // Copy the external db's data into the main banshee.db
+                var db = ServiceManager.DbConnection;
+                db.Execute ("ATTACH DATABASE ? AS Mirage", db_path);
+                db.Execute (String.Format ("INSERT INTO {0} (TrackID, ScmsData, Status) SELECT trackid, scms, 0 FROM Mirage.mirage", TrackAnalysis.Provider.TableName));
+                db.Execute ("DETACH DATABASE Mirage");
+                Banshee.IO.Utilities.DeleteFileTrimmingParentDirectories (db_uri);
+
+                // Migrate the status info from the already-local MirageProcessed table
+                if (db.TableExists ("MirageProcessed")) {
+                    db.Execute (String.Format ("INSERT OR IGNORE INTO {0} (TrackID, ScmsData, Status) SELECT TrackID, NULL, Status FROM MirageProcessed WHERE Status != 0", TrackAnalysis.Provider.TableName));
+                    db.Execute ("DROP TABLE MirageProcessed");
+                }
+            } catch (Exception e) {
+                Log.Exception ("Failed to migrate old Mirage database", e);
+            }
         }
     }
 }

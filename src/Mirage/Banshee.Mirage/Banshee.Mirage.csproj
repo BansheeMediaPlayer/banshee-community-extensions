@@ -95,6 +95,7 @@
     <Compile Include="DistanceCalculator.cs" />
     <Compile Include="BaseSeed.cs" />
     <Compile Include="SingleSeed.cs" />
+    <Compile Include="TrackAnalysis.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

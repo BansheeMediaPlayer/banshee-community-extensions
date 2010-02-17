@@ -23,6 +23,7 @@ namespace Banshee.Mirage
         public static void Dispose ()
         {
             Hyena.Data.Sqlite.BinaryFunction.Remove (FUNC_NAME);
+            seeds.Clear ();
         }
 
         private static Dictionary<int, BaseSeed> seeds = new Dictionary<int, BaseSeed> ();

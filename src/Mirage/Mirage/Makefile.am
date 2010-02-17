@@ -8,11 +8,9 @@ GMCS_FLAGS = -unsafe
 SOURCES =  \
 	Analyzer.cs \
 	AudioDecoder.cs \
-	Db.cs \
 	Dbg.cs \
 	Matrix.cs \
 	Mfcc.cs \
-	MirageDbMigrator.cs \
 	Scms.cs \
 	ScmsConfiguration.cs \
 	Vector.cs

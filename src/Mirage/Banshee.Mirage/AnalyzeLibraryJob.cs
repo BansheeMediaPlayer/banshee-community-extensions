@@ -15,11 +15,10 @@ namespace Banshee.Mirage
 {
     public class AnalyzeLibraryJob : DbIteratorJob
     {
-        Db db;
+        TrackAnalysis analysis = new TrackAnalysis ();
 
-        public AnalyzeLibraryJob (Db db) : base (AddinManager.CurrentLocalizer.GetString ("Mirage: Analyzing Songs"))
+        public AnalyzeLibraryJob () : base (AddinManager.CurrentLocalizer.GetString ("Analyzing Song Similarity"))
         {
-            this.db = db;
             IconNames = new string [] {"audio-x-generic"};
             IsBackground = true;
             SetResources (Resource.Cpu, Resource.Disk);
@@ -31,8 +30,7 @@ namespace Banshee.Mirage
                 @"SELECT COUNT(*)
                     FROM CoreTracks
                     WHERE PrimarySourceID IN ({0}) AND TrackID NOT IN
-                        (SELECT CoreTracks.TrackID FROM MirageProcessed, CoreTracks
-                                WHERE CoreTracks.TrackID = MirageProcessed.TrackID)",
+                        (SELECT TrackID FROM MirageTrackAnalysis)",
                 music_id
             ));
 
@@ -40,15 +38,14 @@ namespace Banshee.Mirage
                 SELECT TrackID
                     FROM CoreTracks
                     WHERE PrimarySourceID IN ({0}) AND TrackID NOT IN
-                        (SELECT CoreTracks.TrackID FROM MirageProcessed, CoreTracks
-                                WHERE CoreTracks.TrackID = MirageProcessed.TrackID)
+                        (SELECT TrackID FROM MirageTrackAnalysis)
                     ORDER BY Rating DESC, PlayCount DESC LIMIT 1",
                 music_id
             ));
 
             CancelMessage = AddinManager.CurrentLocalizer.GetString (
                 "Are you sure you want to stop Mirage?\n" +
-                "Automatic Playlist Generation will only work for the tracks which are already analyzed. " +
+                "Shuffle by Similar will only work for the tracks which are already analyzed. " +
                 "The operation can be resumed at any time from the <i>Tools</i> menu."
             );
             CanCancel = true;
@@ -60,21 +57,17 @@ namespace Banshee.Mirage
         {
             var track = DatabaseTrackInfo.Provider.FetchSingle (reader.Get<long> (0));
             if (track.Uri != null && track.Uri.IsLocalPath) {
-                int status = 0;
+                analysis.TrackId = track.TrackId;
                 try {
                     Log.DebugFormat ("Mirage - Processing {0}-{1}-{2}", track.TrackId, track.ArtistName, track.TrackTitle);
                     Status = String.Format("{0} - {1}", track.ArtistName, track.TrackTitle);
-
-                    db.AddTrack (track.TrackId, Analyzer.Analyze (track.Uri.LocalPath));
-                } catch (DbFailureException) {
-                    status = -2;
-                } catch (MirAnalysisImpossibleException) {
-                    status = -1;
+                    analysis.ScmsData = Analyzer.Analyze (track.Uri.LocalPath).ToBytes ();
+                    analysis.Status = AnalysisStatus.Succeeded;
+                } catch (Exception) {
+                    analysis.Status = AnalysisStatus.Failed;
                 } finally {
-                    ServiceManager.DbConnection.Execute (
-                        @"DELETE FROM MirageProcessed WHERE TrackID = ?;
-                        INSERT INTO MirageProcessed (TrackID, Status) VALUES (?, ?)",
-                        track.TrackId, track.TrackId, status);
+                    TrackAnalysis.Provider.Delete (analysis.TrackId);
+                    TrackAnalysis.Provider.Save (analysis, true);
                 }
             }
         }
