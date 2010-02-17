@@ -15,4 +15,8 @@ RESOURCES =  \
 	LCD.addin.xml \
 	Resources/LCDMenu.xml
 
+if ENABLE_LCD
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif

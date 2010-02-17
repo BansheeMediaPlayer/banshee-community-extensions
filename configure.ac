@@ -46,6 +46,7 @@ dnl Extensions
 BCE_ALARMCLOCK
 BCE_AWN
 BCE_CLUTTERFLOW
+BCE_LCD
 BCE_LYRICS
 BCE_MIRAGE
 BCE_RADIOSTATIONFETCHER
@@ -99,12 +100,12 @@ build/m4/shave/shave-libtool
 po/Makefile.in
 
 src/Makefile
-src/LCD/Makefile
 src/AlarmClock/Makefile
 src/Awn/Makefile
 src/ClutterFlow/Makefile
 src/ClutterFlow/Banshee.ClutterFlow/Makefile
 src/ClutterFlow/ClutterFlow/Makefile
+src/LCD/Makefile
 src/Lyrics/Makefile
 src/Mirage/Makefile
 src/Mirage/libmirageaudio/Makefile
@@ -134,10 +135,10 @@ ${PACKAGE}-${VERSION}
     Vendor Build ID:   ${vendor_build_id}
 
   Extensions:
-    LCD:                 yes
     Alarm Clock:         ${enable_AlarmClock}
     Awn:                 ${enable_Awn}
     ClutterFlow:         ${enable_ClutterFlow}
+    LCD:                 ${enable_LCD}
     Lyrics:              ${enable_Lyrics}
     Mirage:              ${enable_Mirage}
     RadioStationFetcher: ${enable_RadioStationFetcher}

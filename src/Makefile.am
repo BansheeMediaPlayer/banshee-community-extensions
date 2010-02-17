@@ -1,8 +1,8 @@
 SUBDIRS = \
-    LCD \
 	AlarmClock \
 	Awn \
 	ClutterFlow \
+	LCD \
 	Lyrics \
 	Mirage \
 	RadioStationFetcher \
