@@ -6,9 +6,8 @@ SOURCES =  \
 	MirageConfiguration.cs \
 	MiragePlugin.cs \
 	PlaylistGeneratorSource.cs \
-	RandomByMirage.cs \
-	SimilarityCalculator.cs \
-	SqliteFunctions.cs
+	RandomBySimilar.cs \
+	SimilarityCalculator.cs
 
 RESOURCES =  \
 	Banshee.Mirage.addin.xml \
@@ -18,4 +17,8 @@ RESOURCES =  \
 	Resources/MirageMenu.xml \
 	Resources/source-mirage.png
 
+if ENABLE_MIRAGE
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif

@@ -10,7 +10,7 @@
     url="http://hop.at/mirage/"
     defaultEnabled="false">
 
-    <Localizer type="Gettext" catalog="banshee-mirage" location="/usr/share/locale"/>
+    <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
 
   <Dependencies>
     <Addin id="Banshee.Services" version="1.0"/>
@@ -19,6 +19,10 @@
 
   <Extension path="/Banshee/ServiceManager/Service">
     <Service class="Banshee.Mirage.MiragePlugin"/>
+  </Extension>
+
+  <Extension path="/Banshee/PlaybackController/ShuffleModes">
+    <ShuffleMode class="Banshee.Mirage.RandomBySimilar"/>
   </Extension>
   
 </Addin>

@@ -8,10 +8,12 @@ INCLUDES = \
 	$(LIBSAMPLERATE_CFLAGS) \
 	$(FFTW3F_CFLAGS)
 
+if ENABLE_MIRAGE
 noinst_PROGRAMS = mirageaudiotest
 
 mirageaudiolibdir = $(expanded_libdir)
 mirageaudiolib_LTLIBRARIES = libmirageaudio.la
+endif
 
 libmirageaudio_la_LDFLAGS = -avoid-version -module
 libmirageaudio_la_SOURCES = \

@@ -5,6 +5,7 @@ SUBDIRS = \
 	ClutterFlow \
 	Lyrics \
 	Mirage \
-	RadioStationFetcher
+	RadioStationFetcher \
+	StreamRecorder
 
 MAINTAINERCLEANFILES = Makefile.in

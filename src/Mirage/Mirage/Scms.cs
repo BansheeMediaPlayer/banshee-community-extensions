@@ -197,26 +197,58 @@ namespace Mirage
             return scms;
         }
 
-        // Manual deserialization of an Scms from a byte array
+        // Manual deserialization of an Scms from a LittleEndian byte array
         public static void FromBytes (byte[] buf, Scms s)
         {
-            using (var stream = new MemoryStream (buf)) {
-                using (var br = new BinaryReader (stream)) {
-                    s.dim = br.ReadInt32 ();
+            byte [] buf4 = new byte[4];
+            int buf_i = 0;
 
-                    for (int i = 0; i < s.mean.Length; i++) {
-                        s.mean[i] = br.ReadSingle ();
-                    }
+            s.dim = GetInt32 (buf, buf_i, buf4);
+            buf_i += 4;
 
-                    for (int i = 0; i < s.cov.Length; i++) {
-                        s.cov[i] = br.ReadSingle ();
-                    }
-
-                    for (int i = 0; i < s.icov.Length; i++) {
-                        s.icov[i] = br.ReadSingle ();
-                    }
-                }
+            for (int i = 0; i < s.mean.Length; i++) {
+                s.mean[i] = GetFloat (buf, buf_i, buf4);
+                buf_i += 4;
             }
+
+            for (int i = 0; i < s.cov.Length; i++) {
+                s.cov[i] = GetFloat (buf, buf_i, buf4);
+                buf_i += 4;
+            }
+
+            for (int i = 0; i < s.icov.Length; i++) {
+                s.icov[i] = GetFloat (buf, buf_i, buf4);
+                buf_i += 4;
+            }
+        }
+
+        private static bool isLE = BitConverter.IsLittleEndian;
+        private static int GetInt32 (byte [] buf, int i, byte [] buf4)
+        {
+            if (isLE) {
+                return BitConverter.ToInt32 (buf, i);
+            } else {
+                return BitConverter.ToInt32 (Reverse (buf, i, 4, buf4), 0);
+            }
+        }
+
+        private static float GetFloat (byte [] buf, int i, byte [] buf4)
+        {
+            if (isLE) {
+                return BitConverter.ToSingle (buf, i);
+            } else {
+                return BitConverter.ToSingle (Reverse (buf, i, 4, buf4), 0);
+            }
+        }
+
+        private static byte [] Reverse (byte [] buf, int start, int length, byte [] out_buf)
+        {
+            var ret = out_buf;
+            int end = start + length -1;
+            for (int i = 0; i < length; i++) {
+                ret[i] = buf[end - i];
+            }
+            return ret;
         }
     }
 }

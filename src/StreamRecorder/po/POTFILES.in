@@ -1,7 +1,0 @@
-# List of source files containing translatable strings.
-# Please keep this file in alphabetical order.
-[encoding: UTF-8]
-Banshee.Streamrecorder/Banshee.Streamrecorder/RippedFileScanner.cs
-Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs
-Banshee.Streamrecorder/Banshee.Streamrecorder/RipperProcess.cs
-Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs

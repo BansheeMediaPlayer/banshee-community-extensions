@@ -18,6 +18,9 @@ src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs
 src/Mirage/Banshee.Mirage/AnalyzeLibraryJob.cs
 src/Mirage/Banshee.Mirage/MiragePlugin.cs
 src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs
+src/Mirage/Banshee.Mirage/RandomBySimilar.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs
+src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs
+src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs

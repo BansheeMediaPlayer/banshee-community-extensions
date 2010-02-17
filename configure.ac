@@ -49,6 +49,7 @@ BCE_CLUTTERFLOW
 BCE_LYRICS
 BCE_MIRAGE
 BCE_RADIOSTATIONFETCHER
+BCE_STREAMRECORDER
 
 dnl i18n
 SHAMROCK_CONFIGURE_I18N($PACKAGE)
@@ -111,7 +112,7 @@ src/Mirage/Mirage/Makefile
 src/Mirage/Banshee.Mirage/Makefile
 src/Mirage/Test/Makefile
 src/RadioStationFetcher/Makefile
-src/RadioStationFetcher/RadioStationFetcher.addin.xml
+src/StreamRecorder/Makefile
 ])
 
 cat <<EOF

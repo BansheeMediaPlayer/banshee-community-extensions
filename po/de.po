@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the banshee-community-extensions package.
 # Dominik Schnitzer <dominik@schnitzer.at>, 2007.
 # , fuzzy
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: banshee-community-extensions 0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-02-11 11:40-0800\n"
-"PO-Revision-Date: 2009-03-11 23:04+0100\n"
-"Last-Translator: Daniel Schindler <daniel@vcard24.de>\n"
+"PO-Revision-Date: 2010-02-17 14:10+0700\n"
+"Last-Translator: Frank Ziegler <funtastix@googlemail.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:71
 msgid "Alarm Clock"
-msgstr ""
+msgstr "Wecker"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:75
 msgid "Sleep Timer..."
@@ -26,67 +26,67 @@ msgstr ""
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:76
 msgid "Set the sleep timer value"
-msgstr ""
+msgstr "Setze den Sleep Timer Wert"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:79
 msgid "Alarm..."
-msgstr ""
+msgstr "Wecker"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:80
 msgid "Set the alarm time"
-msgstr ""
+msgstr "Setze die Weckzeit"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:83
 msgid "_Configure..."
-msgstr ""
+msgstr "_Konfigurieren"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:84
 msgid "Configure the Alarm Clock plugin"
-msgstr ""
+msgstr "Konfiguriere das Wecker Plugin"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmConfigDialog.cs:62
 msgid "Enable Alarm"
-msgstr ""
+msgstr "Wecker Einschalten"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmConfigDialog.cs:65
 msgid "Set Time: "
-msgstr ""
+msgstr "Setze Zeit:"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:49
 msgid "Alarm Clock configuration"
-msgstr ""
+msgstr "Wecker Konfiguration"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:65
 msgid "Start"
-msgstr ""
+msgstr "Start"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:69
 msgid "End"
-msgstr ""
+msgstr "Ende"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:76
 msgid "<b>Volume</b>"
-msgstr ""
+msgstr "<b> Lautstärke </b>"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:80
 msgid "Duration:"
-msgstr ""
+msgstr "Dauer:"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:81
 msgid " <i>(seconds)</i>"
-msgstr ""
+msgstr "<i>Sekunden</i>"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:90
 msgid "Fade-In Adjustment"
-msgstr ""
+msgstr "Fade-In Anpassung"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:95
 msgid "Command:"
-msgstr ""
+msgstr "Befehl:"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:99
 msgid "Command To Execute:"
-msgstr ""
+msgstr "Auszuführender Befehl:"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:47
 msgid "Sleep Timer"
@@ -98,111 +98,104 @@ msgstr ""
 
 #: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:69
 msgid "<i>(set to 0:00 to disable)</i>"
-msgstr ""
+msgstr "<i>(setze auf 0:00 zum Abstellen)</i>"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs:259
 msgid "Track list"
-msgstr ""
+msgstr "Trackliste"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:48
 msgid "Enable threaded loading of artwork"
-msgstr ""
+msgstr "Lade Artworks in eigenen Threads"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:49
 msgid "If enabled ClutterFlow will use threading to load it's artwork"
-msgstr ""
+msgstr "Wenn gesetzt benutzt ClutterFlow eigene Threads um Artworks zu laden"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:55
 msgid "Unfolds the track list"
-msgstr ""
+msgstr "Klappt die Trackliste aus"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:56
 msgid "If checked it will display the track list when not in fullscreen mode"
-msgstr ""
+msgstr "Wenn gesetzt wird die Trackliste angezeigt wenn kein Vollbild aktiviert ist"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:62
 msgid "Saved value for Show Browser"
-msgstr ""
+msgstr "Gesicherter Wert für Show Browser"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:63
-msgid ""
-"If checked displays the Browser will be displayed when ClutterFlow is made "
-"invisible"
-msgstr ""
+msgid "If checked displays the Browser will be displayed when ClutterFlow is made invisible"
+msgstr "Wenn gesetzt wird der Browser gezeigt wenn ClutterFlow unsichtbar gemacht wird"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:69
 msgid "Display ClutterFlow"
-msgstr ""
+msgstr "Zeige ClutterFlow"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:70
 msgid "If checked displays the ClutterFlow browser instead of the default one"
-msgstr ""
+msgstr "Wenn gesetzt wird der ClutterFlow Browser anstatt des default browsers angezeigt"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:76
 msgid "Immediately apply playback mode changes"
-msgstr ""
+msgstr "Wende Playback Mode Änderungen sofort an"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:77
-msgid ""
-"Starts playing a new song immediately after the playback mode changed (Party "
-"Mode or Album Mode)"
-msgstr ""
+msgid "Starts playing a new song immediately after the playback mode changed (Party Mode or Album Mode)"
+msgstr "Startet die Wiedergabe eines neuen Liedes sofort nach Änderung des Playback Mode (Party Mode oder Album Mode)"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:83
 msgid "Display album _label"
-msgstr ""
+msgstr "Zeige Album _Label"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:84
 msgid "Wether or not the album label needs to be shown above the artwork"
-msgstr ""
+msgstr "Bestimmt, ob das Album Label über dem Artwork gezeigt wird"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:90
 msgid "Display track _title"
-msgstr ""
+msgstr "Zeige Track _Titel"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:91
-msgid ""
-"Wether or not the album title needs to be shown above the artwork in "
-"fullscreen mode"
-msgstr ""
+msgid "Wether or not the album title needs to be shown above the artwork in fullscreen mode"
+msgstr "Bestimmt, ob der Album Titel im Vollbild Modus über dem Artwork gezeigt wird"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:97
 msgid "Texture size in pixels"
-msgstr ""
+msgstr "Texturgröße in Pixeln"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:98
 msgid "The in-memory size of the cover textures in pixels"
-msgstr ""
+msgstr "Die Größe der Covertextur in Pixeln im Speicher"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:104
 msgid "Minimal cover size in pixels"
-msgstr ""
+msgstr "Minimale Covergröße in Pixeln"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:105
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:112
 msgid "The on-stage minimal cover size in pixels"
-msgstr ""
+msgstr "Minimale On-Stage Covergröße in Pixeln"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:111
 msgid "Maximal cover size in pixels"
-msgstr ""
+msgstr "Maximale Covergröße in Pixeln"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:118
 msgid "Number of visible covers at the side"
-msgstr ""
+msgstr "Anzahl der sichtbaren Covers an der Seite"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:119
-msgid ""
-"The number of covers that need to be displayed on the stage (at one side)"
-msgstr ""
+msgid "The number of covers that need to be displayed on the stage (at one side)"
+msgstr "Die Anzahl der Covers welche auf der Bühne angezeigt werden sollen (pro Seite)"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:231
 msgid "Show ClutterFlow Browser"
-msgstr ""
+msgstr "Zeige den ClutterFlow Browser"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:232
 msgid "Show or hide the ClutterFlow browser"
-msgstr ""
+msgstr "Zeige oder verstecke den ClutterFlow Browser"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:324
 msgid "ClutterFlow"
@@ -210,58 +203,58 @@ msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:327
 msgid "General"
-msgstr ""
+msgstr "Allgemein"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:335
 msgid "Dimensions"
-msgstr ""
+msgstr "Ausmaße"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs:47
 msgid "Lyrics"
-msgstr ""
+msgstr "Lyrics"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:64
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:125
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:101
 msgid "add"
-msgstr ""
+msgstr "hinzufügen"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:114
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:123
 msgid "No lyrics found."
-msgstr ""
+msgstr "Keine Lyrics gefunden."
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:126
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:102
 msgid "Click here to manually add a new lyric"
-msgstr ""
+msgstr "Klicke hier um Lyrics manuell hinzuzufügen"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:130
 #: ../src/Lyrics/Banshee.Lyrics/LyricsManager.cs:184
 msgid "Suggestions:"
-msgstr ""
+msgstr "Vorschläge:"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:138
 msgid "Loading..."
-msgstr ""
+msgstr "Lade..."
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsPane.cs:108
 msgid " lyric"
-msgstr ""
+msgstr "Text"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:83
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:104
 msgid "by"
-msgstr ""
+msgstr "von"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:86
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:107
 msgid "Unknown Artist"
-msgstr ""
+msgstr "Unbekannter Künstler"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:20
 msgid "Downloading Lyrics"
-msgstr ""
+msgstr "Lyrics herunterladen"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:64
 #, csharp-format
@@ -270,65 +263,64 @@ msgstr ""
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:171
 msgid "L_yrics"
-msgstr ""
+msgstr "L_yrics"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:172
 msgid "Manage Lyrics"
-msgstr ""
+msgstr "Verwalte Lyrics"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:174
 msgid "_Download Lyrics"
-msgstr ""
+msgstr "Lyrics Herunterla_den"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:175
 msgid "Download lyrics for all tracks"
-msgstr ""
+msgstr "Lade lyrics für alle Tracks"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:180
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:105
 msgid "Show Lyrics"
-msgstr ""
+msgstr "Lyrics anzeigen"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:181
 msgid "Show Lyrics in a separate window"
-msgstr ""
+msgstr "Zeige Lyrics im eigenen Fenster"
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:96
 msgid "<b>Lyric not found</b>"
-msgstr ""
+msgstr "<b>Lyric nicht gefunden</b>"
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:97
 msgid "Error downloading lyric..."
-msgstr ""
+msgstr "Fehler beim Herunterladen der Lyrics.."
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:98
 msgid "Error downloading suggestions..."
-msgstr ""
+msgstr "Fehler beim Herunterladen der Vorschläge..."
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:99
 msgid "Loading lyric..."
-msgstr ""
+msgstr "Lade Lyrics..."
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:100
-msgid ""
-"You don't seem to be connected to internet.<br>Check your network connection."
-msgstr ""
+msgid "You don't seem to be connected to internet.<br>Check your network connection."
+msgstr "Es scheint keine Internetverbinung zu bestehen.<br>Überprüfe die Verindung."
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:103
 msgid "from"
-msgstr ""
+msgstr "von"
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:106
 msgid "A Banshee plugin that retrieves and displays lyrics"
-msgstr ""
+msgstr "Ein Banshee Plugin um Lyrics zu laden und anzuzeigen"
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:108
 msgid "Unknown Title"
-msgstr ""
+msgstr "Unbekannter Titel"
 
 #: ../src/Lyrics/Banshee.Lyrics/LyricBaseSource.cs:58
 msgid "Unable to contact server!"
-msgstr ""
+msgstr "Keine Verbindung zum Server!"
 
 #. Banshee user job
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:252
@@ -338,62 +330,51 @@ msgstr "Mirage: Lieder werden analysiert"
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:254
 msgid ""
 "Are you sure you want to stop Mirage?\n"
-"Automatic Playlist Generation will only work for the tracks which are "
-"already analyzed. The operation can be resumed at any time from the "
-"<i>Tools</i> menu."
+"Automatic Playlist Generation will only work for the tracks which are already analyzed. The operation can be resumed at any time from the <i>Tools</i> menu."
 msgstr ""
 "Wollen Sie Mirage tatsächlich abbrechen?\n"
-"Das automatische Erzeugen von Wiedergabelisten wird nur für die bereits "
-"analysierten Titel funktionieren. \n"
-"Der Vorgang kann jederzeit wieder aus dem <i>Werkzeuge</i> Menü aufgenommen "
-"werden."
+"Das automatische Erzeugen von Wiedergabelisten wird nur für die bereits analysierten Titel funktionieren. \n"
+"Der Vorgang kann jederzeit wieder aus dem <i>Werkzeuge</i> Menü aufgenommen werden."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:320
-#, fuzzy
 msgid "Mirage Duplicates"
-msgstr "Mirage Wiedergabeliste"
+msgstr "Mirage Duplikate"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:335
 msgid "Mirage: Duplicate Search"
-msgstr ""
+msgstr "Mirage: Duplikat-Suche"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:338
 msgid "Are you sure you want to stop the Duplicate Search? "
-msgstr ""
+msgstr "Willst du die Duplikat-Suche wirklich abbrechen?"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:403
-msgid ""
-"The Mirage Duplicate Search finished. Check the newly created <i>Mirage "
-"Duplicates</i> playlist for possible duplicates."
-msgstr ""
+msgid "The Mirage Duplicate Search finished. Check the newly created <i>Mirage Duplicates</i> playlist for possible duplicates."
+msgstr "Die Mirage Duplikat-Suche ist beendet. Prüfe die neu angelegte <i>Mirage Duplikate<i> auf mögliche Duplikate."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:413
 msgid "Mirage Playlist Generator"
 msgstr "Mirage Wiedergabelisten-Generator"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:414
-#, fuzzy
 msgid "Manage the Mirage extension"
 msgstr "Verwaltung des Mirage Plugins"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:417
-#, fuzzy
 msgid "Rescan the Music Library"
 msgstr "Musiksammlung neu einlesen"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:418
-#, fuzzy
 msgid "Rescans the Music Library for new songs"
-msgstr ""
-"Scannt die Musiksammlung nach neuen Liedern und analysiert diese mit Mirage."
+msgstr "Scannt die Musiksammlung nach neuen Liedern und analysiert diese mit Mirage."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:422
 msgid "Duplicate Search (Experimental)"
-msgstr ""
+msgstr "Duplikat-Suche (Experimentell)"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:423
 msgid "Searches your Music Library for possible duplicates"
-msgstr ""
+msgstr "Durchsuchte deine Musikbibliothek nach möglichen Duplikaten"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:427
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:473
@@ -401,12 +382,8 @@ msgid "Reset Mirage"
 msgstr "Mirage zurücksetzen"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:428
-msgid ""
-"Resets the Mirage Playlist Generation Plugin. All songs have to be analyzed "
-"again to use Automatic Playlist Generation."
-msgstr ""
-"Setzt Mirage zurück. Alle Lieder müssen nochmals analysiert werden um wieder "
-"automatisch Playlisten mit Mirage generieren zu können."
+msgid "Resets the Mirage Playlist Generation Plugin. All songs have to be analyzed again to use Automatic Playlist Generation."
+msgstr "Setzt Mirage zurück. Alle Lieder müssen nochmals analysiert werden um wieder automatisch Playlisten mit Mirage generieren zu können."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:441
 msgid ""
@@ -415,29 +392,26 @@ msgid ""
 "· To do so, your music library needs to be analyzed completely from Mirage.\n"
 "· This process will take a long time depending on the size of your library."
 msgstr ""
+"<b>Mirage kann deine Musikbibliothek auf mögliche doppelt vorhandene Musikstücke prüfen.</b>\n"
+"\n"
+"· Die Musikbibliothek muss dafür komplett von Mirage analysiert sein.\n"
+"· Dieser Vorgang dauert lange, abhängig von der Größe der Bibliothek."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:444
 msgid "Scan for Duplicates"
-msgstr ""
+msgstr "Scanne nach Duplikaten"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:471
-#, fuzzy
 msgid ""
 "Do you really want to reset the Mirage Extension?\n"
-"All extracted information will be lost. Your music will have to be re-"
-"analyzed to use Mirage again."
+"All extracted information will be lost. Your music will have to be re-analyzed to use Mirage again."
 msgstr ""
-"Wollen Sie tatsächlich die Mirage Automatische Wiedergabenlisten-Generator-"
-"Erweiterung zurücksetzen?\n"
-"Alle extrahierten Informationen geht dabei verloren. Ihre Musiksammlung muss "
-"neu analysiert werden, um Mirage wieder zu verwenden."
+"Wollen Sie tatsächlich die Mirage-Erweiterung zurücksetzen?\n"
+"Alle extrahierten Informationen gehen dabei verloren. Ihre Musiksammlung muss neu analysiert werden, um Mirage wieder zu verwenden."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:484
-msgid ""
-"Mirage was reset. Your music will have to be re-analyzed to use Mirage again."
-msgstr ""
-"Mirage wurde zurückgesetzt. Ihre Musiksammlung muss reanalysiert werden um "
-"Mirage wieder zu verwenden."
+msgid "Mirage was reset. Your music will have to be re-analyzed to use Mirage again."
+msgstr "Mirage wurde zurückgesetzt. Ihre Musiksammlung muss reanalysiert werden um Mirage wieder zu verwenden."
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:71
 msgid "Playlist Generator"
@@ -469,16 +443,11 @@ msgstr "Die Warteschlage beim Beenden leeren"
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:136
 msgid "Ready. Drag a song on the Playlist Generator to start!"
-msgstr ""
-"Bereit. Ziehen Sie eine Lied auf den Wiedergabelisten-Generator um zu "
-"beginnen."
+msgstr "Bereit. Ziehen Sie eine Lied auf den Wiedergabelisten-Generator um zu beginnen."
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:173
-#, fuzzy
 msgid "Error building playlist. You might need to rescan your music library."
-msgstr ""
-"Fehler beim Erstellen der Wiedergabeliste. Sie müssen vielleicht die "
-"Musiksammlung neu einlesen."
+msgstr "Fehler beim Erstellen der Wiedergabeliste. Sie müssen vielleicht die Musiksammlung neu einlesen."
 
 #: ../src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs:211
 msgid "Playlist ready."
@@ -494,63 +463,63 @@ msgid ""
 "{0}Radiostation fetcher{1}\n"
 "({2})"
 msgstr ""
+"{0}Radiostation fetcher{1}\n"
+"({2})"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:118
-msgid ""
-"Choose a genre or enter a text that you wish to be queried, then press the "
-"Get stations button. Found stations will be added to internet-radio source."
-msgstr ""
+msgid "Choose a genre or enter a text that you wish to be queried, then press the Get stations button. Found stations will be added to internet-radio source."
+msgstr "Wähle ein Genre oder gib einen Text ein, der gesucht werden soll, dann drücke den Hole Stationen Button. Gefundene Stationen werden zum Internet Radio hinzugefügt."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:131
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:132
 msgid "Get stations"
-msgstr ""
+msgstr "Hole Stationen"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:151
 msgid "Query by genre:"
-msgstr ""
+msgstr "Suche nach Genre:"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:155
 msgid "Query by free text:"
-msgstr ""
+msgstr "Suche nach Freitext:"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:173
 msgid "_Close"
-msgstr ""
+msgstr "S_chließen"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:207
 #, csharp-format
 msgid "Querying genre \"{0}\""
-msgstr ""
+msgstr "Suche nach Genre \"{0}\""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:212
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:233
 #, csharp-format
 msgid "Query done. Fetched {0} stations."
-msgstr ""
+msgstr "Suche abgeschlossen. {0} Stationen geholt."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:216
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:237
 #, csharp-format
 msgid "ERROR: Internet-radio extension not available."
-msgstr ""
+msgstr "FEHLER: Internet-radio Plugin nicht verfügbar."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:219
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:240
 #, csharp-format
 msgid "ERROR: Network error."
-msgstr ""
+msgstr "FEHLER: Netzwerkfehler."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:222
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:243
 #, csharp-format
 msgid "ERROR"
-msgstr ""
+msgstr "FEHLER"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:228
 #, csharp-format
 msgid "Querying freetext \"{0}\""
-msgstr ""
+msgstr "Suche nach Freitext \"{0}\""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:69
 msgid "_Radiostation fetcher"
@@ -562,7 +531,7 @@ msgstr ""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:73
 msgid "Fetch stations from shoutcast"
-msgstr ""
+msgstr "Hole Stationen von shoutcast"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:76
 msgid "_Xiph"
@@ -570,16 +539,15 @@ msgstr ""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:77
 msgid "Fetch stations from Xiph"
-msgstr ""
+msgstr "Hole Stationen von Xiph"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs:288
 #, csharp-format
 msgid "www.xiph.org {0} stations available."
-msgstr ""
+msgstr "www.xiph.org {0} Stationen verfügbar."
 
 #~ msgid "Automatic Playlist Generator"
 #~ msgstr "Automatischer Playlist Generator"
-
 #~ msgid ""
 #~ "Drag a song on the automatic playlist generator, Mirage will then try to "
 #~ "automatically generate a playlist of similar songs.\n"
@@ -590,6 +558,68 @@ msgstr ""
 #~ "zu erstellen.\n"
 #~ "Mirage zieht bei der Generierung von Playlisten nur das Audiosignal in "
 #~ "Betracht, keine Meta-Daten"
-
 #~ msgid "Generating the playlist..."
 #~ msgstr "Generiere die Playliste..."
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:66
+#, csharp-format
+msgid ""
+"{0}Streamrecorder configuration\n"
+"{1}"
+msgstr ""
+"{0}Streamrecorder Konfiguration\n"
+"{1}"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:72
+msgid ""
+"Please select output folder for ripped files and if ripped\n"
+"files should be imported to media library.\n"
+msgstr ""
+"Bitte den Dateiordner für die gerippten Dateien auswählen und\n"
+"ob diese in die Medienbibliothek importiert werden sollen.\n"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:76
+msgid "Output folder:"
+msgstr "Augabepfad:"
+
+msgid "Encoder:"
+msgstr "Encoding:"
+
+msgid "Enable automatic files splitting by Metadata"
+msgstr "Aktiviere automatisches Teilen der Dateien nach Metadaten"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:78
+msgid "_Browse"
+msgstr "_Durchsuchen"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:81
+msgid "_Cancel"
+msgstr "_Abbrechen"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:83
+msgid "_Save"
+msgstr "_Speichern"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:85
+msgid "Import files to media library"
+msgstr "Importiere Dateien in die Medienbibliothek"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:87
+msgid "_Streamrecorder"
+msgstr "_Streamrecorder"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:91
+msgid "_Configure"
+msgstr "_Konfigurieren"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:92
+msgid "Configure the Streamrecorder plugin"
+msgstr "Konfiguriere das Streamrecorder plugin"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:97
+msgid "_Activate streamrecorder"
+msgstr "_Aktiviere Streamrecorder"
+
+#: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:98
+msgid "Activate streamrecorder process"
+msgstr "Aktiviere den Streamrecorder Prozess"

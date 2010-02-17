@@ -21,4 +21,8 @@ RESOURCES =  \
 	Resources/dct.filter \
 	Resources/filterweights.filter
 
+if ENABLE_MIRAGE
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif
