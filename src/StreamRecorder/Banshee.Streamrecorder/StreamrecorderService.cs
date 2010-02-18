@@ -256,13 +256,14 @@ namespace Banshee.Streamrecorder
 			string datestr = String.Format("{0:d_M_yyyy_HH_mm_ss}", dt);
 			string filename;
 			RadioTrackInfo radio_track = track as RadioTrackInfo;
+			
 			//split only if Artist AND Title are present, i.e. stream sends complete metadata
 			//do not set extension, will be done by recorder!
-			if (is_splitting_enabled && track.ArtistName.Length > 0)
+			if (is_splitting_enabled && track.ArtistName != null && track.ArtistName.Length > 0)
 			{
 				filename = recorder.SetMetadataFilename(track.TrackTitle, track.ArtistName);
 			} else {
-				filename = radio_track.ParentTrack.TrackTitle + "_" + datestr;
+				filename = (radio_track.ParentTrack == null ? track.TrackTitle : radio_track.ParentTrack.TrackTitle) + "_" + datestr;
 			}
 
             recorder.SetOutputParameters (output_directory,filename);
