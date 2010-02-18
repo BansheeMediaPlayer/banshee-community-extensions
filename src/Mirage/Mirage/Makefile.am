@@ -1,8 +1,7 @@
 ASSEMBLY = Mirage
 LINK =  \
 	-r:System \
-	-r:System.Data \
-	-r:Mono.Data.SqliteClient
+	-r:System.Core
 GMCS_FLAGS = -unsafe
 
 SOURCES =  \
