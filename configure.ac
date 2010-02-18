@@ -142,5 +142,6 @@ ${PACKAGE}-${VERSION}
     Lyrics:              ${enable_Lyrics}
     Mirage:              ${enable_Mirage}
     RadioStationFetcher: ${enable_RadioStationFetcher}
+    StreamRecorder:      ${enable_StreamRecorder}
 
 EOF
