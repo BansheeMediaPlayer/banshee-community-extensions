@@ -13,10 +13,6 @@ namespace Banshee.Mirage
 
         public static void Init ()
         {
-        }
-
-        static DistanceCalculator ()
-        {
             Hyena.Data.Sqlite.BinaryFunction.Add (FUNC_NAME, Distance);
         }
 
