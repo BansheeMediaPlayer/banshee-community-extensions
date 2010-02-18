@@ -117,7 +117,7 @@ namespace Banshee.Streamrecorder
             });
 
             action_service.UIManager.InsertActionGroup (actions, 0);
-            ui_manager_id = action_service.UIManager.AddUiFromResource ("Resources.StreamrecorderMenu.xml");
+            ui_manager_id = action_service.UIManager.AddUiFromResource ("StreamrecorderMenu.xml");
 
             Hyena.Log.Debug ("[StreamrecorderService] <Initialize> END");
         }
