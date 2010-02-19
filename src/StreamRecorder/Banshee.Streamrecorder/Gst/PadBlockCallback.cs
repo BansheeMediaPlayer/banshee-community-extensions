@@ -43,73 +43,76 @@ using Hyena;
 
 namespace Banshee.Streamrecorder.Gst
 {
-	
-	public delegate void PadBlockCallback(IntPtr pad, bool blocked, IntPtr user_data);
+    
+    public delegate void PadBlockCallback(IntPtr pad, bool blocked, IntPtr user_data);
     
     [UnmanagedFunctionPointer (CallingConvention.Cdecl)]
-	internal delegate void PadBlockCallbackNative(IntPtr pad, bool blocked, IntPtr user_data);
+    internal delegate void PadBlockCallbackNative(IntPtr pad, bool blocked, IntPtr user_data);
 
-	internal class PadBlockCallbackInvoker {
+    internal class PadBlockCallbackInvoker {
 
-		PadBlockCallbackNative native_cb;
+        PadBlockCallbackNative native_cb;
 
-		~PadBlockCallbackInvoker () {}
+        ~PadBlockCallbackInvoker () {}
 
-		internal PadBlockCallbackInvoker (PadBlockCallbackNative native_cb) {}
+        internal PadBlockCallbackInvoker (PadBlockCallbackNative native_cb) 
+        {
+            this.native_cb = native_cb;
+        }
 
-		internal PadBlockCallback Handler {
-			get {
-				return new PadBlockCallback(InvokeNative);
-			}
-		}
+        internal PadBlockCallback Handler {
+            get {
+                return new PadBlockCallback(InvokeNative);
+            }
+        }
 
-		void InvokeNative (IntPtr pad, bool blocked, IntPtr user_data)
-		{
-			native_cb (pad, blocked, user_data);
-		}
-	}
+        void InvokeNative (IntPtr pad, bool blocked, IntPtr user_data)
+        {
+            native_cb (pad, blocked, user_data);
+        }
+    }
 
-	internal class PadBlockCallbackWrapper {
+    internal class PadBlockCallbackWrapper {
 
-		public void NativeCallback (IntPtr pad, bool blocked, IntPtr user_data)
-		{
-			try {
-				managed (pad, blocked, user_data);
-				if (release_on_call)
-					gch.Free ();
-			} catch (Exception e) {
-				GLib.ExceptionManager.RaiseUnhandledException (e, false);
-			}
-		}
+        public void NativeCallback (IntPtr pad, bool blocked, IntPtr user_data)
+        {
+            try {
+                managed (pad, blocked, user_data);
+                if (release_on_call)
+                    gch.Free ();
+            } catch (Exception e) {
+                GLib.ExceptionManager.RaiseUnhandledException (e, false);
+            }
+        }
 
-		bool release_on_call = false;
-		GCHandle gch;
+        bool release_on_call = false;
+        GCHandle gch;
 
-		public void PersistUntilCalled ()
-		{
-			release_on_call = true;
-			gch = GCHandle.Alloc (this);
-		}
+        public void PersistUntilCalled ()
+        {
+            release_on_call = true;
+            gch = GCHandle.Alloc (this);
+        }
 
-		internal PadBlockCallbackNative NativeDelegate;
-		PadBlockCallback managed;
+        internal PadBlockCallbackNative NativeDelegate;
+        PadBlockCallback managed;
 
-		public PadBlockCallbackWrapper (PadBlockCallback managed)
-		{
-			this.managed = managed;
-			if (managed != null)
-				NativeDelegate = new PadBlockCallbackNative (NativeCallback);
-		}
+        public PadBlockCallbackWrapper (PadBlockCallback managed)
+        {
+            this.managed = managed;
+            if (managed != null)
+                NativeDelegate = new PadBlockCallbackNative (NativeCallback);
+        }
 
-		public static PadBlockCallback GetManagedDelegate (PadBlockCallbackNative native)
-		{
-			if (native == null)
-				return null;
-			PadBlockCallbackWrapper wrapper = (PadBlockCallbackWrapper) native.Target;
-			if (wrapper == null)
-				return null;
-			return wrapper.managed;
-		}
+        public static PadBlockCallback GetManagedDelegate (PadBlockCallbackNative native)
+        {
+            if (native == null)
+                return null;
+            PadBlockCallbackWrapper wrapper = (PadBlockCallbackWrapper) native.Target;
+            if (wrapper == null)
+                return null;
+            return wrapper.managed;
+        }
 
-	}
+    }
 }

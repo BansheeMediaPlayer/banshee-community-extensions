@@ -44,172 +44,186 @@ using Hyena;
 
 namespace Banshee.Streamrecorder
 {
-	
-	public class PlayerAudioTee : Bin
-	{
-		
-		public PlayerAudioTee(IntPtr audiotee) : base (audiotee) {}
+    
+    public class PlayerAudioTee : Bin
+    {
 
-			public bool AddBin(Bin bin, bool use_pad_block)
+        private bool attached;
+        
+        public PlayerAudioTee(IntPtr audiotee) : base (audiotee) 
         {
-			Bin[] user_bins = new Bin[2] { new Bin(this.ToIntPtr()) , bin };
-			GCHandle gch = GCHandle.Alloc(user_bins);
-			IntPtr user_data = GCHandle.ToIntPtr(gch);
-			
-			Pad fixture_pad = this.GetStaticPad("sink");
-			Pad block_pad = fixture_pad.GetPeer ();
-			fixture_pad.UnRef();
+            attached = false;
+        }
 
-			if (use_pad_block)
-			{
-				Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<AddBin> blockin pad " + block_pad.GetPathString() + " to perform an operation");
+        public bool AddBin(Bin bin, bool use_pad_block)
+        {
+            Bin[] user_bins = new Bin[2] { new Bin(this.ToIntPtr()) , bin };
+            GCHandle gch = GCHandle.Alloc(user_bins);
+            IntPtr user_data = GCHandle.ToIntPtr(gch);
+            
+            Pad fixture_pad = this.GetStaticPad("sink");
+            Pad block_pad = fixture_pad.GetPeer ();
+            fixture_pad.UnRef();
 
-				block_pad.SetBlockedAsync(true, ReallyAddBin, user_data);
-			} else {
-				Hyena.Log.Debug("Streamrecorder.PlayerAudioTee]<AddBin> not using blockin pad, calling operation directly");
-				ReallyAddBin(block_pad.ToIntPtr (), false, user_data);
-			}
-			block_pad.UnRef();
-			return true;
-		}
-		
-		private static void ReallyAddBin(IntPtr pad, bool blocked, IntPtr user_data)
-		{
-			Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> START" + (blocked ? " (blocked)" : " (unblocked)"));
-			
-			GCHandle gch = GCHandle.FromIntPtr(user_data);
-			Bin[] user_bins = (Gst.Bin[])gch.Target;
-			Bin fixture = user_bins[0];
-			Bin element = user_bins[1];
-			
-			Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> path for fixture: " + fixture.GetPathString());
-			Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> path for element: " + element.GetPathString());
+            if (use_pad_block)
+            {
+                Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<AddBin> blockin pad " + block_pad.GetPathString() + " to perform an operation");
 
-			Element queue;
-			Element audioconvert;
-			Bin bin;
-			Bin parent_bin;
-			Pad sink_pad;
-			Pad ghost_pad;
-			GstObject element_parent;
-			
-			element_parent = element.GetParent();
-			if (element_parent != null && !element_parent.IsNull())
-			{
-				Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin>element already linked, exiting. assume double function call");
-				element_parent.UnRef();
-				return;
-			}
-			
-			Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin>adding tee " + element.GetPathString());
-			
-			/* set up containing bin */
-			bin = new Bin ();
-			queue = ElementFactory.Make("queue");
-			audioconvert = ElementFactory.Make("audioconvert");
-			
-			bin.SetBooleanProperty("async-handling", true);
-			queue.SetIntegerProperty("max-size-buffers", 10);
+                block_pad.SetBlockedAsync(true, ReallyAddBin, user_data);
+            } else {
+                Hyena.Log.Debug("Streamrecorder.PlayerAudioTee]<AddBin> not using blockin pad, calling operation directly");
+                ReallyAddBin(block_pad.ToIntPtr (), false, user_data);
+            }
+            block_pad.UnRef();
 
-			bin.AddMany( new Element[3] { queue, audioconvert, element } );
-			queue.LinkMany( new Element[2] { audioconvert, element } );
-			
-			sink_pad = queue.GetStaticPad("sink");
-			ghost_pad = new GhostPad ("sink", sink_pad);
-			bin.AddPad(ghost_pad);
+            return true;
+        }
+        
+        private void ReallyAddBin(IntPtr pad, bool blocked, IntPtr user_data)
+        {
+            Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> START" + (blocked ? " (blocked)" : " (unblocked)"));
+            
+            GCHandle gch = GCHandle.FromIntPtr(user_data);
+            Bin[] user_bins = (Gst.Bin[])gch.Target;
+            Bin fixture = user_bins[0];
+            Bin element = user_bins[1];
+            
+            Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> path for fixture: " + fixture.GetPathString());
+            Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> path for element: " + element.GetPathString());
 
-			parent_bin = new Bin(fixture.GetParent().ToIntPtr());
-			parent_bin.Add(bin);
-			fixture.Link(bin);
-			
-			if (blocked)
-			{
-				Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> unblocking pad after adding tee");
-				
-				parent_bin.SetState(State.Playing);
-				ghost_pad.Ref();
-				parent_bin.UnRef();
-				new Pad(pad).SetBlockedAsync(false,AddRemoveBinDone,ghost_pad.ToIntPtr ());				
-			} else {
-				parent_bin.SetState(State.Paused);
-				ghost_pad.Ref();
-				parent_bin.UnRef();
-				AddRemoveBinDone(IntPtr.Zero,false,ghost_pad.ToIntPtr ());
-			}
+            Element queue;
+            Element audioconvert;
+            Bin bin;
+            Bin parent_bin;
+            Pad sink_pad;
+            Pad ghost_pad;
+            GstObject element_parent;
+            
+            element_parent = element.GetParent();
+            if (element_parent != null && !element_parent.IsNull())
+            {
+                Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin>element already linked, exiting. assume double function call");
+                element_parent.UnRef();
+                return;
+            }
+            
+            Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin>adding tee " + element.GetPathString());
+            
+            /* set up containing bin */
+            bin = new Bin ();
+            queue = ElementFactory.Make("queue");
+            audioconvert = ElementFactory.Make("audioconvert");
+            
+            bin.SetBooleanProperty("async-handling", true);
+            queue.SetIntegerProperty("max-size-buffers", 10);
 
-			Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> END");
+            bin.AddMany( new Element[3] { queue, audioconvert, element } );
+            queue.LinkMany( new Element[2] { audioconvert, element } );
+            
+            sink_pad = queue.GetStaticPad("sink");
+            ghost_pad = new GhostPad ("sink", sink_pad);
+            bin.AddPad(ghost_pad);
 
-		}
-		
-		/*
-		 * Pipeline RemoveTee
-		 */
+            parent_bin = new Bin(fixture.GetParent().ToIntPtr());
+            parent_bin.Add(bin);
+            fixture.Link(bin);
+
+            attached = true;
+            
+            if (blocked)
+            {
+                Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> unblocking pad after adding tee");
+                
+                parent_bin.SetState(State.Playing);
+                ghost_pad.Ref();
+                parent_bin.UnRef();
+                new Pad(pad).SetBlockedAsync(false,AddRemoveBinDone,ghost_pad.ToIntPtr ());             
+            } else {
+                parent_bin.SetState(State.Paused);
+                ghost_pad.Ref();
+                parent_bin.UnRef();
+                AddRemoveBinDone(IntPtr.Zero,false,ghost_pad.ToIntPtr ());
+            }
+
+            Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> END");
+
+        }
+        
+        /*
+         * Pipeline RemoveTee
+         */
         public bool RemoveBin(Bin bin, bool use_pad_block)
         {
-			IntPtr user_data = bin.ToIntPtr ();
-			
-			Pad fixture_pad = this.GetStaticPad("sink");
-			Pad block_pad = fixture_pad.GetPeer();
-			fixture_pad.UnRef();
+            IntPtr user_data = bin.ToIntPtr ();
+            
+            Pad fixture_pad = this.GetStaticPad("sink");
+            Pad block_pad = fixture_pad.GetPeer();
+            fixture_pad.UnRef();
 
-			if (use_pad_block)
-			{
-				Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<RemoveBin> blockin pad " + block_pad.GetPathString() + " to perform an operation");
+            if (use_pad_block)
+            {
+                Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<RemoveBin> blockin pad " + block_pad.GetPathString() + " to perform an operation");
 
-				block_pad.SetBlockedAsync(true, ReallyRemoveBin, user_data);
-			} else {
-				Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<RemoveBin> not using blockin pad, calling operation directly");
-				ReallyRemoveBin(block_pad.ToIntPtr (), false, user_data);
-			}
-			block_pad.UnRef();
-			return true;
-		}
+                block_pad.SetBlockedAsync(true, ReallyRemoveBin, user_data);
+            } else {
+                Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<RemoveBin> not using blockin pad, calling operation directly");
+                ReallyRemoveBin(block_pad.ToIntPtr (), false, user_data);
+            }
+            block_pad.UnRef();
+            return true;
+        }
 
-		private static void ReallyRemoveBin(IntPtr pad, bool blocked, IntPtr user_data)
-		{
-			Bin element = new Bin (user_data);
+        private void ReallyRemoveBin(IntPtr pad, bool blocked, IntPtr user_data)
+        {
+            Bin element = new Bin (user_data);
 
-			Bin bin;
-			Bin parent_bin;
-			
-			string element_path = element.GetPathString();
-			if (!element_path.Contains(":") && element_path.StartsWith("/0x"))
-			{
-				Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyRemoveBin> element empty, assume disposed, exiting: " + element_path);
-				return;
-			}
-			Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyRemoveBin> removing tee " + element_path);
-			
-			bin = new Bin(element.GetParent().ToIntPtr());;
-			bin.Ref();
+            Bin bin;
+            Bin parent_bin;
+            
+            string element_path = element.GetPathString();
+            if (!element_path.Contains(":") && element_path.StartsWith("/0x"))
+            {
+                Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyRemoveBin> element empty, assume disposed, exiting: " + element_path);
+                return;
+            }
+            Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyRemoveBin> removing tee " + element_path);
+            
+            bin = new Bin(element.GetParent().ToIntPtr());;
+            bin.Ref();
 
-			parent_bin = new Bin(bin.GetParent().ToIntPtr());
-			parent_bin.Remove(bin);
+            parent_bin = new Bin(bin.GetParent().ToIntPtr());
+            parent_bin.Remove(bin);
 
-			bin.SetState(State.Null);
-			bin.Remove(element);
-			bin.UnRef();
+            bin.SetState(State.Null);
+            bin.Remove(element);
+            bin.UnRef();
 
-			/* if we're supposed to be playing, unblock the sink */
-			if (blocked) {
-				Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyRemoveBin>unblocking pad after removing tee");
-				new Pad(pad).SetBlockedAsync(false,AddRemoveBinDone,IntPtr.Zero);
-			}
-					
-		}
+            attached = false;
+            
+            /* if we're supposed to be playing, unblock the sink */
+            if (blocked) {
+                Hyena.Log.Debug("[Streamrecorder.PlayerAudioTee]<ReallyRemoveBin>unblocking pad after removing tee");
+                new Pad(pad).SetBlockedAsync(false,AddRemoveBinDone,IntPtr.Zero);
+            }
+                    
+        }
 
-		public static void AddRemoveBinDone(IntPtr pad, bool blocked, IntPtr new_pad)
-		{
-			IntPtr segment;
-			if (new_pad == IntPtr.Zero)
-			{
-				return;
-			}
+        public void AddRemoveBinDone(IntPtr pad, bool blocked, IntPtr new_pad)
+        {
+            IntPtr segment;
+            if (new_pad == IntPtr.Zero)
+            {
+                return;
+            }
 
-			// send a very unimaginative new segment through the new pad
-			segment = Marshaller.CreateSegment ();
-			new Pad(new_pad).SendEvent(segment);
-		}
+            // send a very unimaginative new segment through the new pad
+            segment = Marshaller.CreateSegment ();
+            new Pad(new_pad).SendEvent(segment);
+        }
 
-	}
+        public bool IsAttached()
+        {
+            return attached;
+        }
+    }
 }

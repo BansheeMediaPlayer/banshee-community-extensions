@@ -59,9 +59,9 @@ namespace Banshee.Streamrecorder
         private bool recording = false;
         private string output_directory;
         private bool is_importing_enabled = true;
-		private bool is_splitting_enabled = false;
-		private TrackInfo track = null;
-		private string active_encoder;
+        private bool is_splitting_enabled = false;
+        private TrackInfo track = null;
+        private string active_encoder;
 
         
         public StreamrecorderService ()
@@ -73,13 +73,16 @@ namespace Banshee.Streamrecorder
             is_importing_enabled = IsImportingEnabledEntry.Get ().Equals ("True") ? true : false;
             is_splitting_enabled = IsFileSplittingEnabledEntry.Get ().Equals ("True") ? true : false;
             active_encoder = ActiveEncoderEntry.Get ();
-            recorder = new Recorder();
-			active_encoder = recorder.SetActiveEncoder(active_encoder);
+
+            Hyena.Log.Debug ("[StreamrecorderService] <StreamrecorderService> END");
         }
         
         void IExtensionService.Initialize ()
         {
             Hyena.Log.Debug ("[StreamrecorderService] <Initialize> START");
+
+            recorder = new Recorder();
+            active_encoder = recorder.SetActiveEncoder(active_encoder);
 
             ServiceManager.PlaybackController.TrackStarted += delegate {
                 if (recording) {
@@ -95,7 +98,7 @@ namespace Banshee.Streamrecorder
         
             ServiceManager.PlayerEngine.ConnectEvent ( OnEndOfStream , PlayerEvent.EndOfStream) ;
             ServiceManager.PlayerEngine.ConnectEvent ( OnStateChange , PlayerEvent.StateChange) ;
-			ServiceManager.PlayerEngine.ConnectEvent ( OnMetadata, PlayerEvent.TrackInfoUpdated );
+            ServiceManager.PlayerEngine.ConnectEvent ( OnMetadata, PlayerEvent.TrackInfoUpdated );
         
             action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
             actions = new ActionGroup ("Streamrecorder");
@@ -127,7 +130,7 @@ namespace Banshee.Streamrecorder
             Hyena.Log.Debug ("[StreamrecorderService] <OnActivateStreamrecorder> START");
                     
             if (!recording) { 
-				StartRecording ();
+                StartRecording ();
             }
             else {
                 StopRecording ();        
@@ -163,8 +166,8 @@ namespace Banshee.Streamrecorder
         private bool IsCurrentTrackRecordable () 
         {
             if (Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack != null
-				&& Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsLive 
-				&& Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsPlaying)
+                && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsLive 
+                && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsPlaying)
                 return true;
             
             return false;
@@ -172,8 +175,11 @@ namespace Banshee.Streamrecorder
 
         private void OnMetadata (PlayerEventArgs args)
         {
-			TrackInfo track = ServiceManager.PlayerEngine.CurrentTrack;
-			recorder.AddStreamTags(track,is_splitting_enabled);
+             if (recording)
+             {
+                TrackInfo track = ServiceManager.PlayerEngine.CurrentTrack;
+                recorder.AddStreamTags(track,is_splitting_enabled);
+             }
         }
 
         private void OnEndOfStream (PlayerEventArgs args)
@@ -185,8 +191,6 @@ namespace Banshee.Streamrecorder
 
         private void OnStateChange (PlayerEventArgs args)
         {
-            //Console.WriteLine (ServiceManager.PlayerEngine.CurrentState);
-            //Console.WriteLine (ServiceManager.PlayerEngine.LastState);
             if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Idle && recording) {
                 StopRecording ();
             }        
@@ -198,17 +202,17 @@ namespace Banshee.Streamrecorder
             if (recording ) {
                 StopRecording ();
             }
-			
-			if (!IsCurrentTrackRecordable ()) {
-				 return;
-			}
-			
-			track = ServiceManager.PlaybackController.CurrentTrack;
+            
+            if (!IsCurrentTrackRecordable ()) {
+                 return;
+            }
+            
+            track = ServiceManager.PlaybackController.CurrentTrack;
 
             if (InitStreamrecorderProcess (track)) {
-				recorder.StartRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
-				recorder.AddStreamTags(track,false);
-				
+                recorder.StartRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
+                recorder.AddStreamTags(track,false);
+                
                 if (is_importing_enabled)
                     StartFolderScanner ();
             }
@@ -235,9 +239,9 @@ namespace Banshee.Streamrecorder
         {
             Hyena.Log.DebugFormat ("[StreamrecorderService] <InitStreamrecorderProcess> START dir: '{0}'", output_directory);
             
-			active_encoder = recorder.SetActiveEncoder(active_encoder);
+            active_encoder = recorder.SetActiveEncoder(active_encoder);
             
-			if (String.IsNullOrEmpty (output_directory)) {
+            if (String.IsNullOrEmpty (output_directory)) {
                 output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory +
                     Path.DirectorySeparatorChar + "ripped";
             }
@@ -252,19 +256,19 @@ namespace Banshee.Streamrecorder
                 return false;
             }
 
-			DateTime dt = DateTime.Now;
-			string datestr = String.Format("{0:d_M_yyyy_HH_mm_ss}", dt);
-			string filename;
-			RadioTrackInfo radio_track = track as RadioTrackInfo;
-			
-			//split only if Artist AND Title are present, i.e. stream sends complete metadata
-			//do not set extension, will be done by recorder!
-			if (is_splitting_enabled && track.ArtistName != null && track.ArtistName.Length > 0)
-			{
-				filename = recorder.SetMetadataFilename(track.TrackTitle, track.ArtistName);
-			} else {
-				filename = (radio_track.ParentTrack == null ? track.TrackTitle : radio_track.ParentTrack.TrackTitle) + "_" + datestr;
-			}
+            DateTime dt = DateTime.Now;
+            string datestr = String.Format("{0:d_M_yyyy_HH_mm_ss}", dt);
+            string filename;
+            RadioTrackInfo radio_track = track as RadioTrackInfo;
+
+            //split only if Artist AND Title are present, i.e. stream sends complete metadata
+            //do not set extension, will be done by recorder!
+            if (is_splitting_enabled && track.ArtistName != null && track.ArtistName.Length > 0)
+            {
+                filename = recorder.SetMetadataFilename(track.TrackTitle, track.ArtistName);
+            } else {
+                filename = (radio_track.ParentTrack == null ? track.TrackTitle : radio_track.ParentTrack.TrackTitle) + "_" + datestr;
+            }
 
             recorder.SetOutputParameters (output_directory,filename);
 
@@ -273,18 +277,18 @@ namespace Banshee.Streamrecorder
             Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> END. Recording ready");
             return true;
         }
-				
-		public string[] GetEncoders()
-		{
-			List<Encoder> encoders = recorder.Encoders;
-			string[] encoder_names = new string[encoders.Count];
-			for(int i = 0; i < encoders.Count ; i++)
-			{
-				encoder_names[i] = encoders[i].ToString();
-			}
-			return encoder_names;
-		}
-				
+                
+        public string[] GetEncoders()
+        {
+            List<Encoder> encoders = recorder.Encoders;
+            string[] encoder_names = new string[encoders.Count];
+            for(int i = 0; i < encoders.Count ; i++)
+            {
+                encoder_names[i] = encoders[i].ToString();
+            }
+            return encoder_names;
+        }
+                
         public string OutputDirectory 
         {
             get { return output_directory; }
@@ -297,12 +301,12 @@ namespace Banshee.Streamrecorder
                
                 Hyena.Log.DebugFormat ("[StreamrecorderService] <OutputDirectorySetter> ", value);
 
-				if (String.IsNullOrEmpty (this.output_directory)) 
-				{
-					this.output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory +
-						Path.DirectorySeparatorChar + "ripped";
-				}
-				RippedFileScanner.SetScanDirectory (this.output_directory);
+                if (String.IsNullOrEmpty (this.output_directory)) 
+                {
+                    this.output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory +
+                        Path.DirectorySeparatorChar + "ripped";
+                }
+                RippedFileScanner.SetScanDirectory (this.output_directory);
 
                 if (is_importing_enabled)
                     StartFolderScanner ();
@@ -317,19 +321,19 @@ namespace Banshee.Streamrecorder
             get { return active_encoder; }
             set { active_encoder = value; }
         }
-				
+                
         public bool IsImportingEnabled
         {
             get { return is_importing_enabled; }
             set { is_importing_enabled = value; }
         }
-				
+                
         public bool IsFileSplittingEnabled
         {
             get { return is_splitting_enabled; }
             set { is_splitting_enabled = value; }
         }
-				
+                
         public static readonly SchemaEntry<string> IsRecordingEnabledEntry = new SchemaEntry<string> (
             "plugins.streamrecorder", "is_recording_enabled", "", "Is ripping enabled", "Is ripping enabled"
         );
@@ -347,8 +351,8 @@ namespace Banshee.Streamrecorder
             "plugins.streamrecorder", "is_splitting_enabled", "", "Is splitting enabled", "Is splitting enabled"
         );
 
-		public static readonly SchemaEntry<string> ActiveEncoderEntry = new SchemaEntry<string> (
+        public static readonly SchemaEntry<string> ActiveEncoderEntry = new SchemaEntry<string> (
             "plugins.streamrecorder", "active_encoder", "", "Active Encoder", "Active Encoder"
         );
-	}
+    }
 }

@@ -43,76 +43,79 @@ using Hyena;
 
 namespace Banshee.Streamrecorder.Gst
 {
-	
-	public delegate bool BusFunc(IntPtr bus, IntPtr message, IntPtr user_data);
+    
+    public delegate bool BusFunc(IntPtr bus, IntPtr message, IntPtr user_data);
 
-	[UnmanagedFunctionPointer (CallingConvention.Cdecl)]
-	internal delegate bool BusFuncNative(IntPtr bus, IntPtr message, IntPtr user_data);
+    [UnmanagedFunctionPointer (CallingConvention.Cdecl)]
+    internal delegate bool BusFuncNative(IntPtr bus, IntPtr message, IntPtr user_data);
 
-	internal class BusFuncInvoker {
+    internal class BusFuncInvoker {
 
-		BusFuncNative native_cb;
+        BusFuncNative native_cb;
 
-		~BusFuncInvoker () {}
+        ~BusFuncInvoker () {}
 
-		internal BusFuncInvoker (BusFuncNative native_cb) {}
+        internal BusFuncInvoker (BusFuncNative native_cb)
+        {
+            this.native_cb = native_cb;
+        }
 
-		internal Gst.BusFunc Handler {
-			get {
-				return new Gst.BusFunc(InvokeNative);
-			}
-		}
+        internal Gst.BusFunc Handler {
+            get {
+                return new Gst.BusFunc(InvokeNative);
+            }
+        }
 
-		bool InvokeNative (IntPtr bus, IntPtr message, IntPtr user_data)
-		{
-			bool result = native_cb (bus, message , user_data);
-			return result;
-		}
-	}
+        bool InvokeNative (IntPtr bus, IntPtr message, IntPtr user_data)
+        {
+            bool result = native_cb (bus, message , user_data);
+            return result;
+        }
+    }
 
-	internal class BusFuncWrapper {
+    internal class BusFuncWrapper {
 
-		public bool NativeCallback (IntPtr bus, IntPtr message, IntPtr user_data)
-		{
-			try {
-				bool __ret = managed (bus, message, user_data);
-				if (release_on_call)
-					gch.Free ();
-				return __ret;
-			} catch (Exception e) {
-				GLib.ExceptionManager.RaiseUnhandledException (e, false);
-				return false;
-			}
-		}
+        public bool NativeCallback (IntPtr bus, IntPtr message, IntPtr user_data)
+        {
+            try {
+                bool __ret = managed (bus, message, user_data);
+                if (release_on_call)
+                    gch.Free ();
+                return __ret;
+            } catch (Exception e) {
+                GLib.ExceptionManager.RaiseUnhandledException (e, false);
+                return false;
+            }
+        }
 
-		bool release_on_call = false;
-		GCHandle gch;
+        bool release_on_call = false;
+        GCHandle gch;
 
-		public void PersistUntilCalled ()
-		{
-			release_on_call = true;
-			gch = GCHandle.Alloc (this);
-		}
+        public void PersistUntilCalled ()
+        {
+            release_on_call = true;
+            gch = GCHandle.Alloc (this);
+        }
 
-		internal BusFuncNative NativeDelegate;
-		BusFunc managed;
+        internal BusFuncNative NativeDelegate;
+        BusFunc managed;
 
-		public BusFuncWrapper (Gst.BusFunc managed)
-		{
-			this.managed = managed;
-			if (managed != null)
-				NativeDelegate = new BusFuncNative (NativeCallback);
-		}
+        public BusFuncWrapper (Gst.BusFunc managed)
+        {
+            this.managed = managed;
+            if (managed != null)
+                NativeDelegate = new BusFuncNative (NativeCallback);
+        }
 
-		public static BusFunc GetManagedDelegate (BusFuncNative native)
-		{
-			if (native == null)
-				return null;
-			BusFuncWrapper wrapper = (BusFuncWrapper) native.Target;
-			if (wrapper == null)
-				return null;
-			return wrapper.managed;
-		}
-	}
+        public static BusFunc GetManagedDelegate (BusFuncNative native)
+        {
+            if (native == null)
+                return null;
+            BusFuncWrapper wrapper = (BusFuncWrapper) native.Target;
+            if (wrapper == null)
+                return null;
+            return wrapper.managed;
+        }
+    }
 
 }
