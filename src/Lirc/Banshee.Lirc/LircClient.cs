@@ -134,8 +134,8 @@ namespace Lirc
     [DllImport("liblircglue")]
     private extern static IntPtr lirc_glue_next_valid_command ();
 
-    [DllImport("liblircglue")]
-    private extern static IntPtr lirc_glue_get_config ();
+//    [DllImport("liblircglue")]
+//    private extern static IntPtr lirc_glue_get_config ();
 
     [DllImport("liblircglue")]
     private extern static void lirc_glue_freeconfig();
@@ -183,14 +183,14 @@ namespace Lirc
    }
    
    [StructLayout(LayoutKind.Sequential)]
-   public unsafe struct LircList
+   public struct LircList
    {
        public string str;
        public IntPtr next;
    }
 
    [StructLayout(LayoutKind.Sequential)]
-   public unsafe struct LircCode
+   public struct LircCode
    {
        public string remote;
        public string button;
@@ -198,7 +198,7 @@ namespace Lirc
    }
 
    [StructLayout(LayoutKind.Sequential)]
-   public unsafe struct LircConfig
+   public struct LircConfig
    {
        public string current_mode;
        public IntPtr next;
@@ -207,7 +207,7 @@ namespace Lirc
    }
    
    [StructLayout(LayoutKind.Sequential)]
-   public unsafe struct LircConfigEntry
+   public struct LircConfigEntry
    {
        public string prog;
        public IntPtr code;
