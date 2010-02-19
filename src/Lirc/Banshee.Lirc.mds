@@ -1,0 +1,29 @@
+<Combine fileversion="2.0" name="lirc">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="CombineConfiguration">
+      <Entry build="True" name="Banshee.Lirc" configuration="Debug" />
+      <Entry build="True" name="NUnitTests" configuration="Debug" />
+      <Entry build="True" name="GUITestHarness" configuration="Debug" />
+    </Configuration>
+    <Configuration name="Release" ctype="CombineConfiguration">
+      <Entry build="True" name="Banshee.Lirc" configuration="Release" />
+      <Entry build="True" name="NUnitTests" configuration="Release" />
+      <Entry build="True" name="GUITestHarness" configuration="Release" />
+    </Configuration>
+    <Configuration name="Default" ctype="CombineConfiguration">
+      <Entry build="True" name="Banshee.Lirc" configuration="Default" />
+      <Entry build="True" name="NUnitTests" configuration="Default" />
+      <Entry build="True" name="GUITestHarness" configuration="Default" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="Banshee.Lirc" single="True">
+    <Execute type="None" entry="Banshee.Lirc" />
+    <Execute type="None" entry="NUnitTests" />
+    <Execute type="None" entry="GUITestHarness" />
+  </StartMode>
+  <Entries>
+    <Entry filename="Banshee.Lirc/Banshee.Lirc.mdp" />
+    <Entry filename="NUnitTests/NUnitTests.mdp" />
+    <Entry filename="GUITestHarness/GUITestHarness.mdp" />
+  </Entries>
+</Combine>

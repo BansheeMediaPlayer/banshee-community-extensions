@@ -1,0 +1,35 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
+  <MonoDevelop.Ide.DebuggingService>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Banshee.Lirc/src/lirc-glue.c" ctype="Workbench">
+    <Files>
+      <File FileName="Banshee.Lirc/src/Banshee.Lirc.cs" Line="1" Column="1" />
+      <File FileName="Banshee.Lirc/src/ConfigDialog.cs" Line="14" Column="2" />
+      <File FileName="Banshee.Lirc/src/ActionMapper.cs" Line="1" Column="1" />
+      <File FileName="Banshee.Lirc/src/BansheeController.cs" Line="1" Column="1" />
+      <File FileName="Banshee.Lirc/src/LircClient.cs" Line="1" Column="1" />
+      <File FileName="Banshee.Lirc/src/lirc-glue.c" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Option id="ShowVersionControlOverlays" value="False" />
+          <Option id="ShowAllFiles" value="False" />
+          <Node name="Banshee.Lirc" expanded="True">
+            <Node name="src" expanded="True">
+              <Node name="lirc-glue.c" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+</Properties>

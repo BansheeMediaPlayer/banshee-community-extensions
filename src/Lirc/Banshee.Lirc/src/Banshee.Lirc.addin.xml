@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Addin 
+    id="Banshee.Lirc"
+    version="0.1"
+    compatVersion="0.1"
+    copyright="© JBL Licensed under the MIT X11 license."
+    name="Lirc Remote"
+    category="User Interface"
+    description="Provides Lirc support"
+    author="JBL"
+    url=""
+    defaultEnabled="true">
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.Lirc.LircPlugin"/>   
+  </Extension>  
+</Addin>

@@ -1,0 +1,9 @@
+<ui>
+  <menubar name="MainMenu">
+    <menu name="ToolsMenu" action="ToolsMenuAction">
+      <menu name="Lirc" action="LircAction">
+        <menuitem name="LircConfigure" action="LircConfigureAction" />
+      </menu>
+    </menu>
+  </menubar>
+</ui>

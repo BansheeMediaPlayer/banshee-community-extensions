@@ -1,0 +1,24 @@
+2009-12-23  Jean-Baptiste Lab <jeanbaptiste.lab@gmail.com>
+
+	* Banshee.Lirc/*: merge Patrick's lirc-sharp and lirc plugin to ease distribution.
+	Port code to banshee 1.5.x and use SCons as build system.
+
+2006-10-03  Patrick van Staveren  <trick@vanstaveren.us>
+
+	* src/Makefile.am: don't hardcode path to Trick's lirc-sharp.dll
+	This means you will have to manually copy lirc-sharp.dll into
+	the src directory for this to compile.
+
+2006-05-16  Patrick van Staveren  <trick@vanstaveren.us>
+	* src/Makefile.am: install debug info
+
+2006-01-26  Aaron Bockover  <aaron@aaronbock.net>
+
+	* src/SamplePlugin.cs: Updated to reflect changes in plugin API; added
+	a simple example on how to provide custom Sources with a custom view
+	widget
+
+2005-12-30  Aaron Bockover  <aaron@aaronbock.net>
+
+	* banshee-sample-plugin: Initial revision of sample plugin project
+
