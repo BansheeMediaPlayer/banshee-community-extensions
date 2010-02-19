@@ -3,6 +3,7 @@ SUBDIRS = \
 	Awn \
 	ClutterFlow \
 	LCD \
+	Lirc \
 	Lyrics \
 	Mirage \
 	RadioStationFetcher \

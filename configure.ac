@@ -47,6 +47,7 @@ BCE_ALARMCLOCK
 BCE_AWN
 BCE_CLUTTERFLOW
 BCE_LCD
+BCE_LIRC
 BCE_LYRICS
 BCE_MIRAGE
 BCE_RADIOSTATIONFETCHER
@@ -106,6 +107,11 @@ src/ClutterFlow/Makefile
 src/ClutterFlow/Banshee.ClutterFlow/Makefile
 src/ClutterFlow/ClutterFlow/Makefile
 src/LCD/Makefile
+src/Lirc/Makefile
+src/Lirc/lirc-glue/Makefile
+src/Lirc/Banshee.Lirc/Makefile
+src/Lirc/GUITestHarness/Makefile
+src/Lirc/NUnitTests/Makefile
 src/Lyrics/Makefile
 src/Mirage/Makefile
 src/Mirage/libmirageaudio/Makefile
@@ -139,6 +145,7 @@ ${PACKAGE}-${VERSION}
     Awn:                 ${enable_Awn}
     ClutterFlow:         ${enable_ClutterFlow}
     LCD:                 ${enable_LCD}
+    Lirc:                ${enable_Lirc}
     Lyrics:              ${enable_Lyrics}
     Mirage:              ${enable_Mirage}
     RadioStationFetcher: ${enable_RadioStationFetcher}
