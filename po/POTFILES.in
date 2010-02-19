@@ -12,7 +12,6 @@ src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs
 src/LCD/Banshee.LCD/ConfigurationDialog.cs
 src/LCD/Banshee.LCD/LCDService.cs
 src/Lirc/Banshee.Lirc/gtk-gui/Banshee.Lirc.ConfigDialog.cs
-src/Lirc/GUITestHarness/gtk-gui/MainWindow.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsPane.cs
