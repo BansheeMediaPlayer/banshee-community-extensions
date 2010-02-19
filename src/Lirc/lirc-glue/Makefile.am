@@ -1,7 +1,6 @@
 if ENABLE_LIRC
 lircgluelibdir = $(expanded_libdir)
 lircgluelib_LTLIBRARIES = liblircglue.la
-endif
 
 liblircglue_la_LDFLAGS = -avoid-version -module
 liblircglue_la_SOURCES = \
@@ -15,6 +14,7 @@ all: $(top_builddir)/bin/liblircglue.so
 $(top_builddir)/bin/liblircglue.so: liblircglue.la
 	mkdir -p $(top_builddir)/bin
 	cp -f .libs/liblircglue.so $@
+endif
 
 CLEANFILES = $(top_builddir)/bin/liblircglue.so
 MAINTAINERCLEANFILES = Makefile.in
