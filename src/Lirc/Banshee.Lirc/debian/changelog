@@ -1,3 +1,9 @@
+banshee-extension-lirc (0.0.3-0~ppa0) karmic; urgency=low
+
+  * Internal reorg, make packaging more Ubuntu/Debian friendly
+
+ -- Jean-Baptiste Lab <jeanbaptiste.lab@gmail.com>  Sat, 20 Feb 2010 09:19:05 +0100
+
 banshee-extension-lirc (0.0.2-0~ppa0) karmic; urgency=low
 
   * Use standard threading API
