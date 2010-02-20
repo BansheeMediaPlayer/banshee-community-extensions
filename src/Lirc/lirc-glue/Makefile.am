@@ -1,5 +1,5 @@
 if ENABLE_LIRC
-lircgluelibdir = $(expanded_libdir)
+lircgluelibdir = $(EXTENSION_DIR)
 lircgluelib_LTLIBRARIES = liblircglue.la
 
 liblircglue_la_LDFLAGS = -avoid-version -module

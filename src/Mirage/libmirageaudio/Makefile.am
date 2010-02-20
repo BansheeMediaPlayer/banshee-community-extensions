@@ -11,7 +11,7 @@ INCLUDES = \
 if ENABLE_MIRAGE
 noinst_PROGRAMS = mirageaudiotest
 
-mirageaudiolibdir = $(expanded_libdir)
+mirageaudiolibdir = $(EXTENSION_DIR)
 mirageaudiolib_LTLIBRARIES = libmirageaudio.la
 
 libmirageaudio_la_LDFLAGS = -avoid-version -module
