@@ -18,6 +18,7 @@ RESOURCES =  \
 
 if ENABLE_LIRC
 include $(top_srcdir)/build/build.mk
+module_DATA = Banshee.Lirc.dll.config
 else
 EXTRA_DIST = $(SOURCES) $(RESOURCES)
 endif

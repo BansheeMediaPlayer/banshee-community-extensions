@@ -110,12 +110,14 @@ src/LCD/Makefile
 src/Lirc/Makefile
 src/Lirc/lirc-glue/Makefile
 src/Lirc/Banshee.Lirc/Makefile
+src/Lirc/Banshee.Lirc/Banshee.Lirc.dll.config
 src/Lirc/GUITestHarness/Makefile
 src/Lirc/NUnitTests/Makefile
 src/Lyrics/Makefile
 src/Mirage/Makefile
 src/Mirage/libmirageaudio/Makefile
 src/Mirage/Mirage/Makefile
+src/Mirage/Mirage/Mirage.dll.config
 src/Mirage/Banshee.Mirage/Makefile
 src/Mirage/Test/Makefile
 src/RadioStationFetcher/Makefile
