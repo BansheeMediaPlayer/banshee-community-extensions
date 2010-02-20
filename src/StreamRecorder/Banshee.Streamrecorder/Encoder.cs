@@ -33,50 +33,48 @@ namespace Banshee.Streamrecorder
     public class Encoder
     {
 
-		private string name;
-		private string pipeline;
-		private string file_extension;
-		private bool is_preferred;
+        private string name;
+        private string pipeline;
+        private string file_extension;
+        private bool is_preferred;
 
-		public Encoder (string name, string pipeline, string file_extension) : this(name, pipeline, file_extension, false) {}
+        public Encoder (string name, string pipeline, string file_extension) : this(name, pipeline, file_extension, false)
+        {
+        }
 
-		public Encoder (string name, string pipeline, string file_extension, bool is_preferred)
-		{
-			this.name = name;
-			this.pipeline = pipeline;
-			this.file_extension = file_extension;
-			this.is_preferred = is_preferred;
-		}
+        public Encoder (string name, string pipeline, string file_extension, bool is_preferred)
+        {
+            this.name = name;
+            this.pipeline = pipeline;
+            this.file_extension = file_extension;
+            this.is_preferred = is_preferred;
+        }
 
-		public string Name
-		{
-			get { return name; }
-			set { name = value; }
-		}
-		
-		public string Pipeline
-		{
-			get { return pipeline; }
-			set { pipeline = value; }
-		}
-		
-		public string FileExtension
-		{
-			get { return file_extension; }
-			set { file_extension = value; }
-		}
-		
-		public bool IsPreferred
-		{
-			get {return is_preferred; }
-			set {is_preferred = value; }
-		}
-		
-		override public string ToString()
-		{
-			return name;
-		}
+        public string Name {
+            get { return name; }
+            set { name = value; }
+        }
 
+        public string Pipeline {
+            get { return pipeline; }
+            set { pipeline = value; }
+        }
+
+        public string FileExtension {
+            get { return file_extension; }
+            set { file_extension = value; }
+        }
+
+        public bool IsPreferred {
+            get { return is_preferred; }
+            set { is_preferred = value; }
+        }
+
+        public override string ToString ()
+        {
+            return name;
+        }
+        
     }
-
+    
 }

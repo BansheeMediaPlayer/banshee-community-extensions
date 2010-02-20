@@ -27,26 +27,21 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
 
-using Mono.Addins;
-
-using Hyena;
 namespace Banshee.Streamrecorder.Gst
 {
-	
-	public class FileSink : Element
-	{
-		
-		public FileSink(IntPtr filesink) : base (filesink) {}
-		
-		public string Location
-		{
-			get { return GetProperty("location").Val as string; }
-			set { SetStringProperty("location", value); }
-		}	
-	}
+
+    public class FileSink : Element
+    {
+
+        public FileSink (IntPtr filesink) : base(filesink)
+        {
+        }
+
+        public string Location {
+            get { return GetProperty ("location").Val as string; }
+            set { SetStringProperty ("location", value); }
+        }
+    }
 }

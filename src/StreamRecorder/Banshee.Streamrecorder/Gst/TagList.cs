@@ -27,39 +27,36 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
 
-
-using Mono.Addins;
-
-using Hyena;
 namespace Banshee.Streamrecorder.Gst
 {
-	
-	public class TagList : GstObject
-	{
-		
-        [DllImport ("libgstreamer-0.10.so.0")]
-        private static extern unsafe IntPtr gst_tag_list_new ();
-        
-		protected TagList(IntPtr taglist) : base (taglist) {}
-		
-		public TagList() : this (gst_tag_list_new()) {}
-		
-        [DllImport ("libgstreamer-0.10.so.0")]
-        private static extern unsafe void gst_tag_list_add_value (IntPtr taglist, TagMergeMode mode, IntPtr tag, ref GLib.Value value);
-        
-        public void AddStringValue (TagMergeMode mode, string tag, string value)
-		{
-			GLib.Value val = new GLib.Value (GLib.GType.String);
-			val.Val = value;
-			IntPtr native_tag = GLib.Marshaller.StringToPtrGStrdup (tag);
-			gst_tag_list_add_value (raw, mode, native_tag, ref val);
-			GLib.Marshaller.Free (native_tag);
-		}
 
-	}
+    public class TagList : GstObject
+    {
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe private static extern IntPtr gst_tag_list_new ();
+
+        protected TagList (IntPtr taglist) : base(taglist)
+        {
+        }
+
+        public TagList () : this(gst_tag_list_new ())
+        {
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe private static extern void gst_tag_list_add_value (IntPtr taglist, TagMergeMode mode, IntPtr tag, ref GLib.Value value);
+
+        public void AddStringValue (TagMergeMode mode, string tag, string value)
+        {
+            GLib.Value val = new GLib.Value (GLib.GType.String);
+            val.Val = value;
+            IntPtr native_tag = GLib.Marshaller.StringToPtrGStrdup (tag);
+            gst_tag_list_add_value (raw, mode, native_tag, ref val);
+            GLib.Marshaller.Free (native_tag);
+        }
+        
+    }
 }

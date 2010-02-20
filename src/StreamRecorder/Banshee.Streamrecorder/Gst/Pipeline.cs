@@ -27,30 +27,26 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
 
-using Mono.Addins;
-
-using Hyena;
 namespace Banshee.Streamrecorder.Gst
 {
 
-	public class Pipeline : Bin
-	{
-		
-		public Pipeline(IntPtr pipeline) : base (pipeline) {}
+    public class Pipeline : Bin
+    {
 
-		[DllImport ("libgstreamer-0.10.so.0")]
-        public static extern unsafe IntPtr gst_pipeline_get_bus (IntPtr pipeline);
+        public Pipeline (IntPtr pipeline) : base(pipeline)
+        {
+        }
 
-		public Bus GetBus()
-		{
-			return new Bus(gst_pipeline_get_bus(raw));
-		}
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe public static extern IntPtr gst_pipeline_get_bus (IntPtr pipeline);
 
-	}
-
+        public Bus GetBus ()
+        {
+            return new Bus (gst_pipeline_get_bus (raw));
+        }
+        
+    }
+    
 }

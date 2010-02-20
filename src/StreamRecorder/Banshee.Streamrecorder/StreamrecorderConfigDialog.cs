@@ -37,12 +37,10 @@ using Gtk;
 using Banshee.ServiceStack;
 using Banshee.I18n;
 
-using Hyena;
-
 namespace Banshee.Streamrecorder
-{    
+{
     public class StreamrecorderConfigDialog : Gtk.Dialog
-    {   
+    {
         StreamrecorderService streamrecorder_service;
         Gtk.Image preferences_image = new Gtk.Image ();
         Gtk.Label header_label = new Gtk.Label ();
@@ -55,30 +53,24 @@ namespace Banshee.Streamrecorder
         Gtk.CheckButton enable_automatic_splitting = new Gtk.CheckButton ();
         Gtk.Button cancel_button = new Gtk.Button (Gtk.Stock.Cancel);
         Gtk.Button save_button = new Gtk.Button (Gtk.Stock.Save);
-		Gtk.ComboBox encoderbox = new Gtk.ComboBox();
-        
-        public StreamrecorderConfigDialog (StreamrecorderService service, 
-                                         string previous_output_folder,
-		                                 string previous_encoder,
-                                         bool is_importing_enabled,
-		                                 bool is_splitting_enabled)
+        Gtk.ComboBox encoderbox = new Gtk.ComboBox ();
+
+        public StreamrecorderConfigDialog (StreamrecorderService service, string previous_output_folder, string previous_encoder, bool is_importing_enabled, bool is_splitting_enabled)
         {
             streamrecorder_service = service;
             
-            preferences_image.Yalign = 0.0f;
+            preferences_image.Yalign = 0f;
             preferences_image.IconName = "gtk-preferences";
-            preferences_image.IconSize = (int) IconSize.Dialog;
+            preferences_image.IconSize = (int)IconSize.Dialog;
             preferences_image.Show ();
-            header_label.Text = String.Format (AddinManager.CurrentLocalizer.GetString ("{0}Streamrecorder configuration\n{1}"),
-                "<span weight=\"bold\" size=\"larger\">", "</span>");
+            header_label.Text = String.Format (AddinManager.CurrentLocalizer.GetString ("{0}Streamrecorder configuration\n{1}"), "<span weight=\"bold\" size=\"larger\">", "</span>");
             header_label.UseMarkup = true;
             header_label.Wrap = true;
-            header_label.Yalign = 0.0f;
-            header_label.Xalign = 0.0f;
-            description_label.Text = AddinManager.CurrentLocalizer.GetString ("Please select output folder for ripped files and if ripped\n" + 
-                "files should be imported to media library.\n");
-            description_label.Yalign = 0.0f;
-            description_label.Xalign = 0.0f;
+            header_label.Yalign = 0f;
+            header_label.Xalign = 0f;
+            description_label.Text = AddinManager.CurrentLocalizer.GetString ("Please select output folder for ripped files and if ripped\n" + "files should be imported to media library.\n");
+            description_label.Yalign = 0f;
+            description_label.Xalign = 0f;
             choose_folder_label.Text = AddinManager.CurrentLocalizer.GetString ("Output folder:");
             choose_encoder_label.Text = AddinManager.CurrentLocalizer.GetString ("Encoder:");
             output_folder.Text = previous_output_folder;
@@ -90,68 +82,63 @@ namespace Banshee.Streamrecorder
             save_button.Label = AddinManager.CurrentLocalizer.GetString ("_Save");
             save_button.Image = new Image ("gtk-save", IconSize.Button);
             enable_import_ripped_songs.Label = AddinManager.CurrentLocalizer.GetString ("Import files to media library");
-            enable_import_ripped_songs.Active = StreamrecorderService.IsImportingEnabledEntry.Get ().Equals ("True")
-                ? true : false;
+            enable_import_ripped_songs.Active = StreamrecorderService.IsImportingEnabledEntry.Get ().Equals ("True") ? true : false;
             enable_automatic_splitting.Label = AddinManager.CurrentLocalizer.GetString ("Enable automatic files splitting by Metadata");
-            enable_automatic_splitting.Active = StreamrecorderService.IsFileSplittingEnabledEntry.Get ().Equals ("True")
-                ? true : false;
-
-        	encoderbox.Clear();
-        	CellRendererText cell = new CellRendererText();
-        	encoderbox.PackStart(cell, false);
-        	encoderbox.AddAttribute(cell, "text", 0);
-        	ListStore store = new ListStore(typeof (string));
-        	encoderbox.Model = store;
-
-			int row = -1;
-			int chosen_row = -1;
-			foreach(string encoder in streamrecorder_service.GetEncoders())
-			{
-				row++;
-				store.AppendValues(encoder);
-				if (encoder.Equals(previous_encoder)) 
-				{
-					chosen_row = row;
-	            	Hyena.Log.DebugFormat ("[StreamrecorderConfigDialog] found active encoder in row {1}: {0}", encoder, chosen_row);
-				}
-			}
-			
-			if (chosen_row > -1)
-			{
-				Gtk.TreeIter iter;
-    	    	encoderbox.Model.IterNthChild (out iter, chosen_row);
-        		encoderbox.SetActiveIter (iter);
-			} else {
-				Gtk.TreeIter iter;
-				encoderbox.Model.GetIterFirst(out iter);
-				encoderbox.SetActiveIter(iter);
-			}
-			
+            enable_automatic_splitting.Active = StreamrecorderService.IsFileSplittingEnabledEntry.Get ().Equals ("True") ? true : false;
+            
+            encoderbox.Clear ();
+            CellRendererText cell = new CellRendererText ();
+            encoderbox.PackStart (cell, false);
+            encoderbox.AddAttribute (cell, "text", 0);
+            ListStore store = new ListStore (typeof(string));
+            encoderbox.Model = store;
+            
+            int row = -1;
+            int chosen_row = -1;
+            foreach (string encoder in streamrecorder_service.GetEncoders ()) {
+                row++;
+                store.AppendValues (encoder);
+                if (encoder.Equals (previous_encoder)) {
+                    chosen_row = row;
+                    Hyena.Log.DebugFormat ("[StreamrecorderConfigDialog] found active encoder in row {1}: {0}", encoder, chosen_row);
+                }
+            }
+            
+            if (chosen_row > -1) {
+                Gtk.TreeIter iter;
+                encoderbox.Model.IterNthChild (out iter, chosen_row);
+                encoderbox.SetActiveIter (iter);
+            } else {
+                Gtk.TreeIter iter;
+                encoderbox.Model.GetIterFirst (out iter);
+                encoderbox.SetActiveIter (iter);
+            }
+            
             HBox main_container = new HBox ();
-            VBox action_container = new VBox (); 
-                
+            VBox action_container = new VBox ();
+            
             main_container.Spacing = 12;
             main_container.BorderWidth = 6;
             
             action_container.PackStart (header_label, true, true, 0);
             action_container.PackStart (description_label, true, true, 0);
-			VBox choosing_labels = new VBox ();
+            VBox choosing_labels = new VBox ();
             choosing_labels.PackStart (choose_folder_label, true, true, 5);
             choosing_labels.PackStart (choose_encoder_label, true, true, 5);
-			HBox folder_choosing = new HBox ();
+            HBox folder_choosing = new HBox ();
             folder_choosing.PackStart (output_folder, true, true, 5);
             folder_choosing.PackStart (choose_output_folder_button, true, true, 0);
-			VBox box_choosing = new VBox();
+            VBox box_choosing = new VBox ();
             box_choosing.PackStart (folder_choosing, true, true, 0);
             box_choosing.PackStart (encoderbox, true, true, 5);
-			HBox all_choosing = new HBox();
-			all_choosing.PackStart (choosing_labels, true, true, 0);
-			all_choosing.PackStart (box_choosing, true, true, 0);
-
-			action_container.PackStart (all_choosing, true, true, 5);
-			action_container.PackStart (enable_automatic_splitting, true, true, 5);
+            HBox all_choosing = new HBox ();
+            all_choosing.PackStart (choosing_labels, true, true, 0);
+            all_choosing.PackStart (box_choosing, true, true, 0);
+            
+            action_container.PackStart (all_choosing, true, true, 5);
+            action_container.PackStart (enable_automatic_splitting, true, true, 5);
             action_container.PackStart (enable_import_ripped_songs, true, true, 5);
-
+            
             main_container.PackStart (preferences_image, true, true, 5);
             main_container.PackEnd (action_container, true, true, 5);
             this.VBox.PackStart (main_container, true, true, 5);
@@ -172,48 +159,42 @@ namespace Banshee.Streamrecorder
             
             ShowAll ();
         }
-        
-        private void OnCancelButtonClicked (object o, EventArgs a) 
+
+        private void OnCancelButtonClicked (object o, EventArgs a)
         {
             Destroy ();
         }
-        
-        private void OnSaveButtonClicked (object o, EventArgs a) 
+
+        private void OnSaveButtonClicked (object o, EventArgs a)
         {
             Hyena.Log.DebugFormat ("[StreamrecorderConfigDialog] <OnSaveButtonClicked> dir: {0}", output_folder.Text);
             Hyena.Log.DebugFormat ("[StreamrecorderConfigDialog] <OnSaveButtonClicked> enc: {0}", encoderbox.ActiveText);
             
             StreamrecorderService.IsImportingEnabledEntry.Set (enable_import_ripped_songs.Active.ToString ());
-            streamrecorder_service.IsImportingEnabled = enable_import_ripped_songs.Active.ToString ().Equals ("True")
-                ? true : false;
+            streamrecorder_service.IsImportingEnabled = enable_import_ripped_songs.Active.ToString ().Equals ("True") ? true : false;
             
             StreamrecorderService.IsFileSplittingEnabledEntry.Set (enable_automatic_splitting.Active.ToString ());
-            streamrecorder_service.IsFileSplittingEnabled = enable_automatic_splitting.Active.ToString ().Equals ("True")
-                ? true : false;
+            streamrecorder_service.IsFileSplittingEnabled = enable_automatic_splitting.Active.ToString ().Equals ("True") ? true : false;
             
             if (ValidateOutputFolderField ()) {
                 streamrecorder_service.OutputDirectory = output_folder.Text.Trim ();
-                StreamrecorderService.OutputDirectoryEntry.Set (output_folder.Text.Trim ());    
+                StreamrecorderService.OutputDirectoryEntry.Set (output_folder.Text.Trim ());
             }
-
-			streamrecorder_service.OutputDirectory = output_folder.Text.Trim ();
-            StreamrecorderService.OutputDirectoryEntry.Set (output_folder.Text.Trim ());    
-
-			streamrecorder_service.ActiveEncoder = encoderbox.ActiveText;
-            StreamrecorderService.ActiveEncoderEntry.Set (encoderbox.ActiveText);    
-
+            
+            streamrecorder_service.OutputDirectory = output_folder.Text.Trim ();
+            StreamrecorderService.OutputDirectoryEntry.Set (output_folder.Text.Trim ());
+            
+            streamrecorder_service.ActiveEncoder = encoderbox.ActiveText;
+            StreamrecorderService.ActiveEncoderEntry.Set (encoderbox.ActiveText);
+            
             Destroy ();
         }
-        
-        private void OnChooseOutputFolderButtonClicked (object o, EventArgs a) 
+
+        private void OnChooseOutputFolderButtonClicked (object o, EventArgs a)
         {
-            FileChooserDialog output_folder_chooser = new FileChooserDialog ("Choose output folder",
-                                                                                this,
-                                                                                FileChooserAction.SelectFolder,
-                                                                                "Cancel", ResponseType.Cancel,
-                                                                                "Open", ResponseType.Accept);
+            FileChooserDialog output_folder_chooser = new FileChooserDialog ("Choose output folder", this, FileChooserAction.SelectFolder, "Cancel", ResponseType.Cancel, "Open", ResponseType.Accept);
             
-            ResponseType response = (ResponseType) output_folder_chooser.Run ();
+            ResponseType response = (ResponseType)output_folder_chooser.Run ();
             
             if (response == ResponseType.Accept) {
                 output_folder.Text = output_folder_chooser.Filename;
@@ -221,8 +202,8 @@ namespace Banshee.Streamrecorder
             
             output_folder_chooser.Destroy ();
         }
-        
-        private bool ValidateOutputFolderField () 
+
+        private bool ValidateOutputFolderField ()
         {
             if (Banshee.IO.Directory.Exists (output_folder.Text.Trim ())) {
                 Hyena.Log.Debug ("[StreamrecorderConfigDialog] <ValidateOutputFolderField> VALID!");
@@ -232,8 +213,7 @@ namespace Banshee.Streamrecorder
                 Banshee.IO.Directory.Create (output_folder.Text);
                 Hyena.Log.Debug ("[StreamrecorderConfigDialog] <ValidateOutputFolderField> VALID!");
                 return true;
-            }
-            catch {
+            } catch {
                 Hyena.Log.Debug ("[StreamrecorderConfigDialog] <ValidateOutputFolderField> NOT VALID!");
                 return false;
             }

@@ -27,106 +27,93 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
-
-using System.Text.RegularExpressions;
-
-using Mono.Addins;
-
-using Banshee.ServiceStack;
-using Banshee.Collection;
-
-using Hyena;
 
 namespace Banshee.Streamrecorder.Gst
 {
     public class Marshaller
     {
 
-		private static string gst_version;
-		
-        private Marshaller () 
+        private static string gst_version;
+
+        private Marshaller ()
         {
         }
-		
+
         /*
          * Initialization
          */
-        public static bool Initialize () {
-			try 
-			{
-				 gst_version = VersionString ();
-				 DebugSetActive(false);
-				 Hyena.Log.Information("[Streamrecorder.Gst.Marshaller] gstreamer version found: " + gst_version);
-				 return true;
-			}
-			catch (Exception e)
-			{
-				Hyena.Log.Error(e.ToString());
-				Hyena.Log.Error(e.Message);
-			}
-			return false;
-		}
-
-		/* Helper Import Wrappers */
-		public static bool CheckGstPlugin (string name)
-		{
-			bool ret = false;
-			ElementFactory element_factory;
-			element_factory = ElementFactory.Find(name);
-			if (!element_factory.IsNull()) 
-			{
-				ret = true;
-				element_factory.UnRef();
-				Hyena.Log.Debug("[Streamrecorder.Gst.Marshaller] found factory for : " + name);
-			}
-			return ret;
-		}
-		
-		public static IntPtr CreateSegment()
-		{
-			ulong ClockTimeNone = 0xffffffffffffffff;
-			return gst_event_new_new_segment(true, 1.0, Gst.Format.Default, 0, (long)ClockTimeNone, 0);
-		}
-		
-        public static void DebugSetActive (bool active) {
-			gst_debug_set_active (active);
+        public static bool Initialize ()
+        {
+            try {
+                gst_version = VersionString ();
+                DebugSetActive (false);
+                Hyena.Log.Information ("[Streamrecorder.Gst.Marshaller] gstreamer version found: " + gst_version);
+                return true;
+            } catch (Exception e) {
+                Hyena.Log.Error (e.ToString ());
+                Hyena.Log.Error (e.Message);
+            }
+            return false;
         }
 
-        public static string VersionString () {
-			return gst_version_string ();
+        /* Helper Import Wrappers */
+        public static bool CheckGstPlugin (string name)
+        {
+            bool ret = false;
+            ElementFactory element_factory;
+            element_factory = ElementFactory.Find (name);
+            if (!element_factory.IsNull ()) {
+                ret = true;
+                element_factory.UnRef ();
+                Hyena.Log.Debug ("[Streamrecorder.Gst.Marshaller] found factory for : " + name);
+            }
+            return ret;
         }
-		
-		public static IntPtr NewEOSEvent()
-		{
-			return gst_event_new_eos();
-		}
 
-		/* Helper Imports*/
-        [DllImport ("libgstreamer-0.10.so.0")]
+        public static IntPtr CreateSegment ()
+        {
+            ulong ClockTimeNone = 0xffffffffffffffffuL;
+            return gst_event_new_new_segment (true, 1.0, Gst.Format.Default, 0, (long)ClockTimeNone, 0);
+        }
+
+        public static void DebugSetActive (bool active)
+        {
+            gst_debug_set_active (active);
+        }
+
+        public static string VersionString ()
+        {
+            return gst_version_string ();
+        }
+
+        public static IntPtr NewEOSEvent ()
+        {
+            return gst_event_new_eos ();
+        }
+
+        /* Helper Imports*/
+        [DllImport("libgstreamer-0.10.so.0")]
         private static extern string gst_version_string ();
-        
-        [DllImport ("libgstreamer-0.10.so.0")]
+
+        [DllImport("libgstreamer-0.10.so.0")]
         private static extern void gst_debug_set_active (bool active);
 
-		[DllImport ("libgobject-2.0.so.0")]
+        [DllImport("libgobject-2.0.so.0")]
         public static extern void g_signal_connect_data (IntPtr instance, IntPtr detailed_signal, BusFunc cb, IntPtr data, IntPtr zero, uint flags);
-		
-        [DllImport ("libgstreamer-0.10.so.0")]
-		private static extern IntPtr gst_event_new_new_segment (bool update, double rate, Gst.Format format, long start, long stop,long position);
 
-        [DllImport ("libgstreamer-0.10.so.0")]
-        public static extern unsafe GLib.Value gst_structure_get_value (IntPtr structure, IntPtr name);
+        [DllImport("libgstreamer-0.10.so.0")]
+        private static extern IntPtr gst_event_new_new_segment (bool update, double rate, Gst.Format format, long start, long stop, long position);
 
-        [DllImport ("libgstreamer-0.10.so.0")]
-        public static extern unsafe IntPtr gst_message_get_structure (IntPtr message);
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe public static extern GLib.Value gst_structure_get_value (IntPtr structure, IntPtr name);
 
-		[DllImport ("libgstreamer-0.10.so.0")]
-        public static extern unsafe IntPtr gst_event_new_eos();
-		
-	}
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe public static extern IntPtr gst_message_get_structure (IntPtr message);
 
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe public static extern IntPtr gst_event_new_eos ();
+        
+    }
+    
 }

@@ -27,48 +27,45 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
-
-using Mono.Addins;
-
-using Hyena;
 
 namespace Banshee.Streamrecorder.Gst
 {
-	
-	public class Parse
-	{
-		
-		private Parse()
-		{
-		}
 
-		[DllImport ("libgstreamer-0.10.so.0")]
-        private static extern unsafe IntPtr gst_parse_launch (IntPtr bin_description, out IntPtr gerror);
-        
-        public static unsafe Pipeline Launch(string pipeline_description) {
-			IntPtr native_bin_description = GLib.Marshaller.StringToPtrGStrdup (pipeline_description);
-			IntPtr error = IntPtr.Zero;
-			IntPtr raw_ret = gst_parse_launch(native_bin_description, out error);
-			GLib.Marshaller.Free (native_bin_description);
-			if (error != IntPtr.Zero) throw new GLib.GException (error);
-			return new Pipeline(raw_ret);
+    public class Parse
+    {
+
+        private Parse ()
+        {
         }
 
-        [DllImport ("libgstreamer-0.10.so.0")]
-        private static extern unsafe IntPtr gst_parse_bin_from_description (IntPtr bin_description, bool ghost_unlinked_pads, out IntPtr gerror);
-        
-        public static unsafe Bin BinFromDescription(string bin_description, bool ghost_unlinked_pads) {
-			IntPtr native_bin_description = GLib.Marshaller.StringToPtrGStrdup (bin_description);
-			IntPtr error = IntPtr.Zero;
-			IntPtr raw_ret = gst_parse_bin_from_description(native_bin_description, ghost_unlinked_pads, out error);
-			GLib.Marshaller.Free (native_bin_description);
-			if (error != IntPtr.Zero) throw new GLib.GException (error);
-			return new Bin(raw_ret);
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe private static extern IntPtr gst_parse_launch (IntPtr bin_description, out IntPtr gerror);
+
+        unsafe public static Pipeline Launch (string pipeline_description)
+        {
+            IntPtr native_bin_description = GLib.Marshaller.StringToPtrGStrdup (pipeline_description);
+            IntPtr error = IntPtr.Zero;
+            IntPtr raw_ret = gst_parse_launch (native_bin_description, out error);
+            GLib.Marshaller.Free (native_bin_description);
+            if (error != IntPtr.Zero)
+                throw new GLib.GException (error);
+            return new Pipeline (raw_ret);
         }
 
-	}
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe private static extern IntPtr gst_parse_bin_from_description (IntPtr bin_description, bool ghost_unlinked_pads, out IntPtr gerror);
+
+        unsafe public static Bin BinFromDescription (string bin_description, bool ghost_unlinked_pads)
+        {
+            IntPtr native_bin_description = GLib.Marshaller.StringToPtrGStrdup (bin_description);
+            IntPtr error = IntPtr.Zero;
+            IntPtr raw_ret = gst_parse_bin_from_description (native_bin_description, ghost_unlinked_pads, out error);
+            GLib.Marshaller.Free (native_bin_description);
+            if (error != IntPtr.Zero)
+                throw new GLib.GException (error);
+            return new Bin (raw_ret);
+        }
+        
+    }
 }

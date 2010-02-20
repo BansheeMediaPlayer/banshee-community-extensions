@@ -31,16 +31,10 @@ using System.IO;
 using System.Collections.Generic;
 using System.Threading;
 
-using Mono.Addins;
-
 using Banshee.Base;
 using Banshee.ServiceStack;
 using Banshee.Streaming;
 using Banshee.Collection.Database;
-
-using Hyena;
-
-using TagLib;
 
 namespace Banshee.Streamrecorder
 {
@@ -52,12 +46,12 @@ namespace Banshee.Streamrecorder
         public static List<string> current_list = null;
         public static List<string> previous_list = null;
 
-        public static void SetScanDirectory (string path) 
+        public static void SetScanDirectory (string path)
         {
             basepath = path;
         }
-        
-        public static void StartScanner()
+
+        public static void StartScanner ()
         {
             Hyena.Log.DebugFormat ("[RippedFileScanner] <StartScanner> Started. Dir: {0}", basepath);
             
@@ -71,37 +65,38 @@ namespace Banshee.Streamrecorder
             }
         }
 
-        public static void StopScanner () 
+        public static void StopScanner ()
         {
-             if (folder_scanner != null && folder_scanner.IsAlive) {
+            if (folder_scanner != null && folder_scanner.IsAlive) {
                 try {
                     folder_scanner.Abort ();
-                } catch {}
+                } catch {
+                }
             }
             
-            folder_scanner = null;         
+            folder_scanner = null;
         }
 
-        public static void ScannerThread () 
+        public static void ScannerThread ()
         {
             Hyena.Log.Debug ("[RippedFileScanner] <ScannerThread> Started");
-
+            
             while (!closing) {
                 Scan ();
                 Thread.Sleep (15 * 1000);
             }
-        
-            Hyena.Log.Debug("[RippedFileScanner] <ScannerThread> Stopped");   
+            
+            Hyena.Log.Debug ("[RippedFileScanner] <ScannerThread> Stopped");
         }
-        
+
         public static void Scan ()
         {
-           Hyena.Log.Debug("[RippedFileScanner] <Scan> Start");
-                
+            Hyena.Log.Debug ("[RippedFileScanner] <Scan> Start");
+            
             List<string> current_list = new List<string> ();
             GetFileNames (current_list, basepath);
             List<string> new_items = GetNewItems (previous_list, current_list);
-
+            
             if (new_items != null && previous_list != null) {
                 foreach (string item in new_items) {
                     DatabaseTrackInfo new_track = new DatabaseTrackInfo ();
@@ -109,8 +104,7 @@ namespace Banshee.Streamrecorder
                     if (new_track != null) {
                         StreamTagger.TrackInfoMerge (new_track, new SafeUri (item));
                         // I think here should be a check to database if track is unique
-                        Hyena.Log.DebugFormat ("[RippedFileScanner] <Scan> New track found! Artist: {0} Title: {1}",
-                            new_track.ArtistName, new_track.TrackTitle);
+                        Hyena.Log.DebugFormat ("[RippedFileScanner] <Scan> New track found! Artist: {0} Title: {1}", new_track.ArtistName, new_track.TrackTitle);
                         new_track.PrimarySource = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary;
                         new_track.Save ();
                     }
@@ -120,7 +114,7 @@ namespace Banshee.Streamrecorder
             previous_list = current_list;
             Hyena.Log.Debug ("[RippedFileScanner] <Scan> End");
         }
-        
+
         public static void GetFileNames (List<string> filenames, string path)
         {
             DirectoryInfo[] dirs = null;
@@ -129,11 +123,10 @@ namespace Banshee.Streamrecorder
             try {
                 dir_info = new DirectoryInfo (path);
                 dirs = dir_info.GetDirectories ();
-            }
-            catch {
+            } catch {
                 dirs = new DirectoryInfo[0];
             }
-                
+            
             // We don't want to import incomple-files.
             for (int i = 0; i < dirs.Length; i++) {
                 if (!dirs[i].Name.Equals ("incomplete")) {
@@ -148,11 +141,11 @@ namespace Banshee.Streamrecorder
                 for (int i = 0; i < files.Length; i++) {
                     filenames.Add (files[i].FullName);
                 }
+            } catch {
             }
-            catch {}
         }
-        
-        public static List<string> GetNewItems (List<string> previous, List<string> current) 
+
+        public static List<string> GetNewItems (List<string> previous, List<string> current)
         {
             List<string> new_items = new List<string> ();
             bool is_new;
@@ -164,10 +157,10 @@ namespace Banshee.Streamrecorder
             if (previous == null || current == null) {
                 return null;
             }
-
+            
             for (int i = 0; i < current.Count; i++) {
                 is_new = true;
-
+                
                 for (int j = 0; j < previous.Count; j++) {
                     if (current[i] == previous[j]) {
                         is_new = false;

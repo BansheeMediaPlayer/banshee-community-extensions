@@ -30,11 +30,8 @@
 
 using System;
 using System.IO;
-using System.Threading;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
-using Mono.Unix;
 using Mono.Addins;
 
 using Gtk;
@@ -63,7 +60,7 @@ namespace Banshee.Streamrecorder
         private TrackInfo track = null;
         private string active_encoder;
 
-        
+
         public StreamrecorderService ()
         {
             Hyena.Log.Debug ("[StreamrecorderService] <StreamrecorderService> START");
@@ -73,17 +70,17 @@ namespace Banshee.Streamrecorder
             is_importing_enabled = IsImportingEnabledEntry.Get ().Equals ("True") ? true : false;
             is_splitting_enabled = IsFileSplittingEnabledEntry.Get ().Equals ("True") ? true : false;
             active_encoder = ActiveEncoderEntry.Get ();
-
+            
             Hyena.Log.Debug ("[StreamrecorderService] <StreamrecorderService> END");
         }
-        
+
         void IExtensionService.Initialize ()
         {
             Hyena.Log.Debug ("[StreamrecorderService] <Initialize> START");
-
-            recorder = new Recorder();
-            active_encoder = recorder.SetActiveEncoder(active_encoder);
-
+            
+            recorder = new Recorder ();
+            active_encoder = recorder.SetActiveEncoder (active_encoder);
+            
             ServiceManager.PlaybackController.TrackStarted += delegate {
                 if (recording) {
                     StartRecording ();
@@ -95,79 +92,65 @@ namespace Banshee.Streamrecorder
                     StopRecording ();
                 }
             };
-        
-            ServiceManager.PlayerEngine.ConnectEvent ( OnEndOfStream , PlayerEvent.EndOfStream) ;
-            ServiceManager.PlayerEngine.ConnectEvent ( OnStateChange , PlayerEvent.StateChange) ;
-            ServiceManager.PlayerEngine.ConnectEvent ( OnMetadata, PlayerEvent.TrackInfoUpdated );
-        
+            
+            ServiceManager.PlayerEngine.ConnectEvent (OnEndOfStream, PlayerEvent.EndOfStream);
+            ServiceManager.PlayerEngine.ConnectEvent (OnStateChange, PlayerEvent.StateChange);
+            ServiceManager.PlayerEngine.ConnectEvent (OnMetadata, PlayerEvent.TrackInfoUpdated);
+            
             action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
             actions = new ActionGroup ("Streamrecorder");
             
-            actions.Add (new ActionEntry [] {
-                new ActionEntry ("StreamrecorderAction", null,
-                    AddinManager.CurrentLocalizer.GetString ("_Streamrecorder"), null,
-                    null, null),
-
-                new ActionEntry ("StreamrecorderConfigureAction", Stock.Properties,
-                    AddinManager.CurrentLocalizer.GetString ("_Configure"), null,
-                    AddinManager.CurrentLocalizer.GetString ("Configure the Streamrecorder plugin"), OnConfigure)
-            });
-                
-            actions.Add (new ToggleActionEntry [] { 
-                new ToggleActionEntry ("StreamrecorderEnableAction", Stock.MediaRecord,
-                    AddinManager.CurrentLocalizer.GetString ("_Activate streamrecorder"), null,
-                    AddinManager.CurrentLocalizer.GetString ("Activate streamrecorder process"), OnActivateStreamrecorder, recording)
-            });
-
+            
+            actions.Add (new ActionEntry[] { new ActionEntry ("StreamrecorderAction", null, AddinManager.CurrentLocalizer.GetString ("_Streamrecorder"), null, null, null), new ActionEntry ("StreamrecorderConfigureAction", Stock.Properties, AddinManager.CurrentLocalizer.GetString ("_Configure"), null, AddinManager.CurrentLocalizer.GetString ("Configure the Streamrecorder plugin"), OnConfigure) });
+            
+            actions.Add (new ToggleActionEntry[] { new ToggleActionEntry ("StreamrecorderEnableAction", Stock.MediaRecord, AddinManager.CurrentLocalizer.GetString ("_Activate streamrecorder"), null, AddinManager.CurrentLocalizer.GetString ("Activate streamrecorder process"), OnActivateStreamrecorder, recording) });
+            
             action_service.UIManager.InsertActionGroup (actions, 0);
             ui_manager_id = action_service.UIManager.AddUiFromResource ("StreamrecorderMenu.xml");
-
+            
             Hyena.Log.Debug ("[StreamrecorderService] <Initialize> END");
         }
 
-        public void OnActivateStreamrecorder (object o, EventArgs ea) 
+        public void OnActivateStreamrecorder (object o, EventArgs ea)
         {
             Hyena.Log.Debug ("[StreamrecorderService] <OnActivateStreamrecorder> START");
-                    
-            if (!recording) { 
+            
+            if (!recording) {
                 StartRecording ();
+            } else {
+                StopRecording ();
             }
-            else {
-                StopRecording ();        
-            }
-
+            
             recording = !recording;
             IsRecordingEnabledEntry.Set (recording.ToString ());
-
+            
             Hyena.Log.Debug ("[StreamrecorderService] <OnActivateStreamrecorder> END");
         }
-        
+
         public void OnConfigure (object o, EventArgs ea)
         {
             new StreamrecorderConfigDialog (this, output_directory, active_encoder, is_importing_enabled, is_splitting_enabled);
         }
-            
+
         public void Dispose ()
         {
             Log.Debug ("Disposing Streamrecorder plugin");
-
+            
             StopRecording ();
             action_service.UIManager.RemoveUi (ui_manager_id);
             action_service.UIManager.RemoveActionGroup (actions);
-            ServiceManager.PlayerEngine.DisconnectEvent ( OnEndOfStream ) ;
-            ServiceManager.PlayerEngine.DisconnectEvent ( OnStateChange ) ;
+            ServiceManager.PlayerEngine.DisconnectEvent (OnEndOfStream);
+            ServiceManager.PlayerEngine.DisconnectEvent (OnStateChange);
             actions = null;
         }
-        
+
         string IService.ServiceName {
             get { return "StreamrecorderService"; }
         }
 
-        private bool IsCurrentTrackRecordable () 
+        private bool IsCurrentTrackRecordable ()
         {
-            if (Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack != null
-                && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsLive 
-                && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsPlaying)
+            if (Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack != null && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsLive && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsPlaying)
                 return true;
             
             return false;
@@ -175,11 +158,10 @@ namespace Banshee.Streamrecorder
 
         private void OnMetadata (PlayerEventArgs args)
         {
-             if (recording)
-             {
+            if (recording) {
                 TrackInfo track = ServiceManager.PlayerEngine.CurrentTrack;
-                recorder.AddStreamTags(track,is_splitting_enabled);
-             }
+                recorder.AddStreamTags (track, is_splitting_enabled);
+            }
         }
 
         private void OnEndOfStream (PlayerEventArgs args)
@@ -193,166 +175,145 @@ namespace Banshee.Streamrecorder
         {
             if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Idle && recording) {
                 StopRecording ();
-            }        
+            }
         }
 
-        private void StartRecording () 
+        private void StartRecording ()
         {
-
-            if (recording ) {
+            
+            if (recording) {
                 StopRecording ();
             }
             
             if (!IsCurrentTrackRecordable ()) {
-                 return;
+                return;
             }
             
             track = ServiceManager.PlaybackController.CurrentTrack;
-
+            
             if (InitStreamrecorderProcess (track)) {
                 recorder.StartRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
-                recorder.AddStreamTags(track,false);
+                recorder.AddStreamTags (track, false);
                 
                 if (is_importing_enabled)
                     StartFolderScanner ();
             }
         }
 
-        private void StopRecording () 
+        private void StopRecording ()
         {
             recorder.StopRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
-
+            
             StopFolderScanner ();
         }
-     
-        public void StartFolderScanner () 
+
+        public void StartFolderScanner ()
         {
             RippedFileScanner.StartScanner ();
         }
 
-        public void StopFolderScanner () 
+        public void StopFolderScanner ()
         {
-           RippedFileScanner.StopScanner ();
+            RippedFileScanner.StopScanner ();
         }
-                
-        private bool InitStreamrecorderProcess (TrackInfo track_in) 
+
+        private bool InitStreamrecorderProcess (TrackInfo track_in)
         {
             Hyena.Log.DebugFormat ("[StreamrecorderService] <InitStreamrecorderProcess> START dir: '{0}'", output_directory);
             
-            active_encoder = recorder.SetActiveEncoder(active_encoder);
+            active_encoder = recorder.SetActiveEncoder (active_encoder);
             
             if (String.IsNullOrEmpty (output_directory)) {
-                output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory +
-                    Path.DirectorySeparatorChar + "ripped";
+                output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory + Path.DirectorySeparatorChar + "ripped";
             }
-                    
+            
             if (track_in == null) {
                 Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> END. Recording not ready");
                 return false;
             }
-                  
+            
             if (track_in.Uri == null || track_in.Uri.IsLocalPath) {
                 Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> END. Not recording local files");
                 return false;
             }
-
+            
             DateTime dt = DateTime.Now;
-            string datestr = String.Format("{0:d_M_yyyy_HH_mm_ss}", dt);
+            string datestr = String.Format ("{0:d_M_yyyy_HH_mm_ss}", dt);
             string filename;
             RadioTrackInfo radio_track = track as RadioTrackInfo;
-
+            
             //split only if Artist AND Title are present, i.e. stream sends complete metadata
             //do not set extension, will be done by recorder!
-            if (is_splitting_enabled && track.ArtistName != null && track.ArtistName.Length > 0)
-            {
-                filename = recorder.SetMetadataFilename(track.TrackTitle, track.ArtistName);
+            if (is_splitting_enabled && track.ArtistName != null && track.ArtistName.Length > 0) {
+                filename = recorder.SetMetadataFilename (track.TrackTitle, track.ArtistName);
             } else {
                 filename = (radio_track.ParentTrack == null ? track.TrackTitle : radio_track.ParentTrack.TrackTitle) + "_" + datestr;
             }
-
-            recorder.SetOutputParameters (output_directory,filename);
-
+            
+            recorder.SetOutputParameters (output_directory, filename);
+            
             RippedFileScanner.SetScanDirectory (output_directory);
-                    
+            
             Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> END. Recording ready");
             return true;
         }
-                
-        public string[] GetEncoders()
+
+        public string[] GetEncoders ()
         {
             List<Encoder> encoders = recorder.Encoders;
             string[] encoder_names = new string[encoders.Count];
-            for(int i = 0; i < encoders.Count ; i++)
-            {
-                encoder_names[i] = encoders[i].ToString();
+            for (int i = 0; i < encoders.Count; i++) {
+                encoder_names[i] = encoders[i].ToString ();
             }
             return encoder_names;
         }
-                
-        public string OutputDirectory 
-        {
+
+        public string OutputDirectory {
             get { return output_directory; }
-            set 
-            {
+            set {
                 StopRecording ();
                 StopFolderScanner ();
-                    
+                
                 this.output_directory = value;
-               
+                
                 Hyena.Log.DebugFormat ("[StreamrecorderService] <OutputDirectorySetter> ", value);
-
-                if (String.IsNullOrEmpty (this.output_directory)) 
-                {
-                    this.output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory +
-                        Path.DirectorySeparatorChar + "ripped";
+                
+                if (String.IsNullOrEmpty (this.output_directory)) {
+                    this.output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory + Path.DirectorySeparatorChar + "ripped";
                 }
                 RippedFileScanner.SetScanDirectory (this.output_directory);
-
+                
                 if (is_importing_enabled)
                     StartFolderScanner ();
-
+                
                 if (recording)
                     StartRecording ();
             }
         }
-         
-        public string ActiveEncoder
-        {
+
+        public string ActiveEncoder {
             get { return active_encoder; }
             set { active_encoder = value; }
         }
-                
-        public bool IsImportingEnabled
-        {
+
+        public bool IsImportingEnabled {
             get { return is_importing_enabled; }
             set { is_importing_enabled = value; }
         }
-                
-        public bool IsFileSplittingEnabled
-        {
+
+        public bool IsFileSplittingEnabled {
             get { return is_splitting_enabled; }
             set { is_splitting_enabled = value; }
         }
-                
-        public static readonly SchemaEntry<string> IsRecordingEnabledEntry = new SchemaEntry<string> (
-            "plugins.streamrecorder", "is_recording_enabled", "", "Is ripping enabled", "Is ripping enabled"
-        );
-                
-        public static readonly SchemaEntry<string> OutputDirectoryEntry = new SchemaEntry<string> (
-            "plugins.streamrecorder", "output_directory", "", "Output directory for ripped files", 
-            "Output directory for ripped files"
-        );
-                
-        public static readonly SchemaEntry<string> IsImportingEnabledEntry = new SchemaEntry<string> (
-            "plugins.streamrecorder", "is_importing_enabled", "", "Is importing enabled", "Is importing enabled"
-        );
-                
-        public static readonly SchemaEntry<string> IsFileSplittingEnabledEntry = new SchemaEntry<string> (
-            "plugins.streamrecorder", "is_splitting_enabled", "", "Is splitting enabled", "Is splitting enabled"
-        );
 
-        public static readonly SchemaEntry<string> ActiveEncoderEntry = new SchemaEntry<string> (
-            "plugins.streamrecorder", "active_encoder", "", "Active Encoder", "Active Encoder"
-        );
+        public static readonly SchemaEntry<string> IsRecordingEnabledEntry = new SchemaEntry<string> ("plugins.streamrecorder", "is_recording_enabled", "", "Is ripping enabled", "Is ripping enabled");
+
+        public static readonly SchemaEntry<string> OutputDirectoryEntry = new SchemaEntry<string> ("plugins.streamrecorder", "output_directory", "", "Output directory for ripped files", "Output directory for ripped files");
+
+        public static readonly SchemaEntry<string> IsImportingEnabledEntry = new SchemaEntry<string> ("plugins.streamrecorder", "is_importing_enabled", "", "Is importing enabled", "Is importing enabled");
+
+        public static readonly SchemaEntry<string> IsFileSplittingEnabledEntry = new SchemaEntry<string> ("plugins.streamrecorder", "is_splitting_enabled", "", "Is splitting enabled", "Is splitting enabled");
+
+        public static readonly SchemaEntry<string> ActiveEncoderEntry = new SchemaEntry<string> ("plugins.streamrecorder", "active_encoder", "", "Active Encoder", "Active Encoder");
     }
 }

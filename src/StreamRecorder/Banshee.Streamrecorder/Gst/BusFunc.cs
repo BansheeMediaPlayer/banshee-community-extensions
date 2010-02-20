@@ -27,33 +27,24 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
-
-using System.Text.RegularExpressions;
-
-using Mono.Addins;
-
-using Banshee.ServiceStack;
-using Banshee.Collection;
-
-using Hyena;
 
 namespace Banshee.Streamrecorder.Gst
 {
-    
-    public delegate bool BusFunc(IntPtr bus, IntPtr message, IntPtr user_data);
 
-    [UnmanagedFunctionPointer (CallingConvention.Cdecl)]
-    internal delegate bool BusFuncNative(IntPtr bus, IntPtr message, IntPtr user_data);
+    public delegate bool BusFunc (IntPtr bus, IntPtr message, IntPtr user_data);
 
-    internal class BusFuncInvoker {
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal delegate bool BusFuncNative (IntPtr bus, IntPtr message, IntPtr user_data);
+
+    internal class BusFuncInvoker
+    {
 
         BusFuncNative native_cb;
 
-        ~BusFuncInvoker () {}
+        ~BusFuncInvoker ()
+        {
+        }
 
         internal BusFuncInvoker (BusFuncNative native_cb)
         {
@@ -61,19 +52,18 @@ namespace Banshee.Streamrecorder.Gst
         }
 
         internal Gst.BusFunc Handler {
-            get {
-                return new Gst.BusFunc(InvokeNative);
-            }
+            get { return new Gst.BusFunc (InvokeNative); }
         }
 
         bool InvokeNative (IntPtr bus, IntPtr message, IntPtr user_data)
         {
-            bool result = native_cb (bus, message , user_data);
+            bool result = native_cb (bus, message, user_data);
             return result;
         }
     }
 
-    internal class BusFuncWrapper {
+    internal class BusFuncWrapper
+    {
 
         public bool NativeCallback (IntPtr bus, IntPtr message, IntPtr user_data)
         {
@@ -111,11 +101,11 @@ namespace Banshee.Streamrecorder.Gst
         {
             if (native == null)
                 return null;
-            BusFuncWrapper wrapper = (BusFuncWrapper) native.Target;
+            BusFuncWrapper wrapper = (BusFuncWrapper)native.Target;
             if (wrapper == null)
                 return null;
             return wrapper.managed;
         }
     }
-
+    
 }

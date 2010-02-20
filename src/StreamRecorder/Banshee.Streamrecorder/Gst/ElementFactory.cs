@@ -27,55 +27,50 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
-
-using Mono.Addins;
-
-using Hyena;
 
 namespace Banshee.Streamrecorder.Gst
 {
-	
-	
-	public class ElementFactory : GstObject
-	{
-		
-		public ElementFactory(IntPtr elementfactory) : base (elementfactory) {}
 
-        [DllImport ("libgstreamer-0.10.so.0")]
-        private static extern unsafe IntPtr gst_element_factory_make (IntPtr factoryname, IntPtr name);
 
-		public static Element Make(string factoryname)
-		{
-			IntPtr native_factoryname = GLib.Marshaller.StringToPtrGStrdup (factoryname);
-			IntPtr raw_ret = gst_element_factory_make(native_factoryname,IntPtr.Zero);
-			GLib.Marshaller.Free (native_factoryname);
-			return new Element(raw_ret);
-		}
-		
-		public static Element Make(string factoryname, string name)
-		{
-			IntPtr native_factoryname = GLib.Marshaller.StringToPtrGStrdup (factoryname);
-			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-			IntPtr raw_ret = gst_element_factory_make(native_factoryname,native_name);
-			GLib.Marshaller.Free (native_factoryname);
-			GLib.Marshaller.Free (native_name);
-			return new Element(raw_ret);
-		}
-		
-        [DllImport ("libgstreamer-0.10.so.0")]
-        private static extern unsafe IntPtr gst_element_factory_find (IntPtr name);
-		
-		public static ElementFactory Find(string name)
-		{
-			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-			ElementFactory element_factory = new ElementFactory(gst_element_factory_find (native_name));
-			GLib.Marshaller.Free (native_name);
-			return element_factory;
-		}
+    public class ElementFactory : GstObject
+    {
 
-	}
+        public ElementFactory (IntPtr elementfactory) : base(elementfactory)
+        {
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe private static extern IntPtr gst_element_factory_make (IntPtr factoryname, IntPtr name);
+
+        public static Element Make (string factoryname)
+        {
+            IntPtr native_factoryname = GLib.Marshaller.StringToPtrGStrdup (factoryname);
+            IntPtr raw_ret = gst_element_factory_make (native_factoryname, IntPtr.Zero);
+            GLib.Marshaller.Free (native_factoryname);
+            return new Element (raw_ret);
+        }
+
+        public static Element Make (string factoryname, string name)
+        {
+            IntPtr native_factoryname = GLib.Marshaller.StringToPtrGStrdup (factoryname);
+            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+            IntPtr raw_ret = gst_element_factory_make (native_factoryname, native_name);
+            GLib.Marshaller.Free (native_factoryname);
+            GLib.Marshaller.Free (native_name);
+            return new Element (raw_ret);
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe private static extern IntPtr gst_element_factory_find (IntPtr name);
+
+        public static ElementFactory Find (string name)
+        {
+            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+            ElementFactory element_factory = new ElementFactory (gst_element_factory_find (native_name));
+            GLib.Marshaller.Free (native_name);
+            return element_factory;
+        }
+        
+    }
 }

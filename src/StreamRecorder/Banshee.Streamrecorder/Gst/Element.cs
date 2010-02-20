@@ -27,81 +27,78 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
 
-using Mono.Addins;
-
-using Hyena;
 namespace Banshee.Streamrecorder.Gst
 {
-	
-	public class Element : GstObject
-	{
-		
-		public Element (IntPtr element) : base (element) {}
-		
-        [DllImport ("libgstreamer-0.10.so.0")]
-		static extern IntPtr gst_element_get_static_pad (IntPtr element, IntPtr name);
-		
-		public Pad GetStaticPad (string name)
-		{
-			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-			Pad ret = new Pad(gst_element_get_static_pad(raw, native_name));
-			GLib.Marshaller.Free (native_name);
-			return ret;
-		}
-		
-        [DllImport ("libgstreamer-0.10.so.0")]
-		static extern bool gst_element_add_pad (IntPtr element, IntPtr pad);
-		
-		public bool AddPad (Pad pad)
-		{
-			return gst_element_add_pad(raw, pad.ToIntPtr ());
-		}
-		
-		[DllImport("libgstreamer-0.10.so.0", CallingConvention = CallingConvention.Cdecl)]
-		static extern bool gst_element_link(IntPtr src, IntPtr dest);
 
-		public bool Link(Element dest) {
-			bool ret = gst_element_link(raw, dest.ToIntPtr ());
-			return ret;
-		}
-		
-		public void LinkMany(Element[] elements)
-		{
-			if (elements.Length < 1) return;
-			this.Link(elements[0]);
-			for (int i = 0; i < elements.Length - 1; i++)
-			{
-				elements[i].Link(elements[i+1]);
-			}
-		}
-		
-        [DllImport ("libgstreamer-0.10.so.0")]
-		static extern int gst_element_set_state(IntPtr element, int state);
-		
-		public StateChangeReturn SetState(State state)
-		{
-			int raw_ret = gst_element_set_state(raw, (int) state);
-			StateChangeReturn ret = (StateChangeReturn) raw_ret;
-			return ret;
-		}
-		
-        [DllImport ("libgstreamer-0.10.so.0")]
-		static extern bool gst_element_send_event(IntPtr element, IntPtr gstevent);
-		
-		public bool SendEvent(IntPtr gstevent)
-		{
-			return gst_element_send_event(raw,gstevent);
-		}
-		
-		public FileSink ToFileSink()
-		{
-			return new FileSink(raw);
-		}
+    public class Element : GstObject
+    {
+
+        public Element (IntPtr element) : base(element)
+        {
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        static extern IntPtr gst_element_get_static_pad (IntPtr element, IntPtr name);
+
+        public Pad GetStaticPad (string name)
+        {
+            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+            Pad ret = new Pad (gst_element_get_static_pad (raw, native_name));
+            GLib.Marshaller.Free (native_name);
+            return ret;
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        static extern bool gst_element_add_pad (IntPtr element, IntPtr pad);
+
+        public bool AddPad (Pad pad)
+        {
+            return gst_element_add_pad (raw, pad.ToIntPtr ());
+        }
+
+        [DllImport("libgstreamer-0.10.so.0", CallingConvention = CallingConvention.Cdecl)]
+        static extern bool gst_element_link (IntPtr src, IntPtr dest);
+
+        public bool Link (Element dest)
+        {
+            bool ret = gst_element_link (raw, dest.ToIntPtr ());
+            return ret;
+        }
+
+        public void LinkMany (Element[] elements)
+        {
+            if (elements.Length < 1)
+                return;
+            this.Link (elements[0]);
+            for (int i = 0; i < elements.Length - 1; i++) {
+                elements[i].Link (elements[i + 1]);
+            }
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        static extern int gst_element_set_state (IntPtr element, int state);
+
+        public StateChangeReturn SetState (State state)
+        {
+            int raw_ret = gst_element_set_state (raw, (int)state);
+            StateChangeReturn ret = (StateChangeReturn)raw_ret;
+            return ret;
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        static extern bool gst_element_send_event (IntPtr element, IntPtr gstevent);
+
+        public bool SendEvent (IntPtr gstevent)
+        {
+            return gst_element_send_event (raw, gstevent);
+        }
+
+        public FileSink ToFileSink ()
+        {
+            return new FileSink (raw);
+        }
         
-	}
+    }
 }

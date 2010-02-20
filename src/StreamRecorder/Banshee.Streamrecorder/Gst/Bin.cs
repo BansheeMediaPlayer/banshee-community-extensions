@@ -27,70 +27,66 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
-
-using Mono.Addins;
-
-using Hyena;
 
 namespace Banshee.Streamrecorder.Gst
 {
     public class Bin : Element
     {
 
-        [DllImport ("libgstreamer-0.10.so.0")]
-		private static extern IntPtr gst_bin_new (IntPtr name);
+        [DllImport("libgstreamer-0.10.so.0")]
+        private static extern IntPtr gst_bin_new (IntPtr name);
 
-		public Bin () : base (gst_bin_new (IntPtr.Zero)) {}
+        public Bin () : base(gst_bin_new (IntPtr.Zero))
+        {
+        }
 
-		public Bin (IntPtr bin) : base (bin) {}
-		
-        [DllImport ("libgstreamer-0.10.so.0")]
-		private static extern IntPtr gst_bin_get_by_interface (IntPtr bin, GLib.GType iface);
+        public Bin (IntPtr bin) : base(bin)
+        {
+        }
 
-		public IntPtr GetByInterface(GLib.GType iface)
-		{
-			return gst_bin_get_by_interface(raw, iface);
-		}
+        [DllImport("libgstreamer-0.10.so.0")]
+        private static extern IntPtr gst_bin_get_by_interface (IntPtr bin, GLib.GType iface);
 
-        [DllImport ("libgstreamer-0.10.so.0")]
-		private static extern IntPtr gst_bin_get_by_name (IntPtr bin, IntPtr name);
-		
-		public Element GetByName (string name)
-		{
-			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-			IntPtr raw_ret = gst_bin_get_by_name(raw, native_name);
-			GLib.Marshaller.Free (native_name);
-			return new Element(raw_ret);
-		}
+        public IntPtr GetByInterface (GLib.GType iface)
+        {
+            return gst_bin_get_by_interface (raw, iface);
+        }
 
-        [DllImport ("libgstreamer-0.10.so.0")]
-		static extern bool gst_bin_add (IntPtr bin, IntPtr element);
-		
-		public bool Add (Element element)
-		{
-			return gst_bin_add(raw, element.ToIntPtr ());
-		}
-		
-		public void AddMany(Element[] elements)
-		{
-			foreach (Element element in elements)
-			{
-				Add(element);
-			}
-		}
+        [DllImport("libgstreamer-0.10.so.0")]
+        private static extern IntPtr gst_bin_get_by_name (IntPtr bin, IntPtr name);
 
-        [DllImport ("libgstreamer-0.10.so.0")]
-		static extern bool gst_bin_remove (IntPtr bin, IntPtr element);
-		
-		public bool Remove (Element element)
-		{
-			return gst_bin_remove(raw, element.ToIntPtr ());
-		}
-		
+        public Element GetByName (string name)
+        {
+            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+            IntPtr raw_ret = gst_bin_get_by_name (raw, native_name);
+            GLib.Marshaller.Free (native_name);
+            return new Element (raw_ret);
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        static extern bool gst_bin_add (IntPtr bin, IntPtr element);
+
+        public bool Add (Element element)
+        {
+            return gst_bin_add (raw, element.ToIntPtr ());
+        }
+
+        public void AddMany (Element[] elements)
+        {
+            foreach (Element element in elements) {
+                Add (element);
+            }
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        static extern bool gst_bin_remove (IntPtr bin, IntPtr element);
+
+        public bool Remove (Element element)
+        {
+            return gst_bin_remove (raw, element.ToIntPtr ());
+        }
+        
     }
-
+    
 }

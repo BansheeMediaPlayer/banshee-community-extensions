@@ -27,43 +27,32 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
-
-using System.Text.RegularExpressions;
-
-using Mono.Addins;
-
-using Banshee.ServiceStack;
-using Banshee.Collection;
-
-using Hyena;
 
 namespace Banshee.Streamrecorder.Gst
 {
-    
-    public delegate void PadBlockCallback(IntPtr pad, bool blocked, IntPtr user_data);
-    
-    [UnmanagedFunctionPointer (CallingConvention.Cdecl)]
-    internal delegate void PadBlockCallbackNative(IntPtr pad, bool blocked, IntPtr user_data);
 
-    internal class PadBlockCallbackInvoker {
+    public delegate void PadBlockCallback (IntPtr pad, bool blocked, IntPtr user_data);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal delegate void PadBlockCallbackNative (IntPtr pad, bool blocked, IntPtr user_data);
+
+    internal class PadBlockCallbackInvoker
+    {
 
         PadBlockCallbackNative native_cb;
 
-        ~PadBlockCallbackInvoker () {}
+        ~PadBlockCallbackInvoker ()
+        {
+        }
 
-        internal PadBlockCallbackInvoker (PadBlockCallbackNative native_cb) 
+        internal PadBlockCallbackInvoker (PadBlockCallbackNative native_cb)
         {
             this.native_cb = native_cb;
         }
 
         internal PadBlockCallback Handler {
-            get {
-                return new PadBlockCallback(InvokeNative);
-            }
+            get { return new PadBlockCallback (InvokeNative); }
         }
 
         void InvokeNative (IntPtr pad, bool blocked, IntPtr user_data)
@@ -72,7 +61,8 @@ namespace Banshee.Streamrecorder.Gst
         }
     }
 
-    internal class PadBlockCallbackWrapper {
+    internal class PadBlockCallbackWrapper
+    {
 
         public void NativeCallback (IntPtr pad, bool blocked, IntPtr user_data)
         {
@@ -108,11 +98,11 @@ namespace Banshee.Streamrecorder.Gst
         {
             if (native == null)
                 return null;
-            PadBlockCallbackWrapper wrapper = (PadBlockCallbackWrapper) native.Target;
+            PadBlockCallbackWrapper wrapper = (PadBlockCallbackWrapper)native.Target;
             if (wrapper == null)
                 return null;
             return wrapper.managed;
         }
-
+        
     }
 }
