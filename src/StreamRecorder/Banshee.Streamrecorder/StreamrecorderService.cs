@@ -101,9 +101,16 @@ namespace Banshee.Streamrecorder
             actions = new ActionGroup ("Streamrecorder");
             
             
-            actions.Add (new ActionEntry[] { new ActionEntry ("StreamrecorderAction", null, AddinManager.CurrentLocalizer.GetString ("_Streamrecorder"), null, null, null), new ActionEntry ("StreamrecorderConfigureAction", Stock.Properties, AddinManager.CurrentLocalizer.GetString ("_Configure"), null, AddinManager.CurrentLocalizer.GetString ("Configure the Streamrecorder plugin"), OnConfigure) });
+            actions.Add (new ActionEntry[] { new ActionEntry ("StreamrecorderAction", null,
+                             AddinManager.CurrentLocalizer.GetString ("_Streamrecorder"), null, null, null),
+                             new ActionEntry ("StreamrecorderConfigureAction", Stock.Properties,
+                                 AddinManager.CurrentLocalizer.GetString ("_Configure"), null,
+                                 AddinManager.CurrentLocalizer.GetString ("Configure the Streamrecorder plugin"), OnConfigure) });
             
-            actions.Add (new ToggleActionEntry[] { new ToggleActionEntry ("StreamrecorderEnableAction", Stock.MediaRecord, AddinManager.CurrentLocalizer.GetString ("_Activate streamrecorder"), null, AddinManager.CurrentLocalizer.GetString ("Activate streamrecorder process"), OnActivateStreamrecorder, recording) });
+            actions.Add (new ToggleActionEntry[] { new ToggleActionEntry ("StreamrecorderEnableAction", Stock.MediaRecord,
+                             AddinManager.CurrentLocalizer.GetString ("_Activate streamrecorder"), null,
+                             AddinManager.CurrentLocalizer.GetString ("Activate streamrecorder process"),
+                             OnActivateStreamrecorder, recording) });
             
             action_service.UIManager.InsertActionGroup (actions, 0);
             ui_manager_id = action_service.UIManager.AddUiFromResource ("StreamrecorderMenu.xml");
@@ -150,7 +157,9 @@ namespace Banshee.Streamrecorder
 
         private bool IsCurrentTrackRecordable ()
         {
-            if (Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack != null && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsLive && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsPlaying)
+            if (Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack != null
+                && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsLive
+                && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsPlaying)
                 return true;
             
             return false;
@@ -224,7 +233,8 @@ namespace Banshee.Streamrecorder
             active_encoder = recorder.SetActiveEncoder (active_encoder);
             
             if (String.IsNullOrEmpty (output_directory)) {
-                output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory + Path.DirectorySeparatorChar + "ripped";
+                output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory
+                                 + Path.DirectorySeparatorChar + "ripped";
             }
             
             if (track_in == null) {
@@ -279,7 +289,8 @@ namespace Banshee.Streamrecorder
                 Hyena.Log.DebugFormat ("[StreamrecorderService] <OutputDirectorySetter> ", value);
                 
                 if (String.IsNullOrEmpty (this.output_directory)) {
-                    this.output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory + Path.DirectorySeparatorChar + "ripped";
+                    this.output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory
+                                          + Path.DirectorySeparatorChar + "ripped";
                 }
                 RippedFileScanner.SetScanDirectory (this.output_directory);
                 
@@ -306,14 +317,19 @@ namespace Banshee.Streamrecorder
             set { is_splitting_enabled = value; }
         }
 
-        public static readonly SchemaEntry<string> IsRecordingEnabledEntry = new SchemaEntry<string> ("plugins.streamrecorder", "is_recording_enabled", "", "Is ripping enabled", "Is ripping enabled");
+        public static readonly SchemaEntry<string> IsRecordingEnabledEntry = new SchemaEntry<string> (
+               "plugins.streamrecorder", "is_recording_enabled", "", "Is ripping enabled", "Is ripping enabled");
 
-        public static readonly SchemaEntry<string> OutputDirectoryEntry = new SchemaEntry<string> ("plugins.streamrecorder", "output_directory", "", "Output directory for ripped files", "Output directory for ripped files");
+        public static readonly SchemaEntry<string> OutputDirectoryEntry = new SchemaEntry<string> (
+               "plugins.streamrecorder", "output_directory", "", "Output directory for ripped files", "Output directory for ripped files");
 
-        public static readonly SchemaEntry<string> IsImportingEnabledEntry = new SchemaEntry<string> ("plugins.streamrecorder", "is_importing_enabled", "", "Is importing enabled", "Is importing enabled");
+        public static readonly SchemaEntry<string> IsImportingEnabledEntry = new SchemaEntry<string> (
+               "plugins.streamrecorder", "is_importing_enabled", "", "Is importing enabled", "Is importing enabled");
 
-        public static readonly SchemaEntry<string> IsFileSplittingEnabledEntry = new SchemaEntry<string> ("plugins.streamrecorder", "is_splitting_enabled", "", "Is splitting enabled", "Is splitting enabled");
+        public static readonly SchemaEntry<string> IsFileSplittingEnabledEntry = new SchemaEntry<string> (
+               "plugins.streamrecorder", "is_splitting_enabled", "", "Is splitting enabled", "Is splitting enabled");
 
-        public static readonly SchemaEntry<string> ActiveEncoderEntry = new SchemaEntry<string> ("plugins.streamrecorder", "active_encoder", "", "Active Encoder", "Active Encoder");
+        public static readonly SchemaEntry<string> ActiveEncoderEntry = new SchemaEntry<string> (
+               "plugins.streamrecorder", "active_encoder", "", "Active Encoder", "Active Encoder");
     }
 }
