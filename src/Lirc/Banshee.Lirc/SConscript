@@ -15,11 +15,11 @@ else:
 
 env = Environment(TOOLS=['mcs'])
 
-lirc_glue = SharedLibrary('lircglue', 'lirc-glue.c')
+lirc_glue = SharedLibrary('lircglue', '#../lirc-glue/lirc-glue.c')
 
 sources = ['Banshee.Lirc.cs', 'LircClient.cs', 'ConfigDialog.cs', '#gtk-gui/Banshee.Lirc.ConfigDialog.cs', '#gtk-gui/generated.cs']
 sources += ['ActionMapper.cs', 'IController.cs', 'BansheeController.cs', 'MockController.cs']
-lirc_sharp = env.CLILibrary('Banshee.Lirc.dll', sources, CSCLIBFLAGS=['-res:src/Banshee.Lirc.addin.xml', '-res:src/Ui.xml','-unsafe','-pkg:gtk-sharp-2.0'], CILLIBS=['Hyena', 'Banshee.Services', 'Banshee.ThickClient', 'Banshee.Core', 'Mono.Posix'], CILLIBPATH=['/usr/lib/banshee-1'])
+lirc_sharp = env.CLILibrary('Banshee.Lirc.dll', sources, CSCLIBFLAGS=['-res:Banshee.Lirc.addin.xml', '-res:Resources/Ui.xml','-unsafe','-pkg:gtk-sharp-2.0'], CILLIBS=['Hyena', 'Banshee.Services', 'Banshee.ThickClient', 'Banshee.Core', 'Mono.Posix'], CILLIBPATH=['/usr/lib/banshee-1'])
 
 def patch_dll_config(env, target, source):
   t = open(str(target[0]), 'w')

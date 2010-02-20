@@ -7,4 +7,4 @@ env = conf.Finish()
 
 env.Clean('#', 'config.log')
 
-SConscript('src/SConscript', variant_dir='bin/Debug', duplicate=0)
+SConscript('SConscript', variant_dir='bin/Debug', duplicate=0)
