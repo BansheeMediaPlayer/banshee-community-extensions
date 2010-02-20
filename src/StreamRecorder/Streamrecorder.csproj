@@ -72,6 +72,9 @@
     <EmbeddedResource Include="Resources\StreamrecorderMenu.xml">
       <LogicalName>StreamrecorderMenu.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\StreamrecorderButton.xml">
+      <LogicalName>StreamrecorderButton.xml</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.Streamrecorder\StreamrecorderService.cs" />

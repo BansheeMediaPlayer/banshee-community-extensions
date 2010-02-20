@@ -44,6 +44,7 @@ using Banshee.MediaEngine;
 using Banshee.Streaming;
 
 using Hyena;
+using Banshee.Sources;
 
 namespace Banshee.Streamrecorder
 {
@@ -52,7 +53,8 @@ namespace Banshee.Streamrecorder
         private Recorder recorder;
         private ActionGroup actions;
         private InterfaceActionService action_service;
-        private uint ui_manager_id;
+        private uint ui_menu_id;
+        private uint ui_button_id;
         private bool recording = false;
         private string output_directory;
         private bool is_importing_enabled = true;
@@ -70,7 +72,8 @@ namespace Banshee.Streamrecorder
             is_importing_enabled = IsImportingEnabledEntry.Get ().Equals ("True") ? true : false;
             is_splitting_enabled = IsFileSplittingEnabledEntry.Get ().Equals ("True") ? true : false;
             active_encoder = ActiveEncoderEntry.Get ();
-            
+            ui_button_id = 0;
+
             Hyena.Log.Debug ("[StreamrecorderService] <StreamrecorderService> END");
         }
 
@@ -96,7 +99,8 @@ namespace Banshee.Streamrecorder
             ServiceManager.PlayerEngine.ConnectEvent (OnEndOfStream, PlayerEvent.EndOfStream);
             ServiceManager.PlayerEngine.ConnectEvent (OnStateChange, PlayerEvent.StateChange);
             ServiceManager.PlayerEngine.ConnectEvent (OnMetadata, PlayerEvent.TrackInfoUpdated);
-            
+            ServiceManager.SourceManager.ActiveSourceChanged += OnSourceChanged;
+
             action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
             actions = new ActionGroup ("Streamrecorder");
             
@@ -113,9 +117,41 @@ namespace Banshee.Streamrecorder
                              OnActivateStreamrecorder, recording) });
             
             action_service.UIManager.InsertActionGroup (actions, 0);
-            ui_manager_id = action_service.UIManager.AddUiFromResource ("StreamrecorderMenu.xml");
+            ui_menu_id = action_service.UIManager.AddUiFromResource ("StreamrecorderMenu.xml");
+
+            PrimarySource primary_source = action_service.GlobalActions.ActivePrimarySource;
             
+            if (primary_source != null && primary_source.IsLocal)
+            {
+                ui_button_id = action_service.UIManager.AddUiFromResource ("StreamrecorderButton.xml");
+            }
+
             Hyena.Log.Debug ("[StreamrecorderService] <Initialize> END");
+        }
+
+        void OnSourceChanged (Sources.SourceEventArgs args)
+        {
+            Hyena.Log.Debug ("[StreamrecorderService] <OnSourceChanged> START");
+            PrimarySource primary_source = action_service.GlobalActions.ActivePrimarySource;
+
+            if (primary_source == null)
+            {
+                Hyena.Log.Debug ("[StreamrecorderService] <OnSourceChanged> not a primary source END");
+                return;
+            }
+
+            if (!primary_source.IsLocal && ui_button_id == 0)
+            {
+                Hyena.Log.Debug ("[StreamrecorderService] <OnSourceChanged> adding record button");
+                ui_button_id = action_service.UIManager.AddUiFromResource ("StreamrecorderButton.xml");
+            }
+            if (primary_source.IsLocal && ui_button_id > 0)
+            {
+                Hyena.Log.Debug ("[StreamrecorderService] <OnSourceChanged> removing record button");
+                action_service.UIManager.RemoveUi(ui_button_id);
+                ui_button_id = 0;
+            }
+            Hyena.Log.Debug ("[StreamrecorderService] <OnSourceChanged> END");
         }
 
         public void OnActivateStreamrecorder (object o, EventArgs ea)
@@ -144,7 +180,9 @@ namespace Banshee.Streamrecorder
             Log.Debug ("Disposing Streamrecorder plugin");
             
             StopRecording ();
-            action_service.UIManager.RemoveUi (ui_manager_id);
+            action_service.UIManager.RemoveUi (ui_menu_id);
+            if (ui_button_id > 0)
+                action_service.UIManager.RemoveUi (ui_button_id);
             action_service.UIManager.RemoveActionGroup (actions);
             ServiceManager.PlayerEngine.DisconnectEvent (OnEndOfStream);
             ServiceManager.PlayerEngine.DisconnectEvent (OnStateChange);

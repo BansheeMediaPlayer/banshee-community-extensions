@@ -1,0 +1,7 @@
+<ui>
+    <toolbar name="HeaderToolbar">
+		<placeholder name="SourceActions">
+		<toolitem name="StreamrecorderEnable" action="StreamrecorderEnableAction" />
+		</placeholder>
+	</toolbar>
+</ui>

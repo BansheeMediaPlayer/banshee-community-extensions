@@ -1,4 +1,5 @@
 SUBDIRS = \
+    LiveRadio \
 	AlarmClock \
 	Awn \
 	ClutterFlow \
