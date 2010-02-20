@@ -1,4 +1,4 @@
 <configuration>
-    <dllmap dll="libmirageaudio" target="@EXTENSION_DIR@/libmirageaudio.so"/>
+    <dllmap dll="libmirageaudio" target="libmirageaudio.so"/>
 </configuration>
 
