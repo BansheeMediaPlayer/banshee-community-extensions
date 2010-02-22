@@ -48,7 +48,7 @@ namespace Banshee.Mirage
         private string cache_condition;
         private long last_track_id;
 
-        public RandomBySimilar (Shuffler shuffler) : base ("mirage_similar", shuffler)
+        public RandomBySimilar () : base ("mirage_similar")
         {
             Label = Catalog.GetString ("Shuffle by Similar");
             Adverb = Catalog.GetString ("by similar");
