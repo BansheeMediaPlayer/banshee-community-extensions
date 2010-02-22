@@ -4,9 +4,9 @@
     version="1.0"
     compatVersion="1.0"
     copyright="Copyright © 2010 André Gaul. Licensed under the MIT X11 license."
-    name="LCD"
+    name="LCD Device Display"
     category="Community Extensions"
-    description="Display track info on LCD using LCDproc daemon"
+    description="Display track info on a LCD using LCDproc."
     author="André Gaul"
     url="http://banshee-project.org/"
     defaultEnabled="false">

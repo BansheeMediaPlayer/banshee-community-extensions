@@ -6,7 +6,7 @@
     copyright="© 2009 Mathijs Dumon Licensed under the MIT X11 license."
     name="ClutterFlow"
     category="Community Extensions"
-    description="Provides a CoverFlow like album browser"
+    description="Browse your albums in a cover art flip-book-like view."
     author="Mathijs Dumon"
     url="http://banshee-project.org/"
     defaultEnabled="false">

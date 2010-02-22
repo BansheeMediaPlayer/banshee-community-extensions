@@ -4,9 +4,9 @@
     version="0.2.2beta"
     compatVersion="1.0"
     copyright="© 2009 Frank Ziegler. Licensed under the MIT X11 license."
-    name="Streamrecorder service"
+    name="Stream Recorder"
     category="Community Extensions"
-    description="Allows user to record internet-radio streams"
+    description="Record internet-radio streams."
     author="Frank Ziegler, Akseli Mantila"
     url="http://gitorious.org/banshee-stream-recorder"
     defaultEnabled="false">

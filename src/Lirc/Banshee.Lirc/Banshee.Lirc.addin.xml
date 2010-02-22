@@ -5,9 +5,9 @@
     version="0.1"
     compatVersion="0.1"
     copyright="© JBL Licensed under the MIT X11 license."
-    name="Lirc Remote"
+    name="Infrared Remote Control"
     category="Community Extensions"
-    description="Provides Lirc support"
+    description="Control Banshee via a normal (infrared) remote control. Requires LIRC."
     author="JBL"
     url=""
     defaultEnabled="false">

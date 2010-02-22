@@ -3,9 +3,9 @@
     id="Banshee.AlarmClock"
     version="1.0"
     copyright="© 2008 Bertrand Lorentz, Patrick van Staveren. Licensed under the MIT X11 license."
-    name="Alarm and Sleep Timer"
+    name="Alarm Clock"
     category="Community Extensions"
-    description="Gives Banshee alarm clock type functions."
+    description="Use Banshee as an alarm clock."
     author="Bertrand Lorentz, Patrick van Staveren"
     url="http://code.google.com/p/banshee-unofficial-plugins/"
     defaultEnabled="false">
