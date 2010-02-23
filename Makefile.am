@@ -47,3 +47,30 @@ run:
 	(cd bin; mkdir -p addins; cp *.dll* addins/; \
 		banshee-1 --uninstalled --debug $(BANSHEE_DEV_OPTIONS) \
 	)
+
+# ---------------
+# Release Targets
+# ---------------
+
+-include release-rc
+
+prepare-release: distcheck
+	rm -rf release-data
+	mkdir release-data
+	cp NEWS release-data/$(PACKAGE)-$(VERSION).news
+	git log > release-data/$(PACKAGE)-$(VERSION).changes
+	find -maxdepth 1 \( -name \*.zip -o -name \*.bz2 -o -name \*.gz \) -exec cp -a {} release-data \;
+	cd release-data && sha256sum * > $(PACKAGE)-$(VERSION).sha256sum
+
+upload-release:
+	scp -r release-data $(RELEASE_WEB_USER)@$(RELEASE_WEB_HOST):$(RELEASE_WEB_PATH)/$(VERSION)
+	ssh $(RELEASE_WEB_USER)@$(RELEASE_WEB_HOST) rm -f $(RELEASE_WEB_PATH)/LATEST-IS\*
+	ssh $(RELEASE_WEB_USER)@$(RELEASE_WEB_HOST) ln -s $(VERSION) $(RELEASE_WEB_PATH)/LATEST-IS-$(VERSION)
+
+tag-release:
+	git tag -a -m "$(VERSION) release" $(VERSION)
+	git push origin $(VERSION)
+
+release: prepare-release upload-release tag-release
+	rm -rf release-data
+
