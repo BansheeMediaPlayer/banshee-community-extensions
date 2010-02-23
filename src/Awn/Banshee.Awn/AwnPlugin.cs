@@ -78,8 +78,8 @@ namespace Banshee.Awn
                 awn = NDesk.DBus.Bus.Session.GetObject<IAvantWindowNavigator> ("com.google.code.Awn",
                         new NDesk.DBus.ObjectPath ("/com/google/code/Awn"));
 
-                if (awn == null)
-                    throw new NullReferenceException ();
+                // Dummy call to check that awn is really there
+                awn.UnsetTaskIconByName ("banshee-dummy");
 
                 service = ServiceManager.PlayerEngine;
                 service.ConnectEvent (new PlayerEventHandler (this.OnEventChanged));
@@ -87,7 +87,8 @@ namespace Banshee.Awn
                 Log.Debug ("BansheeAwn - Initialized");
 
             } catch (Exception ex) {
-                Log.Debug ("BansheeAwn - Failed loading Awn Extension. " + ex.Message);
+                Log.Exception ("BansheeAwn - Failed loading Awn Extension. ", ex);
+                awn = null;
             }
         }
 
@@ -154,7 +155,8 @@ namespace Banshee.Awn
                         Log.Debug ("BansheeAwn - No Cover");
                     }
                 }
-            } catch {
+            } catch (Exception ex) {
+                Log.Exception ("BansheeAwn - Error setting icon", ex);
             }
         }
         /*
