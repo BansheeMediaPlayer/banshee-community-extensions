@@ -5,12 +5,12 @@ SOURCES =  \
 	ActionMapper.cs \
 	BansheeController.cs \
 	ConfigDialog.cs \
+	gtk-gui/Banshee.Lirc.ConfigDialog.cs \
+	gtk-gui/generated.cs \
 	IController.cs \
 	LircClient.cs \
 	LircPlugin.cs \
-	MockController.cs \
-	gtk-gui/Banshee.Lirc.ConfigDialog.cs \
-	gtk-gui/generated.cs
+	MockController.cs
 
 RESOURCES =  \
 	Banshee.Lirc.addin.xml \
