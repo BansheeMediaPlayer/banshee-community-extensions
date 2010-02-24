@@ -2,10 +2,24 @@
 Version 1.5.4 - Feb 24, 2010
 ============================
 
-This is the initial release of Banshee Community Extensions.  It is
-a sub-project of Banshee where the community can work on upcoming extensions
-with fewer barriers to entry.
+Banshee Community Extensions is a sub-project of Banshee, where the
+community can work on upcoming extensions with fewer barriers to entry.
 
-Current Extensions:
-AlarmClock, Awn, ClutterFlow, LCD, Lirc, Lyrics,
-Mirage, RadioStationFetcher, StreamRecorder
+Learn more: http://banshee-project.org/download/extensions/
+
+In this first release, we have migrated nine community extensions that were
+previously hosted all over (Google Code, Gitorious, self-hosted), including
+their full commit history.  These are:
+
+  AlarmClock, Awn, ClutterFlow, LCD, Lirc, Lyrics, Mirage,
+  RadioStationFetcher, StreamRecorder
+
+Since migrating them, some changes have been made:
+
+  * Mirage now adds shuffle-by-similar and fill-by-similar modes instead
+    of adding its own automatic-playlist source.
+
+  * All extensions can be found in Preferences under the 'Community
+    Extensions' category
+
+  * All extensions are disabled by default
