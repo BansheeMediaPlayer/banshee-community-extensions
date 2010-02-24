@@ -119,12 +119,13 @@ namespace Banshee.Streamrecorder
             action_service.UIManager.InsertActionGroup (actions, 0);
             ui_menu_id = action_service.UIManager.AddUiFromResource ("StreamrecorderMenu.xml");
 
-            PrimarySource primary_source = action_service.GlobalActions.ActivePrimarySource;
+            //not yet set on init, skipping
+            //PrimarySource primary_source = action_service.GlobalActions.ActivePrimarySource;
             
-            if (primary_source != null && primary_source.IsLocal)
-            {
-                ui_button_id = action_service.UIManager.AddUiFromResource ("StreamrecorderButton.xml");
-            }
+            //if (primary_source != null && primary_source.IsLocal)
+            //{
+            //    ui_button_id = action_service.UIManager.AddUiFromResource ("StreamrecorderButton.xml");
+            //}
 
             Hyena.Log.Debug ("[StreamrecorderService] <Initialize> END");
         }

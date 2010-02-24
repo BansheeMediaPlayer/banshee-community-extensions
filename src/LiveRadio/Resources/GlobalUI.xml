@@ -1,0 +1,9 @@
+<ui>
+    <popup name="LiveRadioContextMenu">
+        <menuitem name="AddToFavorites" action="AddToFavoritesAction"></menuitem>
+        <separator/>
+        <menuitem name="AddToInternetRadio" action="AddToInternetRadioAction"/>
+        <menuitem name="FindSimilarStreams" action="FindSimilarStreamsAction"/>
+        <menu name="SortChildren" action="SortChildrenAction" />
+    </popup>
+</ui>

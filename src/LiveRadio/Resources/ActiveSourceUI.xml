@@ -1,0 +1,18 @@
+<ui>
+  <menubar name="MainMenu" action="MainMenuAction">
+    <menu name="MediaMenu" action="MediaMenuAction">
+      <placeholder name="BelowOpenLocation">
+        <menuitem action="AddToFavoritesAction" />
+        <menuitem action="AddToInternetRadioAction" />
+        <menuitem action="FindSimilarStreamsAction" />
+      </placeholder>
+    </menu>
+  </menubar>
+  <toolbar name="HeaderToolbar">
+      <placeholder name="SourceActions">
+          <toolitem action="AddToFavoritesAction" />
+          <toolitem action="AddToInternetRadioAction" />
+          <toolitem action="FindSimilarStreamsAction" />
+      </placeholder>
+  </toolbar>
+</ui>

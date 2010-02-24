@@ -81,9 +81,9 @@ namespace Banshee.Streamrecorder
                 
                 has_level = Marshaller.CheckGstPlugin ("level");
                 Hyena.Log.Information ("[Streamrecorder] GstPlugin level" + (has_level ? "" : " not") + " found");
-                Hyena.Log.Debug ("gstreamer initialized");
+                Hyena.Log.Debug ("[Streamrecorder] gstreamer initialized");
             } else {
-                Hyena.Log.Debug ("an error occurred during gstreamer initialization, aborting.");
+                Hyena.Log.Debug ("[Streamrecorder] an error occurred during gstreamer initialization, aborting.");
             }
         }
 

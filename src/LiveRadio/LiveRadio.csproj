@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -14,66 +14,76 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <RootNamespace>LiveRadio</RootNamespace>
+    <AssemblyOriginatorKeyFile>.</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <OutputPath>..\..\..\bin</OutputPath>
-    <AssemblyKeyFile>.</AssemblyKeyFile>
     <CustomCommands>
       <CustomCommands>
         <Command type="Build" command="make" workingdir="${SolutionDir}" />
         <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <OutputPath>..\..\..\bin</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
-    <AssemblyKeyFile>.</AssemblyKeyFile>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Core\Banshee.Core\Banshee.Core.csproj">
-      <Project>{2ADB831A-A050-47D0-B6B9-9C19D60233BB}</Project>
-      <Name>Banshee.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Banshee.Services\Banshee.Services.csproj">
-      <Project>{B28354F0-BA87-44E8-989F-B864A3C7C09F}</Project>
-      <Name>Banshee.Services</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Hyena\Hyena.csproj">
-      <Project>{95374549-9553-4C1E-9D89-667755F90E12}</Project>
-      <Name>Hyena</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Hyena.Gui\Hyena.Gui.csproj">
-      <Project>{C856EFD8-E812-4E61-8B76-E3583D94C233}</Project>
-      <Name>Hyena.Gui</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Banshee.Widgets\Banshee.Widgets.csproj">
-      <Project>{A3701765-E571-413D-808C-9788A22791AF}</Project>
-      <Name>Banshee.Widgets</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Banshee.ThickClient\Banshee.ThickClient.csproj">
-      <Project>{AC839523-7BDF-4AB6-8115-E17921B96EC6}</Project>
-      <Name>Banshee.ThickClient</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Mono.Posix" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Mono.Cairo" />
+    <Reference Include="Mono.Cairo">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Banshee.ThickClient, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-thickclient</Package>
+    </Reference>
+    <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-services</Package>
+    </Reference>
+    <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-core</Package>
+    </Reference>
+    <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-hyena</Package>
+    </Reference>
+    <Reference Include="Hyena.Gui, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-hyena-gui</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="LiveRadio.addin.xml">
       <LogicalName>LiveRadio.addin.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ActiveSourceUI.xml">
+      <LogicalName>ActiveSourceUI.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\GlobalUI.xml">
+      <LogicalName>GlobalUI.xml</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.LiveRadio\LiveRadioSource.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\ILiveRadioPlugin.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\ShoutCastPlugin.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\XiphOrgPlugin.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\LiveRadioBasePlugin.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPluginSourceContents.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPluginSource.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPluginManager.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioFilterView.cs" />
+    <Compile Include="Banshee.LiveRadio\GenreListModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -91,4 +101,8 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="Banshee.LiveRadio\LiveRadioPlugins\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
 </Project>

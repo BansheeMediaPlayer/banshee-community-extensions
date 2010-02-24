@@ -66,7 +66,6 @@ namespace Banshee.Streamrecorder.Gst
             if (!element_factory.IsNull ()) {
                 ret = true;
                 element_factory.UnRef ();
-                Hyena.Log.Debug ("[Streamrecorder.Gst.Marshaller] found factory for : " + name);
             }
             return ret;
         }

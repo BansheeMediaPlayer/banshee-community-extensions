@@ -3,12 +3,12 @@
     id="Banshee.LiveRadio"
     version="1.0"
     compatVersion="1.0"
-    copyright="Copyright © 2010 Cool Extension Author. Licensed under the MIT X11 license."
-    name="Concise Title for LiveRadio"
+    copyright="Copyright © 2010 Frank Ziegler. Licensed under the MIT X11 license."
+    name="LiveRadio"
     category="Community Extensions"
-    description="Describe your extension, ideally starting with an action verb.  Keep it brief and avoid tech jargon."
-    author="Cool Extension Author"
-    url="http://banshee-project.org/"
+    description="Allows to listen to internet radio stations from various web directories. Still ALPHA!"
+    author="Frank Ziegler"
+    url="http://gitorious.org/banshee-community-extension/"
     defaultEnabled="false">
 
   <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
