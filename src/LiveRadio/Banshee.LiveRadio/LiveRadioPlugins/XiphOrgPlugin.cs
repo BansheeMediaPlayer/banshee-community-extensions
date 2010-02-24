@@ -65,9 +65,11 @@ namespace Banshee.LiveRadio.Plugins
         {
             StringBuilder sb = new StringBuilder ();
             sb.Append (track.TrackTitle);
+            sb.Append (" ");
             sb.Append (track.Genre);
+            sb.Append (" ");
             sb.Append (track.Comment);
-            if (sb.ToString ().Contains (query))
+            if (sb.ToString ().ToLower ().Contains (query.ToLower ()))
                 return true;
             return false;
         }
@@ -143,6 +145,7 @@ namespace Banshee.LiveRadio.Plugins
 
             }
 
+            new_genres.Sort ();
             genres = new_genres;
 
             Log.DebugFormat ("[XiphOrgPlugin] <ParseCatalog> {0} genres found", genres.Count);

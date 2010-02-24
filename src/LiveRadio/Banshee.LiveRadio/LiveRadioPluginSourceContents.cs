@@ -154,7 +154,8 @@ namespace Banshee.LiveRadio
 
         void OnPluginRequestResultRetrieved (object sender, string request, LiveRadioRequestType request_type, List<DatabaseTrackInfo> result)
         {
-            if ((filter_box.GetSelectedGenre () == null && request_type == LiveRadioRequestType.ByFreetext)
+            Hyena.Log.Debug("[LiverRadioPluginSourceContenst]<OnPluginRequestResultRetrieved> handling result retrieved");
+            if ((request_type == LiveRadioRequestType.ByFreetext)
                 || (filter_box.GetSelectedGenre ().Equals (request) && request_type == LiveRadioRequestType.ByGenre))
             {
                 plugin.GetLiveRadioPluginSource ().SetStations (result);
@@ -229,6 +230,7 @@ namespace Banshee.LiveRadio
             filter_box = new LiveRadioFilterView ();
             filter_box.GenreSelected += OnViewGenreSelected;
             filter_box.GenreActivated += OnViewGenreSelected;
+            filter_box.QuerySent += OnViewQuerySent;
 
             VBox vbx = new VBox ();
             Label help_label =
@@ -244,6 +246,11 @@ namespace Banshee.LiveRadio
 
             container.Position = top ? 175 : 275;
             ShowPack ();
+        }
+
+        void OnViewQuerySent (object sender, string query)
+        {
+            plugin.ExecuteRequest(LiveRadioRequestType.ByFreetext, query);
         }
 
         void OnViewGenreSelected (object sender, string genre)

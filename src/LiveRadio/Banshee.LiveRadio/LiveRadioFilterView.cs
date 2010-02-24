@@ -18,14 +18,17 @@ using Hyena.Widgets;
 namespace Banshee.LiveRadio
 {
     public delegate void GenreSelectedEventHandler(object sender, string genre);
+    public delegate void QuerySentEventHandler(object sender, string query);
 
     public class LiveRadioFilterView : VBox
     {
 
         private ListView<string> genre_view;
+        private Entry query_input;
 
         public event GenreSelectedEventHandler GenreSelected;
         public event GenreSelectedEventHandler GenreActivated;
+        public event QuerySentEventHandler QuerySent;
 
         public LiveRadioFilterView ()
         {
@@ -33,18 +36,20 @@ namespace Banshee.LiveRadio
             Column genre_column = new Column (new ColumnDescription(null,Catalog.GetString("Choose By Genre"),100));
             genre_view.ColumnController = new ColumnController();
             genre_view.ColumnController.Add(genre_column);
-            genre_view.RowActivated += OnGenreActivated;
+            genre_view.RowActivated += OnViewGenreActivated;
             List<string> stringlist = new List<string> ();
             stringlist.Add(Catalog.GetString("Loading..."));
             genre_view.SetModel(new GenreListModel (stringlist));
             //genre_view.HeaderVisible = false;
-            genre_view.Model.Selection.FocusChanged += OnGenreSelected;
+            genre_view.Model.Selection.FocusChanged += OnViewGenreSelected;
 
             Label query_label = new Label (Catalog.GetString("Choose By Query"));
             HBox query_box = new HBox ();
             query_box.BorderWidth = 1;
-            Entry query_input = new Entry ();
+            query_input = new Entry ();
+            query_input.KeyReleaseEvent += OnInputKeyReleaseEvent;
             Button query_button = new Button (Stock.Find);
+            query_button.Clicked += OnViewQuerySent;
             query_box.PackStart(query_input,true,true,5);
             query_box.PackStart(query_button,false,true,5);
 
@@ -53,20 +58,35 @@ namespace Banshee.LiveRadio
             this.PackStart(query_box,false,true,5);
         }
 
+        void OnInputKeyReleaseEvent (object o, KeyReleaseEventArgs args)
+        {
+            if (args.Event.Key == Gdk.Key.Return)
+            {
+                OnViewQuerySent(o, new EventArgs ());
+            }
+        }
+
+        void OnViewQuerySent (object sender, EventArgs e)
+        {
+            GenreListModel model = genre_view.Model as GenreListModel;
+            model.Selection.Clear(false);
+            RaiseQuerySent(query_input.Text.Trim ());
+        }
+
         public string GetSelectedGenre()
         {
             GenreListModel model = genre_view.Model as GenreListModel;
             return model[genre_view.Model.Selection.FocusedIndex];
         }
 
-        void OnGenreSelected (object sender, EventArgs e)
+        void OnViewGenreSelected (object sender, EventArgs e)
         {
             GenreListModel model = genre_view.Model as GenreListModel;
             RaiseGenreSelected(model[genre_view.Model.Selection.FocusedIndex]);
             Hyena.Log.DebugFormat("[LiveRadioFilterView]<OnSelectGenreNotify> selected entry: {0}", model[genre_view.Model.Selection.FocusedIndex]);
         }
 
-        void OnGenreActivated (object o, RowActivatedArgs<string> args)
+        void OnViewGenreActivated (object o, RowActivatedArgs<string> args)
         {
             GenreListModel model = genre_view.Model as GenreListModel;
             model.SetSelection(args.Row);
@@ -122,6 +142,19 @@ namespace Banshee.LiveRadio
         public void RaiseGenreActivated (string genre)
         {
             OnGenreActivated (genre);
+        }
+
+        protected virtual void OnQuerySent (string query)
+        {
+            QuerySentEventHandler handler = QuerySent;
+            if(handler != null) {
+                handler(this, query);
+            }
+        }
+
+        public void RaiseQuerySent (string query)
+        {
+            OnQuerySent (query);
         }
     }
 }

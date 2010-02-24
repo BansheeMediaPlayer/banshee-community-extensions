@@ -164,7 +164,7 @@ namespace Banshee.LiveRadio.Plugins
         {
             RequestResultRetrievedEventHandler handler = RequestResultRetrieved;
             if(handler != null) {
-                handler(this, query, request_type,result);
+                handler(this, query, request_type, result);
             }
         }
 
@@ -172,13 +172,14 @@ namespace Banshee.LiveRadio.Plugins
         {
             RequestResultRetrievedEventHandler handler = RequestResultRefreshRetrieved;
             if(handler != null) {
-                handler(this, query, request_type,result);
+                handler(this, query, request_type, result);
             }
         }
 
         public void RaiseRequestResultRetrieved (LiveRadioRequestType request_type, string query)
         {
             List<DatabaseTrackInfo> result = cached_results[query];
+            Hyena.Log.DebugFormat("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> result contains {1} entries for query {2}", Name, result.Count, query);
             OnRequestResultRetrieved (request_type, query, result);
         }
 
