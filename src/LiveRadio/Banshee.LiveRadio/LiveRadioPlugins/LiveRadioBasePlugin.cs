@@ -35,7 +35,6 @@ namespace Banshee.LiveRadio.Plugins
         protected LiveRadioPluginSource source;
         protected bool use_proxy;
         protected string proxy_url;
-        private BackgroundWorker request_thread;
 
         public event GenreListLoadedEventHandler GenreListLoaded;
         public event RequestResultRetrievedEventHandler RequestResultRetrieved;
@@ -46,7 +45,7 @@ namespace Banshee.LiveRadio.Plugins
             genres = new List<string> ();
             cached_results = new Dictionary<string, List<DatabaseTrackInfo>> ();
             //stations = new List<DatabaseTrackInfo> ();
-            request_thread = new BackgroundWorker ();
+            //request_thread = new BackgroundWorker ();
 
         }
 
@@ -74,7 +73,7 @@ namespace Banshee.LiveRadio.Plugins
 
         public void ExecuteRequest(LiveRadioRequestType request_type, string query)
         {
-            lock(this);
+            BackgroundWorker request_thread = new BackgroundWorker();
             request_thread.DoWork += DoExecuteRequest;
             request_thread.RunWorkerCompleted += OnDoExecuteRequestFinished;
             LiveRadioRequestObject request_object = new LiveRadioRequestObject (request_type, query);
@@ -90,7 +89,7 @@ namespace Banshee.LiveRadio.Plugins
 
         public void RetrieveGenreList()
         {
-            lock(this);
+            BackgroundWorker request_thread = new BackgroundWorker();
             request_thread.DoWork += DoRetrieveGenreList;
             request_thread.RunWorkerCompleted += OnDoRetrieveGenreListFinished;
             request_thread.RunWorkerAsync();
@@ -105,6 +104,7 @@ namespace Banshee.LiveRadio.Plugins
         void OnDoRetrieveGenreListFinished (object sender, RunWorkerCompletedEventArgs e)
         {
             Hyena.Log.DebugFormat("[LiveRadioBasePlugin\"{0}\"]<OnDoRetrieveGenreListFinished> START", Name);
+            BackgroundWorker request_thread = sender as BackgroundWorker;
             request_thread.DoWork -= DoRetrieveGenreList;
             request_thread.RunWorkerCompleted -= OnDoRetrieveGenreListFinished;
             RaiseGenreListLoaded();
@@ -114,6 +114,7 @@ namespace Banshee.LiveRadio.Plugins
         void OnDoExecuteRequestFinished (object sender, RunWorkerCompletedEventArgs e)
         {
             Hyena.Log.DebugFormat("[LiveRadioBasePlugin\"{0}\"]<OnDoExecuteRequestFinished> START", Name);
+            BackgroundWorker request_thread = sender as BackgroundWorker;
             request_thread.DoWork -= DoExecuteRequest;
             request_thread.RunWorkerCompleted -= OnDoExecuteRequestFinished;
             LiveRadioRequestObject request_object = e.Result as LiveRadioRequestObject;
