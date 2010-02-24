@@ -28,6 +28,11 @@ AC_SUBST(BANSHEE_LIBS)
 dnl Banshee Extensions Path
 BCE_FIND_BANSHEE
 
+dnl For native/glue libraries
+AC_ISC_POSIX
+AC_PROG_CC
+AC_HEADER_STDC
+
 dnl GNOME (optional)
 AC_ARG_ENABLE(gnome, 
 	AC_HELP_STRING([--disable-gnome], 

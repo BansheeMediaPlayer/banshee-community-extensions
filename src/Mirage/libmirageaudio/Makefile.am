@@ -37,7 +37,7 @@ $(top_builddir)/bin/libmirageaudio.so: libmirageaudio.la
 	cp -f .libs/libmirageaudio.so $@
 endif
 
-CLEANFILES = $(top_builddir)/bin/liblircglue.so
+CLEANFILES = $(top_builddir)/bin/libmirageaudio.so
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = $(libmirageaudio_la_SOURCES)
 
