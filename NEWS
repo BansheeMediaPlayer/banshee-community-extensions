@@ -1,0 +1,11 @@
+============================
+Version 1.5.4 - Feb 24, 2010
+============================
+
+This is the initial release of Banshee Community Extensions.  It is
+a sub-project of Banshee where the community can work on upcoming extensions
+with fewer barriers to entry.
+
+Current Extensions:
+AlarmClock, Awn, ClutterFlow, LCD, Lirc, Lyrics,
+Mirage, RadioStationFetcher, StreamRecorder
