@@ -1,10 +1,10 @@
 SUBDIRS = \
-    LiveRadio \
 	AlarmClock \
 	Awn \
 	ClutterFlow \
 	LCD \
 	Lirc \
+	LiveRadio \
 	Lyrics \
 	Mirage \
 	RadioStationFetcher \

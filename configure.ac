@@ -47,20 +47,10 @@ else
 	AM_CONDITIONAL(ENABLE_GNOME, false)
 fi
 
-dnl Extensions
-BCE_ALARMCLOCK
-BCE_AWN
-BCE_CLUTTERFLOW
-BCE_LCD
-BCE_LIRC
-BCE_LYRICS
-BCE_MIRAGE
-BCE_RADIOSTATIONFETCHER
-BCE_STREAMRECORDER
-
 dnl i18n
 SHAMROCK_CONFIGURE_I18N($PACKAGE)
 
+dnl Release
 AC_ARG_ENABLE(release,
 	AC_HELP_STRING([--enable-release],
 		[Use release configuration]),
@@ -74,6 +64,18 @@ else
 	GMCS_FLAGS="-warnaserror"
 fi
 AC_SUBST(GMCS_FLAGS)
+
+dnl Extensions
+BCE_ALARMCLOCK
+BCE_AWN
+BCE_CLUTTERFLOW
+BCE_LCD
+BCE_LIRC
+BCE_LIVERADIO
+BCE_LYRICS
+BCE_MIRAGE
+BCE_RADIOSTATIONFETCHER
+BCE_STREAMRECORDER
 
 AC_ARG_WITH(vendor-build-id,
 	AC_HELP_STRING([--with-vendor-build-id=<vendor-build-id>],
@@ -106,7 +108,6 @@ build/m4/shave/shave-libtool
 po/Makefile.in
 
 src/Makefile
-src/LiveRadio/Makefile
 src/AlarmClock/Makefile
 src/Awn/Makefile
 src/ClutterFlow/Makefile
@@ -118,6 +119,7 @@ src/Lirc/lirc-glue/Makefile
 src/Lirc/Banshee.Lirc/Makefile
 src/Lirc/GUITestHarness/Makefile
 src/Lirc/NUnitTests/Makefile
+src/LiveRadio/Makefile
 src/Lyrics/Makefile
 src/Mirage/Makefile
 src/Mirage/libmirageaudio/Makefile
@@ -147,12 +149,12 @@ ${PACKAGE}-${VERSION}
     Vendor Build ID:   ${vendor_build_id}
 
   Extensions:
-    LiveRadio:           yes
     Alarm Clock:         ${enable_AlarmClock}
     Awn:                 ${enable_Awn}
     ClutterFlow:         ${enable_ClutterFlow}
     LCD:                 ${enable_LCD}
     Lirc:                ${enable_Lirc}
+    LiveRadio:           ${enable_LiveRadio}
     Lyrics:              ${enable_Lyrics}
     Mirage:              ${enable_Mirage}
     RadioStationFetcher: ${enable_RadioStationFetcher}
