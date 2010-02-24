@@ -12,7 +12,8 @@ Points of Contact
 =======================
 
 * Website
-  http://banshee-project.org/
+  http://banshee-project.org/download/extensions/
+  http://banshee-project.org/contribute/write-extensions/
 
 * File bugs
   https://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions
@@ -21,8 +22,17 @@ Points of Contact
   http://mail.gnome.org/mailman/listinfo/banshee-list
   http://banshee-project.org/support/forum/
 
+  For BCE maintainers/developers:
+  http://mail.gnome.org/mailman/listinfo/banshee-devel-list
+
 * IRC
   #banshee on irc.gnome.org
+
+=======================
+Dependencies
+=======================
+
+Banshee 1.5.4 and its devel packages are required.
 
 =======================
 Create a New Extension
@@ -32,4 +42,5 @@ Simply run:
 
 ./create-extension Foo
 
-Where Foo is the name (with no spaces) of the extension.
+Where Foo is the name (with no spaces) of the extension.  Read
+http://banshee-project.org/contribute/write-extensions/ for more information.
