@@ -36,6 +36,7 @@ using Banshee.Gui;
 using Banshee.ServiceStack;
 using Banshee.Sources;
 using Banshee.MediaEngine;
+using Hyena;
 
 namespace Banshee.CoverWallpaper
 {
@@ -59,7 +60,7 @@ namespace Banshee.CoverWallpaper
         {  
             artwork_manager_service = ServiceManager.Get<ArtworkManager> ();
             
-            Banshee.Base.ThreadAssist.AssertInMainThread ();
+            ThreadAssist.AssertInMainThread ();
             
             ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEvent,
                PlayerEvent.StartOfStream |
@@ -70,7 +71,7 @@ namespace Banshee.CoverWallpaper
             try {
                 userWallpaper = (string) gClient.Get(GCONF_BACKGROUND_PATH);
             } catch (GConf.NoSuchKeyException ex) {
-                Hyena.Log.Error(ex.Message);
+                Log.Error(ex.Message);
                 //TODO: handle this exception (shouldn't happen though)
             }
         }
@@ -80,7 +81,7 @@ namespace Banshee.CoverWallpaper
             if (disposed)
                 return;
 
-            Banshee.Base.ThreadAssist.ProxyToMain (delegate {
+            ThreadAssist.ProxyToMain (delegate {
                 ServiceManager.PlayerEngine.DisconnectEvent (OnPlayerEvent);
                 artwork_manager_service = null;
                 current_track = null;
@@ -129,7 +130,7 @@ namespace Banshee.CoverWallpaper
                 if (filename != string.Empty)
                     gClient.Set(GCONF_BACKGROUND_PATH, filename);
             } catch (Exception ex) {
-                Hyena.Log.Error(ex.Message);
+                Log.Error(ex.Message);
                 //TODO: handle this exception
             }
         }
