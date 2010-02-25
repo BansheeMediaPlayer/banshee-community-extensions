@@ -63,7 +63,7 @@ namespace Banshee.LiveRadio
         public LiveRadioPluginSource (ILiveRadioPlugin plugin) :
                         base(Catalog.GetString ("LiveRadioPlugin") + plugin.GetName (),
                              plugin.GetName (),
-                             "live-radio-plugin",
+                             "live-radio-plugin-" + plugin.GetName ().ToLower (),
                              sort_order)
         {
             Log.DebugFormat ("[LiveRadioPluginSource\"{0}\"]<Constructor> START", plugin.GetName ());

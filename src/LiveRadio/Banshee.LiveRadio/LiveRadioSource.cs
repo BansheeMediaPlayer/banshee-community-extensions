@@ -117,7 +117,7 @@ namespace Banshee.LiveRadio
             foreach (ILiveRadioPlugin plugin in plugins) {
                 LiveRadioPluginSource plugin_source = new LiveRadioPluginSource (plugin);
                 this.AddChildSource (plugin_source);
-                this.MergeSourceInput (plugin_source, SourceMergeType.All);
+                this.MergeSourceInput (plugin_source, SourceMergeType.Source);
                 plugin.Initialize ();
             }
             

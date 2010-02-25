@@ -194,14 +194,24 @@ namespace Banshee.LiveRadio.Plugins
 
         public void RaiseRequestResultRetrieved (LiveRadioRequestType request_type, string query)
         {
-            List<DatabaseTrackInfo> result = cached_results[query];
+            List<DatabaseTrackInfo> result;
+            if (request_type == LiveRadioRequestType.ByGenre) {
+                result = cached_results["Genre:" + query];
+            } else {
+                result = cached_results[query];
+            }
             Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> result contains {1} entries for query {2}", Name, result.Count, query);
             OnRequestResultRetrieved (request_type, query, result);
         }
 
         public void RaiseRequestResultRefreshRetrieved (LiveRadioRequestType request_type, string query)
         {
-            List<DatabaseTrackInfo> result = cached_results[query];
+            List<DatabaseTrackInfo> result;
+            if (request_type == LiveRadioRequestType.ByGenre) {
+                result = cached_results["Genre:" + query];
+            } else {
+                result = cached_results[query];
+            }
             OnRequestResultRefreshRetrieved (request_type, query, result);
         }
 

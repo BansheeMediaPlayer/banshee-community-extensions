@@ -27,7 +27,16 @@
 //
 
 using System;
+using System.Net;
+using System.IO;
+using System.Text;
+using System.Xml;
 using System.Collections.Generic;
+
+using Banshee.Base;
+using Banshee.Collection.Database;
+
+using Hyena;
 
 namespace Banshee.LiveRadio.Plugins
 {
@@ -36,238 +45,138 @@ namespace Banshee.LiveRadio.Plugins
     public class ShoutCastPlugin : LiveRadioBasePlugin
     {
 
+        private const string base_url = "http://www.shoutcast.com";
+        private const string request_url = "/sbin/newxml.phtml";
+        private const string genre_request = "?genre=";
+        private const string freetext_request = "?search=";
+
         public ShoutCastPlugin ()
         {
+            use_proxy = false;
         }
 
         protected override void RetrieveGenres ()
         {
-            genres.Add ("test1");
-            genres.Add ("test2");
-            genres.Add ("test3");
+            ParseGenres(RetrieveXml(base_url + request_url));
         }
 
         protected override void RetrieveRequest (LiveRadioRequestType request_type, string query)
         {
-            return;
+            string request;
+            if (request_type == LiveRadioRequestType.ByGenre) {
+                request = base_url + request_url + genre_request + query;
+            } else {
+                request = base_url + request_url + freetext_request + query;
+            }
+            XmlDocument document = RetrieveXml(request);
+            Log.Debug ("[ShoutCastPlugin] <RetrieveRequest> Start Parsing");
+            ParseXmlResponse(document, request_type, query);
         }
 
-        public override string Name {
-            get { return "SHOUTcast.com"; }
-        }
-        
-    }
-    
-    /*public class Shoutcast : FetcherDialog, IGenreSearchable, IFreetextSearchable
-    {
-        public Shoutcast ()
-        {
-            source_name = "www.shoutcast.com";
-            InitializeDialog ();
-        }
-        
-        public override void FillGenreList () 
-        {
-            genre_list.Add ("Blues");
-            genre_list.Add ("Classic Rock");
-            genre_list.Add ("Country");
-            genre_list.Add ("Dance");
-            genre_list.Add ("Disco");
-            genre_list.Add ("Funk");
-            genre_list.Add ("Grunge");
-            genre_list.Add ("Hip-Hop");
-            genre_list.Add ("Jazz");
-            genre_list.Add ("Metal");
-            genre_list.Add ("New Age");
-            genre_list.Add ("Oldies");
-            genre_list.Add ("Other");
-            genre_list.Add ("Pop");
-            genre_list.Add ("R&B");
-            genre_list.Add ("Rap");
-            genre_list.Add ("Reggae");
-            genre_list.Add ("Rock");
-            genre_list.Add ("Techno");
-            genre_list.Add ("Industrial");
-            genre_list.Add ("Alternative");
-            genre_list.Add ("Ska");
-            genre_list.Add ("Death Metal");
-            genre_list.Add ("Pranks");
-            genre_list.Add ("Soundtrack");
-            genre_list.Add ("Euro-Techno");
-            genre_list.Add ("Ambient");
-            genre_list.Add ("Trip-Hop");
-            genre_list.Add ("Vocal");
-            genre_list.Add ("Jazz+Funk");
-            genre_list.Add ("Fusion");
-            genre_list.Add ("Trance");
-            genre_list.Add ("Classical");
-            genre_list.Add ("Instrumental");
-            genre_list.Add ("Acid");
-            genre_list.Add ("House");
-            genre_list.Add ("Game");
-            genre_list.Add ("Sound Clip");
-            genre_list.Add ("Gospel");
-            genre_list.Add ("Noise");
-            genre_list.Add ("AlternRock");
-            genre_list.Add ("Bass");
-            genre_list.Add ("Soul");
-            genre_list.Add ("Punk");
-            genre_list.Add ("Space");
-            genre_list.Add ("Meditative");
-            genre_list.Add ("Instrumental Pop");
-            genre_list.Add ("Instrumental Rock");
-            genre_list.Add ("Ethnic");
-            genre_list.Add ("Gothic");
-            genre_list.Add ("Darkwave");
-            genre_list.Add ("Techno-Industrial");
-            genre_list.Add ("Electronic");
-            genre_list.Add ("Pop-Folk");
-            genre_list.Add ("Eurodance");
-            genre_list.Add ("Dream");
-            genre_list.Add ("Southern Rock");
-            genre_list.Add ("Comedy");
-            genre_list.Add ("Cult");
-            genre_list.Add ("Gangsta");
-            genre_list.Add ("Top 40");
-            genre_list.Add ("Christian Rap");
-            genre_list.Add ("Pop/Funk");
-            genre_list.Add ("Jungle");
-            genre_list.Add ("Native American");
-            genre_list.Add ("Cabaret");
-            genre_list.Add ("New Wave");
-            genre_list.Add ("Psychedelic");
-            genre_list.Add ("Rave");
-            genre_list.Add ("Showtunes");
-            genre_list.Add ("Trailer");
-            genre_list.Add ("Lo-Fi");
-            genre_list.Add ("Tribal");
-            genre_list.Add ("Acid Punk");
-            genre_list.Add ("Acid Jazz");
-            genre_list.Add ("Polka");
-            genre_list.Add ("Retro");
-            genre_list.Add ("Musical");
-            genre_list.Add ("Rock & Roll");
-            genre_list.Add ("Hard Rock");
-            genre_list.Add ("Folk");
-            genre_list.Add ("Folk-Rock");
-            genre_list.Add ("National Folk");
-            genre_list.Add ("Swing");
-            genre_list.Add ("Fast Fusion");
-            genre_list.Add ("Bebob");
-            genre_list.Add ("Latin");
-            genre_list.Add ("Revival");
-            genre_list.Add ("Celtic");
-            genre_list.Add ("Bluegrass");
-            genre_list.Add ("Avantgarde");
-            genre_list.Add ("Gothic Rock");
-            genre_list.Add ("Progressive Rock");
-            genre_list.Add ("Psychedelic Rock");
-            genre_list.Add ("Symphonic Rock");
-            genre_list.Add ("Slow Rock");
-            genre_list.Add ("Big Band");
-            genre_list.Add ("Chorus");
-            genre_list.Add ("Easy Listening");
-            genre_list.Add ("Acoustic");
-            genre_list.Add ("Humour");
-            genre_list.Add ("Speech");
-            genre_list.Add ("Chanson");
-            genre_list.Add ("Opera");
-            genre_list.Add ("Chamber Music");
-            genre_list.Add ("Sonata");
-            genre_list.Add ("Symphony");
-            genre_list.Add ("Booty Bass");
-            genre_list.Add ("Primus");
-            genre_list.Add ("Porn Groove");
-            genre_list.Add ("Satire");
-            genre_list.Add ("Slow Jam");
-            genre_list.Add ("Club");
-            genre_list.Add ("Tango");
-            genre_list.Add ("Samba");
-            genre_list.Add ("Folklore");
-            genre_list.Add ("Ballad");
-            genre_list.Add ("Power Ballad");
-            genre_list.Add ("Rhythmic Soul");
-            genre_list.Add ("Freestyle");
-            genre_list.Add ("Duet");
-            genre_list.Add ("Punk Rock");
-            genre_list.Add ("Drum Solo");
-            genre_list.Add ("A capella");
-            genre_list.Add ("Euro-House");
-            genre_list.Add ("Dance Hall");
 
-            genre_list.Sort ();
-        }
-        
-        public List<DatabaseTrackInfo> FetchStationsByGenre (string genre) 
+
+        protected XmlDocument RetrieveXml(string query)
         {
-            Log.Debug ("[Shoutcast] <FetchStationsByGenre> Start");
-        
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.
-                Create ("http://207.200.98.25/sbin/newxml.phtml?genre="+genre);
+            Log.Debug ("[ShoutCastPlugin] <RetrieveXml> Start");
+
+            WebProxy proxy;
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create (query);
             request.Method = "GET";
             request.ContentType = "HTTP/1.0";
-            request.Timeout = 10 * 1000; // 10 seconds
+            request.Timeout = 20 * 1000;
+            if (use_proxy) {
+                proxy = new WebProxy (proxy_url, true);
+                request.Proxy = proxy;
+            }
 
             try
             {
-                Log.DebugFormat ("[Shoutcast] <FetchStationsByGenre> Querying genre \"{0}\" ...", Genre);
-                
                 Stream response = request.GetResponse ().GetResponseStream ();
                 StreamReader reader = new StreamReader (response);
 
                 XmlDocument xml_response = new XmlDocument ();
                 xml_response.LoadXml (reader.ReadToEnd ());
-                
-                Log.Debug ("[Shoutcast] <FetchStationsByGenre> Query done");
-                
-                return ParseQuery (xml_response);
+
+                Log.Debug ("[ShoutCastPlugin] <RetrieveXml> XML retrieved");
+
+                return xml_response;
             }
             finally {
-                Log.Debug ("[Shoutcast] <FetchStationsByGenre> End");    
+                Log.Debug ("[ShoutCastPlugin] <RetrieveXml> End");
             }
         }
 
-        public List<DatabaseTrackInfo> FetchStationsByFreetext (string text) 
+        private void ParseGenres(XmlDocument doc)
         {
-            Log.Debug ("[Shoutcast] <FetchStationsByFreetext> Start");
+            Log.Debug ("[ShoutCastPlugin] <ParseGenres> START");
             
-            HttpWebRequest request = (HttpWebRequest) HttpWebRequest.
-                Create ("http://207.200.98.25/sbin/newxml.phtml?search="+text);
-            request.Method = "GET";
-            request.ContentType = "HTTP/1.0";
-            request.Timeout = 10 * 1000; // 10 seconds
+            XmlNodeList XML_genre_nodes = doc.GetElementsByTagName ("genre");
+            Log.DebugFormat ("[ShoutCastPlugin] <ParseGenres> {0} nodes found", XML_genre_nodes.Count);
 
-            try
+            List<string> new_genres = new List<string> ();
+
+            foreach (XmlNode node in XML_genre_nodes) {
+                XmlAttributeCollection xml_attributes = node.Attributes;
+
+                try {
+                    string genre = xml_attributes.GetNamedItem ("name").InnerText;
+
+                    if (!new_genres.Contains (genre)) {
+                        new_genres.Add (genre);
+                    }
+                } catch (Exception ex) {
+                    Log.Exception ("[ShoutCastPlugin] <ParseGenres> ERROR", ex);
+                    continue;
+                }
+                
+            }
+            
+            new_genres.Sort ();
+            genres = new_genres;
+
+            Log.DebugFormat ("[ShoutCastPlugin] <ParseGenres> {0} genres found", genres.Count);
+        }
+
+        private void ParseXmlResponse (XmlDocument xml_response, LiveRadioRequestType request_type, string query)
+        {
+            Log.Debug ("[ShoutCastPlugin] <ParseXmlResponse> Start");
+
+            string tunein_url = "";
+
+            XmlNodeList XML_tunein_nodes = xml_response.GetElementsByTagName ("tunein");
+
+            foreach (XmlNode node in XML_tunein_nodes)
             {
-                Log.DebugFormat ("[Shoutcast] <FetchStationsByFreetext> Querying freetext \"{0}\" ...", Freetext);
-            
-                Stream response = request.GetResponse ().GetResponseStream ();
-                StreamReader reader = new StreamReader (response);
+                XmlAttributeCollection xml_attributes = node.Attributes;
+                try {
+                    tunein_url = xml_attributes.GetNamedItem("base").InnerText;
+                    break;
+                }
+                catch (Exception e) {
+                    Log.Exception ("[ShoutCastPlugin] <ParseXmlResponse> ERROR: ", e);
+                    return;
+                }
+            }
 
-                XmlDocument xml_response = new XmlDocument();
-                xml_response.LoadXml (reader.ReadToEnd ());
-                
-                Log.Debug ("[Shoutcast] <FetchStationsByFreetext> Query done");
-                
-                return ParseQuery (xml_response);
-            }
-            finally {
-                Log.Debug ("[Shoutcast] <FetchStationsByFreetext> End");
-            }
-        }
-        
-        
-        public List<DatabaseTrackInfo> ParseQuery (XmlDocument xml_response)
-        {
-            Log.Debug ("[Shoutcast] <ParseQuery> Start");
-            
-            List<DatabaseTrackInfo> station_list;
+            Log.Debug ("[ShoutCastPlugin] <ParseXmlResponse> analyzing stations");
+
             XmlNodeList XML_station_nodes = xml_response.GetElementsByTagName ("station");
 
-            station_list = new List<DatabaseTrackInfo> (XML_station_nodes.Count);
-            
-            PrimarySource source = GetInternetRadioSource (); // If not found, throws exception caught in upper level.
-            
+            string key;
+            if (request_type == LiveRadioRequestType.ByGenre) {
+                key = "Genre:" + query;
+                if (!cached_results.ContainsKey (key)) {
+                    cached_results[key] = new List<DatabaseTrackInfo> (XML_station_nodes.Count);
+                }
+            } else {
+                key = query;
+                if (!cached_results.ContainsKey (key)) {
+                    cached_results[key] = new List<DatabaseTrackInfo> (XML_station_nodes.Count);
+                }
+            }
+
+            cached_results[key].Clear ();
+
             foreach (XmlNode node in XML_station_nodes)
             {
                 XmlAttributeCollection xml_attributes = node.Attributes;
@@ -288,7 +197,7 @@ namespace Banshee.LiveRadio.Plugins
 
                     DatabaseTrackInfo new_station = new DatabaseTrackInfo ();
     
-                    new_station.Uri = new SafeUri ("http://207.200.98.25/sbin/tunein-station.pls?id="+id);
+                    new_station.Uri = new SafeUri (base_url + tunein_url + "?" + id);
                     new_station.ArtistName = "www.shoutcast.com";
                     new_station.Genre = genre;
                     new_station.TrackTitle = name;
@@ -301,22 +210,25 @@ namespace Banshee.LiveRadio.Plugins
                     Int32.TryParse (bitrate.Trim (), out bitrate_int);                    
                     new_station.BitRate = bitrate_int;
                     new_station.IsLive = true;
-                    
-                    Log.DebugFormat ("[Shoutcast] <ParseQuery> Station found! Name: {0} URL: {1}", 
-                        name, new_station.Uri.ToString ());
-                    
-                    station_list.Add (new_station);
+
+                    //Log.DebugFormat ("[ShoutCastPlugin] <ParseXmlResponse> Station found! Name: {0} URL: {1}",
+                    //    name, new_station.Uri.ToString ());
+
+                    cached_results[key].Add (new_station);
                 }
                 catch (Exception e) {
-                    Log.Exception ("[Shoutcast] <ParseQuery> ERROR: ", e);
+                    Log.Exception ("[ShoutCastPlugin] <ParseXmlResponse> ERROR: ", e);
                     continue;
                 }
             }
 
-            Log.Debug ("[Shoutcast] <ParseQuery> End"); 
-            return station_list;
+            Log.Debug ("[ShoutCastPlugin] <ParseXmlResponse> End");
+        }
+
+        public override string Name {
+            get { return "SHOUTcast.com"; }
         }
         
-        
-    }*/    
+    }
+    
 }

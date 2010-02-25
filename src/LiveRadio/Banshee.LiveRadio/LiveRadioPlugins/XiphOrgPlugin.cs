@@ -29,6 +29,7 @@
 using System;
 using System.Net;
 using System.IO;
+using System.Xml;
 using System.Collections.Generic;
 
 using Banshee.Base;
@@ -43,15 +44,12 @@ namespace Banshee.LiveRadio.Plugins
     public class XiphOrgPlugin : LiveRadioBasePlugin
     {
         private const string base_url = "http://dir.xiph.org";
-        //private const string base_url = "file:///home/dingsi";
         private const string catalog_url = "/yp.xml";
-        //private List<DatabaseTrackInfo> stations;
 
         public XiphOrgPlugin ()
         {
             use_proxy = true;
             proxy_url = "http://213.203.241.210:80";
-            //stations = new List<DatabaseTrackInfo> ();
         }
 
         protected override void RetrieveGenres ()
@@ -65,7 +63,7 @@ namespace Banshee.LiveRadio.Plugins
             if (request_type == LiveRadioRequestType.ByGenre) {
                 key = "Genre:" + query;
                 if (!cached_results.ContainsKey (key)) {
-                    cached_results[key] = new List<DatabaseTrackInfo> ();
+                    cached_results.Add (key, new List<DatabaseTrackInfo> ());
                 }
             }
             if (request_type == LiveRadioRequestType.ByFreetext) {
@@ -130,6 +128,7 @@ namespace Banshee.LiveRadio.Plugins
                         else if (station_attributes.Name.Equals ("current_song"))
                             now_playing = station_attributes.InnerText;
                         else if (station_attributes.Name.Equals ("bitrate"))
+                            bitrate = station_attributes.InnerText;
                    }
                     
                     DatabaseTrackInfo new_station = new DatabaseTrackInfo ();
@@ -148,9 +147,9 @@ namespace Banshee.LiveRadio.Plugins
                     
                     if (!new_genres.Contains (genre)) {
                         new_genres.Add (genre);
-                        cached_results.Add (genre, new List<DatabaseTrackInfo> ());
+                        cached_results.Add ("Genre:" + genre, new List<DatabaseTrackInfo> ());
                     }
-                    cached_results[genre].Add (new_station);
+                    cached_results["Genre:" + genre].Add (new_station);
                     
                 } catch (Exception ex) {
                     Log.Exception ("[XiphOrgPlugin] <ParseCatalog> ERROR", ex);
