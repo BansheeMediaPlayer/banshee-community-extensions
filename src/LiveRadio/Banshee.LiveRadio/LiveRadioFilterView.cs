@@ -56,6 +56,8 @@ namespace Banshee.LiveRadio
             this.PackStart(SetupView(genre_view),true,true,0);
             this.PackStart(query_label,false,true,0);
             this.PackStart(query_box,false,true,5);
+
+            this.Sensitive = false;
         }
 
         void OnInputKeyReleaseEvent (object o, KeyReleaseEventArgs args)
@@ -98,6 +100,7 @@ namespace Banshee.LiveRadio
         {
             GenreListModel model = genre_view.Model as GenreListModel;
             model.SetList(newlist);
+            this.Sensitive = true;
         }
 
         private ScrolledWindow SetupView (Widget view)
