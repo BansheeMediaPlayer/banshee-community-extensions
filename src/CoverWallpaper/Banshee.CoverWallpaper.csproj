@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -7,46 +7,48 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}</ProjectGuid>
     <OutputType>Library</OutputType>
+    <RootNamespace>Banshee.CoverWallpaper</RootNamespace>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
-    <EnvironmentVariables>
-      <EnvironmentVariables />
-    </EnvironmentVariables>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <StartupObject />
     <AssemblyName>Banshee.CoverWallpaper</AssemblyName>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="cp * ~/.config/banshee-1/addins/" workingdir="${TargetDir}" externalConsole="true" />
+        <Command type="Execute" command="make run" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <StartupObject />
     <AssemblyName>CoverWallpaper</AssemblyName>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Reference Include="gconf-sharp, Version=2.24.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Banshee.Services, Version=1.4.0.0, Culture=neutral" />
-    <Reference Include="Banshee.Core, Version=1.4.0.0, Culture=neutral" />
-    <Reference Include="Banshee.ThickClient, Version=1.4.0.0, Culture=neutral" />
-    <Reference Include="System.Data" />
     <Reference Include="System" />
-    <Reference Include="Hyena, Version=1.4.0.0, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-services</Package>
+    </Reference>
+    <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-core</Package>
+    </Reference>
+    <Reference Include="Banshee.ThickClient, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-thickclient</Package>
+    </Reference>
+    <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-hyena</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -56,14 +58,14 @@
     <MonoDevelop>
       <Properties>
         <Policies>
-          <TextStylePolicy FileWidth="120" TabWidth="4" TabsToSpaces="True" NoTabsAfterNonTabs="False" RemoveTrailingWhitespace="False" />
+          <TextStylePolicy FileWidth="120" inheritsSet="VisualStudio" inheritsScope="text/plain" />
           <ChangeLogPolicy UpdateMode="ProjectRoot" VcsIntegration="RequireEntry" inheritsSet="Mono" />
         </Policies>
         <Deployment.LinuxDeployData generatePcFile="false" />
-        <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile.am" IsAutotoolsProject="true" RelativeConfigureInPath=".">
-          <BuildFilesVar />
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" RelativeConfigureInPath=".">
+          <BuildFilesVar Sync="true" Name="SOURCES" />
           <DeployFilesVar />
-          <ResourcesVar />
+          <ResourcesVar Sync="true" Name="RESOURCES" />
           <OthersVar />
           <GacRefVar />
           <AsmRefVar />
@@ -73,6 +75,8 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
-    <EmbeddedResource Include="Banshee.CoverWallpaper.addin.xml" />
+    <EmbeddedResource Include="Banshee.CoverWallpaper.addin.xml">
+      <LogicalName>Banshee.CoverWallpaper.addin.xml</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

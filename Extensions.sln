@@ -33,16 +33,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lirc", "Lirc", "{B0F00CD8-C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.Lirc", "src\Lirc\Banshee.Lirc\Banshee.Lirc.csproj", "{A8659C27-52A7-4DC5-8F86-43D59F5D6E30}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.CoverWallpaper", "src\CoverWallpaper\Banshee.CoverWallpaper.csproj", "{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}.Debug|x86.Build.0 = Debug|Any CPU
-		{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}.Release|x86.ActiveCfg = Release|Any CPU
-		{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}.Release|x86.Build.0 = Release|Any CPU
 		{176AB141-4CC8-4E64-87FF-69C5D32A1A99}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{176AB141-4CC8-4E64-87FF-69C5D32A1A99}.Debug|x86.Build.0 = Debug|Any CPU
 		{176AB141-4CC8-4E64-87FF-69C5D32A1A99}.Release|x86.ActiveCfg = Release|Any CPU
@@ -67,6 +65,14 @@ Global
 		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Debug|x86.Build.0 = Debug|Any CPU
 		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Release|x86.ActiveCfg = Release|Any CPU
 		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Release|x86.Build.0 = Release|Any CPU
+		{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}.Debug|x86.Build.0 = Debug|Any CPU
+		{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}.Release|x86.ActiveCfg = Release|Any CPU
+		{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}.Release|x86.Build.0 = Release|Any CPU
+		{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}.Debug|x86.Build.0 = Debug|Any CPU
+		{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}.Release|x86.ActiveCfg = Release|Any CPU
+		{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}.Release|x86.Build.0 = Release|Any CPU
 		{A8659C27-52A7-4DC5-8F86-43D59F5D6E30}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{A8659C27-52A7-4DC5-8F86-43D59F5D6E30}.Debug|x86.Build.0 = Debug|Any CPU
 		{A8659C27-52A7-4DC5-8F86-43D59F5D6E30}.Release|x86.ActiveCfg = Release|Any CPU
