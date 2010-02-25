@@ -6,6 +6,7 @@ SOURCES =  \
 	Banshee.LiveRadio/LiveRadioFilterView.cs \
 	Banshee.LiveRadio/LiveRadioPluginManager.cs \
 	Banshee.LiveRadio/LiveRadioPlugins/ILiveRadioPlugin.cs \
+	Banshee.LiveRadio/LiveRadioPlugins/Live365Plugin.cs \
 	Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs \
 	Banshee.LiveRadio/LiveRadioPlugins/ShoutCastPlugin.cs \
 	Banshee.LiveRadio/LiveRadioPlugins/XiphOrgPlugin.cs \
