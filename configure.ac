@@ -69,6 +69,7 @@ dnl Extensions
 BCE_ALARMCLOCK
 BCE_AWN
 BCE_CLUTTERFLOW
+BCE_COVERWALLPAPER
 BCE_LCD
 BCE_LIRC
 BCE_LIVERADIO
@@ -113,6 +114,7 @@ src/Awn/Makefile
 src/ClutterFlow/Makefile
 src/ClutterFlow/Banshee.ClutterFlow/Makefile
 src/ClutterFlow/ClutterFlow/Makefile
+src/CoverWallpaper/Makefile
 src/LCD/Makefile
 src/Lirc/Makefile
 src/Lirc/lirc-glue/Makefile
@@ -152,6 +154,7 @@ ${PACKAGE}-${VERSION}
     Alarm Clock:         ${enable_AlarmClock}
     Awn:                 ${enable_Awn}
     ClutterFlow:         ${enable_ClutterFlow}
+    CoverWallpaper:      ${enable_CoverWallpaper}
     LCD:                 ${enable_LCD}
     Lirc:                ${enable_Lirc}
     LiveRadio:           ${enable_LiveRadio}
