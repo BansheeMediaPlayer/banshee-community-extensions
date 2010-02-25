@@ -1,10 +1,10 @@
 //
-// LiveRadioSource.cs
+// LiveRadioPluginSource.cs
 //
 // Authors:
-//   Cool Extension Author <cool.extension@author.com>
+//   Frank Ziegler <funtastix@googlemail.com>
 //
-// Copyright (C) 2010 Cool Extension Author
+// Copyright (C) 2010 Frank Ziegler
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -34,23 +34,17 @@ using Mono.Unix;
 using Banshee.Base;
 using Banshee.Sources;
 using Banshee.Sources.Gui;
-
 using Banshee.ServiceStack;
-using Banshee.Preferences;
 using Banshee.Streaming;
-using Banshee.MediaEngine;
 using Banshee.PlaybackController;
 using Banshee.Collection;
 using Banshee.Collection.Database;
-using Banshee.Configuration;
-using Banshee.Gui;
 
 using Gtk;
 
 using Hyena;
 
 using Banshee.LiveRadio.Plugins;
-using Banshee.Library;
 
 namespace Banshee.LiveRadio
 {
@@ -66,18 +60,22 @@ namespace Banshee.LiveRadio
         private LiveRadioPluginSourceContents source_contents;
         private bool add_track_job_cancelled = false;
 
-        public LiveRadioPluginSource (ILiveRadioPlugin plugin) : base (Catalog.GetString ("LiveRadioPlugin") + plugin.GetName (), plugin.GetName (), "live-radio-plugin", sort_order)
+        public LiveRadioPluginSource (ILiveRadioPlugin plugin) :
+                        base(Catalog.GetString ("LiveRadioPlugin") + plugin.GetName (),
+                             plugin.GetName (),
+                             "live-radio-plugin",
+                             sort_order)
         {
-            Log.DebugFormat("[LiveRadioPluginSource\"{0}\"]<Constructor> START", plugin.GetName ());
+            Log.DebugFormat ("[LiveRadioPluginSource\"{0}\"]<Constructor> START", plugin.GetName ());
             TypeUniqueId = "live-radio-" + plugin.GetName ();
             IsLocal = false;
-
-            plugin.SetLiveRadioPluginSource(this);
-
+            
+            plugin.SetLiveRadioPluginSource (this);
+            
             AfterInitialized ();
-
+            
             Properties.Set<bool> ("Nereid.SourceContentsPropagate", true);
-
+            
             Properties.SetString ("TrackView.ColumnControllerXml", String.Format (@"
                 <column-controller>
                   <!--<column modify-default=""IndicatorColumn"">
@@ -119,31 +117,30 @@ namespace Banshee.LiveRadio
             Properties.SetString ("ActiveSourceUIResource", "ActiveSourceUI.xml");
             Properties.Set<bool> ("ActiveSourceUIResourcePropagate", true);
             Properties.Set<System.Reflection.Assembly> ("ActiveSourceUIResource.Assembly", typeof(LiveRadioPluginSource).Assembly);
-
+            
             Properties.SetString ("GtkActionPath", "/LiveRadioContextMenu");
-
+            
             ServiceManager.PlayerEngine.TrackIntercept += OnPlayerEngineTrackIntercept;
-
-            TrackEqualHandler = delegate (DatabaseTrackInfo a, TrackInfo b) {
+            
+            TrackEqualHandler = delegate(DatabaseTrackInfo a, TrackInfo b) {
                 RadioTrackInfo radio_track = b as RadioTrackInfo;
-                return radio_track != null && DatabaseTrackInfo.TrackEqual (
-                    radio_track.ParentTrack as DatabaseTrackInfo, a);
+                return radio_track != null && DatabaseTrackInfo.TrackEqual (radio_track.ParentTrack as DatabaseTrackInfo, a);
             };
-
+            
             source_contents = new LiveRadioPluginSourceContents (plugin);
-            source_contents.SetSource(this);
-
+            source_contents.SetSource (this);
+            
             Properties.Set<ISourceContents> ("Nereid.SourceContents", source_contents);
-
+            
             this.PurgeTracks ();
-
-            Log.DebugFormat("[LiveRadioPluginSource\"{0}\"]<Constructor> END", plugin.GetName ());
-
+            
+            Log.DebugFormat ("[LiveRadioPluginSource\"{0}\"]<Constructor> END", plugin.GetName ());
+            
         }
 
         public Widget GetWidget ()
         {
-            ISourceContents source_contents = Properties.Get<ISourceContents>("Nereid.SourceContents");
+            ISourceContents source_contents = Properties.Get<ISourceContents> ("Nereid.SourceContents");
             return source_contents.Widget;
         }
 
@@ -151,7 +148,7 @@ namespace Banshee.LiveRadio
         {
             base.Dispose ();
             this.PurgeTracks ();
-
+            
             ServiceManager.PlayerEngine.TrackIntercept -= OnPlayerEngineTrackIntercept;
         }
 
@@ -161,18 +158,18 @@ namespace Banshee.LiveRadio
             if (station == null || station.PrimarySource != this) {
                 return false;
             }
-
+            
             new RadioTrackInfo (station).Play ();
-
+            
             return true;
         }
 
-        private void OnAddTrackJobCancelRequested(object o, EventArgs e)
+        private void OnAddTrackJobCancelRequested (object o, EventArgs e)
         {
             add_track_job_cancelled = true;
         }
 
-        public void SetStations(List<DatabaseTrackInfo> tracks)
+        public void SetStations (List<DatabaseTrackInfo> tracks)
         {
             this.PurgeTracks ();
             BatchUserJob add_track_job = AddTrackJob;
@@ -180,13 +177,12 @@ namespace Banshee.LiveRadio
             add_track_job.CancelRequested += OnAddTrackJobCancelRequested;
             //source_contents.Widget.FreezeChildNotify ();
             this.PauseSorting ();
-            foreach(DatabaseTrackInfo track in tracks)
-            {
-                AddStation(track);
+            foreach (DatabaseTrackInfo track in tracks) {
+                AddStation (track);
                 this.IncrementAddedTracks ();
                 if (add_track_job_cancelled) {
                     add_track_job_cancelled = false;
-                    Hyena.Log.Debug("[LiveRadioPluginSource]<AddStations> job cancelled");
+                    Hyena.Log.Debug ("[LiveRadioPluginSource]<AddStations> job cancelled");
                     add_track_job.Completed = add_track_job.Total;
                     return;
                 }
@@ -194,37 +190,36 @@ namespace Banshee.LiveRadio
             add_track_job.Finish ();
             this.ResumeSorting ();
             //source_contents.Widget.ThawChildNotify ();
-
+            
         }
 
         protected override void AddTrack (DatabaseTrackInfo track)
         {
-            track.Save();
+            track.Save ();
         }
 
-        private void AddStation(DatabaseTrackInfo track)
+        private void AddStation (DatabaseTrackInfo track)
         {
             DatabaseTrackInfo station = track ?? new DatabaseTrackInfo ();
             station.IsLive = true;
             station.PrimarySource = this;
-            if (!String.IsNullOrEmpty(station.TrackTitle) && station.Uri != null && station.Uri is SafeUri)
-            {
+            if (!String.IsNullOrEmpty (station.TrackTitle) && station.Uri != null && station.Uri is SafeUri) {
                 //this.AddTrackAndIncrementCount(station);
-                this.AddTrack(station);
+                this.AddTrack (station);
             }
         }
 
-        protected void OnAddToFavorites(object o, EventArgs e)
+        protected void OnAddToFavorites (object o, EventArgs e)
         {
             return;
         }
 
-        protected void OnAddToInternetRadio(object o, EventArgs e)
+        protected void OnAddToInternetRadio (object o, EventArgs e)
         {
             return;
         }
 
-        protected void OnFindSimilar(object o, EventArgs e)
+        protected void OnFindSimilar (object o, EventArgs e)
         {
             return;
         }
@@ -286,24 +281,25 @@ namespace Banshee.LiveRadio
         protected PrimarySource GetInternetRadioSource ()
         {
             Log.Debug ("[LiveRadioPluginSource] <GetInternetRadioSource> Start");
-
+            
             foreach (Source source in Banshee.ServiceStack.ServiceManager.SourceManager.Sources) {
                 Log.DebugFormat ("[LiveRadioPluginSource] <GetInternetRadioSource> Source: {0}", source.GenericName);
-
+                
                 if (source.UniqueId.Equals ("InternetRadioSource-internet-radio")) {
-                    return (PrimarySource) source;
+                    return (PrimarySource)source;
                 }
             }
-
+            
             Log.Debug ("[LiveRadioPluginSource] <GetInternetRadioSource> Not found throwing exception");
             throw new InternetRadioExtensionNotFoundException ();
         }
-
+        
     }
 
-    public class InternetRadioExtensionNotFoundException : Exception {
+    public class InternetRadioExtensionNotFoundException : Exception
+    {
     }
-
-
-
+    
+    
+    
 }

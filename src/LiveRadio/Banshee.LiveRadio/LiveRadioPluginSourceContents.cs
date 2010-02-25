@@ -1,10 +1,13 @@
+
 //
-// InternetRadioSourceContents.cs
+// LiveRadioPluginSourceContents.cs
 //
 // Author:
+//   Frank Ziegler <funtastix@googlemail.com>
 //   Aaron Bockover <abockover@novell.com>
 //
 // Copyright (C) 2008 Novell, Inc.
+// Copyright (C) 2010 Frank Ziegler
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -27,31 +30,26 @@
 //
 
 using System;
+using System.Collections.Generic;
+
 using Mono.Unix;
 
 using Gtk;
+using ScrolledWindow = Gtk.ScrolledWindow;
 
 using Hyena;
 using Hyena.Widgets;
-using Hyena.Data;
 using Hyena.Data.Gui;
 
-using Banshee.Base;
 using Banshee.Configuration;
-
 using Banshee.Sources;
 using Banshee.Sources.Gui;
 using Banshee.ServiceStack;
-
 using Banshee.Collection;
 using Banshee.Collection.Database;
 using Banshee.Collection.Gui;
-
-using ScrolledWindow=Gtk.ScrolledWindow;
 using Banshee.Gui;
-
 using Banshee.LiveRadio.Plugins;
-using System.Collections.Generic;
 
 namespace Banshee.LiveRadio
 {
@@ -87,33 +85,33 @@ namespace Banshee.LiveRadio
 
         public LiveRadioPluginSourceContents (ILiveRadioPlugin plugin)
         {
-            Log.DebugFormat("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> START", plugin.GetName ());
+            Log.DebugFormat ("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> START", plugin.GetName ());
             base.Name = plugin.GetName ();
             this.plugin = plugin;
-
+            
             InitializeViews ();
-
+            
             string position = ForcePosition == null ? BrowserPosition.Get () : ForcePosition;
             if (position == "top") {
                 LayoutTop ();
             } else {
                 LayoutLeft ();
             }
-
+            
             plugin.GenreListLoaded += OnPluginGenreListLoaded;
             plugin.RequestResultRetrieved += OnPluginRequestResultRetrieved;
-
+            
             if (ForcePosition != null) {
-                Log.DebugFormat("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> END", plugin.GetName ());
+                Log.DebugFormat ("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> END", plugin.GetName ());
                 return;
             }
-
+            
             if (ServiceManager.Contains ("InterfaceActionService")) {
                 action_service = ServiceManager.Get<InterfaceActionService> ();
-
+                
                 if (action_service.FindActionGroup ("BrowserView") == null) {
                     browser_view_actions = new ActionGroup ("BrowserView");
-
+                    
                     browser_view_actions.Add (new RadioActionEntry [] {
                         new RadioActionEntry ("BrowserLeftAction", null,
                             Catalog.GetString ("Browser on Left"), null,
@@ -131,13 +129,14 @@ namespace Banshee.LiveRadio
                             null, BrowserVisible.Get ())
                     });
 
+
                     action_service.AddActionGroup (browser_view_actions);
                     action_service.UIManager.AddUiFromString (menu_xml);
                 }
-
-                (action_service.FindAction("BrowserView.BrowserLeftAction") as RadioAction).Changed += OnViewModeChanged;
-                (action_service.FindAction("BrowserView.BrowserTopAction") as RadioAction).Changed += OnViewModeChanged;
-                action_service.FindAction("BrowserView.BrowserVisibleAction").Activated += OnToggleBrowser;
+                
+                (action_service.FindAction ("BrowserView.BrowserLeftAction") as RadioAction).Changed += OnViewModeChanged;
+                (action_service.FindAction ("BrowserView.BrowserTopAction") as RadioAction).Changed += OnViewModeChanged;
+                action_service.FindAction ("BrowserView.BrowserVisibleAction").Activated += OnToggleBrowser;
             }
 
             ServiceManager.SourceManager.ActiveSourceChanged += delegate {
@@ -147,14 +146,17 @@ namespace Banshee.LiveRadio
             };
 
             NoShowAll = true;
-
-            Log.DebugFormat("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> END", plugin.GetName ());
-
+            
+            Log.DebugFormat ("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> END", plugin.GetName ());
+            
         }
 
-        void OnPluginRequestResultRetrieved (object sender, string request, LiveRadioRequestType request_type, List<DatabaseTrackInfo> result)
+        void OnPluginRequestResultRetrieved (object sender,
+                                             string request,
+                                             LiveRadioRequestType request_type,
+                                             List<DatabaseTrackInfo> result)
         {
-            Hyena.Log.Debug("[LiverRadioPluginSourceContenst]<OnPluginRequestResultRetrieved> handling result retrieved");
+            Hyena.Log.Debug ("[LiverRadioPluginSourceContenst]<OnPluginRequestResultRetrieved> handling result retrieved");
             if ((request_type == LiveRadioRequestType.ByFreetext)
                 || (filter_box.GetSelectedGenre ().Equals (request) && request_type == LiveRadioRequestType.ByGenre))
             {
@@ -164,9 +166,9 @@ namespace Banshee.LiveRadio
 
         void OnPluginGenreListLoaded (object sender, List<string> genres)
         {
-            Hyena.Log.Debug("[LiverRadioPluginSourceContenst]<OnPluginGenreListLoaded> handling genrelistloaded");
+            Hyena.Log.Debug ("[LiverRadioPluginSourceContenst]<OnPluginGenreListLoaded> handling genrelistloaded");
             if (genres.Count > 0)
-                filter_box.UpdateGenres(genres);
+                filter_box.UpdateGenres (genres);
         }
 
         protected void InitializeViews ()
@@ -182,18 +184,18 @@ namespace Banshee.LiveRadio
         private ScrolledWindow SetupView (Widget view)
         {
             ScrolledWindow window = null;
-
+            
             //if (!Banshee.Base.ApplicationContext.CommandLine.Contains ("no-smooth-scroll")) {
             if (ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
                 window = new SmoothScrolledWindow ();
             } else {
                 window = new ScrolledWindow ();
             }
-
+            
             window.Add (view);
             window.HscrollbarPolicy = PolicyType.Automatic;
             window.VscrollbarPolicy = PolicyType.Automatic;
-
+            
             return window;
         }
 
@@ -201,11 +203,11 @@ namespace Banshee.LiveRadio
         {
             // Unparent the views' scrolled window parents so they can be re-packed in
             // a new layout. The main container gets destroyed since it will be recreated.
-
+            
             if (container != null && main_scrolled_window != null) {
                 container.Remove (main_scrolled_window);
             }
-
+            
             if (container != null) {
                 Remove (container);
             }
@@ -225,37 +227,36 @@ namespace Banshee.LiveRadio
         {
             //Hyena.Log.Information ("ListBrowser LayoutLeft");
             Reset ();
-
+            
             container = GetPane (!top);
             filter_box = new LiveRadioFilterView ();
             filter_box.GenreSelected += OnViewGenreSelected;
             filter_box.GenreActivated += OnViewGenreSelected;
             filter_box.QuerySent += OnViewQuerySent;
-
+            
             VBox vbx = new VBox ();
-            Label help_label =
-                new Label (Catalog.GetString
-                           ("Click to load cached entries, double click to retrieve information from internet."));
-            help_label.ModifyBg(StateType.Normal, new Gdk.Color(200,200,120));
-            vbx.PackStart(main_scrolled_window,true,true,0);
-            vbx.PackStart(help_label,false,false,0);
-
+            Label help_label = new Label (
+                  Catalog.GetString ("Click to load cached entries, double click to retrieve information from internet."));
+            help_label.ModifyBg (StateType.Normal, new Gdk.Color (200, 200, 120));
+            vbx.PackStart (main_scrolled_window, true, true, 0);
+            vbx.PackStart (help_label, false, false, 0);
+            
             container.Pack1 (filter_box, false, false);
             container.Pack2 (vbx, true, false);
             browser_container = filter_box;
-
+            
             container.Position = top ? 175 : 275;
             ShowPack ();
         }
 
         void OnViewQuerySent (object sender, string query)
         {
-            plugin.ExecuteRequest(LiveRadioRequestType.ByFreetext, query);
+            plugin.ExecuteRequest (LiveRadioRequestType.ByFreetext, query);
         }
 
         void OnViewGenreSelected (object sender, string genre)
         {
-            plugin.ExecuteRequest(LiveRadioRequestType.ByGenre, genre);
+            plugin.ExecuteRequest (LiveRadioRequestType.ByGenre, genre);
         }
 
         private void ShowPack ()
@@ -290,14 +291,15 @@ namespace Banshee.LiveRadio
         private void OnToggleBrowser (object o, EventArgs args)
         {
             ToggleAction action = (ToggleAction)o;
-
+            
             browser_container.Visible = action.Active && ActiveSourceCanHasBrowser;
             BrowserVisible.Set (action.Active);
-
+            
         }
 
         protected virtual void OnBrowserViewSelectionChanged (object o, EventArgs args)
         {
+        }
             /* If the All item is now selected, scroll to the top
             Hyena.Collections.Selection selection = (Hyena.Collections.Selection) o;
             if (selection.AllSelected) {
@@ -308,10 +310,9 @@ namespace Banshee.LiveRadio
                         break;
                     }
                 }
-            }*/
-        }
-
-        protected bool ActiveSourceCanHasBrowser {
+            }*/            
+        
+                protected bool ActiveSourceCanHasBrowser {
             get { return true; }
         }
 
@@ -327,11 +328,11 @@ namespace Banshee.LiveRadio
             if (track_source == null) {
                 return false;
             }
-
+            
             this.source = source;
-
+            
             track_view.SetModel (track_source.TrackModel);
-
+            
             return true;
         }
 
@@ -372,6 +373,5 @@ namespace Banshee.LiveRadio
             "Artist/Album Browser Position",
             "The position of the Artist/Album browser; either 'top' or 'left'"
         );
-
     }
 }

@@ -1,3 +1,30 @@
+//
+// GenreListModel.cs
+//
+// Authors:
+//   Frank Ziegler <funtastix@googlemail.com>
+//
+// Copyright (C) 2010 Frank Ziegler
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
 
 using System;
 using System.Collections.Generic;
@@ -21,41 +48,38 @@ namespace Banshee.LiveRadio
 
         private Selection selection;
 
-        public GenreListModel (List<string> list) : base ()
+        public GenreListModel (List<string> list) : base()
         {
             original_list = list;
             this.list = original_list.ToArray ();
-            selection = new Selection();
+            selection = new Selection ();
         }
 
-        public void SetList(List<string> newlist)
+        public void SetList (List<string> newlist)
         {
             original_list = newlist;
             Reload ();
         }
 
-        public string this[int index]
-        {
+        public string this[int index] {
             get { return list[index]; }
         }
 
-        public int Count
-        {
+        public int Count {
             get { return list.Length; }
         }
 
-        public bool CanReorder
-        {
+        public bool CanReorder {
             get { return false; }
         }
 
-        public void Clear()
+        public void Clear ()
         {
             list = new string[0];
             RaiseCleared ();
         }
 
-        public void Reload()
+        public void Reload ()
         {
             list = original_list.ToArray ();
             RaiseReloaded ();
@@ -64,16 +88,16 @@ namespace Banshee.LiveRadio
         protected virtual void OnCleared ()
         {
             EventHandler handler = Cleared;
-            if(handler != null) {
-                handler(this, EventArgs.Empty);
+            if (handler != null) {
+                handler (this, EventArgs.Empty);
             }
         }
 
         protected virtual void OnReloaded ()
         {
             EventHandler handler = Reloaded;
-            if(handler != null) {
-                handler(this, EventArgs.Empty);
+            if (handler != null) {
+                handler (this, EventArgs.Empty);
             }
         }
 
@@ -89,7 +113,7 @@ namespace Banshee.LiveRadio
 
         public void SetSelection (int index)
         {
-            selection.Select(index);
+            selection.Select (index);
         }
 
         public void SetSelection (Selection selection)
@@ -97,10 +121,9 @@ namespace Banshee.LiveRadio
             this.selection = selection;
         }
 
-        public Selection Selection
-        {
+        public Selection Selection {
             get { return selection; }
         }
-
+        
     }
 }
