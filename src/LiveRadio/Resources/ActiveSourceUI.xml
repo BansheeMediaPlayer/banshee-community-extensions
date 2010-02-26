@@ -1,0 +1,16 @@
+<ui>
+  <menubar name="MainMenu" action="MainMenuAction">
+    <menu name="MediaMenu" action="MediaMenuAction">
+      <placeholder name="BelowOpenLocation">
+        <menuitem action="AddToInternetRadioAction" />
+        <menuitem action="RefreshLiveRadioAction" />
+      </placeholder>
+    </menu>
+  </menubar>
+  <toolbar name="HeaderToolbar">
+      <placeholder name="SourceActions">
+          <toolitem action="AddToInternetRadioAction" />
+          <toolitem action="RefreshLiveRadioAction" />
+      </placeholder>
+  </toolbar>
+</ui>

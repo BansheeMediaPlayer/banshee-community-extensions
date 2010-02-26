@@ -9,22 +9,29 @@ copyfiles ()
 	mkdir -p debian/usr/share/locale/en/LC_MESSAGES
 	mkdir -p debian/usr/share/locale/de/LC_MESSAGES
 
-	cp Banshee.Streamrecorder/bin/Release/Banshee.Streamrecorder.dll debian/usr/lib/banshee-1/Extensions/
+	cp ../../bin/Banshee.Streamrecorder.dll debian/usr/lib/banshee-1/Extensions/
 	#cp /usr/share/doc/banshee-extension-streamrecorder/AUTHORS debian/usr/share/doc/banshee-extension-streamrecorder/AUTHORS
 	#cp /usr/share/doc/banshee-extension-streamrecorder/changelog.Debian.gz debian/usr/share/doc/banshee-extension-streamrecorder/changelog.Debian.gz
 	#cp /usr/share/doc/banshee-extension-streamrecorder/copyright debian/usr/share/doc/banshee-extension-streamrecorder/copyright
 	#cp /usr/share/doc/banshee-extension-streamrecorder/NEWS.gz debian/usr/share/doc/banshee-extension-streamrecorder/NEWS.gz
 	#cp /usr/share/doc/banshee-extension-streamrecorder/README debian/usr/share/doc/banshee-extension-streamrecorder/README
-	cp po/de.gmo debian/usr/share/locale/de/LC_MESSAGES/banshee-streamrecorder.mo
-	cp po/en.gmo debian/usr/share/locale/en/LC_MESSAGES/banshee-streamrecorder.mo
-	cp po/fi.gmo debian/usr/share/locale/fi/LC_MESSAGES/banshee-streamrecorder.mo
+	cp ../../po/de.gmo debian/usr/share/locale/de/LC_MESSAGES/banshee-community-extensions.mo
+	cp ../../po/en.gmo debian/usr/share/locale/en/LC_MESSAGES/banshee-community-extensions.mo
+	cp ../../po/fi.gmo debian/usr/share/locale/fi/LC_MESSAGES/banshee-community-extensions.mo
 }
 
 makedeb ()
 {
-	version="0.2.2beta-0ubuntu0"
+	cd debian/usr/share/doc/banshee-extension-streamrecorder/
+	gzip --best changelog.Debian
+	gzip --best NEWS
+	cd ../../../../..
+	version="0.2.2beta-0ubuntu2"
 	fakeroot dpkg-deb --build debian "banshee-extension-streamrecorder_"$version"_all.deb"
 	lintian "banshee-extension-streamrecorder_"$version"_all.deb"
+	cd debian/usr/share/doc/banshee-extension-streamrecorder/
+	gunzip *.gz
+	cd ../../../../..
 }
 
 printusage ()

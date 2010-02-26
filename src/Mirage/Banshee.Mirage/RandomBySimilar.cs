@@ -48,7 +48,7 @@ namespace Banshee.Mirage
         private string cache_condition;
         private long last_track_id;
 
-        public RandomBySimilar (Shuffler shuffler) : base ("mirage_similar", shuffler)
+        public RandomBySimilar () : base ("mirage_similar")
         {
             Label = Catalog.GetString ("Shuffle by Similar");
             Adverb = Catalog.GetString ("by similar");
@@ -80,7 +80,12 @@ namespace Banshee.Mirage
 
         public override TrackInfo GetPlaybackTrack (DateTime after)
         {
-            using (var seed = GetSeed ()) {
+            var seed = GetSeed ();
+            if (seed == null) {
+                return null;
+            }
+
+            using (seed) {
                 var track = Cache.GetSingle (Select, From, cache_condition, seed.Id, after, after) as DatabaseTrackInfo;
                 if (track != null) {
                     last_track_id = track.TrackId;
@@ -91,7 +96,12 @@ namespace Banshee.Mirage
 
         public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
         {
-            using (var seed = GetSeed ()) {
+            var seed = GetSeed ();
+            if (seed == null) {
+                return null;
+            }
+
+            using (seed) {
                 var track = GetTrack (ShufflerQuery, seed.Id, after) as DatabaseTrackInfo;
                 if (track != null) {
                     last_track_id = track.TrackId;
@@ -102,12 +112,13 @@ namespace Banshee.Mirage
 
         private BaseSeed GetSeed ()
         {
-            return new SingleSeed (Scms.FromBytes (ServiceManager.DbConnection.Query<byte[]> (String.Format (
+            var buf = ServiceManager.DbConnection.Query<byte[]> (String.Format (
                 "SELECT ScmsData FROM MirageTrackAnalysis WHERE Status = 0 {0} LIMIT 1",
                 last_track_id == 0
                     ? "ORDER BY RANDOM ()"
                     : String.Format ("AND TrackID = {0}", last_track_id)
-            ))));
+            ));
+            return buf == null ? null : new SingleSeed (Scms.FromBytes (buf));
         }
     }
 }

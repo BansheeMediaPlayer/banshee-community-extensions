@@ -9,6 +9,13 @@ src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs
 src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs
 src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs
 src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs
+src/LCD/Banshee.LCD/ConfigurationDialog.cs
+src/LCD/Banshee.LCD/LCDService.cs
+src/Lirc/Banshee.Lirc/gtk-gui/Banshee.Lirc.ConfigDialog.cs
+src/LiveRadio/Banshee.LiveRadio/LiveRadioFilterView.cs
+src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs
+src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs
+src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsPane.cs
@@ -17,7 +24,6 @@ src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs
 src/Mirage/Banshee.Mirage/AnalyzeLibraryJob.cs
 src/Mirage/Banshee.Mirage/MiragePlugin.cs
-src/Mirage/Banshee.Mirage/PlaylistGeneratorSource.cs
 src/Mirage/Banshee.Mirage/RandomBySimilar.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs

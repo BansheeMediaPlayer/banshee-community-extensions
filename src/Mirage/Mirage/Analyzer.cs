@@ -39,6 +39,8 @@ namespace Mirage
         private static Mfcc mfcc = new Mfcc (WINDOW_SIZE, SAMPLING_RATE, MEL_COEFFICIENTS, MFCC_COEFFICIENTS);
         private static AudioDecoder ad = new AudioDecoder (SAMPLING_RATE, SECONDS_TO_ANALYZE, WINDOW_SIZE);
 
+        public static void Init () {}
+
         public static void CancelAnalyze ()
         {
             ad.CancelDecode ();

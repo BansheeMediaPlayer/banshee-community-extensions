@@ -59,6 +59,7 @@ namespace Banshee.Mirage
         {
             action_service = ServiceManager.Get<InterfaceActionService> ();
 
+            Analyzer.Init ();
             TrackAnalysis.Init ();
             MigrateLegacyDb ();
             DistanceCalculator.Init ();

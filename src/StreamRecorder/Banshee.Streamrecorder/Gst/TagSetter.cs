@@ -27,38 +27,33 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
 
-
-using Mono.Addins;
-
-using Hyena;
 namespace Banshee.Streamrecorder.Gst
 {
-	
-	public class TagSetter : GstObject
-	{
-		
-		public TagSetter(IntPtr tagsetter) : base (tagsetter) {}
-		
-		[DllImport ("libgstreamer-0.10.so.0")]
-		private static extern GLib.GType gst_tag_setter_get_type ();
 
-		new public static GLib.GType GetType ()
-		{
-			return gst_tag_setter_get_type ();
-		}		
+    public class TagSetter : GstObject
+    {
 
-		[DllImport ("libgstreamer-0.10.so.0")]
-        private static extern unsafe void gst_tag_setter_merge_tags (IntPtr tagsetter, IntPtr taglist, TagMergeMode mode);
+        public TagSetter (IntPtr tagsetter) : base(tagsetter)
+        {
+        }
 
-		public void MergeTags(TagList taglist, Gst.TagMergeMode mode)
-		{
-			gst_tag_setter_merge_tags(raw, taglist.ToIntPtr (), mode);
-		}
+        [DllImport("libgstreamer-0.10.so.0")]
+        private static extern GLib.GType gst_tag_setter_get_type ();
 
-	}
+        public static new GLib.GType GetType ()
+        {
+            return gst_tag_setter_get_type ();
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe private static extern void gst_tag_setter_merge_tags (IntPtr tagsetter, IntPtr taglist, TagMergeMode mode);
+
+        public void MergeTags (TagList taglist, Gst.TagMergeMode mode)
+        {
+            gst_tag_setter_merge_tags (raw, taglist.ToIntPtr (), mode);
+        }
+        
+    }
 }

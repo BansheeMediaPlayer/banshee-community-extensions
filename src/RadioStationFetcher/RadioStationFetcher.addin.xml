@@ -4,9 +4,9 @@
     version="0.1"
     compatVersion="1.0"
     copyright="© 2009 Akseli Mantila. Licensed under the MIT X11 license."
-    name="RadioStationFetcher service"
+    name="Radio Station Fetcher"
     category="Community Extensions"
-    description="Allows user to fetch radiostations from services like www.shoutcast.com"
+    description="Fetch internet radio stations from services like shoutcast.com."
     author="Akseli Mantila"
     url="http://aksussummerofcode.blogspot.com/"
     defaultEnabled="false">

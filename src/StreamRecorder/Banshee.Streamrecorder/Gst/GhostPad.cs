@@ -27,32 +27,27 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
 
-
-using Mono.Addins;
-
-using Hyena;
 namespace Banshee.Streamrecorder.Gst
 {
 
-	public class GhostPad : Pad
-	{
-		
-		public GhostPad(IntPtr ghostpad) : base (ghostpad) {}
+    public class GhostPad : Pad
+    {
 
-		[DllImport ("libgstreamer-0.10.so.0")]
-        private static extern unsafe IntPtr gst_ghost_pad_new (IntPtr name, IntPtr target);
-        
-        public GhostPad(string name, Pad target) : base (IntPtr.Zero)
+        public GhostPad (IntPtr ghostpad) : base(ghostpad)
         {
-			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-			this.raw = gst_ghost_pad_new(native_name, target.ToIntPtr ());
-			GLib.Marshaller.Free (native_name);
-		}
+        }
 
-	}
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe private static extern IntPtr gst_ghost_pad_new (IntPtr name, IntPtr target);
+
+        public GhostPad (string name, Pad target) : base(IntPtr.Zero)
+        {
+            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+            this.raw = gst_ghost_pad_new (native_name, target.ToIntPtr ());
+            GLib.Marshaller.Free (native_name);
+        }
+        
+    }
 }

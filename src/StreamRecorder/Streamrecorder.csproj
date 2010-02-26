@@ -52,7 +52,6 @@
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Mono.Posix" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Mono.Cairo" />
     <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
     </Reference>
     <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
@@ -65,6 +64,9 @@
       <Package>banshee-1-thickclient</Package>
     </Reference>
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Banshee.Widgets, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-thickclient</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Banshee.Streamrecorder.addin.xml">
@@ -72,6 +74,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StreamrecorderMenu.xml">
       <LogicalName>StreamrecorderMenu.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\StreamrecorderButton.xml">
+      <LogicalName>StreamrecorderButton.xml</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

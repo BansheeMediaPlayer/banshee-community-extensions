@@ -11,9 +11,8 @@ INCLUDES = \
 if ENABLE_MIRAGE
 noinst_PROGRAMS = mirageaudiotest
 
-mirageaudiolibdir = $(expanded_libdir)
+mirageaudiolibdir = $(EXTENSION_DIR)
 mirageaudiolib_LTLIBRARIES = libmirageaudio.la
-endif
 
 libmirageaudio_la_LDFLAGS = -avoid-version -module
 libmirageaudio_la_SOURCES = \
@@ -31,6 +30,14 @@ mirageaudiotest_SOURCES = \
 mirageaudiotest_LDADD = \
 	libmirageaudio.la
 
+all: $(top_builddir)/bin/libmirageaudio.so
+
+$(top_builddir)/bin/libmirageaudio.so: libmirageaudio.la
+	mkdir -p $(top_builddir)/bin
+	cp -f .libs/libmirageaudio.so $@
+endif
+
+CLEANFILES = $(top_builddir)/bin/libmirageaudio.so
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = $(libmirageaudio_la_SOURCES)
 

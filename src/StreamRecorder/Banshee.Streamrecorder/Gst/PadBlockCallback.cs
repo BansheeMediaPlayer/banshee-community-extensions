@@ -27,89 +27,82 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
-
-using System.Text.RegularExpressions;
-
-using Mono.Addins;
-
-using Banshee.ServiceStack;
-using Banshee.Collection;
-
-using Hyena;
 
 namespace Banshee.Streamrecorder.Gst
 {
-	
-	public delegate void PadBlockCallback(IntPtr pad, bool blocked, IntPtr user_data);
-    
-    [UnmanagedFunctionPointer (CallingConvention.Cdecl)]
-	internal delegate void PadBlockCallbackNative(IntPtr pad, bool blocked, IntPtr user_data);
 
-	internal class PadBlockCallbackInvoker {
+    public delegate void PadBlockCallback (IntPtr pad, bool blocked, IntPtr user_data);
 
-		PadBlockCallbackNative native_cb;
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal delegate void PadBlockCallbackNative (IntPtr pad, bool blocked, IntPtr user_data);
 
-		~PadBlockCallbackInvoker () {}
+    internal class PadBlockCallbackInvoker
+    {
 
-		internal PadBlockCallbackInvoker (PadBlockCallbackNative native_cb) {}
+        PadBlockCallbackNative native_cb;
 
-		internal PadBlockCallback Handler {
-			get {
-				return new PadBlockCallback(InvokeNative);
-			}
-		}
+        ~PadBlockCallbackInvoker ()
+        {
+        }
 
-		void InvokeNative (IntPtr pad, bool blocked, IntPtr user_data)
-		{
-			native_cb (pad, blocked, user_data);
-		}
-	}
+        internal PadBlockCallbackInvoker (PadBlockCallbackNative native_cb)
+        {
+            this.native_cb = native_cb;
+        }
 
-	internal class PadBlockCallbackWrapper {
+        internal PadBlockCallback Handler {
+            get { return new PadBlockCallback (InvokeNative); }
+        }
 
-		public void NativeCallback (IntPtr pad, bool blocked, IntPtr user_data)
-		{
-			try {
-				managed (pad, blocked, user_data);
-				if (release_on_call)
-					gch.Free ();
-			} catch (Exception e) {
-				GLib.ExceptionManager.RaiseUnhandledException (e, false);
-			}
-		}
+        void InvokeNative (IntPtr pad, bool blocked, IntPtr user_data)
+        {
+            native_cb (pad, blocked, user_data);
+        }
+    }
 
-		bool release_on_call = false;
-		GCHandle gch;
+    internal class PadBlockCallbackWrapper
+    {
 
-		public void PersistUntilCalled ()
-		{
-			release_on_call = true;
-			gch = GCHandle.Alloc (this);
-		}
+        public void NativeCallback (IntPtr pad, bool blocked, IntPtr user_data)
+        {
+            try {
+                managed (pad, blocked, user_data);
+                if (release_on_call)
+                    gch.Free ();
+            } catch (Exception e) {
+                GLib.ExceptionManager.RaiseUnhandledException (e, false);
+            }
+        }
 
-		internal PadBlockCallbackNative NativeDelegate;
-		PadBlockCallback managed;
+        bool release_on_call = false;
+        GCHandle gch;
 
-		public PadBlockCallbackWrapper (PadBlockCallback managed)
-		{
-			this.managed = managed;
-			if (managed != null)
-				NativeDelegate = new PadBlockCallbackNative (NativeCallback);
-		}
+        public void PersistUntilCalled ()
+        {
+            release_on_call = true;
+            gch = GCHandle.Alloc (this);
+        }
 
-		public static PadBlockCallback GetManagedDelegate (PadBlockCallbackNative native)
-		{
-			if (native == null)
-				return null;
-			PadBlockCallbackWrapper wrapper = (PadBlockCallbackWrapper) native.Target;
-			if (wrapper == null)
-				return null;
-			return wrapper.managed;
-		}
+        internal PadBlockCallbackNative NativeDelegate;
+        PadBlockCallback managed;
 
-	}
+        public PadBlockCallbackWrapper (PadBlockCallback managed)
+        {
+            this.managed = managed;
+            if (managed != null)
+                NativeDelegate = new PadBlockCallbackNative (NativeCallback);
+        }
+
+        public static PadBlockCallback GetManagedDelegate (PadBlockCallbackNative native)
+        {
+            if (native == null)
+                return null;
+            PadBlockCallbackWrapper wrapper = (PadBlockCallbackWrapper)native.Target;
+            if (wrapper == null)
+                return null;
+            return wrapper.managed;
+        }
+        
+    }
 }

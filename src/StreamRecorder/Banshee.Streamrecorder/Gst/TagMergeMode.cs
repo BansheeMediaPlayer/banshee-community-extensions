@@ -30,17 +30,18 @@ using System;
 
 namespace Banshee.Streamrecorder.Gst
 {
-	
-	public enum TagMergeMode {
 
-		Undefined,
-		ReplaceAll,
-		Replace,
-		Append,
-		Prepend,
-		Keep,
-		KeepAll,
-		Count,
-	}
+    public enum TagMergeMode
+    {
 
+        Undefined,
+        ReplaceAll,
+        Replace,
+        Append,
+        Prepend,
+        Keep,
+        KeepAll,
+        Count
+    }
+    
 }

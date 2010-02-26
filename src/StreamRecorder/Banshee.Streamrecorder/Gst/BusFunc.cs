@@ -27,92 +27,85 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
-
-using System.Text.RegularExpressions;
-
-using Mono.Addins;
-
-using Banshee.ServiceStack;
-using Banshee.Collection;
-
-using Hyena;
 
 namespace Banshee.Streamrecorder.Gst
 {
-	
-	public delegate bool BusFunc(IntPtr bus, IntPtr message, IntPtr user_data);
 
-	[UnmanagedFunctionPointer (CallingConvention.Cdecl)]
-	internal delegate bool BusFuncNative(IntPtr bus, IntPtr message, IntPtr user_data);
+    public delegate bool BusFunc (IntPtr bus, IntPtr message, IntPtr user_data);
 
-	internal class BusFuncInvoker {
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal delegate bool BusFuncNative (IntPtr bus, IntPtr message, IntPtr user_data);
 
-		BusFuncNative native_cb;
+    internal class BusFuncInvoker
+    {
 
-		~BusFuncInvoker () {}
+        BusFuncNative native_cb;
 
-		internal BusFuncInvoker (BusFuncNative native_cb) {}
+        ~BusFuncInvoker ()
+        {
+        }
 
-		internal Gst.BusFunc Handler {
-			get {
-				return new Gst.BusFunc(InvokeNative);
-			}
-		}
+        internal BusFuncInvoker (BusFuncNative native_cb)
+        {
+            this.native_cb = native_cb;
+        }
 
-		bool InvokeNative (IntPtr bus, IntPtr message, IntPtr user_data)
-		{
-			bool result = native_cb (bus, message , user_data);
-			return result;
-		}
-	}
+        internal Gst.BusFunc Handler {
+            get { return new Gst.BusFunc (InvokeNative); }
+        }
 
-	internal class BusFuncWrapper {
+        bool InvokeNative (IntPtr bus, IntPtr message, IntPtr user_data)
+        {
+            bool result = native_cb (bus, message, user_data);
+            return result;
+        }
+    }
 
-		public bool NativeCallback (IntPtr bus, IntPtr message, IntPtr user_data)
-		{
-			try {
-				bool __ret = managed (bus, message, user_data);
-				if (release_on_call)
-					gch.Free ();
-				return __ret;
-			} catch (Exception e) {
-				GLib.ExceptionManager.RaiseUnhandledException (e, false);
-				return false;
-			}
-		}
+    internal class BusFuncWrapper
+    {
 
-		bool release_on_call = false;
-		GCHandle gch;
+        public bool NativeCallback (IntPtr bus, IntPtr message, IntPtr user_data)
+        {
+            try {
+                bool __ret = managed (bus, message, user_data);
+                if (release_on_call)
+                    gch.Free ();
+                return __ret;
+            } catch (Exception e) {
+                GLib.ExceptionManager.RaiseUnhandledException (e, false);
+                return false;
+            }
+        }
 
-		public void PersistUntilCalled ()
-		{
-			release_on_call = true;
-			gch = GCHandle.Alloc (this);
-		}
+        bool release_on_call = false;
+        GCHandle gch;
 
-		internal BusFuncNative NativeDelegate;
-		BusFunc managed;
+        public void PersistUntilCalled ()
+        {
+            release_on_call = true;
+            gch = GCHandle.Alloc (this);
+        }
 
-		public BusFuncWrapper (Gst.BusFunc managed)
-		{
-			this.managed = managed;
-			if (managed != null)
-				NativeDelegate = new BusFuncNative (NativeCallback);
-		}
+        internal BusFuncNative NativeDelegate;
+        BusFunc managed;
 
-		public static BusFunc GetManagedDelegate (BusFuncNative native)
-		{
-			if (native == null)
-				return null;
-			BusFuncWrapper wrapper = (BusFuncWrapper) native.Target;
-			if (wrapper == null)
-				return null;
-			return wrapper.managed;
-		}
-	}
+        public BusFuncWrapper (Gst.BusFunc managed)
+        {
+            this.managed = managed;
+            if (managed != null)
+                NativeDelegate = new BusFuncNative (NativeCallback);
+        }
 
+        public static BusFunc GetManagedDelegate (BusFuncNative native)
+        {
+            if (native == null)
+                return null;
+            BusFuncWrapper wrapper = (BusFuncWrapper)native.Target;
+            if (wrapper == null)
+                return null;
+            return wrapper.managed;
+        }
+    }
+    
 }

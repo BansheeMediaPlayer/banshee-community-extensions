@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveRadio", "src\LiveRadio\LiveRadio.csproj", "{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCD", "src\LCD\LCD.csproj", "{B03D0959-A746-46E0-9D70-400CAD5ABA23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlarmClock", "src\AlarmClock\AlarmClock.csproj", "{8850F596-7FD9-4583-A524-BAFEDD1F474C}"
@@ -26,6 +28,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Awn", "src\Awn\Awn.csproj", "{5CDB25E4-4CB8-413B-BF94-91406867EEEF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Streamrecorder", "src\StreamRecorder\Streamrecorder.csproj", "{176AB141-4CC8-4E64-87FF-69C5D32A1A99}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lirc", "Lirc", "{B0F00CD8-CE0A-4231-9BC9-1B0B2F8984DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.Lirc", "src\Lirc\Banshee.Lirc\Banshee.Lirc.csproj", "{A8659C27-52A7-4DC5-8F86-43D59F5D6E30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.CoverWallpaper", "src\CoverWallpaper\Banshee.CoverWallpaper.csproj", "{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +65,18 @@ Global
 		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Debug|x86.Build.0 = Debug|Any CPU
 		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Release|x86.ActiveCfg = Release|Any CPU
 		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Release|x86.Build.0 = Release|Any CPU
+		{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}.Debug|x86.Build.0 = Debug|Any CPU
+		{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}.Release|x86.ActiveCfg = Release|Any CPU
+		{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}.Release|x86.Build.0 = Release|Any CPU
+		{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}.Debug|x86.Build.0 = Debug|Any CPU
+		{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}.Release|x86.ActiveCfg = Release|Any CPU
+		{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}.Release|x86.Build.0 = Release|Any CPU
+		{A8659C27-52A7-4DC5-8F86-43D59F5D6E30}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A8659C27-52A7-4DC5-8F86-43D59F5D6E30}.Debug|x86.Build.0 = Debug|Any CPU
+		{A8659C27-52A7-4DC5-8F86-43D59F5D6E30}.Release|x86.ActiveCfg = Release|Any CPU
+		{A8659C27-52A7-4DC5-8F86-43D59F5D6E30}.Release|x86.Build.0 = Release|Any CPU
 		{B03D0959-A746-46E0-9D70-400CAD5ABA23}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{B03D0959-A746-46E0-9D70-400CAD5ABA23}.Debug|x86.Build.0 = Debug|Any CPU
 		{B03D0959-A746-46E0-9D70-400CAD5ABA23}.Release|x86.ActiveCfg = Release|Any CPU
@@ -84,6 +104,7 @@ Global
 		{D8618AEA-5F05-48DE-86BB-0A1F601AE5DC} = {FA8A4EFB-2E20-4880-8053-3DEAF3F4B2E1}
 		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0} = {C54CC0D3-C05D-4A06-9918-5BF9B61C35BF}
 		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024} = {C54CC0D3-C05D-4A06-9918-5BF9B61C35BF}
+		{A8659C27-52A7-4DC5-8F86-43D59F5D6E30} = {B0F00CD8-CE0A-4231-9BC9-1B0B2F8984DE}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = src\AlarmClock\AlarmClock.csproj

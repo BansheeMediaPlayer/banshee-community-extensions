@@ -1,7 +1,7 @@
 <Addin
     id="Banshee.Lyrics"
     name="Lyrics"
-    description="Fetch song lyrics"
+    description="View lyrics for the currently playing song in the context pane."
     category="Community Extensions"
     copyright="© 2009 Christian Martellini. Licensed under the MIT X11 license."
     author = "Christian Martellini"

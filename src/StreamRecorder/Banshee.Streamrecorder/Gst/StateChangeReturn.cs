@@ -30,13 +30,14 @@ using System;
 
 namespace Banshee.Streamrecorder.Gst
 {
-	
-	public enum StateChangeReturn {
 
-		Failure,
-		Success = 1,
-		Async = 2,
-		NoPreroll = 3,
-	}
+    public enum StateChangeReturn
+    {
 
+        Failure,
+        Success = 1,
+        Async = 2,
+        NoPreroll = 3
+    }
+    
 }

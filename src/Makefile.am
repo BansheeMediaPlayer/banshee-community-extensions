@@ -2,7 +2,10 @@ SUBDIRS = \
 	AlarmClock \
 	Awn \
 	ClutterFlow \
+	CoverWallpaper \
 	LCD \
+	Lirc \
+	LiveRadio \
 	Lyrics \
 	Mirage \
 	RadioStationFetcher \

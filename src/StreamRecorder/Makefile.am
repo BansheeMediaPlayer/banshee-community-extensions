@@ -32,6 +32,7 @@ SOURCES =  \
 
 RESOURCES =  \
 	Banshee.Streamrecorder.addin.xml \
+	Resources/StreamrecorderButton.xml \
 	Resources/StreamrecorderMenu.xml
 
 if ENABLE_STREAMRECORDER

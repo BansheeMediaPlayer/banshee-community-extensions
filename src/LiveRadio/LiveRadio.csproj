@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <ProjectGuid>{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
+    <AssemblyName>Banshee.LiveRadio</AssemblyName>
+    <SchemaVersion>2.0</SchemaVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <Optimize>true</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <RootNamespace>LiveRadio</RootNamespace>
+    <AssemblyOriginatorKeyFile>.</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OutputPath>..\..\..\bin</OutputPath>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Build" command="make" workingdir="${SolutionDir}" />
+        <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
+      </CustomCommands>
+    </CustomCommands>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OutputPath>..\..\..\bin</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Posix" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Cairo">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Banshee.ThickClient, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-thickclient</Package>
+    </Reference>
+    <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-services</Package>
+    </Reference>
+    <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-core</Package>
+    </Reference>
+    <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-hyena</Package>
+    </Reference>
+    <Reference Include="Hyena.Gui, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-hyena-gui</Package>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="LiveRadio.addin.xml">
+      <LogicalName>LiveRadio.addin.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ActiveSourceUI.xml">
+      <LogicalName>ActiveSourceUI.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\GlobalUI.xml">
+      <LogicalName>GlobalUI.xml</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Banshee.LiveRadio\LiveRadioSource.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\ILiveRadioPlugin.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\ShoutCastPlugin.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\XiphOrgPlugin.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\LiveRadioBasePlugin.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPluginSourceContents.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPluginSource.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPluginManager.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioFilterView.cs" />
+    <Compile Include="Banshee.LiveRadio\GenreListModel.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\Live365Plugin.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\Genre.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="./Makefile.am">
+          <BuildFilesVar Sync="true" Name="SOURCES" />
+          <DeployFilesVar />
+          <ResourcesVar Sync="true" Name="RESOURCES" />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="Banshee.LiveRadio\LiveRadioPlugins\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+</Project>

@@ -30,14 +30,15 @@ using System;
 
 namespace Banshee.Streamrecorder.Gst
 {
-	
-	public enum State {
 
-		VoidPending,
-		Null = 1,
-		Ready = 2,
-		Paused = 3,
-		Playing = 4,
-	}
+    public enum State
+    {
 
+        VoidPending,
+        Null = 1,
+        Ready = 2,
+        Paused = 3,
+        Playing = 4
+    }
+    
 }

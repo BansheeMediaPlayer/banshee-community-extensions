@@ -27,52 +27,44 @@
 //
 
 using System;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
 
-
-using Mono.Addins;
-
-using Hyena;
 namespace Banshee.Streamrecorder.Gst
 {
 
-	
-	
-	public class Bus : GstObject
-	{
-		
-		public Bus(IntPtr bus) : base (bus) {}
+    public class Bus : GstObject
+    {
 
-        [DllImport ("libgstreamer-0.10.so.0")]
-		public static extern IntPtr gst_bus_pop (IntPtr bus);
-		
-		protected IntPtr Pop()
-		{
-			return gst_bus_pop(raw);
-		}
-		
-		public GLib.Value PopMessageStructure(string name)
-		{
-			IntPtr structure = Gst.Marshaller.gst_message_get_structure(Pop ());
-			if (structure == IntPtr.Zero)
-			{
-				return new GLib.Value(IntPtr.Zero);
-			}
-			IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-			GLib.Value val = Gst.Marshaller.gst_structure_get_value(structure, native_name);
-			GLib.Marshaller.Free(native_name);
-			return val;
-		}
+        public Bus (IntPtr bus) : base(bus)
+        {
+        }
 
-        [DllImport ("libgstreamer-0.10.so.0")]
-        public static extern unsafe void gst_bus_add_signal_watch (IntPtr bus);
+        [DllImport("libgstreamer-0.10.so.0")]
+        public static extern IntPtr gst_bus_pop (IntPtr bus);
 
-		public void AddSignalWatch ()
-		{
-			gst_bus_add_signal_watch(raw);
-		}
-	}
+        protected IntPtr Pop ()
+        {
+            return gst_bus_pop (raw);
+        }
+
+        public GLib.Value PopMessageStructure (string name)
+        {
+            IntPtr structure = Gst.Marshaller.gst_message_get_structure (Pop ());
+            if (structure == IntPtr.Zero) {
+                return new GLib.Value (IntPtr.Zero);
+            }
+            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+            GLib.Value val = Gst.Marshaller.gst_structure_get_value (structure, native_name);
+            GLib.Marshaller.Free (native_name);
+            return val;
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe public static extern void gst_bus_add_signal_watch (IntPtr bus);
+
+        public void AddSignalWatch ()
+        {
+            gst_bus_add_signal_watch (raw);
+        }
+    }
 }

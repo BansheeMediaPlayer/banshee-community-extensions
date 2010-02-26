@@ -30,11 +30,12 @@ using System;
 
 namespace Banshee.Streamrecorder.Gst
 {
-	
-		public enum PadDirection {
-		Unknown,
-		Source,
-		Sink
-	} 
 
+    public enum PadDirection
+    {
+        Unknown,
+        Source,
+        Sink
+    }
+    
 }

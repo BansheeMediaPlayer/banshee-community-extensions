@@ -2,11 +2,11 @@
 <Addin 
     id="Banshee.Mirage"
     version="0.1"
-    copyright="© 2007 Dominik Schnitzer. Licensed under the GPL license."
-    name="Mirage Automatic Playlist Generator"
+    copyright="© 2007 Dominik Schnitzer. Copyright 2010 Novell, Inc.  Licensed under the GPL license."
+    name="Mirage Similarity Engine"
     category="Community Extensions"
-    description="Drag a song on the automatic playlist generator, Mirage will then try to automatically generate a playlist of similar songs. Mirage only looks at the audio signal!"
-    author="Dominik Schnitzer, Bertrand Lorentz"
+    description="Adds playback shuffle-by-similar and Auto DJ fill-by-similar modes, based on songs' acoustic similarity."
+    author="Dominik Schnitzer, Bertrand Lorentz, Gabriel Burt"
     url="http://hop.at/mirage/"
     defaultEnabled="false">
 

@@ -1,1 +1,2 @@
 build/extension-template/Banshee.Template/TemplateSource.cs
+src/Lirc/GUITestHarness/gtk-gui/MainWindow.cs

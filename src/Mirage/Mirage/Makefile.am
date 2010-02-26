@@ -20,6 +20,8 @@ RESOURCES =  \
 
 if ENABLE_MIRAGE
 include $(top_srcdir)/build/build.mk
+EXTRA_DIST += Mirage.dll.config
+module_DATA = Mirage.dll.config
 else
 EXTRA_DIST = $(SOURCES) $(RESOURCES)
 endif

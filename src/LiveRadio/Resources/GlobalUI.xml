@@ -1,0 +1,6 @@
+<ui>
+    <popup name="LiveRadioContextMenu">
+        <menuitem name="AddToInternetRadio" action="AddToInternetRadioAction"/>
+        <menu name="SortChildren" action="SortChildrenAction" />
+    </popup>
+</ui>
