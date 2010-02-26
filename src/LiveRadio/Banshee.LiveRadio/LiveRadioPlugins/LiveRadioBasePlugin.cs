@@ -100,8 +100,8 @@ namespace Banshee.LiveRadio.Plugins
         void DoExecuteRequest (object sender, DoWorkEventArgs e)
         {
             LiveRadioRequestObject request_object = e.Argument as LiveRadioRequestObject;
-            RetrieveRequest (request_object.request_type, request_object.query);
             e.Result = request_object;
+            RetrieveRequest (request_object.request_type, request_object.query);
         }
 
         public void RetrieveGenreList ()
@@ -114,8 +114,6 @@ namespace Banshee.LiveRadio.Plugins
 
         void DoRetrieveGenreList (object sender, DoWorkEventArgs e)
         {
-            lock (this)
-                ;
             RetrieveGenres ();
         }
 
@@ -133,10 +131,11 @@ namespace Banshee.LiveRadio.Plugins
         {
             Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<OnDoExecuteRequestFinished> START", Name);
             BackgroundWorker request_thread = sender as BackgroundWorker;
+            LiveRadioRequestObject request_object = e.Result as LiveRadioRequestObject;
+            Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<OnDoExecuteRequestFinished> raising", Name);
+            RaiseRequestResultRetrieved (request_object.request_type, request_object.query);
             request_thread.DoWork -= DoExecuteRequest;
             request_thread.RunWorkerCompleted -= OnDoExecuteRequestFinished;
-            LiveRadioRequestObject request_object = e.Result as LiveRadioRequestObject;
-            RaiseRequestResultRetrieved (request_object.request_type, request_object.query);
             Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<OnDoExecuteRequestFinished> END", Name);
         }
 
@@ -185,6 +184,7 @@ namespace Banshee.LiveRadio.Plugins
 
         public void RaiseRequestResultRetrieved (LiveRadioRequestType request_type, string query)
         {
+            Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> START query: {0}", query);
             List<DatabaseTrackInfo> result;
             try {
                 if (request_type == LiveRadioRequestType.ByGenre) {

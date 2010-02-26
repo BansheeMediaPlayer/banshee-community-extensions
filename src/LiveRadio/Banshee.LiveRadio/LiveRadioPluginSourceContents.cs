@@ -169,6 +169,7 @@ namespace Banshee.LiveRadio
                     faketrack.TrackTitle = Catalog.GetString("Error... Please Reload");
                     faketrack.ArtistName = Catalog.GetString("Error... Please Reload");
                     faketrack.AlbumArtist = Catalog.GetString("Error... Please Reload");
+                    faketrack.Uri = new Banshee.Base.SafeUri ("http://test.com/test.pls");
 
                     fakeresult.Add (faketrack);
                     plugin.GetLiveRadioPluginSource ().SetStations (fakeresult);

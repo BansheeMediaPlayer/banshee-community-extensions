@@ -71,7 +71,7 @@ namespace Banshee.LiveRadio.Plugins
             }
             XmlDocument document = RetrieveXml(request);
             Log.Debug ("[Live365Plugin] <RetrieveRequest> Start Parsing");
-            ParseXmlResponse(document, request_type, query);
+            if (document != null) ParseXmlResponse(document, request_type, query);
         }
 
         protected XmlDocument RetrieveXml(string query)
@@ -100,9 +100,10 @@ namespace Banshee.LiveRadio.Plugins
 
                 return xml_response;
             }
-            finally {
-                Log.Debug ("[Live365Plugin] <RetrieveXml> End");
+            catch (Exception e) {
+                Log.DebugFormat ("[Live365Plugin] <RetrieveXml> Error:" + e.Message);
             }
+            return null;
         }
 
         private void ParseGenres(XmlDocument doc)
