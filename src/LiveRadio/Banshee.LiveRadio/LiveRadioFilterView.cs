@@ -60,11 +60,9 @@ namespace Banshee.LiveRadio
             Column genre_column = new Column (new ColumnDescription (null, Catalog.GetString ("Choose By Genre"), 100));
             genre_view.ColumnController = new ColumnController ();
             genre_view.ColumnController.Add (genre_column);
-            genre_view.RowActivated += OnViewGenreActivated;
             List<string> stringlist = new List<string> ();
             stringlist.Add (Catalog.GetString ("Loading..."));
             genre_view.SetModel (new GenreListModel (stringlist));
-            //genre_view.HeaderVisible = false;
             genre_view.Model.Selection.FocusChanged += OnViewGenreSelected;
             
             Label query_label = new Label (Catalog.GetString ("Choose By Query"));
@@ -80,8 +78,6 @@ namespace Banshee.LiveRadio
             this.PackStart (SetupView (genre_view), true, true, 0);
             this.PackStart (query_label, false, true, 0);
             this.PackStart (query_box, false, true, 5);
-            
-            this.Sensitive = false;
         }
 
         void OnInputKeyReleaseEvent (object o, KeyReleaseEventArgs args)
@@ -112,27 +108,16 @@ namespace Banshee.LiveRadio
                                    model[genre_view.Model.Selection.FocusedIndex]);
         }
 
-        void OnViewGenreActivated (object o, RowActivatedArgs<string> args)
-        {
-            GenreListModel model = genre_view.Model as GenreListModel;
-            model.SetSelection (args.Row);
-            RaiseGenreActivated (model[genre_view.Model.Selection.FocusedIndex]);
-            Hyena.Log.DebugFormat ("[LiveRadioFilterView]<OnSelectGenreNotify> doubleclicked entry: {0}",
-                                   model[model.Selection.FocusedIndex]);
-        }
-
         public void UpdateGenres (List<string> newlist)
         {
             GenreListModel model = genre_view.Model as GenreListModel;
             model.SetList (newlist);
-            this.Sensitive = true;
         }
 
         private ScrolledWindow SetupView (Widget view)
         {
             ScrolledWindow window = null;
             
-            //if (!Banshee.Base.ApplicationContext.CommandLine.Contains ("no-smooth-scroll")) {
             if (ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
                 window = new SmoothScrolledWindow ();
             } else {

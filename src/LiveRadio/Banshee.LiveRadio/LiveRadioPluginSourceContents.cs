@@ -160,15 +160,35 @@ namespace Banshee.LiveRadio
             if ((request_type == LiveRadioRequestType.ByFreetext)
                 || (filter_box.GetSelectedGenre ().Equals (request) && request_type == LiveRadioRequestType.ByGenre))
             {
-                plugin.GetLiveRadioPluginSource ().SetStations (result);
+                if (result.Count > 0) {
+                    plugin.GetLiveRadioPluginSource ().SetStations (result);
+                    main_scrolled_window.Sensitive = true;
+                } else {
+                    List<DatabaseTrackInfo> fakeresult = new List<DatabaseTrackInfo> ();
+                    DatabaseTrackInfo faketrack = new DatabaseTrackInfo ();
+                    faketrack.TrackTitle = Catalog.GetString("Error... Please Reload");
+                    faketrack.ArtistName = Catalog.GetString("Error... Please Reload");
+                    faketrack.AlbumArtist = Catalog.GetString("Error... Please Reload");
+
+                    fakeresult.Add (faketrack);
+                    plugin.GetLiveRadioPluginSource ().SetStations (fakeresult);
+                    main_scrolled_window.Sensitive = false;
+                }
             }
         }
 
         void OnPluginGenreListLoaded (object sender, List<string> genres)
         {
             Hyena.Log.Debug ("[LiverRadioPluginSourceContenst]<OnPluginGenreListLoaded> handling genrelistloaded");
-            if (genres.Count > 0)
+            if (genres.Count > 0) {
                 filter_box.UpdateGenres (genres);
+                filter_box.Sensitive = true;
+            } else {
+                List<string> fakeresult = new List<string> ();
+                fakeresult.Add (Catalog.GetString("Error... Please Reload"));
+                filter_box.UpdateGenres (fakeresult);
+                filter_box.Sensitive = false;
+            }
         }
 
         protected void InitializeViews ()
@@ -179,6 +199,7 @@ namespace Banshee.LiveRadio
         protected void SetupMainView<T> (ListView<T> main_view)
         {
             main_scrolled_window = SetupView (main_view);
+            main_scrolled_window.Sensitive = false;
         }
 
         private ScrolledWindow SetupView (Widget view)
@@ -230,10 +251,11 @@ namespace Banshee.LiveRadio
             
             container = GetPane (!top);
             filter_box = new LiveRadioFilterView ();
+            filter_box.Sensitive = false;
             filter_box.GenreSelected += OnViewGenreSelected;
             filter_box.GenreActivated += OnViewGenreSelected;
             filter_box.QuerySent += OnViewQuerySent;
-            
+
             VBox vbx = new VBox ();
             Label help_label = new Label (
                   Catalog.GetString ("Click to load cached entries, double click to retrieve information from internet."));

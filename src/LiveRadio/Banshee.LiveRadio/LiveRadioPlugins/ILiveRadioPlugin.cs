@@ -37,7 +37,6 @@ namespace Banshee.LiveRadio.Plugins
     {
         event GenreListLoadedEventHandler GenreListLoaded;
         event RequestResultRetrievedEventHandler RequestResultRetrieved;
-        event RequestResultRetrievedEventHandler RequestResultRefreshRetrieved;
 
         string GetName ();
 

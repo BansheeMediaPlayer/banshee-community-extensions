@@ -42,6 +42,7 @@ using Gtk;
 using Hyena;
 
 using Banshee.LiveRadio.Plugins;
+using Banshee.Collection.Database;
 
 namespace Banshee.LiveRadio
 {
@@ -74,29 +75,24 @@ namespace Banshee.LiveRadio
             
             InterfaceActionService uia_service = ServiceManager.Get<InterfaceActionService> ();
             uia_service.GlobalActions.AddImportant (
-                        new ActionEntry ("AddToFavoritesAction",
-                                          Stock.Add, Catalog.GetString ("Add To Favorites"), null,
-                                          Catalog.GetString ("Add stream to Favorites"),
-                                          OnAddToFavorites));
+                        new ActionEntry ("RefreshLiveRadioAction",
+                                          Stock.Add, Catalog.GetString ("Refresh View"), null,
+                                          Catalog.GetString ("Refresh View"),
+                                          OnRefreshPlugin));
             uia_service.GlobalActions.AddImportant (
                         new ActionEntry ("AddToInternetRadioAction",
                                           Stock.Add, Catalog.GetString ("Add To Internet Radio"), null,
                                           Catalog.GetString ("Add stream as Internet Radio Station"),
                                           OnAddToInternetRadio));
-            uia_service.GlobalActions.AddImportant (
-                        new ActionEntry ("FindSimilarStreamsAction",
-                                          Stock.Find, Catalog.GetString ("Find Similar Streams"), null,
-                                          Catalog.GetString ("Find Streams Similar to this one"),
-                                          OnFindSimilar));
-            
+
             ui_global_id = uia_service.UIManager.AddUiFromResource ("GlobalUI.xml");
             
             Properties.SetString ("ActiveSourceUIResource", "ActiveSourceUI.xml");
             Properties.Set<bool> ("ActiveSourceUIResourcePropagate", true);
-            Properties.Set<System.Reflection.Assembly> ("ActiveSourceUIResource.Assembly", typeof(LiveRadioPluginSource).Assembly);
+            Properties.Set<System.Reflection.Assembly> ("ActiveSourceUIResource.Assembly", typeof(LiveRadioSource).Assembly);
             
             
-            Properties.SetString ("GtkActionPath", "/LiveRadioContextMenu");
+            //Properties.SetString ("GtkActionPath", "/LiveRadioContextMenu");
             
             Properties.Set<bool> ("Nereid.SourceContentsPropagate", true);
             
@@ -171,19 +167,36 @@ namespace Banshee.LiveRadio
             
         }
 
-        protected void OnAddToFavorites (object o, EventArgs e)
+        protected void OnRefreshPlugin (object o, EventArgs e)
         {
-            return;
+            LiveRadioPluginSource current_source = ServiceManager.SourceManager.ActiveSource as LiveRadioPluginSource;
+            if (current_source == null) return;
+            foreach (ILiveRadioPlugin plugin in plugins) {
+                if (plugin.GetLiveRadioPluginSource ().Equals (current_source)) {
+                    plugin.RetrieveGenreList ();
+                    return;
+                }
+            }
         }
 
         protected void OnAddToInternetRadio (object o, EventArgs e)
         {
-            return;
-        }
-
-        protected void OnFindSimilar (object o, EventArgs e)
-        {
-            return;
+            Log.Debug ("[LiveRadioSource]<OnAddToInternetRadio> START");
+            PrimarySource internet_radio_source = GetInternetRadioSource ();
+            PrimarySource current_source = ServiceManager.SourceManager.ActiveSource as PrimarySource;
+            if (current_source == null) {
+                Log.Debug ("[LiveRadioSource]<OnAddToInternetRadio> ActiveSource not Primary END");
+                return;
+            }
+            if (internet_radio_source == null) {
+                Log.Debug ("[LiveRadioSource]<OnAddToInternetRadio> Internet Radio not found END");
+                return;
+            }
+            //current_source.AddSelectedTracks(internet_radio_source);
+            DatabaseTrackInfo track = new DatabaseTrackInfo (current_source.TrackModel.FocusedItem as DatabaseTrackInfo);
+            track.PrimarySource = internet_radio_source;
+            track.Save ();
+            Log.Debug ("[LiveRadioSource]<OnAddToInternetRadio> END");
         }
 
         public override bool AcceptsInputFromSource (Source source)
@@ -211,6 +224,24 @@ namespace Banshee.LiveRadio
             get { return false; }
         }
         
+        protected PrimarySource GetInternetRadioSource ()
+        {
+            Log.Debug ("[LiveRadioPluginSource] <GetInternetRadioSource> Start");
+            
+            foreach (Source source in Banshee.ServiceStack.ServiceManager.SourceManager.Sources) {
+                Log.DebugFormat ("[LiveRadioPluginSource] <GetInternetRadioSource> Source: {0}", source.GenericName);
+                
+                if (source.UniqueId.Equals ("InternetRadioSource-internet-radio")) {
+                    return (PrimarySource)source;
+                }
+            }
+            
+            Log.Debug ("[LiveRadioPluginSource] <GetInternetRadioSource> Not found throwing exception");
+            throw new InternetRadioExtensionNotFoundException ();
+        }
     }
-    
+
+    public class InternetRadioExtensionNotFoundException : Exception
+    {
+    }
 }

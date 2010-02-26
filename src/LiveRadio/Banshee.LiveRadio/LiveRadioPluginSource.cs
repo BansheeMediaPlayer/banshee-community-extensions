@@ -133,7 +133,7 @@ namespace Banshee.LiveRadio
             Properties.Set<ISourceContents> ("Nereid.SourceContents", source_contents);
             
             this.PurgeTracks ();
-            
+
             Log.DebugFormat ("[LiveRadioPluginSource\"{0}\"]<Constructor> END", plugin.GetName ());
             
         }
@@ -275,31 +275,10 @@ namespace Banshee.LiveRadio
         }
 
         public override bool HasViewableTrackProperties {
-            get { return false; }
+            get { return true; }
         }
 
-        protected PrimarySource GetInternetRadioSource ()
-        {
-            Log.Debug ("[LiveRadioPluginSource] <GetInternetRadioSource> Start");
-            
-            foreach (Source source in Banshee.ServiceStack.ServiceManager.SourceManager.Sources) {
-                Log.DebugFormat ("[LiveRadioPluginSource] <GetInternetRadioSource> Source: {0}", source.GenericName);
-                
-                if (source.UniqueId.Equals ("InternetRadioSource-internet-radio")) {
-                    return (PrimarySource)source;
-                }
-            }
-            
-            Log.Debug ("[LiveRadioPluginSource] <GetInternetRadioSource> Not found throwing exception");
-            throw new InternetRadioExtensionNotFoundException ();
-        }
         
     }
 
-    public class InternetRadioExtensionNotFoundException : Exception
-    {
-    }
-    
-    
-    
 }

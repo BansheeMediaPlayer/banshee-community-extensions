@@ -56,7 +56,6 @@ namespace Banshee.LiveRadio.Plugins
 
         public event GenreListLoadedEventHandler GenreListLoaded;
         public event RequestResultRetrievedEventHandler RequestResultRetrieved;
-        public event RequestResultRetrievedEventHandler RequestResultRefreshRetrieved;
 
         public LiveRadioBasePlugin ()
         {
@@ -184,35 +183,21 @@ namespace Banshee.LiveRadio.Plugins
             }
         }
 
-        protected virtual void OnRequestResultRefreshRetrieved (LiveRadioRequestType request_type, string query, List<DatabaseTrackInfo> result)
-        {
-            RequestResultRetrievedEventHandler handler = RequestResultRefreshRetrieved;
-            if (handler != null) {
-                handler (this, query, request_type, result);
-            }
-        }
-
         public void RaiseRequestResultRetrieved (LiveRadioRequestType request_type, string query)
         {
             List<DatabaseTrackInfo> result;
-            if (request_type == LiveRadioRequestType.ByGenre) {
-                result = cached_results["Genre:" + query];
-            } else {
-                result = cached_results[query];
+            try {
+                if (request_type == LiveRadioRequestType.ByGenre) {
+                    result = cached_results["Genre:" + query];
+                } else {
+                    result = cached_results[query];
+                }
+            } catch (Exception e) {
+                result = new List<DatabaseTrackInfo> ();
+                Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> error {0}", e.Message);
             }
             Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> result contains {1} entries for query {2}", Name, result.Count, query);
             OnRequestResultRetrieved (request_type, query, result);
-        }
-
-        public void RaiseRequestResultRefreshRetrieved (LiveRadioRequestType request_type, string query)
-        {
-            List<DatabaseTrackInfo> result;
-            if (request_type == LiveRadioRequestType.ByGenre) {
-                result = cached_results["Genre:" + query];
-            } else {
-                result = cached_results[query];
-            }
-            OnRequestResultRefreshRetrieved (request_type, query, result);
         }
 
         public void RaiseGenreListLoaded ()
