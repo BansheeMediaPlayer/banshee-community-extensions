@@ -61,7 +61,7 @@ namespace Banshee.ClutterFlow
 		}
 	
 		public virtual string PbId {
-			get { return album.ArtworkId; }
+			get { return Album!=null ? Album.ArtworkId : "NOT FOUND"; }
 		}
 
 		public override string CacheKey {
