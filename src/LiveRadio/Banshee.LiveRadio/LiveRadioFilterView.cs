@@ -90,7 +90,7 @@ namespace Banshee.LiveRadio
         void OnViewQuerySent (object sender, EventArgs e)
         {
             GenreListModel model = genre_view.Model as GenreListModel;
-            model.Selection.Clear (false);
+            model.Selection.Clear (true);
             RaiseQuerySent (query_input.Text.Trim ());
         }
 

@@ -209,21 +209,6 @@ namespace Banshee.LiveRadio
             }
         }
 
-        protected void OnAddToFavorites (object o, EventArgs e)
-        {
-            return;
-        }
-
-        protected void OnAddToInternetRadio (object o, EventArgs e)
-        {
-            return;
-        }
-
-        protected void OnFindSimilar (object o, EventArgs e)
-        {
-            return;
-        }
-
         #region IBasicPlaybackController implementation
 
         public bool First ()
@@ -258,6 +243,10 @@ namespace Banshee.LiveRadio
             return false;
         }
 
+        public override bool CanSearch {
+            get { return false; }
+        }
+
         public override bool CanDeleteTracks {
             get { return false; }
         }
@@ -278,7 +267,10 @@ namespace Banshee.LiveRadio
             get { return true; }
         }
 
-        
+        public override bool HasEditableTrackProperties {
+            get { return false; }
+        }
+
     }
 
 }

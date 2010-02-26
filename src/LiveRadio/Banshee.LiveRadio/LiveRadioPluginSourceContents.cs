@@ -53,7 +53,7 @@ using Banshee.LiveRadio.Plugins;
 
 namespace Banshee.LiveRadio
 {
-    public class LiveRadioPluginSourceContents : HBox, ISourceContents, ITrackModelSourceContents
+    public class LiveRadioPluginSourceContents : VBox, ISourceContents, ITrackModelSourceContents
     {
         private TrackListView track_view;
         private Gtk.ScrolledWindow main_scrolled_window;
@@ -256,15 +256,8 @@ namespace Banshee.LiveRadio
             filter_box.GenreActivated += OnViewGenreSelected;
             filter_box.QuerySent += OnViewQuerySent;
 
-            VBox vbx = new VBox ();
-            Label help_label = new Label (
-                  Catalog.GetString ("Click to load cached entries, double click to retrieve information from internet."));
-            help_label.ModifyBg (StateType.Normal, new Gdk.Color (200, 200, 120));
-            vbx.PackStart (main_scrolled_window, true, true, 0);
-            vbx.PackStart (help_label, false, false, 0);
-            
             container.Pack1 (filter_box, false, false);
-            container.Pack2 (vbx, true, false);
+            container.Pack2 (main_scrolled_window, true, false);
             browser_container = filter_box;
             
             container.Position = top ? 175 : 275;
@@ -284,6 +277,34 @@ namespace Banshee.LiveRadio
         private void ShowPack ()
         {
             PackStart (container, true, true, 0);
+            VBox instruct = new VBox ();
+            instruct.ExposeEvent += (o, a) => {
+                using (Cairo.Context cr = Gdk.CairoHelper.Create (instruct.GdkWindow)) {
+                    double radius = 10;
+                    int x = a.Event.Area.X;
+                    int y = a.Event.Area.Y;
+                    int width = a.Event.Area.Width;
+                    int height = a.Event.Area.Height;
+
+                    cr.MoveTo (x + radius, y);
+                    cr.Arc (x + width - radius, y + radius, radius, Math.PI * 1.5, Math.PI * 2);
+                    cr.Arc (x + width - radius, y + height - radius, radius, 0, Math.PI * .5);
+                    cr.Arc (x + radius, y + height - radius, radius, Math.PI * .5, Math.PI);
+                    cr.Arc (x + radius, y + radius, radius, Math.PI, Math.PI * 1.5);
+                    cr.Color = new Cairo.Color (.5, .5, .5, 1);
+                    cr.Stroke ();
+                }
+//                Gdk.Window win = a.Event.Window;
+//                Gdk.Rectangle area = a.Event.Area;
+//
+//                win.DrawRectangle (Style.BaseGC (StateType.Active), false, area);
+//
+//                a.RetVal = true;
+            };
+            Label help_label = new Label (
+                  Catalog.GetString ("Click a gernre to load/refresh entries or type query, use refresh button to refresh genres."));
+            instruct.PackStart(help_label, false, true, 10);
+            PackStart (instruct, false, true, 10);
             NoShowAll = false;
             ShowAll ();
             NoShowAll = true;

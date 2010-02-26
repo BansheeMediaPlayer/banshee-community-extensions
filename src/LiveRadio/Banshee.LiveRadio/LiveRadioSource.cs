@@ -208,8 +208,12 @@ namespace Banshee.LiveRadio
             get { return false; }
         }
 
+        public override bool CanSearch {
+            get { return false; }
+        }
+
         public override bool ShowBrowser {
-            get { return true; }
+            get { return false; }
         }
 
         public override bool CanRename {
@@ -221,9 +225,13 @@ namespace Banshee.LiveRadio
         }
 
         public override bool HasViewableTrackProperties {
+            get { return true; }
+        }
+
+        public override bool HasEditableTrackProperties {
             get { return false; }
         }
-        
+
         protected PrimarySource GetInternetRadioSource ()
         {
             Log.Debug ("[LiveRadioPluginSource] <GetInternetRadioSource> Start");
