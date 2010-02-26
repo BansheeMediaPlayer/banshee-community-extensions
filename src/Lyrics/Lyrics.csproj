@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <ProjectGuid>{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
+    <AssemblyName>Banshee.Lyrics</AssemblyName>
+    <SchemaVersion>2.0</SchemaVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <RootNamespace>Banshee.Lyrics</RootNamespace>
+    <AssemblyOriginatorKeyFile>.</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
+      </CustomCommands>
+    </CustomCommands>
+    <OutputPath>..\..\bin</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>..\..\bin</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Posix" />
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+    </Reference>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gtkhtml-sharp, Version=3.16.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+    </Reference>
+    <Reference Include="gconf-sharp, Version=2.24.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+    </Reference>
+    <Reference Include="webkit-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=eaa1d335d2e19745">
+    </Reference>
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-hyena</Package>
+    </Reference>
+    <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-services</Package>
+    </Reference>
+    <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-core</Package>
+    </Reference>
+    <Reference Include="Banshee.ThickClient, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-thickclient</Package>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Lyrics.addin.xml">
+      <LogicalName>Lyrics.addin.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\LyricsMenu.xml">
+      <LogicalName>LyricsMenu.xml</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics\LyricsManager.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Network\ProxyManager.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Network\HttpUtils.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\Lyrc.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\AutoLyrics.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\LyricWiki.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\Lyriki.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\LeosLyrics.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\LyricsWindow.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\gtk-gui\generated.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\gtk-gui\LyricsWindow.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.IO\LyricsCache.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\LyricsBrowser.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics\LyricsService.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\ContextPage.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\LyricsPane.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics\LyricsDownloadJob.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics\Utils.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\ILyricsSource.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\LyricsWebSource.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" BuildTargetName="" CleanTargetName="">
+          <BuildFilesVar Sync="true" Name="SOURCES" />
+          <DeployFilesVar />
+          <ResourcesVar Sync="true" Name="RESOURCES" />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>

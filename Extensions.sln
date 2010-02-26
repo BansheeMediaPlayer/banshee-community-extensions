@@ -1,7 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCD", "src\LCD\LCD.csproj", "{B03D0959-A746-46E0-9D70-400CAD5ABA23}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlarmClock", "src\AlarmClock\AlarmClock.csproj", "{8850F596-7FD9-4583-A524-BAFEDD1F474C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyrics", "src\Lyrics\Lyrics.csproj", "{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadioStationFetcher", "src\RadioStationFetcher\RadioStationFetcher.csproj", "{1FD50427-9F74-412E-89EB-0F33B889C6A4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mirage", "Mirage", "{FA8A4EFB-2E20-4880-8053-3DEAF3F4B2E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirage", "src\Mirage\Mirage\Mirage.csproj", "{D43EB678-542B-4B0B-8A3B-F6CA6181C81F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.Mirage", "src\Mirage\Banshee.Mirage\Banshee.Mirage.csproj", "{DB994058-F7F4-494F-BEBC-11ADF056DF68}"
+EndProject
+Project("{2857B73E-F847-4B02-9238-064979017E93}") = "libmirageaudio", "src\Mirage\libmirageaudio\libmirageaudio.cproj", "{D8618AEA-5F05-48DE-86BB-0A1F601AE5DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClutterFlow", "ClutterFlow", "{C54CC0D3-C05D-4A06-9918-5BF9B61C35BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClutterFlow", "src\ClutterFlow\ClutterFlow\ClutterFlow.csproj", "{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.ClutterFlow", "src\ClutterFlow\Banshee.ClutterFlow\Banshee.ClutterFlow.csproj", "{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Awn", "src\Awn\Awn.csproj", "{5CDB25E4-4CB8-413B-BF94-91406867EEEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Streamrecorder", "src\StreamRecorder\Streamrecorder.csproj", "{176AB141-4CC8-4E64-87FF-69C5D32A1A99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,17 +33,64 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{176AB141-4CC8-4E64-87FF-69C5D32A1A99}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{176AB141-4CC8-4E64-87FF-69C5D32A1A99}.Debug|x86.Build.0 = Debug|Any CPU
+		{176AB141-4CC8-4E64-87FF-69C5D32A1A99}.Release|x86.ActiveCfg = Release|Any CPU
+		{176AB141-4CC8-4E64-87FF-69C5D32A1A99}.Release|x86.Build.0 = Release|Any CPU
+		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Debug|x86.Build.0 = Debug|Any CPU
+		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Release|x86.ActiveCfg = Release|Any CPU
+		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Release|x86.Build.0 = Release|Any CPU
+		{5CDB25E4-4CB8-413B-BF94-91406867EEEF}.Debug|x86.ActiveCfg = Debug|x86
+		{5CDB25E4-4CB8-413B-BF94-91406867EEEF}.Debug|x86.Build.0 = Debug|x86
+		{5CDB25E4-4CB8-413B-BF94-91406867EEEF}.Release|x86.ActiveCfg = Release|x86
+		{5CDB25E4-4CB8-413B-BF94-91406867EEEF}.Release|x86.Build.0 = Release|x86
+		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Debug|x86.Build.0 = Debug|Any CPU
+		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Release|x86.ActiveCfg = Release|Any CPU
+		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Release|x86.Build.0 = Release|Any CPU
 		{8850F596-7FD9-4583-A524-BAFEDD1F474C}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{8850F596-7FD9-4583-A524-BAFEDD1F474C}.Debug|x86.Build.0 = Debug|Any CPU
 		{8850F596-7FD9-4583-A524-BAFEDD1F474C}.Release|x86.ActiveCfg = Release|Any CPU
 		{8850F596-7FD9-4583-A524-BAFEDD1F474C}.Release|x86.Build.0 = Release|Any CPU
+		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Debug|x86.Build.0 = Debug|Any CPU
+		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Release|x86.ActiveCfg = Release|Any CPU
+		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}.Release|x86.Build.0 = Release|Any CPU
+		{B03D0959-A746-46E0-9D70-400CAD5ABA23}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B03D0959-A746-46E0-9D70-400CAD5ABA23}.Debug|x86.Build.0 = Debug|Any CPU
+		{B03D0959-A746-46E0-9D70-400CAD5ABA23}.Release|x86.ActiveCfg = Release|Any CPU
+		{B03D0959-A746-46E0-9D70-400CAD5ABA23}.Release|x86.Build.0 = Release|Any CPU
+		{D43EB678-542B-4B0B-8A3B-F6CA6181C81F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D43EB678-542B-4B0B-8A3B-F6CA6181C81F}.Debug|x86.Build.0 = Debug|Any CPU
+		{D43EB678-542B-4B0B-8A3B-F6CA6181C81F}.Release|x86.ActiveCfg = Release|Any CPU
+		{D43EB678-542B-4B0B-8A3B-F6CA6181C81F}.Release|x86.Build.0 = Release|Any CPU
+		{D8618AEA-5F05-48DE-86BB-0A1F601AE5DC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D8618AEA-5F05-48DE-86BB-0A1F601AE5DC}.Debug|x86.Build.0 = Debug|Any CPU
+		{D8618AEA-5F05-48DE-86BB-0A1F601AE5DC}.Release|x86.ActiveCfg = Release|Any CPU
+		{D8618AEA-5F05-48DE-86BB-0A1F601AE5DC}.Release|x86.Build.0 = Release|Any CPU
+		{DB994058-F7F4-494F-BEBC-11ADF056DF68}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DB994058-F7F4-494F-BEBC-11ADF056DF68}.Debug|x86.Build.0 = Debug|Any CPU
+		{DB994058-F7F4-494F-BEBC-11ADF056DF68}.Release|x86.ActiveCfg = Release|Any CPU
+		{DB994058-F7F4-494F-BEBC-11ADF056DF68}.Release|x86.Build.0 = Release|Any CPU
+		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Debug|x86.Build.0 = Debug|Any CPU
+		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Release|x86.ActiveCfg = Release|Any CPU
+		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D43EB678-542B-4B0B-8A3B-F6CA6181C81F} = {FA8A4EFB-2E20-4880-8053-3DEAF3F4B2E1}
+		{DB994058-F7F4-494F-BEBC-11ADF056DF68} = {FA8A4EFB-2E20-4880-8053-3DEAF3F4B2E1}
+		{D8618AEA-5F05-48DE-86BB-0A1F601AE5DC} = {FA8A4EFB-2E20-4880-8053-3DEAF3F4B2E1}
+		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0} = {C54CC0D3-C05D-4A06-9918-5BF9B61C35BF}
+		{8A4E3B12-4BDA-4A17-B886-A70AD7CED024} = {C54CC0D3-C05D-4A06-9918-5BF9B61C35BF}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = src\AlarmClock\AlarmClock.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None
-		$1.ResourceNamePolicy = FileFormatDefault
+		$1.ResourceNamePolicy = FileName
 		$0.TextStylePolicy = $2
 		$2.FileWidth = 120
 		$2.NoTabsAfterNonTabs = True

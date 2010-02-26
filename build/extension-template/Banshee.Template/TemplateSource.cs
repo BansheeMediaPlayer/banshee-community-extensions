@@ -2,7 +2,7 @@
 // EXTENSION-NAMESource.cs
 //
 // Authors:
-//   Cool Extension Author
+//   Cool Extension Author <cool.extension@author.com>
 //
 // Copyright (C) 2010 Cool Extension Author
 //

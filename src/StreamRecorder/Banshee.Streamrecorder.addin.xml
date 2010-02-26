@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.Streamrecorder"
+    version="0.2.2beta"
+    compatVersion="1.0"
+    copyright="© 2009 Frank Ziegler. Licensed under the MIT X11 license."
+    name="Streamrecorder service"
+    category="Community Extensions"
+    description="Allows user to record internet-radio streams"
+    author="Frank Ziegler, Akseli Mantila"
+    url="http://gitorious.org/banshee-stream-recorder"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.Streamrecorder.StreamrecorderService"/>   
+  </Extension>
+  
+</Addin>

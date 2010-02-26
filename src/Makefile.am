@@ -1,6 +1,11 @@
 SUBDIRS = \
-    AlarmClock \
+	AlarmClock \
+	Awn \
+	ClutterFlow \
+	LCD \
+	Lyrics \
 	Mirage \
-    RadioStationFetcher
+	RadioStationFetcher \
+	StreamRecorder
 
 MAINTAINERCLEANFILES = Makefile.in

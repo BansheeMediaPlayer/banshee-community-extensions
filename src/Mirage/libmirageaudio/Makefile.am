@@ -4,14 +4,16 @@ INCLUDES = \
 	-ggdb3 \
 	-D_FORTIFY_SOURCE=2 \
 	$(GLIB_CFLAGS) \
-	$(GST_CFLAGS) \
+	$(GSTREAMER_CFLAGS) \
 	$(LIBSAMPLERATE_CFLAGS) \
 	$(FFTW3F_CFLAGS)
 
+if ENABLE_MIRAGE
 noinst_PROGRAMS = mirageaudiotest
 
 mirageaudiolibdir = $(expanded_libdir)
 mirageaudiolib_LTLIBRARIES = libmirageaudio.la
+endif
 
 libmirageaudio_la_LDFLAGS = -avoid-version -module
 libmirageaudio_la_SOURCES = \
@@ -22,7 +24,7 @@ libmirageaudio_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(LIBSAMPLERATE_LIBS) \
 	$(FFTW3F_LIBS) \
-	$(GST_LIBS)
+	$(GSTREAMER_LIBS)
 
 mirageaudiotest_SOURCES = \
 	mirageaudiotest.c

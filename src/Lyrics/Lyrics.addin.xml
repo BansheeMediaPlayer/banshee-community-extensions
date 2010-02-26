@@ -1,0 +1,28 @@
+<Addin
+    id="Banshee.Lyrics"
+    name="Lyrics"
+    description="Fetch song lyrics"
+    category="Community Extensions"
+    copyright="© 2009 Christian Martellini. Licensed under the MIT X11 license."
+    author = "Christian Martellini"
+    url="http://banshee-project.org/"
+    version="1.0"
+    compatVersion="1.0"
+    defaultEnabled="false">
+  
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin version="1.0" id="Banshee.Services"/>
+    <Addin version="1.0" id="Banshee.ThickClient"/>
+  </Dependencies>
+  
+  <Extension path="/Banshee/ThickClient/ContextPane">
+    <ContextPage class="Banshee.Lyrics.Gui.ContextPage"/>
+  </Extension>
+  
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.Lyrics.LyricsService"/>
+  </Extension>
+  
+</Addin>

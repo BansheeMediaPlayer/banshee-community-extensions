@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -8,19 +8,21 @@
     <ProjectGuid>{8A4E3B12-4BDA-4A17-B886-A70AD7CED024}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Banshee.ClutterFlow</AssemblyName>
+    <RootNamespace>Banshee.ClutterFlow</RootNamespace>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>..\..\..\bin</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Execute" command="cd bin &amp;&amp; ./run_test" workingdir="${ProjectDir}" externalConsole="true" />
+        <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -29,26 +31,24 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>..\..\..\bin</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Execute" command="bin/run_test" workingdir="${TargetDir}" externalConsole="true" />
+        <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_Banshee152|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release_Banshee152</OutputPath>
-    <DefineConstants>BANSHEE_V152</DefineConstants>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="clutter-gtk-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=87b7d16e3a31768b">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-gtk-sharp.dll</HintPath>
+      <Package>clutter-gtk-sharp</Package>
+    </Reference>
     <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-core</Package>
     </Reference>
@@ -67,24 +67,22 @@
     <Reference Include="Hyena.Gui, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-hyena-gui</Package>
     </Reference>
-    <Reference Include="Mono.Cairo" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.Transactions" />
+    <Reference Include="clutter-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=87b7d16e3a31768b">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-sharp.dll</HintPath>
+      <Package>clutter-sharp</Package>
+    </Reference>
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Banshee.NowPlaying, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-nowplaying</Package>
     </Reference>
-    <Reference Include="clutter-gtk-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=87b7d16e3a31768b">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-gtk-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="clutter-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=87b7d16e3a31768b">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-sharp.dll</HintPath>
-    </Reference>
+    <Reference Include="Mono.Posix" />
+    <Reference Include="Mono.Cairo" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -101,15 +99,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="..\Banshee.ClutterFlow.Addin.xml" />
-    <None Include="..\Banshee.ClutterFlow.addin.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\ThemeIcons\256x256\clutterflow-large.png">
-      <Gettext-ScanForTranslations>false</Gettext-ScanForTranslations>
+    <EmbeddedResource Include="ClutterFlow.addin.xml">
+      <LogicalName>ClutterFlow.addin.xml</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Banshee.ClutterFlow.addin.xml" />
-    <EmbeddedResource Include="..\ThemeIcons\22x22\clutterflow-icon.png" />
+    <EmbeddedResource Include="ThemeIcons\22x22\clutterflow-icon.png">
+      <LogicalName>clutterflow-icon.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClutterFlow\ClutterFlow.csproj">
@@ -121,7 +116,7 @@
     <MonoDevelop>
       <Properties>
         <Policies>
-          <TextStylePolicy FileWidth="120" TabWidth="4" TabsToSpaces="True" NoTabsAfterNonTabs="True" RemoveTrailingWhitespace="True" EolMarker="Native" />
+          <TextStylePolicy FileWidth="120" NoTabsAfterNonTabs="True" RemoveTrailingWhitespace="True" inheritsSet="VisualStudio" inheritsScope="text/plain" />
         </Policies>
         <Deployment.LinuxDeployData generatePcFile="false" />
         <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile" SyncReferences="true">

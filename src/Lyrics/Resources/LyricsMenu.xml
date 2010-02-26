@@ -1,0 +1,14 @@
+<ui>
+    <menubar name="MainMenu">
+        <menu name="ViewMenu" action="ViewMenuAction">
+            <placeholder name="ViewMenuAdditions">
+                 <menuitem name="ShowLyrics" action="ShowLyricsAction" />
+            </placeholder> 
+        </menu>
+        <menu name="ToolsMenu" action="ToolsMenuAction">
+            <menu name="Lyrics" action="LyricsAction">
+                 <menuitem name="FetchLyrics" action="FetchLyricsAction" />
+            </menu>
+        </menu>
+    </menubar>
+</ui>

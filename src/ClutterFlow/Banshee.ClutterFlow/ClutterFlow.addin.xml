@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.ClutterFlow"
+    version="0.3.6"
+    compatVersion="1.0"
+    copyright="© 2009 Mathijs Dumon Licensed under the MIT X11 license."
+    name="ClutterFlow"
+    category="Community Extensions"
+    description="Provides a CoverFlow like album browser"
+    author="Mathijs Dumon"
+    url="http://banshee-project.org/"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+    <Addin id="Banshee.NowPlaying" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.ClutterFlow.ClutterFlowService"/>
+  </Extension>
+</Addin>

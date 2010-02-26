@@ -1,5 +1,5 @@
 AC_PREREQ(2.52)
-AC_INIT([banshee-community-extensions], 0.1,
+AC_INIT([banshee-community-extensions], 1.5.4,
 	[http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions])
 
 AM_INIT_AUTOMAKE([1.9 dist-bzip2 tar-ustar dist-zip foreign])
@@ -22,24 +22,11 @@ SHAMROCK_FIND_MONO_2_0_COMPILER
 SHAMROCK_FIND_MONO_RUNTIME
 
 dnl Banshee deps
-PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.0)
+PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.5.3)
 AC_SUBST(BANSHEE_LIBS)
 
 dnl Banshee Extensions Path
-BANSHEE_LIBDIR=`$PKG_CONFIG banshee-1-core --variable=bansheedir`
-SYSTEM_EXTENSIONS=$BANSHEE_LIBDIR/Extensions
-REL_EXTENSIONS_DIR=`basename $SYSTEM_EXTENSIONS`
-REL_BANSHEE_DIR=`echo "$SYSTEM_EXTENSIONS" | sed -e "s|\/$REL_EXTENSIONS_DIR||"`
-REL_BANSHEE_DIR=`basename $REL_BANSHEE_DIR`
-REL_EXTENSIONS_DIR=$REL_BANSHEE_DIR/$REL_EXTENSIONS_DIR
-
-EXTENSION_DIR=$libdir/$REL_EXTENSIONS_DIR
-AC_SUBST(EXTENSION_DIR)
-
-expanded_libdir=`( case $prefix in NONE) prefix=$ac_default_prefix ;; *) ;; esac
-		   case $exec_prefix in NONE) exec_prefix=$prefix ;; *) ;; esac
-		   eval echo $libdir )`
-expanded_extensionsdir=$expanded_libdir/$REL_EXTENSIONS_DIR
+BCE_FIND_BANSHEE
 
 dnl GNOME (optional)
 AC_ARG_ENABLE(gnome, 
@@ -54,6 +41,16 @@ else
 	AM_CONDITIONAL(GCONF_SCHEMAS_INSTALL, false)
 	AM_CONDITIONAL(ENABLE_GNOME, false)
 fi
+
+dnl Extensions
+BCE_ALARMCLOCK
+BCE_AWN
+BCE_CLUTTERFLOW
+BCE_LCD
+BCE_LYRICS
+BCE_MIRAGE
+BCE_RADIOSTATIONFETCHER
+BCE_STREAMRECORDER
 
 dnl i18n
 SHAMROCK_CONFIGURE_I18N($PACKAGE)
@@ -71,21 +68,6 @@ else
 	GMCS_FLAGS="-warnaserror"
 fi
 AC_SUBST(GMCS_FLAGS)
-
-dnl Mirage
-PKG_CHECK_MODULES(FFTW3F, fftw3f)
-PKG_CHECK_MODULES(SQLITE3, sqlite3 >= 3.3)
-PKG_CHECK_MODULES(LIBSAMPLERATE, samplerate)
-GSTREAMER_REQUIRED_VERSION=0.10.15
-AC_SUBST(GSTREAMER_REQUIRED_VERSION)
-PKG_CHECK_MODULES(GST,
-    gstreamer-0.10 >= $GSTREAMER_REQUIRED_VERSION
-    gstreamer-base-0.10 >= $GSTREAMER_REQUIRED_VERSION
-    gstreamer-plugins-base-0.10 >= $GSTREAMER_REQUIRED_VERSION)
-AC_SUBST(GST_CFLAGS)
-AC_SUBST(GST_LIBS)
-PKG_CHECK_MODULES(GLIB, glib-2.0)
-
 
 AC_ARG_WITH(vendor-build-id,
 	AC_HELP_STRING([--with-vendor-build-id=<vendor-build-id>],
@@ -119,13 +101,19 @@ po/Makefile.in
 
 src/Makefile
 src/AlarmClock/Makefile
+src/Awn/Makefile
+src/ClutterFlow/Makefile
+src/ClutterFlow/Banshee.ClutterFlow/Makefile
+src/ClutterFlow/ClutterFlow/Makefile
+src/LCD/Makefile
+src/Lyrics/Makefile
 src/Mirage/Makefile
 src/Mirage/libmirageaudio/Makefile
 src/Mirage/Mirage/Makefile
 src/Mirage/Banshee.Mirage/Makefile
 src/Mirage/Test/Makefile
 src/RadioStationFetcher/Makefile
-src/RadioStationFetcher/RadioStationFetcher.addin.xml
+src/StreamRecorder/Makefile
 ])
 
 cat <<EOF
@@ -147,8 +135,13 @@ ${PACKAGE}-${VERSION}
     Vendor Build ID:   ${vendor_build_id}
 
   Extensions:
-    Alarm Clock:         yes
-    Mirage:              yes
-    RadioStationFetcher: yes
+    Alarm Clock:         ${enable_AlarmClock}
+    Awn:                 ${enable_Awn}
+    ClutterFlow:         ${enable_ClutterFlow}
+    LCD:                 ${enable_LCD}
+    Lyrics:              ${enable_Lyrics}
+    Mirage:              ${enable_Mirage}
+    RadioStationFetcher: ${enable_RadioStationFetcher}
+    StreamRecorder:      ${enable_StreamRecorder}
 
 EOF

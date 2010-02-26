@@ -1,6 +1,5 @@
 ASSEMBLY = Banshee.AlarmClock
 LINK = $(BANSHEE_LIBS)
-ASSEMBLY_GCONF_SCHEMA = banshee-plugin-alarm.schemas.in
 
 SOURCES =  \
 	Banshee.AlarmClock/Alarm.cs \
@@ -15,4 +14,8 @@ RESOURCES =  \
 	AlarmClock.addin.xml \
 	Resources/AlarmMenu.xml
 
+if ENABLE_ALARMCLOCK
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif

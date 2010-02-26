@@ -20,14 +20,12 @@
  * Boston, MA  02110-1301, USA.
  */
 
-
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 
 namespace Mirage
 {
-
     public class AudioDecoderErrorException : Exception
     {
     }
@@ -36,72 +34,46 @@ namespace Mirage
     {
     }
 
-    public class FrameSelectorSort : IComparer
-    {
-        float[] idx;
-
-        FrameSelectorSort(ref float[] frameselection)
-        {
-            idx = frameselection;
-        }
-        
-        int IComparer.Compare(Object x, Object y)
-        {
-            float X = idx[(int)x];
-            float Y = idx[(int)y];
-
-            if (X < Y) {
-                return -1;
-            } else if (X > Y) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-    }
-
     public class AudioDecoder
     {
         [DllImport("libmirageaudio")]
-        static extern IntPtr mirageaudio_initialize(int rate, int seconds, int winsize);
+        static extern IntPtr mirageaudio_initialize (int rate, int seconds, int winsize);
 
         [DllImport("libmirageaudio")]
-        static extern IntPtr mirageaudio_decode(IntPtr ma, string file, ref int frames, ref int size, ref int ret);
+        static extern IntPtr mirageaudio_decode (IntPtr ma, string file, ref int frames, ref int size, ref int ret);
 
         [DllImport("libmirageaudio")]
-        static extern IntPtr mirageaudio_destroy(IntPtr ma);
+        static extern IntPtr mirageaudio_destroy (IntPtr ma);
 
         [DllImport("libmirageaudio")]
-        static extern void mirageaudio_canceldecode(IntPtr ma);
+        static extern void mirageaudio_canceldecode (IntPtr ma);
 
         IntPtr ma;
 
-        public AudioDecoder(int rate, int seconds, int winsize)
+        public AudioDecoder (int rate, int seconds, int winsize)
         {
-            ma = mirageaudio_initialize(rate, seconds, winsize);
+            ma = mirageaudio_initialize (rate, seconds, winsize);
         }
 
-        public Matrix Decode(string file)
+        public Matrix Decode (string file)
         {
             int frames = 0;
             int size = 0;
             int ret = 0;
 
-            IntPtr data = mirageaudio_decode(ma, file, ref frames, ref size, ref ret);
-            // Error while decoding
-            if (ret == -1)
-                throw new AudioDecoderErrorException();
-            // Decoding was canceled
-            else if (ret == -2)
-                throw new AudioDecoderCanceledException();
-            // No data
-            else if ((frames <= 0) || (size <= 0))
-                throw new AudioDecoderErrorException();
+            IntPtr data = mirageaudio_decode (ma, file, ref frames, ref size, ref ret);
+            if (ret == -1) {
+                throw new AudioDecoderErrorException ();
+            } else if (ret == -2) {
+                throw new AudioDecoderCanceledException ();
+            } else if ((frames <= 0) || (size <= 0)) {
+                throw new AudioDecoderErrorException (); // No data
+            }
 
-            Dbg.WriteLine("Mirage - decoded frames={0},size={1}", frames, size);
+            Dbg.WriteLine ("Mirage - decoded frames={0},size={1}", frames, size);
 
             // Sort the frames by total energy (frame selection)
-            float[] frameselection = new float[frames];
+            float [] frameselection = new float[frames];
             int [] framepos = new int[frames];
             unsafe {
                 float* stft_unsafe = (float*)data;
@@ -109,22 +81,23 @@ namespace Mirage
                     frameselection[j] = 0;
                     framepos[j] = j;
                     for (int i = 0; i < size; i++) {
-                        frameselection[j] += stft_unsafe[i*frames+j];
+                        frameselection[j] += stft_unsafe[i * frames + j];
                     }
                 }
             }
-            Array.Sort(frameselection, framepos);
+
+            Array.Sort (frameselection, framepos);
 
             // Save the high energy frames to the Matrix 
             int copyframes = frames / 2;
-            Matrix stft = new Matrix(size, copyframes);
-
+            Matrix stft = new Matrix (size, copyframes);
+            
             unsafe {
                 float* stft_unsafe = (float*)data;
                 fixed (float* stftd = stft.d) {
                     for (int j = 0; j < copyframes; j++) {
                         for (int i = 0; i < size; i++) {
-                            stftd[i*copyframes+j] = stft_unsafe[i*frames+framepos[copyframes+j]];
+                            stftd[i * copyframes + j] = stft_unsafe[i * frames + framepos[copyframes + j]];
                         }
                     }
                 }
@@ -133,16 +106,15 @@ namespace Mirage
             return stft;
         }
 
-        ~AudioDecoder()
+        ~AudioDecoder ()
         {
-            mirageaudio_destroy(ma);
+            mirageaudio_destroy (ma);
             ma = IntPtr.Zero;
         }
 
-        public void CancelDecode()
+        public void CancelDecode ()
         {
-            mirageaudio_canceldecode(ma);
+            mirageaudio_canceldecode (ma);
         }
     }
-    
 }

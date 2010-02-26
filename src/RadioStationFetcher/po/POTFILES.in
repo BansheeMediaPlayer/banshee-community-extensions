@@ -1,7 +1,0 @@
-# List of source files containing translatable strings.
-# Please keep this file in alphabetical order.
-[encoding: UTF-8]
-Banshee.RadioStationFetcher/src/FetcherDialog.cs
-Banshee.RadioStationFetcher/src/RadioStationFetcherService.cs
-Banshee.RadioStationFetcher/src/Shoutcast.cs
-Banshee.RadioStationFetcher/src/Xiph.cs

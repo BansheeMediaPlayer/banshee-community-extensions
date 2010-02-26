@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Addin
+    id="Banshee.Awn"
+    version="0.1"
+    copyright="© Marcos Almeida Jr. Licensed under the MIT X11 license."
+    name="Awn Integration"
+    category="Community Extensions"
+    description="Provides integration with Avant Window Navigator"
+    author="Marcos Almeida Jr."
+    url="http://code.google.com/p/banshee-unofficial-plugins"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.Awn.AwnService"/>
+  </Extension>
+</Addin>

@@ -1,23 +1,25 @@
 ASSEMBLY = Mirage
 LINK =  \
 	-r:System \
-	-r:System.Data \
-	-r:Mono.Data.SqliteClient
+	-r:System.Core
 GMCS_FLAGS = -unsafe
 
-SOURCES = \
+SOURCES =  \
+	Analyzer.cs \
 	AudioDecoder.cs \
-	Db.cs \
 	Dbg.cs \
 	Matrix.cs \
 	Mfcc.cs \
-	Mir.cs \
-	MirageDbMigrator.cs \
 	Scms.cs \
+	ScmsConfiguration.cs \
 	Vector.cs
 
-RESOURCES = \
-	res/dct.filter \
-	res/filterweights.filter 
+RESOURCES =  \
+	Resources/dct.filter \
+	Resources/filterweights.filter
 
+if ENABLE_MIRAGE
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif

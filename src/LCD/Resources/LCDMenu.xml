@@ -1,0 +1,9 @@
+<ui>
+    <menubar name="MainMenu">
+        <menu name="ToolsMenu" action="ToolsMenuAction">
+            <menu name="LCD" action="LCDAction">
+                <menuitem name="LCDConfigure" action="LCDConfigureAction" />
+            </menu>
+        </menu>
+    </menubar>
+</ui>
