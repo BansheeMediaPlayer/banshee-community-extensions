@@ -56,3 +56,4 @@ tests/Performance/Performance.dll
 tests/results/
 src/Mirage/libmirageaudio/mirageaudiotest
 src/RadioStationFetcher/RadioStationFetcher.addin.xml
+run_debug

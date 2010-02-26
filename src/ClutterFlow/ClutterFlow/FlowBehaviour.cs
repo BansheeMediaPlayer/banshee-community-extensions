@@ -78,6 +78,7 @@ namespace ClutterFlow
 				if (value!=width) {
 					width = value;
 					centerX = value*0.5f;
+					UpdateCoverWidth ();
 					UpdateXStepAndSideWidth ();
 					UpdateActors ();
 				}
@@ -91,6 +92,8 @@ namespace ClutterFlow
 				if (value!=height) {
 					height = value;
 					centerY = value*0.45f;
+					UpdateCoverWidth ();
+					UpdateXStepAndSideWidth ();
 					UpdateActors ();
 				}
 			}
@@ -126,6 +129,7 @@ namespace ClutterFlow
 		
 		protected void UpdateXStepAndSideWidth ()
 		{
+			SideMargin = CoverWidth*0.5f;
 			XStep = (Width - CenterWidth - SideMargin) / CoverCount;
 			SideWidth = Width*0.5f - (CenterMargin+XStep+SideMargin);
 			if (SideWidth>coverWidth*0.5f) {
@@ -143,16 +147,40 @@ namespace ClutterFlow
 		protected float SideWidth = 130;
 		public float CoverWidth {
 			get { return coverWidth; }
-			set {
+			protected set {
 				if (value!=coverWidth) {
 					coverWidth = value;
 					CenterMargin = value*0.75f;
-				 	SideMargin = value*0.5f;
 					CenterWidth = CenterMargin*2;
-					UpdateXStepAndSideWidth ();
-					UpdateActors ();
+				}			
+			}
+		}
+		
+		protected int maxCoverWidth = 256;
+		public int MaxCoverWidth {
+			get { return maxCoverWidth; }
+			set { 
+				if (maxCoverWidth!=value) {
+					maxCoverWidth = value;
+					UpdateCoverWidth (); //TODO use a timeout instead. Multiple update calls may cause slowdowns?
 				}
 			}
+		}
+        
+		protected int minCoverWidth = 64;
+		public int MinCoverWidth {
+			get { return minCoverWidth; }
+			set { 
+				if (minCoverWidth!=value) {
+					minCoverWidth = value;
+					UpdateCoverWidth (); //TODO use a timeout instead. Multiple update calls may cause slowdowns?
+				}
+			}
+		}
+		
+		public void UpdateCoverWidth ()
+		{
+			CoverWidth = Math.Max(Math.Min(Height*0.5f, maxCoverWidth), minCoverWidth);;
 		}
 		
 		protected float AlphaStep {
@@ -277,22 +305,22 @@ namespace ClutterFlow
 		}
 
         private double AlphaFunc (ClutterFlowBaseActor actor) {
-/*            if (!actor.Data.ContainsKey ("alpha_ini"))
-                actor.Data.Add*/
             if (actor.Index < 0)
-                actor.Data["alpha_ini"] = 0;
+                actor.Data["alpha_ini"] = (double) 0;
             else {
-                double previous_alpha = (CoverManager.HalfVisCovers - (CoverManager.TotalCovers-1) 
-                                  * CoverManager.Timeline.Progress + actor.Index) 
-                                  / (CoverManager.VisibleCovers-1);
+				double previous_alpha = (CoverManager.HalfVisCovers - (CoverManager.TotalCovers-1) 
+                              * CoverManager.Timeline.Progress + actor.Index) 
+                              / (CoverManager.VisibleCovers-1);
                 if (previous_alpha<0) previous_alpha=0;
                 if (previous_alpha>1) previous_alpha=1;
                 actor.Data["alpha_ini"] = previous_alpha;
             }
+			if (actor is ClutterFlowFixedActor) Console.WriteLine ("ClutterFlowBaseActor passed to AlphaFunc with progress = " + CoverManager.Timeline.Progress);
             return (double) actor.Data["alpha_ini"];
         }
         
 		protected void UpdateActorWithAlpha (ClutterFlowBaseActor actor, double alpha) {
+			
 			float ratio = Math.Min (0.75f * (float) coverManager.Timeline.Delta / (float) coverManager.VisibleCovers, 1.25f);
 			OffsetRotationAngle = (float) ((rotationAngle / 5) * ratio);
 			OffsetCenterX = -(float) ((CenterMargin / 2) * ratio);
@@ -428,6 +456,8 @@ namespace ClutterFlow
             //Prepare to fade in new covers
             foreach (ClutterFlowBaseActor cover in new_covers) {
                 if (cover!=null) {
+					if (cover is ClutterFlowFixedActor)
+						Console.WriteLine ("ClutterFlowFixedActor in new covers!!!!!!!!!!!!!!!!!!!!!!!!!");
                     UpdateActorWithAlpha (cover, AlphaFunc(cover));
                     FadeInActor (cover);
                     fadeInAnim.Timeline.Pause ();

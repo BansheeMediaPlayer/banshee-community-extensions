@@ -386,14 +386,14 @@ namespace Banshee.ClutterFlow
 		private void UpdateMinCoverSize ()
 		{
 			if (clutter_flow_contents != null)
-				clutter_flow_contents.FilterView.CoverManager.MinCoverWidth = 
+				clutter_flow_contents.FilterView.CoverManager.Behaviour.MinCoverWidth = 
 					ClutterFlowSchemas.MinCoverSize.Get ();
 		}
 
 		private void UpdateMaxCoverSize ()
 		{
 			if (clutter_flow_contents != null)
-				clutter_flow_contents.FilterView.CoverManager.MaxCoverWidth = 
+				clutter_flow_contents.FilterView.CoverManager.Behaviour.MaxCoverWidth = 
 					ClutterFlowSchemas.MaxCoverSize.Get ();
 		}
 

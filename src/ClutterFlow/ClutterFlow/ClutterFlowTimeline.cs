@@ -94,6 +94,7 @@ namespace ClutterFlow
             set {
                 if (value > 1) value = 1;
                 if (value < 0) value = 0;
+				if (double.IsInfinity(value) || double.IsNaN(value)) value = 0;
                 progress = value;
                 delta = (int) Math.Abs(AbsoluteProgress - Target);
                 if (delta==0) InvokeTargetReached ();

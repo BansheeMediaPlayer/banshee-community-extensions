@@ -102,27 +102,6 @@ namespace ClutterFlow
         #endregion
         
         #region Cover-related fields
-		protected int maxCoverWidth = 256;
-		public int MaxCoverWidth {
-			get { return maxCoverWidth; }
-			set { 
-				if (maxCoverWidth!=value) {
-					maxCoverWidth = value;
-					UpdateBehaviour(); //TODO use a flag instead. Multiple update calls may cause slowdowns?
-				}
-			}
-		}
-        
-		protected int minCoverWidth = 64;
-		public int MinCoverWidth {
-			get { return minCoverWidth; }
-			set { 
-				if (minCoverWidth!=value) {
-					minCoverWidth = value;
-					UpdateBehaviour(); //TODO use a flag instead. Multiple update calls may cause slowdowns?
-				}
-			}
-		}
 
 		protected int textureSize = 128;
 		public int TextureSize {
@@ -250,7 +229,7 @@ namespace ClutterFlow
 			if (behaviour!=null && Stage!=null) {
 				behaviour.Height = Stage.Height;
 				behaviour.Width = Stage.Width;
-				behaviour.CoverWidth = Math.Max(Math.Min(Stage.Height*0.5f, maxCoverWidth), minCoverWidth);;
+				//Console.WriteLine ("behaviour.CoverWidth = " + behaviour.CoverWidth + "behaviour.Height = " + behaviour.Height + " behaviour.Width = " + behaviour.Width);
 			}
 		}
 
@@ -264,8 +243,16 @@ namespace ClutterFlow
 			}
 		}
 		
-		internal void ReloadCovers () 
+		private int reload_timeout = -1;
+		internal void ReloadCovers ()
 		{
+			if (reload_timeout!=-1)
+				GLib.Source.Remove((uint) reload_timeout);
+			reload_timeout = (int) GLib.Timeout.Add (MinAnimationSpan, new GLib.TimeoutHandler (reload_covers));
+		}
+ 
+     	private bool reload_covers ()
+     	{   			
 			if (Timeline!=null) Timeline.Pause ();
             HideAll (); Show ();
 			if (covers!=null && covers.Count!=0) {
@@ -298,9 +285,11 @@ namespace ClutterFlow
                         persistent_covers.Add (actor);
                     if (CurrentCover==actor) keep_current = true;
 				});
+				
                 if (covers.Count==0) {
-                    ShowEmptyActor ();
+                    InstallEmptyActor ();
                     EmptyActor.Show ();
+					keep_current = true;
                 }
                 
 				//recalculate timeline progression and the target index
@@ -351,9 +340,6 @@ namespace ClutterFlow
                     Console.WriteLine("\t- " + cover.Label.Replace("\n", " - "));
 
                 EventHandler update_target = delegate (object o, EventArgs e) {
-                    Behaviour.FadeInActor (EmptyActor);
-                    EmptyActor.Show ();
-                    CurrentCover = EmptyActor;
                     Timeline.Play ();
                     InvokeCoversChanged();
                 };
@@ -365,15 +351,18 @@ namespace ClutterFlow
                 TargetIndex = 0;
                 Timeline.JumpToTarget ();
                 if (covers==null || covers.Count==0) {
-                    ShowEmptyActor ();
+                    InstallEmptyActor ();
+					Behaviour.UpdateActors ();
                     Behaviour.FadeInActor (EmptyActor);
                 }
                 Timeline.Play ();
 				InvokeCoversChanged ();
 			}
+			
+			return false;
 		}
 
-        private void ShowEmptyActor ()
+        private void InstallEmptyActor ()
         {
             covers = new List<ClutterFlowBaseActor> ();
             covers.Add (EmptyActor);
