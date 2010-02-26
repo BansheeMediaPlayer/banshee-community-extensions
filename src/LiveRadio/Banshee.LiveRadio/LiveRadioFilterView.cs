@@ -41,13 +41,13 @@ using Hyena.Widgets;
 
 namespace Banshee.LiveRadio
 {
-    public delegate void GenreSelectedEventHandler (object sender, string genre);
+    public delegate void GenreSelectedEventHandler (object sender, Genre genre);
     public delegate void QuerySentEventHandler (object sender, string query);
 
     public class LiveRadioFilterView : VBox
     {
 
-        private ListView<string> genre_view;
+        private ListView<Genre> genre_view;
         private Entry query_input;
 
         public event GenreSelectedEventHandler GenreSelected;
@@ -56,12 +56,12 @@ namespace Banshee.LiveRadio
 
         public LiveRadioFilterView ()
         {
-            genre_view = new ListView<string> ();
-            Column genre_column = new Column (new ColumnDescription (null, Catalog.GetString ("Choose By Genre"), 100));
+            genre_view = new ListView<Genre> ();
+            Column genre_column = new Column (new ColumnDescription ("Name", Catalog.GetString ("Choose By Genre"), 100));
             genre_view.ColumnController = new ColumnController ();
             genre_view.ColumnController.Add (genre_column);
-            List<string> stringlist = new List<string> ();
-            stringlist.Add (Catalog.GetString ("Loading..."));
+            List<Genre> stringlist = new List<Genre> ();
+            stringlist.Add (new Genre(Catalog.GetString ("Loading...")));
             genre_view.SetModel (new GenreListModel (stringlist));
             genre_view.Model.Selection.FocusChanged += OnViewGenreSelected;
             
@@ -94,7 +94,7 @@ namespace Banshee.LiveRadio
             RaiseQuerySent (query_input.Text.Trim ());
         }
 
-        public string GetSelectedGenre ()
+        public Genre GetSelectedGenre ()
         {
             GenreListModel model = genre_view.Model as GenreListModel;
             return model[genre_view.Model.Selection.FocusedIndex];
@@ -108,7 +108,7 @@ namespace Banshee.LiveRadio
                                    model[genre_view.Model.Selection.FocusedIndex]);
         }
 
-        public void UpdateGenres (List<string> newlist)
+        public void UpdateGenres (List<Genre> newlist)
         {
             GenreListModel model = genre_view.Model as GenreListModel;
             model.SetList (newlist);
@@ -131,7 +131,7 @@ namespace Banshee.LiveRadio
             return window;
         }
 
-        protected virtual void OnGenreSelected (string genre)
+        protected virtual void OnGenreSelected (Genre genre)
         {
             GenreSelectedEventHandler handler = GenreSelected;
             if (handler != null) {
@@ -139,12 +139,12 @@ namespace Banshee.LiveRadio
             }
         }
 
-        public void RaiseGenreSelected (string genre)
+        public void RaiseGenreSelected (Genre genre)
         {
             OnGenreSelected (genre);
         }
 
-        protected virtual void OnGenreActivated (string genre)
+        protected virtual void OnGenreActivated (Genre genre)
         {
             GenreSelectedEventHandler handler = GenreActivated;
             if (handler != null) {
@@ -152,7 +152,7 @@ namespace Banshee.LiveRadio
             }
         }
 
-        public void RaiseGenreActivated (string genre)
+        public void RaiseGenreActivated (Genre genre)
         {
             OnGenreActivated (genre);
         }

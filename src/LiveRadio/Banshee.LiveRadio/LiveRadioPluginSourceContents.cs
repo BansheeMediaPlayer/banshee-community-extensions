@@ -158,7 +158,7 @@ namespace Banshee.LiveRadio
         {
             Hyena.Log.Debug ("[LiverRadioPluginSourceContenst]<OnPluginRequestResultRetrieved> handling result retrieved");
             if ((request_type == LiveRadioRequestType.ByFreetext)
-                || (filter_box.GetSelectedGenre ().Equals (request) && request_type == LiveRadioRequestType.ByGenre))
+                || (filter_box.GetSelectedGenre ().Name.Equals (request) && request_type == LiveRadioRequestType.ByGenre))
             {
                 if (result.Count > 0) {
                     plugin.GetLiveRadioPluginSource ().SetStations (result);
@@ -178,15 +178,15 @@ namespace Banshee.LiveRadio
             }
         }
 
-        void OnPluginGenreListLoaded (object sender, List<string> genres)
+        void OnPluginGenreListLoaded (object sender, List<Genre> genres)
         {
             Hyena.Log.Debug ("[LiverRadioPluginSourceContenst]<OnPluginGenreListLoaded> handling genrelistloaded");
             if (genres.Count > 0) {
                 filter_box.UpdateGenres (genres);
                 filter_box.Sensitive = true;
             } else {
-                List<string> fakeresult = new List<string> ();
-                fakeresult.Add (Catalog.GetString("Error... Please Reload"));
+                List<Genre> fakeresult = new List<Genre> ();
+                fakeresult.Add (new Genre(Catalog.GetString("Error... Please Reload")));
                 filter_box.UpdateGenres (fakeresult);
                 filter_box.Sensitive = false;
             }
@@ -270,9 +270,9 @@ namespace Banshee.LiveRadio
             plugin.ExecuteRequest (LiveRadioRequestType.ByFreetext, query);
         }
 
-        void OnViewGenreSelected (object sender, string genre)
+        void OnViewGenreSelected (object sender, Genre genre)
         {
-            plugin.ExecuteRequest (LiveRadioRequestType.ByGenre, genre);
+            plugin.ExecuteRequest (LiveRadioRequestType.ByGenre, genre.Name);
         }
 
         private void ShowPack ()

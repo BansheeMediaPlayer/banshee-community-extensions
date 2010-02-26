@@ -1,5 +1,5 @@
 //
-// ILiveRadioPlugin.cs
+// Genre.cs
 //
 // Authors:
 //   Frank Ziegler <funtastix@googlemail.com>
@@ -25,33 +25,58 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+using System;
 
-using System.Collections.Generic;
-
-
-namespace Banshee.LiveRadio.Plugins
+namespace Banshee.LiveRadio
 {
 
-
-    public interface ILiveRadioPlugin
+    public class Genre : IComparable<Genre>
     {
-        event GenreListLoadedEventHandler GenreListLoaded;
-        event RequestResultRetrievedEventHandler RequestResultRetrieved;
 
-        string GetName ();
+        string name;
 
-        List<Genre> GetGenres ();
+        public Genre ()
+        {
+            name = null;
+        }
 
-        string ToString ();
+        public Genre (string genre)
+        {
+            name = genre;
+        }
 
-        LiveRadioPluginSource GetLiveRadioPluginSource ();
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
 
-        void Initialize ();
+        public string GenreKey
+        {
+            get { return "Genre:" + name; }
+        }
 
-        void RetrieveGenreList ();
+        public override string ToString()
+        {
+            return Name;
+        }
 
-        void ExecuteRequest (LiveRadioRequestType request_type, string query);
+        public override bool Equals (object genre)
+        {
+            if (!(genre is Genre)) return false;
+            return this.Name.Equals ((genre as Genre).Name);
+        }
 
-        void SetLiveRadioPluginSource (LiveRadioPluginSource source);
+        public override int GetHashCode ()
+        {
+            return Name.GetHashCode ();
+        }
+
+        public int CompareTo (Genre genre)
+        {
+            return this.Name.CompareTo (genre.Name);
+        }
+
+
     }
 }

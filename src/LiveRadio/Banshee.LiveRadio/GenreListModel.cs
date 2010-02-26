@@ -37,31 +37,31 @@ namespace Banshee.LiveRadio
 {
 
 
-    public class GenreListModel : IListModel<string>
+    public class GenreListModel : IListModel<Genre>
     {
 
         public event EventHandler Cleared;
         public event EventHandler Reloaded;
 
-        private string[] list;
-        private List<string> original_list;
+        private Genre[] list;
+        private List<Genre> original_list;
 
         private Selection selection;
 
-        public GenreListModel (List<string> list) : base()
+        public GenreListModel (List<Genre> list) : base()
         {
             original_list = list;
             this.list = original_list.ToArray ();
             selection = new Selection ();
         }
 
-        public void SetList (List<string> newlist)
+        public void SetList (List<Genre> newlist)
         {
             original_list = newlist;
             Reload ();
         }
 
-        public string this[int index] {
+        public Genre this[int index] {
             get { return list[index]; }
         }
 
@@ -75,7 +75,7 @@ namespace Banshee.LiveRadio
 
         public void Clear ()
         {
-            list = new string[0];
+            list = new Genre[0];
             RaiseCleared ();
         }
 

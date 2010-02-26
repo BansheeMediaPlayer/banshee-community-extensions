@@ -42,13 +42,13 @@ namespace Banshee.LiveRadio.Plugins
         ByFreetext
     }
 
-    public delegate void GenreListLoadedEventHandler (object sender, List<string> genres);
+    public delegate void GenreListLoadedEventHandler (object sender, List<Genre> genres);
     public delegate void RequestResultRetrievedEventHandler (object sender, string request, LiveRadioRequestType request_type, List<DatabaseTrackInfo> result);
 
     public abstract class LiveRadioBasePlugin : ILiveRadioPlugin
     {
 
-        protected List<string> genres;
+        protected List<Genre> genres;
         protected Dictionary<string, List<DatabaseTrackInfo>> cached_results;
         protected LiveRadioPluginSource source;
         protected bool use_proxy;
@@ -59,7 +59,7 @@ namespace Banshee.LiveRadio.Plugins
 
         public LiveRadioBasePlugin ()
         {
-            genres = new List<string> ();
+            genres = new List<Genre> ();
             cached_results = new Dictionary<string, List<DatabaseTrackInfo>> ();
             //stations = new List<DatabaseTrackInfo> ();
             //request_thread = new BackgroundWorker ();
@@ -124,7 +124,7 @@ namespace Banshee.LiveRadio.Plugins
             request_thread.DoWork -= DoRetrieveGenreList;
             request_thread.RunWorkerCompleted -= OnDoRetrieveGenreListFinished;
             RaiseGenreListLoaded ();
-            Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<OnDoRetrieveGenreListFinished> END", Name);
+            Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<OnDoRetrieveGenreListFinished> ({1}) END", Name, genres.Count);
         }
 
         void OnDoExecuteRequestFinished (object sender, RunWorkerCompletedEventArgs e)
@@ -149,7 +149,7 @@ namespace Banshee.LiveRadio.Plugins
             return Name;
         }
 
-        public List<string> GetGenres ()
+        public List<Genre> GetGenres ()
         {
             return genres;
         }

@@ -113,7 +113,7 @@ namespace Banshee.LiveRadio.Plugins
             XmlNodeList XML_genre_nodes = doc.GetElementsByTagName ("Genre");
             Log.DebugFormat ("[Live365Plugin] <ParseGenres> {0} nodes found", XML_genre_nodes.Count);
 
-            List<string> new_genres = new List<string> ();
+            List<Genre> new_genres = new List<Genre> ();
 
             foreach (XmlNode node in XML_genre_nodes) {
                 XmlNodeList data_nodes = node.ChildNodes;
@@ -123,8 +123,9 @@ namespace Banshee.LiveRadio.Plugins
                     try {
                         if (data_node.LocalName.Equals("Name"))
                         {
-                            string genre = data_node.InnerText;
+                            Genre genre = new Genre(data_node.InnerText);
 
+                            Log.DebugFormat("Live365Plugin]<ParseGenres> found genre {0} (#{1})",data_node.InnerText, new_genres.Count);
                             if (!new_genres.Contains (genre))
                                 new_genres.Add (genre);
                         }

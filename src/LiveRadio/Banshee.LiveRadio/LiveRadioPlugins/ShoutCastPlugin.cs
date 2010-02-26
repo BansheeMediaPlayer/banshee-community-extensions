@@ -114,13 +114,13 @@ namespace Banshee.LiveRadio.Plugins
             XmlNodeList XML_genre_nodes = doc.GetElementsByTagName ("genre");
             Log.DebugFormat ("[ShoutCastPlugin] <ParseGenres> {0} nodes found", XML_genre_nodes.Count);
 
-            List<string> new_genres = new List<string> ();
+            List<Genre> new_genres = new List<Genre> ();
 
             foreach (XmlNode node in XML_genre_nodes) {
                 XmlAttributeCollection xml_attributes = node.Attributes;
 
                 try {
-                    string genre = xml_attributes.GetNamedItem ("name").InnerText;
+                    Genre genre = new Genre(xml_attributes.GetNamedItem ("name").InnerText);
 
                     if (!new_genres.Contains (genre)) {
                         new_genres.Add (genre);

@@ -102,7 +102,7 @@ namespace Banshee.LiveRadio.Plugins
             XmlNodeList XML_station_nodes = doc.GetElementsByTagName ("entry");
             Log.DebugFormat ("[XiphOrgPlugin] <ParseCatalog> {0} nodes found", XML_station_nodes.Count);
             
-            List<string> new_genres = new List<string> ();
+            List<Genre> new_genres = new List<Genre> ();
             
             foreach (XmlNode node in XML_station_nodes) {
                 XmlNodeList xml_attributes = node.ChildNodes;
@@ -111,7 +111,7 @@ namespace Banshee.LiveRadio.Plugins
                     string name = "";
                     string URI = "";
                     string media_type = "";
-                    string genre = "";
+                    Genre genre = new Genre ();
                     string now_playing = "";
                     string bitrate = "";
                     int bitrate_int = 0;
@@ -124,7 +124,7 @@ namespace Banshee.LiveRadio.Plugins
                         else if (station_attributes.Name.Equals ("server_type"))
                             media_type = station_attributes.InnerText;
                         else if (station_attributes.Name.Equals ("genre"))
-                            genre = station_attributes.InnerText;
+                            genre.Name = station_attributes.InnerText;
                         else if (station_attributes.Name.Equals ("current_song"))
                             now_playing = station_attributes.InnerText;
                         else if (station_attributes.Name.Equals ("bitrate"))
@@ -135,7 +135,7 @@ namespace Banshee.LiveRadio.Plugins
                     
                     new_station.Uri = new SafeUri (URI);
                     new_station.ArtistName = Name;
-                    new_station.Genre = genre;
+                    new_station.Genre = genre.Name;
                     new_station.TrackTitle = name;
                     new_station.Comment = now_playing;
                     new_station.AlbumTitle = now_playing;
