@@ -46,8 +46,7 @@
     <Reference Include="System" />
     <Reference Include="clutter-gtk-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=87b7d16e3a31768b">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-gtk-sharp.dll</HintPath>
-      <Package>clutter-gtk-sharp</Package>
+      <HintPath>..\..\..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-gtk-sharp.dll</HintPath>
     </Reference>
     <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-core</Package>
@@ -72,8 +71,7 @@
     <Reference Include="System.Transactions" />
     <Reference Include="clutter-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=87b7d16e3a31768b">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-sharp.dll</HintPath>
-      <Package>clutter-sharp</Package>
+      <HintPath>..\..\..\..\..\..\..\..\usr\local\lib\clutter-sharp\clutter-sharp.dll</HintPath>
     </Reference>
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -82,7 +80,7 @@
       <Package>banshee-1-nowplaying</Package>
     </Reference>
     <Reference Include="Mono.Posix" />
-    <Reference Include="Mono.Cairo" />
+    <Reference Include="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
