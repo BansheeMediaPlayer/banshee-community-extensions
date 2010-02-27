@@ -27,7 +27,6 @@
 //
 
 using System;
-using System.Net;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -37,6 +36,7 @@ using Banshee.Base;
 using Banshee.Collection.Database;
 
 using Hyena;
+using Banshee.Configuration;
 
 namespace Banshee.LiveRadio.Plugins
 {
@@ -51,9 +51,16 @@ namespace Banshee.LiveRadio.Plugins
         private const string freetext_request = "&searchdesc=";
         private const string genre_url = "/cgi-bin/api_genres.cgi?site=xml&app_id=Banshee&access=all&version=4&charset=UTF-8";
 
-        public Live365Plugin ()
+        public Live365Plugin () : base (true)
         {
-            use_proxy = false;
+            use_proxy = UseProxyEntry.Get ().Equals ("True") ? true : false;
+            use_credentials = UseCredentialsEntry.Get ().Equals ("True") ? true : false;
+
+            if (!Int32.TryParse(HttpTimeoutEntry.Get (), out http_timeout_seconds))
+                http_timeout_seconds = 20;
+            credentials_username = HttpUsernameEntry.Get ();
+            credentials_password = HttpPasswordEntry.Get ();
+            proxy_url = ProxyUrlEntry.Get ();
         }
 
         protected override void RetrieveGenres ()
@@ -72,38 +79,6 @@ namespace Banshee.LiveRadio.Plugins
             XmlDocument document = RetrieveXml(request);
             Log.Debug ("[Live365Plugin] <RetrieveRequest> Start Parsing");
             if (document != null) ParseXmlResponse(document, request_type, query);
-        }
-
-        protected XmlDocument RetrieveXml(string query)
-        {
-            Log.Debug ("[Live365Plugin] <RetrieveXml> Start");
-
-            WebProxy proxy;
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create (query);
-            request.Method = "GET";
-            request.ContentType = "HTTP/1.0";
-            request.Timeout = 20 * 1000;
-            if (use_proxy) {
-                proxy = new WebProxy (proxy_url, true);
-                request.Proxy = proxy;
-            }
-
-            try
-            {
-                Stream response = request.GetResponse ().GetResponseStream ();
-                StreamReader reader = new StreamReader (response);
-
-                XmlDocument xml_response = new XmlDocument ();
-                xml_response.LoadXml (reader.ReadToEnd ());
-
-                Log.Debug ("[Live365Plugin] <RetrieveXml> XML retrieved");
-
-                return xml_response;
-            }
-            catch (Exception e) {
-                Log.DebugFormat ("[Live365Plugin] <RetrieveXml> Error:" + e.Message);
-            }
-            return null;
         }
 
         private void ParseGenres(XmlDocument doc)
@@ -125,7 +100,6 @@ namespace Banshee.LiveRadio.Plugins
                         {
                             Genre genre = new Genre(data_node.InnerText);
 
-                            Log.DebugFormat("Live365Plugin]<ParseGenres> found genre {0} (#{1})",data_node.InnerText, new_genres.Count);
                             if (!new_genres.Contains (genre))
                                 new_genres.Add (genre);
                         }
@@ -295,7 +269,42 @@ namespace Banshee.LiveRadio.Plugins
         public override string Name {
             get { return "live365.com"; }
         }
-        
+
+        public override void SaveConfiguration ()
+        {
+            if (configuration_widget == null) return;
+            http_timeout_seconds = configuration_widget.HttpTimeout;
+            credentials_password = configuration_widget.HttpPassword;
+            credentials_username = configuration_widget.HttpUsername;
+            proxy_url = configuration_widget.ProxyUrl;
+            use_credentials = configuration_widget.UseCredentials;
+            use_proxy = configuration_widget.UseProxy;
+            HttpTimeoutEntry.Set (http_timeout_seconds.ToString ());
+            HttpPasswordEntry.Set (credentials_password);
+            HttpUsernameEntry.Set (credentials_username);
+            ProxyUrlEntry.Set (proxy_url);
+            UseCredentialsEntry.Set (use_credentials.ToString ());
+            UseProxyEntry.Set (use_proxy.ToString ());
+        }
+
+        public static readonly SchemaEntry<string> UseProxyEntry = new SchemaEntry<string> (
+        "plugins.liveradio.live365" , "use_proxy", "", "whether to use proxy for HTTP", "whether to use proxy for HTTP");
+
+        public static readonly SchemaEntry<string> ProxyUrlEntry = new SchemaEntry<string> (
+        "plugins.liveradio.live365", "proxy_url", "", "HTTP proxy url", "HTTP proxy url");
+
+        public static readonly SchemaEntry<string> UseCredentialsEntry = new SchemaEntry<string> (
+        "plugins.liveradio.live365", "use_credentials", "", "whether to use credentials authentification", "whether to use credentials authentification");
+
+        public static readonly SchemaEntry<string> HttpUsernameEntry = new SchemaEntry<string> (
+        "plugins.liveradio.live365", "credentials_username", "", "HTTP username", "HTTP username");
+
+        public static readonly SchemaEntry<string> HttpPasswordEntry = new SchemaEntry<string> (
+        "plugins.liveradio.live365", "credentials_password", "", "HTTP password", "HTTP password");
+
+        public static readonly SchemaEntry<string> HttpTimeoutEntry = new SchemaEntry<string> (
+        "plugins.liveradio.live365", "http_timeout_seconds", "", "HTTP timeout", "HTTP timeout");
+
     }
     
 }

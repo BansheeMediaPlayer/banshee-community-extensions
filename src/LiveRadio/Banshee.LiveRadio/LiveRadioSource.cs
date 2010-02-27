@@ -68,12 +68,19 @@ namespace Banshee.LiveRadio
             plugins = new LiveRadioPluginManager ().LoadPlugins ();
             
             foreach (ILiveRadioPlugin plugin in plugins) {
-                Log.DebugFormat ("[LiveRadioSource]<Constructor> found plugin: {0}", plugin.GetName ());
+                Log.DebugFormat ("[LiveRadioSource]<Constructor> found plugin: {0}", plugin.Name);
             }
             
             AfterInitialized ();
             
             InterfaceActionService uia_service = ServiceManager.Get<InterfaceActionService> ();
+
+            uia_service.GlobalActions.AddImportant (new ActionEntry[] { new ActionEntry ("LiveRadioAction", null,
+                             Catalog.GetString ("Live_Radio"), null, null, null),
+                             new ActionEntry ("LiveRadioConfigureAction", Stock.Properties,
+                                 Catalog.GetString ("_Configure"), null,
+                                 Catalog.GetString ("Configure the LiveRadio plugin"), OnConfigure) });
+            
             uia_service.GlobalActions.AddImportant (
                         new ActionEntry ("RefreshLiveRadioAction",
                                           Stock.Add, Catalog.GetString ("Refresh View"), null,
@@ -89,17 +96,22 @@ namespace Banshee.LiveRadio
             
             Properties.SetString ("ActiveSourceUIResource", "ActiveSourceUI.xml");
             Properties.Set<bool> ("ActiveSourceUIResourcePropagate", true);
-            Properties.Set<System.Reflection.Assembly> ("ActiveSourceUIResource.Assembly", typeof(LiveRadioSource).Assembly);
+            Properties.Set<System.Reflection.Assembly> ("ActiveSourceUIResource.Assembly", typeof(LiveRadioPluginSource).Assembly);
+
+            Properties.SetString ("GtkActionPath", "/LiveRadioContextMenu");
             
-            
-            //Properties.SetString ("GtkActionPath", "/LiveRadioContextMenu");
-            
-            Properties.Set<bool> ("Nereid.SourceContentsPropagate", true);
+            Properties.Set<bool> ("Nereid.SourceContentsPropagate", false);
             
             if (!SetupSourceContents ())
                 ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
             
             Log.Debug ("[LiveRadioSource]<Constructor> END");
+        }
+
+        public void OnConfigure (object o, EventArgs ea)
+        {
+            new LiveRadioConfigDialog (plugins);
+            return;
         }
 
         private void OnSourceAdded (SourceAddedArgs args)
@@ -115,6 +127,7 @@ namespace Banshee.LiveRadio
                 this.AddChildSource (plugin_source);
                 this.MergeSourceInput (plugin_source, SourceMergeType.Source);
                 plugin.Initialize ();
+                plugin_source.UpdateCounts ();
             }
             
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
@@ -172,8 +185,13 @@ namespace Banshee.LiveRadio
             LiveRadioPluginSource current_source = ServiceManager.SourceManager.ActiveSource as LiveRadioPluginSource;
             if (current_source == null) return;
             foreach (ILiveRadioPlugin plugin in plugins) {
-                if (plugin.GetLiveRadioPluginSource ().Equals (current_source)) {
+                if (plugin.PluginSource.Equals (current_source)) {
                     plugin.RetrieveGenreList ();
+                    LiveRadioPluginSourceContents source_contents =
+                        current_source.Properties.Get<ISourceContents> ("Nereid.SourceContents") as LiveRadioPluginSourceContents;
+                    if (source_contents != null)
+                        source_contents.InitRefresh ();
+
                     return;
                 }
             }

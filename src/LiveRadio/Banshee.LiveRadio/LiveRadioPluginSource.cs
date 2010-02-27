@@ -61,13 +61,13 @@ namespace Banshee.LiveRadio
         private bool add_track_job_cancelled = false;
 
         public LiveRadioPluginSource (ILiveRadioPlugin plugin) :
-                        base(Catalog.GetString ("LiveRadioPlugin") + plugin.GetName (),
-                             plugin.GetName (),
-                             "live-radio-plugin-" + plugin.GetName ().ToLower (),
+                        base(Catalog.GetString ("LiveRadioPlugin") + plugin.Name,
+                             plugin.Name,
+                             "live-radio-plugin-" + plugin.Name.ToLower (),
                              sort_order)
         {
-            Log.DebugFormat ("[LiveRadioPluginSource\"{0}\"]<Constructor> START", plugin.GetName ());
-            TypeUniqueId = "live-radio-" + plugin.GetName ();
+            Log.DebugFormat ("[LiveRadioPluginSource\"{0}\"]<Constructor> START", plugin.Name);
+            TypeUniqueId = "live-radio-" + plugin.Name;
             IsLocal = false;
             
             plugin.SetLiveRadioPluginSource (this);
@@ -114,11 +114,11 @@ namespace Banshee.LiveRadio
                 Catalog.GetString ("Description")
             ));
 
-            Properties.SetString ("ActiveSourceUIResource", "ActiveSourceUI.xml");
-            Properties.Set<bool> ("ActiveSourceUIResourcePropagate", true);
-            Properties.Set<System.Reflection.Assembly> ("ActiveSourceUIResource.Assembly", typeof(LiveRadioPluginSource).Assembly);
+            //Properties.SetString ("ActiveSourceUIResource", "ActiveSourceUI.xml");
+            //Properties.Set<bool> ("ActiveSourceUIResourcePropagate", true);
+            //Properties.Set<System.Reflection.Assembly> ("ActiveSourceUIResource.Assembly", typeof(LiveRadioPluginSource).Assembly);
             
-            Properties.SetString ("GtkActionPath", "/LiveRadioContextMenu");
+            //Properties.SetString ("GtkActionPath", "/LiveRadioContextMenu");
             
             ServiceManager.PlayerEngine.TrackIntercept += OnPlayerEngineTrackIntercept;
             
@@ -134,7 +134,7 @@ namespace Banshee.LiveRadio
             
             this.PurgeTracks ();
 
-            Log.DebugFormat ("[LiveRadioPluginSource\"{0}\"]<Constructor> END", plugin.GetName ());
+            Log.DebugFormat ("[LiveRadioPluginSource\"{0}\"]<Constructor> END", plugin.Name);
             
         }
 

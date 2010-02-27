@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: banshee-community-extensions 0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-02-11 11:40-0800\n"
-"PO-Revision-Date: 2010-02-05 01:12+0100\n"
+"PO-Revision-Date: 2010-02-25 13:55+0100\n"
 "Last-Translator: Gianvito Cavasoli <janvitus@ubuntu-it.org>\n"
 "Language-Team: Italiana <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -18,317 +18,331 @@ msgstr ""
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:71
 msgid "Alarm Clock"
-msgstr ""
+msgstr "Sveglia"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:75
 msgid "Sleep Timer..."
-msgstr ""
+msgstr "Spegnimento..."
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:76
 msgid "Set the sleep timer value"
-msgstr ""
+msgstr "Imposta l'orario dello spegnimento"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:79
 msgid "Alarm..."
-msgstr ""
+msgstr "Sveglia..."
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:80
 msgid "Set the alarm time"
-msgstr ""
+msgstr "Imposta l'orario della sveglia..."
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:83
 msgid "_Configure..."
-msgstr ""
+msgstr "_Configura..."
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:84
 msgid "Configure the Alarm Clock plugin"
-msgstr ""
+msgstr "Configura il plugin della sveglia"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmConfigDialog.cs:62
 msgid "Enable Alarm"
-msgstr ""
+msgstr "Abilitare sveglia"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmConfigDialog.cs:65
 msgid "Set Time: "
-msgstr ""
+msgstr "Impostare orario:"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:49
 msgid "Alarm Clock configuration"
-msgstr ""
+msgstr "Configurazione della sveglia"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:65
 msgid "Start"
-msgstr ""
+msgstr "Avvio"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:69
 msgid "End"
-msgstr ""
+msgstr "Fine"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:76
 msgid "<b>Volume</b>"
-msgstr ""
+msgstr "<b>Volume</b>"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:80
 msgid "Duration:"
-msgstr ""
+msgstr "Durata:"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:81
 msgid " <i>(seconds)</i>"
-msgstr ""
+msgstr " <i>(secondi)</i>"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:90
 msgid "Fade-In Adjustment"
-msgstr ""
+msgstr "Impostazioni di dissolvenza"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:95
 msgid "Command:"
-msgstr ""
+msgstr "Comando:"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:99
 msgid "Command To Execute:"
-msgstr ""
+msgstr "Comando da eseguire:"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:47
 msgid "Sleep Timer"
-msgstr ""
+msgstr "Spegnimento:"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:67
 msgid "Sleep Timer :"
-msgstr ""
+msgstr "Spegnimento :"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:69
 msgid "<i>(set to 0:00 to disable)</i>"
-msgstr ""
+msgstr "<i>(per disabilitare impostare a 0:00)</i>"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs:259
 msgid "Track list"
-msgstr ""
+msgstr "Elenco tracce"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:48
 msgid "Enable threaded loading of artwork"
-msgstr ""
+msgstr "Abilita il caricamento dell'elenco delle copertine"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:49
 msgid "If enabled ClutterFlow will use threading to load it's artwork"
-msgstr ""
+msgstr "Se abilitata ClutterFlow usare l'elenco per caricare le copertine"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:55
 msgid "Unfolds the track list"
-msgstr ""
+msgstr "Spiega l'elenco delle tracce"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:56
 msgid "If checked it will display the track list when not in fullscreen mode"
 msgstr ""
+"Se impostata verrà mostrato l'elenco delle tracce quando non si è a schermo "
+"intero"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:62
 msgid "Saved value for Show Browser"
-msgstr ""
+msgstr "Valori salvati di \"mostra il navigatore\""
 
+# Ripeto, boh...
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:63
 msgid ""
 "If checked displays the Browser will be displayed when ClutterFlow is made "
 "invisible"
 msgstr ""
+"Se impostata \"mostra il navigatore\" sarà mostrato quando ClutterFlow è "
+"reso invisibile"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:69
 msgid "Display ClutterFlow"
-msgstr ""
+msgstr "Mostra ClutterFlow"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:70
 msgid "If checked displays the ClutterFlow browser instead of the default one"
 msgstr ""
+"Se impostata mostra il navigatore di ClutterFlow invece di quello predefinito"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:76
 msgid "Immediately apply playback mode changes"
-msgstr ""
+msgstr "Immediatamente applica le modifiche alla modalità di riproduzione"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:77
 msgid ""
 "Starts playing a new song immediately after the playback mode changed (Party "
 "Mode or Album Mode)"
 msgstr ""
+"Avvia la riproduzione di un nuovo brano immediatamente dopo le modifiche "
+"alla modalità di riproduzione (modalità party o modalità album)"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:83
 msgid "Display album _label"
-msgstr ""
+msgstr "Mostrare l'_etichetta dell'album"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:84
 msgid "Wether or not the album label needs to be shown above the artwork"
-msgstr ""
+msgstr "Indica se mostrare o no l'etichetta dell'album sopra la copertina"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:90
 msgid "Display track _title"
-msgstr ""
+msgstr "Mostrare _titolo della traccia"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:91
 msgid ""
 "Wether or not the album title needs to be shown above the artwork in "
 "fullscreen mode"
 msgstr ""
+"Indica se mostrare o no il titolo della traccia sopra la copertina nella "
+"modalità a schermo intero"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:97
 msgid "Texture size in pixels"
-msgstr ""
+msgstr "Dimensione delle texture in pixel"
 
+# Questa non l'ho davvero capita...
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:98
 msgid "The in-memory size of the cover textures in pixels"
-msgstr ""
+msgstr "La dimensione in memoria delle texture in pixel della copertina"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:104
 msgid "Minimal cover size in pixels"
-msgstr ""
+msgstr "Dimensione minima della copertina in pixel"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:105
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:112
 msgid "The on-stage minimal cover size in pixels"
-msgstr ""
+msgstr "La dimensione minima della copertina sul palco in pixel"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:111
 msgid "Maximal cover size in pixels"
-msgstr ""
+msgstr "Dimensione massima della copertina in pixel"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:118
 msgid "Number of visible covers at the side"
-msgstr ""
+msgstr "Numero di copertine visibili sul lato"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:119
 msgid ""
 "The number of covers that need to be displayed on the stage (at one side)"
 msgstr ""
+"Il numero di copertine che devono essere mostrare sul palco (su ogni lato)"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:231
 msgid "Show ClutterFlow Browser"
-msgstr ""
+msgstr "Mostra il navigatore ClutterFlow"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:232
 msgid "Show or hide the ClutterFlow browser"
-msgstr ""
+msgstr "Mostra o nasconde il navigatore di ClutterFlow"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:324
 msgid "ClutterFlow"
-msgstr ""
+msgstr "ClutterFlow"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:327
 msgid "General"
-msgstr ""
+msgstr "Generale"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:335
 msgid "Dimensions"
-msgstr ""
+msgstr "Demensioni"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs:47
 msgid "Lyrics"
-msgstr ""
+msgstr "Testi"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:64
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:125
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:101
 msgid "add"
-msgstr ""
+msgstr "aggiungi"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:114
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:123
 msgid "No lyrics found."
-msgstr ""
+msgstr "Testi non trovati."
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:126
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:102
 msgid "Click here to manually add a new lyric"
-msgstr ""
+msgstr "Fare clic qui per aggiungere manualmente un nuovo testo"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:130
 #: ../src/Lyrics/Banshee.Lyrics/LyricsManager.cs:184
 msgid "Suggestions:"
-msgstr ""
+msgstr "Consigli:"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:138
 msgid "Loading..."
-msgstr ""
+msgstr "Caricamento..."
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsPane.cs:108
 msgid " lyric"
-msgstr ""
+msgstr " testo"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:83
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:104
 msgid "by"
-msgstr ""
+msgstr "da"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:86
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:107
 msgid "Unknown Artist"
-msgstr ""
+msgstr "Artista sconosciuto"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:20
 msgid "Downloading Lyrics"
-msgstr ""
+msgstr "Scaricamento testi"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:64
 #, csharp-format
 msgid "{0} - {1}"
-msgstr ""
+msgstr "{0} - {1}"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:171
 msgid "L_yrics"
-msgstr ""
+msgstr "_Testi"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:172
 msgid "Manage Lyrics"
-msgstr ""
+msgstr "Gestisci i testi"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:174
 msgid "_Download Lyrics"
-msgstr ""
+msgstr "_Scarica testi"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:175
 msgid "Download lyrics for all tracks"
-msgstr ""
+msgstr "Scarica i testi per tutte le tracce"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:180
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:105
 msgid "Show Lyrics"
-msgstr ""
+msgstr "Mostra testi"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:181
 msgid "Show Lyrics in a separate window"
-msgstr ""
+msgstr "Mostra i testi in una finestra separata"
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:96
 msgid "<b>Lyric not found</b>"
-msgstr ""
+msgstr "<b>Testo non trovato</b>"
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:97
 msgid "Error downloading lyric..."
-msgstr ""
+msgstr "Errore nello scaricamento del testo..."
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:98
 msgid "Error downloading suggestions..."
-msgstr ""
+msgstr "Errore nello scaricamento dei consigli..."
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:99
 msgid "Loading lyric..."
-msgstr ""
+msgstr "Caricamento testo..."
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:100
 msgid ""
 "You don't seem to be connected to internet.<br>Check your network connection."
 msgstr ""
+"Sembra che non si è connessi a Internet.<br>Verificare la connessione di "
+"rete."
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:103
 msgid "from"
-msgstr ""
+msgstr "da"
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:106
 msgid "A Banshee plugin that retrieves and displays lyrics"
-msgstr ""
+msgstr "Un plugin che recupera e mostra i testi"
 
 #: ../src/Lyrics/Banshee.Lyrics/Constants.cs:108
 msgid "Unknown Title"
-msgstr ""
+msgstr "Titolo sconosciuto"
 
 #: ../src/Lyrics/Banshee.Lyrics/LyricBaseSource.cs:58
 msgid "Unable to contact server!"
-msgstr ""
+msgstr "Impossibile contattare il server."
 
 #. Banshee user job
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:252
@@ -491,85 +505,91 @@ msgid ""
 "{0}Radiostation fetcher{1}\n"
 "({2})"
 msgstr ""
+"{0}Ricerca stazioni radio{1}\n"
+"({2})"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:118
 msgid ""
 "Choose a genre or enter a text that you wish to be queried, then press the "
 "Get stations button. Found stations will be added to internet-radio source."
 msgstr ""
+"Scegliere un genere e immettere un testo che si vuole cercare, quindi "
+"premere il pulsante «Trova stazioni». Le stazioni trovate saranno aggiunte "
+"alla fonte delle radio Internet."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:131
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:132
 msgid "Get stations"
-msgstr ""
+msgstr "Trova stazioni"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:151
 msgid "Query by genre:"
-msgstr ""
+msgstr "Cerca per genere:"
 
+# Non mi veniva una traduzione migliore...
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:155
 msgid "Query by free text:"
-msgstr ""
+msgstr "Cerca per testo libero:"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:173
 msgid "_Close"
-msgstr ""
+msgstr "_Chiudi"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:207
 #, csharp-format
 msgid "Querying genre \"{0}\""
-msgstr ""
+msgstr "Ricerca genere «{0}»"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:212
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:233
 #, csharp-format
 msgid "Query done. Fetched {0} stations."
-msgstr ""
+msgstr "Ricerca effettuata. Trovate {0} stazioni."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:216
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:237
 #, csharp-format
 msgid "ERROR: Internet-radio extension not available."
-msgstr ""
+msgstr "Errore: l'estensione Radio Internet non è disponibile."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:219
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:240
 #, csharp-format
 msgid "ERROR: Network error."
-msgstr ""
+msgstr "Errore: errore di rete."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:222
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:243
 #, csharp-format
 msgid "ERROR"
-msgstr ""
+msgstr "Errore"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:228
 #, csharp-format
 msgid "Querying freetext \"{0}\""
-msgstr ""
+msgstr "Ricerca testo libero «{0}»"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:69
 msgid "_Radiostation fetcher"
-msgstr ""
+msgstr "_Ricerca stazioni radio"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:72
 msgid "_Shoutcast"
-msgstr ""
+msgstr "_Shoutcast"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:73
 msgid "Fetch stations from shoutcast"
-msgstr ""
+msgstr "Cerca stazioni radio da shoutcast"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:76
 msgid "_Xiph"
-msgstr ""
+msgstr "_Xiph"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:77
 msgid "Fetch stations from Xiph"
-msgstr ""
+msgstr "Cerca stazioni radio da Xiph"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs:288
 #, csharp-format
 msgid "www.xiph.org {0} stations available."
-msgstr ""
+msgstr "{0} stazioni disponibili su www.xiph.org"

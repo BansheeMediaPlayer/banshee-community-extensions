@@ -87,6 +87,8 @@
     <Compile Include="Banshee.LiveRadio\GenreListModel.cs" />
     <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\Live365Plugin.cs" />
     <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\Genre.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioConfigDialog.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\LiveRadioPluginConfigurationWidget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
