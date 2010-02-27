@@ -100,7 +100,17 @@ namespace Banshee.ClutterFlow
 		private double mouse_x, mouse_y;
 		private float drag_x0, drag_y0;		// initial coordinates when the mouse button was pressed down
 		private int start_index;
-		private const float dragSens = 0.3f;
+		
+		private float drag_sens = 0.3f;
+		public float DragSensitivity {
+			get { return drag_sens; }
+			set {
+				if (value<0.01f) value = 0.01f;
+				if (value>2.0f) value = 2.0f;
+				drag_sens = value;
+			}
+		}
+		
 		
 		private ClutterFlowSlider slider;
 		public ClutterFlowSlider Slider {
@@ -347,7 +357,7 @@ namespace Banshee.ClutterFlow
 						ViewportAngleY += (float) (mouse_x - args.Event.X)*rotSens;
 						ViewportAngleX += (float) (mouse_y - args.Event.Y)*rotSens;
 					} else {
-						CoverManager.TargetIndex = start_index + (int) ((drag_x0 - drag_x)*dragSens);
+						CoverManager.TargetIndex = start_index + (int) ((drag_x0 - drag_x)*drag_sens);
 					}
 				}
 			} else {

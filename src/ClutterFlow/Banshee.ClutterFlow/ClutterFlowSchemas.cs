@@ -42,6 +42,13 @@ namespace Banshee.ClutterFlow
             section.Add (new SchemaPreference<T> (entry, entry.ShortDescription, entry.LongDescription, func));
         }
         
+        internal static readonly SchemaEntry<int> DragSensitivity = new SchemaEntry<int>(
+            "clutterflow", "drag_sensitivity",
+            3, 1, 20,
+            Catalog.GetString ("Sensitivity for album dragging"),
+            Catalog.GetString ("Sets the sensitivity with which albums scroll when dragged, higher values mean faster scrolling")
+        );
+		
         internal static readonly SchemaEntry<bool> ThreadedArtwork = new SchemaEntry<bool>(
             "clutterflow", "threaded_artwork",
             true,

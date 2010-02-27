@@ -325,21 +325,18 @@ namespace Banshee.ClutterFlow
 				
 	            general = pref_page.Add (new Section ("general", 
 	                Catalog.GetString ("General"), 1));
-                ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.ThreadedArtwork, UpdateThreadedArtwork);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.InstantPlayback, UpdateLabelVisibility);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DisplayLabel, UpdateLabelVisibility);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DisplayTitle, UpdateTitleVisibility);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.VisibleCovers, UpdateVisibleCovers);
+				ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DragSensitivity, UpdateDragSensitivity);
+				ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.ThreadedArtwork, UpdateThreadedArtwork);
 				
 				dimensions = pref_page.Add (new Section ("dimensions", 
 	                Catalog.GetString ("Dimensions"), 2));
-	
-	            dimensions.Add (new SchemaPreference<int> (ClutterFlowSchemas.MinCoverSize, 
-	                ClutterFlowSchemas.MinCoverSize.ShortDescription, ClutterFlowSchemas.MinCoverSize.LongDescription, UpdateMinCoverSize));
-				dimensions.Add (new SchemaPreference<int> (ClutterFlowSchemas.MaxCoverSize, 
-	                ClutterFlowSchemas.MaxCoverSize.ShortDescription, ClutterFlowSchemas.MaxCoverSize.LongDescription, UpdateMaxCoverSize));
-				dimensions.Add (new SchemaPreference<int> (ClutterFlowSchemas.TextureSize, 
-	                ClutterFlowSchemas.TextureSize.ShortDescription, ClutterFlowSchemas.TextureSize.LongDescription, UpdateTextureSize));
+				ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MinCoverSize, UpdateMinCoverSize);
+				ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MaxCoverSize, UpdateMinCoverSize);
+				ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.TextureSize, UpdateMinCoverSize);
 	
 				LoadPreferences ();
 
@@ -349,6 +346,7 @@ namespace Banshee.ClutterFlow
 
 		private void LoadPreferences ()
 		{
+			UpdateDragSensitivity ();
 			UpdateLabelVisibility ();
 			UpdateTitleVisibility ();
 			UpdateVisibleCovers ();
@@ -361,6 +359,13 @@ namespace Banshee.ClutterFlow
         {
             
         }
+		
+		private void UpdateDragSensitivity ()
+		{
+			if (clutter_flow_contents != null)
+				clutter_flow_contents.FilterView.DragSensitivity =
+					(float) ClutterFlowSchemas.DragSensitivity.Get () * 0.1f;
+		}
         
 		private void UpdateLabelVisibility ()
 		{

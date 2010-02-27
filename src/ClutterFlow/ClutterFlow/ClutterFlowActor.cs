@@ -525,6 +525,7 @@ namespace ClutterFlow
 		
 		protected virtual void SlideIn ()
 		{
+			//FIXME: we should not shift the shade along!!
 			if (!shifted_outwards)
 				return;
 			shifted_outwards = false;
@@ -533,6 +534,7 @@ namespace ClutterFlow
 		
 		protected virtual void SlideOut ()
 		{
+			//FIXME: we should not shift the shade along!!
 			if (shifted_outwards)
 				return;
 			shifted_outwards = true;
