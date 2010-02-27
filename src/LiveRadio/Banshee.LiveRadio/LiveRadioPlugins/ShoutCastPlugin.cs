@@ -27,7 +27,6 @@
 //
 
 using System;
-using System.Net;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -50,14 +49,13 @@ namespace Banshee.LiveRadio.Plugins
         private const string genre_request = "?genre=";
         private const string freetext_request = "?search=";
 
-        public ShoutCastPlugin ()
+        public ShoutCastPlugin () : base ()
         {
-            use_proxy = false;
         }
 
         protected override void RetrieveGenres ()
         {
-            ParseGenres(RetrieveXml(base_url + request_url));
+            ParseGenres(RetrieveXml(base_url + request_url,20));
         }
 
         protected override void RetrieveRequest (LiveRadioRequestType request_type, string query)
@@ -68,43 +66,9 @@ namespace Banshee.LiveRadio.Plugins
             } else {
                 request = base_url + request_url + freetext_request + query;
             }
-            XmlDocument document = RetrieveXml(request);
+            XmlDocument document = RetrieveXml(request,20);
             Log.Debug ("[ShoutCastPlugin] <RetrieveRequest> Start Parsing");
             if (document != null) ParseXmlResponse(document, request_type, query);
-        }
-
-
-
-        protected XmlDocument RetrieveXml(string query)
-        {
-            Log.Debug ("[ShoutCastPlugin] <RetrieveXml> Start");
-
-            WebProxy proxy;
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create (query);
-            request.Method = "GET";
-            request.ContentType = "HTTP/1.0";
-            request.Timeout = 20 * 1000;
-            if (use_proxy) {
-                proxy = new WebProxy (proxy_url, true);
-                request.Proxy = proxy;
-            }
-
-            try
-            {
-                Stream response = request.GetResponse ().GetResponseStream ();
-                StreamReader reader = new StreamReader (response);
-
-                XmlDocument xml_response = new XmlDocument ();
-                xml_response.LoadXml (reader.ReadToEnd ());
-
-                Log.Debug ("[ShoutCastPlugin] <RetrieveXml> XML retrieved");
-
-                return xml_response;
-            }
-            catch (Exception e) {
-                Log.DebugFormat ("[Live365Plugin] <RetrieveXml> Error:" + e.Message);
-            }
-            return null;
         }
 
         private void ParseGenres(XmlDocument doc)

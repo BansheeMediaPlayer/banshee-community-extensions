@@ -27,10 +27,15 @@
 //
 
 using System;
+using System.Net;
+using System.Xml;
 using System.Collections.Generic;
 using System.ComponentModel;
 
 using Banshee.Collection.Database;
+using Banshee.Configuration;
+using System.IO;
+using Hyena;
 
 
 namespace Banshee.LiveRadio.Plugins
@@ -52,7 +57,10 @@ namespace Banshee.LiveRadio.Plugins
         protected Dictionary<string, List<DatabaseTrackInfo>> cached_results;
         protected LiveRadioPluginSource source;
         protected bool use_proxy;
+        protected bool use_credentials;
         protected string proxy_url;
+        protected string credentials_username;
+        protected string credentials_password;
 
         public event GenreListLoadedEventHandler GenreListLoaded;
         public event RequestResultRetrievedEventHandler RequestResultRetrieved;
@@ -61,9 +69,10 @@ namespace Banshee.LiveRadio.Plugins
         {
             genres = new List<Genre> ();
             cached_results = new Dictionary<string, List<DatabaseTrackInfo>> ();
-            //stations = new List<DatabaseTrackInfo> ();
-            //request_thread = new BackgroundWorker ();
-            
+            use_proxy = false;
+            use_credentials = false;
+            credentials_password = null;
+            credentials_username = null;
         }
 
         public void Initialize ()
@@ -74,7 +83,6 @@ namespace Banshee.LiveRadio.Plugins
         protected abstract void RetrieveGenres ();
 
         protected abstract void RetrieveRequest (LiveRadioRequestType request_type, string query);
-
 
         private class LiveRadioRequestObject : Object
         {
@@ -204,5 +212,45 @@ namespace Banshee.LiveRadio.Plugins
         {
             OnGenreListLoaded ();
         }
+
+        protected XmlDocument RetrieveXml(string query, int timeout_seconds)
+        {
+            Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"] <RetrieveXml> START", Name);
+
+            WebProxy proxy;
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create (query);
+            request.Method = "GET";
+            request.ContentType = "HTTP/1.0";
+            request.Timeout = timeout_seconds * 1000;
+
+            if (use_credentials)
+                request.Credentials = new NetworkCredential(credentials_username, credentials_password);
+
+            if (use_proxy) {
+                proxy = new WebProxy (proxy_url, true);
+                request.Proxy = proxy;
+            }
+
+            try
+            {
+                Stream response = request.GetResponse ().GetResponseStream ();
+                StreamReader reader = new StreamReader (response);
+
+                XmlDocument xml_response = new XmlDocument ();
+                xml_response.LoadXml (reader.ReadToEnd ());
+
+                Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"] <RetrieveXml> XML retrieved END", Name);
+
+                return xml_response;
+            }
+            catch (Exception e) {
+                Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"] <RetrieveXml> Error: {1} END", Name, e.Message);
+            }
+            return null;
+        }
+
+        public static readonly SchemaEntry<string> UseProxy = new SchemaEntry<string> (
+        "plugins.liveradio", "use_proxy", "", "whether to use proxy for HTTP", "whether to use proxy for HTTP");
+
     }
 }

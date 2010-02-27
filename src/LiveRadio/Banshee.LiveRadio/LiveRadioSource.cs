@@ -115,6 +115,7 @@ namespace Banshee.LiveRadio
                 this.AddChildSource (plugin_source);
                 this.MergeSourceInput (plugin_source, SourceMergeType.Source);
                 plugin.Initialize ();
+                plugin_source.UpdateCounts ();
             }
             
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
@@ -174,6 +175,11 @@ namespace Banshee.LiveRadio
             foreach (ILiveRadioPlugin plugin in plugins) {
                 if (plugin.GetLiveRadioPluginSource ().Equals (current_source)) {
                     plugin.RetrieveGenreList ();
+                    LiveRadioPluginSourceContents source_contents =
+                        current_source.Properties.Get<ISourceContents> ("Nereid.SourceContents") as LiveRadioPluginSourceContents;
+                    if (source_contents != null)
+                        source_contents.InitRefresh ();
+
                     return;
                 }
             }

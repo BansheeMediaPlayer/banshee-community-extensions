@@ -46,7 +46,7 @@ namespace Banshee.LiveRadio.Plugins
         private const string base_url = "http://dir.xiph.org";
         private const string catalog_url = "/yp.xml";
 
-        public XiphOrgPlugin ()
+        public XiphOrgPlugin () : base ()
         {
             use_proxy = true;
             proxy_url = "http://213.203.241.210:80";

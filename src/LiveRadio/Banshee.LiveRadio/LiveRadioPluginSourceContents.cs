@@ -151,6 +151,15 @@ namespace Banshee.LiveRadio
             
         }
 
+        public void InitRefresh ()
+        {
+            main_scrolled_window.Sensitive = false;
+            List<Genre> fakeresult = new List<Genre> ();
+            fakeresult.Add (new Genre(Catalog.GetString("Loading...")));
+            filter_box.UpdateGenres (fakeresult);
+            filter_box.Sensitive = false;
+        }
+
         void OnPluginRequestResultRetrieved (object sender,
                                              string request,
                                              LiveRadioRequestType request_type,
@@ -164,18 +173,23 @@ namespace Banshee.LiveRadio
                     plugin.GetLiveRadioPluginSource ().SetStations (result);
                     main_scrolled_window.Sensitive = true;
                 } else {
-                    List<DatabaseTrackInfo> fakeresult = new List<DatabaseTrackInfo> ();
-                    DatabaseTrackInfo faketrack = new DatabaseTrackInfo ();
-                    faketrack.TrackTitle = Catalog.GetString("Error... Please Reload");
-                    faketrack.ArtistName = Catalog.GetString("Error... Please Reload");
-                    faketrack.AlbumArtist = Catalog.GetString("Error... Please Reload");
-                    faketrack.Uri = new Banshee.Base.SafeUri ("http://test.com/test.pls");
-
-                    fakeresult.Add (faketrack);
-                    plugin.GetLiveRadioPluginSource ().SetStations (fakeresult);
-                    main_scrolled_window.Sensitive = false;
+                    SetFakeTrack (Catalog.GetString("Error... Please Reload"));
                 }
             }
+        }
+
+        protected void SetFakeTrack (string info)
+        {
+            List<DatabaseTrackInfo> fakeresult = new List<DatabaseTrackInfo> ();
+            DatabaseTrackInfo faketrack = new DatabaseTrackInfo ();
+            faketrack.TrackTitle = info;
+            faketrack.ArtistName = info;
+            faketrack.AlbumArtist = info;
+            faketrack.Uri = new Banshee.Base.SafeUri ("http://test.com/test.pls");
+    
+            fakeresult.Add (faketrack);
+            plugin.GetLiveRadioPluginSource ().SetStations (fakeresult);
+            main_scrolled_window.Sensitive = false;
         }
 
         void OnPluginGenreListLoaded (object sender, List<Genre> genres)
@@ -267,11 +281,13 @@ namespace Banshee.LiveRadio
 
         void OnViewQuerySent (object sender, string query)
         {
+            SetFakeTrack (Catalog.GetString("Loading..."));
             plugin.ExecuteRequest (LiveRadioRequestType.ByFreetext, query);
         }
 
         void OnViewGenreSelected (object sender, Genre genre)
         {
+            SetFakeTrack (Catalog.GetString("Loading..."));
             plugin.ExecuteRequest (LiveRadioRequestType.ByGenre, genre.Name);
         }
 
@@ -356,7 +372,7 @@ namespace Banshee.LiveRadio
                 }
             }*/            
         
-                protected bool ActiveSourceCanHasBrowser {
+        protected bool ActiveSourceCanHasBrowser {
             get { return true; }
         }
 

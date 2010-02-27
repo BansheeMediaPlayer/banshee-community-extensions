@@ -27,7 +27,6 @@
 //
 
 using System;
-using System.Net;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -51,14 +50,16 @@ namespace Banshee.LiveRadio.Plugins
         private const string freetext_request = "&searchdesc=";
         private const string genre_url = "/cgi-bin/api_genres.cgi?site=xml&app_id=Banshee&access=all&version=4&charset=UTF-8";
 
-        public Live365Plugin ()
+        public Live365Plugin () : base ()
         {
-            use_proxy = false;
+            use_credentials = false;
+            credentials_password = null;
+            credentials_username = null;
         }
 
         protected override void RetrieveGenres ()
         {
-            ParseGenres(RetrieveXml(base_url + genre_url));
+            ParseGenres(RetrieveXml(base_url + genre_url,20));
         }
 
         protected override void RetrieveRequest (LiveRadioRequestType request_type, string query)
@@ -69,41 +70,9 @@ namespace Banshee.LiveRadio.Plugins
             } else {
                 request = base_url + request_url + freetext_request + query;
             }
-            XmlDocument document = RetrieveXml(request);
+            XmlDocument document = RetrieveXml(request,20);
             Log.Debug ("[Live365Plugin] <RetrieveRequest> Start Parsing");
             if (document != null) ParseXmlResponse(document, request_type, query);
-        }
-
-        protected XmlDocument RetrieveXml(string query)
-        {
-            Log.Debug ("[Live365Plugin] <RetrieveXml> Start");
-
-            WebProxy proxy;
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create (query);
-            request.Method = "GET";
-            request.ContentType = "HTTP/1.0";
-            request.Timeout = 20 * 1000;
-            if (use_proxy) {
-                proxy = new WebProxy (proxy_url, true);
-                request.Proxy = proxy;
-            }
-
-            try
-            {
-                Stream response = request.GetResponse ().GetResponseStream ();
-                StreamReader reader = new StreamReader (response);
-
-                XmlDocument xml_response = new XmlDocument ();
-                xml_response.LoadXml (reader.ReadToEnd ());
-
-                Log.Debug ("[Live365Plugin] <RetrieveXml> XML retrieved");
-
-                return xml_response;
-            }
-            catch (Exception e) {
-                Log.DebugFormat ("[Live365Plugin] <RetrieveXml> Error:" + e.Message);
-            }
-            return null;
         }
 
         private void ParseGenres(XmlDocument doc)
@@ -200,7 +169,7 @@ namespace Banshee.LiveRadio.Plugins
                 if (String.IsNullOrEmpty(page)) {
                     doc = xml_response;
                 } else {
-                    doc = RetrieveXml(page);
+                    doc = RetrieveXml(page,20);
                 }
 
                 XmlNodeList XML_station_nodes = doc.GetElementsByTagName ("LIVE365_STATION");
