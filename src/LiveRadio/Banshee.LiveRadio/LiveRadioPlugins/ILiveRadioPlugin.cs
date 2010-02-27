@@ -53,5 +53,9 @@ namespace Banshee.LiveRadio.Plugins
         void ExecuteRequest (LiveRadioRequestType request_type, string query);
 
         void SetLiveRadioPluginSource (LiveRadioPluginSource source);
+
+        Gtk.Widget ConfigurationWidget { get; }
+
+        void SaveConfiguration ();
     }
 }

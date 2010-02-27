@@ -114,11 +114,11 @@ namespace Banshee.LiveRadio
                 Catalog.GetString ("Description")
             ));
 
-            Properties.SetString ("ActiveSourceUIResource", "ActiveSourceUI.xml");
-            Properties.Set<bool> ("ActiveSourceUIResourcePropagate", true);
-            Properties.Set<System.Reflection.Assembly> ("ActiveSourceUIResource.Assembly", typeof(LiveRadioPluginSource).Assembly);
+            //Properties.SetString ("ActiveSourceUIResource", "ActiveSourceUI.xml");
+            //Properties.Set<bool> ("ActiveSourceUIResourcePropagate", true);
+            //Properties.Set<System.Reflection.Assembly> ("ActiveSourceUIResource.Assembly", typeof(LiveRadioPluginSource).Assembly);
             
-            Properties.SetString ("GtkActionPath", "/LiveRadioContextMenu");
+            //Properties.SetString ("GtkActionPath", "/LiveRadioContextMenu");
             
             ServiceManager.PlayerEngine.TrackIntercept += OnPlayerEngineTrackIntercept;
             

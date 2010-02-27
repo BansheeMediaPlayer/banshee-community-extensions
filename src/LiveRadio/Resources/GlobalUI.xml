@@ -3,4 +3,11 @@
         <menuitem name="AddToInternetRadio" action="AddToInternetRadioAction"/>
         <menu name="SortChildren" action="SortChildrenAction" />
     </popup>
+    <menubar name="MainMenu">
+        <menu name="ToolsMenu" action="ToolsMenuAction">
+            <menu name="LiveRadio" action="LiveRadioAction">
+                <menuitem name="LiveRadioConfigure" action="LiveRadioConfigureAction" />
+            </menu>
+        </menu>
+    </menubar>
 </ui>

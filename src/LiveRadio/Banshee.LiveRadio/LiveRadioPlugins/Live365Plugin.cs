@@ -94,7 +94,6 @@ namespace Banshee.LiveRadio.Plugins
                         {
                             Genre genre = new Genre(data_node.InnerText);
 
-                            Log.DebugFormat("Live365Plugin]<ParseGenres> found genre {0} (#{1})",data_node.InnerText, new_genres.Count);
                             if (!new_genres.Contains (genre))
                                 new_genres.Add (genre);
                         }

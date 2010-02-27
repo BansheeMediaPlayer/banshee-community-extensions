@@ -36,6 +36,7 @@ using Banshee.Collection.Database;
 using Banshee.Configuration;
 using System.IO;
 using Hyena;
+using Gtk;
 
 
 namespace Banshee.LiveRadio.Plugins
@@ -61,6 +62,7 @@ namespace Banshee.LiveRadio.Plugins
         protected string proxy_url;
         protected string credentials_username;
         protected string credentials_password;
+        protected Widget configuration_widget;
 
         public event GenreListLoadedEventHandler GenreListLoaded;
         public event RequestResultRetrievedEventHandler RequestResultRetrieved;
@@ -69,7 +71,7 @@ namespace Banshee.LiveRadio.Plugins
         {
             genres = new List<Genre> ();
             cached_results = new Dictionary<string, List<DatabaseTrackInfo>> ();
-            use_proxy = false;
+            use_proxy = UseProxyEntry.Get ().Equals ("True") ? true : false;
             use_credentials = false;
             credentials_password = null;
             credentials_username = null;
@@ -84,7 +86,7 @@ namespace Banshee.LiveRadio.Plugins
 
         protected abstract void RetrieveRequest (LiveRadioRequestType request_type, string query);
 
-        private class LiveRadioRequestObject : Object
+        private class LiveRadioRequestObject
         {
             public string query;
             public LiveRadioRequestType request_type;
@@ -174,6 +176,16 @@ namespace Banshee.LiveRadio.Plugins
             return Name;
         }
 
+        public void SaveConfiguration ()
+        {
+            if (configuration_widget == null) return;
+        }
+
+        public Widget ConfigurationWidget
+        {
+            get { return configuration_widget; }
+        }
+
         protected virtual void OnGenreListLoaded ()
         {
             GenreListLoadedEventHandler handler = GenreListLoaded;
@@ -249,7 +261,12 @@ namespace Banshee.LiveRadio.Plugins
             return null;
         }
 
-        public static readonly SchemaEntry<string> UseProxy = new SchemaEntry<string> (
+        public bool UseProxy {
+            get { return use_proxy; }
+            set { use_proxy = value; }
+        }
+
+        public static readonly SchemaEntry<string> UseProxyEntry = new SchemaEntry<string> (
         "plugins.liveradio", "use_proxy", "", "whether to use proxy for HTTP", "whether to use proxy for HTTP");
 
     }
