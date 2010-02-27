@@ -35,6 +35,7 @@ using System.ComponentModel;
 using Banshee.Collection.Database;
 using Banshee.Configuration;
 using System.IO;
+using System.Reflection;
 using Hyena;
 using Gtk;
 
@@ -57,24 +58,25 @@ namespace Banshee.LiveRadio.Plugins
         protected List<Genre> genres;
         protected Dictionary<string, List<DatabaseTrackInfo>> cached_results;
         protected LiveRadioPluginSource source;
+        protected bool has_login;
         protected bool use_proxy;
         protected bool use_credentials;
+        protected int http_timeout_seconds;
         protected string proxy_url;
         protected string credentials_username;
         protected string credentials_password;
-        protected Widget configuration_widget;
+        protected LiveRadioPluginConfigurationWidget configuration_widget;
 
         public event GenreListLoadedEventHandler GenreListLoaded;
         public event RequestResultRetrievedEventHandler RequestResultRetrieved;
 
-        public LiveRadioBasePlugin ()
+        public LiveRadioBasePlugin () : this (false) {}
+
+        public LiveRadioBasePlugin (bool has_login)
         {
+            this.has_login = has_login;
             genres = new List<Genre> ();
             cached_results = new Dictionary<string, List<DatabaseTrackInfo>> ();
-            use_proxy = UseProxyEntry.Get ().Equals ("True") ? true : false;
-            use_credentials = false;
-            credentials_password = null;
-            credentials_username = null;
         }
 
         public void Initialize ()
@@ -154,19 +156,14 @@ namespace Banshee.LiveRadio.Plugins
             this.source = source;
         }
 
-        public string GetName ()
+        public List<Genre> Genres
         {
-            return Name;
+            get { return genres; }
         }
 
-        public List<Genre> GetGenres ()
+        public LiveRadioPluginSource PluginSource
         {
-            return genres;
-        }
-
-        public LiveRadioPluginSource GetLiveRadioPluginSource ()
-        {
-            return source;
+            get { return source; }
         }
 
         public abstract string Name { get; }
@@ -176,14 +173,20 @@ namespace Banshee.LiveRadio.Plugins
             return Name;
         }
 
-        public void SaveConfiguration ()
-        {
-            if (configuration_widget == null) return;
-        }
+        public abstract void SaveConfiguration ();
 
         public Widget ConfigurationWidget
         {
-            get { return configuration_widget; }
+            get {
+                configuration_widget = new LiveRadioPluginConfigurationWidget (has_login);
+                configuration_widget.HttpTimeout = http_timeout_seconds;
+                configuration_widget.HttpPassword = credentials_password;
+                configuration_widget.HttpUsername = credentials_username;
+                configuration_widget.ProxyUrl = proxy_url;
+                configuration_widget.UseCredentials = use_credentials;
+                configuration_widget.UseProxy = use_proxy;
+
+                return configuration_widget; }
         }
 
         protected virtual void OnGenreListLoaded ()
@@ -225,7 +228,7 @@ namespace Banshee.LiveRadio.Plugins
             OnGenreListLoaded ();
         }
 
-        protected XmlDocument RetrieveXml(string query, int timeout_seconds)
+        protected XmlDocument RetrieveXml(string query)
         {
             Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"] <RetrieveXml> START", Name);
 
@@ -233,7 +236,7 @@ namespace Banshee.LiveRadio.Plugins
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create (query);
             request.Method = "GET";
             request.ContentType = "HTTP/1.0";
-            request.Timeout = timeout_seconds * 1000;
+            request.Timeout = http_timeout_seconds * 1000;
 
             if (use_credentials)
                 request.Credentials = new NetworkCredential(credentials_username, credentials_password);
@@ -266,8 +269,30 @@ namespace Banshee.LiveRadio.Plugins
             set { use_proxy = value; }
         }
 
-        public static readonly SchemaEntry<string> UseProxyEntry = new SchemaEntry<string> (
-        "plugins.liveradio", "use_proxy", "", "whether to use proxy for HTTP", "whether to use proxy for HTTP");
+        public string ProxyUrl {
+            get { return proxy_url; }
+            set { proxy_url = value; }
+        }
+
+        public bool UseCredentials {
+            get { return use_credentials; }
+            set { use_credentials = value; }
+        }
+
+        public string HttpUsername {
+            get { return credentials_username; }
+            set { credentials_username = value; }
+        }
+
+        public string HttpPassword {
+            get { return credentials_password; }
+            set { credentials_password = value; }
+        }
+
+        public int HttpTimeout {
+            get { return http_timeout_seconds; }
+            set { http_timeout_seconds = value; }
+        }
 
     }
 }

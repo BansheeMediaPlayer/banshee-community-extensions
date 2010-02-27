@@ -36,6 +36,7 @@ using Banshee.Base;
 using Banshee.Collection.Database;
 
 using Hyena;
+using Banshee.Configuration;
 
 namespace Banshee.LiveRadio.Plugins
 {
@@ -51,11 +52,19 @@ namespace Banshee.LiveRadio.Plugins
 
         public ShoutCastPlugin () : base ()
         {
+            use_proxy = UseProxyEntry.Get ().Equals ("True") ? true : false;
+            use_credentials = UseCredentialsEntry.Get ().Equals ("True") ? true : false;
+
+            if (!Int32.TryParse(HttpTimeoutEntry.Get (), out http_timeout_seconds))
+                http_timeout_seconds = 20;
+            credentials_username = HttpUsernameEntry.Get ();
+            credentials_password = HttpPasswordEntry.Get ();
+            proxy_url = ProxyUrlEntry.Get ();
         }
 
         protected override void RetrieveGenres ()
         {
-            ParseGenres(RetrieveXml(base_url + request_url,20));
+            ParseGenres(RetrieveXml(base_url + request_url));
         }
 
         protected override void RetrieveRequest (LiveRadioRequestType request_type, string query)
@@ -66,7 +75,7 @@ namespace Banshee.LiveRadio.Plugins
             } else {
                 request = base_url + request_url + freetext_request + query;
             }
-            XmlDocument document = RetrieveXml(request,20);
+            XmlDocument document = RetrieveXml(request);
             Log.Debug ("[ShoutCastPlugin] <RetrieveRequest> Start Parsing");
             if (document != null) ParseXmlResponse(document, request_type, query);
         }
@@ -193,7 +202,42 @@ namespace Banshee.LiveRadio.Plugins
         public override string Name {
             get { return "SHOUTcast.com"; }
         }
-        
+        public override void SaveConfiguration ()
+        {
+            if (configuration_widget == null) return;
+            http_timeout_seconds = configuration_widget.HttpTimeout;
+            credentials_password = configuration_widget.HttpPassword;
+            credentials_username = configuration_widget.HttpUsername;
+            proxy_url = configuration_widget.ProxyUrl;
+            use_credentials = configuration_widget.UseCredentials;
+            use_proxy = configuration_widget.UseProxy;
+            HttpTimeoutEntry.Set (http_timeout_seconds.ToString ());
+            HttpPasswordEntry.Set (credentials_password);
+            HttpUsernameEntry.Set (credentials_username);
+            ProxyUrlEntry.Set (proxy_url);
+            UseCredentialsEntry.Set (use_credentials.ToString ());
+            UseProxyEntry.Set (use_proxy.ToString ());
+        }
+
+        public static readonly SchemaEntry<string> UseProxyEntry = new SchemaEntry<string> (
+        "plugins.liveradio.shoutcast" , "use_proxy", "", "whether to use proxy for HTTP", "whether to use proxy for HTTP");
+
+        public static readonly SchemaEntry<string> ProxyUrlEntry = new SchemaEntry<string> (
+        "plugins.liveradio.shoutcast", "proxy_url", "", "HTTP proxy url", "HTTP proxy url");
+
+        public static readonly SchemaEntry<string> UseCredentialsEntry = new SchemaEntry<string> (
+        "plugins.liveradio.shoutcast", "use_credentials", "", "whether to use credentials authentification", "whether to use credentials authentification");
+
+        public static readonly SchemaEntry<string> HttpUsernameEntry = new SchemaEntry<string> (
+        "plugins.liveradio.shoutcast", "credentials_username", "", "HTTP username", "HTTP username");
+
+        public static readonly SchemaEntry<string> HttpPasswordEntry = new SchemaEntry<string> (
+        "plugins.liveradio.shoutcast", "credentials_password", "", "HTTP password", "HTTP password");
+
+        public static readonly SchemaEntry<string> HttpTimeoutEntry = new SchemaEntry<string> (
+        "plugins.liveradio.shoutcast", "http_timeout_seconds", "", "HTTP timeout", "HTTP timeout");
+
+
     }
     
 }

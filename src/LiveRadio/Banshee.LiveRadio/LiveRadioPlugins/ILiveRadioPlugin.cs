@@ -38,13 +38,7 @@ namespace Banshee.LiveRadio.Plugins
         event GenreListLoadedEventHandler GenreListLoaded;
         event RequestResultRetrievedEventHandler RequestResultRetrieved;
 
-        string GetName ();
-
-        List<Genre> GetGenres ();
-
         string ToString ();
-
-        LiveRadioPluginSource GetLiveRadioPluginSource ();
 
         void Initialize ();
 
@@ -54,8 +48,17 @@ namespace Banshee.LiveRadio.Plugins
 
         void SetLiveRadioPluginSource (LiveRadioPluginSource source);
 
+        void SaveConfiguration ();
+
         Gtk.Widget ConfigurationWidget { get; }
 
-        void SaveConfiguration ();
+        LiveRadioPluginSource PluginSource { get; }
+
+        string Name { get; }
+
+        List<Genre> Genres { get; }
+
+        //TODO: add enable/disable functionality
+        //bool Enabled { get; }
     }
 }

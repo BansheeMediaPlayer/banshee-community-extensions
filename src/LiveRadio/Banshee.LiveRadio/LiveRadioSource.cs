@@ -68,7 +68,7 @@ namespace Banshee.LiveRadio
             plugins = new LiveRadioPluginManager ().LoadPlugins ();
             
             foreach (ILiveRadioPlugin plugin in plugins) {
-                Log.DebugFormat ("[LiveRadioSource]<Constructor> found plugin: {0}", plugin.GetName ());
+                Log.DebugFormat ("[LiveRadioSource]<Constructor> found plugin: {0}", plugin.Name);
             }
             
             AfterInitialized ();
@@ -110,7 +110,7 @@ namespace Banshee.LiveRadio
 
         public void OnConfigure (object o, EventArgs ea)
         {
-            //new StreamrecorderConfigDialog (this, output_directory, active_encoder, is_importing_enabled, is_splitting_enabled);
+            new LiveRadioConfigDialog (plugins);
             return;
         }
 
@@ -185,7 +185,7 @@ namespace Banshee.LiveRadio
             LiveRadioPluginSource current_source = ServiceManager.SourceManager.ActiveSource as LiveRadioPluginSource;
             if (current_source == null) return;
             foreach (ILiveRadioPlugin plugin in plugins) {
-                if (plugin.GetLiveRadioPluginSource ().Equals (current_source)) {
+                if (plugin.PluginSource.Equals (current_source)) {
                     plugin.RetrieveGenreList ();
                     LiveRadioPluginSourceContents source_contents =
                         current_source.Properties.Get<ISourceContents> ("Nereid.SourceContents") as LiveRadioPluginSourceContents;

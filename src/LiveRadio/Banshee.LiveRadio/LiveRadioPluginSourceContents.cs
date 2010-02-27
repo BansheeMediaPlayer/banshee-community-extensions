@@ -85,8 +85,8 @@ namespace Banshee.LiveRadio
 
         public LiveRadioPluginSourceContents (ILiveRadioPlugin plugin)
         {
-            Log.DebugFormat ("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> START", plugin.GetName ());
-            base.Name = plugin.GetName ();
+            Log.DebugFormat ("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> START", plugin.Name);
+            base.Name = plugin.Name;
             this.plugin = plugin;
             
             InitializeViews ();
@@ -102,7 +102,7 @@ namespace Banshee.LiveRadio
             plugin.RequestResultRetrieved += OnPluginRequestResultRetrieved;
             
             if (ForcePosition != null) {
-                Log.DebugFormat ("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> END", plugin.GetName ());
+                Log.DebugFormat ("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> END", plugin.Name);
                 return;
             }
             
@@ -147,7 +147,7 @@ namespace Banshee.LiveRadio
 
             NoShowAll = true;
             
-            Log.DebugFormat ("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> END", plugin.GetName ());
+            Log.DebugFormat ("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> END", plugin.Name);
             
         }
 
@@ -170,7 +170,7 @@ namespace Banshee.LiveRadio
                 || (filter_box.GetSelectedGenre ().Name.Equals (request) && request_type == LiveRadioRequestType.ByGenre))
             {
                 if (result.Count > 0) {
-                    plugin.GetLiveRadioPluginSource ().SetStations (result);
+                    plugin.PluginSource.SetStations (result);
                     main_scrolled_window.Sensitive = true;
                 } else {
                     SetFakeTrack (Catalog.GetString("Error... Please Reload"));
@@ -188,7 +188,7 @@ namespace Banshee.LiveRadio
             faketrack.Uri = new Banshee.Base.SafeUri ("http://test.com/test.pls");
     
             fakeresult.Add (faketrack);
-            plugin.GetLiveRadioPluginSource ().SetStations (fakeresult);
+            plugin.PluginSource.SetStations (fakeresult);
             main_scrolled_window.Sensitive = false;
         }
 
