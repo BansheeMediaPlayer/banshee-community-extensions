@@ -2,6 +2,7 @@
 # Please keep this file in alphabetical order; run ./sort-potfiles
 # after adding files here.
 [encoding: UTF-8]
+
 src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs
 src/AlarmClock/Banshee.AlarmClock/AlarmConfigDialog.cs
 src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs
@@ -12,7 +13,9 @@ src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs
 src/LCD/Banshee.LCD/ConfigurationDialog.cs
 src/LCD/Banshee.LCD/LCDService.cs
 src/Lirc/Banshee.Lirc/gtk-gui/Banshee.Lirc.ConfigDialog.cs
+src/LiveRadio/Banshee.LiveRadio/LiveRadioConfigDialog.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioFilterView.cs
+src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs
