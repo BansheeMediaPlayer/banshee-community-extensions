@@ -390,8 +390,9 @@ namespace ClutterFlow
             }
         }
 
-        
 		private NeedPixbuf getDefaultPb;
+		
+		protected bool shifted_outwards;
 		#endregion
 		
 		#region Initialization	
@@ -400,12 +401,14 @@ namespace ClutterFlow
 			this.getDefaultPb = getDefaultPb;
 
             this.ParentSet += HandleParentSet;
+			this.LeaveEvent += HandleLeaveEvent;
 			this.ButtonPressEvent += HandleButtonPressEvent;
 			this.ButtonReleaseEvent += HandleButtonReleaseEvent;
 			
 			IsSetup = SetupStatics ();
 			SetupActors ();
 		}
+
         ~ ClutterFlowActor ()
         {
             Dispose ();
@@ -415,6 +418,7 @@ namespace ClutterFlow
             base.Dispose ();
 
             this.ParentSet -= HandleParentSet;
+			this.LeaveEvent -= HandleLeaveEvent;
             this.ButtonPressEvent -= HandleButtonPressEvent;
             this.ButtonReleaseEvent -= HandleButtonReleaseEvent;
             getDefaultPb = null;
@@ -506,7 +510,7 @@ namespace ClutterFlow
 			return this;
 		}
 
-		public double AlphaFunction (double progress)
+		/*public double AlphaFunction (double progress)
 		{
 			if (index < 0)
 				last_alpha = 0;
@@ -517,6 +521,25 @@ namespace ClutterFlow
 				last_alpha = val;
 			}
 			return last_alpha;
+		}*/
+		
+		protected virtual void SlideIn ()
+		{
+			if (!shifted_outwards)
+				return;
+			shifted_outwards = false;
+			Animatev ((ulong) Clutter.AnimationMode.EaseOutBack.value__, CoverManager.MaxAnimationSpan, new string[] { "anchor-x" }, new GLib.Value ((float) Width*0.5f));
+		}
+		
+		protected virtual void SlideOut ()
+		{
+			if (shifted_outwards)
+				return;
+			shifted_outwards = true;
+			float x, y, z;
+			double angle = GetRotation(RotateAxis.Y, out x, out y, out z);
+			float new_anchor_x = (float) (Width * (0.5f + 1.6f*Math.Tan (angle)));
+			Animatev ((ulong) Clutter.AnimationMode.EaseOutBack.value__, CoverManager.MaxAnimationSpan, new string[] { "anchor-x" }, new GLib.Value ((float) new_anchor_x));
 		}
 		#endregion
 
@@ -536,23 +559,40 @@ namespace ClutterFlow
             }
         }
         
+		protected virtual void HandleLeaveEvent (object o, LeaveEventArgs args)
+		{
+			SlideIn ();
+			args.RetVal = true;
+		}
+		
 		protected virtual void HandleButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
 		{
-			if (Index>=0 && Opacity > 0) {
-                //Console.WriteLine ("HandleButtonReleaseEvent in ClutterFlowActor with index " + Index + " current cover is " + ((CoverManager.CurrentCover!=null) ? CoverManager.CurrentCover.Index.ToString():"null") + " and lc_index is " + index);
-				if (CoverManager.CurrentCover==this) {
-                    CreateClickClone ();
-					CoverManager.InvokeCoverActivated (this);
-				} else
-					CoverManager.TargetIndex = Index;
+			if (args.Event.Button == 3) {
+				SlideIn ();
+			} else {
+				if (Index>=0 && Opacity > 0) {
+					if (CoverManager.CurrentCover==this) {
+	                    CreateClickClone ();
+						CoverManager.InvokeCoverActivated (this);
+					} else
+						CoverManager.TargetIndex = Index;
+				}
 			}
             args.RetVal = true;
-            
 		}
 
 		protected virtual void HandleButtonPressEvent (object o, ButtonPressEventArgs args)
 		{
-			//should register time for double clicks
+			if (args.Event.Button == 3) {
+				float x, y, z;
+				Clutter.EventHelper.GetCoords (args.Event, out x, out y);
+				TransformStagePoint (x, y, out x, out y);
+				if (y < Height*0.5f)
+					SlideOut ();
+				args.RetVal = true;
+			} else {
+				
+			}
 		}
 		#endregion
 	}
