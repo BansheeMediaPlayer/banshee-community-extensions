@@ -3,7 +3,7 @@ Alarm & Sleep Timer extension
 
 ABOUT:
 =================
-This is a relatively simple extension to the Banshee media player, which allows the user to set an alarm time, and a sleep time.
+This is a relatively simple extension to the Banshee media player, which allows you to use Banshee as an alarm clock.
 
 FEATURES:
 =================
@@ -22,16 +22,16 @@ Sleep Timer:
 
 HOW TO USE:
 =================
-It's almost too easy!
 Go to the "Tools/Alarm Clock" menu, and select "Alarm" or "Sleep Timer", depending on which one you want to configure.
 Edit the settings and click OK.
 Easy as that!
 
-To configure volume changing settings for alarm timer, go to "Tools/Alarm Clock", click on "Configure" tab, and change settings as desired.
+To configure volume changing settings for alarm timer, go to "Tools/Alarm Clock" menu, select "Configure", and change settings as desired.
 
 REPORTING BUGS:
 =================
-See the BUGS file
+Bugs should be reported using the GNOME bugtracker :
+http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions
 
 FEATURE REQUESTS:
 =================
@@ -44,4 +44,4 @@ or join the banshee-list@gnome.org and ask nicely :)
 
 PATCHES:
 =================
-Submit all patches on the issue tracker at http://code.google.com/p/banshee-unofficial-plugins/issues.
+Submit all patches on the bug tracker at http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions
