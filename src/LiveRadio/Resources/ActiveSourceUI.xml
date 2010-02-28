@@ -7,6 +7,11 @@
       </placeholder>
     </menu>
   </menubar>
+	<popup name="TrackContextMenu" action="TrackContextMenuAction">
+	    <placeholder name="AboveAddToInternetRadio">
+	        <menuitem name="AddToInternetRadio" action="AddToInternetRadioAction"></menuitem>
+	    </placeholder>
+	</popup>
   <toolbar name="HeaderToolbar">
       <placeholder name="SourceActions">
           <toolitem action="AddToInternetRadioAction" />
