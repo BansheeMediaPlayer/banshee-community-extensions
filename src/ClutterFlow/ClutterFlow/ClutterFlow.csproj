@@ -10,6 +10,7 @@
     <AssemblyName>ClutterFlow</AssemblyName>
     <RootNamespace>ClutterFlow</RootNamespace>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <ReleaseVersion>0.3.7</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

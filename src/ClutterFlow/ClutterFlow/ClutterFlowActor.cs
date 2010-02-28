@@ -586,7 +586,7 @@ namespace ClutterFlow
 		protected virtual void HandleButtonPressEvent (object o, ButtonPressEventArgs args)
 		{
 			if (args.Event.Button == 3) {
-				float x, y, z;
+				float x, y;
 				Clutter.EventHelper.GetCoords (args.Event, out x, out y);
 				TransformStagePoint (x, y, out x, out y);
 				if (y < Height*0.5f)
