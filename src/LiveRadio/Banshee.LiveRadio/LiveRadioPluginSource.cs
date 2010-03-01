@@ -48,25 +48,29 @@ using Banshee.LiveRadio.Plugins;
 
 namespace Banshee.LiveRadio
 {
-    // We are inheriting from Source, the top-level, most generic type of Source.
-    // Other types include (inheritance indicated by indentation):
-    //      DatabaseSource - generic, DB-backed Track source; used by PlaylistSource
-    //        PrimarySource - 'owns' tracks, used by DaapSource, DapSource
-    //          LibrarySource - used by Music, Video, Podcasts, and Audiobooks
+
+    /// <summary>
+    /// The base class for temporary LiveRadio Plugin sources, which can add station tracks and will remove all tracks upon disposal
+    /// </summary>
     public class LiveRadioPluginSource : PrimarySource, IDisposable, IBasicPlaybackController
     {
-        // In the sources TreeView, sets the order value for this source, small on top
         const int sort_order = 191;
         private LiveRadioPluginSourceContents source_contents;
         private bool add_track_job_cancelled = false;
 
+        /// <summary>
+        /// Constructor -- creates a new temporary LiveRadio Plugin source and sets itself as the plugin's source
+        /// Any tracks that have remained in the source from a previous (interrupted) session are purged
+        /// </summary>
+        /// <param name="plugin">
+        /// A <see cref="ILiveRadioPlugin"/> -- the plugin the source is created for
+        /// </param>
         public LiveRadioPluginSource (ILiveRadioPlugin plugin) :
                         base(Catalog.GetString ("LiveRadioPlugin") + plugin.Name,
                              plugin.Name,
                              "live-radio-plugin-" + plugin.Name.ToLower (),
                              sort_order)
         {
-            Log.DebugFormat ("[LiveRadioPluginSource\"{0}\"]<Constructor> START", plugin.Name);
             TypeUniqueId = "live-radio-" + plugin.Name;
             IsLocal = false;
             
@@ -114,12 +118,6 @@ namespace Banshee.LiveRadio
                 Catalog.GetString ("Description")
             ));
 
-            //Properties.SetString ("ActiveSourceUIResource", "ActiveSourceUI.xml");
-            //Properties.Set<bool> ("ActiveSourceUIResourcePropagate", true);
-            //Properties.Set<System.Reflection.Assembly> ("ActiveSourceUIResource.Assembly", typeof(LiveRadioPluginSource).Assembly);
-            
-            //Properties.SetString ("GtkActionPath", "/LiveRadioContextMenu");
-            
             ServiceManager.PlayerEngine.TrackIntercept += OnPlayerEngineTrackIntercept;
             
             TrackEqualHandler = delegate(DatabaseTrackInfo a, TrackInfo b) {
@@ -134,16 +132,23 @@ namespace Banshee.LiveRadio
             
             this.PurgeTracks ();
 
-            Log.DebugFormat ("[LiveRadioPluginSource\"{0}\"]<Constructor> END", plugin.Name);
-            
         }
 
+        /// <summary>
+        /// The Widget of the source contents of this source
+        /// </summary>
+        /// <returns>
+        /// A <see cref="Widget"/>
+        /// </returns>
         public Widget GetWidget ()
         {
             ISourceContents source_contents = Properties.Get<ISourceContents> ("Nereid.SourceContents");
             return source_contents.Widget;
         }
 
+        /// <summary>
+        /// Purges any tracks left in the source and removes event handlers
+        /// </summary>
         public override void Dispose ()
         {
             base.Dispose ();
@@ -152,6 +157,16 @@ namespace Banshee.LiveRadio
             ServiceManager.PlayerEngine.TrackIntercept -= OnPlayerEngineTrackIntercept;
         }
 
+        /// <summary>
+        /// Handler when a track of this source is intercepted by the player engine. Initiates the track to play
+        /// if it belongs to this source.
+        /// </summary>
+        /// <param name="track">
+        /// A <see cref="TrackInfo"/>
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Boolean"/>
+        /// </returns>
         private bool OnPlayerEngineTrackIntercept (TrackInfo track)
         {
             DatabaseTrackInfo station = track as DatabaseTrackInfo;
@@ -164,11 +179,26 @@ namespace Banshee.LiveRadio
             return true;
         }
 
+        /// <summary>
+        /// Handles the (user) request to cancel a batch job adding new stations to the source
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         private void OnAddTrackJobCancelRequested (object o, EventArgs e)
         {
             add_track_job_cancelled = true;
         }
 
+        /// <summary>
+        /// Sets the tracks of this source. All tracks previously contained in this source are purged.
+        /// </summary>
+        /// <param name="tracks">
+        /// A <see cref="List<DatabaseTrackInfo>"/> -- the list of tracks to be contained in the source
+        /// </param>
         public void SetStations (List<DatabaseTrackInfo> tracks)
         {
             this.PurgeTracks ();
@@ -193,11 +223,23 @@ namespace Banshee.LiveRadio
             
         }
 
+        /// <summary>
+        /// Adds a track to is source. Does not actually set the tracks source.
+        /// </summary>
+        /// <param name="track">
+        /// A <see cref="DatabaseTrackInfo"/> -- the track to be added to its set source
+        /// </param>
         protected override void AddTrack (DatabaseTrackInfo track)
         {
             track.Save ();
         }
 
+        /// <summary>
+        /// Adds a station track to this source.
+        /// </summary>
+        /// <param name="track">
+        /// A <see cref="DatabaseTrackInfo"/> -- the track to be added to this source
+        /// </param>
         private void AddStation (DatabaseTrackInfo track)
         {
             DatabaseTrackInfo station = track ?? new DatabaseTrackInfo ();
@@ -211,11 +253,26 @@ namespace Banshee.LiveRadio
 
         #region IBasicPlaybackController implementation
 
+        /// <summary>
+        /// First method for IBasicPlaybackController
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.Boolean"/>
+        /// </returns>
         public bool First ()
         {
             return false;
         }
 
+        /// <summary>
+        /// Next method for IBasicPlaybackController
+        /// </summary>
+        /// <param name="restart">
+        /// A <see cref="System.Boolean"/>
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Boolean"/>
+        /// </returns>
         public bool Next (bool restart)
         {
             RadioTrackInfo radio_track = ServiceManager.PlaybackController.CurrentTrack as RadioTrackInfo;
@@ -226,6 +283,15 @@ namespace Banshee.LiveRadio
             }
         }
 
+        /// <summary>
+        /// Previous  method for IBasicPlaybackController
+        /// </summary>
+        /// <param name="restart">
+        /// A <see cref="System.Boolean"/>
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Boolean"/>
+        /// </returns>
         public bool Previous (bool restart)
         {
             RadioTrackInfo radio_track = ServiceManager.PlaybackController.CurrentTrack as RadioTrackInfo;
@@ -243,6 +309,9 @@ namespace Banshee.LiveRadio
             return false;
         }
 
+        /// <summary>
+        /// Set to false so the track view is not searchable and query is not interrupted
+        /// </summary>
         public override bool CanSearch {
             get { return false; }
         }

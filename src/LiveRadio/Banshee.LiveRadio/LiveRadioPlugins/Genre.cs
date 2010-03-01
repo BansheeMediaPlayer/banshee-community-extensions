@@ -30,16 +30,28 @@ using System;
 namespace Banshee.LiveRadio
 {
 
+    /// <summary>
+    /// Implements a comparable Genre object to be used in List structures
+    /// </summary>
     public class Genre : IComparable<Genre>
     {
 
         string name;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Genre ()
         {
             name = null;
         }
 
+        /// <summary>
+        /// Full Constructor
+        /// </summary>
+        /// <param name="genre">
+        /// A <see cref="System.String"/> -- the genre name
+        /// </param>
         public Genre (string genre)
         {
             name = genre;
@@ -51,6 +63,9 @@ namespace Banshee.LiveRadio
             set { name = value; }
         }
 
+        /// <summary>
+        /// The dictionary key for this genre
+        /// </summary>
         public string GenreKey
         {
             get { return "Genre:" + name; }
@@ -61,6 +76,15 @@ namespace Banshee.LiveRadio
             return Name;
         }
 
+        /// <summary>
+        /// Equals Handler comparing Genres by their name
+        /// </summary>
+        /// <param name="genre">
+        /// A <see cref="System.Object"/> -- a Genre object
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Boolean"/> -- true if name of the compared genre equals the Genre name of the caller
+        /// </returns>
         public override bool Equals (object genre)
         {
             if (!(genre is Genre)) return false;
@@ -72,6 +96,15 @@ namespace Banshee.LiveRadio
             return Name.GetHashCode ();
         }
 
+        /// <summary>
+        /// Implements string comparison of genre names
+        /// </summary>
+        /// <param name="genre">
+        /// A <see cref="Genre"/> -- a Genre object
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Int32"/> -- the comparison result of the genre names
+        /// </returns>
         public int CompareTo (Genre genre)
         {
             return this.Name.CompareTo (genre.Name);

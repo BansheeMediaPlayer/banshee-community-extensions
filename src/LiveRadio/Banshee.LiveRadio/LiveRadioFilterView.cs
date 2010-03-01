@@ -41,19 +41,41 @@ using Hyena.Widgets;
 
 namespace Banshee.LiveRadio
 {
+    /// <summary>
+    /// EventHandler for genre selection
+    /// </summary>
     public delegate void GenreSelectedEventHandler (object sender, Genre genre);
+    /// <summary>
+    /// EventHandler for query request
+    /// </summary>
     public delegate void QuerySentEventHandler (object sender, string query);
 
+
+    /// <summary>
+    /// Gtk Container to hold the control elements for a LiveRadio source
+    /// </summary>
     public class LiveRadioFilterView : VBox
     {
 
         private ListView<Genre> genre_view;
         private Entry query_input;
 
+        /// <summary>
+        /// Event is raised when a genre is clicked in the genre choose box
+        /// </summary>
         public event GenreSelectedEventHandler GenreSelected;
+        /// <summary>
+        /// Event is raised when a genre is double clicked in the genre choose box
+        /// </summary>
         public event GenreSelectedEventHandler GenreActivated;
+        /// <summary>
+        /// Event is raised when a freetext query is sent by the user=
+        /// </summary>
         public event QuerySentEventHandler QuerySent;
 
+        /// <summary>
+        /// Constructor -- creates a Gtk Widget holding a genre choose box and a freetext query field
+        /// </summary>
         public LiveRadioFilterView ()
         {
             genre_view = new ListView<Genre> ();
@@ -80,6 +102,15 @@ namespace Banshee.LiveRadio
             this.PackStart (query_box, false, true, 5);
         }
 
+        /// <summary>
+        /// Captures the press of the RETURN key within the query field and delegates to OnViewQuerySent
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="args">
+        /// A <see cref="KeyReleaseEventArgs"/> -- holding information about the key released
+        /// </param>
         void OnInputKeyReleaseEvent (object o, KeyReleaseEventArgs args)
         {
             if (args.Event.Key == Gdk.Key.Return) {
@@ -87,6 +118,15 @@ namespace Banshee.LiveRadio
             }
         }
 
+        /// <summary>
+        /// Handler when a query has been sent by the user. Clears any genre selection and raises QuerySent event
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/>
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="EventArgs"/>
+        /// </param>
         void OnViewQuerySent (object sender, EventArgs e)
         {
             GenreListModel model = genre_view.Model as GenreListModel;
@@ -94,26 +134,54 @@ namespace Banshee.LiveRadio
             RaiseQuerySent (query_input.Text.Trim ());
         }
 
+        /// <summary>
+        /// Returns the genre entry which currently has focus in the genre choose box
+        /// </summary>
+        /// <returns>
+        /// A <see cref="Genre"/> -- the focused genre
+        /// </returns>
         public Genre GetSelectedGenre ()
         {
             GenreListModel model = genre_view.Model as GenreListModel;
             return model[genre_view.Model.Selection.FocusedIndex];
         }
 
+        /// <summary>
+        /// Handler when a genre has been selected by the user. Raises the GenreSelected event for the selected genre
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         void OnViewGenreSelected (object sender, EventArgs e)
         {
             GenreListModel model = genre_view.Model as GenreListModel;
             RaiseGenreSelected (model[genre_view.Model.Selection.FocusedIndex]);
-            Hyena.Log.DebugFormat ("[LiveRadioFilterView]<OnSelectGenreNotify> selected entry: {0}",
-                                   model[genre_view.Model.Selection.FocusedIndex]);
         }
 
+        /// <summary>
+        /// Set a new Genre list in the genre choose box
+        /// </summary>
+        /// <param name="newlist">
+        /// A <see cref="List<Genre>"/> -- the list of new genres
+        /// </param>
         public void UpdateGenres (List<Genre> newlist)
         {
             GenreListModel model = genre_view.Model as GenreListModel;
             model.SetList (newlist);
         }
 
+        /// <summary>
+        /// Capsules a Gtk Widget in a scolled window to add scrolling
+        /// </summary>
+        /// <param name="view">
+        /// A <see cref="Widget"/> -- the widget to be capsuled
+        /// </param>
+        /// <returns>
+        /// A <see cref="ScrolledWindow"/> -- the scrolled window containing the capsuled widget
+        /// </returns>
         private ScrolledWindow SetupView (Widget view)
         {
             ScrolledWindow window = null;
@@ -131,6 +199,12 @@ namespace Banshee.LiveRadio
             return window;
         }
 
+        /// <summary>
+        /// Method to invoke the GenreSelected event
+        /// </summary>
+        /// <param name="genre">
+        /// A <see cref="Genre"/> -- the genre selected
+        /// </param>
         protected virtual void OnGenreSelected (Genre genre)
         {
             GenreSelectedEventHandler handler = GenreSelected;
@@ -139,11 +213,23 @@ namespace Banshee.LiveRadio
             }
         }
 
+        /// <summary>
+        /// Raise the GenreSelected event
+        /// </summary>
+        /// <param name="genre">
+        /// A <see cref="Genre"/> -- the genre selected
+        /// </param>
         public void RaiseGenreSelected (Genre genre)
         {
             OnGenreSelected (genre);
         }
 
+        /// <summary>
+        /// Method to invoke the GenreActivated event
+        /// </summary>
+        /// <param name="genre">
+        /// A <see cref="Genre"/> -- the genre selected
+        /// </param>
         protected virtual void OnGenreActivated (Genre genre)
         {
             GenreSelectedEventHandler handler = GenreActivated;
@@ -152,11 +238,23 @@ namespace Banshee.LiveRadio
             }
         }
 
+        /// <summary>
+        /// Raise the GenreActivated event
+        /// </summary>
+        /// <param name="genre">
+        /// A <see cref="Genre"/> -- the genre selected
+        /// </param>
         public void RaiseGenreActivated (Genre genre)
         {
             OnGenreActivated (genre);
         }
 
+        /// <summary>
+        /// Method to invoke the QuerySent event
+        /// </summary>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- the query that has been sent
+        /// </param>
         protected virtual void OnQuerySent (string query)
         {
             QuerySentEventHandler handler = QuerySent;
@@ -165,6 +263,12 @@ namespace Banshee.LiveRadio
             }
         }
 
+        /// <summary>
+        /// Raise the QuerySent event
+        /// </summary>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- the query that has been sent
+        /// </param>
         public void RaiseQuerySent (string query)
         {
             OnQuerySent (query);

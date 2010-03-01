@@ -41,7 +41,11 @@ using Banshee.Configuration;
 namespace Banshee.LiveRadio.Plugins
 {
 
-
+    /// <summary>
+    /// LiveRadio plugin for shoutcast.com
+    ///
+    /// This plugin is able to download a genre list upon initialize/refresh and execute live queries on the shoutcast directory
+    /// </summary>
     public class ShoutCastPlugin : LiveRadioBasePlugin
     {
 
@@ -50,6 +54,9 @@ namespace Banshee.LiveRadio.Plugins
         private const string genre_request = "?genre=";
         private const string freetext_request = "?search=";
 
+        /// <summary>
+        /// Constructor -- sets configuration entries
+        /// </summary>
         public ShoutCastPlugin () : base ()
         {
             use_proxy = UseProxyEntry.Get ().Equals ("True") ? true : false;
@@ -59,11 +66,23 @@ namespace Banshee.LiveRadio.Plugins
             proxy_url = ProxyUrlEntry.Get ();
         }
 
+        /// <summary>
+        /// Retrieve and parse genre list
+        /// </summary>
         protected override void RetrieveGenres ()
         {
             ParseGenres(RetrieveXml(base_url + request_url));
         }
 
+        /// <summary>
+        /// Retrieve and parse a live query on the shoutcast directory
+        /// </summary>
+        /// <param name="request_type">
+        /// A <see cref="LiveRadioRequestType"/> -- the request type
+        /// </param>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- the freetext query or the genre name
+        /// </param>
         protected override void RetrieveRequest (LiveRadioRequestType request_type, string query)
         {
             string request;
@@ -73,16 +92,18 @@ namespace Banshee.LiveRadio.Plugins
                 request = base_url + request_url + freetext_request + query;
             }
             XmlDocument document = RetrieveXml(request);
-            Log.Debug ("[ShoutCastPlugin] <RetrieveRequest> Start Parsing");
             if (document != null) ParseXmlResponse(document, request_type, query);
         }
 
+        /// <summary>
+        /// Parses and sorts an XML genre catalog and fills the plugins genre list
+        /// </summary>
+        /// <param name="doc">
+        /// A <see cref="XmlDocument"/> -- the XML document containing the genre catalog
+        /// </param>
         private void ParseGenres(XmlDocument doc)
         {
-            Log.Debug ("[ShoutCastPlugin] <ParseGenres> START");
-            
             XmlNodeList XML_genre_nodes = doc.GetElementsByTagName ("genre");
-            Log.DebugFormat ("[ShoutCastPlugin] <ParseGenres> {0} nodes found", XML_genre_nodes.Count);
 
             List<Genre> new_genres = new List<Genre> ();
 
@@ -108,10 +129,20 @@ namespace Banshee.LiveRadio.Plugins
             Log.DebugFormat ("[ShoutCastPlugin] <ParseGenres> {0} genres found", genres.Count);
         }
 
+        /// <summary>
+        /// Parses the response to a query request and fills the results cache
+        /// </summary>
+        /// <param name="xml_response">
+        /// A <see cref="XmlDocument"/> -- the XML document containing the response to the query request
+        /// </param>
+        /// <param name="request_type">
+        /// A <see cref="LiveRadioRequestType"/> -- the type of the request
+        /// </param>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- the requested query, freetext or the genre name
+        /// </param>
         private void ParseXmlResponse (XmlDocument xml_response, LiveRadioRequestType request_type, string query)
         {
-            Log.Debug ("[ShoutCastPlugin] <ParseXmlResponse> Start");
-
             string tunein_url = "";
 
             XmlNodeList XML_tunein_nodes = xml_response.GetElementsByTagName ("tunein");
@@ -128,8 +159,6 @@ namespace Banshee.LiveRadio.Plugins
                     return;
                 }
             }
-
-            Log.Debug ("[ShoutCastPlugin] <ParseXmlResponse> analyzing stations");
 
             XmlNodeList XML_station_nodes = xml_response.GetElementsByTagName ("station");
 
@@ -182,9 +211,6 @@ namespace Banshee.LiveRadio.Plugins
                     new_station.BitRate = bitrate_int;
                     new_station.IsLive = true;
 
-                    //Log.DebugFormat ("[ShoutCastPlugin] <ParseXmlResponse> Station found! Name: {0} URL: {1}",
-                    //    name, new_station.Uri.ToString ());
-
                     cached_results[key].Add (new_station);
                 }
                 catch (Exception e) {
@@ -192,13 +218,18 @@ namespace Banshee.LiveRadio.Plugins
                     continue;
                 }
             }
-
-            Log.Debug ("[ShoutCastPlugin] <ParseXmlResponse> End");
         }
 
+        /// <summary>
+        /// The name of the plugin -- used as identifier and as label for the source header
+        /// </summary>
         public override string Name {
             get { return "SHOUTcast.com"; }
         }
+
+        /// <summary>
+        /// Saves the configuration for this plugin
+        /// </summary>
         public override void SaveConfiguration ()
         {
             if (configuration_widget == null) return;

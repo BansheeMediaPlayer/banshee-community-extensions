@@ -53,6 +53,13 @@ using Banshee.LiveRadio.Plugins;
 
 namespace Banshee.LiveRadio
 {
+
+    /// <summary>
+    /// The source contents for a plugin source. It creates a view with a genre choose box, a query field
+    /// and the view for the retrieved station tracks.
+    /// The source contents is also the connector between plugin and source, as it handles just about all
+    /// refresh/notify events coming from either side.
+    /// </summary>
     public class LiveRadioPluginSourceContents : VBox, ISourceContents, ITrackModelSourceContents
     {
         private TrackListView track_view;
@@ -83,9 +90,15 @@ namespace Banshee.LiveRadio
             </ui>
         ";
 
+        /// <summary>
+        /// Constructor -- creates the source contents for a plugin and sets up the event handlers for the view
+        /// and the plugin refresh events.
+        /// </summary>
+        /// <param name="plugin">
+        /// A <see cref="ILiveRadioPlugin"/> -- the plugin to set up the source contents for.
+        /// </param>
         public LiveRadioPluginSourceContents (ILiveRadioPlugin plugin)
         {
-            Log.DebugFormat ("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> START", plugin.Name);
             base.Name = plugin.Name;
             this.plugin = plugin;
             
@@ -102,7 +115,6 @@ namespace Banshee.LiveRadio
             plugin.RequestResultRetrieved += OnPluginRequestResultRetrieved;
             
             if (ForcePosition != null) {
-                Log.DebugFormat ("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> END", plugin.Name);
                 return;
             }
             
@@ -146,11 +158,13 @@ namespace Banshee.LiveRadio
             };
 
             NoShowAll = true;
-            
-            Log.DebugFormat ("[LiveRadioPluginSourceContents\"{0}\"]<Constructor> END", plugin.Name);
-            
+
         }
 
+        /// <summary>
+        /// Initiate a refesh of the contents: clear the genre list, add a fake "loading" entry and
+        /// prohibit interaction with the elements
+        /// </summary>
         public void InitRefresh ()
         {
             main_scrolled_window.Sensitive = false;
@@ -160,12 +174,27 @@ namespace Banshee.LiveRadio
             filter_box.Sensitive = false;
         }
 
+        /// <summary>
+        /// Handles when a new result for a previous query request is received from the corresponding plugin. Transfers the
+        /// received result to the plugin's source, and if there are none, set up a fake entry.
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- The plugin that sent the results. Implements ILiveRadioPlugin.
+        /// </param>
+        /// <param name="request">
+        /// A <see cref="System.String"/> -- The requested query string, either a genre name or the freetext (see request_type).
+        /// </param>
+        /// <param name="request_type">
+        /// A <see cref="LiveRadioRequestType"/> -- The type of the request.
+        /// </param>
+        /// <param name="result">
+        /// A <see cref="List<DatabaseTrackInfo>"/> -- A list of DatabaseTrackInfo objects that fulfil the query.
+        /// </param>
         void OnPluginRequestResultRetrieved (object sender,
                                              string request,
                                              LiveRadioRequestType request_type,
                                              List<DatabaseTrackInfo> result)
         {
-            Hyena.Log.Debug ("[LiverRadioPluginSourceContenst]<OnPluginRequestResultRetrieved> handling result retrieved");
             if ((request_type == LiveRadioRequestType.ByFreetext)
                 || (filter_box.GetSelectedGenre ().Name.Equals (request) && request_type == LiveRadioRequestType.ByGenre))
             {
@@ -178,6 +207,12 @@ namespace Banshee.LiveRadio
             }
         }
 
+        /// <summary>
+        /// Adds a fake track to the source and disables interaction with the track view.
+        /// </summary>
+        /// <param name="info">
+        /// A <see cref="System.String"/> -- The information to display will be set as the fake track title and artist.
+        /// </param>
         protected void SetFakeTrack (string info)
         {
             List<DatabaseTrackInfo> fakeresult = new List<DatabaseTrackInfo> ();
@@ -192,9 +227,18 @@ namespace Banshee.LiveRadio
             main_scrolled_window.Sensitive = false;
         }
 
+        /// <summary>
+        /// Handles when a genre list has been retrieved by the plugin. Fills the genre choose box with the results or
+        /// adds a info message in case of an empty result and disables interaction with the control.
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/>
+        /// </param>
+        /// <param name="genres">
+        /// A <see cref="List<Genre>"/>
+        /// </param>
         void OnPluginGenreListLoaded (object sender, List<Genre> genres)
         {
-            Hyena.Log.Debug ("[LiverRadioPluginSourceContenst]<OnPluginGenreListLoaded> handling genrelistloaded");
             if (genres.Count > 0) {
                 filter_box.UpdateGenres (genres);
                 filter_box.Sensitive = true;
@@ -206,22 +250,40 @@ namespace Banshee.LiveRadio
             }
         }
 
+        /// <summary>
+        /// Initialize the main track view
+        /// </summary>
         protected void InitializeViews ()
         {
             SetupMainView (track_view = new TrackListView ());
         }
 
+
+        /// <summary>
+        /// Setup the main track view and disable interaction
+        /// </summary>
+        /// <param name="main_view">
+        /// A <see cref="ListView<T>"/> -- the main track view to set up
+        /// </param>
         protected void SetupMainView<T> (ListView<T> main_view)
         {
             main_scrolled_window = SetupView (main_view);
             main_scrolled_window.Sensitive = false;
         }
 
+        /// <summary>
+        /// Capsules a widget in a scrolled window to add scrolling.
+        /// </summary>
+        /// <param name="view">
+        /// A <see cref="Widget"/> -- the view to capsule
+        /// </param>
+        /// <returns>
+        /// A <see cref="ScrolledWindow"/> -- the scrolled window containing the capsuled view
+        /// </returns>
         private ScrolledWindow SetupView (Widget view)
         {
             ScrolledWindow window = null;
             
-            //if (!Banshee.Base.ApplicationContext.CommandLine.Contains ("no-smooth-scroll")) {
             if (ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
                 window = new SmoothScrolledWindow ();
             } else {
@@ -235,11 +297,12 @@ namespace Banshee.LiveRadio
             return window;
         }
 
+        /// <summary>
+        /// Unparent the views' scrolled window parents so they can be re-packed in
+        /// a new layout. The main container gets destroyed since it will be recreated.
+        /// </summary>
         private void Reset ()
         {
-            // Unparent the views' scrolled window parents so they can be re-packed in
-            // a new layout. The main container gets destroyed since it will be recreated.
-            
             if (container != null && main_scrolled_window != null) {
                 container.Remove (main_scrolled_window);
             }
@@ -249,19 +312,30 @@ namespace Banshee.LiveRadio
             }
         }
 
+        /// <summary>
+        /// Make a layout with the filter views on the left hand side
+        /// </summary>
         private void LayoutLeft ()
         {
             Layout (false);
         }
 
+        /// <summary>
+        /// Make a layout with the filter views on top
+        /// </summary>
         private void LayoutTop ()
         {
             Layout (true);
         }
 
+        /// <summary>
+        /// Create the contents of the source contents in the desired layout.
+        /// </summary>
+        /// <param name="top">
+        /// A <see cref="System.Boolean"/> -- whether to create a LayoutTop (true) or a LayoutLeft (false)
+        /// </param>
         private void Layout (bool top)
         {
-            //Hyena.Log.Information ("ListBrowser LayoutLeft");
             Reset ();
             
             container = GetPane (!top);
@@ -279,18 +353,40 @@ namespace Banshee.LiveRadio
             ShowPack ();
         }
 
+        /// <summary>
+        /// Handles when the user sends a query through the Entry box of the UI and initiates request execution
+        /// in the plugin object. The track view is reset with a fake entry.
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- the sender of the event
+        /// </param>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- the query string the user entered
+        /// </param>
         void OnViewQuerySent (object sender, string query)
         {
             SetFakeTrack (Catalog.GetString("Loading..."));
             plugin.ExecuteRequest (LiveRadioRequestType.ByFreetext, query);
         }
 
+        /// <summary>
+        /// Handles when the user activates a genre in the genre choose box and initiates request execution
+        /// in the plugin object. The track view is reset with a fake entry.
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- the sender of the event
+        /// </param>
+        /// <param name="genre">
+        /// A <see cref="Genre"/> -- the genre the user selected
+        /// </param>
         void OnViewGenreSelected (object sender, Genre genre)
         {
             SetFakeTrack (Catalog.GetString("Loading..."));
             plugin.ExecuteRequest (LiveRadioRequestType.ByGenre, genre.Name);
         }
-
+        /// <summary>
+        /// Draw the source contents
+        /// </summary>
         private void ShowPack ()
         {
             PackStart (container, true, true, 0);
@@ -311,12 +407,13 @@ namespace Banshee.LiveRadio
                     cr.Color = new Cairo.Color (.5, .5, .5, 1);
                     cr.Stroke ();
                 }
-//                Gdk.Window win = a.Event.Window;
-//                Gdk.Rectangle area = a.Event.Area;
-//
-//                win.DrawRectangle (Style.BaseGC (StateType.Active), false, area);
-//
-//                a.RetVal = true;
+                // not yet sure which is the better code.
+                //                Gdk.Window win = a.Event.Window;
+                //                Gdk.Rectangle area = a.Event.Area;
+                //
+                //                win.DrawRectangle (Style.BaseGC (StateType.Active), false, area);
+                //
+                //                a.RetVal = true;
             };
             Label help_label = new Label (
                   Catalog.GetString ("Click a gernre to load/refresh entries or type query, use refresh button to refresh genres."));
@@ -328,6 +425,15 @@ namespace Banshee.LiveRadio
             browser_container.Visible = ForcePosition != null || BrowserVisible.Get ();
         }
 
+        /// <summary>
+        /// Helper function to make a new Paned with the correct layout
+        /// </summary>
+        /// <param name="hpane">
+        /// A <see cref="System.Boolean"/>
+        /// </param>
+        /// <returns>
+        /// A <see cref="Paned"/>
+        /// </returns>
         private Paned GetPane (bool hpane)
         {
             if (hpane)
@@ -336,6 +442,15 @@ namespace Banshee.LiveRadio
                 return new VPaned ();
         }
 
+        /// <summary>
+        /// Handles when the user selects a different view mode.
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/>
+        /// </param>
+        /// <param name="args">
+        /// A <see cref="ChangedArgs"/>
+        /// </param>
         private void OnViewModeChanged (object o, ChangedArgs args)
         {
             //Hyena.Log.InformationFormat ("ListBrowser mode toggled, val = {0}", args.Current.Value);
@@ -348,6 +463,15 @@ namespace Banshee.LiveRadio
             }
         }
 
+        /// <summary>
+        /// Handles when browser visibility is toggled
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/>
+        /// </param>
+        /// <param name="args">
+        /// A <see cref="EventArgs"/>
+        /// </param>
         private void OnToggleBrowser (object o, EventArgs args)
         {
             ToggleAction action = (ToggleAction)o;
@@ -357,21 +481,6 @@ namespace Banshee.LiveRadio
             
         }
 
-        protected virtual void OnBrowserViewSelectionChanged (object o, EventArgs args)
-        {
-        }
-            /* If the All item is now selected, scroll to the top
-            Hyena.Collections.Selection selection = (Hyena.Collections.Selection) o;
-            if (selection.AllSelected) {
-                // Find the view associated with this selection; a bit yuck; pass view in args?
-                foreach (IListView view in filter_views) {
-                    if (view.Selection == selection) {
-                        view.ScrollTo (0);
-                        break;
-                    }
-                }
-            }*/            
-        
         protected bool ActiveSourceCanHasBrowser {
             get { return true; }
         }
@@ -382,6 +491,15 @@ namespace Banshee.LiveRadio
 
         #region Implement ISourceContents
 
+        /// <summary>
+        /// Sets the source and the track model for the source contents
+        /// </summary>
+        /// <param name="source">
+        /// A <see cref="ISource"/>
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Boolean"/>
+        /// </returns>
         public bool SetSource (ISource source)
         {
             DatabaseSource track_source = source as DatabaseSource;
@@ -396,16 +514,25 @@ namespace Banshee.LiveRadio
             return true;
         }
 
+        /// <summary>
+        /// Sets the source and track model references to null
+        /// </summary>
         public void ResetSource ()
         {
             this.source = null;
             track_view.SetModel (null);
         }
 
+        /// <summary>
+        /// The ISource source of this source contents
+        /// </summary>
         public ISource Source {
             get { return source; }
         }
 
+        /// <summary>
+        /// The Widget of the source contents
+        /// </summary>
         public Widget Widget {
             get { return this; }
         }
@@ -414,6 +541,9 @@ namespace Banshee.LiveRadio
 
         #region ITrackModelSourceContents implementation
 
+        /// <summary>
+        /// returns the track view of this source contents
+        /// </summary>
         public IListView<TrackInfo> TrackView {
             get { return track_view; }
         }

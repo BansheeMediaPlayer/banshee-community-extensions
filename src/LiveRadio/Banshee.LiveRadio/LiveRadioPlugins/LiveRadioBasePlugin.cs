@@ -44,15 +44,45 @@ using Banshee.Base;
 namespace Banshee.LiveRadio.Plugins
 {
 
+    /// <summary>
+    /// Enumeration of RequestTypes for LiveRadio
+    /// </summary>
     public enum LiveRadioRequestType
     {
         ByGenre,
         ByFreetext
     }
 
+    /// <summary>
+    /// EventHandler for the event a genre list has been retrieved by the plugin
+    /// </summary>
     public delegate void GenreListLoadedEventHandler (object sender, List<Genre> genres);
+    /// <summary>
+    /// EventHandler for the event a query result has been retrieved by the plugin
+    /// </summary>
     public delegate void RequestResultRetrievedEventHandler (object sender, string request, LiveRadioRequestType request_type, List<DatabaseTrackInfo> result);
 
+
+    /// <summary>
+    /// An abstact base plugin for LiveRadio plugins. Should normally be the parent class of all plugins. Implements the ILiveRadioPlugin
+    /// interface and provides a lot of basic functionality for plugins:
+    /// - background-threaded processing of requests
+    /// - basic protected configuration members
+    /// - XML document retrieval
+    /// - event handling
+    ///
+    /// derived classes must implement the following abstract members:
+    /// - RetrieveGenres ()
+    /// - RetrieveRequest (...)
+    /// - Name
+    /// - SaveConfiguration ()
+    ///
+    /// derived classes may override the following virtual members:
+    /// - Initialize ()
+    /// - SetLiveRadioPluginSource (...)
+    /// - ConfigurationWidget
+    /// - CleanUpUrl (...)
+    /// </summary>
     public abstract class LiveRadioBasePlugin : ILiveRadioPlugin
     {
 
@@ -71,8 +101,20 @@ namespace Banshee.LiveRadio.Plugins
         public event GenreListLoadedEventHandler GenreListLoaded;
         public event RequestResultRetrievedEventHandler RequestResultRetrieved;
 
+
+        /// <summary>
+        /// Parameterless Constructor, assumes that it will handle an internet radio directory without
+        /// user credentials processing
+        /// </summary>
         public LiveRadioBasePlugin () : this (false) {}
 
+        /// <summary>
+        /// Full Constructor -- creates the genres list object and the cached_results dictionary
+        /// </summary>
+        /// <param name="has_login">
+        /// A <see cref="System.Boolean"/> -- whether or not to use login with user credentials, implemented
+        /// in the derived class
+        /// </param>
         public LiveRadioBasePlugin (bool has_login)
         {
             this.has_login = has_login;
@@ -80,15 +122,45 @@ namespace Banshee.LiveRadio.Plugins
             cached_results = new Dictionary<string, List<DatabaseTrackInfo>> ();
         }
 
-        public void Initialize ()
+        /// <summary>
+        /// Initializes the plugin by retrieving its genre list
+        /// </summary>
+        public virtual void Initialize ()
         {
             RetrieveGenreList ();
         }
 
+        /// <summary>
+        /// Actual method that does the work of retrieving the list of genres from an outside source.
+        /// This method must take care of retrieving the data (possibly using the provided RetrieveXML
+        /// method), parsing it, and filling the
+        ///
+        /// List<Genres> genres
+        ///
+        /// member of this class.
+        /// </summary>
         protected abstract void RetrieveGenres ();
 
+        /// <summary>
+        /// Actual method that does the work of retrieving the results of a user query from an outside
+        /// source. This method must take care of retrieving the data (possibly using the provided
+        /// RetrieveXML method). parsing it, and filling the
+        ///
+        /// Dictionary<string key, List<DatabaseTrackInfo> track> cached_results
+        ///
+        /// member of this class with the result.
+        /// </summary>
+        /// <param name="request_type">
+        /// A <see cref="LiveRadioRequestType"/> -- the type of the request
+        /// </param>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- the freetext query or the genre name
+        /// </param>
         protected abstract void RetrieveRequest (LiveRadioRequestType request_type, string query);
 
+        /// <summary>
+        /// Internal object to capsule request type and actual query
+        /// </summary>
         private class LiveRadioRequestObject
         {
             public string query;
@@ -101,6 +173,15 @@ namespace Banshee.LiveRadio.Plugins
             }
         }
 
+        /// <summary>
+        /// Method capsuling the actual RetrieveRequest worker method with a background worker thread
+        /// </summary>
+        /// <param name="request_type">
+        /// A <see cref="LiveRadioRequestType"/> -- the type of the request
+        /// </param>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- the freetext query or the genre name
+        /// </param>
         public void ExecuteRequest (LiveRadioRequestType request_type, string query)
         {
             BackgroundWorker request_thread = new BackgroundWorker ();
@@ -110,6 +191,16 @@ namespace Banshee.LiveRadio.Plugins
             request_thread.RunWorkerAsync (request_object);
         }
 
+        /// <summary>
+        /// The background worker asynchronous thread method calling the worker method
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- the sending object
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="DoWorkEventArgs"/> -- containing the arguments (a LiveRadioRequestObject)
+        /// and the result
+        /// </param>
         void DoExecuteRequest (object sender, DoWorkEventArgs e)
         {
             LiveRadioRequestObject request_object = e.Argument as LiveRadioRequestObject;
@@ -117,6 +208,9 @@ namespace Banshee.LiveRadio.Plugins
             RetrieveRequest (request_object.request_type, request_object.query);
         }
 
+        /// <summary>
+        /// Method capsuling the actual RetrieveGenres worker method with a background worker thread
+        /// </summary>
         public void RetrieveGenreList ()
         {
             BackgroundWorker request_thread = new BackgroundWorker ();
@@ -125,34 +219,64 @@ namespace Banshee.LiveRadio.Plugins
             request_thread.RunWorkerAsync ();
         }
 
+        /// <summary>
+        /// The background worker asynchronous thread method calling the worker method
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- the sending object
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="DoWorkEventArgs"/> -- containing the arguments (a LiveRadioRequestObject)
+        /// and the result
+        /// </param>
         void DoRetrieveGenreList (object sender, DoWorkEventArgs e)
         {
             RetrieveGenres ();
         }
 
+        /// <summary>
+        /// Method executed upon the completion of the background worker method
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- the sending object
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="RunWorkerCompletedEventArgs"/> -- containing the Result object
+        /// (a LiveRadioRequestObject) with the original request type and query
+        /// </param>
         void OnDoRetrieveGenreListFinished (object sender, RunWorkerCompletedEventArgs e)
         {
-            Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<OnDoRetrieveGenreListFinished> START", Name);
             BackgroundWorker request_thread = sender as BackgroundWorker;
             request_thread.DoWork -= DoRetrieveGenreList;
             request_thread.RunWorkerCompleted -= OnDoRetrieveGenreListFinished;
             RaiseGenreListLoaded ();
-            Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<OnDoRetrieveGenreListFinished> ({1}) END", Name, genres.Count);
         }
 
+        /// <summary>
+        /// Method executed upon the completion of the background worker method
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- the sending object
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="RunWorkerCompletedEventArgs"/> -- not used
+        /// </param>
         void OnDoExecuteRequestFinished (object sender, RunWorkerCompletedEventArgs e)
         {
-            Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<OnDoExecuteRequestFinished> START", Name);
             BackgroundWorker request_thread = sender as BackgroundWorker;
             LiveRadioRequestObject request_object = e.Result as LiveRadioRequestObject;
-            Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<OnDoExecuteRequestFinished> raising", Name);
             RaiseRequestResultRetrieved (request_object.request_type, request_object.query);
             request_thread.DoWork -= DoExecuteRequest;
             request_thread.RunWorkerCompleted -= OnDoExecuteRequestFinished;
-            Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<OnDoExecuteRequestFinished> END", Name);
         }
 
-        public void SetLiveRadioPluginSource (LiveRadioPluginSource source)
+        /// <summary>
+        /// Set the LiveRadioPluginSource of the plugin
+        /// </summary>
+        /// <param name="source">
+        /// A <see cref="LiveRadioPluginSource"/>
+        /// </param>
+        public virtual void SetLiveRadioPluginSource (LiveRadioPluginSource source)
         {
             this.source = source;
         }
@@ -174,8 +298,15 @@ namespace Banshee.LiveRadio.Plugins
             return Name;
         }
 
+        /// <summary>
+        /// Actual method that does the work of saving the configuration for this plugin. For examples see derived
+        /// classes. There are no predefined SchemaEntry objects, the derived class needs to take care of those.
+        /// </summary>
         public abstract void SaveConfiguration ();
 
+        /// <summary>
+        /// Always returns a new standard Configration Widget with all base Properties set
+        /// </summary>
         public virtual Widget ConfigurationWidget
         {
             get {
@@ -190,7 +321,10 @@ namespace Banshee.LiveRadio.Plugins
                 return configuration_widget; }
         }
 
-        protected virtual void OnGenreListLoaded ()
+        /// <summary>
+        /// Method to invoke the GenreListLoaded event
+        /// </summary>
+        protected void OnGenreListLoaded ()
         {
             GenreListLoadedEventHandler handler = GenreListLoaded;
             if (handler != null) {
@@ -198,7 +332,19 @@ namespace Banshee.LiveRadio.Plugins
             }
         }
 
-        protected virtual void OnRequestResultRetrieved (LiveRadioRequestType request_type, string query, List<DatabaseTrackInfo> result)
+        /// <summary>
+        /// Method to invoke the RequestResultRetrieved event
+        /// </summary>
+        /// <param name="request_type">
+        /// A <see cref="LiveRadioRequestType"/> -- the original request type
+        /// </param>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- the original freetext query or the original genre name
+        /// </param>
+        /// <param name="result">
+        /// A <see cref="List<DatabaseTrackInfo>"/> -- the resulting list of DatabaseTrackInfo objects for the query
+        /// </param>
+        protected void OnRequestResultRetrieved (LiveRadioRequestType request_type, string query, List<DatabaseTrackInfo> result)
         {
             RequestResultRetrievedEventHandler handler = RequestResultRetrieved;
             if (handler != null) {
@@ -206,9 +352,17 @@ namespace Banshee.LiveRadio.Plugins
             }
         }
 
+        /// <summary>
+        /// Raises the ResultsRetrieved event
+        /// </summary>
+        /// <param name="request_type">
+        /// A <see cref="LiveRadioRequestType"/> -- the original request type
+        /// </param>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- the original freetext query or the original genre name
+        /// </param>
         public void RaiseRequestResultRetrieved (LiveRadioRequestType request_type, string query)
         {
-            Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> START query: {0}", query);
             List<DatabaseTrackInfo> result;
             try {
                 if (request_type == LiveRadioRequestType.ByGenre) {
@@ -224,15 +378,25 @@ namespace Banshee.LiveRadio.Plugins
             OnRequestResultRetrieved (request_type, query, result);
         }
 
+        /// <summary>
+        /// Raises the GenreListLoaded event
+        /// </summary>
         public void RaiseGenreListLoaded ()
         {
             OnGenreListLoaded ();
         }
 
+        /// <summary>
+        /// Retrieves, reads and returns an XML document from the specified query url using HTTP GET
+        /// </summary>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- a URL with full query parameters
+        /// </param>
+        /// <returns>
+        /// A <see cref="XmlDocument"/> -- the retrieved and loaded XML document
+        /// </returns>
         protected XmlDocument RetrieveXml(string query)
         {
-            Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"] <RetrieveXml> START", Name);
-
             WebProxy proxy;
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create (query);
             request.Method = "GET";
@@ -252,8 +416,6 @@ namespace Banshee.LiveRadio.Plugins
                 XmlDocument xml_response = new XmlDocument ();
                 xml_response.LoadXml (reader.ReadToEnd ());
 
-                Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"] <RetrieveXml> XML retrieved END", Name);
-
                 return xml_response;
             }
             catch (Exception e) {
@@ -262,6 +424,16 @@ namespace Banshee.LiveRadio.Plugins
             return null;
         }
 
+        /// <summary>
+        /// Cleans up any plugin specific data from a track url, such as session data or any other
+        /// temporary parameters.
+        /// </summary>
+        /// <param name="url">
+        /// A <see cref="SafeUri"/> -- the original url to be cleaned
+        /// </param>
+        /// <returns>
+        /// A <see cref="SafeUri"/> -- the cleaned url
+        /// </returns>
         public virtual SafeUri CleanUpUrl (SafeUri url)
         {
             return url;

@@ -47,11 +47,11 @@ using Banshee.Collection;
 
 namespace Banshee.LiveRadio
 {
-    // We are inheriting from Source, the top-level, most generic type of Source.
-    // Other types include (inheritance indicated by indentation):
-    //      DatabaseSource - generic, DB-backed Track source; used by PlaylistSource
-    //        PrimarySource - 'owns' tracks, used by DaapSource, DapSource
-    //          LibrarySource - used by Music, Video, Podcasts, and Audiobooks
+
+    /// <summary>
+    /// The main class of the LiveRadio Extension. It creates a new primary source in the source trees and adds
+    /// child sources for each internet radio plugin detected.
+    /// </summary>
     public class LiveRadioSource : PrimarySource, IDisposable
     {
         // In the sources TreeView, sets the order value for this source, small on top
@@ -59,21 +59,25 @@ namespace Banshee.LiveRadio
         private List<ILiveRadioPlugin> plugins;
         private uint ui_global_id;
 
+        /// <summary>
+        /// Constructor -- creates a new LiveRadio parent source
+        /// </summary>
         public LiveRadioSource () : base(Catalog.GetString ("LiveRadio"), Catalog.GetString ("LiveRadio"), "live-radio", sort_order)
         {
             Log.Debug ("[LiveRadioSource]<Constructor> START");
             Properties.SetString ("Icon.Name", "radio");
             TypeUniqueId = "live-radio";
             IsLocal = false;
-            
+
+            //Load internet directory parser plugins
             plugins = new LiveRadioPluginManager ().LoadPlugins ();
-            
             foreach (ILiveRadioPlugin plugin in plugins) {
                 Log.DebugFormat ("[LiveRadioSource]<Constructor> found plugin: {0}", plugin.Name);
             }
             
             AfterInitialized ();
-            
+
+            //setting up interface actions
             InterfaceActionService uia_service = ServiceManager.Get<InterfaceActionService> ();
 
             uia_service.GlobalActions.AddImportant (new ActionEntry[] { new ActionEntry ("LiveRadioAction", null,
@@ -100,7 +104,6 @@ namespace Banshee.LiveRadio
             Properties.Set<System.Reflection.Assembly> ("ActiveSourceUIResource.Assembly", typeof(LiveRadioPluginSource).Assembly);
 
             Properties.SetString ("GtkActionPath", "/LiveRadioContextMenu");
-            
             Properties.Set<bool> ("Nereid.SourceContentsPropagate", false);
             
             if (!SetupSourceContents ())
@@ -109,18 +112,40 @@ namespace Banshee.LiveRadio
             Log.Debug ("[LiveRadioSource]<Constructor> END");
         }
 
+        /// <summary>
+        /// Handles LiveRadioConfigureAction. Creates a new LiveRadioConfigDialog.
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="ea">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         public void OnConfigure (object o, EventArgs ea)
         {
             new LiveRadioConfigDialog (plugins);
             return;
         }
 
+        /// <summary>
+        /// Handles SourceAdded Event of SourceManager. When this source is added, its contents are setup.
+        /// </summary>
+        /// <param name="args">
+        /// A <see cref="SourceAddedArgs"/> -- not used
+        /// </param>
         private void OnSourceAdded (SourceAddedArgs args)
         {
             if (args.Source is LiveRadioSource)
                 SetupSourceContents ();
         }
 
+        /// <summary>
+        /// Setup the source contents of the LiveRadioSource, i.e. create a childsource for each plugin found
+        /// and initialize the overview widget.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.Boolean"/>
+        /// </returns>
         private bool SetupSourceContents ()
         {
             foreach (ILiveRadioPlugin plugin in plugins) {
@@ -136,7 +161,9 @@ namespace Banshee.LiveRadio
             ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
             return true;
         }
-
+        /// <summary>
+        /// Returns the sum of the child sources' counts
+        /// </summary>
         public override int Count {
             get {
                 int sum = 0;
@@ -146,6 +173,9 @@ namespace Banshee.LiveRadio
             }
         }
 
+        /// <summary>
+        /// TODO: will be statistics view over the activities in the child sources.
+        /// </summary>
         private class CustomView : ISourceContents
         {
             Gtk.Label label = new Gtk.Label ("LiveRadio! This view will be setup to show statistics...");
@@ -165,6 +195,9 @@ namespace Banshee.LiveRadio
             }
         }
 
+        /// <summary>
+        /// Dispose interface actions and remove UI.
+        /// </summary>
         public override void Dispose ()
         {
             base.Dispose ();
@@ -181,6 +214,16 @@ namespace Banshee.LiveRadio
             
         }
 
+        /// <summary>
+        /// Handles the RefreshLiveRadioAction. Initiates a reload of the active source/plugin's genre list
+        /// and resets the active child source's view
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         protected void OnRefreshPlugin (object o, EventArgs e)
         {
             LiveRadioPluginSource current_source = ServiceManager.SourceManager.ActiveSource as LiveRadioPluginSource;
@@ -198,17 +241,27 @@ namespace Banshee.LiveRadio
             }
         }
 
+        /// <summary>
+        /// Adds the currently selected item(s) of the active source to the internet radio source
+        /// as new stations. Any session data (as in live365 with activated user login) will previously
+        /// be cleared.
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         protected void OnAddToInternetRadio (object o, EventArgs e)
         {
-            Log.Debug ("[LiveRadioSource]<OnAddToInternetRadio> START");
             PrimarySource internet_radio_source = GetInternetRadioSource ();
             PrimarySource current_source = ServiceManager.SourceManager.ActiveSource as PrimarySource;
             if (current_source == null) {
-                Log.Debug ("[LiveRadioSource]<OnAddToInternetRadio> ActiveSource not Primary END");
+                Log.Debug ("[LiveRadioSource]<OnAddToInternetRadio> ActiveSource not Primary");
                 return;
             }
             if (internet_radio_source == null) {
-                Log.Debug ("[LiveRadioSource]<OnAddToInternetRadio> Internet Radio not found END");
+                Log.Debug ("[LiveRadioSource]<OnAddToInternetRadio> Internet Radio not found");
                 return;
             }
 
@@ -237,7 +290,6 @@ namespace Banshee.LiveRadio
                     station_track.Save ();
                 }
             }
-            Log.Debug ("[LiveRadioSource]<OnAddToInternetRadio> END");
         }
 
         public override bool AcceptsInputFromSource (Source source)
@@ -249,6 +301,9 @@ namespace Banshee.LiveRadio
             get { return false; }
         }
 
+        /// <summary>
+        /// We must set this to false as we don't want a hotkey pressed in the query field to activate search
+        /// </summary>
         public override bool CanSearch {
             get { return false; }
         }
@@ -269,23 +324,30 @@ namespace Banshee.LiveRadio
             get { return true; }
         }
 
+        /// <summary>
+        /// We set this to false to prohibit editing the track properties, as they are pulled from a live catalog.
+        /// </summary>
         public override bool HasEditableTrackProperties {
             get { return false; }
         }
 
+        /// <summary>
+        /// Gets the Internet Radio Source object
+        /// IDEA: Call this method once upon initialization and store the object. If it is not found, remove
+        /// AddToInternetRadioAction
+        /// </summary>
+        /// <returns>
+        /// A <see cref="PrimarySource"/> -- the Internet Radio source, or throws an exception, if it cannot be found.
+        /// </returns>
         protected PrimarySource GetInternetRadioSource ()
         {
-            Log.Debug ("[LiveRadioPluginSource] <GetInternetRadioSource> Start");
-            
             foreach (Source source in Banshee.ServiceStack.ServiceManager.SourceManager.Sources) {
-                Log.DebugFormat ("[LiveRadioPluginSource] <GetInternetRadioSource> Source: {0}", source.GenericName);
-                
+
                 if (source.UniqueId.Equals ("InternetRadioSource-internet-radio")) {
                     return (PrimarySource)source;
                 }
             }
             
-            Log.Debug ("[LiveRadioPluginSource] <GetInternetRadioSource> Not found throwing exception");
             throw new InternetRadioExtensionNotFoundException ();
         }
     }

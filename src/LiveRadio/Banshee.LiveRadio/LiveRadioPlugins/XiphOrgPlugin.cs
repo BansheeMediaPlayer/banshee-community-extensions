@@ -42,11 +42,19 @@ using Banshee.Configuration;
 namespace Banshee.LiveRadio.Plugins
 {
 
+    /// <summary>
+    /// LiveRadio plugin to xiph.org internet radio directory
+    ///
+    /// This plugin downloads the catalog once when the genres are requested and builds a cache for all stations
+    /// </summary>
     public class XiphOrgPlugin : LiveRadioBasePlugin
     {
         private const string base_url = "http://dir.xiph.org";
         private const string catalog_url = "/yp.xml";
 
+        /// <summary>
+        /// Constructor -- sets configuration entries
+        /// </summary>
         public XiphOrgPlugin () : base ()
         {
             use_proxy = UseProxyEntry.Get ().Equals ("True") ? true : false;
@@ -56,11 +64,23 @@ namespace Banshee.LiveRadio.Plugins
             proxy_url = ProxyUrlEntry.Get ();
         }
 
+        /// <summary>
+        /// Retrieve and parse the catalog
+        /// </summary>
         protected override void RetrieveGenres ()
         {
             ParseCatalog (RetrieveXml(base_url + catalog_url));
         }
 
+        /// <summary>
+        /// Lookup the query in the cached station track entries
+        /// </summary>
+        /// <param name="request_type">
+        /// A <see cref="LiveRadioRequestType"/> -- the type of the request
+        /// </param>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- the freetext query or the genre name
+        /// </param>
         protected override void RetrieveRequest (LiveRadioRequestType request_type, string query)
         {
             string key;
@@ -82,6 +102,18 @@ namespace Banshee.LiveRadio.Plugins
             }
         }
 
+        /// <summary>
+        /// Checks if a track's metadata contains the user query
+        /// </summary>
+        /// <param name="track">
+        /// A <see cref="DatabaseTrackInfo"/> -- the track to query
+        /// </param>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- the user query
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Boolean"/> -- the query result, true if the query is contained within the tracks metadata, false otherwise
+        /// </returns>
         private static bool QueryString (DatabaseTrackInfo track, string query)
         {
             StringBuilder sb = new StringBuilder ();
@@ -95,14 +127,21 @@ namespace Banshee.LiveRadio.Plugins
             return false;
         }
 
+        /// <summary>
+        /// The name of the plugin -- used as identifier and as label for the source header
+        /// </summary>
         public override string Name {
             get { return "xiph.org"; }
         }
 
+        /// <summary>
+        /// Parse the XML catalog and build the sorted genre list and track cache
+        /// </summary>
+        /// <param name="doc">
+        /// A <see cref="XmlDocument"/> -- the XML document containing the xiph.org catalog
+        /// </param>
         protected void ParseCatalog (XmlDocument doc)
         {
-            Log.Debug ("[XiphOrgPlugin] <ParseCatalog> START");
-            
             XmlNodeList XML_station_nodes = doc.GetElementsByTagName ("entry");
             Log.DebugFormat ("[XiphOrgPlugin] <ParseCatalog> {0} nodes found", XML_station_nodes.Count);
             
@@ -169,6 +208,9 @@ namespace Banshee.LiveRadio.Plugins
             
         }
 
+        /// <summary>
+        /// Saves the configuration for this plugin
+        /// </summary>
         public override void SaveConfiguration ()
         {
             if (configuration_widget == null) return;

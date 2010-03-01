@@ -35,16 +35,29 @@ using Banshee.LiveRadio.Plugins;
 namespace Banshee.LiveRadio
 {
 
+    /// <summary>
+    /// Management class to load all plugins implemented in the assembly that implement the ILiveRadioPlugin interface
+    /// </summary>
     public class LiveRadioPluginManager
     {
 
         private Assembly assembly;
 
+        /// <summary>
+        /// Constructor -- sets the calling assembly which contains all the plugin classes
+        /// </summary>
         public LiveRadioPluginManager ()
         {
             assembly = Assembly.GetCallingAssembly ();
         }
 
+        /// <summary>
+        /// Goes through all the assembly classes to find any non-abstract class implementing ILiveRadioPlugin and adds
+        /// an object instance of the class to the plugin list
+        /// </summary>
+        /// <returns>
+        /// A <see cref="List<ILiveRadioPlugin>"/> -- a list of one instance for each plugin class
+        /// </returns>
         public List<ILiveRadioPlugin> LoadPlugins ()
         {
             List<ILiveRadioPlugin> plugins = new List<ILiveRadioPlugin> ();

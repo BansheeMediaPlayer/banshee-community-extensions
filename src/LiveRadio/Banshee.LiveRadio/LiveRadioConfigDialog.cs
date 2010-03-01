@@ -35,6 +35,9 @@ using System.Collections.Generic;
 namespace Banshee.LiveRadio
 {
 
+    /// <summary>
+    /// A dynamic configuration dialog for LiveRadio plugins
+    /// </summary>
     public class LiveRadioConfigDialog : Gtk.Dialog
     {
 
@@ -48,6 +51,12 @@ namespace Banshee.LiveRadio
 
         private List<ILiveRadioPlugin> plugins;
 
+        /// <summary>
+        /// Constructor -- builds a basic dialog structure and adds each plugins configuration widget into a notebook
+        /// </summary>
+        /// <param name="plugins">
+        /// A <see cref="List<ILiveRadioPlugin>"/> -- the list of plugins
+        /// </param>
         public LiveRadioConfigDialog (List<ILiveRadioPlugin> plugins)
         {
             this.plugins = plugins;
@@ -111,22 +120,53 @@ namespace Banshee.LiveRadio
             
             ShowAll ();
         }
+
+        /// <summary>
+        /// Handles when the user presses the Cancel Button
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="a">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         private void OnCancelButtonClicked (object o, EventArgs a)
         {
             Destroy ();
         }
 
+        /// <summary>
+        /// Handles when the user presses the Save Button
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="a">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         private void OnSaveButtonClicked (object o, EventArgs a)
         {
             SaveConfiguration();
             Destroy ();
         }
 
+        /// <summary>
+        /// Handles when the user presses the Apply Button
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="a">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         private void OnApplyButtonClicked (object o, EventArgs a)
         {
             SaveConfiguration();
         }
 
+        /// <summary>
+        /// Initiates each plugin's SaveConfiguration method
+        /// </summary>
         private void SaveConfiguration()
         {
             foreach (ILiveRadioPlugin plugin in plugins)

@@ -36,7 +36,9 @@ using Selection = Hyena.Collections.Selection;
 namespace Banshee.LiveRadio
 {
 
-
+    /// <summary>
+    /// Models a list of Genre objects and implements the IListModel interface so the model can be used in a ListView
+    /// </summary>
     public class GenreListModel : IListModel<Genre>
     {
 

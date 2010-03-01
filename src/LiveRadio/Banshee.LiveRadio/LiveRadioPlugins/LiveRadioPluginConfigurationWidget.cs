@@ -38,7 +38,16 @@ using Hyena;
 namespace Banshee.LiveRadio
 {
 
-
+    /// <summary>
+    /// A basic Configuration Widget for a standard LiveRadio plugin
+    ///
+    /// contains configuration entries for
+    /// - proxy
+    /// - user credentials
+    /// - HTTP timeout
+    ///
+    /// implements properties to easily access the configured elements
+    /// </summary>
     public class LiveRadioPluginConfigurationWidget : VBox
     {
 
@@ -54,9 +63,14 @@ namespace Banshee.LiveRadio
         private Entry proxy_url_text = new Entry ();
         private Entry timeout_seconds_text = new Entry ();
 
+        /// <summary>
+        /// Constructor -- builds the configuration widget according to parameters
+        /// </summary>
+        /// <param name="has_login">
+        /// A <see cref="System.Boolean"/> -- whether to include user credentials configuration or not
+        /// </param>
         public LiveRadioPluginConfigurationWidget (bool has_login) : base ()
         {
-            Log.Debug ("[LiveRadioPluginConfigurationWidget]<Constructor> START");
             proxy_url_label = new Label (Catalog.GetString ("Proxy URL"));
             use_proxy = new CheckButton (Catalog.GetString ("Enable using a HTTP proxy server"));
             use_credentials = new CheckButton (Catalog.GetString ("Use Site Login"));
@@ -96,11 +110,17 @@ namespace Banshee.LiveRadio
             proxy_url_text.Sensitive = use_proxy.Active;
             credential_password_text.Sensitive = use_credentials.Active;
             credential_username_text.Sensitive = use_credentials.Active;
-
-            Log.Debug ("[LiveRadioPluginConfigurationWidget]<Constructor> END");
-
         }
 
+        /// <summary>
+        /// Ensures HTTP Timeout is always a number
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         void OnTimeoutTextChanged (object sender, EventArgs e)
         {
             string text = timeout_seconds_text.Text;
@@ -108,6 +128,16 @@ namespace Banshee.LiveRadio
             timeout_seconds_text.Text = objNotNaturalPattern.Replace(text, "#").Replace("#",null);
         }
 
+        /// <summary>
+        /// Toggles sensitivity of User Credential text fields according to activation of the
+        /// corresponding checkbox
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         void OnCredentialsToggled (object sender, EventArgs e)
         {
             if (use_credentials.Active)
@@ -120,6 +150,16 @@ namespace Banshee.LiveRadio
             }
         }
 
+        /// <summary>
+        /// Toggles sensitivity of the Proxy text field according to the activation of the
+        /// corresponding checkbox
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         void OnProxyToggled (object sender, EventArgs e)
         {
             if (use_proxy.Active)
@@ -160,6 +200,15 @@ namespace Banshee.LiveRadio
             set { credential_password_text.Text = value; }
         }
 
+        /// <summary>
+        /// Validate a timeout is given that makes sense and is a valid integer. Always at least 10 seconds.
+        /// </summary>
+        /// <param name="timeout">
+        /// A <see cref="System.String"/> -- the timeout value entered by the user
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Int32"/> -- a valid timeout integer value in seconds
+        /// </returns>
         private int ValidateTimeout(string timeout)
         {
             try

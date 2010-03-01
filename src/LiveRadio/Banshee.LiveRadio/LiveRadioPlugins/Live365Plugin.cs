@@ -41,27 +41,36 @@ using Banshee.Configuration;
 namespace Banshee.LiveRadio.Plugins
 {
 
-
+    /// <summary>
+    /// LiveRadio plugin for live365.com
+    ///
+    /// This plugin is able to download a genre list upon initialize/refresh and execute live queries on the live365 directory.
+    /// The plugin can configure and handle user login data of registered live365 users. Once added to the internet radio
+    /// source, the user specifics for a track are lost, so this makes only sense for public tracks available to non-registered
+    /// users
+    /// </summary>
     public class Live365Plugin : LiveRadioBasePlugin
     {
 
-        //todo: login issue
-        //http://www.live365.com/cgi-bin/api_login.cgi?site=xml&app_id=Banshee&access=all&version=4&charset=UTF-8&membername=dingsi&password=protect
-        /*
-            <LIVE365_API_LOGIN_CGI xsi:schemaLocation="http://www.live365.com/api/api_login_cgi /xml/def/api/api_login_cgi.xsd">
-            <Code>0</Code>
-            <Reason>Success</Reason>
-            <Session_ID>dingsi:REFN80ZbyJOsI2o</Session_ID>
-            <Application_ID>Banshee</Application_ID>
-            <Device_ID>114.128.244.12-1267086060483854</Device_ID>
-            <Member_Status>REGULAR</Member_Status>
-            <PLS_Prefix/>
-            <Acl_station_count>0</Acl_station_count>
-            </LIVE365_API_LOGIN_CGI>
+        /* API urls:
+         * /cgi-bin/api_account.cgi
+         * /cgi-bin/api_bcinfo.cgi
+         * /cgi-bin/api_broadcast.cgi
+         * /cgi-bin/api_featured_content.cgi
+         * /cgi-bin/api_genres.cgi
+         * /cgi-bin/api_get_playlist.cgi
+         * /cgi-bin/api_live.cgi
+         * /cgi-bin/api_login.cgi
+         * /cgi-bin/api_meetings.cgi
+         * /cgi-bin/api_presets.cgi
+         * /cgi-bin/api_profile.cgi
+         * /cgi-bin/api_set_playlist.cgi
+         * /cgi-bin/api_station_status.cgi
+         * /cgi-bin/api_subscription.cgi
+         * /cgi-bin/api_track_stats.cgi
+         * /cgi-bin/api_validate.cgi
         */
-        //http://www.live365.com/cgi-bin/play.pls?stationid=andysenior&session_id=dingsi:REFN86Cv7kUHJFW
-        //keepalive
-        //http://www.live365.com/cgi-bin/api_presets.cgi?action=get&sessionid=dingsi:REFN86Cv7kUHJFW&app_id=Banshee&first=1&rows=
+
         private const string base_url = "http://www.live365.com";
         private const string request_url = "/cgi-bin/directory.cgi?site=xml&app_id=BansheeExtension&access=all&version=4&rows=200&charset=UTF-8";
         private const string genre_request = "&genre=";
@@ -75,6 +84,10 @@ namespace Banshee.LiveRadio.Plugins
 
         private string session_id = null;
 
+        /// <summary>
+        /// Constructor -- invokes the base constructor with has_login=true for handling user credentials.
+        /// Sets configured Properties
+        /// </summary>
         public Live365Plugin () : base (true)
         {
             use_proxy = UseProxyEntry.Get ().Equals ("True") ? true : false;
@@ -87,11 +100,23 @@ namespace Banshee.LiveRadio.Plugins
             proxy_url = ProxyUrlEntry.Get ();
         }
 
+        /// <summary>
+        /// Retrieve and parse genre list
+        /// </summary>
         protected override void RetrieveGenres ()
         {
             ParseGenres(RetrieveXml(base_url + genre_url));
         }
 
+        /// <summary>
+        /// Retrieve and parse a live query on the shoutcast directory
+        /// </summary>
+        /// <param name="request_type">
+        /// A <see cref="LiveRadioRequestType"/> -- the request type
+        /// </param>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- the freetext query or the genre name
+        /// </param>
         protected override void RetrieveRequest (LiveRadioRequestType request_type, string query)
         {
             string request;
@@ -105,30 +130,33 @@ namespace Banshee.LiveRadio.Plugins
             if (document != null) ParseXmlResponse(document, request_type, query);
         }
 
+        /// <summary>
+        /// Checks if the memorized user session is still valid
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.Boolean"/> -- true, if the session is still valid
+        /// </returns>
         private bool TestSession ()
         {
-            Log.Debug ("[Live365Plugin] <TestSession> START");
             if (String.IsNullOrEmpty (session_id)) return false;
             XmlDocument test_xml = RetrieveXml (test_session_url + session_id.Replace(":", "%3A").Replace("session_id","sessionid"));
-            Log.DebugFormat ("[Live365Plugin] <TestSession> {1} \n {0}", test_xml.InnerXml, test_session_url + session_id);
             XmlNodeList test_nodes = test_xml.GetElementsByTagName ("Code");
             if (test_nodes.Count > 0 && !test_nodes[0].InnerText.Equals ("0"))
             {
-                Log.Debug ("[Live365Plugin] <TestSession> END false");
                 return false;
             }
-            Log.Debug ("[Live365Plugin] <TestSession> END true");
             return true;
         }
 
+        /// <summary>
+        /// Creates a new user session and saves the result in the private session_id member.
+        /// </summary>
         private void CreateSession ()
         {
-            Log.Debug ("[Live365Plugin] <CreateSession> START");
             string login = login_url.Replace ("%USERNAME%", credentials_username)
                                     .Replace ("%PASSWORD%", credentials_password);
 
             XmlDocument login_xml = RetrieveXml (login);
-            Log.DebugFormat ("[Live365Plugin] <CreateSession> {1} \n {0}", login_xml.InnerXml, login);
             XmlNodeList session_nodes = login_xml.GetElementsByTagName ("Session_ID");
             XmlNodeList success_nodes = login_xml.GetElementsByTagName ("Reason");
             XmlNodeList code_nodes = login_xml.GetElementsByTagName ("Code");
@@ -155,10 +183,16 @@ namespace Banshee.LiveRadio.Plugins
                 //TODO: init keepalive
             }
             Log.DebugFormat ("[Live365Plugin] <CreateSession> session_id : {0}", session_id);
-
-            Log.Debug ("[Live365Plugin] <CreateSession> END");
         }
 
+        /// <summary>
+        /// Get a user session identifier.
+        /// If a session_id is already present, it tests the current session_id for validity
+        /// first and will reuse it, if valid, otherwise a new session is created
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> -- the full parameter with session_id set ("&session_id=...")
+        /// </returns>
         private string GetSession ()
         {
             if (!UseCredentials) return null;
@@ -171,6 +205,12 @@ namespace Banshee.LiveRadio.Plugins
             return session_id;
         }
 
+        /// <summary>
+        /// Parses and sorts an XML genre catalog and fills the plugins genre list
+        /// </summary>
+        /// <param name="doc">
+        /// A <see cref="XmlDocument"/> -- the XML document containing the genre catalog
+        /// </param>
         private void ParseGenres(XmlDocument doc)
         {
             Log.Debug ("[Live365Plugin] <ParseGenres> START");
@@ -207,6 +247,18 @@ namespace Banshee.LiveRadio.Plugins
             Log.DebugFormat ("[Live365Plugin] <ParseGenres> {0} genres found", genres.Count);
         }
 
+        /// <summary>
+        /// Parses the response to a query request and fills the results cache
+        /// </summary>
+        /// <param name="xml_response">
+        /// A <see cref="XmlDocument"/> -- the XML document containing the response to the query request
+        /// </param>
+        /// <param name="request_type">
+        /// A <see cref="LiveRadioRequestType"/> -- the type of the request
+        /// </param>
+        /// <param name="query">
+        /// A <see cref="System.String"/> -- the requested query, freetext or the genre name
+        /// </param>
         private void ParseXmlResponse (XmlDocument xml_response, LiveRadioRequestType request_type, string query)
         {
             Log.Debug ("[Live365Plugin] <ParseXmlResponse> Start");
@@ -364,10 +416,16 @@ namespace Banshee.LiveRadio.Plugins
             Log.Debug ("[Live365Plugin] <ParseXmlResponse> End");
         }
 
+        /// <summary>
+        /// The name of the plugin -- used as identifier and as label for the source header
+        /// </summary>
         public override string Name {
             get { return "live365.com"; }
         }
 
+        /// <summary>
+        /// Saves the configuration for this plugin
+        /// </summary>
         public override void SaveConfiguration ()
         {
             if (configuration_widget == null) return;
@@ -385,6 +443,15 @@ namespace Banshee.LiveRadio.Plugins
             UseProxyEntry.Set (use_proxy.ToString ());
         }
 
+        /// <summary>
+        /// Cleans up live365 session data from a track url
+        /// </summary>
+        /// <param name="url">
+        /// A <see cref="SafeUri"/> -- the original url to be cleaned
+        /// </param>
+        /// <returns>
+        /// A <see cref="SafeUri"/> -- the cleaned url
+        /// </returns>
         public override SafeUri CleanUpUrl (SafeUri url)
         {
             if (url.ToString ().Contains ("session_id"))
