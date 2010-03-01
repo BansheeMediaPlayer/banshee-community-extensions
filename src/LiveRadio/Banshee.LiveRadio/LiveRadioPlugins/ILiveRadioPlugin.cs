@@ -27,6 +27,7 @@
 //
 
 using System.Collections.Generic;
+using Banshee.Base;
 
 
 namespace Banshee.LiveRadio.Plugins
@@ -47,6 +48,8 @@ namespace Banshee.LiveRadio.Plugins
         void ExecuteRequest (LiveRadioRequestType request_type, string query);
 
         void SetLiveRadioPluginSource (LiveRadioPluginSource source);
+
+        SafeUri CleanUpUrl (SafeUri url);
 
         void SaveConfiguration ();
 

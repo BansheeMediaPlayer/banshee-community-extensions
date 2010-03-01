@@ -38,6 +38,7 @@ using System.IO;
 using System.Reflection;
 using Hyena;
 using Gtk;
+using Banshee.Base;
 
 
 namespace Banshee.LiveRadio.Plugins
@@ -175,7 +176,7 @@ namespace Banshee.LiveRadio.Plugins
 
         public abstract void SaveConfiguration ();
 
-        public Widget ConfigurationWidget
+        public virtual Widget ConfigurationWidget
         {
             get {
                 configuration_widget = new LiveRadioPluginConfigurationWidget (has_login);
@@ -238,9 +239,6 @@ namespace Banshee.LiveRadio.Plugins
             request.ContentType = "HTTP/1.0";
             request.Timeout = http_timeout_seconds * 1000;
 
-            if (use_credentials)
-                request.Credentials = new NetworkCredential(credentials_username, credentials_password);
-
             if (use_proxy) {
                 proxy = new WebProxy (proxy_url, true);
                 request.Proxy = proxy;
@@ -262,6 +260,11 @@ namespace Banshee.LiveRadio.Plugins
                 Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"] <RetrieveXml> Error: {1} END", Name, e.Message);
             }
             return null;
+        }
+
+        public virtual SafeUri CleanUpUrl (SafeUri url)
+        {
+            return url;
         }
 
         public bool UseProxy {

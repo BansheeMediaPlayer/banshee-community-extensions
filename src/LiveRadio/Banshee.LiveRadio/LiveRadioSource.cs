@@ -43,6 +43,7 @@ using Hyena;
 
 using Banshee.LiveRadio.Plugins;
 using Banshee.Collection.Database;
+using Banshee.Collection;
 
 namespace Banshee.LiveRadio
 {
@@ -210,10 +211,32 @@ namespace Banshee.LiveRadio
                 Log.Debug ("[LiveRadioSource]<OnAddToInternetRadio> Internet Radio not found END");
                 return;
             }
-            //current_source.AddSelectedTracks(internet_radio_source);
-            DatabaseTrackInfo track = new DatabaseTrackInfo (current_source.TrackModel.FocusedItem as DatabaseTrackInfo);
-            track.PrimarySource = internet_radio_source;
-            track.Save ();
+
+            ITrackModelSource active_track_model_source = (ITrackModelSource) current_source;
+
+            if (active_track_model_source.TrackModel.SelectedItems == null ||
+                active_track_model_source.TrackModel.SelectedItems.Count <= 0) {
+                return;
+            }
+
+            ILiveRadioPlugin current_plugin = null;
+            foreach (ILiveRadioPlugin plugin in plugins)
+            {
+                if (plugin.PluginSource.Equals (current_source))
+                {
+                    current_plugin = plugin;
+                }
+            }
+
+            foreach (TrackInfo track in active_track_model_source.TrackModel.SelectedItems) {
+                DatabaseTrackInfo station_track = new DatabaseTrackInfo (track as DatabaseTrackInfo);
+                if (station_track != null) {
+                    station_track.PrimarySource = internet_radio_source;
+                    if (current_plugin != null)
+                        station_track.Uri = current_plugin.CleanUpUrl (station_track.Uri);
+                    station_track.Save ();
+                }
+            }
             Log.Debug ("[LiveRadioSource]<OnAddToInternetRadio> END");
         }
 
