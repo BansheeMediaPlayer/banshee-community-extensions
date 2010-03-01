@@ -274,23 +274,30 @@ namespace ClutterFlow
 
         #region Texture Handling
         public static Gdk.Pixbuf MakeReflection (Pixbuf pb) {
-            Gdk.Pixbuf finalPb = new Gdk.Pixbuf(Colorspace.Rgb, true, pb.BitsPerSample, pb.Width, pb.Height*2);
             if (pb.BitsPerSample != 8)
                 throw new System.Exception ("Invalid bits per sample");
+			
+			
+			Gdk.Pixbuf border_pb = new Gdk.Pixbuf(Colorspace.Rgb, true, pb.BitsPerSample, pb.Width+4, pb.Height+4);
+			border_pb.Fill (0x00000000);
+			pb.CopyArea (0, 0, pb.Width, pb.Height, border_pb, 2, 2);
+			
+			Gdk.Pixbuf final_pb = new Gdk.Pixbuf(Colorspace.Rgb, true, border_pb.BitsPerSample, border_pb.Width, border_pb.Height*2);
+
 
             unsafe {
 
-                bool alpha = pb.HasAlpha;
-                int src_rowstride = pb.Rowstride;
-                int src_width = pb.Width;
-                int src_height = pb.Height;
-                byte * src_byte = (byte *) pb.Pixels;
+                bool alpha = border_pb.HasAlpha;
+                int src_rowstride = border_pb.Rowstride;
+                int src_width = border_pb.Width;
+                int src_height = border_pb.Height;
+                byte * src_byte = (byte *) border_pb.Pixels;
                 byte * src_base = src_byte;
                 
-                int dst_rowstride = finalPb.Rowstride;
-                int dst_width = finalPb.Width;
-                int dst_height = finalPb.Height;
-                byte * dst_byte = (byte *) finalPb.Pixels;
+                int dst_rowstride = final_pb.Rowstride;
+                int dst_width = final_pb.Width;
+                int dst_height = final_pb.Height;
+                byte * dst_byte = (byte *) final_pb.Pixels;
                 byte * dst_base = dst_byte;
     
                 byte * refl_byte = dst_base + (dst_height-1) * dst_rowstride + (dst_width-1) * 4  + 3;
@@ -318,7 +325,8 @@ namespace ClutterFlow
                     }
                 }
             }
-            return finalPb;
+			
+            return final_pb;
         }
         #endregion
     }

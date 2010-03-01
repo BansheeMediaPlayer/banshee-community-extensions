@@ -132,8 +132,8 @@ namespace ClutterFlow
 			SideMargin = CoverWidth*0.5f;
 			XStep = (Width - CenterWidth - SideMargin) / CoverCount;
 			SideWidth = Width*0.5f - (CenterMargin+XStep+SideMargin);
-			if (SideWidth>coverWidth*0.5f) {
-			 	SideMargin += SideWidth-coverWidth*0.5f;
+			if (SideWidth>CoverWidth) {
+			 	SideMargin += SideWidth-CoverWidth;
 				XStep = (Width - CenterWidth - SideMargin) / CoverCount;
 				SideWidth = Width*0.5f - (CenterMargin+XStep+SideMargin);
 			}
@@ -144,7 +144,7 @@ namespace ClutterFlow
 		protected float SideMargin = 50;
 		protected float CenterWidth = 150;
 		protected float XStep = 20;
-		protected float SideWidth = 130;
+		protected float SideWidth = 100;
 		public float CoverWidth {
 			get { return coverWidth; }
 			protected set {
