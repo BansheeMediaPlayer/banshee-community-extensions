@@ -16,6 +16,7 @@ SOURCES =  \
     CoverManager.cs \
     FlowBehaviour.cs \
     ClutterFlowActor.cs \
+    ClutterFlowFixedActor.cs \
     ActorLoader.cs \
     ClutterWidgetBar.cs \
     ClutterGenericButton.cs \
