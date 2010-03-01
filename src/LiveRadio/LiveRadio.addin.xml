@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Addin 
     id="Banshee.LiveRadio"
-    version="1.0"
+    version="0.0.9"
     compatVersion="1.0"
     copyright="Copyright © 2010 Frank Ziegler. Licensed under the MIT X11 license."
     name="LiveRadio"
