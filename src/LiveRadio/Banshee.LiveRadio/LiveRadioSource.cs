@@ -44,6 +44,7 @@ using Hyena;
 using Banshee.LiveRadio.Plugins;
 using Banshee.Collection.Database;
 using Banshee.Collection;
+using Banshee.Configuration;
 
 namespace Banshee.LiveRadio
 {
@@ -51,6 +52,13 @@ namespace Banshee.LiveRadio
     /// <summary>
     /// The main class of the LiveRadio Extension. It creates a new primary source in the source trees and adds
     /// child sources for each internet radio plugin detected.
+    ///
+    /// TODO:
+    /// * edit PO files
+    /// * add toolbar messages?
+    /// * add the statistics gui
+    ///    - add OnXXXError to collect error statistics
+    ///    - add listview with retrieve/sent/error (create custom object)
     /// </summary>
     public class LiveRadioSource : PrimarySource, IDisposable
     {
@@ -58,6 +66,7 @@ namespace Banshee.LiveRadio
         const int sort_order = 190;
         private List<ILiveRadioPlugin> plugins;
         private uint ui_global_id;
+        private List<string> enabled_plugins;
 
         /// <summary>
         /// Constructor -- creates a new LiveRadio parent source
@@ -69,10 +78,18 @@ namespace Banshee.LiveRadio
             TypeUniqueId = "live-radio";
             IsLocal = false;
 
+            string enabled_plugin_names = EnabledPluginsEntry.Get ();
+            if (String.IsNullOrEmpty (enabled_plugin_names))
+                enabled_plugins = new List<string> ();
+            else
+                enabled_plugins = new List<string> (enabled_plugin_names.Split (','));
+
             //Load internet directory parser plugins
             plugins = new LiveRadioPluginManager ().LoadPlugins ();
             foreach (ILiveRadioPlugin plugin in plugins) {
-                Log.DebugFormat ("[LiveRadioSource]<Constructor> found plugin: {0}", plugin.Name);
+                Log.DebugFormat ("[LiveRadioSource]<Constructor> found plugin: {0}, enabled: {1}",
+                                  plugin.Name,
+                                 (EnabledPlugins.Contains (plugin.Name)));
             }
             
             AfterInitialized ();
@@ -123,7 +140,7 @@ namespace Banshee.LiveRadio
         /// </param>
         public void OnConfigure (object o, EventArgs ea)
         {
-            new LiveRadioConfigDialog (plugins);
+            new LiveRadioConfigDialog (this, plugins);
             return;
         }
 
@@ -140,20 +157,19 @@ namespace Banshee.LiveRadio
         }
 
         /// <summary>
-        /// Setup the source contents of the LiveRadioSource, i.e. create a childsource for each plugin found
+        /// Setup the source contents of the LiveRadioSource, i.e. create a childsource for each enabled plugin found
         /// and initialize the overview widget.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.Boolean"/>
+        /// A <see cref="System.Boolean"/> -- always returns true
         /// </returns>
         private bool SetupSourceContents ()
         {
             foreach (ILiveRadioPlugin plugin in plugins) {
-                LiveRadioPluginSource plugin_source = new LiveRadioPluginSource (plugin);
-                this.AddChildSource (plugin_source);
-                this.MergeSourceInput (plugin_source, SourceMergeType.Source);
-                plugin.Initialize ();
-                plugin_source.UpdateCounts ();
+                if (EnabledPlugins.Contains (plugin.Name))
+                {
+                    AddPlugin (plugin);
+                }
             }
             
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
@@ -161,6 +177,37 @@ namespace Banshee.LiveRadio
             ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
             return true;
         }
+        
+        /// <summary>
+        /// Add and initialize a plugin
+        /// </summary>
+        /// <param name="plugin">
+        /// A <see cref="ILiveRadioPlugin"/> -- the plugin to initialize
+        /// </param>
+        protected void AddPlugin (ILiveRadioPlugin plugin)
+        {
+            LiveRadioPluginSource plugin_source = new LiveRadioPluginSource (plugin);
+            this.AddChildSource (plugin_source);
+            this.MergeSourceInput (plugin_source, SourceMergeType.Source);
+            plugin.Initialize ();
+            plugin_source.UpdateCounts ();
+        }
+
+        /// <summary>
+        /// Removes a plugin source
+        /// </summary>
+        /// <param name="plugin">
+        /// A <see cref="ILiveRadioPlugin"/> the plugin which to remove the source for
+        /// </param>
+        protected void RemovePlugin(ILiveRadioPlugin plugin)
+        {
+            LiveRadioPluginSource plugin_source = plugin.PluginSource;
+            plugin.SetLiveRadioPluginSource (null);
+            this.RemoveChildSource(plugin_source);
+            plugin_source.Dispose ();
+            this.UpdateCounts ();
+        }
+
         /// <summary>
         /// Returns the sum of the child sources' counts
         /// </summary>
@@ -350,6 +397,32 @@ namespace Banshee.LiveRadio
             
             throw new InternetRadioExtensionNotFoundException ();
         }
+
+        /// <summary>
+        /// List of enabled plugins. If updated, newly enabled plugins get a source added
+        /// and newly disabled plugin will have their source removed
+        /// </summary>
+        public List<string> EnabledPlugins
+        {
+            get { return enabled_plugins; }
+            set
+            {
+                foreach (ILiveRadioPlugin plugin in plugins)
+                {
+                    if (enabled_plugins.Contains (plugin.Name)
+                        && !value.Contains (plugin.Name))
+                        this.RemovePlugin (plugin);
+                    if (!enabled_plugins.Contains (plugin.Name)
+                        && value.Contains (plugin.Name))
+                        this.AddPlugin (plugin);
+                }
+                enabled_plugins = value;
+            }
+        }
+
+        public static readonly SchemaEntry<string> EnabledPluginsEntry = new SchemaEntry<string> (
+        "plugins.liveradio" , "enbaled_plugins", "", "List of enabled Plugins", "List of enabled Plugins");
+
     }
 
     public class InternetRadioExtensionNotFoundException : Exception

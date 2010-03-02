@@ -31,6 +31,7 @@ using Banshee.LiveRadio.Plugins;
 using Gtk;
 using Mono.Unix;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Banshee.LiveRadio
 {
@@ -50,6 +51,8 @@ namespace Banshee.LiveRadio
         Gtk.Button save_button = new Gtk.Button (Gtk.Stock.Save);
 
         private List<ILiveRadioPlugin> plugins;
+        private Dictionary<string, CheckButton> enable_plugin_buttons;
+        private LiveRadioSource source;
 
         /// <summary>
         /// Constructor -- builds a basic dialog structure and adds each plugins configuration widget into a notebook
@@ -57,9 +60,11 @@ namespace Banshee.LiveRadio
         /// <param name="plugins">
         /// A <see cref="List<ILiveRadioPlugin>"/> -- the list of plugins
         /// </param>
-        public LiveRadioConfigDialog (List<ILiveRadioPlugin> plugins)
+        public LiveRadioConfigDialog (LiveRadioSource source, List<ILiveRadioPlugin> plugins)
         {
             this.plugins = plugins;
+            this.source = source;
+            enable_plugin_buttons = new Dictionary<string, CheckButton> ();
 
             preferences_image.Yalign = 0f;
             preferences_image.IconName = "gtk-preferences";
@@ -79,7 +84,19 @@ namespace Banshee.LiveRadio
             {
                 Widget plugin_widget = plugin.ConfigurationWidget;
                 if (plugin_widget != null)
-                    notebook.AppendPage(plugin_widget, new Label (plugin.Name));
+                {
+                    VBox box = new VBox ();
+                    CheckButton button = new CheckButton (Catalog.GetString ("Enable this plugin"));
+                    if (source.EnabledPlugins.Contains (plugin.Name))
+                        button.Active = true;
+
+                    enable_plugin_buttons.Add(plugin.Name, button);
+
+                    box.PackStart (button, false, true, 5);
+                    box.PackStart (plugin_widget, true, true, 5);
+
+                    notebook.AppendPage(box, new Label (plugin.Name));
+                }
             }
             cancel_button.Label = Catalog.GetString ("_Cancel");
             cancel_button.Image = new Image ("gtk-cancel", IconSize.Button);
@@ -169,9 +186,30 @@ namespace Banshee.LiveRadio
         /// </summary>
         private void SaveConfiguration()
         {
+            List<string> enabled_plugin_names = new List<string> ();
             foreach (ILiveRadioPlugin plugin in plugins)
             {
+                if (enable_plugin_buttons.ContainsKey(plugin.Name)
+                    && enable_plugin_buttons[plugin.Name].Active)
+                {
+                    enabled_plugin_names.Add(plugin.Name);;
+                }
                 plugin.SaveConfiguration ();
+            }
+            source.EnabledPlugins = enabled_plugin_names;
+            if (enabled_plugin_names.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder (enabled_plugin_names[0]);
+                int i = 1;
+                while (enabled_plugin_names.Count > i)
+                {
+                    sb.Append (",");
+                    sb.Append (enabled_plugin_names[i]);
+                    i++;
+                }
+                LiveRadioSource.EnabledPluginsEntry.Set (sb.ToString ());
+            } else {
+                LiveRadioSource.EnabledPluginsEntry.Set (null);
             }
         }
 

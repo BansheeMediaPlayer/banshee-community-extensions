@@ -38,6 +38,8 @@ using Banshee.Collection.Database;
 using Hyena;
 using Banshee.Configuration;
 
+using Timer = System.Timers.Timer;
+
 namespace Banshee.LiveRadio.Plugins
 {
 
@@ -84,6 +86,9 @@ namespace Banshee.LiveRadio.Plugins
 
         private string session_id = null;
 
+        private Timer keepalive_timer = null;
+        private const int keepalive_timeout = 600000;
+
         /// <summary>
         /// Constructor -- invokes the base constructor with has_login=true for handling user credentials.
         /// Sets configured Properties
@@ -126,7 +131,6 @@ namespace Banshee.LiveRadio.Plugins
                 request = base_url + request_url + freetext_request + query;
             }
             XmlDocument document = RetrieveXml(request);
-            Log.Debug ("[Live365Plugin] <RetrieveRequest> Start Parsing");
             if (document != null) ParseXmlResponse(document, request_type, query);
         }
 
@@ -180,9 +184,32 @@ namespace Banshee.LiveRadio.Plugins
                     new_session_id = session_node.InnerText;
                 }
                 session_id = "&session_id=" + new_session_id;
-                //TODO: init keepalive
+                //init keepalive
+                if (keepalive_timer == null)
+                {
+                    keepalive_timer = new Timer ();
+                    keepalive_timer.Interval = keepalive_timeout;
+                    keepalive_timer.Elapsed += OnKeepAliveElapsed;
+                    keepalive_timer.Start ();
+                }
             }
             Log.DebugFormat ("[Live365Plugin] <CreateSession> session_id : {0}", session_id);
+        }
+
+        void OnKeepAliveElapsed (object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Log.DebugFormat ("[Live365Plugin] <OnKeepAliveElapsed> keepalive {0}", session_id);
+            //just clear session if expired
+            if (Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack != null
+                && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsPlaying
+                && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.Uri.ToString ().Contains (session_id)
+                && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.Uri.ToString ().Contains (playlist_url))
+                return;
+            if (!TestSession ())
+            {
+                session_id = null;
+                keepalive_timer.Stop ();
+            }
         }
 
         /// <summary>

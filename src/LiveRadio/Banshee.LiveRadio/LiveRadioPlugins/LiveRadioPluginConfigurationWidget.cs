@@ -185,19 +185,43 @@ namespace Banshee.LiveRadio
         public string ProxyUrl
         {
             get { return proxy_url_text.Text.Trim (); }
-            set { proxy_url_text.Text = value.Trim (); }
+            set
+            {
+                if (String.IsNullOrEmpty(value))
+                {
+                    proxy_url_text.DeleteText(0, proxy_url_text.Text.Length);
+                } else {
+                    proxy_url_text.Text = value.Trim ();
+                }
+            }
         }
 
         public string HttpUsername
         {
             get { return credential_username_text.Text; }
-            set { credential_username_text.Text = value; }
+            set
+            {
+                if (String.IsNullOrEmpty(value))
+                {
+                    credential_username_text.DeleteText(0, credential_username_text.Text.Length);
+                } else {
+                    credential_username_text.Text = value.Trim ();
+                }
+            }
         }
 
         public string HttpPassword
         {
             get { return credential_password_text.Text; }
-            set { credential_password_text.Text = value; }
+            set
+            {
+                if (String.IsNullOrEmpty(value))
+                {
+                    credential_password_text.DeleteText(0, credential_password_text.Text.Length);
+                } else {
+                    credential_password_text.Text = value.Trim ();
+                }
+            }
         }
 
         /// <summary>
@@ -224,7 +248,7 @@ namespace Banshee.LiveRadio
         public int HttpTimeout
         {
             get { return ValidateTimeout (timeout_seconds_text.Text); }
-            set { timeout_seconds_text.Text = value.ToString (); }
+            set { timeout_seconds_text.Text = ValidateTimeout (value.ToString ()).ToString (); }
         }
 
     }
