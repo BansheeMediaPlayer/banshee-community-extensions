@@ -15,9 +15,11 @@ src/LCD/Banshee.LCD/LCDService.cs
 src/Lirc/Banshee.Lirc/gtk-gui/Banshee.Lirc.ConfigDialog.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioConfigDialog.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioFilterView.cs
+src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs
+src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs
