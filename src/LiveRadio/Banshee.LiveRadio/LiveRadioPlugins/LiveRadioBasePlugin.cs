@@ -61,7 +61,10 @@ namespace Banshee.LiveRadio.Plugins
     /// EventHandler for the event a query result has been retrieved by the plugin
     /// </summary>
     public delegate void RequestResultRetrievedEventHandler (object sender, string request, LiveRadioRequestType request_type, List<DatabaseTrackInfo> result);
-
+    /// <summary>
+    /// EventHandler for the event an error is returned during a plugin operation
+    /// </summary>
+    public delegate void ErrorReturnedEventHandler (ILiveRadioPlugin plugin, LiveRadioPluginError error);
 
     /// <summary>
     /// An abstact base plugin for LiveRadio plugins. Should normally be the parent class of all plugins. Implements the ILiveRadioPlugin
@@ -82,6 +85,8 @@ namespace Banshee.LiveRadio.Plugins
     /// - SetLiveRadioPluginSource (...)
     /// - ConfigurationWidget
     /// - CleanUpUrl (...)
+    ///
+    /// Errors should be reported through the RaiseErrorReturned () method.
     /// </summary>
     public abstract class LiveRadioBasePlugin : ILiveRadioPlugin
     {
@@ -92,6 +97,7 @@ namespace Banshee.LiveRadio.Plugins
         protected bool has_login;
         protected bool use_proxy;
         protected bool use_credentials;
+        private bool enabled;
         protected int http_timeout_seconds;
         protected string proxy_url;
         protected string credentials_username;
@@ -100,6 +106,7 @@ namespace Banshee.LiveRadio.Plugins
 
         public event GenreListLoadedEventHandler GenreListLoaded;
         public event RequestResultRetrievedEventHandler RequestResultRetrieved;
+        public event ErrorReturnedEventHandler ErrorReturned;
 
 
         /// <summary>
@@ -120,6 +127,7 @@ namespace Banshee.LiveRadio.Plugins
             this.has_login = has_login;
             genres = new List<Genre> ();
             cached_results = new Dictionary<string, List<DatabaseTrackInfo>> ();
+            enabled = false;
         }
 
         /// <summary>
@@ -128,6 +136,13 @@ namespace Banshee.LiveRadio.Plugins
         public virtual void Initialize ()
         {
             RetrieveGenreList ();
+            enabled = true;
+        }
+
+        public virtual void Disable ()
+        {
+            SetLiveRadioPluginSource (null);
+            enabled = false;
         }
 
         /// <summary>
@@ -333,6 +348,23 @@ namespace Banshee.LiveRadio.Plugins
         }
 
         /// <summary>
+        /// Method to invoke the ErrorReturned event
+        /// </summary>
+        /// <param name="short_message">
+        /// A <see cref="System.String"/> -- the short description of the error
+        /// </param>
+        /// <param name="long_message">
+        /// A <see cref="System.String"/> -- the detailed description of the error
+        /// </param>
+        protected void OnErrorReturned (string short_message, string long_message)
+        {
+            ErrorReturnedEventHandler handler = ErrorReturned;
+            if (handler != null) {
+                handler (this, new LiveRadioPluginError (short_message, long_message));
+            }
+        }
+
+        /// <summary>
         /// Method to invoke the RequestResultRetrieved event
         /// </summary>
         /// <param name="request_type">
@@ -373,6 +405,7 @@ namespace Banshee.LiveRadio.Plugins
             } catch (Exception e) {
                 result = new List<DatabaseTrackInfo> ();
                 Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> error {0}", e.Message);
+                RaiseErrorReturned ("General Error", e.Message);
             }
             Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> result contains {1} entries for query {2}", Name, result.Count, query);
             OnRequestResultRetrieved (request_type, query, result);
@@ -384,6 +417,20 @@ namespace Banshee.LiveRadio.Plugins
         public void RaiseGenreListLoaded ()
         {
             OnGenreListLoaded ();
+        }
+
+        /// <summary>
+        /// Raises the ErrorReturned event
+        /// </summary>
+        /// <param name="short_message">
+        /// A <see cref="System.String"/> -- the short description of the error
+        /// </param>
+        /// <param name="long_message">
+        /// A <see cref="System.String"/> -- the detailed description of the error
+        /// </param>
+        public void RaiseErrorReturned (string short_message, string long_message)
+        {
+            OnErrorReturned (short_message, long_message);
         }
 
         /// <summary>
@@ -420,6 +467,7 @@ namespace Banshee.LiveRadio.Plugins
             }
             catch (Exception e) {
                 Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"] <RetrieveXml> Error: {1} END", Name, e.Message);
+                RaiseErrorReturned ("General Error", e.Message);
             }
             return null;
         }
@@ -467,6 +515,15 @@ namespace Banshee.LiveRadio.Plugins
         public int HttpTimeout {
             get { return http_timeout_seconds; }
             set { http_timeout_seconds = value; }
+        }
+
+        public bool Enabled {
+            get { return enabled; }
+        }
+
+        public abstract string Version
+        {
+            get ;
         }
 
     }

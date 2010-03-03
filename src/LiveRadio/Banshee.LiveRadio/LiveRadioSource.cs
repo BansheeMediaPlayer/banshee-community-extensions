@@ -55,10 +55,6 @@ namespace Banshee.LiveRadio
     ///
     /// TODO:
     /// * edit PO files
-    /// * add toolbar messages?
-    /// * add the statistics gui
-    ///    - add OnXXXError to collect error statistics
-    ///    - add listview with retrieve/sent/error (create custom object)
     /// </summary>
     public class LiveRadioSource : PrimarySource, IDisposable
     {
@@ -172,7 +168,7 @@ namespace Banshee.LiveRadio
                 }
             }
             
-            Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
+            Properties.Set<ISourceContents> ("Nereid.SourceContents", new LiveRadioSourceContents (plugins));
             
             ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
             return true;
@@ -202,7 +198,7 @@ namespace Banshee.LiveRadio
         protected void RemovePlugin(ILiveRadioPlugin plugin)
         {
             LiveRadioPluginSource plugin_source = plugin.PluginSource;
-            plugin.SetLiveRadioPluginSource (null);
+            plugin.Disable ();
             this.RemoveChildSource(plugin_source);
             plugin_source.Dispose ();
             this.UpdateCounts ();
@@ -217,28 +213,6 @@ namespace Banshee.LiveRadio
                 foreach (ISource source in this.Children)
                     sum += source.Count;
                 return sum;
-            }
-        }
-
-        /// <summary>
-        /// TODO: will be statistics view over the activities in the child sources.
-        /// </summary>
-        private class CustomView : ISourceContents
-        {
-            Gtk.Label label = new Gtk.Label ("LiveRadio! This view will be setup to show statistics...");
-
-            public bool SetSource (ISource source)
-            {
-                return true;
-            }
-            public void ResetSource ()
-            {
-            }
-            public Gtk.Widget Widget {
-                get { return label; }
-            }
-            public ISource Source {
-                get { return null; }
             }
         }
 

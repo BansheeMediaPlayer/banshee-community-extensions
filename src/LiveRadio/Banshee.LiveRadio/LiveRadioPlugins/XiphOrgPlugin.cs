@@ -135,6 +135,13 @@ namespace Banshee.LiveRadio.Plugins
         }
 
         /// <summary>
+        /// Version of this plugin code
+        /// </summary>
+        public override string Version {
+            get { return "0.1"; }
+        }
+
+        /// <summary>
         /// Parse the XML catalog and build the sorted genre list and track cache
         /// </summary>
         /// <param name="doc">
@@ -196,6 +203,7 @@ namespace Banshee.LiveRadio.Plugins
                     
                 } catch (Exception ex) {
                     Log.Exception ("[XiphOrgPlugin] <ParseCatalog> ERROR", ex);
+                    RaiseErrorReturned ("XML Parse Error", ex.Message);
                     continue;
                 }
                 

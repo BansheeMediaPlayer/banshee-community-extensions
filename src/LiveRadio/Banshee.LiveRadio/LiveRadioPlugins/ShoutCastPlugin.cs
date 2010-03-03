@@ -118,6 +118,7 @@ namespace Banshee.LiveRadio.Plugins
                     }
                 } catch (Exception ex) {
                     Log.Exception ("[ShoutCastPlugin] <ParseGenres> ERROR", ex);
+                    RaiseErrorReturned ("XML Parse Error", ex.Message);
                     continue;
                 }
                 
@@ -156,6 +157,7 @@ namespace Banshee.LiveRadio.Plugins
                 }
                 catch (Exception e) {
                     Log.Exception ("[ShoutCastPlugin] <ParseXmlResponse> ERROR: ", e);
+                    RaiseErrorReturned ("XML Parse Error", e.Message);
                     return;
                 }
             }
@@ -215,6 +217,7 @@ namespace Banshee.LiveRadio.Plugins
                 }
                 catch (Exception e) {
                     Log.Exception ("[ShoutCastPlugin] <ParseXmlResponse> ERROR: ", e);
+                    RaiseErrorReturned ("XML Parse Error", e.Message);
                     continue;
                 }
             }
@@ -225,6 +228,13 @@ namespace Banshee.LiveRadio.Plugins
         /// </summary>
         public override string Name {
             get { return "SHOUTcast.com"; }
+        }
+
+        /// <summary>
+        /// Version of this plugin code
+        /// </summary>
+        public override string Version {
+            get { return "0.1"; }
         }
 
         /// <summary>

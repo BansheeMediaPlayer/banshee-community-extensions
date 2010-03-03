@@ -88,9 +88,14 @@
     <Compile Include="Banshee.LiveRadio\LiveRadioFilterView.cs" />
     <Compile Include="Banshee.LiveRadio\GenreListModel.cs" />
     <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\Live365Plugin.cs" />
-    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\Genre.cs" />
     <Compile Include="Banshee.LiveRadio\LiveRadioConfigDialog.cs" />
     <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\LiveRadioPluginConfigurationWidget.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioSourceContents.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioStatisticListModel.cs" />
+    <Compile Include="Banshee.LiveRadio\Genre.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioStatistic.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\LiveRadioPluginListModel.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\LiveRadioPluginError.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

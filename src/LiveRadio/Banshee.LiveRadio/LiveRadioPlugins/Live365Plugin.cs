@@ -74,14 +74,15 @@ namespace Banshee.LiveRadio.Plugins
         */
 
         private const string base_url = "http://www.live365.com";
-        private const string request_url = "/cgi-bin/directory.cgi?site=xml&app_id=BansheeExtension&access=all&version=4&rows=200&charset=UTF-8";
+        private const string request_url = "/cgi-bin/directory.cgi?site=xml&org=live365&access=all&version=4&rows=200&charset=UTF-8";
         private const string genre_request = "&genre=";
         private const string freetext_request = "&searchdesc=";
-        private const string genre_url = "/cgi-bin/api_genres.cgi?site=xml&app_id=Banshee&access=all&version=4&charset=UTF-8";
+        private const string genre_url = "/cgi-bin/api_genres.cgi?site=xml&org=live365&access=all&version=4&charset=UTF-8";
 
-        private const string test_session_url = "http://www.live365.com/cgi-bin/api_presets.cgi?action=get&app_id=Banshee&first=1&device_id=UNKNOWN&rows=";
-        private const string login_url = "http://www.live365.com/cgi-bin/api_login.cgi?site=xml&remeber=Y&app_id=Banshee&access=all&version=4&charset=UTF-8&membername=%USERNAME%&password=%PASSWORD%";
-        private const string playlist_url = "http://www.live365.com/cgi-bin/play.pls?stationid=";
+        private const string test_session_url = "http://www.live365.com/cgi-bin/api_presets.cgi?action=get&org=live365&first=1&device_id=UNKNOWN&rows=";
+        private const string login_url = "http://www.live365.com/cgi-bin/api_login.cgi?site=xml&remeber=Y&org=live365&access=all&version=4&charset=UTF-8&membername=%USERNAME%&password=%PASSWORD%";
+        private const string playlist_url = "http://www.live365.com/play/";
+        //private const string playlist_url = "http://www.live365.com/cgi-bin/play.pls?stationid=";
         private const string replace_url = "http://www.live365.com/play/";
 
         private string session_id = null;
@@ -164,6 +165,7 @@ namespace Banshee.LiveRadio.Plugins
             XmlNodeList session_nodes = login_xml.GetElementsByTagName ("Session_ID");
             XmlNodeList success_nodes = login_xml.GetElementsByTagName ("Reason");
             XmlNodeList code_nodes = login_xml.GetElementsByTagName ("Code");
+            string error = null;
 
             bool has_session = true;
 
@@ -173,7 +175,11 @@ namespace Banshee.LiveRadio.Plugins
             }
             foreach (XmlNode success_node in success_nodes)
             {
-                if (!success_node.InnerText.Equals ("Success")) has_session = false;
+                if (!success_node.InnerText.Equals ("Success"))
+                {
+                    has_session = false;
+                    error = success_node.InnerText;
+                }
             }
 
             if (has_session)
@@ -192,6 +198,11 @@ namespace Banshee.LiveRadio.Plugins
                     keepalive_timer.Elapsed += OnKeepAliveElapsed;
                     keepalive_timer.Start ();
                 }
+            } else {
+                RaiseErrorReturned ("Session Create Failure",
+                                    (String.IsNullOrEmpty(error) ?
+                                        "Failed to create a user session using credentials on live365" :
+                                        error));
             }
             Log.DebugFormat ("[Live365Plugin] <CreateSession> session_id : {0}", session_id);
         }
@@ -209,6 +220,7 @@ namespace Banshee.LiveRadio.Plugins
             {
                 session_id = null;
                 keepalive_timer.Stop ();
+                RaiseErrorReturned ("User Session Lost", "The live365 user session has been lost");
             }
         }
 
@@ -262,6 +274,7 @@ namespace Banshee.LiveRadio.Plugins
                         }
                     } catch (Exception ex) {
                         Log.Exception ("[Live365Plugin] <ParseGenres> ERROR", ex);
+                        RaiseErrorReturned ("XML Parse Error", ex.Message);
                         continue;
                     }
                 }
@@ -315,6 +328,7 @@ namespace Banshee.LiveRadio.Plugins
                     }
                     catch (Exception e) {
                         Log.Exception ("[Live365Plugin] <ParseXmlResponse> ERROR: ", e);
+                        RaiseErrorReturned ("XML Parse Error", e.Message);
                         return;
                     }
                 }
@@ -398,6 +412,7 @@ namespace Banshee.LiveRadio.Plugins
                         }
                         catch (Exception e) {
                             Log.Exception ("[Live365Plugin] <ParseXmlResponse> ERROR: ", e);
+                            RaiseErrorReturned ("General Error", e.Message);
                             continue;
                         }
                     }
@@ -448,6 +463,13 @@ namespace Banshee.LiveRadio.Plugins
         /// </summary>
         public override string Name {
             get { return "live365.com"; }
+        }
+
+        /// <summary>
+        /// Version of this plugin code
+        /// </summary>
+        public override string Version {
+            get { return "0.1"; }
         }
 
         /// <summary>

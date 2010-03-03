@@ -46,6 +46,10 @@ namespace Banshee.LiveRadio.Plugins
         /// Event raised when a query result has been retrieved by the plugin
         /// </summary>
         event RequestResultRetrievedEventHandler RequestResultRetrieved;
+        /// <summary>
+        /// Event raised when an Error occurs in a plugin
+        /// </summary>
+        event ErrorReturnedEventHandler ErrorReturned;
 
         /// <summary>
         /// Return a string most likely unique to the plugin, best practice is
@@ -59,8 +63,15 @@ namespace Banshee.LiveRadio.Plugins
         /// <summary>
         /// Initializes the plugin, usually will result in initiating the retrieval of
         /// the genre list
+        /// Must set Enabled Property to true
         /// </summary>
         void Initialize ();
+
+        /// <summary>
+        /// Method that will disable the plugin. Must set Enabled Property to false and should
+        /// disable any background tasks
+        /// </summary>
+        void Disable ();
 
         /// <summary>
         /// Method that will be called when the genre list needs to be filled and a
@@ -128,7 +139,8 @@ namespace Banshee.LiveRadio.Plugins
         /// </summary>
         List<Genre> Genres { get; }
 
-        //TODO: add enable/disable functionality
-        //bool Enabled { get; }
+        bool Enabled { get; }
+
+        string Version { get; }
     }
 }
