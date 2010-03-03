@@ -37,15 +37,17 @@ namespace Banshee.LiveRadio
     public class LiveRadioStatistic
     {
         private int count = 0;
-        private string name;
-        private string description;
+        private string short_description;
+        private string origin;
+        private string long_description;
         private int counter = 0;
         private double average = 0;
 
-        public LiveRadioStatistic (string name, string description)
+        public LiveRadioStatistic (string origin, string short_description, string long_description)
         {
-            this.name = name;
-            this.description = description;
+            this.origin = origin;
+            this.short_description = short_description;
+            this.long_description = long_description;
         }
 
         public void AddCount(int count)
@@ -67,14 +69,14 @@ namespace Banshee.LiveRadio
             get { return count; }
         }
 
-        public string Name
+        public string ShortDescription
         {
-            get { return name; }
+            get { return short_description; }
         }
 
-        public string Description
+        public string LongDescription
         {
-            get { return description; }
+            get { return long_description; }
         }
 
         public double Average
@@ -85,6 +87,11 @@ namespace Banshee.LiveRadio
         public int Updates
         {
             get { return counter; }
+        }
+
+        public string Origin
+        {
+            get { return origin; }
         }
 
     }

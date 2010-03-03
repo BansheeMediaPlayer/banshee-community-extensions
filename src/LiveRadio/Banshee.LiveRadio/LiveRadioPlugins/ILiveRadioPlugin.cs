@@ -141,6 +141,8 @@ namespace Banshee.LiveRadio.Plugins
 
         bool Enabled { get; }
 
+        string IsEnabled { get; }
+
         string Version { get; }
     }
 }

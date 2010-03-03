@@ -91,13 +91,15 @@ namespace Banshee.LiveRadio
                                              LiveRadioRequestType request_type,
                                              List<DatabaseTrackInfo> result)
         {
+            ILiveRadioPlugin plugin = sender as ILiveRadioPlugin;
             string short_message = Catalog.GetString ("Requested Results Returned");
             string long_message = Catalog.GetString ("The plugin has returned a list of results for a genre or freetext query");
             LiveRadioStatistic stat = statistics.Find (delegate (LiveRadioStatistic statistic) {
                                            return MessageEqual (statistic,
+                                                                plugin.Name,
                                                                 short_message,
                                                                 long_message);
-                                       }) ?? new LiveRadioStatistic (short_message, long_message);
+                                       }) ?? new LiveRadioStatistic (plugin.Name, short_message, long_message);
             stat.AddCount (result.Count);
             if (!statistics.Contains (stat)) statistics.Add (stat);
             LiveRadioStatisticListModel model = statistic_view.Model as LiveRadioStatisticListModel;
@@ -113,9 +115,14 @@ namespace Banshee.LiveRadio
         {
         }
 
-        private bool MessageEqual (LiveRadioStatistic statistic, string name, string description)
+        private bool MessageEqual (LiveRadioStatistic statistic,
+                                   string origin,
+                                   string short_description,
+                                   string long_description)
         {
-            if (statistic.Name.Equals (name) && statistic.Description.Equals (description))
+            if (statistic.ShortDescription.Equals (short_description)
+                && statistic.LongDescription.Equals (long_description)
+                && statistic.Origin.Equals (origin))
                 return true;
             return false;
         }
@@ -131,7 +138,7 @@ namespace Banshee.LiveRadio
             plugin_view = new ListView<ILiveRadioPlugin> ();
             Column col_name = new Column (new ColumnDescription ("Name", Catalog.GetString ("Plugin"), 100));
             Column col_version = new Column (new ColumnDescription ("Version", Catalog.GetString ("Version"), 100));
-            Column col_enabled = new Column (new ColumnDescription ("Enabled", Catalog.GetString ("Enabled"), 100));
+            Column col_enabled = new Column (new ColumnDescription ("IsEnabled", Catalog.GetString ("Enabled"), 100));
             plugin_view.ColumnController = new ColumnController ();
             plugin_view.ColumnController.Add (col_name);
             plugin_view.ColumnController.Add (col_version);
@@ -142,14 +149,16 @@ namespace Banshee.LiveRadio
             List<LiveRadioStatistic> stats = new List<LiveRadioStatistic> ();
 
             statistic_view = new ListView<LiveRadioStatistic> ();
-            Column col_sname = new Column (new ColumnDescription ("Name", Catalog.GetString ("Short Info"), 100));
-            Column col_desc = new Column (new ColumnDescription ("Description", Catalog.GetString ("Long Info"), 100));
+            Column col_origin = new Column (new ColumnDescription ("Origin", Catalog.GetString ("Origin"), 100));
+            Column col_short = new Column (new ColumnDescription ("ShortDescription", Catalog.GetString ("Short Info"), 100));
+            Column col_long = new Column (new ColumnDescription ("LongDescription", Catalog.GetString ("Long Info"), 100));
             Column col_count = new Column (new ColumnDescription ("Count", Catalog.GetString ("Count"), 100));
             Column col_average = new Column (new ColumnDescription ("Average", Catalog.GetString ("Average"), 100));
             Column col_updates = new Column (new ColumnDescription ("Updates", Catalog.GetString ("Updates"), 100));
             statistic_view.ColumnController = new ColumnController ();
-            statistic_view.ColumnController.Add (col_sname);
-            statistic_view.ColumnController.Add (col_desc);
+            statistic_view.ColumnController.Add (col_origin);
+            statistic_view.ColumnController.Add (col_short);
+            statistic_view.ColumnController.Add (col_long);
             statistic_view.ColumnController.Add (col_count);
             statistic_view.ColumnController.Add (col_average);
             statistic_view.ColumnController.Add (col_updates);
@@ -171,8 +180,13 @@ namespace Banshee.LiveRadio
             button_box.PackEnd (enable_button, false, false, 10);
             button_box.PackEnd (disable_button, false, false, 10);
 
+            Label stat_label = new Label ();
+            stat_label.UseMarkup = true;
+            stat_label.Markup = "<b>" + Catalog.GetString ("Plugin Statistics") + "</b>";
+
             PackStart (SetupView (plugin_view), true, true, 10);
             PackStart (button_box, false, true, 10);
+            PackStart (stat_label, false, true, 20);
             PackStart (SetupView (statistic_view), true, true, 10);
 
             ShowAll ();

@@ -39,6 +39,7 @@ using System.Reflection;
 using Hyena;
 using Gtk;
 using Banshee.Base;
+using Mono.Unix;
 
 
 namespace Banshee.LiveRadio.Plugins
@@ -519,6 +520,10 @@ namespace Banshee.LiveRadio.Plugins
 
         public bool Enabled {
             get { return enabled; }
+        }
+
+        public string IsEnabled {
+            get { return (enabled ? Catalog.GetString ("Yes") : Catalog.GetString ("No")); }
         }
 
         public abstract string Version
