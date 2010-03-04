@@ -10,10 +10,6 @@ AC_DEFUN([BCE_MIRAGE],
 		[glib-2.0],
 		[The glib library was not found. Please install it or disable the Mirage extension by passing --disable-mirage])
 
-	BCE_CHECK_EXTENSION_DEP([Mirage], [SQLITE3],
-		[sqlite3 >= 3.3],
-		[sqlite was not found. Please install it or disable the Mirage extension by passing --disable-mirage])
-
 	BCE_CHECK_EXTENSION_DEP([Mirage], [FFTW3F],
 		[fftw3f],
 		[The fftw3f library was not found. Please install it or disable the Mirage extension by passing --disable-mirage])
@@ -32,7 +28,6 @@ AC_DEFUN([BCE_MIRAGE],
 	if test "x$enable_Mirage" = "xtry" \
 		&& test "x$have_BANSHEE_154" = "xyes" \
 		&& test "x$have_GLIB" = "xyes" \
-		&& test "x$have_SQLITE3" = "xyes" \
 		&& test "x$have_FFTW3F" = "xyes" \
 		&& test "x$have_LIBSAMPLERATE" = "xyes" \
 		&& test "x$have_GSTREAMER" = "xyes"; then

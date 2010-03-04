@@ -32,7 +32,29 @@ Points of Contact
 Dependencies
 =======================
 
-Banshee 1.5.4 and its devel packages are required.
+Banshee 1.5.4 and its devel packages are required.  Some extensions have
+specific requirements.
+
+ClutterFlow
+  clutter-sharp
+  clutter-gtk-sharp
+
+Lcd
+  LCDProc
+
+Lirc
+  LIRC
+
+Lyrics
+  webkit-sharp
+
+Mirage:
+  glib-2.0
+  fftw3f
+  samplerate
+  gstreamer-0.10 >= 0.10.15
+  gstreamer-base-0.10 >= 0.10.15
+  gstreamer-plugins-base-0.10 >= 0.10.15
 
 =======================
 Create a New Extension

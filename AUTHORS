@@ -1,9 +1,24 @@
-Maintainers:
-  Aaron Bockover
+Extension Maintainers:
+         AlarmClock Bertrand Lorentz
+                Awn Marcos Almeida Jr
+        ClutterFlow Mathijs Dumon
+                    Miep Vandamme
+     CoverWallpaper David Corrales
+                LCD André Gaul
+               Lirc Jean-Baptiste Lab
+          LiveRadio Frank Ziegler
+             Lyrics Christian Martellini
+             Mirage Bertrand Lorentz
+                    Dominik Schnitzer
+                    Gabriel Burt
+     StreamRecorder Frank Ziegler
+RadioStationFetcher Akseli Mantila
+
+General Maintainers:
   Alexander Kojevnikov
   Bertrand Lorentz
   Gabriel Burt
 
-Contributors:
+Other Contributors:
+  Chow Loong Jin
   Patrick van Staveren
-

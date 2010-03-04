@@ -1,4 +1,25 @@
 ============================
+Version 1.5.5 - NOT YET RELEASED
+============================
+
+Contributors:
+Alexander Kojevnikov, Bertrand Lorentz, David Corrales, Frank Ziegler,
+Gabriel Burt, Mathijs Dumon, Miep Vandamme
+
+Features:
+* [ClutterFlow] Added a slide out animation when user right-clicks album so he/she can see the cover better
+* [ClutterFlow] Dragging sensitivity is now adjustable
+* [CoverWallpaper] new, migrated from Google Code
+* [LiveRadio] new, another way to discover internet radio stations
+
+Bugs Fixed:
+* [Mirage] Fix crash in RandomBySimilar (bgo#611066)
+* [Lyrics] Handle proxy config errors (bgo#611446)
+
+Translators:
+Gianvito Cavasoli
+
+============================
 Version 1.5.4 - Feb 24, 2010
 ============================
 
