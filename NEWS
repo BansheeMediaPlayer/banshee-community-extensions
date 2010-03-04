@@ -4,7 +4,7 @@ Version 1.5.5 - NOT YET RELEASED
 
 Contributors:
 Alexander Kojevnikov, Bertrand Lorentz, David Corrales, Frank Ziegler,
-Gabriel Burt, Mathijs Dumon, Miep Vandamme
+Gabriel Burt, Mathijs Dumon
 
 Features:
 * [ClutterFlow] Added a slide out animation when user right-clicks album so he/she can see the cover better
