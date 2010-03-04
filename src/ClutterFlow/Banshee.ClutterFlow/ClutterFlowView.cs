@@ -252,7 +252,10 @@ namespace Banshee.ClutterFlow
 			coverManager.SetRotation (RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
 			Stage.Add (coverManager);
             
-            coverManager.EmptyActor.SetToPb (new Gdk.Pixbuf (System.Reflection.Assembly.GetCallingAssembly(), "clutterflow-large.png"));
+			coverManager.EmptyActor.SetToPb(
+	            IconThemeUtils.LoadIcon (coverManager.TextureSize, "gtk-stop", "clutterflow-large.png")
+            );
+            //coverManager.EmptyActor.SetToPb (new Gdk.Pixbuf (System.Reflection.Assembly.GetCallingAssembly(), "clutterflow-large.png"));
 			coverManager.LowerBottom ();
 			coverManager.Show ();
 		}
@@ -388,7 +391,7 @@ namespace Banshee.ClutterFlow
 		{
 			ActiveAlbum = CurrentAlbum;
 			ActiveIndex = CurrentIndex;
-			if (UpdatedAlbum!=null)	UpdatedAlbum (coverManager.CurrentCover/*!=null ? coverManager.CurrentCover.CreateClickClone() : null*/, EventArgs.Empty);
+			if (UpdatedAlbum!=null)	UpdatedAlbum (coverManager.CurrentCover, EventArgs.Empty);
 		}
 		#endregion
 		

@@ -36,7 +36,7 @@ namespace ClutterFlow
 {
     
 	public delegate void CoverEventHandler(ClutterFlowBaseActor actor, EventArgs e);
-	
+				
 	public class CoverManager : Clutter.Group {
 
         #region Events
@@ -248,7 +248,7 @@ namespace ClutterFlow
 		{
 			if (reload_timeout!=-1)
 				GLib.Source.Remove((uint) reload_timeout);
-			reload_timeout = (int) GLib.Timeout.Add (MinAnimationSpan, new GLib.TimeoutHandler (reload_covers));
+			reload_timeout = (int) GLib.Timeout.Add (MaxAnimationSpan, new GLib.TimeoutHandler (reload_covers));
 		}
  
      	private bool reload_covers ()
@@ -257,20 +257,18 @@ namespace ClutterFlow
             HideAll (); Show ();
 			if (covers!=null && covers.Count!=0) {
 				Console.WriteLine("Reloading Covers");
-
+				
+				int old_target_index = CurrentCover!=null ? covers.IndexOf (CurrentCover) : 0;		// the old current index
+				int new_target_index = 0;					// the newly calculated index
+				bool keep_current = false;					// wether or not to keep the current cover centered
+				
                 /* Bugs:
-                 *  PARTIALLY FIXED - when a search is cleared (or reduced) the TargetIndex is set to 4, never to the correct cover
-                 *      --> It jumps to an album near to it, sya four indexes away...?
+                 *  FIXED - when a search is cleared (or reduced) the TargetIndex is set to 4, never to the correct cover
                  *  FIXED - when searching fast visible covers stay visible
-                 *  - when no results are found, cluterflow icon should be displayed
-                 *      --> create dummy ClutterFlowBaseActor with:
-                 *              - no click event
-                 *              - Index always zero
-                 *              - Label set to "No Matches"
+                 *  FIXED - when no results are found, no matches should be displayed
                  */
                 
-				int old_current_index = CurrentCover!=null ? covers.IndexOf (CurrentCover) : 0;
-				List<ClutterFlowBaseActor> old_covers = new List<ClutterFlowBaseActor>(SafeGetRange(covers, old_current_index - HalfVisCovers - 1, visibleCovers + 2));
+				List<ClutterFlowBaseActor> old_covers = new List<ClutterFlowBaseActor>(SafeGetRange(covers, old_target_index - HalfVisCovers - 1, visibleCovers + 2));
 				foreach (ClutterFlowBaseActor actor in covers) {
                     if (actor.Data.ContainsKey ("isOldCover")) actor.Data.Remove ("isOldCover");
                     actor.Index = -1;  
@@ -278,7 +276,7 @@ namespace ClutterFlow
                         actor.Data.Add ("isOldCover", true);
 				}
 
-				bool keep_current = false;
+				
                 List<ClutterFlowBaseActor> persistent_covers = new List<ClutterFlowBaseActor>();
 				covers = actorLoader.GetActors (delegate (ClutterFlowBaseActor actor) {
                     if (actor.Data.ContainsKey ("isOldCover"))
@@ -288,12 +286,14 @@ namespace ClutterFlow
 				
                 if (covers.Count==0) {
                     InstallEmptyActor ();
-                    EmptyActor.Show ();
+					if (old_covers.Contains(EmptyActor)) {
+						EmptyActor.Show ();
+						return false;
+					}
 					keep_current = true;
                 }
                 
 				//recalculate timeline progression and the target index
-				int new_target_index = 0;
 				if (covers.Count > 1) {
 					if (keep_current)
 						new_target_index = CurrentCover.Index;
@@ -309,7 +309,7 @@ namespace ClutterFlow
                 TargetIndex = new_target_index;
                 Timeline.JumpToTarget ();
 
-                Console.WriteLine ("Timeline progress set to " + Timeline.Progress + " Timeline.RelativeTarget is " + Timeline.RelativeTarget);
+                //Console.WriteLine ("Timeline progress set to " + Timeline.Progress + " Timeline.RelativeTarget is " + Timeline.RelativeTarget);
 
                 List<ClutterFlowBaseActor> truly_pers = new List<ClutterFlowBaseActor> ();
 				List<ClutterFlowBaseActor> new_covers = new List<ClutterFlowBaseActor>(SafeGetRange(covers, new_target_index - HalfVisCovers - 1, visibleCovers + 2));
@@ -329,7 +329,7 @@ namespace ClutterFlow
                     if (actor!=null) actor.Data.Remove ("isOldCover");
                 }
                 
-                Console.WriteLine ("old_covers          contains " + old_covers.Count + " elements:");
+                /*Console.WriteLine ("old_covers          contains " + old_covers.Count + " elements:");
                 foreach (ClutterFlowBaseActor cover in old_covers)
                     Console.WriteLine("\t- " + cover.Label.Replace("\n", " - "));
                 Console.WriteLine ("persistent_covers   contains " + truly_pers.Count + " elements");
@@ -337,16 +337,16 @@ namespace ClutterFlow
                     Console.WriteLine("\t- " + cover.Label.Replace("\n", " - "));
                 Console.WriteLine ("new_covers          contains " + new_covers.Count + " elements");
                 foreach (ClutterFlowBaseActor cover in new_covers)
-                    Console.WriteLine("\t- " + cover.Label.Replace("\n", " - "));
+                    Console.WriteLine("\t- " + cover.Label.Replace("\n", " - "));*/
 
                 EventHandler update_target = delegate (object o, EventArgs e) {
                     Timeline.Play ();
                     InvokeCoversChanged();
                 };
                 
-                Behaviour.FadeCoversInAndOut (old_covers, truly_pers, new_covers, Timeline.Progress, update_target);
+                Behaviour.FadeCoversInAndOut (old_covers, truly_pers, new_covers, update_target);
 			} else {
-				Console.WriteLine("Loading Covers");
+				//Console.WriteLine("Loading Covers");
 				covers = actorLoader.GetActors (null);
                 TargetIndex = 0;
                 Timeline.JumpToTarget ();

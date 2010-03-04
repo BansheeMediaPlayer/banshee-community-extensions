@@ -135,6 +135,7 @@ namespace Banshee.ClutterFlow
             ClutterFlowBaseActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
             if (actor==null) {
                 actor = new ClutterFlowAlbum (generator, coverManager);
+				actor.Hide ();
                 Cache.Add (key, actor);
             }
             actor.Index = list.Count;

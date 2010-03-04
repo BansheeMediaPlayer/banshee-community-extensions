@@ -88,7 +88,7 @@ namespace ClutterFlow.Captions
 
 		protected void SetTextFromCover(ClutterFlowBaseActor cover) 
 		{
-            Console.WriteLine ("SetTextFromCover called");
+            //Console.WriteLine ("SetTextFromCover called");
 			if (cover!=null && cover.Label!="")
 				Value = cover.Label;
 			else

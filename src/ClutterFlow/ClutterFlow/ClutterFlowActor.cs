@@ -202,7 +202,7 @@ namespace ClutterFlow
                     coverManager = value;
                     if (coverManager!=null) {
                         coverManager.Add (this);
-                        coverManager.Realize ();
+                        //coverManager.Realize ();
                     }
                 }
             }
@@ -226,10 +226,10 @@ namespace ClutterFlow
             set { sort_label = value; }
         }
         
-        protected double last_alpha = 0;
+        /*protected double last_alpha = 0;
         public double LastAlpha {
             get { return last_alpha; }
-        }
+        }*/
 
         public virtual event IndexChangedEventHandler IndexChanged;
         
@@ -278,7 +278,7 @@ namespace ClutterFlow
                 throw new System.Exception ("Invalid bits per sample");
 			
 			
-			Gdk.Pixbuf border_pb = new Gdk.Pixbuf(Colorspace.Rgb, true, pb.BitsPerSample, pb.Width+4, pb.Height+4);
+			Gdk.Pixbuf border_pb = new Gdk.Pixbuf(Colorspace.Rgb, true, pb.BitsPerSample, pb.Width+4, pb.Height+2);
 			border_pb.Fill (0x00000000);
 			pb.CopyArea (0, 0, pb.Width, pb.Height, border_pb, 2, 2);
 			

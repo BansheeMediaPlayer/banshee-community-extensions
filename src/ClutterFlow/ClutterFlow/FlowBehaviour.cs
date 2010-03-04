@@ -187,7 +187,7 @@ namespace ClutterFlow
 			get { return 1 / CoverCount; }
 		}
 
-		protected double previousProgress = 0.0;
+		protected double previous_progress = 0.0;
 		protected int pcb = -1; protected int plb; protected int pub;
 		protected double Progress {
 			get { return coverManager.Timeline.Progress; }
@@ -257,13 +257,13 @@ namespace ClutterFlow
 			if (!HoldUpdates && coverManager.IsVisible) {
 				//only update covers that were visible at the previous & current progress:
 				
-				double currentProgress = Progress;
-				int ccb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (currentProgress * (CoverManager.TotalCovers-1))));
+				double current_progress = Progress;
+				int ccb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (current_progress * (CoverManager.TotalCovers-1))));
 				int clb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (ccb - (CoverManager.HalfVisCovers + 1))));
 				int cub = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (ccb + (CoverManager.HalfVisCovers + 1))));
 				
 				if (pcb==-1) {
-					pcb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (previousProgress * (CoverManager.TotalCovers-1))));
+					pcb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (previous_progress * (CoverManager.TotalCovers-1))));
 					plb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (pcb - (CoverManager.HalfVisCovers + 1))));
 					pub = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (pcb + (CoverManager.HalfVisCovers + 1))));
 				}
@@ -276,7 +276,7 @@ namespace ClutterFlow
 				CoverManager.ForSomeCovers (UpdateActor, clb, cub);
 				CoverManager.SortDepthOrder ();
 				
-				previousProgress = currentProgress;
+				previous_progress = current_progress;
 				pcb = ccb;
 				plb = clb;
 				pub = cub;
@@ -304,20 +304,23 @@ namespace ClutterFlow
             
 		}
 
-        private double AlphaFunc (ClutterFlowBaseActor actor) {
+        protected double AlphaFunc (ClutterFlowBaseActor actor) {
+			return AlphaFunc (actor, CoverManager.Timeline.Progress);
+        }
+		protected double AlphaFunc (ClutterFlowBaseActor actor, double progress) {
+			
             if (actor.Index < 0)
-                actor.Data["alpha_ini"] = (double) 0;
+                actor.Data["last_alpha"] = (double) 0;
             else {
 				double previous_alpha = (CoverManager.HalfVisCovers - (CoverManager.TotalCovers-1) 
-                              * CoverManager.Timeline.Progress + actor.Index) 
+                              * progress + actor.Index) 
                               / (CoverManager.VisibleCovers-1);
                 if (previous_alpha<0) previous_alpha=0;
                 if (previous_alpha>1) previous_alpha=1;
-                actor.Data["alpha_ini"] = previous_alpha;
+                actor.Data["last_alpha"] = previous_alpha;
             }
-			if (actor is ClutterFlowFixedActor) Console.WriteLine ("ClutterFlowBaseActor passed to AlphaFunc with progress = " + CoverManager.Timeline.Progress);
-            return (double) actor.Data["alpha_ini"];
-        }
+            return (double) actor.Data["last_alpha"];
+		}
         
 		protected void UpdateActorWithAlpha (ClutterFlowBaseActor actor, double alpha) {
 			
@@ -385,8 +388,9 @@ namespace ClutterFlow
             public List<ClutterFlowBaseActor> OldCovers;
             public List<ClutterFlowBaseActor> PersistentCovers;
             public List<ClutterFlowBaseActor> NewCovers;
-            public EventHandler OnCompletedHandler;
             public double NewProgress;
+            public EventHandler OnCompletedHandler;
+			
             
             public TransitionStruct (List<ClutterFlowBaseActor> old_covers, List<ClutterFlowBaseActor> persistent_covers, List<ClutterFlowBaseActor> new_covers, double new_progress, EventHandler on_completed) {
                 OldCovers = old_covers;
@@ -406,41 +410,51 @@ namespace ClutterFlow
                 }
             }
         }
-        Queue<TransitionStruct> transition_queue = new Queue<TransitionStruct>();
+        Queue<TransitionStruct> transition_queue = new Queue<TransitionStruct>();	
+		public void FadeCoversInAndOut (List<ClutterFlowBaseActor> old_covers, 
+                                        List<ClutterFlowBaseActor> persistent_covers, 
+                                        List<ClutterFlowBaseActor> new_covers,
+		                                EventHandler on_completed)
+		{
+			FadeCoversInAndOut (old_covers, persistent_covers, new_covers, on_completed, Progress);
+		}
         protected void FadeCoversInAndOut (TransitionStruct trans) {
             FadeCoversInAndOut (trans.OldCovers, 
                                 trans.PersistentCovers, 
                                 trans.NewCovers,
-                                trans.NewProgress, trans.OnCompletedHandler);
+                                trans.OnCompletedHandler,
+			                    trans.NewProgress);
         }
-		public void FadeCoversInAndOut (List<ClutterFlowBaseActor> old_covers, 
+		private void FadeCoversInAndOut (List<ClutterFlowBaseActor> old_covers, 
                                         List<ClutterFlowBaseActor> persistent_covers, 
-                                        List<ClutterFlowBaseActor> new_covers, 
-                                        double newProgress, EventHandler onCompleted)
+                                        List<ClutterFlowBaseActor> new_covers,
+		                                EventHandler on_completed, double new_progress)
 		{
+			
+			//Console.WriteLine ("FADE COVERS IN AND OUT");
+			
             if (old_covers==null || persistent_covers==null || new_covers==null) return;
             if (TransitionAnimationBusy) {
-                transition_queue.Enqueue(new TransitionStruct(old_covers, persistent_covers, new_covers, newProgress, onCompleted));
+                transition_queue.Enqueue(new TransitionStruct(old_covers, persistent_covers, new_covers, new_progress, on_completed));
             }
 			if (fadeOutAnim!=null) { fadeOutAnim.CompleteAnimation (); fadeOutAnim = null; }
 			if (fadeInAnim!=null) { fadeInAnim.CompleteAnimation (); fadeInAnim = null; }
             if (t_slide!=null) { t_slide.Advance(t_slide.Duration); t_slide = null; }
             
-			//Fade out removed covers
+			#region fade out of removed covers
 			foreach (ClutterFlowBaseActor cover in old_covers) {
 				if (cover!=null) {
 					FadeOutActor (cover);
                     fadeOutAnim.Timeline.Pause ();
 				}
 			}
-            //Set up code for sliding of persistent covers:
+			#endregion
+			
+			#region sliding of persistent covers
             foreach (ClutterFlowBaseActor cover in persistent_covers) {
                 if (cover!=null) {
-                    if (cover.Data.ContainsKey ("alpha_ini")) cover.Data.Remove ("alpha_ini");
-                    if (cover.Data.ContainsKey ("alpha_end")) cover.Data.Remove ("alpha_end");
-                    cover.Data.Add ("alpha_ini", cover.LastAlpha);
-                    cover.Data.Add ("alpha_end", AlphaFunc(cover));
-                   // Console.WriteLine ("alpha_ini = " + cover.Data["alpha_ini"] + " and alpha_end = " + cover.Data["alpha_end"] + " for " + cover.Label.Replace ("\n", " - "));
+					cover.Data["alpha_ini"] = cover.Data["last_alpha"];
+					cover.Data["alpha_end"] = AlphaFunc(cover, new_progress);
                 }
             }
             t_slide = new Timeline (CoverManager.MaxAnimationSpan*fade_slow);
@@ -453,22 +467,26 @@ namespace ClutterFlow
                     }
                 }
             };
-            //Prepare to fade in new covers
+			#endregion
+			
+			#region fade in of new covers
             foreach (ClutterFlowBaseActor cover in new_covers) {
                 if (cover!=null) {
-					if (cover is ClutterFlowFixedActor)
-						Console.WriteLine ("ClutterFlowFixedActor in new covers!!!!!!!!!!!!!!!!!!!!!!!!!");
                     UpdateActorWithAlpha (cover, AlphaFunc(cover));
                     FadeInActor (cover);
                     fadeInAnim.Timeline.Pause ();
                 }
             }
+			#endregion
+			
+			#region clearing, setting and playing of transition score:
             if (transition_score!=null) {
-                GC.SuppressFinalize (transition_queue);
+                GC.SuppressFinalize (transition_score);
                 transition_score.Completed -= HandleScoreCompleted;
-                transition_score.Stop ();
-                transition_score.Dispose ();
-                transition_score = null;
+				/*if (transition_score.IsPlaying) {
+                	transition_score.Completed
+				}
+                transition_score = null;*/
             }
             transition_score = new Score();
             transition_score.Completed += HandleScoreCompleted;
@@ -486,15 +504,16 @@ namespace ClutterFlow
                 transition_score.Append(parent, fadeInAnim.Timeline);
                 parent = fadeInAnim.Timeline;
             }
-            
-            SetPreviousBounds (newProgress);
+			
+            SetPreviousBounds (new_progress);
             CoverManager.SortDepthOrder ();
             if (parent!=null) {
-                transition_score.Completed += onCompleted;
+                transition_score.Completed += on_completed;
                 transition_score.Start ();
             } else {
-                onCompleted (this, EventArgs.Empty);
+                on_completed (this, EventArgs.Empty);
             }
+			#endregion
 		}
 
         private void HandleScoreCompleted(object sender, EventArgs e)

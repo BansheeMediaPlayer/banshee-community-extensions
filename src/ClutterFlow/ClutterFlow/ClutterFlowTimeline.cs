@@ -72,7 +72,7 @@ namespace ClutterFlow
         public virtual uint Target {
             get { return target; }
             set {
-                Console.WriteLine ("IndexCount is " + IndexCount + " value is " + value);
+                //Console.WriteLine ("IndexCount is " + IndexCount + " value is " + value);
                 if (value >= IndexCount) value = IndexCount-1;
                 if (value < 0) value = 0;
                 target = value;
