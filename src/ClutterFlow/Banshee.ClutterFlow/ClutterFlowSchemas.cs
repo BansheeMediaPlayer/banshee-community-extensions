@@ -66,15 +66,15 @@ namespace Banshee.ClutterFlow
         internal static readonly SchemaEntry<bool> OldShowBrowser = new SchemaEntry<bool>(
             "clutterflow", "old_show_browser",
             false,
-            Catalog.GetString ("Saved value for Show Browser"),
-            Catalog.GetString ("If checked displays the Browser will be displayed when ClutterFlow is made invisible")
+            "Saved value for Show Browser",
+            "If checked the Browser will be displayed when ClutterFlow is made invisible"
         );
         
         internal static readonly SchemaEntry<bool> ShowClutterFlow = new SchemaEntry<bool>(
             "clutterflow", "show_clutterflow",
             false,
-            Catalog.GetString ("Display ClutterFlow"),
-            Catalog.GetString ("If checked displays the ClutterFlow browser instead of the default one")
+            "Display ClutterFlow",
+            "If checked displays the ClutterFlow browser instead of the default one"
         );
 		
         internal static readonly SchemaEntry<bool> InstantPlayback = new SchemaEntry<bool>(
