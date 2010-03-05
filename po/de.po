@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: banshee-community-extensions 0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-02-11 11:40-0800\n"
-"PO-Revision-Date: 2010-02-17 14:10+0700\n"
+"PO-Revision-Date: 2010-03-05 17:11+0700\n"
 "Last-Translator: Frank Ziegler <funtastix@googlemail.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -623,3 +623,220 @@ msgstr "_Aktiviere Streamrecorder"
 #: ../Banshee.Streamrecorder/Banshee.Streamrecorder/StreamrecorderService.cs:98
 msgid "Activate streamrecorder process"
 msgstr "Aktiviere den Streamrecorder Prozess"
+
+
+#: Banshee.LiveRadio/LiveRadioConfigDialog.cs:73
+#, csharp-format
+msgid ""
+"{0}LiveRadio configuration\n{1}"
+msgstr ""
+"{0}LiveRadio Konfiguration\n{1}"
+
+#: Banshee.LiveRadio/LiveRadioConfigDialog.cs:79
+msgid "Please set your preferences for your LiveRadio plugins\n"
+msgstr "Einstellungen für die LiveRadio Plugins\n"
+
+#: Banshee.LiveRadio/LiveRadioConfigDialog.cs:89
+msgid "Enable this plugin"
+msgstr "Plugin aktivieren"
+
+#: Banshee.LiveRadio/LiveRadioConfigDialog.cs:103
+msgid "_Apply"
+msgstr "_Anwenden"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:119
+msgid "Requested Results Returned"
+msgstr "Anfrageergebnis geliefert"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:120
+msgid "The plugin has returned a list of results for a genre or freetext query"
+msgstr "Das Plugin hat die Ergebnisse einer Anfrage geliefert"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:129
+msgid "Genre List Retrieved"
+msgstr "Genre Liste geliefert"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:130
+msgid "The plugin has returned the list of genres"
+msgstr "Das Plugin hat eine Liste von Genres geliefert"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:166
+msgid "Plugin"
+msgstr ""
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:167
+msgid "Version"
+msgstr ""
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:168
+msgid "Enabled"
+msgstr "Aktiviert"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:179
+msgid "Type"
+msgstr "Typ"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:180
+msgid "Origin"
+msgstr "Ursprung"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:181
+msgid "Short Info"
+msgstr "Kurzinfo"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:182
+msgid "Long Info"
+msgstr "Details"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:183
+msgid "Count"
+msgstr "Anzahl"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:184
+msgid "Average"
+msgstr "Durchschnitt"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:185
+msgid "Updates"
+msgstr "Auftreten"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:197
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:198
+msgid "Enable Plugin"
+msgstr "Plugin aktivieren"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:200
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:201
+msgid "Disable Plugin"
+msgstr "Plugin deaktivieren"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:203
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:204
+msgid "Configure Plugin"
+msgstr "Plugin konfigurieren"
+
+#: Banshee.LiveRadio/LiveRadioSourceContents.cs:214
+msgid "Plugin Statistics"
+msgstr "Plugin Statistiken"
+
+#: Banshee.LiveRadio/LiveRadioSource.cs:70
+msgid "LiveRadio"
+msgstr ""
+
+#: Banshee.LiveRadio/LiveRadioSource.cs:97
+msgid "Live_Radio"
+msgstr ""
+
+#: Banshee.LiveRadio/LiveRadioSource.cs:100
+msgid "Configure the LiveRadio plugin"
+msgstr "Konfiguriere das LiveRadio plugin"
+
+#: Banshee.LiveRadio/LiveRadioSource.cs:104
+#: Banshee.LiveRadio/LiveRadioSource.cs:105
+msgid "Refresh View"
+msgstr "Anzeige neu laden"
+
+#: Banshee.LiveRadio/LiveRadioSource.cs:109
+msgid "Add To Internet Radio"
+msgstr "Zum Internet Radio hinzufügen"
+
+#: Banshee.LiveRadio/LiveRadioSource.cs:110
+msgid "Add stream as Internet Radio Station"
+msgstr "Stream als Internet Radio Sender hinzufügen"
+
+#: Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:129
+msgid "Browser on Left"
+msgstr "Browser links"
+
+#: Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:130
+msgid "Show the artist/album browser to the left of the track list"
+msgstr "Zeige den Artist/Album Browser links von der Trackliste"
+
+#: Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:133
+msgid "Browser on Top"
+msgstr "Browser oben"
+
+#: Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:134
+msgid "Show the artist/album browser above the track list"
+msgstr "Zeige den Artist/Album browser oberhalb der Trackliste"
+
+#: Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:139
+msgid "Show Browser"
+msgstr "Zeige Browser"
+
+#: Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:140
+msgid "Show or hide the artist/album browser"
+msgstr "Zeige/Verstecke den Artist/Album Browser"
+
+#: Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:205
+#: Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:247
+msgid "Error... Please Reload"
+msgstr "Fehler... bitte neu laden"
+
+#: Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:419
+msgid "Click a gernre to load/refresh entries or type query, use refresh button to refresh genres."
+msgstr "Genre klicken zum (Neu)Laden der Liste oder Freitextsuche eingeben. Refresh zum Neuladen der Genreliste. "
+
+#: Banshee.LiveRadio/LiveRadioFilterView.cs:82
+msgid "Choose By Genre"
+msgstr "Genreauswahl"
+
+#: Banshee.LiveRadio/LiveRadioFilterView.cs:90
+msgid "Choose By Query"
+msgstr "Freitextsuche"
+
+#: Banshee.LiveRadio/LiveRadioPluginSource.cs:69
+msgid "LiveRadioPlugin"
+msgstr ""
+
+#: Banshee.LiveRadio/LiveRadioPluginSource.cs:116
+msgid "Station"
+msgstr "Sendername"
+
+#: Banshee.LiveRadio/LiveRadioPluginSource.cs:117
+msgid "Creator"
+msgstr "Urheber"
+
+#: Banshee.LiveRadio/LiveRadioPluginSource.cs:118
+msgid "Description"
+msgstr "Beschreibung"
+
+#: Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:74
+msgid "Proxy URL"
+msgstr "Proxy Adresse"
+
+#: Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:75
+msgid "Enable using a HTTP proxy server"
+msgstr "Benutze HTTP Proxy"
+
+#: Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:76
+msgid "Use Site Login"
+msgstr "Benutze Login der Seite"
+
+#: Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:77
+msgid "Username"
+msgstr "Benutzername"
+
+#: Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:78
+msgid "Password"
+msgstr "Passwort"
+
+#: Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:79
+msgid "HTTP timeout in seconds"
+msgstr "HTTP Timeout in Sekunden"
+
+#: Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:526
+msgid "Yes"
+msgstr "Ja"
+
+#: Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:526
+msgid "No"
+msgstr "Nein"
+
+#: Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:526
+msgid "Message"
+msgstr "Nachricht"
+
+#: Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:526
+msgid "Error"
+msgstr "Fehler"

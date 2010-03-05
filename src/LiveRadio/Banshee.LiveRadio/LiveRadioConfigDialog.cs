@@ -29,9 +29,11 @@ using System;
 using Banshee.LiveRadio.Plugins;
 
 using Gtk;
-using Mono.Unix;
 using System.Collections.Generic;
 using System.Text;
+
+using Banshee.I18n;
+using Mono.Addins;
 
 namespace Banshee.LiveRadio
 {
@@ -70,13 +72,13 @@ namespace Banshee.LiveRadio
             preferences_image.IconName = "gtk-preferences";
             preferences_image.IconSize = (int)IconSize.Dialog;
             preferences_image.Show ();
-            header_label.Text = String.Format (Catalog.GetString ("{0}LiveRadio configuration\n{1}"), "<span weight=\"bold\" size=\"larger\">", "</span>");
+            header_label.Text = String.Format (AddinManager.CurrentLocalizer.GetString ("{0}LiveRadio configuration\n{1}"), "<span weight=\"bold\" size=\"larger\">", "</span>");
             header_label.UseMarkup = true;
             header_label.Wrap = true;
             header_label.Yalign = 0f;
             header_label.Xalign = 0f;
 
-            description_label.Text = Catalog.GetString ("Please set your preferences for your LiveRadio plugins\n");
+            description_label.Text = AddinManager.CurrentLocalizer.GetString ("Please set your preferences for your LiveRadio plugins\n");
             description_label.Yalign = 0f;
             description_label.Xalign = 0f;
 
@@ -86,7 +88,7 @@ namespace Banshee.LiveRadio
                 if (plugin_widget != null)
                 {
                     VBox box = new VBox ();
-                    CheckButton button = new CheckButton (Catalog.GetString ("Enable this plugin"));
+                    CheckButton button = new CheckButton (AddinManager.CurrentLocalizer.GetString ("Enable this plugin"));
                     if (source.EnabledPlugins.Contains (plugin.Name))
                         button.Active = true;
 
@@ -98,11 +100,8 @@ namespace Banshee.LiveRadio
                     notebook.AppendPage(box, new Label (plugin.Name));
                 }
             }
-            cancel_button.Label = Catalog.GetString ("_Cancel");
             cancel_button.Image = new Image ("gtk-cancel", IconSize.Button);
-            apply_button.Label = Catalog.GetString ("_Apply");
             apply_button.Image = new Image ("gtk-apply", IconSize.Button);
-            save_button.Label = Catalog.GetString ("_Save");
             save_button.Image = new Image ("gtk-save", IconSize.Button);
 
             HBox main_container = new HBox ();

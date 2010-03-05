@@ -33,6 +33,7 @@ using Gtk;
 using ScrolledWindow = Gtk.ScrolledWindow;
 
 using Banshee.I18n;
+using Mono.Addins;
 
 using Hyena;
 using Hyena.Data;
@@ -79,15 +80,15 @@ namespace Banshee.LiveRadio
         public LiveRadioFilterView ()
         {
             genre_view = new ListView<Genre> ();
-            Column genre_column = new Column (new ColumnDescription ("Name", Catalog.GetString ("Choose By Genre"), 100));
+            Column genre_column = new Column (new ColumnDescription ("Name", AddinManager.CurrentLocalizer.GetString ("Choose By Genre"), 100));
             genre_view.ColumnController = new ColumnController ();
             genre_view.ColumnController.Add (genre_column);
             List<Genre> stringlist = new List<Genre> ();
-            stringlist.Add (new Genre(Catalog.GetString ("Loading...")));
+            stringlist.Add (new Genre(AddinManager.CurrentLocalizer.GetString ("Loading...")));
             genre_view.SetModel (new GenreListModel (stringlist));
             genre_view.Model.Selection.FocusChanged += OnViewGenreSelected;
             
-            Label query_label = new Label (Catalog.GetString ("Choose By Query"));
+            Label query_label = new Label (AddinManager.CurrentLocalizer.GetString ("Choose By Query"));
             HBox query_box = new HBox ();
             query_box.BorderWidth = 1;
             query_input = new Entry ();

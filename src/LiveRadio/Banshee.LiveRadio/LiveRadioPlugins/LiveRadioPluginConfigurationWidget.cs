@@ -31,7 +31,7 @@ using System.Text.RegularExpressions;
 
 using Gtk;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Hyena;
 
@@ -71,12 +71,12 @@ namespace Banshee.LiveRadio
         /// </param>
         public LiveRadioPluginConfigurationWidget (bool has_login) : base ()
         {
-            proxy_url_label = new Label (Catalog.GetString ("Proxy URL"));
-            use_proxy = new CheckButton (Catalog.GetString ("Enable using a HTTP proxy server"));
-            use_credentials = new CheckButton (Catalog.GetString ("Use Site Login"));
-            credential_username_label = new Label (Catalog.GetString ("Username"));
-            credential_password_label = new Label (Catalog.GetString ("Password"));
-            http_timeout_label = new Label (Catalog.GetString ("HTTP timeout in seconds"));
+            proxy_url_label = new Label (AddinManager.CurrentLocalizer.GetString ("Proxy URL"));
+            use_proxy = new CheckButton (AddinManager.CurrentLocalizer.GetString ("Enable using a HTTP proxy server"));
+            use_credentials = new CheckButton (AddinManager.CurrentLocalizer.GetString ("Use Site Login"));
+            credential_username_label = new Label (AddinManager.CurrentLocalizer.GetString ("Username"));
+            credential_password_label = new Label (AddinManager.CurrentLocalizer.GetString ("Password"));
+            http_timeout_label = new Label (AddinManager.CurrentLocalizer.GetString ("HTTP timeout in seconds"));
 
             use_credentials.Toggled += OnCredentialsToggled;
             use_proxy.Toggled += OnProxyToggled;

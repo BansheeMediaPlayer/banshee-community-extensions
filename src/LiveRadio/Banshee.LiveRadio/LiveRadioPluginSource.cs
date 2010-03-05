@@ -29,7 +29,7 @@
 using System;
 using System.Collections.Generic;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Banshee.Base;
 using Banshee.Sources;
@@ -66,7 +66,7 @@ namespace Banshee.LiveRadio
         /// A <see cref="ILiveRadioPlugin"/> -- the plugin the source is created for
         /// </param>
         public LiveRadioPluginSource (ILiveRadioPlugin plugin) :
-                        base(Catalog.GetString ("LiveRadioPlugin") + plugin.Name,
+                        base(AddinManager.CurrentLocalizer.GetString ("LiveRadioPlugin") + plugin.Name,
                              plugin.Name,
                              "live-radio-plugin-" + plugin.Name.ToLower (),
                              sort_order)
@@ -113,9 +113,9 @@ namespace Banshee.LiveRadio
                   <add-default column=""UriColumn"" />
                   <sort-column direction=""asc"">genre</sort-column>
                 </column-controller>",
-                Catalog.GetString ("Station"),
-                Catalog.GetString ("Creator"),
-                Catalog.GetString ("Description")
+                AddinManager.CurrentLocalizer.GetString ("Station"),
+                AddinManager.CurrentLocalizer.GetString ("Creator"),
+                AddinManager.CurrentLocalizer.GetString ("Description")
             ));
 
             ServiceManager.PlayerEngine.TrackIntercept += OnPlayerEngineTrackIntercept;

@@ -31,7 +31,7 @@
 using System;
 using System.Collections.Generic;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Gtk;
 using ScrolledWindow = Gtk.ScrolledWindow;
@@ -57,7 +57,7 @@ namespace Banshee.LiveRadio
     /// <summary>
     ///
     /// </summary>
-    public class LiveRadioSourceContents : VBox, ISourceContents
+    public class LiveRadioSourceContents : VPaned, ISourceContents
     {
         //Gtk.Label label = new Gtk.Label ("LiveRadio! This view will be setup to show statistics...");
         private ListView<ILiveRadioPlugin> plugin_view;
@@ -86,43 +86,70 @@ namespace Banshee.LiveRadio
             }
         }
 
+        private void AddStatistic(LiveRadioStatisticType type,
+                                  string plugin_name,
+                                  string short_message,
+                                  string long_message,
+                                  int count)
+        {
+            LiveRadioStatistic stat = statistics.Find (delegate (LiveRadioStatistic statistic) {
+                                           return MessageEqual (statistic,
+                                                                type,
+                                                                plugin_name,
+                                                                short_message,
+                                                                long_message);
+                                       }) ?? new LiveRadioStatistic (type,
+                                                                     plugin_name,
+                                                                     short_message,
+                                                                     long_message);
+            stat.AddCount (count);
+            if (!statistics.Contains (stat)) statistics.Add (stat);
+            LiveRadioStatisticListModel model = statistic_view.Model as LiveRadioStatisticListModel;
+            model.SetList(statistics);
+        }
+
         void OnPluginRequestResultRetrieved (object sender,
                                              string request,
                                              LiveRadioRequestType request_type,
                                              List<DatabaseTrackInfo> result)
         {
             ILiveRadioPlugin plugin = sender as ILiveRadioPlugin;
-            string short_message = Catalog.GetString ("Requested Results Returned");
-            string long_message = Catalog.GetString ("The plugin has returned a list of results for a genre or freetext query");
-            LiveRadioStatistic stat = statistics.Find (delegate (LiveRadioStatistic statistic) {
-                                           return MessageEqual (statistic,
-                                                                plugin.Name,
-                                                                short_message,
-                                                                long_message);
-                                       }) ?? new LiveRadioStatistic (plugin.Name, short_message, long_message);
-            stat.AddCount (result.Count);
-            if (!statistics.Contains (stat)) statistics.Add (stat);
-            LiveRadioStatisticListModel model = statistic_view.Model as LiveRadioStatisticListModel;
-            model.SetList(statistics);
+            AddStatistic (LiveRadioStatisticType.Message,
+                          plugin.Name,
+                          AddinManager.CurrentLocalizer.GetString ("Requested Results Returned"),
+                          AddinManager.CurrentLocalizer.GetString ("The plugin has returned a list of results for a genre or freetext query"),
+                          result.Count);
         }
 
         void OnPluginGenreListLoaded (object sender, List<Genre> genres)
         {
-
+            ILiveRadioPlugin plugin = sender as ILiveRadioPlugin;
+            AddStatistic (LiveRadioStatisticType.Message,
+                          plugin.Name,
+                          AddinManager.CurrentLocalizer.GetString ("Genre List Retrieved"),
+                          AddinManager.CurrentLocalizer.GetString ("The plugin has returned the list of genres"),
+                          genres.Count);
         }
 
         void OnPluginErrorReturned (ILiveRadioPlugin plugin, LiveRadioPluginError error)
         {
+            AddStatistic (LiveRadioStatisticType.Error,
+                          plugin.Name,
+                          AddinManager.CurrentLocalizer.GetString (error.Message),
+                          AddinManager.CurrentLocalizer.GetString (error.LongMessage),
+                          1);
         }
 
         private bool MessageEqual (LiveRadioStatistic statistic,
+                                   LiveRadioStatisticType type,
                                    string origin,
                                    string short_description,
                                    string long_description)
         {
             if (statistic.ShortDescription.Equals (short_description)
                 && statistic.LongDescription.Equals (long_description)
-                && statistic.Origin.Equals (origin))
+                && statistic.Origin.Equals (origin)
+                && statistic.Type.Equals (type))
                 return true;
             return false;
         }
@@ -136,9 +163,9 @@ namespace Banshee.LiveRadio
         protected void CreateLayout (List<ILiveRadioPlugin> plugins)
         {
             plugin_view = new ListView<ILiveRadioPlugin> ();
-            Column col_name = new Column (new ColumnDescription ("Name", Catalog.GetString ("Plugin"), 100));
-            Column col_version = new Column (new ColumnDescription ("Version", Catalog.GetString ("Version"), 100));
-            Column col_enabled = new Column (new ColumnDescription ("IsEnabled", Catalog.GetString ("Enabled"), 100));
+            Column col_name = new Column (new ColumnDescription ("Name", AddinManager.CurrentLocalizer.GetString ("Plugin"), 100));
+            Column col_version = new Column (new ColumnDescription ("Version", AddinManager.CurrentLocalizer.GetString ("Version"), 100));
+            Column col_enabled = new Column (new ColumnDescription ("IsEnabled", AddinManager.CurrentLocalizer.GetString ("Enabled"), 100));
             plugin_view.ColumnController = new ColumnController ();
             plugin_view.ColumnController.Add (col_name);
             plugin_view.ColumnController.Add (col_version);
@@ -149,13 +176,15 @@ namespace Banshee.LiveRadio
             List<LiveRadioStatistic> stats = new List<LiveRadioStatistic> ();
 
             statistic_view = new ListView<LiveRadioStatistic> ();
-            Column col_origin = new Column (new ColumnDescription ("Origin", Catalog.GetString ("Origin"), 100));
-            Column col_short = new Column (new ColumnDescription ("ShortDescription", Catalog.GetString ("Short Info"), 100));
-            Column col_long = new Column (new ColumnDescription ("LongDescription", Catalog.GetString ("Long Info"), 100));
-            Column col_count = new Column (new ColumnDescription ("Count", Catalog.GetString ("Count"), 100));
-            Column col_average = new Column (new ColumnDescription ("Average", Catalog.GetString ("Average"), 100));
-            Column col_updates = new Column (new ColumnDescription ("Updates", Catalog.GetString ("Updates"), 100));
+            Column col_type = new Column (new ColumnDescription ("TypeName", AddinManager.CurrentLocalizer.GetString ("Type"), 100));
+            Column col_origin = new Column (new ColumnDescription ("Origin", AddinManager.CurrentLocalizer.GetString ("Origin"), 100));
+            Column col_short = new Column (new ColumnDescription ("ShortDescription", AddinManager.CurrentLocalizer.GetString ("Short Info"), 100));
+            Column col_long = new Column (new ColumnDescription ("LongDescription", AddinManager.CurrentLocalizer.GetString ("Long Info"), 100));
+            Column col_count = new Column (new ColumnDescription ("Count", AddinManager.CurrentLocalizer.GetString ("Count"), 100));
+            Column col_average = new Column (new ColumnDescription ("Average", AddinManager.CurrentLocalizer.GetString ("Average"), 100));
+            Column col_updates = new Column (new ColumnDescription ("Updates", AddinManager.CurrentLocalizer.GetString ("Updates"), 100));
             statistic_view.ColumnController = new ColumnController ();
+            statistic_view.ColumnController.Add (col_type);
             statistic_view.ColumnController.Add (col_origin);
             statistic_view.ColumnController.Add (col_short);
             statistic_view.ColumnController.Add (col_long);
@@ -165,15 +194,19 @@ namespace Banshee.LiveRadio
             statistic_view.SetModel (new LiveRadioStatisticListModel (stats));
             statistic_view.Model.Selection.FocusChanged += OnStatisticViewModelSelectionFocusChanged;
 
-            enable_button.TooltipText = Catalog.GetString ("Enable Plugin");
-            enable_button.Label = Catalog.GetString ("Enable Plugin");
+            enable_button.TooltipText = AddinManager.CurrentLocalizer.GetString ("Enable Plugin");
+            enable_button.Label = AddinManager.CurrentLocalizer.GetString ("Enable Plugin");
             enable_button.Sensitive = false;
-            disable_button.TooltipText = Catalog.GetString ("Disable Plugin");
-            disable_button.Label = Catalog.GetString ("Disable Plugin");
+            disable_button.TooltipText = AddinManager.CurrentLocalizer.GetString ("Disable Plugin");
+            disable_button.Label = AddinManager.CurrentLocalizer.GetString ("Disable Plugin");
             disable_button.Sensitive = false;
-            configure_button.TooltipText = Catalog.GetString ("Configure Plugin");
-            configure_button.Label = Catalog.GetString ("Configure Plugin");
+            configure_button.TooltipText = AddinManager.CurrentLocalizer.GetString ("Configure Plugin");
+            configure_button.Label = AddinManager.CurrentLocalizer.GetString ("Configure Plugin");
             configure_button.Sensitive = false;
+
+            enable_button.Clicked += new EventHandler(OnEnableButtonClicked);
+            disable_button.Clicked += new EventHandler (OnDisableButtonClicked);
+            configure_button.Clicked += new EventHandler (OnConfigureButtonClicked);
 
             HBox button_box = new HBox ();
             button_box.PackStart (configure_button, false, false, 10);
@@ -182,14 +215,80 @@ namespace Banshee.LiveRadio
 
             Label stat_label = new Label ();
             stat_label.UseMarkup = true;
-            stat_label.Markup = "<b>" + Catalog.GetString ("Plugin Statistics") + "</b>";
+            stat_label.Markup = "<b>" + AddinManager.CurrentLocalizer.GetString ("Plugin Statistics") + "</b>";
 
-            PackStart (SetupView (plugin_view), true, true, 10);
-            PackStart (button_box, false, true, 10);
-            PackStart (stat_label, false, true, 20);
-            PackStart (SetupView (statistic_view), true, true, 10);
+            Position = 275;
+
+            VBox pack1 = new VBox ();
+            VBox pack2 = new VBox ();
+
+
+            pack1.PackStart (SetupView (plugin_view), true, true, 10);
+            pack1.PackStart (button_box, false, true, 10);
+            pack2.PackStart (stat_label, false, true, 20);
+            pack2.PackStart (SetupView (statistic_view), true, true, 10);
+
+            Pack1 (pack1, true, true);
+            Pack2 (pack2, true, true);
 
             ShowAll ();
+        }
+
+        void OnEnableButtonClicked (object sender, EventArgs e)
+        {
+            LiveRadioPluginListModel model = plugin_view.Model as LiveRadioPluginListModel;
+            ILiveRadioPlugin plugin = model[plugin_view.Model.Selection.FocusedIndex];
+            if (plugin.Enabled) return;
+            LiveRadioSource source = this.Source as LiveRadioSource;
+            if (source == null) return;
+            source.AddPlugin (plugin);
+            enable_button.Sensitive = false;
+            disable_button.Sensitive = true;
+            plugin_view.GrabFocus ();
+//            model.SetSelection(plugin_view.Model.Selection.FocusedIndex);
+        }
+
+        void OnDisableButtonClicked (object sender, EventArgs e)
+        {
+            LiveRadioPluginListModel model = plugin_view.Model as LiveRadioPluginListModel;
+            ILiveRadioPlugin plugin = model[plugin_view.Model.Selection.FocusedIndex];
+            if (!plugin.Enabled) return;
+            LiveRadioSource source = plugin.PluginSource.Parent as LiveRadioSource;
+            if (source == null) return;
+            source.RemovePlugin (plugin);
+            enable_button.Sensitive = true;
+            disable_button.Sensitive = false;
+            plugin_view.GrabFocus ();
+        }
+
+        void OnConfigureButtonClicked (object sender, EventArgs e)
+        {
+            LiveRadioPluginListModel model = plugin_view.Model as LiveRadioPluginListModel;
+            ILiveRadioPlugin plugin = model[plugin_view.Model.Selection.FocusedIndex];
+
+            Dialog dialog = new Dialog ();
+            dialog.Title = String.Format ("LiveRadio Plugin {0} configuration", plugin.Name);
+            dialog.IconName = "gtk-preferences";
+            dialog.Resizable = false;
+            dialog.BorderWidth = 6;
+            dialog.HasSeparator = false;
+            dialog.VBox.Spacing = 12;
+
+            dialog.VBox.PackStart (plugin.ConfigurationWidget);
+
+            Button save_button = new Button (Stock.Save);
+            Button cancel_button = new Button (Stock.Cancel);
+
+            dialog.AddActionWidget (cancel_button, 0);
+            dialog.AddActionWidget (save_button, 0);
+
+            cancel_button.Clicked += delegate { dialog.Destroy (); };
+            save_button.Clicked += delegate {
+                plugin.SaveConfiguration ();
+                dialog.Destroy ();
+            };
+
+            dialog.ShowAll ();
         }
 
         void OnPluginViewModelSelectionFocusChanged (object sender, EventArgs e)

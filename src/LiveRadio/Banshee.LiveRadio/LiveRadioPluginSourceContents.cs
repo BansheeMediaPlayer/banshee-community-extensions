@@ -32,7 +32,7 @@
 using System;
 using System.Collections.Generic;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Gtk;
 using ScrolledWindow = Gtk.ScrolledWindow;
@@ -126,18 +126,18 @@ namespace Banshee.LiveRadio
                     
                     browser_view_actions.Add (new RadioActionEntry [] {
                         new RadioActionEntry ("BrowserLeftAction", null,
-                            Catalog.GetString ("Browser on Left"), null,
-                            Catalog.GetString ("Show the artist/album browser to the left of the track list"), 0),
+                            AddinManager.CurrentLocalizer.GetString ("Browser on Left"), null,
+                            AddinManager.CurrentLocalizer.GetString ("Show the artist/album browser to the left of the track list"), 0),
 
                         new RadioActionEntry ("BrowserTopAction", null,
-                            Catalog.GetString ("Browser on Top"), null,
-                            Catalog.GetString ("Show the artist/album browser above the track list"), 1),
+                            AddinManager.CurrentLocalizer.GetString ("Browser on Top"), null,
+                            AddinManager.CurrentLocalizer.GetString ("Show the artist/album browser above the track list"), 1),
                     }, position == "top" ? 1 : 0, null);
 
                     browser_view_actions.Add (new ToggleActionEntry [] {
                         new ToggleActionEntry ("BrowserVisibleAction", null,
-                            Catalog.GetString ("Show Browser"), "<control>B",
-                            Catalog.GetString ("Show or hide the artist/album browser"),
+                            AddinManager.CurrentLocalizer.GetString ("Show Browser"), "<control>B",
+                            AddinManager.CurrentLocalizer.GetString ("Show or hide the artist/album browser"),
                             null, BrowserVisible.Get ())
                     });
 
@@ -169,7 +169,7 @@ namespace Banshee.LiveRadio
         {
             main_scrolled_window.Sensitive = false;
             List<Genre> fakeresult = new List<Genre> ();
-            fakeresult.Add (new Genre(Catalog.GetString("Loading...")));
+            fakeresult.Add (new Genre(AddinManager.CurrentLocalizer.GetString("Loading...")));
             filter_box.UpdateGenres (fakeresult);
             filter_box.Sensitive = false;
         }
@@ -202,7 +202,7 @@ namespace Banshee.LiveRadio
                     plugin.PluginSource.SetStations (result);
                     main_scrolled_window.Sensitive = true;
                 } else {
-                    SetFakeTrack (Catalog.GetString("Error... Please Reload"));
+                    SetFakeTrack (AddinManager.CurrentLocalizer.GetString("Error... Please Reload"));
                 }
             }
         }
@@ -244,7 +244,7 @@ namespace Banshee.LiveRadio
                 filter_box.Sensitive = true;
             } else {
                 List<Genre> fakeresult = new List<Genre> ();
-                fakeresult.Add (new Genre(Catalog.GetString("Error... Please Reload")));
+                fakeresult.Add (new Genre(AddinManager.CurrentLocalizer.GetString("Error... Please Reload")));
                 filter_box.UpdateGenres (fakeresult);
                 filter_box.Sensitive = false;
             }
@@ -365,7 +365,7 @@ namespace Banshee.LiveRadio
         /// </param>
         void OnViewQuerySent (object sender, string query)
         {
-            SetFakeTrack (Catalog.GetString("Loading..."));
+            SetFakeTrack (AddinManager.CurrentLocalizer.GetString("Loading..."));
             plugin.ExecuteRequest (LiveRadioRequestType.ByFreetext, query);
         }
 
@@ -381,7 +381,7 @@ namespace Banshee.LiveRadio
         /// </param>
         void OnViewGenreSelected (object sender, Genre genre)
         {
-            SetFakeTrack (Catalog.GetString("Loading..."));
+            SetFakeTrack (AddinManager.CurrentLocalizer.GetString("Loading..."));
             plugin.ExecuteRequest (LiveRadioRequestType.ByGenre, genre.Name);
         }
         /// <summary>
@@ -391,22 +391,22 @@ namespace Banshee.LiveRadio
         {
             PackStart (container, true, true, 0);
             VBox instruct = new VBox ();
-            instruct.ExposeEvent += (o, a) => {
-                using (Cairo.Context cr = Gdk.CairoHelper.Create (instruct.GdkWindow)) {
-                    double radius = 10;
-                    int x = a.Event.Area.X;
-                    int y = a.Event.Area.Y;
-                    int width = a.Event.Area.Width;
-                    int height = a.Event.Area.Height;
+            //instruct.ExposeEvent += (o, a) => {
+            //    using (Cairo.Context cr = Gdk.CairoHelper.Create (instruct.GdkWindow)) {
+            //        double radius = 10;
+            //        int x = a.Event.Area.X;
+            //        int y = a.Event.Area.Y;
+            //        int width = a.Event.Area.Width;
+            //        int height = a.Event.Area.Height;
 
-                    cr.MoveTo (x + radius, y);
-                    cr.Arc (x + width - radius, y + radius, radius, Math.PI * 1.5, Math.PI * 2);
-                    cr.Arc (x + width - radius, y + height - radius, radius, 0, Math.PI * .5);
-                    cr.Arc (x + radius, y + height - radius, radius, Math.PI * .5, Math.PI);
-                    cr.Arc (x + radius, y + radius, radius, Math.PI, Math.PI * 1.5);
-                    cr.Color = new Cairo.Color (.5, .5, .5, 1);
-                    cr.Stroke ();
-                }
+            //        cr.MoveTo (x + radius, y);
+            //        cr.Arc (x + width - radius, y + radius, radius, Math.PI * 1.5, Math.PI * 2);
+            //        cr.Arc (x + width - radius, y + height - radius, radius, 0, Math.PI * .5);
+            //        cr.Arc (x + radius, y + height - radius, radius, Math.PI * .5, Math.PI);
+            //        cr.Arc (x + radius, y + radius, radius, Math.PI, Math.PI * 1.5);
+            //        cr.Color = new Cairo.Color (.5, .5, .5, 1);
+            //        cr.Stroke ();
+            //    }
                 // not yet sure which is the better code.
                 //                Gdk.Window win = a.Event.Window;
                 //                Gdk.Rectangle area = a.Event.Area;
@@ -414,9 +414,9 @@ namespace Banshee.LiveRadio
                 //                win.DrawRectangle (Style.BaseGC (StateType.Active), false, area);
                 //
                 //                a.RetVal = true;
-            };
+            //};
             Label help_label = new Label (
-                  Catalog.GetString ("Click a gernre to load/refresh entries or type query, use refresh button to refresh genres."));
+                  AddinManager.CurrentLocalizer.GetString ("Click a gernre to load/refresh entries or type query, use refresh button to refresh genres."));
             instruct.PackStart(help_label, false, true, 10);
             PackStart (instruct, false, true, 10);
             NoShowAll = false;

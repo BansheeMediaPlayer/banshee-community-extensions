@@ -27,6 +27,7 @@
 //
 
 using System;
+using Mono.Addins;
 
 namespace Banshee.LiveRadio
 {
@@ -42,9 +43,14 @@ namespace Banshee.LiveRadio
         private string long_description;
         private int counter = 0;
         private double average = 0;
+        private LiveRadioStatisticType type;
 
-        public LiveRadioStatistic (string origin, string short_description, string long_description)
+        public LiveRadioStatistic (LiveRadioStatisticType type,
+                                   string origin,
+                                   string short_description,
+                                   string long_description)
         {
+            this.type = type;
             this.origin = origin;
             this.short_description = short_description;
             this.long_description = long_description;
@@ -94,5 +100,20 @@ namespace Banshee.LiveRadio
             get { return origin; }
         }
 
+        public LiveRadioStatisticType Type
+        {
+            get { return type; }
+        }
+
+        public string TypeName
+        {
+            get { return AddinManager.CurrentLocalizer.GetString (type.ToString ()); }
+        }
+
+    }
+
+    public enum LiveRadioStatisticType {
+        Message,
+        Error
     }
 }

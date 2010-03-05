@@ -29,7 +29,7 @@
 using System;
 using System.Collections.Generic;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Banshee.Sources;
 using Banshee.Sources.Gui;
@@ -45,6 +45,7 @@ using Banshee.LiveRadio.Plugins;
 using Banshee.Collection.Database;
 using Banshee.Collection;
 using Banshee.Configuration;
+using System.Text;
 
 namespace Banshee.LiveRadio
 {
@@ -67,7 +68,8 @@ namespace Banshee.LiveRadio
         /// <summary>
         /// Constructor -- creates a new LiveRadio parent source
         /// </summary>
-        public LiveRadioSource () : base(Catalog.GetString ("LiveRadio"), Catalog.GetString ("LiveRadio"), "live-radio", sort_order)
+        public LiveRadioSource () : base(AddinManager.CurrentLocalizer.GetString ("LiveRadio"),
+                                         AddinManager.CurrentLocalizer.GetString ("LiveRadio"), "live-radio", sort_order)
         {
             Log.Debug ("[LiveRadioSource]<Constructor> START");
             Properties.SetString ("Icon.Name", "radio");
@@ -94,20 +96,20 @@ namespace Banshee.LiveRadio
             InterfaceActionService uia_service = ServiceManager.Get<InterfaceActionService> ();
 
             uia_service.GlobalActions.AddImportant (new ActionEntry[] { new ActionEntry ("LiveRadioAction", null,
-                             Catalog.GetString ("Live_Radio"), null, null, null),
+                             AddinManager.CurrentLocalizer.GetString ("Live_Radio"), null, null, null),
                              new ActionEntry ("LiveRadioConfigureAction", Stock.Properties,
-                                 Catalog.GetString ("_Configure"), null,
-                                 Catalog.GetString ("Configure the LiveRadio plugin"), OnConfigure) });
+                                 AddinManager.CurrentLocalizer.GetString ("_Configure"), null,
+                                 AddinManager.CurrentLocalizer.GetString ("Configure the LiveRadio plugin"), OnConfigure) });
             
             uia_service.GlobalActions.AddImportant (
                         new ActionEntry ("RefreshLiveRadioAction",
-                                          Stock.Add, Catalog.GetString ("Refresh View"), null,
-                                          Catalog.GetString ("Refresh View"),
+                                          Stock.Add, AddinManager.CurrentLocalizer.GetString ("Refresh View"), null,
+                                          AddinManager.CurrentLocalizer.GetString ("Refresh View"),
                                           OnRefreshPlugin));
             uia_service.GlobalActions.AddImportant (
                         new ActionEntry ("AddToInternetRadioAction",
-                                          Stock.Add, Catalog.GetString ("Add To Internet Radio"), null,
-                                          Catalog.GetString ("Add stream as Internet Radio Station"),
+                                          Stock.Add, AddinManager.CurrentLocalizer.GetString ("Add To Internet Radio"), null,
+                                          AddinManager.CurrentLocalizer.GetString ("Add stream as Internet Radio Station"),
                                           OnAddToInternetRadio));
 
             ui_global_id = uia_service.UIManager.AddUiFromResource ("GlobalUI.xml");
@@ -173,20 +175,48 @@ namespace Banshee.LiveRadio
             ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
             return true;
         }
-        
+
         /// <summary>
-        /// Add and initialize a plugin
+        /// Register an external plugin with the main source, so it can be added as a child via AddPlugin method.
+        /// Assembly plugins are autodetected/autoregistered
+        /// </summary>
+        /// <param name="plugin">
+        /// A <see cref="ILiveRadioPlugin"/> -- an external plugin
+        /// </param>
+        public void RegisterPlugin (ILiveRadioPlugin plugin)
+        {
+            if (plugins.Contains (plugin))
+            {
+                Log.DebugFormat ("[LiveRadioSource]<RegisterPlugin> plugin {0} already registered", plugin.Name);
+            } else {
+                plugins.Add (plugin);
+            }
+        }
+
+        /// <summary>
+        /// Add and initialize a plugin -- if it is not an assembly plugin, it must be registered first, assembly
+        /// plugins are auto registered
         /// </summary>
         /// <param name="plugin">
         /// A <see cref="ILiveRadioPlugin"/> -- the plugin to initialize
         /// </param>
-        protected void AddPlugin (ILiveRadioPlugin plugin)
+        public void AddPlugin (ILiveRadioPlugin plugin)
         {
-            LiveRadioPluginSource plugin_source = new LiveRadioPluginSource (plugin);
-            this.AddChildSource (plugin_source);
-            this.MergeSourceInput (plugin_source, SourceMergeType.Source);
-            plugin.Initialize ();
-            plugin_source.UpdateCounts ();
+            if (plugins.Contains (plugin))
+            {
+                LiveRadioPluginSource plugin_source = new LiveRadioPluginSource (plugin);
+                this.AddChildSource (plugin_source);
+                this.MergeSourceInput (plugin_source, SourceMergeType.Source);
+                plugin.Initialize ();
+                plugin_source.UpdateCounts ();
+                if (!enabled_plugins.Contains (plugin.Name))
+                {
+                    enabled_plugins.Add(plugin.Name);
+                    SetEnabledPluginsEntry ();
+                }
+            } else {
+                Log.DebugFormat ("[LiveRadioSource]<AddPlugin> plugin {0} not registered, cannot add", plugin.Name);
+            }
         }
 
         /// <summary>
@@ -195,13 +225,23 @@ namespace Banshee.LiveRadio
         /// <param name="plugin">
         /// A <see cref="ILiveRadioPlugin"/> the plugin which to remove the source for
         /// </param>
-        protected void RemovePlugin(ILiveRadioPlugin plugin)
+        public void RemovePlugin(ILiveRadioPlugin plugin)
         {
-            LiveRadioPluginSource plugin_source = plugin.PluginSource;
-            plugin.Disable ();
-            this.RemoveChildSource(plugin_source);
-            plugin_source.Dispose ();
-            this.UpdateCounts ();
+            if (plugins.Contains (plugin))
+            {
+                LiveRadioPluginSource plugin_source = plugin.PluginSource;
+                plugin.Disable ();
+                this.RemoveChildSource(plugin_source);
+                plugin_source.Dispose ();
+                this.UpdateCounts ();
+                if (enabled_plugins.Contains (plugin.Name))
+                {
+                    enabled_plugins.Remove(plugin.Name);
+                    SetEnabledPluginsEntry ();
+                }
+            } else {
+                Log.DebugFormat ("[LiveRadioSource]<RemovePlugin> plugin {0} not registered, cannot remove", plugin.Name);
+            }
         }
 
         /// <summary>
@@ -370,6 +410,24 @@ namespace Banshee.LiveRadio
             }
             
             throw new InternetRadioExtensionNotFoundException ();
+        }
+
+        private void SetEnabledPluginsEntry ()
+        {
+            if (EnabledPlugins.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder (EnabledPlugins[0]);
+                int i = 1;
+                while (EnabledPlugins.Count > i)
+                {
+                    sb.Append (",");
+                    sb.Append (EnabledPlugins[i]);
+                    i++;
+                }
+                LiveRadioSource.EnabledPluginsEntry.Set (sb.ToString ());
+            } else {
+                LiveRadioSource.EnabledPluginsEntry.Set (null);
+            }
         }
 
         /// <summary>
