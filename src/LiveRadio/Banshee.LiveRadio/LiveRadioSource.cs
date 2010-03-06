@@ -293,7 +293,7 @@ namespace Banshee.LiveRadio
             LiveRadioPluginSource current_source = ServiceManager.SourceManager.ActiveSource as LiveRadioPluginSource;
             if (current_source == null) return;
             foreach (ILiveRadioPlugin plugin in plugins) {
-                if (plugin.PluginSource.Equals (current_source)) {
+                if (plugin.PluginSource != null && plugin.PluginSource.Equals (current_source)) {
                     plugin.RetrieveGenreList ();
                     LiveRadioPluginSourceContents source_contents =
                         current_source.Properties.Get<ISourceContents> ("Nereid.SourceContents") as LiveRadioPluginSourceContents;
