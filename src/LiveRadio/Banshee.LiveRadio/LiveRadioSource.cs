@@ -339,7 +339,7 @@ namespace Banshee.LiveRadio
             ILiveRadioPlugin current_plugin = null;
             foreach (ILiveRadioPlugin plugin in plugins)
             {
-                if (plugin.PluginSource.Equals (current_source))
+                if (plugin.PluginSource != null && plugin.PluginSource.Equals (current_source))
                 {
                     current_plugin = plugin;
                 }
