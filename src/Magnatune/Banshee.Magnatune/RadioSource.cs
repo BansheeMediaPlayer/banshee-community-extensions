@@ -92,9 +92,9 @@ namespace Banshee.Magnatune
             actions = new ActionGroup ("Magnatune");
 
             actions.Add (new ActionEntry[] {
-                new ActionEntry ("MagnatuneAction", null, "Magnatune", "_Magnatune",
+                new ActionEntry ("MagnatuneAction", null, "_Magnatune", null,
                                  "Configure the Magnatune Addin", null),
-                new ActionEntry ("MagnatuneConfigureAction", Stock.Properties, "Configure", "_Configure",
+                new ActionEntry ("MagnatuneConfigureAction", Stock.Properties, "_Configure", null,
                                  "Configure the Magnatune addin", OnConfigurePlugin)
             });
 
