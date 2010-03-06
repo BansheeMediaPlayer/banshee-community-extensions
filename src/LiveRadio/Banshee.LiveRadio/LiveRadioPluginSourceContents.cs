@@ -416,7 +416,7 @@ namespace Banshee.LiveRadio
                 //                a.RetVal = true;
             //};
             Label help_label = new Label (
-                  AddinManager.CurrentLocalizer.GetString ("Click a gernre to load/refresh entries or type query, use refresh button to refresh genres."));
+                  AddinManager.CurrentLocalizer.GetString ("Click a genre to load/refresh entries or type a query. Use the refresh button to refresh genres."));
             instruct.PackStart(help_label, false, true, 10);
             PackStart (instruct, false, true, 10);
             NoShowAll = false;
