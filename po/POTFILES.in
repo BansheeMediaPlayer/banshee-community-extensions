@@ -27,6 +27,7 @@ src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsPane.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs
 src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs
+src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs
 src/Mirage/Banshee.Mirage/AnalyzeLibraryJob.cs
 src/Mirage/Banshee.Mirage/MiragePlugin.cs
 src/Mirage/Banshee.Mirage/RandomBySimilar.cs
