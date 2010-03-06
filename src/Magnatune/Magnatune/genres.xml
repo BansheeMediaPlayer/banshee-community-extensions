@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<genres>
+  <!-- Magnatune doesn't have an existing way to poll for its
+       genres, but they don't change all that often, so keeping
+       this document in sync should not be a concern. -->
+  <genre title="Ambient" 
+         desc="space, drone, loops: find a new reality."
+	 id="ambient" />
+  <genre title="Classical" 
+         desc="baroque, renaissance, medieval, contemporary,
+minimalism."
+	 id="classical" />
+  <genre title="Classical After 1800"
+         desc="mix of just classical after 1800."
+         id="classical_after_1800" />
+  <genre title="Electronica"
+         desc="ambient, IDM, industrial, trance, goa, and 5 
+zillion more sub-genres."
+	 id="electronica" />
+  <genre title="Jazz and Blues"
+         desc="classic, fusion, progressive, avant-garde, we 
+all want to chill sometimes."
+         id="jazz" />
+  <genre title="Metal"
+         desc="speed, thrash, death, black, goth, industrial,
+and all sorts of punk. If it grinds,
+we like it."
+         id="metal" />
+  <genre title="Punk"
+         desc="speed, thrash, death, black, goth, industrial,
+and all sorts of punk. If it grinds, 
+we like it."
+         id="punk" />
+  <genre title="New Age"
+         desc="tribal, electronic, world-influenced, meditation,
+acoustic, classical-oriented. New Age
+certainly isn't dead."
+         id="new_age" />
+  <genre title="Rock"
+         desc="goth, electro, classic, new-wave, synthpop, 
+shoe-gazer, guitar-oriented, progressive,
+psychadelic, grunge, art-rock, folk."
+         id="rock" />
+  <genre title="Pop"
+         desc="goth, electro, classic, new-wave, synthpop,
+shoe-gazer, guitar-oriented, progressive, 
+psychadelic, grunge, art-rock, folk."
+         id="pop" />
+  <genre title="World"
+         desc="Indian, Celtic, Arabic, Tango, Eastern-european, 
+Native-American, and many more.... start your day
+with a morning raga!"
+         id="world" />
+</genres>
