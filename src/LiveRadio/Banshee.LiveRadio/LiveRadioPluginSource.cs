@@ -313,7 +313,7 @@ namespace Banshee.LiveRadio
         /// Set to false so the track view is not searchable and query is not interrupted
         /// </summary>
         public override bool CanSearch {
-            get { return false; }
+            get { return true; }
         }
 
         public override bool CanDeleteTracks {

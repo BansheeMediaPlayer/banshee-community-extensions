@@ -9,7 +9,9 @@ using Selection = Hyena.Collections.Selection;
 namespace Banshee.LiveRadio.Plugins
 {
 
-
+    /// <summary>
+    /// ListModel implementation for objects implementing ILiveRadioPlugin
+    /// </summary>
     public class LiveRadioPluginListModel : IListModel<ILiveRadioPlugin>
     {
 

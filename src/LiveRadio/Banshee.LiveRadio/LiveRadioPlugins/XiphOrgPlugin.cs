@@ -151,7 +151,9 @@ namespace Banshee.LiveRadio.Plugins
         {
             XmlNodeList XML_station_nodes = doc.GetElementsByTagName ("entry");
             Log.DebugFormat ("[XiphOrgPlugin] <ParseCatalog> {0} nodes found", XML_station_nodes.Count);
-            
+
+            //cached_results.Clear ();
+
             List<Genre> new_genres = new List<Genre> ();
             
             foreach (XmlNode node in XML_station_nodes) {
@@ -197,7 +199,10 @@ namespace Banshee.LiveRadio.Plugins
                     
                     if (!new_genres.Contains (genre)) {
                         new_genres.Add (genre);
-                        cached_results.Add ("Genre:" + genre, new List<DatabaseTrackInfo> ());
+                        if (cached_results.ContainsKey ("Genre:" + genre))
+                            cached_results["Genre:" + genre].Clear ();
+                        else
+                            cached_results.Add ("Genre:" + genre, new List<DatabaseTrackInfo> ());
                     }
                     cached_results["Genre:" + genre].Add (new_station);
                     

@@ -39,6 +39,9 @@ using Hyena;
 using Hyena.Data;
 using Hyena.Data.Gui;
 using Hyena.Widgets;
+using Banshee.Gui;
+using Banshee.Widgets;
+using Banshee.ServiceStack;
 
 namespace Banshee.LiveRadio
 {
@@ -60,6 +63,8 @@ namespace Banshee.LiveRadio
 
         private ListView<Genre> genre_view;
         private Entry query_input;
+        private Button query_button;
+        private SearchEntry fake_search_entry;
 
         /// <summary>
         /// Event is raised when a genre is clicked in the genre choose box
@@ -93,7 +98,9 @@ namespace Banshee.LiveRadio
             query_box.BorderWidth = 1;
             query_input = new Entry ();
             query_input.KeyReleaseEvent += OnInputKeyReleaseEvent;
-            Button query_button = new Button (Stock.Find);
+            query_input.FocusInEvent += OnQueryFocusInEvent;
+            query_input.FocusOutEvent += OnQueryFocusOutEvent;
+            query_button = new Button (Stock.Find);
             query_button.Clicked += OnViewQuerySent;
             query_box.PackStart (query_input, true, true, 5);
             query_box.PackStart (query_button, false, true, 5);
@@ -101,6 +108,80 @@ namespace Banshee.LiveRadio
             this.PackStart (SetupView (genre_view), true, true, 0);
             this.PackStart (query_label, false, true, 0);
             this.PackStart (query_box, false, true, 5);
+        }
+
+        /// <summary>
+        /// Removes the hack that prevents the "s" key capture
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="args">
+        /// A <see cref="FocusOutEventArgs"/> -- not used
+        /// </param>
+        void OnQueryFocusOutEvent (object o, FocusOutEventArgs args)
+        {
+            Widget w = this.Parent.Parent.Parent;
+            if (w is Container)
+            {
+                SearchEntry searchEntry = WidgetFindRecursive (w as Container, "Banshee_Widgets_SearchEntry") as SearchEntry;
+                fake_search_entry.Destroy ();
+                searchEntry.Visible = true;
+            }
+        }
+
+        /// <summary>
+        /// Finds one widget inside the container for that part of its name matches the searcharg
+        /// </summary>
+        /// <param name="c">
+        /// A <see cref="Container"/> that contains the elements to be recursivly searched
+        /// </param>
+        /// <param name="searcharg">
+        /// A <see cref="System.String"/>  that contains the name or part of the name of the widget to be found
+        /// </param>
+        /// <returns>
+        /// A <see cref="Widget"/> that matches the search criteria. If there are more than one widget in the
+        /// container, it cannot be definately said which one will be returned
+        /// </returns>
+        private Widget WidgetFindRecursive (Container c, string searcharg)
+        {
+            foreach (Widget cw in c.Children)
+            {
+                if (cw.Name.Contains (searcharg)) return cw;
+                if (cw is Container)
+                {
+                    Widget res = WidgetFindRecursive (cw as Container, searcharg);
+                    if (res != null) return res;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Captures the Entry's FocusIn event to apply a hack to prevent capturing the "S" key
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="args">
+        /// A <see cref="FocusInEventArgs"/> -- not used
+        /// </param>
+        void OnQueryFocusInEvent (object o, FocusInEventArgs args)
+        {
+            Widget w = this.Parent.Parent.Parent;
+            if (w is Container)
+            {
+                SearchEntry searchEntry = WidgetFindRecursive (w as Container, "Banshee_Widgets_SearchEntry") as SearchEntry;
+                if (searchEntry != null)
+                {
+                    fake_search_entry = new SearchEntry ();
+                    fake_search_entry.SetSizeRequest (260, -1);
+                    (searchEntry.Parent as HBox).PackStart (fake_search_entry, false, false, 0);
+                    fake_search_entry.Sensitive = false;
+                    fake_search_entry.Show ();
+                    searchEntry.Visible = false;
+                }
+            }
         }
 
         /// <summary>
@@ -116,6 +197,7 @@ namespace Banshee.LiveRadio
         {
             if (args.Event.Key == Gdk.Key.Return) {
                 OnViewQuerySent (o, new EventArgs ());
+                query_button.GrabFocus ();
             }
         }
 

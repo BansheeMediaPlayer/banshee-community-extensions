@@ -202,7 +202,8 @@ namespace Banshee.LiveRadio
                     plugin.PluginSource.SetStations (result);
                     main_scrolled_window.Sensitive = true;
                 } else {
-                    SetFakeTrack (AddinManager.CurrentLocalizer.GetString("Error... Please Reload"));
+                    string message = (request_type == LiveRadioRequestType.ByGenre ? "Error... Please Reload" : "No Results");
+                    SetFakeTrack (AddinManager.CurrentLocalizer.GetString(message));
                 }
             }
         }

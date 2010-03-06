@@ -769,6 +769,9 @@ msgid "Show or hide the artist/album browser"
 msgstr "Zeige/Verstecke den Artist/Album Browser"
 
 #: Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:205
+msgid "No Results"
+msgstr "Keine Ergebnisse"
+
 #: Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:247
 msgid "Error... Please Reload"
 msgstr "Fehler... bitte neu laden"

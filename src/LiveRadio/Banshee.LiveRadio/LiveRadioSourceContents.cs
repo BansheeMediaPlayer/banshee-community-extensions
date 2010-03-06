@@ -55,11 +55,11 @@ namespace Banshee.LiveRadio
 {
 
     /// <summary>
-    ///
+    /// A Widget containing ILiveRadioPlugin overview and control options as well as a view on statistics messages
+    /// from ILiveRadioPlugin objects. The SourceContents will hook up to events coming from registered plugins
     /// </summary>
     public class LiveRadioSourceContents : VPaned, ISourceContents
     {
-        //Gtk.Label label = new Gtk.Label ("LiveRadio! This view will be setup to show statistics...");
         private ListView<ILiveRadioPlugin> plugin_view;
         private ListView<LiveRadioStatistic> statistic_view;
         private List<LiveRadioStatistic> statistics;
@@ -69,23 +69,66 @@ namespace Banshee.LiveRadio
 
         ISource source;
 
+        /// <summary>
+        /// Constructor -- connects all plugin events
+        /// </summary>
+        /// <param name="plugins">
+        /// A <see cref="List<ILiveRadioPlugin>"/> -- the list of plugins
+        /// </param>
         public LiveRadioSourceContents (List<ILiveRadioPlugin> plugins)
         {
             statistics = new List<LiveRadioStatistic> ();
-            ConnectPluginEvents(plugins);
+            foreach (ILiveRadioPlugin plugin in plugins)
+            {
+                ConnectPluginEvents (plugin);
+            }
             CreateLayout (plugins);
         }
 
-        void ConnectPluginEvents (List<ILiveRadioPlugin> plugins)
+        /// <summary>
+        /// Connects class functions to plugin events
+        /// </summary>
+        /// <param name="plugin">
+        /// A <see cref="ILiveRadioPlugin"/> the events of which will be connected
+        /// </param>
+        public void ConnectPluginEvents (ILiveRadioPlugin plugin)
         {
-            foreach (ILiveRadioPlugin plugin in plugins)
-            {
-                plugin.ErrorReturned += OnPluginErrorReturned;
-                plugin.GenreListLoaded += OnPluginGenreListLoaded;
-                plugin.RequestResultRetrieved += OnPluginRequestResultRetrieved;
-            }
+            plugin.ErrorReturned += OnPluginErrorReturned;
+            plugin.GenreListLoaded += OnPluginGenreListLoaded;
+            plugin.RequestResultRetrieved += OnPluginRequestResultRetrieved;
         }
 
+        /// <summary>
+        /// Disconnects class functions from plugin events
+        /// </summary>
+        /// <param name="plugin">
+        /// A <see cref="ILiveRadioPlugin"/> the events of which will be disconnected
+        /// </param>
+        public void DisconnectPluginEvents (ILiveRadioPlugin plugin)
+        {
+            plugin.ErrorReturned -= OnPluginErrorReturned;
+            plugin.GenreListLoaded -= OnPluginGenreListLoaded;
+            plugin.RequestResultRetrieved -= OnPluginRequestResultRetrieved;
+        }
+
+        /// <summary>
+        /// Adds a statistic or updates an existing one if a matching statistic is found
+        /// </summary>
+        /// <param name="type">
+        /// A <see cref="LiveRadioStatisticType"/> that defines the type of the statistic
+        /// </param>
+        /// <param name="plugin_name">
+        /// A <see cref="System.String"/> -- the name of the originating plugin
+        /// </param>
+        /// <param name="short_message">
+        /// A <see cref="System.String"/> with the short info for the statistic
+        /// </param>
+        /// <param name="long_message">
+        /// A <see cref="System.String"/> with the description of the statistic
+        /// </param>
+        /// <param name="count">
+        /// A <see cref="System.Int32"/> -- the number of elements associated with the message
+        /// </param>
         private void AddStatistic(LiveRadioStatisticType type,
                                   string plugin_name,
                                   string short_message,
@@ -108,6 +151,21 @@ namespace Banshee.LiveRadio
             model.SetList(statistics);
         }
 
+        /// <summary>
+        /// Event Handler for the event that a plugin has retreived a result list for a query
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- the plugin that has retrieved the results
+        /// </param>
+        /// <param name="request">
+        /// A <see cref="System.String"/> -- the original request string, either freetext or the genre name
+        /// </param>
+        /// <param name="request_type">
+        /// A <see cref="LiveRadioRequestType"/> -- the original request type
+        /// </param>
+        /// <param name="result">
+        /// A <see cref="List<DatabaseTrackInfo>"/> -- the results list
+        /// </param>
         void OnPluginRequestResultRetrieved (object sender,
                                              string request,
                                              LiveRadioRequestType request_type,
@@ -121,6 +179,15 @@ namespace Banshee.LiveRadio
                           result.Count);
         }
 
+        /// <summary>
+        /// Event Handler for the event that a plugin has retrieved a list of genres
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- the plugin that has retrieved the genre list
+        /// </param>
+        /// <param name="genres">
+        /// A <see cref="List<Genre>"/> -- the list of genres that has been retrieved
+        /// </param>
         void OnPluginGenreListLoaded (object sender, List<Genre> genres)
         {
             ILiveRadioPlugin plugin = sender as ILiveRadioPlugin;
@@ -131,6 +198,15 @@ namespace Banshee.LiveRadio
                           genres.Count);
         }
 
+        /// <summary>
+        /// Event Handler for the event that a plugin has returned an error
+        /// </summary>
+        /// <param name="plugin">
+        /// A <see cref="ILiveRadioPlugin"/> -- the plugin that has encountered the error
+        /// </param>
+        /// <param name="error">
+        /// A <see cref="LiveRadioPluginError"/> containing information about the error
+        /// </param>
         void OnPluginErrorReturned (ILiveRadioPlugin plugin, LiveRadioPluginError error)
         {
             AddStatistic (LiveRadioStatisticType.Error,
@@ -140,6 +216,27 @@ namespace Banshee.LiveRadio
                           1);
         }
 
+        /// <summary>
+        /// Tests if the messages and types of a LiveRadioStatistic matches with the given parameters
+        /// </summary>
+        /// <param name="statistic">
+        /// A <see cref="LiveRadioStatistic"/> to test
+        /// </param>
+        /// <param name="type">
+        /// A <see cref="LiveRadioStatisticType"/> type to match
+        /// </param>
+        /// <param name="origin">
+        /// A <see cref="System.String"/> containing the plugin name to match
+        /// </param>
+        /// <param name="short_description">
+        /// A <see cref="System.String"/> containing the short info to match
+        /// </param>
+        /// <param name="long_description">
+        /// A <see cref="System.String"/> containing the long info to match
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Boolean"/> true, if all parameters match the properties of the tested statistic, false otherwise
+        /// </returns>
         private bool MessageEqual (LiveRadioStatistic statistic,
                                    LiveRadioStatisticType type,
                                    string origin,
@@ -192,7 +289,6 @@ namespace Banshee.LiveRadio
             statistic_view.ColumnController.Add (col_average);
             statistic_view.ColumnController.Add (col_updates);
             statistic_view.SetModel (new LiveRadioStatisticListModel (stats));
-            statistic_view.Model.Selection.FocusChanged += OnStatisticViewModelSelectionFocusChanged;
 
             enable_button.TooltipText = AddinManager.CurrentLocalizer.GetString ("Enable Plugin");
             enable_button.Label = AddinManager.CurrentLocalizer.GetString ("Enable Plugin");
@@ -234,6 +330,16 @@ namespace Banshee.LiveRadio
             ShowAll ();
         }
 
+        /// <summary>
+        /// Activated when the user clicks the "Enable" button. Enables the selected,
+        /// previously inactive plugin
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         void OnEnableButtonClicked (object sender, EventArgs e)
         {
             LiveRadioPluginListModel model = plugin_view.Model as LiveRadioPluginListModel;
@@ -245,9 +351,18 @@ namespace Banshee.LiveRadio
             enable_button.Sensitive = false;
             disable_button.Sensitive = true;
             plugin_view.GrabFocus ();
-//            model.SetSelection(plugin_view.Model.Selection.FocusedIndex);
         }
 
+        /// <summary>
+        /// Activated when the user clicks the "Disable" button. Disables the selected,
+        /// previously active plugin
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         void OnDisableButtonClicked (object sender, EventArgs e)
         {
             LiveRadioPluginListModel model = plugin_view.Model as LiveRadioPluginListModel;
@@ -261,6 +376,16 @@ namespace Banshee.LiveRadio
             plugin_view.GrabFocus ();
         }
 
+        /// <summary>
+        /// Activated when the user clicks the "Configure" button. Opens a new dialog containing the configuration
+        /// widget of the selected plugin
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         void OnConfigureButtonClicked (object sender, EventArgs e)
         {
             LiveRadioPluginListModel model = plugin_view.Model as LiveRadioPluginListModel;
@@ -291,6 +416,15 @@ namespace Banshee.LiveRadio
             dialog.ShowAll ();
         }
 
+        /// <summary>
+        /// Activated when the focus in the plugin list changes. Sets the enable and disable button sensitivity
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         void OnPluginViewModelSelectionFocusChanged (object sender, EventArgs e)
         {
             configure_button.Sensitive = true;
@@ -303,11 +437,6 @@ namespace Banshee.LiveRadio
                 enable_button.Sensitive = true;
                 disable_button.Sensitive = false;
             }
-        }
-
-        void OnStatisticViewModelSelectionFocusChanged (object sender, EventArgs e)
-        {
-
         }
 
         /// <summary>

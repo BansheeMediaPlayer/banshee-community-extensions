@@ -207,6 +207,16 @@ namespace Banshee.LiveRadio.Plugins
             Log.DebugFormat ("[Live365Plugin] <CreateSession> session_id : {0}", session_id);
         }
 
+        /// <summary>
+        /// This function is periodically called by a timer, after a session has been established and tests session validity.
+        /// The test is used as a keepalive signal for the session
+        /// </summary>
+        /// <param name="sender">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="e">
+        /// A <see cref="System.Timers.ElapsedEventArgs"/> -- not used
+        /// </param>
         void OnKeepAliveElapsed (object sender, System.Timers.ElapsedEventArgs e)
         {
             Log.DebugFormat ("[Live365Plugin] <OnKeepAliveElapsed> keepalive {0}", session_id);

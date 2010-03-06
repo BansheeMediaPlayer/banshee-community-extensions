@@ -37,6 +37,9 @@ namespace Banshee.LiveRadio
 {
 
 
+    /// <summary>
+    /// A ListModel for the LiveRadioStatistic object
+    /// </summary>
     public class LiveRadioStatisticListModel : IListModel<LiveRadioStatistic>
     {
 

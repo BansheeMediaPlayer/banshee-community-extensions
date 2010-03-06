@@ -31,7 +31,9 @@ using System;
 namespace Banshee.LiveRadio.Plugins
 {
 
-
+    /// <summary>
+    /// A class capsuling an error message object
+    /// </summary>
     public class LiveRadioPluginError
     {
 

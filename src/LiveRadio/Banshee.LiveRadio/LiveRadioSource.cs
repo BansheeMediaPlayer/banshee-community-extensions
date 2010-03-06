@@ -64,6 +64,7 @@ namespace Banshee.LiveRadio
         private List<ILiveRadioPlugin> plugins;
         private uint ui_global_id;
         private List<string> enabled_plugins;
+        private LiveRadioSourceContents source_contents;
 
         /// <summary>
         /// Constructor -- creates a new LiveRadio parent source
@@ -169,8 +170,9 @@ namespace Banshee.LiveRadio
                     AddPlugin (plugin);
                 }
             }
-            
-            Properties.Set<ISourceContents> ("Nereid.SourceContents", new LiveRadioSourceContents (plugins));
+
+            source_contents = new LiveRadioSourceContents (plugins);
+            Properties.Set<ISourceContents> ("Nereid.SourceContents", source_contents);
             
             ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
             return true;
@@ -190,6 +192,7 @@ namespace Banshee.LiveRadio
                 Log.DebugFormat ("[LiveRadioSource]<RegisterPlugin> plugin {0} already registered", plugin.Name);
             } else {
                 plugins.Add (plugin);
+                source_contents.ConnectPluginEvents (plugin);
             }
         }
 
@@ -415,6 +418,9 @@ namespace Banshee.LiveRadio
             throw new InternetRadioExtensionNotFoundException ();
         }
 
+        /// <summary>
+        /// Sets the EnablePluginsEntry schema entry correctly from the internal object data
+        /// </summary>
         private void SetEnabledPluginsEntry ()
         {
             if (EnabledPlugins.Count > 0)

@@ -139,10 +139,20 @@ namespace Banshee.LiveRadio.Plugins
         /// </summary>
         List<Genre> Genres { get; }
 
+        /// <summary>
+        /// Must truthfully return, if the plugin is enabled. A plugin is enabled, if it has been initialized
+        /// and not been disabled afterwards
+        /// </summary>
         bool Enabled { get; }
 
+        /// <summary>
+        /// Should return "Yes" if enabled, and "No" if not enabled
+        /// </summary>
         string IsEnabled { get; }
 
+        /// <summary>
+        /// Returns the version information for the plugin
+        /// </summary>
         string Version { get; }
     }
 }
