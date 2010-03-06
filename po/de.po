@@ -777,7 +777,7 @@ msgid "Error... Please Reload"
 msgstr "Fehler... bitte neu laden"
 
 #: Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:419
-msgid "Click a gernre to load/refresh entries or type query, use refresh button to refresh genres."
+msgid "Click a genre to load/refresh entries or type a query. Use the refresh button to refresh genres."
 msgstr "Genre klicken zum (Neu)Laden der Liste oder Freitextsuche eingeben. Refresh zum Neuladen der Genreliste. "
 
 #: Banshee.LiveRadio/LiveRadioFilterView.cs:82
