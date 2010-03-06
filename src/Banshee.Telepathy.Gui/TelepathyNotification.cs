@@ -92,7 +92,7 @@ namespace Banshee.Telepathy.Gui
         public void Show (string summary, string body, Pixbuf image)
         {
            if (image == null) {
-                image = Banshee.Gui.IconThemeUtils.LoadIcon (48, "notification-message-im");
+                image = Banshee.Gui.IconThemeUtils.LoadIcon (48, "banshee");
                 if (image != null) {
                     image.ScaleSimple (42, 42, Gdk.InterpType.Bilinear);
                 }
