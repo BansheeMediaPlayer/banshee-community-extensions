@@ -109,6 +109,8 @@ build/m4/shave/shave-libtool
 po/Makefile.in
 
 src/Makefile
+src/AssemblyInfo.cs
+
 src/AlarmClock/Makefile
 src/Awn/Makefile
 src/ClutterFlow/Makefile

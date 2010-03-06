@@ -11,4 +11,6 @@ SUBDIRS = \
 	RadioStationFetcher \
 	StreamRecorder
 
+EXTRA_DIST = AssemblyInfo.cs.in
+
 MAINTAINERCLEANFILES = Makefile.in

@@ -2,6 +2,7 @@ UNIQUE_FILTER_PIPE = tr [:space:] \\n | sort | uniq
 BUILD_DATA_DIR = $(top_builddir)/bin/share/$(PACKAGE)
 
 SOURCES_BUILD = $(addprefix $(srcdir)/, $(SOURCES))
+SOURCES_BUILD += $(top_srcdir)/src/AssemblyInfo.cs
 
 RESOURCES_EXPANDED = $(addprefix $(srcdir)/, $(RESOURCES))
 RESOURCES_BUILD = $(foreach resource, $(RESOURCES_EXPANDED), \
