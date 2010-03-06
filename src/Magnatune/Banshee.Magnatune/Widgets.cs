@@ -31,7 +31,7 @@ using Gtk;
 using System;
 using System.Collections.Generic;
 
-namespace Magnatune
+namespace Banshee.Magnatune
 {
     public class TitledList : VBox
     {

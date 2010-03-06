@@ -28,10 +28,10 @@ using Banshee.Sources.Gui;
 using Gtk;
 using System;
 
-namespace Magnatune
+namespace Banshee.Magnatune
 {
 	public class RadioSourceContents : Hyena.Widgets.ScrolledWindow, ISourceContents
-	{	
+	{
 		private RadioSource radio;
 		
 		private VBox main_box;

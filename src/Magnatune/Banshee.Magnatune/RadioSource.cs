@@ -36,7 +36,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 
-namespace Magnatune
+namespace Banshee.Magnatune
 {
 	public class Genre
 	{
@@ -78,12 +78,12 @@ namespace Magnatune
 		}
 	}
 	
-	public class RadioSource : Banshee.Sources.Source, IDisposable
+	public class RadioSource : Source, IDisposable
 	{
 		private ActionGroup actions;
 		private uint ui_manager_id;
 		private InterfaceActionService action_service;
-		
+
 		public RadioSource() : base("Magnatune", "Magnatune", 200)
 		{
 			Pixbuf icon = new Pixbuf(System.Reflection.Assembly.GetExecutingAssembly()

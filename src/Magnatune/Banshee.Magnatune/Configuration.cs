@@ -24,7 +24,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 using System;
 
-namespace Magnatune
+namespace Banshee.Magnatune
 {
 	public partial class Configuration : Gtk.Dialog
 	{
