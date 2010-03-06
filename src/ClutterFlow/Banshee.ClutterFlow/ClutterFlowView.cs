@@ -193,9 +193,9 @@ namespace Banshee.ClutterFlow
             
 			coverManager = new CoverManager();
 			albumLoader = new AlbumLoader (coverManager);
-            
+ 
             AttachEvents ();
-            
+			
 			SetupViewport ();
 			SetupSlider ();
 			SetupLabels ();
@@ -213,7 +213,7 @@ namespace Banshee.ClutterFlow
             Stage.ButtonReleaseEvent += HandleButtonReleaseEvent;
             Stage.ButtonPressEvent += HandleButtonPressEvent;
             Stage.MotionEvent += HandleMotionEvent;
-            coverManager.CoverActivated += HandleCoverActivated;
+			albumLoader.ActorActivated += HandleActorActivated;
         }
 
         public void DetachEvents ()
@@ -226,7 +226,7 @@ namespace Banshee.ClutterFlow
             Stage.ButtonReleaseEvent -= HandleButtonReleaseEvent;
             Stage.ButtonPressEvent -= HandleButtonPressEvent;
             Stage.MotionEvent -= HandleMotionEvent;
-            coverManager.CoverActivated -= HandleCoverActivated;
+			albumLoader.ActorActivated -= HandleActorActivated;
             
             attached = false;
         }
@@ -248,14 +248,13 @@ namespace Banshee.ClutterFlow
 		protected void SetupViewport ()
 		{
 			Stage.Color = new Clutter.Color (0x00, 0x00, 0x00, 0xff);
-			
 			coverManager.SetRotation (RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
 			Stage.Add (coverManager);
             
 			coverManager.EmptyActor.SetToPb(
 	            IconThemeUtils.LoadIcon (coverManager.TextureSize, "gtk-stop", "clutterflow-large.png")
             );
-            //coverManager.EmptyActor.SetToPb (new Gdk.Pixbuf (System.Reflection.Assembly.GetCallingAssembly(), "clutterflow-large.png"));
+            CoverManager.DoubleClickTime = (uint) Gtk.Settings.GetForScreen(this.Screen).DoubleClickTime;
 			coverManager.LowerBottom ();
 			coverManager.Show ();
 		}
@@ -323,9 +322,9 @@ namespace Banshee.ClutterFlow
 		}
 
 
-        private void HandleCoverActivated (ClutterFlowBaseActor actor, EventArgs e)
+        private void HandleActorActivated (ClutterFlowAlbum actor, EventArgs e)
         {
-        	UpdateAlbum ();
+        	UpdateAlbum (actor);
         }
 		
 		private void HandleButtonPressEvent(object o, Clutter.ButtonPressEventArgs args)
@@ -389,9 +388,14 @@ namespace Banshee.ClutterFlow
 
 		public void UpdateAlbum ()
 		{
-			ActiveAlbum = CurrentAlbum;
-			ActiveIndex = CurrentIndex;
-			if (UpdatedAlbum!=null)	UpdatedAlbum (coverManager.CurrentCover, EventArgs.Empty);
+			UpdateAlbum (albumLoader.CurrentActor);
+		}
+		
+		public void UpdateAlbum (ClutterFlowAlbum actor)
+		{
+			ActiveAlbum = actor.Album;
+			ActiveIndex = actor.Index;
+			if (UpdatedAlbum!=null)	UpdatedAlbum (ActiveAlbum, EventArgs.Empty);
 		}
 		#endregion
 		

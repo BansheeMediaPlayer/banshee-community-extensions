@@ -66,16 +66,21 @@ namespace ClutterFlow.Captions
 		
 		public virtual void FadeOut ()
 		{
-			aFade = this.Animatev ((ulong) AnimationMode.Linear.value__, (uint) (CoverManager.MaxAnimationSpan*0.5f), new string[] { "opacity" }, new GLib.Value ((byte) 0));
+			EventHandler hFadeOut = delegate (object sender, EventArgs e) {
+				aFade = this.Animatev ((ulong) AnimationMode.Linear.value__, (uint) (CoverManager.MaxAnimationSpan*0.5f), new string[] { "opacity" }, new GLib.Value ((byte) 0));
+			};
+			if (aFade!=null && aFade.Timeline!=null && aFade.Timeline.IsPlaying)
+				aFade.Completed +=  hFadeOut;
+			else
+				hFadeOut (this, EventArgs.Empty);
 		}
 
 		public virtual void FadeIn () 
 		{
 			EventHandler hFadeIn = delegate (object sender, EventArgs e) {
-				this.Animatev ((ulong) AnimationMode.Linear.value__, (uint) (CoverManager.MaxAnimationSpan*0.5f), new string[] { "opacity" }, new GLib.Value ((byte) 255));
-				aFade = null;
+				aFade = this.Animatev ((ulong) AnimationMode.Linear.value__, (uint) (CoverManager.MaxAnimationSpan*0.5f), new string[] { "opacity" }, new GLib.Value ((byte) 255));
 			};
-			if (aFade!=null && aFade.Timeline.IsPlaying)
+			if (aFade!=null && aFade.Timeline!=null && aFade.Timeline.IsPlaying)
 				aFade.Completed +=  hFadeIn;
 			else
 				hFadeIn (this, EventArgs.Empty);

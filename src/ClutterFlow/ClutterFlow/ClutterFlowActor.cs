@@ -202,7 +202,6 @@ namespace ClutterFlow
                     coverManager = value;
                     if (coverManager!=null) {
                         coverManager.Add (this);
-                        //coverManager.Realize ();
                     }
                 }
             }
@@ -225,11 +224,6 @@ namespace ClutterFlow
             get { return sort_label; }
             set { sort_label = value; }
         }
-        
-        /*protected double last_alpha = 0;
-        public double LastAlpha {
-            get { return last_alpha; }
-        }*/
 
         public virtual event IndexChangedEventHandler IndexChanged;
         
@@ -361,7 +355,13 @@ namespace ClutterFlow
                 }
             }
         }
-
+		
+		protected bool CanUseShader {
+			get {
+				return ClutterHelper.CheckForExtension ("GL_ARB_vertex_shader");
+			}
+		}
+		
         private void SetCoverSwap () {
             if (swapped) {
                 cover.CoglTexture = textureHolder.DefaultTexture;
@@ -373,8 +373,10 @@ namespace ClutterFlow
         }
 
         private void SetShadeSwap () {
-            shade.CoglTexture = textureHolder.ShadeTexture;
-            delayed_shade_swap = false;
+			if (!has_shader) {
+	            shade.CoglTexture = textureHolder.ShadeTexture;
+            	delayed_shade_swap = false;
+			}
         }
         
         protected Clutter.Texture cover = null;
@@ -449,6 +451,8 @@ namespace ClutterFlow
 		{
 			SetAnchorPoint (0, 0);
 			
+			TryShading ();
+			
 			SetupCover ();
 			SetupShade ();
 
@@ -457,10 +461,50 @@ namespace ClutterFlow
 			
 			ShowAll();
 		}
+		
+		protected Clutter.Shader shader;
+		protected bool has_shader = false;
+		protected virtual void TryShading ()
+		{
+			if (CanUseShader/*Clutter.Feature.Available (Clutter.FeatureFlags.ShadersGlsl)*/) {
+				shader = new Clutter.Shader ();
+				shader.VertexSource = @"
+					attribute vec4 gl_Color;
+					varying vec4 gl_FrontColor;
+					varying vec4 gl_BackColor;
+					uniform float			alpha;
+					uniform float			angle;
+					uniform float			z;
+					
+					void main()
+					{
+						gl_TexCoord[0] = gl_MultiTexCoord0;
+					
+						float shadow = 1;
+						if ((gl_TexCoord[0].s == 1 && angle > 0) || (gl_TexCoord[0].s == 0 && angle < 0)) {
+							shadow = clamp(pow(cos(angle), 2.0) * pow(1 + abs(z - 0.5)*1.25, 2.0), 0.0, 1.0);
+						}
+					
+						gl_Position = ftransform();
+						gl_BackColor = vec4(0, 0, 0, 1);
+						gl_FrontColor = vec4(gl_Color.rgb * shadow, alpha);
+					}";
+				shader.Compile ();
+				SetShader (shader);
+				AddNotification ("opacity", OnOpacityChanged);
+				AddNotification ("rotation-angle-y", OnAngleChanged);
+				AddNotification ("anchor-x", OnAnchorChanged);
+				OnOpacityChanged (this, new GLib.NotifyArgs());
+				OnAngleChanged (this, new GLib.NotifyArgs());
+				OnAnchorChanged (this, new GLib.NotifyArgs());
+				has_shader = true;
+			}
+		}
+		
 		protected virtual void SetupCover ()
 		{
 			if (cover==null) {
-				cover = new Clutter.Texture();
+				cover = new Clutter.Texture();				
 				Add (cover);
 				cover.Show ();
 				cover.Realize ();
@@ -471,24 +515,40 @@ namespace ClutterFlow
 			
 			SwappedToDefault = true;
 		}
-
+		
+		protected virtual void OnOpacityChanged (object sender, NotifyArgs args)
+		{
+			SetShaderParamFloat ("alpha", (float) this.Opacity / 255f);
+		}
+		protected virtual void OnAngleChanged (object sender, NotifyArgs args)
+		{
+			SetShaderParamFloat ("angle", (float) ((double) GetProperty("rotation-angle-y") * Math.PI / 180));
+		}
+		
+		protected virtual void OnAnchorChanged (object sender, NotifyArgs args)
+		{
+			SetShaderParamFloat ("z", (float) GetProperty("anchor-x") / (float) (Width));
+		}
+		
 		protected virtual void SetupShade ()
 		{
-			if (shade==null) {
-				shade = new Clutter.Texture();
-				Add (shade);
-				shade.Show ();
-				shade.Realize ();
-				if (Stage!=null)
-					SetShadeSwap ();
-				else
-					delayed_shade_swap = true;
+			if (!has_shader) {
+				if (shade==null) {
+					shade = new Clutter.Texture();
+					Add (shade);
+					shade.Show ();
+					shade.Realize ();
+					if (Stage!=null)
+						SetShadeSwap ();
+					else
+						delayed_shade_swap = true;
+				}
+				shade.SetSize (coverManager.Behaviour.CoverWidth, coverManager.Behaviour.CoverWidth*2);
+				shade.SetPosition (0, 0);
+				shade.Opacity = 255;
+	
+				if (cover!=null) Shade.Raise (cover);
 			}
-			shade.SetSize (coverManager.Behaviour.CoverWidth, coverManager.Behaviour.CoverWidth*2);
-			shade.SetPosition (0, 0);
-			shade.Opacity = 255;
-
-			if (cover!=null) Shade.Raise (cover);
 		}
 		#endregion
 
@@ -506,11 +566,13 @@ namespace ClutterFlow
 
 		#region Behaviour Functions
 		public void SetShade (byte opacity, bool left) {
-			shade.Opacity = opacity;
-			if (left)
-				shade.SetRotation (RotateAxis.Y, 0, shade.Width*0.5f, shade.Height*0.25f, 0);
-			else
-				shade.SetRotation (RotateAxis.Y, 180, shade.Width*0.5f, shade.Height*0.25f, 0);
+			if (!has_shader) {
+				shade.Opacity = opacity;
+				if (left)
+					shade.SetRotation (RotateAxis.Y, 0, shade.Width*0.5f, shade.Height*0.25f, 0);
+				else
+					shade.SetRotation (RotateAxis.Y, 180, shade.Width*0.5f, shade.Height*0.25f, 0);
+			}
 		}
 		
 		public ClutterFlowActor CreateClickClone () {
@@ -518,19 +580,6 @@ namespace ClutterFlow
 			return this;
 		}
 
-		/*public double AlphaFunction (double progress)
-		{
-			if (index < 0)
-				last_alpha = 0;
-			else {
-				double val = (CoverManager.HalfVisCovers - (CoverManager.TotalCovers-1) * progress + index) / (CoverManager.VisibleCovers-1);
-				if (val<0) val=0;
-				if (val>1) val=1;
-				last_alpha = val;
-			}
-			return last_alpha;
-		}*/
-		
 		protected virtual void SlideIn ()
 		{
 			//FIXME: we should not shift the shade along!!
@@ -552,13 +601,6 @@ namespace ClutterFlow
 			Animatev ((ulong) Clutter.AnimationMode.EaseOutBack.value__, CoverManager.MaxAnimationSpan, new string[] { "anchor-x" }, new GLib.Value ((float) new_anchor_x));
 		}
 		#endregion
-
-        /* TODO
-         * use Cogl.General.AreFeaturesAvailable(FeatureFlags.ShadersGlsl) to check
-         * if we can use vertex shaders for the shadow effect:
-         *  gl_FrontColor = gl_Color;
-         * if not available use the current implementation
-         */
         
 		#region Event Handling
         void HandleParentSet(object o, ParentSetArgs args)
@@ -581,16 +623,16 @@ namespace ClutterFlow
 				SlideIn ();
 			} else {
 				if (Index>=0 && Opacity > 0) {
-					if (CoverManager.CurrentCover==this) {
+					if (CoverManager.CurrentCover==this || args.Event.ClickCount==3) {
 	                    CreateClickClone ();
-						CoverManager.InvokeCoverActivated (this);
+						CoverManager.InvokeActorActivated (this);
 					} else
-						CoverManager.TargetIndex = Index;
+						GLib.Timeout.Add ((uint) (CoverManager.DoubleClickTime*0.75), new GLib.TimeoutHandler (delegate { CoverManager.TargetIndex = Index; return false; }));
 				}
 			}
             args.RetVal = true;
 		}
-
+		
 		protected virtual void HandleButtonPressEvent (object o, ButtonPressEventArgs args)
 		{
 			if (args.Event.Button == 3) {

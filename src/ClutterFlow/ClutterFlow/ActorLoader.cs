@@ -37,7 +37,7 @@ namespace ClutterFlow
 		List<ClutterFlowBaseActor> GetActors (System.Action<ClutterFlowBaseActor> method_call);
 	}
 	
-	public class ActorLoader<TKey, TGen> : IActorLoader {
+	public abstract class ActorLoader<TKey, TGen> : IActorLoader {
 		#region Fields	
 		protected Dictionary<TKey, ClutterFlowBaseActor> cached_covers = new Dictionary<TKey, ClutterFlowBaseActor> ();
 		public virtual Dictionary<TKey, ClutterFlowBaseActor> Cache {
@@ -48,9 +48,14 @@ namespace ClutterFlow
 		public virtual CoverManager CoverManager { 
 			get { return coverManager; }
 			set {
+				if (coverManager!=null) {
+					coverManager.ActorActivated -= HandleActorActivated;
+				}
 				coverManager = value;
-                if (coverManager!=null)
+                if (coverManager!=null) {
+					coverManager.ActorActivated += HandleActorActivated;
 				    coverManager.ActorLoader = this;
+				}
 			}
 		}
 		#endregion
@@ -93,5 +98,7 @@ namespace ClutterFlow
 			if (actor!=null && coverManager.covers.Contains (actor))
 				coverManager.TargetIndex = actor.Index; //coverManager.covers.IndexOf (actor); //replace covers with something faster?
 		}
+		
+		public abstract void HandleActorActivated (ClutterFlowBaseActor actor, EventArgs args);
 	}
 }

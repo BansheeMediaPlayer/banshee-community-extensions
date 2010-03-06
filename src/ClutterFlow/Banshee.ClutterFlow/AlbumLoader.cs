@@ -36,7 +36,7 @@ using ClutterFlow;
 namespace Banshee.ClutterFlow
 {
     
-    public class BansheeActorLoader<TGen> : ActorLoader<string, TGen> where TGen : ICacheableItem, new()  {
+    public abstract class BansheeActorLoader<TGen> : ActorLoader<string, TGen> where TGen : ICacheableItem, new()  {
 
         private int count; //previous model count
         
@@ -90,7 +90,18 @@ namespace Banshee.ClutterFlow
     public class AlbumLoader : BansheeActorLoader<AlbumInfo>
     {
 
-        #region Fields    
+		#region Events
+		public event ActorEventHandler<ClutterFlowAlbum> ActorActivated;
+		protected void InvokeActorActivated (ClutterFlowAlbum actor) {
+			if (ActorActivated!=null) ActorActivated (actor, EventArgs.Empty);
+		}
+		#endregion
+		
+        #region Fields   
+		public ClutterFlowAlbum CurrentActor {
+			get { return (ClutterFlowAlbum) coverManager.CurrentCover; }
+		}
+		
         public AlbumInfo CurrentAlbum {
             get {
                 if (coverManager.CurrentCover!=null && coverManager.CurrentCover is ClutterFlowAlbum)
@@ -142,5 +153,11 @@ namespace Banshee.ClutterFlow
             list.Add(actor);
             return actor;
         }
+		
+		public override void HandleActorActivated (ClutterFlowBaseActor actor, EventArgs args)
+		{
+			if (actor is ClutterFlowAlbum)
+				InvokeActorActivated (actor as ClutterFlowAlbum);
+		}
     }
 }

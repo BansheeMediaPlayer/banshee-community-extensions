@@ -35,18 +35,18 @@ using GLib;
 namespace ClutterFlow
 {
     
-	public delegate void CoverEventHandler(ClutterFlowBaseActor actor, EventArgs e);
+	public delegate void ActorEventHandler<T>(T actor, EventArgs e) where T : ClutterFlowBaseActor;
 				
 	public class CoverManager : Clutter.Group {
 
         #region Events
-		public event CoverEventHandler CoverActivated;
-		internal void InvokeCoverActivated (ClutterFlowBaseActor cover)
+		public event ActorEventHandler<ClutterFlowBaseActor> ActorActivated;
+		internal void InvokeActorActivated (ClutterFlowBaseActor cover)
         {
-			if (CoverActivated!=null) CoverActivated (cover, EventArgs.Empty);
+			if (ActorActivated!=null) ActorActivated (cover, EventArgs.Empty);
 		}
 		
-		public event CoverEventHandler NewCurrentCover;
+		public event ActorEventHandler<ClutterFlowBaseActor> NewCurrentCover;
 		protected void InvokeNewCurrentCover (ClutterFlowBaseActor cover)
         {
 			if (NewCurrentCover!=null) NewCurrentCover(cover, EventArgs.Empty);
@@ -138,6 +138,12 @@ namespace ClutterFlow
 		protected static uint minAnimationSpan = 10; //minimal length of a single step in the animations in ms
 		public static uint MinAnimationSpan {
 			get { return minAnimationSpan; }
+		}
+		
+		protected static uint doubleClickTime = 200;
+		public static uint DoubleClickTime {
+			get { return doubleClickTime; }
+			set { doubleClickTime = value; }
 		}
         #endregion
 
