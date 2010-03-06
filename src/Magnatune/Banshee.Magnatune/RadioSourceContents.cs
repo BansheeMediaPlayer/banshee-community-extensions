@@ -73,8 +73,7 @@ namespace Magnatune
 			// auto-scale logo
 			SizeAllocated += delegate (object o, SizeAllocatedArgs args) {
 				int width = args.Allocation.Width - 50;
-				logo.FromPixbuf = logo_pix.ScaleSimple(width, (int)((float)width / 6.3f), 
-				                                       Gdk.InterpType.Bilinear);
+				logo.Pixbuf = logo_pix.ScaleSimple(width, (int)((float)width / 6.3f), Gdk.InterpType.Bilinear);
 			};
 			
 			main_box.PackStart(logo, false, false, 0);
