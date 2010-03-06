@@ -389,6 +389,9 @@ namespace Banshee.Telepathy.Data
 			//case TubeManager.State.PermissionNotGranted:
 			//case TubeManager.State.PermissionGranted:
 			case TubeManager.State.LoadingMetadata:
+				if (Count > 0) {
+					CleanUpData ();
+				}
 				SetStatus (Catalog.GetString ("Loading..."), false);
 				break;
 			case TubeManager.State.LoadedMetadata:
