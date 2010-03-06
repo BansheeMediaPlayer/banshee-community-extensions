@@ -43,6 +43,8 @@ namespace Banshee.Telepathy.Gui
     {
         private TelepathyService service = null;
         private readonly TelepathyDownloadManager download_manager = new TelepathyDownloadManager ();
+		private Banshee.Library.LibraryImportManager import_manager = null;
+
 
         public DownloadManagerUi (TelepathyService service) : base ()
         {
@@ -53,6 +55,8 @@ namespace Banshee.Telepathy.Gui
             download_manager.Updated += OnUpdated;
             download_manager.Completed += OnCompleted;
             download_manager.TransferCompleted += OnTransferCompleted;
+			
+			import_manager = new Banshee.Library.LibraryImportManager (true);
         }
 
         public TelepathyDownloadManager DownloadManager {
@@ -71,7 +75,7 @@ namespace Banshee.Telepathy.Gui
 
         private void ImportTrack (string path)
         {
-            Banshee.Library.LibraryImportManager import_manager = ServiceManager.Get <Banshee.Library.LibraryImportManager> ();
+            //Banshee.Library.LibraryImportManager import_manager = ServiceManager.Get <Banshee.Library.LibraryImportManager> ();
 
             if (import_manager.ImportTrack (path) != null) {
                 import_manager.NotifyAllSources ();
