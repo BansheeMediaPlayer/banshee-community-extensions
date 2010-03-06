@@ -351,8 +351,9 @@ namespace Banshee.Telepathy.Data
             notify_timer.AutoReset = true;
             notify_timer.Start ();
 			
-			// pulse source every 7 seconds
-			Timer timer = new Timer (7000);
+			// pulse source every 5 seconds
+			NotifyUser ();
+			Timer timer = new Timer (5000);
             timer.Elapsed += (o, a) => {
                 if (!getting_response) {
                		timer.Stop ();
