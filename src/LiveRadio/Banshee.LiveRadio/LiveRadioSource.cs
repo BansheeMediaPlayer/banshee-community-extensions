@@ -272,7 +272,10 @@ namespace Banshee.LiveRadio
                 uia_service.UIManager.RemoveUi (ui_global_id);
                 ui_global_id = 0;
             }
-            
+            uia_service.GlobalActions.Remove ("AddToInternetRadioAction");
+            uia_service.GlobalActions.Remove ("RefreshLiveRadioAction");
+            uia_service.GlobalActions.Remove ("LiveRadioConfigureAction");
+            uia_service.GlobalActions.Remove ("LiveRadioAction");
         }
 
         /// <summary>
