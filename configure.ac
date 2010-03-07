@@ -78,6 +78,7 @@ BCE_MAGNATUNE
 BCE_MIRAGE
 BCE_RADIOSTATIONFETCHER
 BCE_STREAMRECORDER
+BCE_TELEPATHY
 
 AC_ARG_WITH(vendor-build-id,
 	AC_HELP_STRING([--with-vendor-build-id=<vendor-build-id>],
@@ -134,6 +135,8 @@ src/Mirage/Banshee.Mirage/Makefile
 src/Mirage/Test/Makefile
 src/RadioStationFetcher/Makefile
 src/StreamRecorder/Makefile
+src/Telepathy/Makefile
+src/Telepathy/Banshee.Telepathy/Makefile
 ])
 
 cat <<EOF
@@ -167,5 +170,6 @@ ${PACKAGE}-${VERSION}
     Mirage:              ${enable_Mirage}
     RadioStationFetcher: ${enable_RadioStationFetcher}
     StreamRecorder:      ${enable_StreamRecorder}
+    Telepathy:           ${enable_Telepathy}
 
 EOF

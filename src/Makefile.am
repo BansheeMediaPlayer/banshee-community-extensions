@@ -10,7 +10,8 @@ SUBDIRS = \
 	Magnatune \
 	Mirage \
 	RadioStationFetcher \
-	StreamRecorder
+	StreamRecorder \
+	Telepathy
 
 EXTRA_DIST = AssemblyInfo.cs.in
 
