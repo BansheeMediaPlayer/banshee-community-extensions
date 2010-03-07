@@ -459,10 +459,12 @@ namespace Banshee.Telepathy.Data
             }
 
             LibraryDownload d = track_args.download as LibraryDownload;
-			
-			SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), 
-				CalculateLoadingTracks (chunk.Length, d.TotalExpected), 
-			    d.TotalExpected), false);
+
+			ThreadAssist.ProxyToMain (delegate {
+				SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), 
+					CalculateLoadingTracks (chunk.Length, d.TotalExpected), 
+			    	d.TotalExpected), false);
+			});
             
 			ContactPlaylistSource source = null;
 			if (playlist_map.ContainsKey (d)) {	
@@ -494,10 +496,12 @@ namespace Banshee.Telepathy.Data
             }
             
 			LibraryDownload d = track_args.download as LibraryDownload;
-			
-			SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), 
-				CalculateLoadingTracks (chunk.Length, d.TotalExpected), 
-			    d.TotalExpected), false);
+		
+			ThreadAssist.ProxyToMain (delegate {
+				SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), 
+					CalculateLoadingTracks (chunk.Length, d.TotalExpected), 
+			    	d.TotalExpected), false);
+			});
 			
             HyenaSqliteConnection conn = ServiceManager.DbConnection;
             conn.BeginTransaction ();
