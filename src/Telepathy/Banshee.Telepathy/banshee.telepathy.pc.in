@@ -1,0 +1,6 @@
+Name: Banshee.Telepathy
+Description: Banshee.Telepathy
+Version: 0.1.1
+
+Requires: 
+Libs: -r:@PLUGINDIR@/Banshee.Telepathy.dll

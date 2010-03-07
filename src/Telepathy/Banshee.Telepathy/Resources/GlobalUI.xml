@@ -1,0 +1,14 @@
+<ui>
+    <popup name="ContactSourceContainerPopup" >
+        <menuitem action="AllowDownloadsAction" />
+    </popup>
+        <popup name="ContactSourceContainerPopup" >
+        <menuitem action="AllowStreamingAction" />
+    </popup>
+    <popup name="ContactSourceContainerPopup" >
+        <menuitem action="ShareCurrentlyPlayingAction" />
+    </popup>
+    <popup name="ContactSourcePopup" >
+        <menuitem action="CancelBrowseRequest" />
+    </popup>
+</ui>
