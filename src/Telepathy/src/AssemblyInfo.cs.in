@@ -1,8 +1,0 @@
-using System.Reflection;
-using System.Runtime.CompilerServices;
-
-[assembly: AssemblyTitle("Banshee.Telepathy")]
-[assembly: AssemblyDescription("A Telepathy based extension for Banshee")]
-[assembly: AssemblyVersion("@VERSION@")]
-[assembly: AssemblyDelaySign(false)]
-[assembly: AssemblyKeyFile("")]
