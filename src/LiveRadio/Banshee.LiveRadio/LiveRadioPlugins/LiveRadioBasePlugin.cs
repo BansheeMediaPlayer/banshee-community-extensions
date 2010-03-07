@@ -403,12 +403,12 @@ namespace Banshee.LiveRadio.Plugins
                 } else {
                     result = cached_results[query];
                 }
+                Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> result contains {1} entries for query {2}", Name, result.Count, query);
             } catch (Exception e) {
-                result = new List<DatabaseTrackInfo> ();
-                Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> error {0}", e.Message);
+                result = null;
+                Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> error {1}", Name, e.Message);
                 RaiseErrorReturned ("General Error", e.Message);
             }
-            Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> result contains {1} entries for query {2}", Name, result.Count, query);
             OnRequestResultRetrieved (request_type, query, result);
         }
 
