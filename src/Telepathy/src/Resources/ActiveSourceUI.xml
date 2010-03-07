@@ -1,0 +1,8 @@
+<ui>
+     <popup name="TrackContextMenu" action="TrackContextMenuAction">
+         <menuitem name="DownloadTrack" action="DownloadTrackAction"></menuitem>
+    </popup>
+    <popup name="TrackContextMenu" action="TrackContextMenuAction">
+         <menuitem name="CancelDownloadTrack" action="CancelDownloadTrackAction"></menuitem>
+    </popup>
+</ui>
