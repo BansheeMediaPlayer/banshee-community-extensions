@@ -10,8 +10,8 @@ SOURCES =  \
 	Banshee.Magnatune/Widgets.cs
 
 RESOURCES =  \
-	Magnatune.addin.xml \
 	Banshee.Magnatune/gtk-gui/gui.stetic \
+	Magnatune.addin.xml \
 	Resources/genres.xml \
 	Resources/logo_color_large.gif \
 	Resources/MagnatuneMenu.xml \
