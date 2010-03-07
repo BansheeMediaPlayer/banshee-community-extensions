@@ -4,7 +4,7 @@ Version 1.5.5 - NOT YET RELEASED
 
 Contributors:
 Alexander Kojevnikov, Bertrand Lorentz, David Corrales, Frank Ziegler,
-Gabriel Burt, Mathijs Dumon
+Gabriel Burt, Mathijs Dumon, Max Battcher, Neil Loknath
 
 Features:
 * [ClutterFlow] Added a slide out animation when user right-clicks album so he/she can see the cover better
@@ -12,6 +12,7 @@ Features:
 * [CoverWallpaper] new, migrated from Google Code
 * [LiveRadio] new, another way to discover internet radio stations
 * [Magnatune] new, browse and stream tracks from Magnatune
+* [Telepathy] new, browse your IM friends' music library, download or stream their tracks
 
 Bugs Fixed:
 * [Mirage] Fix crash in RandomBySimilar (bgo#611066)
