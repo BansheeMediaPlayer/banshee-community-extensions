@@ -11,6 +11,7 @@ Features:
 * [ClutterFlow] Dragging sensitivity is now adjustable
 * [CoverWallpaper] new, migrated from Google Code
 * [LiveRadio] new, another way to discover internet radio stations
+* [Magnatune] new, browse and stream tracks from Magnatune
 
 Bugs Fixed:
 * [Mirage] Fix crash in RandomBySimilar (bgo#611066)

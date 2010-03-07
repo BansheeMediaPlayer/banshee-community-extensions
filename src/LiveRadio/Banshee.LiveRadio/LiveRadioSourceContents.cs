@@ -171,12 +171,15 @@ namespace Banshee.LiveRadio
                                              LiveRadioRequestType request_type,
                                              List<DatabaseTrackInfo> result)
         {
-            ILiveRadioPlugin plugin = sender as ILiveRadioPlugin;
-            AddStatistic (LiveRadioStatisticType.Message,
-                          plugin.Name,
-                          AddinManager.CurrentLocalizer.GetString ("Requested Results Returned"),
-                          AddinManager.CurrentLocalizer.GetString ("The plugin has returned a list of results for a genre or freetext query"),
-                          result.Count);
+            if (result != null)
+            {
+                ILiveRadioPlugin plugin = sender as ILiveRadioPlugin;
+                AddStatistic (LiveRadioStatisticType.Message,
+                              plugin.Name,
+                              AddinManager.CurrentLocalizer.GetString ("Requested Results Returned"),
+                              AddinManager.CurrentLocalizer.GetString ("The plugin has returned a list of results for a genre or freetext query"),
+                              result.Count);
+            }
         }
 
         /// <summary>

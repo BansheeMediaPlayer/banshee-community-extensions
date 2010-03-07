@@ -1,0 +1,9 @@
+<ui>
+  <menubar name="MainMenu">
+    <menu name="ToolsMenu" action="ToolsMenuAction">
+      <menu name="Magnatune" action="MagnatuneAction">
+        <menuitem name="MagnatuneConfigure" action="MagnatuneConfigureAction" />
+      </menu>
+    </menu>
+  </menubar>
+</ui>

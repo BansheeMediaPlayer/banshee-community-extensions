@@ -198,7 +198,10 @@ namespace Banshee.LiveRadio
             if ((request_type == LiveRadioRequestType.ByFreetext)
                 || (filter_box.GetSelectedGenre ().Name.Equals (request) && request_type == LiveRadioRequestType.ByGenre))
             {
-                if (result.Count > 0) {
+                if (result == null)
+                {
+                    SetFakeTrack (AddinManager.CurrentLocalizer.GetString("Error... Please Reload"));
+                } else if (result.Count > 0) {
                     plugin.PluginSource.SetStations (result);
                     main_scrolled_window.Sensitive = true;
                 } else {

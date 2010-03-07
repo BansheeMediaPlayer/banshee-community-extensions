@@ -104,7 +104,7 @@ namespace Banshee.LiveRadio
             
             uia_service.GlobalActions.AddImportant (
                         new ActionEntry ("RefreshLiveRadioAction",
-                                          Stock.Add, AddinManager.CurrentLocalizer.GetString ("Refresh View"), null,
+                                          Stock.Refresh, AddinManager.CurrentLocalizer.GetString ("Refresh View"), null,
                                           AddinManager.CurrentLocalizer.GetString ("Refresh View"),
                                           OnRefreshPlugin));
             uia_service.GlobalActions.AddImportant (
