@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.Lirc", "src\Lirc\Ba
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.CoverWallpaper", "src\CoverWallpaper\Banshee.CoverWallpaper.csproj", "{9EFE1F6E-9B7E-4CBA-9EFC-E6F0FDDA9EDC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnatune", "src\Magnatune\Magnatune.csproj", "{1AEA0235-2C93-4B31-A4F2-D5FF66D841C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -45,6 +47,10 @@ Global
 		{176AB141-4CC8-4E64-87FF-69C5D32A1A99}.Debug|x86.Build.0 = Debug|Any CPU
 		{176AB141-4CC8-4E64-87FF-69C5D32A1A99}.Release|x86.ActiveCfg = Release|Any CPU
 		{176AB141-4CC8-4E64-87FF-69C5D32A1A99}.Release|x86.Build.0 = Release|Any CPU
+		{1AEA0235-2C93-4B31-A4F2-D5FF66D841C7}.Debug|x86.ActiveCfg = Debug|x86
+		{1AEA0235-2C93-4B31-A4F2-D5FF66D841C7}.Debug|x86.Build.0 = Debug|x86
+		{1AEA0235-2C93-4B31-A4F2-D5FF66D841C7}.Release|x86.ActiveCfg = Release|x86
+		{1AEA0235-2C93-4B31-A4F2-D5FF66D841C7}.Release|x86.Build.0 = Release|x86
 		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Debug|x86.Build.0 = Debug|Any CPU
 		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Release|x86.ActiveCfg = Release|Any CPU

@@ -74,6 +74,7 @@ BCE_LCD
 BCE_LIRC
 BCE_LIVERADIO
 BCE_LYRICS
+BCE_MAGNATUNE
 BCE_MIRAGE
 BCE_RADIOSTATIONFETCHER
 BCE_STREAMRECORDER
@@ -125,6 +126,7 @@ src/Lirc/GUITestHarness/Makefile
 src/Lirc/NUnitTests/Makefile
 src/LiveRadio/Makefile
 src/Lyrics/Makefile
+src/Magnatune/Makefile
 src/Mirage/Makefile
 src/Mirage/libmirageaudio/Makefile
 src/Mirage/Mirage/Makefile
@@ -161,6 +163,7 @@ ${PACKAGE}-${VERSION}
     Lirc:                ${enable_Lirc}
     LiveRadio:           ${enable_LiveRadio}
     Lyrics:              ${enable_Lyrics}
+    Magnatune:           ${enable_Magnatune}
     Mirage:              ${enable_Mirage}
     RadioStationFetcher: ${enable_RadioStationFetcher}
     StreamRecorder:      ${enable_StreamRecorder}

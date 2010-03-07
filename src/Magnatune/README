@@ -1,0 +1,16 @@
+Magnatune Addin for Banshee
+===========================
+
+http://magnatune.code.worldmaker.net/
+
+Copyright 2008 Max Battcher.  Licensed under the MIT X11 license.
+
+This addin adds some Magnatune functionality to Banshee.
+
+Magnatune: http://magnatune.com/
+Banshee: http://banshee-project.org/
+
+Install
+-------
+
+To install simply copy the Magnatune.dll to $HOME/.config/banshee-1/addins/

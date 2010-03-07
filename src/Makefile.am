@@ -7,6 +7,7 @@ SUBDIRS = \
 	Lirc \
 	LiveRadio \
 	Lyrics \
+	Magnatune \
 	Mirage \
 	RadioStationFetcher \
 	StreamRecorder
