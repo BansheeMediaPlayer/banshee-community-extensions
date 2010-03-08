@@ -40,29 +40,46 @@ class MainClass
     [DllImport("libmirageaudio")]
     static extern void mirageaudio_initgst();
 
-	private static void Test()
-	{
+    private static void Test()
+    {
         mirageaudio_initgst();
 
-        Scms song1 = Mirage.Mir.Analyze("/home/music/bo2/Folk/Nikola Jankov/A Master On Klarinet/Seeing Off.mp3");
+        string song1_filename = "/home/lorentz/Music/Library/Pachelbel/Johann Pachelbel - Canon And Gigue In D Major For 3 Violins And Basso Continuo.mp3";
+        string song2_filename = "/home/lorentz/Music/Library/Karajan Adagios/CD 1/Pachelbel - Canon in d Major (Kanon And Gigue in d Major = d Dur) av Johann Pachelbel.mp3";
+        Scms song1 = null;
+        Scms song2 = null;
+        
+        DbgTimer t1 = new DbgTimer();
+        t1.Start();
+        int runs = 10;
+        for (int i = 0; i < runs; i++) {
+            Analyzer.Analyze(song1_filename);
+        }
+        long l1 = 0;
+        t1.Stop(ref l1);
+        Dbg.WriteLine("Analysis: " + runs + " times - " + l1 + "ms; " +
+                      (double)l1/(double)runs + "ms per analysis");
 
-        /*
-		Console.WriteLine("Distance = " + song1.Distance(song2));
-		
-		DbgTimer t = new DbgTimer();
-		t.Start();
-		int runs = 100000;
-		for (int i = 0; i < runs; i++) {
-			song1.Distance(song2);
-		}
-		long l = 0;
-        t.Stop(ref l);
-		Dbg.WriteLine("Distance Computation: " + runs + " times - " + l + "ms; " +
-			(double)l/(double)runs + "ms per comparison");
-            */
-	}
-	
-	private static void GenreClassification()
+        song1 = Analyzer.Analyze(song1_filename);
+        song2 = Analyzer.Analyze(song2_filename);
+        
+        ScmsConfiguration config = new ScmsConfiguration (Analyzer.MFCC_COEFFICIENTS);
+
+        Console.WriteLine("Distance = " + Scms.Distance (song1, song2, config));
+        
+        DbgTimer t2 = new DbgTimer();
+        t2.Start();
+        runs = 100000;
+        for (int i = 0; i < runs; i++) {
+            Scms.Distance (song1, song2, config);
+        }
+        long l2 = 0;
+        t2.Stop(ref l2);
+        Dbg.WriteLine("Distance Computation: " + runs + " times - " + l2 + "ms; " +
+                      (double)l2/(double)runs + "ms per comparison");
+    }
+
+/*	private static void GenreClassification()
 	{
 		// Position of the Genre of the filename seperated by '/' 
 		int genrePos = 5;
@@ -128,13 +145,13 @@ class MainClass
 		Console.Out.WriteLine("Genre Classification Accuracy: {0}%", ((double)hit/(double)ht.Count)*100);
 		
 	}
-
+*/
 
 
 	public static void Main(string[] args)
 	{
-//		Test();
-		GenreClassification();
+		Test();
+//		GenreClassification();
 	}
 	
 }
