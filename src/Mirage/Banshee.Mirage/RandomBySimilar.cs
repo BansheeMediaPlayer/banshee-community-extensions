@@ -71,42 +71,40 @@ namespace Banshee.Mirage
 
         public override TrackInfo GetPlaybackTrack (DateTime after)
         {
-            return GetTrack (after, false);
+            return GetTrack (after, true);
         }
 
         public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
         {
-            return GetTrack (after, true);
+            return GetTrack (after, false);
         }
 
-        private DatabaseTrackInfo GetTrack (DateTime after, bool shuffler)
+        private DatabaseTrackInfo GetTrack (DateTime after, bool playback)
         {
-            using (var context = GetSimilarityContext (after)) {
-                if (context.IsEmpty) {
-                    return null;
-                } else {
-                    var track = shuffler
-                        ? GetTrack (ShufflerQuery, context.Id, context.AvoidArtistIds, after) as DatabaseTrackInfo
-                        : Cache.GetSingle (Select, From, cache_condition, context.Id, context.AvoidArtistIds, after, after) as DatabaseTrackInfo;
+            using (var context = GetSimilarityContext (after, playback)) {
+                var track = playback
+                    ? Cache.GetSingle (Select, From, cache_condition, context.Id, context.AvoidArtistIds, after, after) as DatabaseTrackInfo
+                    : GetTrack (ShufflerQuery, context.Id, context.AvoidArtistIds, after) as DatabaseTrackInfo;
 
-                    if (MiragePlugin.Debug) {
-                        Console.WriteLine ("Mirage got {0} as lowest avg distance to the similarity context", track.Uri);
-                        context.DumpDebug ();
-                    }
-                    return track;
+                if (MiragePlugin.Debug) {
+                    Console.WriteLine ("Mirage got {0} as lowest avg distance to the similarity context", track.Uri);
+                    context.DumpDebug ();
                 }
+                return track;
             }
         }
 
-        private SimilarityContext GetSimilarityContext (DateTime after)
+        private SimilarityContext GetSimilarityContext (DateTime after, bool playback)
         {
             var context = new SimilarityContext ();
 
-            // Manually added songs are the strongest postiive signal for what we want
-            context.AddSeeds (GetSeeds (
-                "d.ModificationType = 1 AND d.LastModifiedAt IS NOT NULL AND d.LastModifiedAt > ? ORDER BY d.LastModifiedAt DESC",
-                after, 4, SimilarityContext.SelectedWeight
-            ));
+            if (!playback) {
+                // Manually added songs are the strongest postiive signal for what we want
+                context.AddSeeds (GetSeeds (
+                    "d.ModificationType = 1 AND d.LastModifiedAt IS NOT NULL AND d.LastModifiedAt > ? ORDER BY d.LastModifiedAt DESC",
+                    after, 4, SimilarityContext.SelectedWeight
+                ));
+            }
 
             // Played songs are the next strongest postiive signal for what we want
             context.AddSeeds (GetSeeds (
@@ -114,16 +112,24 @@ namespace Banshee.Mirage
                 after, 2, SimilarityContext.PlayedWeight
             ));
 
-            // Shuffled songs that the user hasn't removed are a decent, positive signal
-            context.AddSeeds (GetSeeds (
-                "s.LastShuffledAt IS NOT NULL AND s.LastShuffledAt > MAX (?, coalesce(t.LastPlayedStamp, 0), coalesce(d.LastModifiedAt, 0), coalesce(t.LastSkippedStamp, 0)) ORDER BY s.LastShuffledAt DESC",
-                after, 2, SimilarityContext.ShuffledWeight
-            ));
+            if (!playback) {
+                // Shuffled songs that the user hasn't removed are a decent, positive signal
+                context.AddSeeds (GetSeeds (
+                    "s.LastShuffledAt IS NOT NULL AND s.LastShuffledAt > MAX (?, coalesce(t.LastPlayedStamp, 0), coalesce(d.LastModifiedAt, 0), coalesce(t.LastSkippedStamp, 0)) ORDER BY s.LastShuffledAt DESC",
+                    after, 2, SimilarityContext.ShuffledWeight
+                ));
 
-            // Discarded songs are a strong negative signal for what we want
+                // Discarded songs are a strong negative signal for what we want
+                context.AddSeeds (GetSeeds (
+                    "d.ModificationType = 0 AND d.LastModifiedAt IS NOT NULL AND d.LastModifiedAt > ? ORDER BY d.LastModifiedAt DESC",
+                    after, 3, SimilarityContext.DiscardedWeight
+                ));
+            }
+
+            // Skipped songs are also a strong negative signal for what we want
             context.AddSeeds (GetSeeds (
-                "d.ModificationType = 0 AND d.LastModifiedAt IS NOT NULL AND d.LastModifiedAt > ? ORDER BY d.LastModifiedAt DESC",
-                after, 3, SimilarityContext.DiscardedWeight
+                "t.LastSkippedStamp IS NOT NULL AND t.LastSkippedStamp > ? ORDER BY t.LastSkippedStamp DESC",
+                after, 2, SimilarityContext.SkippedWeight
             ));
 
             return context;

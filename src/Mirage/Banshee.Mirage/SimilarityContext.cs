@@ -12,7 +12,8 @@ namespace Banshee.Mirage
         public const float SelectedWeight = 4.0f;
         public const float PlayedWeight = 2.0f;
         public const float ShuffledWeight = 1.0f;
-        public const float DiscardedWeight = 1.0f / 10.0f;
+        public const float DiscardedWeight = 1.0f / 5.0f;
+        public const float SkippedWeight = 1.0f / 10.0f;
 
         private List<Seed> seeds = new List<Seed> ();
 
