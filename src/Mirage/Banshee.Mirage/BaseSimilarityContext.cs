@@ -6,7 +6,7 @@ using Mirage;
 
 namespace Banshee.Mirage
 {
-    public abstract class BaseSeed : IDisposable
+    public abstract class BaseSimilarityContext : IDisposable
     {
         private int seed_id;
         protected ScmsConfiguration Config = new ScmsConfiguration (Analyzer.MFCC_COEFFICIENTS);
@@ -15,13 +15,16 @@ namespace Banshee.Mirage
 
         public int Id { get { return seed_id; } }
 
+        public bool IsEmpty { get; protected set; }
+
         // Scms object that can be reused when testing various tracks sequentially,
         // avoiding creating new arrays for each.
-        public Scms TestScms = new Scms (Analyzer.MFCC_COEFFICIENTS);
+        internal Scms ComparisonScms = new Scms (Analyzer.MFCC_COEFFICIENTS);
 
-        public BaseSeed ()
+        public BaseSimilarityContext ()
         {
             seed_id = DistanceCalculator.AddSeed (this);
+            IsEmpty = true;
             DistanceCalculator.total_count = 0;
             DistanceCalculator.total_ms = 0;
             DistanceCalculator.total_read_ms = 0;
@@ -32,9 +35,12 @@ namespace Banshee.Mirage
         public void Dispose ()
         {
             DistanceCalculator.RemoveSeed (seed_id);
-            Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} ms - spent reading: {1} ms; total calls: {2}",
-                               DistanceCalculator.total_ms, DistanceCalculator.total_read_ms, DistanceCalculator.total_count);
-            Console.WriteLine (">>>>>>>>>>>>>> Distance [min, max] = [{0}, {1}]", min_distance, max_distance);
+
+            if (MiragePlugin.Debug) {
+                Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} ms - spent reading: {1} ms; total calls: {2}",
+                                   DistanceCalculator.total_ms, DistanceCalculator.total_read_ms, DistanceCalculator.total_count);
+                Console.WriteLine (">>>>>>>>>>>>>> Distance [min, max] = [{0}, {1}]", min_distance, max_distance);
+            }
         }
     }
 }

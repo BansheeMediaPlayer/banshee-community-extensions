@@ -45,6 +45,7 @@ clean-local:
 # copy the extension dlls to such a folder so Banshee will pick them up.
 run:
 	(cd bin; mkdir -p addins; cp *.dll* addins/; \
+		export LD_LIBRARY_PATH=".${LD_LIBRARY_PATH+:$LD_LIBRARY_PATH}"; \
 		banshee-1 --uninstalled --debug $(BANSHEE_DEV_OPTIONS) \
 	)
 

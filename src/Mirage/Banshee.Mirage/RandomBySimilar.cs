@@ -27,6 +27,8 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Banshee.Collection.Database;
 using Banshee.Collection;
@@ -46,7 +48,6 @@ namespace Banshee.Mirage
         // add the Similarity-based selection[, exclusion], and ordering.
 
         private string cache_condition;
-        private long last_track_id;
 
         public RandomBySimilar () : base ("mirage_similar")
         {
@@ -55,22 +56,12 @@ namespace Banshee.Mirage
             Description = Catalog.GetString ("Play songs similar to those already played");
 
             // TODO Mirage's PlaylistGeneratorSource ensures no more than 50% of tracks are by same artist
-            Condition = "mirage.Status = 0 AND Distance > 0";
+            Condition = "mirage.Status = 0 AND CoreTracks.ArtistID NOT IN (?) AND Distance > 0";
             From = "LEFT OUTER JOIN MirageTrackAnalysis mirage ON (mirage.TrackID = CoreTracks.TrackID) ";
             Select = ", HYENA_BINARY_FUNCTION ('MIRAGE_DISTANCE', ?, mirage.ScmsData) as Distance";
             OrderBy = "Distance ASC, RANDOM ()";
 
             cache_condition = String.Format ("AND {0} {1} ORDER BY {2}", Condition, RANDOM_CONDITION, OrderBy);
-        }
-
-        public override void Reset ()
-        {
-            var track = ServiceManager.PlaybackController.CurrentTrack as DatabaseTrackInfo;
-            if (track != null) {
-                last_track_id = track.TrackId;
-            } else {
-                last_track_id = 0;
-            }
         }
 
         public override bool Next (DateTime after)
@@ -80,45 +71,91 @@ namespace Banshee.Mirage
 
         public override TrackInfo GetPlaybackTrack (DateTime after)
         {
-            var seed = GetSeed ();
-            if (seed == null) {
-                return null;
-            }
-
-            using (seed) {
-                var track = Cache.GetSingle (Select, From, cache_condition, seed.Id, after, after) as DatabaseTrackInfo;
-                if (track != null) {
-                    last_track_id = track.TrackId;
-                }
-                return track;
-            }
+            return GetTrack (after, false);
         }
 
         public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
         {
-            var seed = GetSeed ();
-            if (seed == null) {
-                return null;
-            }
-
-            using (seed) {
-                var track = GetTrack (ShufflerQuery, seed.Id, after) as DatabaseTrackInfo;
-                if (track != null) {
-                    last_track_id = track.TrackId;
-                }
-                return track;
-            }
+            return GetTrack (after, true);
         }
 
-        private BaseSeed GetSeed ()
+        private DatabaseTrackInfo GetTrack (DateTime after, bool shuffler)
         {
-            var buf = ServiceManager.DbConnection.Query<byte[]> (String.Format (
-                "SELECT ScmsData FROM MirageTrackAnalysis WHERE Status = 0 {0} LIMIT 1",
-                last_track_id == 0
-                    ? "ORDER BY RANDOM ()"
-                    : String.Format ("AND TrackID = {0}", last_track_id)
-            ));
-            return buf == null ? null : new SingleSeed (Scms.FromBytes (buf));
+            using (var context = GetSimilarityContext (after)) {
+                if (context.IsEmpty) {
+                    return null;
+                } else {
+                    var track = shuffler
+                        ? GetTrack (ShufflerQuery, context.Id, context.AvoidArtistIds, after) as DatabaseTrackInfo
+                        : Cache.GetSingle (Select, From, cache_condition, context.Id, context.AvoidArtistIds, after, after) as DatabaseTrackInfo;
+
+                    if (MiragePlugin.Debug) {
+                        Console.WriteLine ("Mirage got {0} as lowest avg distance to the similarity context", track.Uri);
+                        context.DumpDebug ();
+                    }
+                    return track;
+                }
+            }
         }
+
+        private SimilarityContext GetSimilarityContext (DateTime after)
+        {
+            var context = new SimilarityContext ();
+
+            // Manually added songs are the strongest postiive signal for what we want
+            context.AddSeeds (GetSeeds (
+                "d.ModificationType = 1 AND d.LastModifiedAt IS NOT NULL AND d.LastModifiedAt > ? ORDER BY d.LastModifiedAt DESC",
+                after, 4, SimilarityContext.SelectedWeight
+            ));
+
+            // Played songs are the next strongest postiive signal for what we want
+            context.AddSeeds (GetSeeds (
+                "t.LastPlayedStamp IS NOT NULL AND t.LastPlayedStamp > MAX (?, coalesce(d.LastModifiedAt, 0), coalesce(t.LastSkippedStamp, 0)) ORDER BY t.LastPlayedStamp DESC",
+                after, 2, SimilarityContext.PlayedWeight
+            ));
+
+            // Shuffled songs that the user hasn't removed are a decent, positive signal
+            context.AddSeeds (GetSeeds (
+                "s.LastShuffledAt IS NOT NULL AND s.LastShuffledAt > MAX (?, coalesce(t.LastPlayedStamp, 0), coalesce(d.LastModifiedAt, 0), coalesce(t.LastSkippedStamp, 0)) ORDER BY s.LastShuffledAt DESC",
+                after, 2, SimilarityContext.ShuffledWeight
+            ));
+
+            // Discarded songs are a strong negative signal for what we want
+            context.AddSeeds (GetSeeds (
+                "d.ModificationType = 0 AND d.LastModifiedAt IS NOT NULL AND d.LastModifiedAt > ? ORDER BY d.LastModifiedAt DESC",
+                after, 3, SimilarityContext.DiscardedWeight
+            ));
+
+            return context;
+        }
+
+        private IEnumerable<Seed> GetSeeds (string query, DateTime after, int limit, float weight)
+        {
+            var reader = ServiceManager.DbConnection.Query (
+                String.Format (similarity_query, query),
+                Shuffler.DbId, Shuffler.DbId, after, limit // these args assume the query string has exactly one ? meant for the after date
+            );
+
+            using (reader) {
+                while (reader.Read ()) {
+                    yield return new Seed () {
+                        TrackId = Convert.ToInt32 (reader[0]),
+                        Scms = Scms.FromBytes (reader[1] as byte[]),
+                        Weight = weight,
+                        ArtistId = Convert.ToInt32 (reader[2]),
+                        Uri = reader[3] as string
+                    };
+                }
+            }
+        }
+
+        const string similarity_query =
+            @"SELECT a.TrackID, a.ScmsData, t.ArtistId, t.Uri FROM MirageTrackAnalysis a, CoreTracks t
+                 WHERE a.Status = 0 AND a.TrackID = t.TrackID AND
+                 a.TrackID IN (SELECT t.TrackID FROM
+                        CoreTracks t LEFT OUTER JOIN
+                        CoreShuffles s ON (s.ShufflerID = ? AND s.TrackID = t.TrackID) LEFT OUTER JOIN
+                        CoreShuffleModifications d ON (d.ShufflerID = ? AND t.TrackID = d.TrackID)
+                    WHERE {0} LIMIT ?)";
     }
 }

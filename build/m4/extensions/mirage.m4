@@ -2,9 +2,9 @@ AC_DEFUN([BCE_MIRAGE],
 [
 	BCE_ARG_DISABLE([Mirage], [try])
 
-	BCE_CHECK_EXTENSION_DEP([Mirage], [BANSHEE_154],
-		[banshee-1-thickclient >= 1.5.4],
-		[Banshee 1.5.4 was not found. Please install it or disable the Mirage extension by passing --disable-mirage])
+	BCE_CHECK_EXTENSION_DEP([Mirage], [BANSHEE_155],
+		[banshee-1-thickclient >= 1.5.5],
+		[Banshee 1.5.5 was not found. Please install it or disable the Mirage extension by passing --disable-mirage])
 
 	BCE_CHECK_EXTENSION_DEP([Mirage], [GLIB],
 		[glib-2.0],
@@ -26,7 +26,7 @@ AC_DEFUN([BCE_MIRAGE],
 		[GStreamer >= $GSTREAMER_REQUIRED_VERSION not found. Please install it or disable the Mirage extension by passing --disable-mirage])
 
 	if test "x$enable_Mirage" = "xtry" \
-		&& test "x$have_BANSHEE_154" = "xyes" \
+		&& test "x$have_BANSHEE_155" = "xyes" \
 		&& test "x$have_GLIB" = "xyes" \
 		&& test "x$have_FFTW3F" = "xyes" \
 		&& test "x$have_LIBSAMPLERATE" = "xyes" \

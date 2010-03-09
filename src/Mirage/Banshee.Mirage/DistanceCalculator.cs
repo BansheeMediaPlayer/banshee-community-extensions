@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using Mirage;
+using Mono.Unix;
 
 namespace Banshee.Mirage
 {
@@ -22,10 +23,10 @@ namespace Banshee.Mirage
             seeds.Clear ();
         }
 
-        private static Dictionary<int, BaseSeed> seeds = new Dictionary<int, BaseSeed> ();
+        private static Dictionary<int, BaseSimilarityContext> seeds = new Dictionary<int, BaseSimilarityContext> ();
 
         private static int seed_index;
-        public static int AddSeed (BaseSeed seed)
+        public static int AddSeed (BaseSimilarityContext seed)
         {
             lock (seeds) {
                 seeds[seed_index] = seed;
@@ -44,24 +45,27 @@ namespace Banshee.Mirage
         internal static double total_ms = 0;
         internal static double total_read_ms = 0;
 
+        internal static string notify_string = Catalog.GetString ("The Mirage extension is still analyzing your songs.  Until its finished, shuffle and fill by similar may not perform properly.");
+
         private static object Distance (object seed_id_obj, object scms_obj)
         {
-            BaseSeed seed;
-            if (!seeds.TryGetValue (Convert.ToInt32 (seed_id_obj), out seed))
+            BaseSimilarityContext context;
+            if (!seeds.TryGetValue (Convert.ToInt32 (seed_id_obj), out context))
                 throw new ArgumentException ("seed_id not found", "seed_id_obj");
 
             var scms_bytes = scms_obj as byte[];
             if (scms_bytes == null) {
                 // TODO raise an event to notify the user (one time only) that
                 // there are un-analyzed tracks?
+                // notify_string
                 return Double.MaxValue;
             }
 
             var start = DateTime.Now;
-            Scms.FromBytes (scms_bytes, seed.TestScms);
+            Scms.FromBytes (scms_bytes, context.ComparisonScms);
             total_read_ms += (DateTime.Now - start).TotalMilliseconds;
 
-            float distance = seed.Distance (seed.TestScms).Average ();
+            float distance = context.Distance (context.ComparisonScms).Average ();
             total_ms += (DateTime.Now - start).TotalMilliseconds;
             total_count++;
 

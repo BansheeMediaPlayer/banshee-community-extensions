@@ -54,10 +54,14 @@ namespace Banshee.Mirage
         ActionGroup actions;
         uint uiManagerId;
         InterfaceActionService action_service;
+
+        internal static bool Debug;
         
         void IExtensionService.Initialize ()
         {
             action_service = ServiceManager.Get<InterfaceActionService> ();
+
+            Debug = ApplicationContext.CommandLine.Contains ("debug-mirage");
 
             Analyzer.Init ();
             TrackAnalysis.Init ();

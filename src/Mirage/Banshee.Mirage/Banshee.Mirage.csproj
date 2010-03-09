@@ -28,6 +28,7 @@
     </CustomCommands>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <DefineConstants>ENABLE_TESTS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,6 +37,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <DefineConstants>ENABLE_TESTS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -88,9 +90,11 @@
     <Compile Include="AnalyzeLibraryJob.cs" />
     <Compile Include="RandomBySimilar.cs" />
     <Compile Include="DistanceCalculator.cs" />
-    <Compile Include="BaseSeed.cs" />
-    <Compile Include="SingleSeed.cs" />
     <Compile Include="TrackAnalysis.cs" />
+    <Compile Include="BaseSimilarityContext.cs" />
+    <Compile Include="SimilarityContext.cs" />
+    <Compile Include="Tests\SimilarityTests.cs" />
+    <Compile Include="Seed.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -113,5 +117,8 @@
       <Project>{D43EB678-542B-4B0B-8A3B-F6CA6181C81F}</Project>
       <Name>Mirage</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tests\" />
   </ItemGroup>
 </Project>

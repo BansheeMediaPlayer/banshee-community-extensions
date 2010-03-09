@@ -3,12 +3,14 @@ LINK = $(BANSHEE_LIBS) -r:$(DIR_BIN)/Mirage.dll
 
 SOURCES =  \
 	AnalyzeLibraryJob.cs \
-	BaseSeed.cs \
+	BaseSimilarityContext.cs \
 	DistanceCalculator.cs \
 	MirageConfiguration.cs \
 	MiragePlugin.cs \
 	RandomBySimilar.cs \
-	SingleSeed.cs \
+	Seed.cs \
+	SimilarityContext.cs \
+	Tests/SimilarityTests.cs \
 	TrackAnalysis.cs
 
 RESOURCES =  \
