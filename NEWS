@@ -7,6 +7,7 @@ Alexander Kojevnikov, Bertrand Lorentz, David Corrales, Frank Ziegler,
 Gabriel Burt, Mathijs Dumon, Max Battcher, Neil Loknath
 
 Features:
+* [Mirage] Much more sophisticated shuffle/fill-by similar
 * [ClutterFlow] Added a slide out animation when user right-clicks album so he/she can see the cover better
 * [ClutterFlow] Dragging sensitivity is now adjustable
 * [CoverWallpaper] new, migrated from Google Code
@@ -45,4 +46,4 @@ Since migrating them, some changes have been made:
   * All extensions can be found in Preferences under the 'Community
     Extensions' category
 
-  * All extensions are disabled by default
+  * All extensions are disabled by default; enable in Preferences
