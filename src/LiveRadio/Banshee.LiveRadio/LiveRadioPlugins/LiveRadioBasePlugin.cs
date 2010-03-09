@@ -403,6 +403,8 @@ namespace Banshee.LiveRadio.Plugins
                 } else {
                     result = cached_results[query];
                 }
+                foreach (DatabaseTrackInfo track in result)
+                    result[result.IndexOf (track)] = new DatabaseTrackInfo (track);
                 Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> result contains {1} entries for query {2}", Name, result.Count, query);
             } catch (Exception e) {
                 result = null;

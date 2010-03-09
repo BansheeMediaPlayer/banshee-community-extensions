@@ -13,6 +13,7 @@ SOURCES =  \
 	Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs \
 	Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginError.cs \
 	Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginListModel.cs \
+	Banshee.LiveRadio/LiveRadioPlugins/MagnatunePlugin.cs \
 	Banshee.LiveRadio/LiveRadioPlugins/ShoutCastPlugin.cs \
 	Banshee.LiveRadio/LiveRadioPlugins/XiphOrgPlugin.cs \
 	Banshee.LiveRadio/LiveRadioPluginSource.cs \

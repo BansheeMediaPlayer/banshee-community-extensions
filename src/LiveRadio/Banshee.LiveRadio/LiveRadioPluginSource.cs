@@ -205,7 +205,6 @@ namespace Banshee.LiveRadio
             BatchUserJob add_track_job = AddTrackJob;
             add_track_job.Total = tracks.Count;
             add_track_job.CancelRequested += OnAddTrackJobCancelRequested;
-            //source_contents.Widget.FreezeChildNotify ();
             this.PauseSorting ();
             foreach (DatabaseTrackInfo track in tracks) {
                 AddStation (track);
@@ -219,8 +218,6 @@ namespace Banshee.LiveRadio
             }
             add_track_job.Finish ();
             this.ResumeSorting ();
-            //source_contents.Widget.ThawChildNotify ();
-            
         }
 
         /// <summary>
@@ -231,6 +228,8 @@ namespace Banshee.LiveRadio
         /// </param>
         protected override void AddTrack (DatabaseTrackInfo track)
         {
+            track.CanSaveToDatabase = false;
+            track.PrimarySource = this;
             track.Save ();
         }
 
@@ -246,7 +245,6 @@ namespace Banshee.LiveRadio
             station.IsLive = true;
             station.PrimarySource = this;
             if (!String.IsNullOrEmpty (station.TrackTitle) && station.Uri != null && station.Uri is SafeUri) {
-                //this.AddTrackAndIncrementCount(station);
                 this.AddTrack (station);
             }
         }
