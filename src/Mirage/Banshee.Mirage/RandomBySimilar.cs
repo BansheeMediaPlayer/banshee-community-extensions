@@ -109,7 +109,7 @@ namespace Banshee.Mirage
             // Played songs are the next strongest postiive signal for what we want
             context.AddSeeds (GetSeeds (
                 "t.LastPlayedStamp IS NOT NULL AND t.LastPlayedStamp > MAX (?, coalesce(d.LastModifiedAt, 0), coalesce(t.LastSkippedStamp, 0)) ORDER BY t.LastPlayedStamp DESC",
-                after, 2, SimilarityContext.PlayedWeight
+                after, playback ? 4 : 2, SimilarityContext.PlayedWeight
             ));
 
             if (!playback) {
@@ -129,7 +129,7 @@ namespace Banshee.Mirage
             // Skipped songs are also a strong negative signal for what we want
             context.AddSeeds (GetSeeds (
                 "t.LastSkippedStamp IS NOT NULL AND t.LastSkippedStamp > ? ORDER BY t.LastSkippedStamp DESC",
-                after, 2, SimilarityContext.SkippedWeight
+                after, playback ? 4 : 2, SimilarityContext.SkippedWeight
             ));
 
             return context;
