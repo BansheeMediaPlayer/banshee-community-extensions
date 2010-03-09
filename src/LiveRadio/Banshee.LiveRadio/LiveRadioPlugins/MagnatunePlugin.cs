@@ -285,7 +285,7 @@ namespace Banshee.LiveRadio.Plugins
                                     new_station.Uri = new SafeUri (location);
                                     new_station.ArtistName = artist_name;
                                     new_station.TrackTitle = song_name;
-                                    new_station.Comment = "www.magnatune.com";
+                                    new_station.Comment = "buy it at www.magnatune.com";
                                     new_station.AlbumTitle = album_name;
                                     new_station.PrimarySource = source;
                                     new_station.IsLive = true;
