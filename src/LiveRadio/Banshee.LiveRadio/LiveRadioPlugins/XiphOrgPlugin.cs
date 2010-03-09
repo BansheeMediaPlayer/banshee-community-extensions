@@ -85,7 +85,7 @@ namespace Banshee.LiveRadio.Plugins
         {
             string key;
             if (request_type == LiveRadioRequestType.ByGenre) {
-                key = "Genre:" + query;
+                key = new Genre(query).GenreKey;
                 if (!cached_results.ContainsKey (key)) {
                     cached_results.Add (key, new List<DatabaseTrackInfo> ());
                 }
@@ -196,16 +196,14 @@ namespace Banshee.LiveRadio.Plugins
                     Int32.TryParse (bitrate.Trim (), out bitrate_int);
                     new_station.BitRate = bitrate_int;
                     
-                    
                     if (!new_genres.Contains (genre)) {
                         new_genres.Add (genre);
-                        if (cached_results.ContainsKey ("Genre:" + genre))
-                            cached_results["Genre:" + genre].Clear ();
+                        if (cached_results.ContainsKey (genre.GenreKey))
+                            cached_results[genre.GenreKey].Clear ();
                         else
-                            cached_results.Add ("Genre:" + genre, new List<DatabaseTrackInfo> ());
+                            cached_results.Add (genre.GenreKey, new List<DatabaseTrackInfo> ());
                     }
-                    cached_results["Genre:" + genre].Add (new_station);
-                    
+                    cached_results[genre.GenreKey].Add (new_station);
                 } catch (Exception ex) {
                     Log.Exception ("[XiphOrgPlugin] <ParseCatalog> ERROR", ex);
                     RaiseErrorReturned ("XML Parse Error", ex.Message);
