@@ -48,6 +48,27 @@ run:
 		banshee-1 --uninstalled --debug $(BANSHEE_DEV_OPTIONS) \
 	)
 
+if ENABLE_TESTS
+# ---------------
+# Unit Test Target
+# ---------------
+
+TEST_ASSEMBLIES = \
+	Banshee.Mirage.dll
+
+ENV_OPTIONS = TZ=America/Chicago LC_ALL=it_IT LANG=it_IT \
+			  LD_LIBRARY_PATH="$(EXTENSION_DIR)/..:$(EXTENSION_DIR)${LD_LIBRARY_PATH+:$LD_LIBRARY_PATH}" \
+			  MONO_PATH="$(EXTENSION_DIR)/..:$(EXTENSION_DIR)${MONO_PATH+:$MONO_PATH}"
+
+RUNNER = for asm in $${TEST_ASSEMBLIES}; do echo -e "\033[1mRunning tests on $${asm}...\033[0m"; $(ENV_OPTIONS) nunit-console2 -nologo -noshadow $$asm; done
+
+test:
+	(cd bin; mkdir -p addins; cp *.dll* addins/; \
+		export TEST_ASSEMBLIES="$(TEST_ASSEMBLIES)"; $(RUNNER); \
+	)
+
+endif
+
 # ---------------
 # Release Targets
 # ---------------

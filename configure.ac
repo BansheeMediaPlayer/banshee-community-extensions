@@ -65,6 +65,9 @@ else
 fi
 AC_SUBST(GMCS_FLAGS)
 
+dnl Unit Tests (optional)
+SHAMROCK_CHECK_UNIT_TESTS
+
 dnl Extensions
 BCE_ALARMCLOCK
 BCE_AWN
@@ -144,18 +147,19 @@ cat <<EOF
 ${PACKAGE}-${VERSION}
 
   Build Environment
-    Install Prefix:    ${prefix}
-    Datadir:           ${expanded_datadir}
-    Libdir:            ${expanded_libdir}
-    Extensions libdir: ${expanded_extensionsdir}
+    Install Prefix:      ${prefix}
+    Datadir:             ${expanded_datadir}
+    Libdir:              ${expanded_libdir}
+    Extensions libdir:   ${expanded_extensionsdir}
 
-    C Compiler:        ${CC}
-    Mono C# Compiler:  ${MCS} ${GMCS_FLAGS}
-    Mono Runtime:      ${MONO}
+    C Compiler:          ${CC}
+    Mono C# Compiler:    ${MCS} ${GMCS_FLAGS}
+    Mono Runtime:        ${MONO}
 
   Build/Development:
-    Release Build:     ${enable_release}
-    Vendor Build ID:   ${vendor_build_id}
+    Release Build:       ${enable_release}
+    Vendor Build ID:     ${vendor_build_id}
+    Unit Tests:          ${enable_tests} (requires nunit >= ${NUNIT_REQUIRED}, --enable-tests)
 
   Extensions:
     Alarm Clock:         ${enable_AlarmClock}

@@ -17,6 +17,11 @@ ASSEMBLY_FILE = $(top_builddir)/bin/$(ASSEMBLY).$(ASSEMBLY_EXTENSION)
 
 INSTALL_DIR_RESOLVED = $(firstword $(subst , $(DEFAULT_INSTALL_DIR), $(INSTALL_DIR)))
 
+if ENABLE_TESTS
+    LINK += " $(NUNIT_LIBS) $(MONO_NUNIT_LIBS)"
+    ENABLE_TESTS_FLAG = "-define:ENABLE_TESTS"
+endif
+
 FILTERED_LINK = $(shell echo "$(LINK)" | $(UNIQUE_FILTER_PIPE))
 DEP_LINK = $(shell echo "$(LINK)" | $(UNIQUE_FILTER_PIPE) | sed s,-r:,,g | grep '$(top_builddir)/bin/')
 
@@ -43,6 +48,7 @@ $(ASSEMBLY_FILE): $(SOURCES_BUILD) $(RESOURCES_EXPANDED) $(DEP_LINK)
 	@mkdir -p $(top_builddir)/bin
 	$(MCS) \
 		$(GMCS_FLAGS) \
+		$(ENABLE_TESTS_FLAG) \
 		$(ASSEMBLY_BUILD_FLAGS) \
 		-debug -target:$(TARGET) -out:$@ \
 		$(BUILD_DEFINES) \
