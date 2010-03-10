@@ -1,6 +1,6 @@
 AC_DEFUN([BCE_U1MS],
 [
-	BCE_ARG_DISABLE([UbuntuOneMusicStore], [yes])
+	BCE_ARG_DISABLE([UbuntuOneMusicStore], [no])
 
 	BCE_CHECK_EXTENSION_DEP([UbuntuOneMusicStore], [UBUNTUONESHARP],
 		[ubuntuone-sharp-1.0],
