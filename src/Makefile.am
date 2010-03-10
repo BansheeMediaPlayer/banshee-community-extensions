@@ -1,5 +1,4 @@
 SUBDIRS = \
-    UbuntuOneMusicStore \
 	AlarmClock \
 	Awn \
 	ClutterFlow \
@@ -12,7 +11,8 @@ SUBDIRS = \
 	Mirage \
 	RadioStationFetcher \
 	StreamRecorder \
-	Telepathy
+	Telepathy \
+	UbuntuOneMusicStore
 
 EXTRA_DIST = AssemblyInfo.cs.in
 

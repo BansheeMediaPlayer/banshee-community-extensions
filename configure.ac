@@ -115,7 +115,6 @@ build/m4/shave/shave-libtool
 po/Makefile.in
 
 src/Makefile
-src/UbuntuOneMusicStore/Makefile
 src/AssemblyInfo.cs
 
 src/AlarmClock/Makefile
@@ -142,6 +141,7 @@ src/RadioStationFetcher/Makefile
 src/StreamRecorder/Makefile
 src/Telepathy/Makefile
 src/Telepathy/Banshee.Telepathy/Makefile
+src/UbuntuOneMusicStore/Makefile
 ])
 
 cat <<EOF
@@ -164,7 +164,6 @@ ${PACKAGE}-${VERSION}
     Unit Tests:          ${enable_tests} (requires nunit >= ${NUNIT_REQUIRED}, --enable-tests)
 
   Extensions:
-    UbuntuOneMusicStore: ${enable_UbuntuOneMusicStore}
     Alarm Clock:         ${enable_AlarmClock}
     Awn:                 ${enable_Awn}
     ClutterFlow:         ${enable_ClutterFlow}
@@ -178,5 +177,6 @@ ${PACKAGE}-${VERSION}
     RadioStationFetcher: ${enable_RadioStationFetcher}
     StreamRecorder:      ${enable_StreamRecorder}
     Telepathy:           ${enable_Telepathy}
+    UbuntuOneMusicStore: ${enable_UbuntuOneMusicStore}
 
 EOF
