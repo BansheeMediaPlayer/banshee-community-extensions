@@ -44,7 +44,6 @@ src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/TelepathyUpload.cs
 src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs
 src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactSourceContents.cs
 src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/DownloadManagerUi.cs
-src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/IncomingTubeDialog.cs
 src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs
 src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyNotification.cs
 src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TransferManagerUi.cs
