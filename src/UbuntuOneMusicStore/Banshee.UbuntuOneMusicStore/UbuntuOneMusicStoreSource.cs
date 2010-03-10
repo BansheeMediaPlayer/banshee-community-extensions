@@ -87,7 +87,8 @@ namespace Banshee.UbuntuOneMusicStore
                 PreviewTrack.ArtistName = "Track Preview";
                 PreviewTrack.AlbumTitle = "Ubuntu One Music Store";
                 PreviewTrack.Uri = new SafeUri (a.Url);
-                Banshee.ServiceStack.ServiceManager.PlayerEngine.OpenPlay (PreviewTrack);
+                ServiceManager.PlayerEngine.OpenPlay (PreviewTrack);
+                ServiceManager.PlaybackController.StopWhenFinished = true;
             }
 
             private void AddDownloadToLibrary (object Sender, UbuntuOne.DownloadFinishedArgs a)
