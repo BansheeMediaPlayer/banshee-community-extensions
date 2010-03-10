@@ -21,8 +21,13 @@ namespace Banshee.Mirage
         private Scms best_scms;
         private bool debug;
 
+        private static bool static_avoid_artists;
+        private bool avoid_artists;
+
         public SimilarityContext ()
         {
+            avoid_artists = static_avoid_artists;
+            static_avoid_artists = !static_avoid_artists;
         }
 
         public void AddSeeds (IEnumerable<Seed> seeds)
@@ -38,7 +43,13 @@ namespace Banshee.Mirage
         }
 
         public int [] AvoidArtistIds {
-            get { return seeds.Select (s => s.ArtistId).ToArray (); }
+            get {
+                if (avoid_artists) {
+                    return seeds.Select (s => s.ArtistId).ToArray ();
+                } else {
+                    return new int [0];
+                }
+            }
         }
 
         public void DumpDebug ()
