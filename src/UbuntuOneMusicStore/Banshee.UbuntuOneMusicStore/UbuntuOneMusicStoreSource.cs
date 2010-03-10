@@ -41,6 +41,7 @@ using Banshee.Preferences;
 using Banshee.MediaEngine;
 using Banshee.Gui;
 using Banshee.PlaybackController;
+using Banshee.Collection;
 
 namespace Banshee.UbuntuOneMusicStore
 {
@@ -71,6 +72,8 @@ namespace Banshee.UbuntuOneMusicStore
 
         public class StoreWrapper: UbuntuOne.U1MusicStore, IDisableKeybindings
         {
+            string U1LibraryLocation = System.IO.Path.Combine (System.IO.Path.Combine (System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal), ".ubuntuone"), "Purchased from Ubuntu One");
+
             public StoreWrapper (): base ()
             {
                 this.PreviewMp3 += PlayMP3Preview;
@@ -82,7 +85,7 @@ namespace Banshee.UbuntuOneMusicStore
             private void PlayMP3Preview (object Sender, UbuntuOne.PreviewMp3Args a)
             {
                 Hyena.Log.Information ("U1MS: Playing preview: ", a.Url );
-                Banshee.Collection.TrackInfo PreviewTrack = new Banshee.Collection.TrackInfo ();
+                TrackInfo PreviewTrack = new TrackInfo ();
                 PreviewTrack.TrackTitle = a.Title;
                 PreviewTrack.ArtistName = "Track Preview";
                 PreviewTrack.AlbumTitle = "Ubuntu One Music Store";
@@ -100,7 +103,15 @@ namespace Banshee.UbuntuOneMusicStore
 
             private void PlayU1MSLibrary (object Sender, UbuntuOne.PlayLibraryArgs a)
             {
-                Hyena.Log.Information ("U1MS: PlayLibrary. ", a.Path);
+                Hyena.Log.Information ("U1MS: Playing from library: ", a.Path);
+                Hyena.Log.Information ("U1MS: U1 library location: ", U1LibraryLocation);
+                int track_id = Banshee.Collection.Database.DatabaseTrackInfo.GetTrackIdForUri (System.IO.Path.Combine (U1LibraryLocation, a.Path));
+                if (track_id > 0)
+                {
+                    var track = Banshee.Collection.Database.DatabaseTrackInfo.Provider.FetchSingle (track_id);
+                    ServiceManager.PlaybackController.NextSource = ServiceManager.SourceManager.MusicLibrary;
+                    ServiceManager.PlayerEngine.OpenPlay (track);
+                }
             }
 
             private void U1MSUrlLoaded (object Sender, UbuntuOne.UrlLoadedArgs a)
