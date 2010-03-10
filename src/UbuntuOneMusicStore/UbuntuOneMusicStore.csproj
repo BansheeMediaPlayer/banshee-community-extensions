@@ -56,6 +56,9 @@
     <EmbeddedResource Include="UbuntuOneMusicStore.addin.xml">
       <LogicalName>UbuntuOneMusicStore.addin.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ubuntuone.png">
+      <LogicalName>ubuntuone.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.UbuntuOneMusicStore\UbuntuOneMusicStoreSource.cs" />
