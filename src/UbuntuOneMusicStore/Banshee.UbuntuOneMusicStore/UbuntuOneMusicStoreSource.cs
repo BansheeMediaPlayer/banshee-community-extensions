@@ -74,6 +74,9 @@ namespace Banshee.UbuntuOneMusicStore
             public StoreWrapper (): base ()
             {
                 this.PreviewMp3 += PlayMP3Preview;
+                this.DownloadFinished += AddDownloadToLibrary;
+                this.PlayLibrary += PlayU1MSLibrary;
+                this.UrlLoaded += U1MSUrlLoaded;
             }
 
             private void PlayMP3Preview (object Sender, UbuntuOne.PreviewMp3Args a)
@@ -85,11 +88,28 @@ namespace Banshee.UbuntuOneMusicStore
                 PreviewTrack.Uri = new SafeUri (a.Url);
                 Banshee.ServiceStack.ServiceManager.PlayerEngine.OpenPlay (PreviewTrack);
             }
+
+            private void AddDownloadToLibrary (object Sender, UbuntuOne.DownloadFinishedArgs a)
+            {
+                Hyena.Log.Information ("U1MS: DownloadFinished. ", a.Path);
+                ServiceManager.Get<Banshee.Library.LibraryImportManager> ().ImportTrack (new SafeUri (a.Path));
+                ServiceManager.Get<Banshee.Library.LibraryImportManager> ().NotifyAllSources ();
+            }
+
+            private void PlayU1MSLibrary (object Sender, UbuntuOne.PlayLibraryArgs a)
+            {
+                Hyena.Log.Information ("U1MS: PlayLibrary. ", a.Path);
+            }
+
+            private void U1MSUrlLoaded (object Sender, UbuntuOne.UrlLoadedArgs a)
+            {
+                Hyena.Log.Information ("U1MS: Url Loaded: ", a.Url);
+            }
         }
 		
         private class CustomView : ISourceContents
         {
-            StoreWrapper store = new StoreWrapper( );
+            StoreWrapper store = new StoreWrapper ();
 
             public bool SetSource (ISource source) { return true; }
             public void ResetSource () { }
