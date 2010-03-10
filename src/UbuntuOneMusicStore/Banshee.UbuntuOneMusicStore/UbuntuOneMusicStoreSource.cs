@@ -62,7 +62,7 @@ namespace Banshee.UbuntuOneMusicStore
             Properties.Set<Pixbuf> ("Icon.Pixbuf_22", icon.ScaleSimple (22, 22, InterpType.Bilinear));
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
 
-            Hyena.Log.Information ("U1MS: Initialized");
+            Hyena.Log.Debug ("U1MS: Initialized");
         }
 
         // A count of 0 will be hidden in the source TreeView
@@ -84,7 +84,7 @@ namespace Banshee.UbuntuOneMusicStore
 
             private void PlayMP3Preview (object Sender, UbuntuOne.PreviewMp3Args a)
             {
-                Hyena.Log.Information ("U1MS: Playing preview: ", a.Url );
+                Hyena.Log.Debug ("U1MS: Playing preview: ", a.Url );
                 TrackInfo PreviewTrack = new TrackInfo ();
                 PreviewTrack.TrackTitle = a.Title;
                 PreviewTrack.ArtistName = "Track Preview";
@@ -96,15 +96,15 @@ namespace Banshee.UbuntuOneMusicStore
 
             private void AddDownloadToLibrary (object Sender, UbuntuOne.DownloadFinishedArgs a)
             {
-                Hyena.Log.Information ("U1MS: Track downloaded: ", a.Path);
+                Hyena.Log.Debug ("U1MS: Track downloaded: ", a.Path);
                 ServiceManager.Get<Banshee.Library.LibraryImportManager> ().ImportTrack (new SafeUri (a.Path));
                 ServiceManager.Get<Banshee.Library.LibraryImportManager> ().NotifyAllSources ();
             }
 
             private void PlayU1MSLibrary (object Sender, UbuntuOne.PlayLibraryArgs a)
             {
-                Hyena.Log.Information ("U1MS: Playing from library: ", a.Path);
-                Hyena.Log.Information ("U1MS: U1 library location: ", U1LibraryLocation);
+                Hyena.Log.Debug ("U1MS: Playing from library: ", a.Path);
+                Hyena.Log.Debug ("U1MS: U1 library location: ", U1LibraryLocation);
                 int track_id = Banshee.Collection.Database.DatabaseTrackInfo.GetTrackIdForUri (System.IO.Path.Combine (U1LibraryLocation, a.Path));
                 if (track_id > 0)
                 {
@@ -116,7 +116,7 @@ namespace Banshee.UbuntuOneMusicStore
 
             private void U1MSUrlLoaded (object Sender, UbuntuOne.UrlLoadedArgs a)
             {
-                Hyena.Log.Information ("U1MS: Url Loaded: ", a.Url);
+                Hyena.Log.Debug ("U1MS: Url Loaded: ", a.Url);
             }
         }
 		
