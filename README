@@ -39,7 +39,7 @@ ClutterFlow
   clutter-sharp
   clutter-gtk-sharp
 
-Lcd
+LCD
   LCDProc
 
 Lirc
@@ -56,6 +56,16 @@ Mirage:
   gstreamer-0.10 >= 0.10.15
   gstreamer-base-0.10 >= 0.10.15
   gstreamer-plugins-base-0.10 >= 0.10.15
+
+Telepathy
+  empathy >= 2.27.91
+  telepathy-gabble >= 0.9
+  telepathy-mission-control-5 >= 5.3.1
+  see src/Telepathy/README for more details
+
+UbuntuOneMusicStore
+  ubuntuone-sharp-1.0
+  Banshee 1.5.5
 
 =======================
 Create a New Extension
