@@ -29,7 +29,9 @@ namespace Banshee.Mirage
         {
             foreach (var seed in seeds) {
                 //Console.WriteLine ("Adding seed track ({0}) with weight {1}", seed.Uri, seed.Weight);
-                this.seeds.Add (seed);
+                if (seed.Scms != null) {
+                    this.seeds.Add (seed);
+                }
             }
 
             IsEmpty = this.seeds.Count == 0;
@@ -51,6 +53,11 @@ namespace Banshee.Mirage
 
         public override IEnumerable<float> Distance (Scms from)
         {
+            if (from == null) {
+                yield return float.MaxValue;
+                yield break;
+            }
+
             bool any_seeds = false;
             float last_weight = -99;
 
