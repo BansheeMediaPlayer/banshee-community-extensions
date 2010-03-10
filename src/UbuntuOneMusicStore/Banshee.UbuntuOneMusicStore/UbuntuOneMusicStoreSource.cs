@@ -91,7 +91,7 @@ namespace Banshee.UbuntuOneMusicStore
 
             private void AddDownloadToLibrary (object Sender, UbuntuOne.DownloadFinishedArgs a)
             {
-                Hyena.Log.Information ("U1MS: DownloadFinished. ", a.Path);
+                Hyena.Log.Information ("U1MS: Track downloaded: ", a.Path);
                 ServiceManager.Get<Banshee.Library.LibraryImportManager> ().ImportTrack (new SafeUri (a.Path));
                 ServiceManager.Get<Banshee.Library.LibraryImportManager> ().NotifyAllSources ();
             }
