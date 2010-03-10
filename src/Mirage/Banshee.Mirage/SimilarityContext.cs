@@ -21,22 +21,35 @@ namespace Banshee.Mirage
         private Scms best_scms;
         private bool debug;
 
+        private static bool static_avoid_artists;
+        private bool avoid_artists;
+
         public SimilarityContext ()
         {
+            avoid_artists = static_avoid_artists;
+            static_avoid_artists = !static_avoid_artists;
         }
 
         public void AddSeeds (IEnumerable<Seed> seeds)
         {
             foreach (var seed in seeds) {
                 //Console.WriteLine ("Adding seed track ({0}) with weight {1}", seed.Uri, seed.Weight);
-                this.seeds.Add (seed);
+                if (seed.Scms != null) {
+                    this.seeds.Add (seed);
+                }
             }
 
             IsEmpty = this.seeds.Count == 0;
         }
 
         public int [] AvoidArtistIds {
-            get { return seeds.Select (s => s.ArtistId).ToArray (); }
+            get {
+                if (avoid_artists) {
+                    return seeds.Select (s => s.ArtistId).ToArray ();
+                } else {
+                    return new int [0];
+                }
+            }
         }
 
         public void DumpDebug ()
@@ -51,6 +64,11 @@ namespace Banshee.Mirage
 
         public override IEnumerable<float> Distance (Scms from)
         {
+            if (from == null) {
+                yield return float.MaxValue;
+                yield break;
+            }
+
             bool any_seeds = false;
             float last_weight = -99;
 

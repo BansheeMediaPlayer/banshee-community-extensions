@@ -1,26 +1,29 @@
-============================
-Version 1.5.5 - NOT YET RELEASED
-============================
+==============================
+Version 1.5.5 - March 10, 2010
+==============================
 
 Contributors:
 Alexander Kojevnikov, Bertrand Lorentz, David Corrales, Frank Ziegler,
-Gabriel Burt, Mathijs Dumon, Max Battcher, Neil Loknath
+Gabriel Burt, Jo Shields, Mathijs Dumon, Max Battcher, Neil Loknath
 
-Features:
-* [Mirage] Much more sophisticated shuffle/fill-by similar
-* [ClutterFlow] Added a slide out animation when user right-clicks album so he/she can see the cover better
-* [ClutterFlow] Dragging sensitivity is now adjustable
+New:
 * [CoverWallpaper] new, migrated from Google Code
 * [LiveRadio] new, another way to discover internet radio stations
 * [Magnatune] new, browse and stream tracks from Magnatune
 * [Telepathy] new, browse your IM friends' music library, download or stream their tracks
+* [UbuntuOneMusicStore] new, browse and preview songs from the Ubuntu One Music Store
+
+Enhancements:
+* [ClutterFlow] Added a slide out animation when user right-clicks album so he/she can see the cover better
+* [ClutterFlow] Dragging sensitivity is now adjustable
+* [Mirage] Much more sophisticated shuffle/fill-by similar
 
 Bugs Fixed:
-* [Mirage] Fix crash in RandomBySimilar (bgo#611066)
 * [Lyrics] Handle proxy config errors (bgo#611446)
+* [Mirage] Fix crash in RandomBySimilar (bgo#611066)
 
 Translators:
-Gianvito Cavasoli
+Frank Ziegler, Gianvito Cavasoli
 
 ============================
 Version 1.5.4 - Feb 24, 2010
