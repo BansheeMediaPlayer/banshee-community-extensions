@@ -70,7 +70,7 @@ namespace Banshee.UbuntuOneMusicStore
         }
 
         public class StoreWrapper: UbuntuOne.U1MusicStore, IDisableKeybindings
-		{
+        {
             public StoreWrapper (): base ()
             {
                 this.PreviewMp3 += PlayMP3Preview;
@@ -84,7 +84,8 @@ namespace Banshee.UbuntuOneMusicStore
                 Hyena.Log.Information ("U1MS: Playing preview: ", a.Url );
                 Banshee.Collection.TrackInfo PreviewTrack = new Banshee.Collection.TrackInfo ();
                 PreviewTrack.TrackTitle = a.Title;
-				PreviewTrack.ArtistName = "Music Store Preview";
+                PreviewTrack.ArtistName = "Track Preview";
+                PreviewTrack.AlbumTitle = "Ubuntu One Music Store";
                 PreviewTrack.Uri = new SafeUri (a.Url);
                 Banshee.ServiceStack.ServiceManager.PlayerEngine.OpenPlay (PreviewTrack);
             }
