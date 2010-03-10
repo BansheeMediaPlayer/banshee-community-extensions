@@ -87,7 +87,7 @@ namespace Banshee.Mirage
                     : GetTrack (ShufflerQuery, context.Id, context.AvoidArtistIds, after) as DatabaseTrackInfo;
 
                 if (MiragePlugin.Debug) {
-                    Console.WriteLine ("Mirage got {0} as lowest avg distance to the similarity context", track == null ? "(null)" : track.Uri);
+                    Console.WriteLine ("Mirage got {0} as lowest avg distance to the similarity context", track == null ? "(null)" : track.Uri.ToString ());
                     context.DumpDebug ();
                 }
                 return track;
