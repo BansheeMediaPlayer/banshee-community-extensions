@@ -3,7 +3,6 @@ LINK = $(BANSHEE_LIBS) $(BANSHEE_NOWPLAYING_LIBS) $(CLUTTER_SHARP_LIBS) -r:$(DIR
 ASSEMBLY_GCONF_SCHEMA = banshee-plugin-alarm.schemas.in
 
 SOURCES =  \
-    AssemblyInfo.cs \
     ClutterFlowService.cs \
     ClutterFlowContents.cs \
     ClutterFlowSchemas.cs \
