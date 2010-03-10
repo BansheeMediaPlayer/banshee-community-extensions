@@ -1,4 +1,5 @@
 SUBDIRS = \
+    UbuntuOneMusicStore \
 	AlarmClock \
 	Awn \
 	ClutterFlow \

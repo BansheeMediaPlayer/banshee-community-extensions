@@ -82,6 +82,7 @@ BCE_MIRAGE
 BCE_RADIOSTATIONFETCHER
 BCE_STREAMRECORDER
 BCE_TELEPATHY
+BCE_U1MS
 
 AC_ARG_WITH(vendor-build-id,
 	AC_HELP_STRING([--with-vendor-build-id=<vendor-build-id>],
@@ -114,6 +115,7 @@ build/m4/shave/shave-libtool
 po/Makefile.in
 
 src/Makefile
+src/UbuntuOneMusicStore/Makefile
 src/AssemblyInfo.cs
 
 src/AlarmClock/Makefile
@@ -162,6 +164,7 @@ ${PACKAGE}-${VERSION}
     Unit Tests:          ${enable_tests} (requires nunit >= ${NUNIT_REQUIRED}, --enable-tests)
 
   Extensions:
+    UbuntuOneMusicStore: ${enable_UbuntuOneMusicStore}
     Alarm Clock:         ${enable_AlarmClock}
     Awn:                 ${enable_Awn}
     ClutterFlow:         ${enable_ClutterFlow}
