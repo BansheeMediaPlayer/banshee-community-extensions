@@ -268,6 +268,23 @@ namespace Banshee.LiveRadio
         /// <param name="restart">
         /// A <see cref="System.Boolean"/>
         /// </param>
+        /// <param name="userRequested">
+        /// A <see cref="System.Boolean"/>
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Boolean"/>
+        /// </returns>
+        public bool Next (bool restart, bool userRequested)
+        {
+            return Next (restart);
+        }
+
+        /// <summary>
+        /// Next method for IBasicPlaybackController
+        /// </summary>
+        /// <param name="restart">
+        /// A <see cref="System.Boolean"/>
+        /// </param>
         /// <returns>
         /// A <see cref="System.Boolean"/>
         /// </returns>
