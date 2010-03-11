@@ -67,6 +67,11 @@ namespace Banshee.LiveRadio
             get { return list[index]; }
         }
 
+        public object GetItem (int index)
+        {
+            return this[index];
+        }
+
         public int Count {
             get { return list.Length; }
         }
