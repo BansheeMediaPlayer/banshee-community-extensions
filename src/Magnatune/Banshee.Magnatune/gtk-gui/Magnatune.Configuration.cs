@@ -66,7 +66,7 @@ namespace Banshee.Magnatune {
             this.username.CanFocus = true;
             this.username.Name = "username";
             this.username.IsEditable = true;
-            this.username.InvisibleChar = '●';
+            this.username.InvisibleChar = '\u25cf';
             this.hbox2.Add(this.username);
             Gtk.Box.BoxChild w3 = ((Gtk.Box.BoxChild)(this.hbox2[this.username]));
             w3.Position = 1;
@@ -94,7 +94,7 @@ namespace Banshee.Magnatune {
             this.password.Name = "password";
             this.password.IsEditable = true;
             this.password.Visibility = false;
-            this.password.InvisibleChar = '●';
+            this.password.InvisibleChar = '\u25cf';
             this.hbox1.Add(this.password);
             Gtk.Box.BoxChild w6 = ((Gtk.Box.BoxChild)(this.hbox1[this.password]));
             w6.Position = 1;
