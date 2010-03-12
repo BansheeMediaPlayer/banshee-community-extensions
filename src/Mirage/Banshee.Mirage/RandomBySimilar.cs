@@ -51,6 +51,9 @@ namespace Banshee.Mirage
 
         public RandomBySimilar () : base ("mirage_similar")
         {
+            if (!MiragePlugin.Initialized)
+                throw new InvalidOperationException ("Mirage was not initialized correctly.");
+
             Label = Catalog.GetString ("Shuffle by Similar");
             Adverb = Catalog.GetString ("by similar");
             Description = Catalog.GetString ("Play songs similar to those already played");

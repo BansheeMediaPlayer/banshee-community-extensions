@@ -56,7 +56,12 @@ namespace Banshee.Mirage
         InterfaceActionService action_service;
 
         internal static bool Debug;
-        
+
+        static bool initialized = false;
+        internal static bool Initialized {
+            get { return initialized; }
+        }
+
         void IExtensionService.Initialize ()
         {
             action_service = ServiceManager.Get<InterfaceActionService> ();
@@ -73,6 +78,8 @@ namespace Banshee.Mirage
             if (!ServiceStartup ()) {
                 ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
             }
+
+            initialized = true;
         }
 
         private void OnSourceAdded (SourceAddedArgs args)
