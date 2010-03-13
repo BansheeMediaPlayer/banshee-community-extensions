@@ -586,7 +586,11 @@ namespace ClutterFlow
 			if (!shifted_outwards)
 				return;
 			shifted_outwards = false;
-			Animatev ((ulong) Clutter.AnimationMode.EaseOutBack.value__, CoverManager.MaxAnimationSpan, new string[] { "anchor-x" }, new GLib.Value ((float) Width*0.5f));
+			Animation anm = Animatev ((ulong) Clutter.AnimationMode.EaseOutBack.value__, CoverManager.MaxAnimationSpan, 
+			          new string[] { "anchor-x" }, new GLib.Value ((float) Width*0.5f));
+			if (!has_shader)
+				shade.AnimateWithTimelinev ((ulong) Clutter.AnimationMode.EaseOutSine.value__, anm.Timeline, 
+				          new string[] { "anchor-x" }, new GLib.Value (0.0f));
 		}
 		
 		protected virtual void SlideOut ()
@@ -598,7 +602,11 @@ namespace ClutterFlow
 			float x, y, z;
 			double angle = GetRotation(RotateAxis.Y, out x, out y, out z);
 			float new_anchor_x = (float) (Width * (0.5f + 1.6f*Math.Tan (angle)));
-			Animatev ((ulong) Clutter.AnimationMode.EaseOutBack.value__, CoverManager.MaxAnimationSpan, new string[] { "anchor-x" }, new GLib.Value ((float) new_anchor_x));
+			Animation anm = Animatev ((ulong) Clutter.AnimationMode.EaseOutBack.value__, CoverManager.MaxAnimationSpan, 
+			          new string[] { "anchor-x" }, new GLib.Value ((float) new_anchor_x));
+			if (!has_shader)
+				shade.AnimateWithTimelinev ((ulong) Clutter.AnimationMode.EaseOutSine.value__, anm.Timeline, 
+				          new string[] { "anchor-x" }, new GLib.Value ((float) -new_anchor_x*0.5f));			
 		}
 		#endregion
         
