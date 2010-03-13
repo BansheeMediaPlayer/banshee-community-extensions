@@ -565,7 +565,8 @@ namespace ClutterFlow
 		#endregion
 
 		#region Behaviour Functions
-		public void SetShade (byte opacity, bool left) {
+		public void SetShade (byte opacity, bool left) 
+		{
 			if (!has_shader) {
 				shade.Opacity = opacity;
 				if (left)
@@ -575,14 +576,25 @@ namespace ClutterFlow
 			}
 		}
 		
-		public ClutterFlowActor CreateClickClone () {
-			coverManager.Behaviour.CreateClickedCloneAnimation (this);			
+		public ClutterFlowActor CreateClickClone () 
+		{
+			if (CoverManager.CurrentCover!=this)
+				CoverManager.NewCurrentCover += HandleNewCurrentCover;
+			else
+				coverManager.Behaviour.CreateClickedCloneAnimation (this);
 			return this;
+		}
+		
+		private void HandleNewCurrentCover (ClutterFlowBaseActor Actor, EventArgs args)
+		{
+			if (CoverManager.CurrentCover==this) {
+				CoverManager.NewCurrentCover -= HandleNewCurrentCover;
+				coverManager.Behaviour.CreateClickedCloneAnimation (this, CoverManager.MaxAnimationSpan);
+			}
 		}
 
 		protected virtual void SlideIn ()
 		{
-			//FIXME: we should not shift the shade along!!
 			if (!shifted_outwards)
 				return;
 			shifted_outwards = false;
@@ -595,7 +607,6 @@ namespace ClutterFlow
 		
 		protected virtual void SlideOut ()
 		{
-			//FIXME: we should not shift the shade along!!
 			if (shifted_outwards)
 				return;
 			shifted_outwards = true;

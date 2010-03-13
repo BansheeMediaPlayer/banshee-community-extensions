@@ -188,7 +188,7 @@ namespace Banshee.ClutterFlow
 		#region Initialisation
         public ClutterFlowView () : base ()
         {
-			SetSizeRequest (500, 300);
+			SetSizeRequest (300, 200);
 			Clutter.Global.MotionEventsEnabled = true;
             
 			coverManager = new CoverManager();

@@ -522,23 +522,35 @@ namespace ClutterFlow
                 FadeCoversInAndOut (transition_queue.Dequeue());
         }
 		
-		public void CreateClickedCloneAnimation (ClutterFlowBaseActor actor) {
+		public void CreateClickedCloneAnimation (ClutterFlowBaseActor actor, uint delay) 
+		{
 			if (actor.Parent!=null) {
 				Clone clone = new Clone(actor);
 				MoveAndRotateActorCentrally (clone, 0);
 				double scaleX, scaleY; actor.GetScale (out scaleX, out scaleY); clone.SetScale (scaleX, scaleY);
 
 				((Container) actor.Parent).Add (clone);
-				clone.ShowAll ();
+				clone.Hide ();
 				clone.Opacity = 255;
-				clone.Raise (actor);
-				Animation anmn = clone.Animatev ((ulong) AnimationMode.EaseInExpo.value__, CoverManager.MaxAnimationSpan*4, new string[] { "opacity" }, new GLib.Value ((byte) 50));
+				clone.Depth = ZNear+1;
+				Timeline timeline = new Timeline (CoverManager.MaxAnimationSpan*4);
+				timeline.Delay = delay;
+				timeline.AddMarkerAtTime ("start", 1);
+				timeline.MarkerReached += delegate {
+					clone.ShowAll ();
+				};
+				Animation anmn = clone.AnimateWithTimelinev ((ulong) AnimationMode.EaseInExpo.value__, timeline, new string[] { "opacity" }, new GLib.Value ((byte) 50));
+				clone.AnimateWithTimelinev ((ulong) AnimationMode.EaseInExpo.value__, timeline, new string[] { "scale-x" }, new GLib.Value (scaleX*2));
+				clone.AnimateWithTimelinev ((ulong) AnimationMode.EaseInExpo.value__, timeline, new string[] { "scale-y" }, new GLib.Value (scaleY*2));
+				clone.AnimateWithTimelinev ((ulong) AnimationMode.EaseInExpo.value__, timeline, new string[] { "fixed::anchor-x" }, new GLib.Value (clone.Width/2));
+				clone.AnimateWithTimelinev ((ulong) AnimationMode.EaseInExpo.value__, timeline, new string[] { "fixed::anchor-y" }, new GLib.Value (clone.Height/4));
 				anmn.Completed += HandleClickedCloneCompleted;
-				clone.AnimateWithTimelinev ((ulong) AnimationMode.EaseInExpo.value__, anmn.Timeline, new string[] { "scale-x" }, new GLib.Value (scaleX*2));
-				clone.AnimateWithTimelinev ((ulong) AnimationMode.EaseInExpo.value__, anmn.Timeline, new string[] { "scale-y" }, new GLib.Value (scaleY*2));
-				clone.AnimateWithTimelinev ((ulong) AnimationMode.EaseInExpo.value__, anmn.Timeline, new string[] { "fixed::anchor-x" }, new GLib.Value (clone.Width/2));
-				clone.AnimateWithTimelinev ((ulong) AnimationMode.EaseInExpo.value__, anmn.Timeline, new string[] { "fixed::anchor-y" }, new GLib.Value (clone.Height/4));
 			}
+		}
+		
+		public void CreateClickedCloneAnimation (ClutterFlowBaseActor actor) 
+		{
+			CreateClickedCloneAnimation (actor, 0);
 		}
 		
 		protected void HandleClickedCloneCompleted (object sender, EventArgs e)
