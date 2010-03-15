@@ -52,7 +52,7 @@ namespace Banshee.Streamrecorder
         private List<Encoder> encoders = new List<Encoder> ();
         private bool has_lame;
         private const string lame_name = "LAME MP3 Audio Encoder";
-        private const string lame_pipeline = "! lame name=audio_encoder ! id3v2mux name=tagger ";
+        private const string lame_pipeline = "! lamemp3enc name=audio_encoder ! id3v2mux name=tagger ";
         private const string lame_extension = ".mp3";
         private bool has_vorbis;
         private const string vorbis_name = "Ogg/Vorbis Audio Encoder";
