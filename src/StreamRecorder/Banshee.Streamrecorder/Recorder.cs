@@ -62,25 +62,22 @@ namespace Banshee.Streamrecorder
         private const string flac_name = "FLAC Audio Encoder";
         private const string flac_pipeline = "! flacenc name=audio_encoder ! flactag name=tagger ";
         private const string flac_extension = ".flac";
-        private bool has_level;
 
         public Recorder ()
         {
             if (Marshaller.Initialize ()) {
                 has_lame = Marshaller.CheckGstPlugin ("lame") && Marshaller.CheckGstPlugin ("id3v2mux");
                 Hyena.Log.Information ("[Streamrecorder] GstPlugin lame" + (has_lame ? "" : " not") + " found");
-                encoders.Add (new Encoder (lame_name, lame_pipeline, lame_extension));
+                if (has_lame) encoders.Add (new Encoder (lame_name, lame_pipeline, lame_extension));
                 
                 has_vorbis = Marshaller.CheckGstPlugin ("vorbisenc") && Marshaller.CheckGstPlugin ("oggmux") && Marshaller.CheckGstPlugin ("oggmux");
                 Hyena.Log.Information ("[Streamrecorder] GstPlugin vorbis" + (has_vorbis ? "" : " not") + " found");
-                encoders.Add (new Encoder (vorbis_name, vorbis_pipeline, vorbis_extension, true));
+                if (has_vorbis) encoders.Add (new Encoder (vorbis_name, vorbis_pipeline, vorbis_extension, true));
                 
                 has_flac = Marshaller.CheckGstPlugin ("flacenc") && Marshaller.CheckGstPlugin ("flactag");
                 Hyena.Log.Information ("[Streamrecorder] GstPlugin flac" + (has_flac ? "" : " not") + " found");
-                encoders.Add (new Encoder (flac_name, flac_pipeline, flac_extension));
-                
-                has_level = Marshaller.CheckGstPlugin ("level");
-                Hyena.Log.Information ("[Streamrecorder] GstPlugin level" + (has_level ? "" : " not") + " found");
+                if (has_flac) encoders.Add (new Encoder (flac_name, flac_pipeline, flac_extension));
+
                 Hyena.Log.Debug ("[Streamrecorder] gstreamer initialized");
             } else {
                 Hyena.Log.Debug ("[Streamrecorder] an error occurred during gstreamer initialization, aborting.");
