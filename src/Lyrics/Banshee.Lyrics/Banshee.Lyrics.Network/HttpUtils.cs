@@ -33,12 +33,12 @@ namespace Banshee.Lyrics.Network
 {
     public class HttpUtils
     {
-        public static string ReadHtmlContent (String url)
+        public static string ReadHtmlContent (String url, Encoding encoding)
         {
             string html = null;
               try
             {
-                html = GetHtml (url);
+                html = GetHtml (url, encoding);
             } catch (Exception e)
             {
                 Hyena.Log.DebugFormat ("{0}, {1}", e.Message, url);
@@ -47,7 +47,7 @@ namespace Banshee.Lyrics.Network
             return html;
         }
 
-        private static string GetHtml (string url)
+        private static string GetHtml (string url, Encoding encoding)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create (url);
             request.Timeout = 6000;
@@ -61,23 +61,24 @@ namespace Banshee.Lyrics.Network
                 }
             }
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
-            if (response.ContentLength == 0) {
-                return null;
+            using (var response = (HttpWebResponse)request.GetResponse ()) {
+                if (response.ContentLength == 0) {
+                    return null;
+                }
+
+                if (encoding == null) {
+                    if (response.ContentType.Contains ("utf")) {
+                        encoding = Encoding.UTF8;
+                    } else {
+                        encoding = Encoding.GetEncoding ("iso-8859-1");
+                    }
+                }
+
+                using (var reader = new StreamReader (response.GetResponseStream (), encoding)) {
+                    // Read all bytes from the stream
+                    return reader.ReadToEnd ();
+                }
             }
-
-            StreamReader reader;
-            if (response.ContentType.Contains ("utf")) {
-                reader = new StreamReader (response.GetResponseStream ());
-            } else {
-                reader = new StreamReader (response.GetResponseStream (), Encoding.GetEncoding ("iso-8859-1"));
-            }
-
-            //read all bytes from the stream
-            string source = reader.ReadToEnd ();
-            reader.Close ();
-
-            return source;
         }
     }
 }

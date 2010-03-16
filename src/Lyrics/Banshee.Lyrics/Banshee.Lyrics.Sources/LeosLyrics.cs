@@ -66,7 +66,7 @@ namespace Banshee.Lyrics.Sources
             string search_url =
                 string.Format ("http://api.leoslyrics.com/api_search.php?auth=duane&artist={0}&songtitle={1}", artist,
                                title);
-            string xml = HttpUtils.ReadHtmlContent (search_url);
+            string xml = HttpUtils.ReadHtmlContent (search_url, null);
             return xml;
         }
         
@@ -74,7 +74,7 @@ namespace Banshee.Lyrics.Sources
         {
             /*query for the lyric xml */
             string lyric_url = "http://api.leoslyrics.com/api_lyrics.php?auth=duane&hid=" + hid;
-            string lyric_xml = HttpUtils.ReadHtmlContent (lyric_url);
+            string lyric_xml = HttpUtils.ReadHtmlContent (lyric_url, null);
             if (lyric_xml == null) {
                 return null;
             }

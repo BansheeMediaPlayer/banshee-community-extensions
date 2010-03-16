@@ -26,6 +26,7 @@
 
 using System;
 using System.Web;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Banshee.Lyrics.Sources
@@ -69,5 +70,10 @@ namespace Banshee.Lyrics.Sources
         {
             return null;
         }
+
+        protected override Encoding Encoding {
+            get { return Encoding.UTF8; }
+        }
+
     }
 }

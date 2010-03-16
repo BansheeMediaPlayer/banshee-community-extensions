@@ -24,6 +24,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 using System;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using Mono.Unix;
@@ -94,6 +95,10 @@ namespace Banshee.Lyrics.Sources
             return title.EndsWith (" ") ? title.Substring (0, title.Length - 1) : title;
         }
 
+        protected virtual Encoding Encoding {
+            get { return null; }
+        }
+
         /*parse the content of an url using a regular expression to filter the content */
         public string ParseUrl (string url, Regex r)
         {
@@ -101,7 +106,7 @@ namespace Banshee.Lyrics.Sources
                 return null;
             }
             
-            string html = HttpUtils.ReadHtmlContent (url);
+            string html = HttpUtils.ReadHtmlContent (url, this.Encoding);
             if (html == null) {
                 return null;
             }
