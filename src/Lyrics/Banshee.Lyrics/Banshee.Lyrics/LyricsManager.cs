@@ -80,6 +80,7 @@ namespace Banshee.Lyrics
             sourceList.Add (new Lyriki ());
             sourceList.Add (new AutoLyrics ());
             sourceList.Add (new LyricWiki ());
+            sourceList.Add (new LyricsPlugin ());
         }
 
         internal static LyricsManager Instance {

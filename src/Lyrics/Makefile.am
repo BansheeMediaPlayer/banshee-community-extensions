@@ -15,6 +15,7 @@ SOURCES =  \
 	Banshee.Lyrics/Banshee.Lyrics.Sources/ILyricsSource.cs \
 	Banshee.Lyrics/Banshee.Lyrics.Sources/LeosLyrics.cs \
 	Banshee.Lyrics/Banshee.Lyrics.Sources/Lyrc.cs \
+	Banshee.Lyrics/Banshee.Lyrics.Sources/LyricsPlugin.cs \
 	Banshee.Lyrics/Banshee.Lyrics.Sources/LyricsWebSource.cs \
 	Banshee.Lyrics/Banshee.Lyrics.Sources/LyricWiki.cs \
 	Banshee.Lyrics/Banshee.Lyrics.Sources/Lyriki.cs \

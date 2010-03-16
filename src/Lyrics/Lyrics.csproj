@@ -93,6 +93,7 @@
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics\Utils.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\ILyricsSource.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\LyricsWebSource.cs" />
+    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\LyricsPlugin.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
