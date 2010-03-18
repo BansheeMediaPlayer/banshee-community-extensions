@@ -8,7 +8,7 @@
     category="Community Extensions"
     description="This extension grants access to the Ubuntu One Music Store, powered by 7digital."
     author="Jo Shields"
-    url="http://one.ubuntu.com.org/"
+    url="http://one.ubuntu.com/"
     defaultEnabled="false">
 
   <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
