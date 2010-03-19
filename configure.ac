@@ -70,6 +70,7 @@ SHAMROCK_CHECK_UNIT_TESTS
 
 dnl Extensions
 BCE_ALARMCLOCK
+BCE_APPINDICATOR
 BCE_AWN
 BCE_CLUTTERFLOW
 BCE_COVERWALLPAPER
@@ -115,6 +116,7 @@ build/m4/shave/shave-libtool
 po/Makefile.in
 
 src/Makefile
+src/AppIndicator/Makefile
 src/AssemblyInfo.cs
 
 src/AlarmClock/Makefile
@@ -164,6 +166,7 @@ ${PACKAGE}-${VERSION}
     Unit Tests:          ${enable_tests} (requires nunit >= ${NUNIT_REQUIRED}, --enable-tests)
 
   Extensions:
+    AppIndicator:        ${enable_AppIndicator}
     Alarm Clock:         ${enable_AlarmClock}
     Awn:                 ${enable_Awn}
     ClutterFlow:         ${enable_ClutterFlow}

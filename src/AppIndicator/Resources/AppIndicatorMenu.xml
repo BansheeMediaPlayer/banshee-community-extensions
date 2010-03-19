@@ -1,0 +1,19 @@
+<ui>
+  <popup name="AppIndicatorTrayMenu" action="AppIndicatorTrayMenuAction">
+    <menuitem name="PlayPause" action="PlayPauseAction"/>
+    <menuitem name="Next" action="NextAction"/>
+    <menuitem name="Previous" action="PreviousAction"/>
+    <separator/>
+    <menuitem name="ShowHide" action="ShowHideAction"/>
+    <menuitem name="Quit" action="QuitAction"/>
+  </popup>
+
+  <!-- This menu gets merged into the main menu to add the close window item -->
+  <menubar name="MainMenu">
+    <menu name="MediaMenu" action="MediaMenuAction">
+      <placeholder name="ClosePlaceholder">
+      <menuitem name="Close" action="CloseAction"/>
+      </placeholder>
+    </menu>
+  </menubar>
+</ui>

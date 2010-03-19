@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppIndicator", "src\AppIndicator\AppIndicator.csproj", "{B3971F35-8FE0-4FED-A3A4-7A082B341D81}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UbuntuOneMusicStore", "src\UbuntuOneMusicStore\UbuntuOneMusicStore.csproj", "{3B855EBC-8E55-48DF-816B-B241BE45EBD8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveRadio", "src\LiveRadio\LiveRadio.csproj", "{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}"
@@ -45,6 +47,10 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Debug|x86.Build.0 = Debug|Any CPU
+		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Release|x86.ActiveCfg = Release|Any CPU
+		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Release|x86.Build.0 = Release|Any CPU
 		{3B855EBC-8E55-48DF-816B-B241BE45EBD8}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{3B855EBC-8E55-48DF-816B-B241BE45EBD8}.Debug|x86.Build.0 = Debug|Any CPU
 		{3B855EBC-8E55-48DF-816B-B241BE45EBD8}.Release|x86.ActiveCfg = Release|Any CPU

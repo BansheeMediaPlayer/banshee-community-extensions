@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.AppIndicator"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="Copyright © 2010 Sense Hofstede. Licensed under the MIT X11 license."
+    name="Application Indicator for Banshee"
+    category="Community Extensions"
+    description="Enable the Application Indicator for Banshee, making use of Ubuntu's new tray. This extension also adds Notify OSD support."
+    author="Sense Hofstede"
+    url="https://launchpad.net/indicator-application/"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.AppIndicator.AppIndicatorService"/>
+  </Extension>
+
+</Addin>

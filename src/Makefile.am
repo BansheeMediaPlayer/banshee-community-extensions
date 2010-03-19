@@ -1,4 +1,5 @@
 SUBDIRS = \
+    AppIndicator \
 	AlarmClock \
 	Awn \
 	ClutterFlow \
