@@ -41,6 +41,7 @@ using Clutter;
 using ClutterFlow;
 using ClutterFlow.Captions;
 using ClutterFlow.Slider;
+using ClutterFlow.Alphabet;
 
 using Banshee.ClutterFlow.Buttons;
 
@@ -261,9 +262,9 @@ namespace Banshee.ClutterFlow
 		
 		protected void SetupSlider ()
 		{
-			slider = new ClutterFlowSlider (Stage.Width, Stage.Height, coverManager);
+			slider = new ClutterFlowSlider (400, 40, coverManager);
 			Stage.Add (slider);
-		}
+		}	
 		
 		protected void SetupLabels () {
 			caption_cover = new CoverCaption (coverManager, "Sans Bold 10", new Clutter.Color(1.0f,1.0f,1.0f,1.0f));

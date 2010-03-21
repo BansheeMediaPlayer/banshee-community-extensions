@@ -29,7 +29,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Gdk;
-//using Cairo;
 using Clutter;
 using Cogl;
 

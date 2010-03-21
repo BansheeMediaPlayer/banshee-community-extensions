@@ -33,18 +33,11 @@ namespace ClutterFlow.Buttons
 
 	public abstract class ClutterButtonState : Group {
 		
+		#region Fields
 		protected bool bubble = false;
 		public virtual bool BubbleEvents {
 			get { return bubble; }
 			set { bubble = value; }
-		}
-
-		protected virtual void Initialise () {
-			IsReactive = true;
-			ButtonPressEvent += HandleButtonPressEvent;
-			ButtonReleaseEvent += HandleButtonReleaseEvent;
-			EnterEvent += HandleEnterEvent;
-			LeaveEvent += HandleLeaveEvent;
 		}
 		
 		protected int state = 0;
@@ -65,7 +58,21 @@ namespace ClutterFlow.Buttons
 				}
 			}
 		}
+		#endregion
 		
+		#region Methods
+		protected virtual void Initialise () {
+			IsReactive = true;
+			ButtonPressEvent += HandleButtonPressEvent;
+			ButtonReleaseEvent += HandleButtonReleaseEvent;
+			EnterEvent += HandleEnterEvent;
+			LeaveEvent += HandleLeaveEvent;
+		}
+		
+		public abstract void Update();
+		#endregion
+		
+		#region Event Handling
 		protected virtual void HandleEnterEvent(object o, EnterEventArgs args)
 		{
 			State |= 1;
@@ -89,8 +96,7 @@ namespace ClutterFlow.Buttons
 			State &= ~1;
 			args.RetVal = !BubbleEvents;
 		}
-
-		public abstract void Update();
+		#endregion
 	}
 	
 	public class ClutterButton : ClutterButtonState
@@ -102,18 +108,18 @@ namespace ClutterFlow.Buttons
 		}
 		
 		protected CairoTexture[] textures;
-		protected virtual int GetTextureIndex(int state) {
-			return ((state == 3) ? 2 : state);
+		protected virtual int GetTextureIndex(int with_state) {
+			return ((with_state == 3) ? 2 : with_state);
 		}
 		public virtual CairoTexture StateTexture {
-			get { return textures[GetTextureIndex(state)]; }
+			get { return textures[GetTextureIndex(State)]; }
 		}
 		#endregion
 
 		#region Initialization
 		protected ClutterButton (uint width, uint height, int state, bool init) : base () 
 		{
-			this.state = state;
+			this.State = state;
 			this.SetSize (width, height);
 			
 			if (init) Initialise ();

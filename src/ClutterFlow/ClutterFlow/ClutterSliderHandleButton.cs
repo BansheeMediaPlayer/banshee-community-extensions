@@ -78,12 +78,5 @@ namespace ClutterFlow.Buttons
 			((IDisposable) context.Target).Dispose();
 			((IDisposable) context).Dispose();
 		}
-		
-		protected override void HandleButtonPressEvent (object o, Clutter.ButtonPressEventArgs args)
-		{
-			base.HandleButtonPressEvent (o, args);
-			args.RetVal = false;
-		}
-
 	}
 }

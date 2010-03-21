@@ -56,6 +56,11 @@ namespace ClutterFlow.Slider
 		#endregion
 		
 		#region Fields
+		protected bool bubble = false;
+		public virtual bool BubbleEvents {
+			get { return bubble; }
+			set { bubble = value; }
+		}
 		
 		protected ClutterSliderHandleButton button;
 		public ClutterSliderHandleButton Button {
@@ -94,6 +99,7 @@ namespace ClutterFlow.Slider
 			SetSize(width, height);
 
 			button = new ClutterSliderHandleButton((uint) Height,(uint) Height,state);
+			button.BubbleEvents = true;
 			Add(button);
 			button.Show();
 			UpdatePosition();
@@ -118,7 +124,7 @@ namespace ClutterFlow.Slider
 		protected virtual void HandleEnterEvent (object o, EnterEventArgs args)
 		{
 			button.State |= 1;
-			args.RetVal = true;
+			args.RetVal = !BubbleEvents;
 		}
 
 		public new void SetSize (float width, float height)
@@ -159,7 +165,7 @@ namespace ClutterFlow.Slider
 		protected virtual void HandleLeaveEvent (object o, LeaveEventArgs args)
 		{
 			button.State &= 2;
-			args.RetVal = true;
+			args.RetVal = !BubbleEvents;
 		}
 		
 		protected void HandleMotionEvent (object o, MotionEventArgs args)

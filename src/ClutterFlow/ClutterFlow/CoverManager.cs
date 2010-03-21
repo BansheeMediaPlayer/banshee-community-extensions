@@ -28,6 +28,8 @@
 using System;
 using System.Collections.Generic;
 
+using ClutterFlow.Alphabet;
+
 using Clutter;
 using Gtk;
 using GLib;
@@ -65,15 +67,23 @@ namespace ClutterFlow
 		}
 
         public event EventHandler TextureSizeChanged;
-        protected void InvokeTextureSizeChanged () {
+        protected void InvokeTextureSizeChanged () 
+		{
              //TODO use a timeout here, if the function is called mutliple times shortly after another, we don't get endless recalculation
             if (TextureSizeChanged!=null) TextureSizeChanged (this, EventArgs.Empty);
         }
 
-        public EventHandler<EventArgs> VisibleCoversChanged;
-        protected void InvokeVisibleCoversChanged () {
-            if (VisibleCoversChanged!=null) VisibleCoversChanged(this, EventArgs.Empty);;
+        public event EventHandler<EventArgs> VisibleCoversChanged;
+        protected void InvokeVisibleCoversChanged () 
+		{
+            if (VisibleCoversChanged!=null) VisibleCoversChanged(this, EventArgs.Empty);
         }
+		
+		public event EventHandler<EventArgs> LetterLookupChanged;
+		protected void InvokeLetterLookupChanged ()
+		{
+			if (LetterLookupChanged!=null) LetterLookupChanged(this, EventArgs.Empty);;
+		}
         
         #endregion
 
@@ -93,6 +103,28 @@ namespace ClutterFlow
 		public IActorLoader ActorLoader {
 			get { return actorLoader; }
 			internal set { actorLoader = value; }
+		}
+		
+		public Dictionary<AlphabetChars, int> letter_lookup;
+		public Dictionary<AlphabetChars, int> LetterLookup {
+			get { return letter_lookup; }
+		}
+		
+		public void ResetLetterLookup () {
+			letter_lookup = new Dictionary<AlphabetChars, int>();
+			foreach (AlphabetChars key in Enum.GetValues(typeof(AlphabetChars)))
+				letter_lookup.Add(key, -1);
+			Console.WriteLine ("ResetLetterLookup called, letter_lookup is " + (letter_lookup == null ? "null" : "not null"));
+		}
+		public void UpdateLetterLookup (ClutterFlowBaseActor actor) {		
+			char letter = char.Parse(actor.SortLabel.ToUpper ().Substring (0,1));
+			AlphabetChars key;
+			if (char.IsLetter(letter))
+				key = (AlphabetChars) letter;
+			else
+				key = AlphabetChars.unkown;
+			if (letter_lookup[key]==-1)
+				letter_lookup[key] = actor.Index;
 		}
 		
 		protected FlowBehaviour behaviour;
@@ -282,13 +314,16 @@ namespace ClutterFlow
                         actor.Data.Add ("isOldCover", true);
 				}
 
-				
+				ResetLetterLookup ();
                 List<ClutterFlowBaseActor> persistent_covers = new List<ClutterFlowBaseActor>();
 				covers = actorLoader.GetActors (delegate (ClutterFlowBaseActor actor) {
                     if (actor.Data.ContainsKey ("isOldCover"))
                         persistent_covers.Add (actor);
                     if (CurrentCover==actor) keep_current = true;
+					
+					UpdateLetterLookup (actor);	
 				});
+				InvokeLetterLookupChanged ();
 				
                 if (covers.Count==0) {
                     InstallEmptyActor ();
@@ -353,7 +388,9 @@ namespace ClutterFlow
                 Behaviour.FadeCoversInAndOut (old_covers, truly_pers, new_covers, update_target);
 			} else {
 				//Console.WriteLine("Loading Covers");
-				covers = actorLoader.GetActors (null);
+				ResetLetterLookup ();
+				covers = actorLoader.GetActors (UpdateLetterLookup);
+				InvokeLetterLookupChanged ();
                 TargetIndex = 0;
                 Timeline.JumpToTarget ();
                 if (covers==null || covers.Count==0) {

@@ -24,20 +24,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+
+using Clutter;
 
 using ClutterFlow;
-using System;
+using ClutterFlow.Alphabet;
 
 namespace ClutterFlow.Slider
 {
 	
 	
-	public class ClutterFlowSlider : ClutterSlider
+	public class ClutterFlowSlider : Group
 	{
-		
+		#region Fields
 		protected CoverManager coverManager;
 		public CoverManager CoverManager {
-			get { return CoverManager; }
+			get { return coverManager; }
 			set {
 				if (value!=coverManager) {
 					if (coverManager!=null) {
@@ -48,53 +51,117 @@ namespace ClutterFlow.Slider
 					if (coverManager!=null) {
 						coverManager.CoversChanged += HandleCoversChanged;
 						coverManager.TargetIndexChanged += HandleTargetIndexChanged;
+						coverManager.LetterLookupChanged += HandleLetterLookupChanged;
 					}
 				}
 			}
 		}
+		
+		protected ClutterSlider slider;
+		protected AlphabetBar alphabet;
+		
+		#endregion
 	
-		public ClutterFlowSlider (float width, float height, CoverManager coverManager) : base (width, height)
+		#region Initialisation
+		public ClutterFlowSlider (float width, float height, CoverManager coverManager)
 		{
+			this.IsReactive = true;
 			this.CoverManager = coverManager;
-			this.SliderHasChanged += HandleSliderHasChanged;
-			this.SliderHasMoved += HandleSliderHasMoved;
-		}
+			this.SetSize (width, height);
+			this.EnterEvent += HandleEnterEvent;
+			this.LeaveEvent += HandleLeaveEvent;
 
-		public override void Update ()
+			InitChildren ();
+			Update ();
+		}
+		
+		protected virtual void InitChildren ()
+		{
+			slider = new ClutterSlider (Width, Height*0.6f);
+			slider.SetAnchorPoint (0, 0);
+			slider.SetPosition (0, 0);			
+			slider.SliderHasChanged += HandleSliderHasChanged;
+			slider.SliderHasMoved += HandleSliderHasMoved;
+			Add (slider);
+			slider.Show ();
+			
+			alphabet = new AlphabetBar ((uint) (Width-Height*1.5), (uint) (Height*0.4f));
+			alphabet.SetAnchorPoint (alphabet.Width*0.5f, alphabet.Height);
+			alphabet.SetPosition (Width*0.5f, Height);
+			alphabet.LetterClicked += HandleAlphabetLetterClicked;
+			Add (alphabet);
+			alphabet.Opacity = (byte) 0;
+			alphabet.Show ();
+		}
+		#endregion
+
+		public void Update ()
 		{
 			if (Stage!=null) {
-				SetAnchorPoint(Width*0.5f, Height*0.5f);
-				SetPosition(coverManager.Behaviour.CenterX, Math.Min(coverManager.Behaviour.CenterY + coverManager.Behaviour.CoverWidth * 1.25f, Stage.Height - Height));
+				SetAnchorPoint(Width*0.5f, Height);
+				Console.WriteLine ("ClutterFlowSlider.Update, Width = " + Width + " coverManager.Behaviour.CenterX = " + coverManager.Behaviour.CenterX);
+				SetPosition(coverManager.Behaviour.CenterX, Math.Min(coverManager.Behaviour.CenterY + coverManager.Behaviour.CoverWidth * 1.5f, Stage.Height));
 			}
-			base.Update ();
+			slider.Update ();
 		}
+		
+		
+		#region Event Handling
+		protected void HandleEnterEvent (object o, EnterEventArgs args)
+		{
+			alphabet.Animatev ((ulong) AnimationMode.EaseOutExpo.value__, CoverManager.MaxAnimationSpan, new string[] { "opacity" }, new GLib.Value((byte) 255));
+			args.RetVal = true;
+		}
+		
+		protected void HandleLeaveEvent (object o, LeaveEventArgs args)
+		{
+			alphabet.Animatev ((ulong) AnimationMode.EaseOutExpo.value__, CoverManager.MaxAnimationSpan, new string[] { "opacity" }, new GLib.Value((byte) 0));
+			args.RetVal = true;
+		}		
 		
         protected void HandleCoversChanged (object sender, EventArgs e)
         {
-        	UpdateBounds (coverManager.TotalCovers, coverManager.TargetIndex);
+        	slider.UpdateBounds (coverManager.TotalCovers, coverManager.TargetIndex);
         }
 		
 		bool ignoreTargetIndexOnce = false;
 		protected void HandleTargetIndexChanged(object sender, EventArgs e)
 		{
 			if (coverManager.TargetActor!=null)
-				this.handle.Button.Label = coverManager.TargetActor.SortLabel.ToUpper ().Substring (0,1);
+				slider.Label = coverManager.TargetActor.SortLabel.ToUpper ().Substring (0,1);
 			else
-				this.handle.Button.Label = "?";
+				slider.Label = "?";
 			if (!ignoreTargetIndexOnce)
-				HandlePostionFromIndex = coverManager.TargetIndex;
+				slider.HandlePostionFromIndex = coverManager.TargetIndex;
 			ignoreTargetIndexOnce = false;
 		}
 		
 		protected void HandleSliderHasMoved(object sender, EventArgs e)
 		{
 			ignoreTargetIndexOnce = true;
-			coverManager.TargetIndex = HandlePostionFromIndex;
+			coverManager.TargetIndex = slider.HandlePostionFromIndex;
 		}
 		
 		protected void HandleSliderHasChanged(object sender, EventArgs e)
 		{
-			coverManager.TargetIndex = HandlePostionFromIndex;
+			coverManager.TargetIndex = slider.HandlePostionFromIndex;
 		}
+
+		protected void HandleAlphabetLetterClicked (object sender, AlphabetEventArgs e)
+		{
+			ignoreTargetIndexOnce = false;
+			Console.WriteLine ("HandleAlphabetLetterClicked e.Letter = " + e.Letter);
+			Console.WriteLine ("CoverManager.LetterLookup is " + (CoverManager.LetterLookup == null ? "null" : "not null"));
+			Console.WriteLine ("CoverManager.LetterLookup.ContainsKey(e.Letter) = " + CoverManager.LetterLookup.ContainsKey(e.Letter));
+			Console.WriteLine ("CoverManager.LetterLookup[e.Letter] = " + CoverManager.LetterLookup[e.Letter]);
+			CoverManager.TargetIndex = CoverManager.LetterLookup[e.Letter];
+		}
+		
+		protected void HandleLetterLookupChanged (object sender, EventArgs e)
+		{
+			foreach (AlphabetChars key in Enum.GetValues(typeof(AlphabetChars)))
+				alphabet[key].Disabled = CoverManager.LetterLookup[key]==-1;
+		}		
+		#endregion
 	}
 }

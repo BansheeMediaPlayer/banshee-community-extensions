@@ -69,6 +69,8 @@
     <Compile Include="TrackCaption.cs" />
     <Compile Include="Caption.cs" />
     <Compile Include="ClutterFlowFixedActor.cs" />
+    <Compile Include="AlphabetBar.cs" />
+    <Compile Include="AlphabetButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
