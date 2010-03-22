@@ -54,8 +54,13 @@ namespace Banshee.LiveRadio
     /// The main class of the LiveRadio Extension. It creates a new primary source in the source trees and adds
     /// child sources for each internet radio plugin detected.
     ///
-    /// TODO:
-    /// * edit PO files
+    /// TODO by priority:
+    /// * combined search/results for all plugins
+    /// * add option to use system proxy -- move to banshee.io.httprequest
+    /// * use Mono.Addins for plugins
+    /// * save/cancel/apply button in config -> close -> save changes immediately
+    /// ** not sure if this can be done safely, configuration widget delivered
+    ///    by plugins, might need to extend interface or move logic completely to plugin
     /// </summary>
     public class LiveRadioSource : PrimarySource, IDisposable
     {
