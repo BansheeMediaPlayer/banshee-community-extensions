@@ -41,22 +41,20 @@ namespace Banshee.Telepathy.Gui
 {
     public class DownloadManagerUi : TransferManagerUi
     {
-        //private TelepathyService service = null;
         private readonly TelepathyDownloadManager download_manager = new TelepathyDownloadManager ();
-		private Banshee.Library.LibraryImportManager import_manager = null;
+        private Banshee.Library.LibraryImportManager import_manager = null;
 
 
         public DownloadManagerUi () : base ()
         {
-            //this.service = service;
             Title = Catalog.GetString ("Download(s) from Contacts");
             CancelMessage = Catalog.GetString ("Downloads are in progress. Would you like to cancel them?");
 
             download_manager.Updated += OnUpdated;
             download_manager.Completed += OnCompleted;
             download_manager.TransferCompleted += OnTransferCompleted;
-			
-			import_manager = new Banshee.Library.LibraryImportManager (true);
+
+            import_manager = new Banshee.Library.LibraryImportManager (true);
         }
 
         public TelepathyDownloadManager DownloadManager {
@@ -75,8 +73,6 @@ namespace Banshee.Telepathy.Gui
 
         private void ImportTrack (string path)
         {
-            //Banshee.Library.LibraryImportManager import_manager = ServiceManager.Get <Banshee.Library.LibraryImportManager> ();
-
             if (import_manager.ImportTrack (path) != null) {
                 import_manager.NotifyAllSources ();
             }
