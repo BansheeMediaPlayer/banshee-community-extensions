@@ -31,25 +31,17 @@ using System;
 using Mono.Unix;
 using Gdk;
 
+using Hyena;
+
 using Banshee.Base;
+using Banshee.Collection;
+using Banshee.Gui;
+using Banshee.ServiceStack;
 using Banshee.Sources;
 using Banshee.Sources.Gui;
 
-// Other namespaces you might want:
-using Banshee.ServiceStack;
-using Banshee.Preferences;
-using Banshee.MediaEngine;
-using Banshee.Gui;
-using Banshee.PlaybackController;
-using Banshee.Collection;
-
 namespace Banshee.UbuntuOneMusicStore
 {
-    // We are inheriting from Source, the top-level, most generic type of Source.
-    // Other types include (inheritance indicated by indentation):
-    //      DatabaseSource - generic, DB-backed Track source; used by PlaylistSource
-    //        PrimarySource - 'owns' tracks, used by DaapSource, DapSource
-    //          LibrarySource - used by Music, Video, Podcasts, and Audiobooks
     public class UbuntuOneMusicStoreSource : Source
     {
         // In the sources TreeView, sets the order value for this source, small on top
@@ -62,7 +54,7 @@ namespace Banshee.UbuntuOneMusicStore
             Properties.Set<Pixbuf> ("Icon.Pixbuf_22", icon.ScaleSimple (22, 22, InterpType.Bilinear));
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
 
-            Hyena.Log.Debug ("U1MS: Initialized");
+            Log.Debug ("U1MS: Initialized");
         }
 
         // A count of 0 will be hidden in the source TreeView
@@ -84,7 +76,7 @@ namespace Banshee.UbuntuOneMusicStore
 
             private void PlayMP3Preview (object Sender, UbuntuOne.PreviewMp3Args a)
             {
-                Hyena.Log.Debug ("U1MS: Playing preview: ", a.Url );
+                Log.Debug ("U1MS: Playing preview: ", a.Url );
                 TrackInfo PreviewTrack = new TrackInfo ();
                 PreviewTrack.TrackTitle = a.Title;
                 PreviewTrack.ArtistName = "Track Preview";
@@ -96,15 +88,15 @@ namespace Banshee.UbuntuOneMusicStore
 
             private void AddDownloadToLibrary (object Sender, UbuntuOne.DownloadFinishedArgs a)
             {
-                Hyena.Log.Debug ("U1MS: Track downloaded: ", a.Path);
+                Log.Debug ("U1MS: Track downloaded: ", a.Path);
                 ServiceManager.Get<Banshee.Library.LibraryImportManager> ().ImportTrack (new SafeUri (a.Path));
                 ServiceManager.Get<Banshee.Library.LibraryImportManager> ().NotifyAllSources ();
             }
 
             private void PlayU1MSLibrary (object Sender, UbuntuOne.PlayLibraryArgs a)
             {
-                Hyena.Log.Debug ("U1MS: Playing from library: ", a.Path);
-                Hyena.Log.Debug ("U1MS: U1 library location: ", U1LibraryLocation);
+                Log.Debug ("U1MS: Playing from library: ", a.Path);
+                Log.Debug ("U1MS: U1 library location: ", U1LibraryLocation);
                 int track_id = Banshee.Collection.Database.DatabaseTrackInfo.GetTrackIdForUri (System.IO.Path.Combine (U1LibraryLocation, a.Path));
                 if (track_id > 0)
                 {
@@ -116,10 +108,10 @@ namespace Banshee.UbuntuOneMusicStore
 
             private void U1MSUrlLoaded (object Sender, UbuntuOne.UrlLoadedArgs a)
             {
-                Hyena.Log.Debug ("U1MS: Url Loaded: ", a.Url);
+                Log.Debug ("U1MS: Url Loaded: ", a.Url);
             }
         }
-		
+
         private class CustomView : ISourceContents
         {
             StoreWrapper store = new StoreWrapper ();
@@ -129,6 +121,5 @@ namespace Banshee.UbuntuOneMusicStore
             public Gtk.Widget Widget { get { return store; } }
             public ISource Source { get { return null; } }
         }
-
     }
 }
