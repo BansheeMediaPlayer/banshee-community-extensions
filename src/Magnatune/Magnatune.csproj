@@ -1,1 +1,103 @@
-<?xml version="1.0" encoding="utf-8"?><Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">  <PropertyGroup>    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>    <ProductVersion>9.0.21022</ProductVersion>    <SchemaVersion>2.0</SchemaVersion>    <ProjectGuid>{1AEA0235-2C93-4B31-A4F2-D5FF66D841C7}</ProjectGuid>    <OutputType>Library</OutputType>    <RootNamespace>Banshee.Magnatune</RootNamespace>    <AssemblyName>Magnatune</AssemblyName>    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>  </PropertyGroup>  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">    <DebugSymbols>true</DebugSymbols>    <DebugType>full</DebugType>    <Optimize>false</Optimize>    <OutputPath>..\..\bin</OutputPath>    <DefineConstants>DEBUG</DefineConstants>    <ErrorReport>prompt</ErrorReport>    <WarningLevel>4</WarningLevel>    <PlatformTarget>x86</PlatformTarget>    <CustomCommands>      <CustomCommands xmlns="">        <Command type="Execute" command="make run" />      </CustomCommands>    </CustomCommands>  </PropertyGroup>  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">    <DebugType>none</DebugType>    <Optimize>false</Optimize>    <OutputPath>..\..\bin</OutputPath>    <ErrorReport>prompt</ErrorReport>    <WarningLevel>4</WarningLevel>    <PlatformTarget>x86</PlatformTarget>  </PropertyGroup>  <ItemGroup>    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />    <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">      <Package>banshee-1-core</Package>    </Reference>    <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">      <Package>banshee-1-services</Package>    </Reference>    <Reference Include="Banshee.ThickClient, Version=1.5.0.0, Culture=neutral">      <Package>banshee-1-thickclient</Package>    </Reference>    <Reference Include="Banshee.Widgets, Version=1.5.0.0, Culture=neutral">      <Package>banshee-1-thickclient</Package>    </Reference>    <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">      <Package>banshee-1-hyena</Package>    </Reference>    <Reference Include="Hyena.Gui, Version=1.5.0.0, Culture=neutral">      <Package>banshee-1-hyena-gui</Package>    </Reference>    <Reference Include="System.Xml" />  </ItemGroup>  <ItemGroup>    <EmbeddedResource Include="Magnatune.addin.xml">      <LogicalName>Magnatune.addin.xml</LogicalName>    </EmbeddedResource>    <EmbeddedResource Include="Resources\genres.xml">      <LogicalName>genres.xml</LogicalName>    </EmbeddedResource>    <EmbeddedResource Include="Resources\logo_color_large.gif">      <LogicalName>logo_color_large.gif</LogicalName>    </EmbeddedResource>    <EmbeddedResource Include="Resources\MagnatuneMenu.xml">      <LogicalName>MagnatuneMenu.xml</LogicalName>    </EmbeddedResource>    <EmbeddedResource Include="Resources\simple_icon.png">      <LogicalName>simple_icon.png</LogicalName>    </EmbeddedResource>    <EmbeddedResource Include="Banshee.Magnatune\gtk-gui\gui.stetic">      <LogicalName>gui.stetic</LogicalName>    </EmbeddedResource>  </ItemGroup>  <ItemGroup>    <Compile Include="Banshee.Magnatune\Configuration.cs" />    <Compile Include="Banshee.Magnatune\RadioSource.cs" />    <Compile Include="Banshee.Magnatune\RadioSourceContents.cs" />    <Compile Include="Banshee.Magnatune\Widgets.cs" />    <Compile Include="Banshee.Magnatune\gtk-gui\generated.cs" />    <Compile Include="Banshee.Magnatune\gtk-gui\Magnatune.Configuration.cs" />  </ItemGroup>  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />  <ProjectExtensions>    <MonoDevelop>      <Properties xmlns="">        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am">          <BuildFilesVar Sync="true" Name="SOURCES" />          <DeployFilesVar />          <ResourcesVar Sync="true" Name="RESOURCES" />          <OthersVar />          <GacRefVar />          <AsmRefVar />          <ProjectRefVar />        </MonoDevelop.Autotools.MakefileInfo>      </Properties>    </MonoDevelop>  </ProjectExtensions></Project>
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1AEA0235-2C93-4B31-A4F2-D5FF66D841C7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Banshee.Magnatune</RootNamespace>
+    <AssemblyName>Magnatune</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Execute" command="make run" />
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-core</Package>
+    </Reference>
+    <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-services</Package>
+    </Reference>
+    <Reference Include="Banshee.ThickClient, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-thickclient</Package>
+    </Reference>
+    <Reference Include="Banshee.Widgets, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-thickclient</Package>
+    </Reference>
+    <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-hyena</Package>
+    </Reference>
+    <Reference Include="Hyena.Gui, Version=1.5.0.0, Culture=neutral">
+      <Package>banshee-1-hyena-gui</Package>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Magnatune.addin.xml">
+      <LogicalName>Magnatune.addin.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\genres.xml">
+      <LogicalName>genres.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\logo_color_large.gif">
+      <LogicalName>logo_color_large.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\MagnatuneMenu.xml">
+      <LogicalName>MagnatuneMenu.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\simple_icon.png">
+      <LogicalName>simple_icon.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Banshee.Magnatune\gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Banshee.Magnatune\Configuration.cs" />
+    <Compile Include="Banshee.Magnatune\RadioSource.cs" />
+    <Compile Include="Banshee.Magnatune\RadioSourceContents.cs" />
+    <Compile Include="Banshee.Magnatune\Widgets.cs" />
+    <Compile Include="Banshee.Magnatune\gtk-gui\generated.cs" />
+    <Compile Include="Banshee.Magnatune\gtk-gui\Magnatune.Configuration.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am">
+          <BuildFilesVar Sync="true" Name="SOURCES" />
+          <DeployFilesVar />
+          <ResourcesVar Sync="true" Name="RESOURCES" />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>
