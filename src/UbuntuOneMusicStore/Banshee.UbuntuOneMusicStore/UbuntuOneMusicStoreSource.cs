@@ -79,8 +79,8 @@ namespace Banshee.UbuntuOneMusicStore
                 Log.Debug ("U1MS: Playing preview: ", a.Url );
                 TrackInfo PreviewTrack = new TrackInfo ();
                 PreviewTrack.TrackTitle = a.Title;
-                PreviewTrack.ArtistName = "Track Preview";
-                PreviewTrack.AlbumTitle = "Ubuntu One Music Store";
+                PreviewTrack.ArtistName = Catalog.GetString ("Track Preview");
+                PreviewTrack.AlbumTitle = Catalog.GetString ("Ubuntu One Music Store");
                 PreviewTrack.Uri = new SafeUri (a.Url);
                 ServiceManager.PlayerEngine.OpenPlay (PreviewTrack);
                 ServiceManager.PlaybackController.StopWhenFinished = true;
