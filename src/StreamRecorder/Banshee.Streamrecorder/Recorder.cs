@@ -68,6 +68,8 @@ namespace Banshee.Streamrecorder
             try
             {
                 if (Marshaller.Initialize ()) {
+                    encoders.Add (new Encoder ("None (unchanged stream)", "! identity ", null));
+
                     has_lame = Marshaller.CheckGstPlugin ("lame") && Marshaller.CheckGstPlugin ("id3v2mux");
                     Hyena.Log.Information ("[Streamrecorder] GstPlugin lame" + (has_lame ? "" : " not") + " found");
                     if (has_lame) encoders.Add (new Encoder (lame_name, lame_pipeline, lame_extension));
@@ -94,10 +96,10 @@ namespace Banshee.Streamrecorder
         public bool Create ()
         {
             Hyena.Log.Debug ("[Streamrecoder.Recorder]<Create> START");
+            string bin_description = BuildPipeline ();
+
             try {
                 audiotee = new PlayerAudioTee (ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements ()[2]);
-                
-                string bin_description = BuildPipeline ();
                 
                 if (bin_description.Equals ("")) {
                     return false;
@@ -118,7 +120,7 @@ namespace Banshee.Streamrecorder
 
                 ghost_pad = encoder_bin.GetStaticPad ("sink").ToGhostPad ();
             } catch (Exception e) {
-                Hyena.Log.Information ("[Streamrecorder] An exception occurred during pipeline construction");
+                Hyena.Log.InformationFormat ("[Streamrecorder] An exception occurred during pipeline construction: {0}", bin_description);
                 Hyena.Log.Debug (e.StackTrace);
                 return false;
             }
@@ -137,7 +139,14 @@ namespace Banshee.Streamrecorder
             
             if (encoder != null) {
                 pipeline = pipeline_start + encoder.Pipeline + pipeline_end;
-                file_extension = encoder.FileExtension;
+                if (String.IsNullOrEmpty (encoder.FileExtension))
+                {
+                    string trackuri = Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.Uri.ToString ();
+                    int ind = trackuri.LastIndexOf ('.');
+                    file_extension = trackuri.Substring (ind);
+                } else {
+                    file_extension = encoder.FileExtension;
+                }
             }
             
             return pipeline;
