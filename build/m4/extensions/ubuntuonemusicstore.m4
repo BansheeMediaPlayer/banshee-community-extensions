@@ -1,6 +1,6 @@
 AC_DEFUN([BCE_U1MS],
 [
-	BCE_ARG_DISABLE([UbuntuOneMusicStore], [no])
+	BCE_ARG_DISABLE([UbuntuOneMusicStore], [try])
 
         BCE_CHECK_EXTENSION_DEP([UbuntuOneMusicStore], [BANSHEE_155],
                 [banshee-1-thickclient >= 1.5.5],
@@ -11,6 +11,7 @@ AC_DEFUN([BCE_U1MS],
 		[UbuntuOne-sharp was not found. Please install it or disable the UbuntuOneMusicStore extension by passing --disable-ubuntuonemusicstore])
 
 	if test "x$enable_UbuntuOneMusicStore" = "xtry" \
+		&& test "x$have_BANSHEE_155" = "xyes" \
 		&& test "x$have_UBUNTUONESHARP" = "xyes"; then
 		enable_UbuntuOneMusicStore=yes
 	fi
