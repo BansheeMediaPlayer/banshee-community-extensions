@@ -3,6 +3,8 @@ LINK = $(CLUTTER_SHARP_LIBS) -r:Mono.Cairo -pkg:gtk-sharp-2.0
 GMCS_FLAGS = -unsafe
 
 SOURCES =  \
+    AlphabetBar.cs \
+    AlphabetButton.cs \
     ClutterSlider.cs \
     ClutterSliderHandleButton.cs \
     ClutterButton.cs \
