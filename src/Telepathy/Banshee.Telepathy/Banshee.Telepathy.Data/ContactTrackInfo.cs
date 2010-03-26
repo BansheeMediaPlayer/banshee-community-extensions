@@ -30,14 +30,12 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
-using Mono.Unix;
 
 using Hyena;
 
 using Banshee.Base;
 using Banshee.Collection;
 using Banshee.Collection.Database;
-using Banshee.ServiceStack;
 using Banshee.Telepathy.DBus;
 
 using Banshee.Telepathy.API;

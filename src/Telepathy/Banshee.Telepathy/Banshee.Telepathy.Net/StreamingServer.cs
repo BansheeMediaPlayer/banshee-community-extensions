@@ -29,13 +29,9 @@
 using System;
 using System.IO;
 using System.Text;
-using System.Web;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
-using System.Collections;
 
-using Banshee.Collection;
 using Banshee.Collection.Database;
 using Banshee.Web;
 

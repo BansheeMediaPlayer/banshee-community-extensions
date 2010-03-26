@@ -27,20 +27,9 @@
 //
 
 using System;
-using System.Timers;
 using System.Collections.Generic;
-using Mono.Unix;
 
-using Hyena.Data.Sqlite;
 
-using Banshee.Base;
-using Banshee.Collection;
-using Banshee.Collection.Database;
-using Banshee.Gui.Dialogs;
-using Banshee.Library;
-using Banshee.Sources;
-using Banshee.ServiceStack;
-using Banshee.Telepathy.Gui;
 using Banshee.Telepathy.DBus;
 using Banshee.Telepathy.Net;
 

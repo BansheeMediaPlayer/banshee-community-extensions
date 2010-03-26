@@ -26,18 +26,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using Mono.Unix;
-
-using Hyena;
-
-using Banshee.Base;
-using Banshee.ServiceStack;
-using Banshee.Telepathy;
 using Banshee.Telepathy.Data;
-
-using Banshee.Telepathy.API;
-using Banshee.Telepathy.API.Dispatchables;
 
 namespace Banshee.Telepathy.Gui
 {
