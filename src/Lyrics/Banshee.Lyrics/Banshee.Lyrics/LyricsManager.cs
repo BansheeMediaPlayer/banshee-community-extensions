@@ -25,10 +25,7 @@
 // 
 
 using System;
-using System.Threading;
 using System.Collections.Generic;
-
-using Mono.Unix;
 
 using Banshee.Networking;
 using Banshee.ServiceStack;
@@ -36,7 +33,6 @@ using Banshee.Collection;
 
 using Banshee.Lyrics.Sources;
 using Banshee.Lyrics.IO;
-using Banshee.Lyrics.Gui;
 using Banshee.Streaming;
 
 using Hyena;
