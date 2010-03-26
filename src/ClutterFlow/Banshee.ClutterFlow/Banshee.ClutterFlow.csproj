@@ -100,11 +100,11 @@
     <EmbeddedResource Include="ClutterFlow.addin.xml">
       <LogicalName>ClutterFlow.addin.xml</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="ThemeIcons\22x22\clutterflow-icon.png">
-      <LogicalName>clutterflow-icon.png</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="ThemeIcons\256x256\clutterflow-large.png">
       <LogicalName>clutterflow-large.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ThemeIcons\22x22\clutterflow-icon.png">
+      <LogicalName>clutterflow-icon.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -120,14 +120,14 @@
           <TextStylePolicy FileWidth="120" NoTabsAfterNonTabs="True" RemoveTrailingWhitespace="True" inheritsSet="VisualStudio" inheritsScope="text/plain" />
         </Policies>
         <Deployment.LinuxDeployData generatePcFile="false" />
-        <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile" SyncReferences="true">
-          <BuildFilesVar Sync="true" Name="FILES" />
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am">
+          <BuildFilesVar Sync="true" Name="SOURCES" />
           <DeployFilesVar />
           <ResourcesVar Sync="true" Name="RESOURCES" />
           <OthersVar />
-          <GacRefVar Sync="true" Name="REFERENCES" />
-          <AsmRefVar Sync="true" Name="REFERENCES" />
-          <ProjectRefVar Sync="true" Name="REFERENCES" />
+          <GacRefVar Name="LINK" Prefix="-r:" />
+          <AsmRefVar Name="LINK" Prefix="-r:" />
+          <ProjectRefVar Name="LINK" Prefix="-r:" />
         </MonoDevelop.Autotools.MakefileInfo>
       </Properties>
     </MonoDevelop>

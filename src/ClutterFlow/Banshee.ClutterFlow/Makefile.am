@@ -3,19 +3,21 @@ LINK = $(BANSHEE_LIBS) $(BANSHEE_NOWPLAYING_LIBS) $(CLUTTER_SHARP_LIBS) -r:$(DIR
 ASSEMBLY_GCONF_SCHEMA = banshee-plugin-alarm.schemas.in
 
 SOURCES =  \
-    ClutterFlowService.cs \
-    ClutterFlowContents.cs \
-    ClutterFlowSchemas.cs \
-    ClutterFlowAlbum.cs \
-    AlbumLoader.cs \
-    ClutterFlowView.cs \
-    PartyModeButton.cs \
-    FullscreenButton.cs \
-    ArtworkLookup.cs \
-    FloatingQueue.cs
+	AlbumLoader.cs \
+	ArtworkLookup.cs \
+	ClutterFlowAlbum.cs \
+	ClutterFlowContents.cs \
+	ClutterFlowSchemas.cs \
+	ClutterFlowService.cs \
+	ClutterFlowView.cs \
+	FloatingQueue.cs \
+	FullscreenButton.cs \
+	PartyModeButton.cs
 
 RESOURCES =  \
-	ClutterFlow.addin.xml
+	ClutterFlow.addin.xml \
+	ThemeIcons/22x22/clutterflow-icon.png \
+	ThemeIcons/256x256/clutterflow-large.png
 
 if ENABLE_CLUTTERFLOW
 include $(top_srcdir)/build/build.mk
