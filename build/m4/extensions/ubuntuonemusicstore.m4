@@ -19,6 +19,7 @@ AC_DEFUN([BCE_U1MS],
 	if test "x$enable_UbuntuOneMusicStore" = "xyes"; then
 		AM_CONDITIONAL(ENABLE_U1MS, true)
 	else
+		enable_UbuntuOneMusicStore=no
 		AM_CONDITIONAL(ENABLE_U1MS, false)
 	fi
 ])
