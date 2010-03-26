@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Banshee.IO;
 
@@ -47,7 +47,8 @@ namespace Banshee.Lyrics.Sources
         
         public string Credits {
             get {
-                return string.Format ("Powered by {0} ({1})", Name, Url);
+                return string.Format (AddinManager.CurrentLocalizer.GetString ("Powered by {0} ({1})"),
+                                      Name, Url);
             }
         }
 

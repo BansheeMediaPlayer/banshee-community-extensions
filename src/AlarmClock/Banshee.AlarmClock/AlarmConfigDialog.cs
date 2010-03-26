@@ -29,7 +29,7 @@
 
 using System;
 using Gtk;
-using Mono.Unix;
+using Mono.Addins;
 
 namespace Banshee.AlarmClock
 {
@@ -59,10 +59,10 @@ namespace Banshee.AlarmClock
             spbMinute = new SpinButton (0, 59, 1);
             spbMinute.WidthChars = 2;
 
-            isEnabled = new CheckButton (Catalog.GetString ("Enable Alarm"));
+            isEnabled = new CheckButton (AddinManager.CurrentLocalizer.GetString ("Enable Alarm"));
 
             HBox time_box = new HBox ();
-            time_box.PackStart (new Label (Catalog.GetString ("Set Time: ")));
+            time_box.PackStart (new Label (AddinManager.CurrentLocalizer.GetString ("Set Time: ")));
             time_box.PackStart (spbHour);
             time_box.PackStart (new Label (" : "));
             time_box.PackStart (spbMinute);

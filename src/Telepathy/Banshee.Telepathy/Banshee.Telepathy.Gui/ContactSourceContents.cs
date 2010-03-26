@@ -31,7 +31,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Gtk;
-using Mono.Unix;
+using Mono.Addins;
 
 using Banshee.Collection;
 using Banshee.Collection.Gui;
@@ -98,7 +98,7 @@ namespace Banshee.Telepathy.Gui
             }
             
             if (contacts == null) {
-                contacts = new TitledList (Catalog.GetString ("Contacts"));
+                contacts = new TitledList (AddinManager.CurrentLocalizer.GetString ("Contacts"));
                 contacts.PackStart (contacts_view, true, true, 0);
                 contacts_view.Show ();
 

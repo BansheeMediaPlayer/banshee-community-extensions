@@ -12,6 +12,8 @@
     url=""
     defaultEnabled="false">
 
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
   <Dependencies>
     <Addin id="Banshee.Services" version="1.0"/>
     <Addin id="Banshee.ThickClient" version="1.0"/>

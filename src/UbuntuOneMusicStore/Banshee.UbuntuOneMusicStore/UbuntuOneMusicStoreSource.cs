@@ -28,7 +28,7 @@
 
 using System;
 
-using Mono.Unix;
+using Mono.Addins;
 using Gdk;
 
 using Hyena;
@@ -47,7 +47,7 @@ namespace Banshee.UbuntuOneMusicStore
         // In the sources TreeView, sets the order value for this source, small on top
         const int sort_order = 190;
 
-        public UbuntuOneMusicStoreSource () : base (Catalog.GetString ("Ubuntu One Music Store"), Catalog.GetString ("Ubuntu One Music Store"), sort_order)
+        public UbuntuOneMusicStoreSource () : base (AddinManager.CurrentLocalizer.GetString ("Ubuntu One Music Store"), AddinManager.CurrentLocalizer.GetString ("Ubuntu One Music Store"), sort_order)
         {
             Pixbuf icon = new Pixbuf (System.Reflection.Assembly.GetExecutingAssembly ()
                                       .GetManifestResourceStream ("ubuntuone.png"));
@@ -79,8 +79,8 @@ namespace Banshee.UbuntuOneMusicStore
                 Log.Debug ("U1MS: Playing preview: ", a.Url );
                 TrackInfo PreviewTrack = new TrackInfo ();
                 PreviewTrack.TrackTitle = a.Title;
-                PreviewTrack.ArtistName = Catalog.GetString ("Track Preview");
-                PreviewTrack.AlbumTitle = Catalog.GetString ("Ubuntu One Music Store");
+                PreviewTrack.ArtistName = AddinManager.CurrentLocalizer.GetString ("Track Preview");
+                PreviewTrack.AlbumTitle = AddinManager.CurrentLocalizer.GetString ("Ubuntu One Music Store");
                 PreviewTrack.Uri = new SafeUri (a.Url);
                 ServiceManager.PlayerEngine.OpenPlay (PreviewTrack);
                 ServiceManager.PlaybackController.StopWhenFinished = true;

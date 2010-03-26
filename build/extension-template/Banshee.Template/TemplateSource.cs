@@ -28,7 +28,7 @@
 
 using System;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Banshee.Base;
 using Banshee.Sources;
@@ -52,7 +52,8 @@ namespace Banshee.EXTENSION-NAME
         // In the sources TreeView, sets the order value for this source, small on top
         const int sort_order = 190;
 
-        public EXTENSION-NAMESource () : base (Catalog.GetString ("EXTENSION-NAME"), Catalog.GetString ("EXTENSION-NAME"), sort_order)
+        public EXTENSION-NAMESource () : base (AddinManager.CurrentLocalizer.GetString ("EXTENSION-NAME"),
+                                               AddinManager.CurrentLocalizer.GetString ("EXTENSION-NAME"), sort_order)
         {
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
 

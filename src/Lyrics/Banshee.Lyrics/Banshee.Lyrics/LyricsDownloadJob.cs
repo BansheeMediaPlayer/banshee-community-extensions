@@ -1,7 +1,7 @@
 
 using System;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Banshee.Base;
 using Banshee.ServiceStack;
@@ -17,7 +17,7 @@ namespace Banshee.Lyrics
 {
     public class LyricsDownloadJob : DbIteratorJob
     {
-        public LyricsDownloadJob (bool force) : base(Catalog.GetString ("Downloading Lyrics"))
+        public LyricsDownloadJob (bool force) : base (AddinManager.CurrentLocalizer.GetString ("Downloading Lyrics"))
         {
             PriorityHints = PriorityHints.LongRunning;
             IsBackground = true;
@@ -61,7 +61,8 @@ namespace Banshee.Lyrics
                 DbId = reader.Get<int> (0),
             };
 
-            Status = String.Format (Catalog.GetString ("{0} - {1}"), track.ArtistName, track.TrackTitle);
+            Status = String.Format (AddinManager.CurrentLocalizer.GetString ("{0} - {1}"),
+                                    track.ArtistName, track.TrackTitle);
             DownloadLyrics (track);
         }
 

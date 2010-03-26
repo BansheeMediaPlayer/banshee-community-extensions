@@ -28,7 +28,7 @@ using System;
 using System.IO;
 using System.Threading;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Gtk;
 using Gdk;
@@ -80,10 +80,10 @@ namespace Banshee.Lyrics.Gui
             }
 
             string window_title = ServiceManager.PlayerEngine.CurrentTrack.TrackTitle;
-            string by_str = " " + Catalog.GetString ("by") + " ";
+            string by_str = " " + AddinManager.CurrentLocalizer.GetString ("by") + " ";
             string artist = ServiceManager.PlayerEngine.CurrentTrack.ArtistName;
             if (artist == null) {
-                artist = Catalog.GetString ("Unknown Artist");
+                artist = AddinManager.CurrentLocalizer.GetString ("Unknown Artist");
             }
             window_title += by_str + artist;
             this.Title = window_title;

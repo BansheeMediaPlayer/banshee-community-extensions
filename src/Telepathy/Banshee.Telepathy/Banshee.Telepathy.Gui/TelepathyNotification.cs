@@ -27,7 +27,6 @@
 //
 
 using System;
-using Mono.Unix;
 using Gdk;
 
 using Notifications;
@@ -112,13 +111,13 @@ namespace Banshee.Telepathy.Gui
 	                current_nf.Urgency = Urgency.Low;
 	                current_nf.Timeout = 4500;
 	//                if (!current_track.IsLive && ActionsSupported && interface_action_service.PlaybackActions["NextAction"].Sensitive) {
-	//                    current_nf.AddAction ("skip-song", Catalog.GetString("Skip this item"), OnSongSkipped);
+	//                    current_nf.AddAction ("skip-song", AddinManager.CurrentLocalizer.GetString ("Skip this item"), OnSongSkipped);
 	//                }
 	                current_nf.Show ();
 					Hyena.Log.Debug ("Showing notification");
 	            } catch (Exception e) {
 					Console.WriteLine (e.StackTrace);
-	                Hyena.Log.Warning (Catalog.GetString ("Cannot show notification"), e.Message, false);
+	                Hyena.Log.Warning ("Cannot show notification", e.Message, false);
 	            }
 			}
         }

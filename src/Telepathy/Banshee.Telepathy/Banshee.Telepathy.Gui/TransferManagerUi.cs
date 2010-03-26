@@ -28,7 +28,7 @@
 
 using System;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Hyena.Jobs;
 using Banshee.ServiceStack;
@@ -47,20 +47,20 @@ namespace Banshee.Telepathy.Gui
             Initialize ();
         }
         
-        private string title = Catalog.GetString ("Transfer(s) to Contacts");
+        private string title = AddinManager.CurrentLocalizer.GetString ("Transfer(s) to Contacts");
         public string Title {
             get { return title; }
             protected set { title = value; }
         }
 
-        private string cancel_message = Catalog.GetString (
+        private string cancel_message = AddinManager.CurrentLocalizer.GetString (
             "File transfers are in progress. Would you like to cancel them?");
         public string CancelMessage {
             get { return cancel_message; }
             protected set { cancel_message = value; }
         }
 
-        private string progress_message = Catalog.GetString ("Transferring {0} of {1}");
+        private string progress_message = AddinManager.CurrentLocalizer.GetString ("Transferring {0} of {1}");
         public string ProgressMessage {
             get { return progress_message; }
             set { progress_message = value; }
@@ -128,7 +128,7 @@ namespace Banshee.Telepathy.Gui
                     return;
                 }
                 
-                user_job = new UserJob (Title, Catalog.GetString ("Initializing"));
+                user_job = new UserJob (Title, AddinManager.CurrentLocalizer.GetString ("Initializing"));
                 user_job.SetResources (Resource.Cpu, Resource.Disk);
                 user_job.PriorityHints = PriorityHints.SpeedSensitive | PriorityHints.DataLossIfStopped;
                 user_job.IconNames = new string [] { Gtk.Stock.Network };

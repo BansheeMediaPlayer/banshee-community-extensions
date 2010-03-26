@@ -27,7 +27,7 @@
 //
 
 using System;
-using Mono.Unix;
+using Mono.Addins;
 using Gtk;
 
 namespace Banshee.Telepathy.Gui
@@ -39,7 +39,7 @@ namespace Banshee.Telepathy.Gui
     
         public ContactRequestDialog (string contact_name) : base ()
         {
-            Title = Catalog.GetString ("Contact Request");
+            Title = AddinManager.CurrentLocalizer.GetString ("Contact Request");
             HasSeparator = false;
             BorderWidth = 5;
             
@@ -64,7 +64,7 @@ namespace Banshee.Telepathy.Gui
             hbox.PackStart (image, false, false, 0);
             hbox.PackStart (vbox, true, true, 0);
         
-            message = new Label (String.Format (Catalog.GetString ("{0} would like to browse your music library."), contact_name));
+            message = new Label (String.Format (AddinManager.CurrentLocalizer.GetString ("{0} would like to browse your music library."), contact_name));
             message.Xalign = 0.0f;
             message.Show ();
             
@@ -80,7 +80,7 @@ namespace Banshee.Telepathy.Gui
             VBox.PackEnd (bottom_box, false, false, 0);
            
             Button accept_button = new Button ();
-            accept_button.Label = Catalog.GetString ("Accept");
+            accept_button.Label = AddinManager.CurrentLocalizer.GetString ("Accept");
             accept_button.ShowAll ();
             accept_button.Activated += delegate {
                 //login_form.Save ();
@@ -91,7 +91,7 @@ namespace Banshee.Telepathy.Gui
             AddActionWidget (accept_button, ResponseType.Accept);
 
             Button reject_button = new Button ();
-            reject_button.Label = Catalog.GetString ("Reject");
+            reject_button.Label = AddinManager.CurrentLocalizer.GetString ("Reject");
             reject_button.ShowAll ();
             reject_button.Activated += delegate {
                 //login_form.Save ();

@@ -28,7 +28,7 @@ using Gtk;
 using System;
 using System.Text;
 
-using Mono.Unix;
+using Mono.Addins;
 using System.Threading;
 using WebKit;
 using Banshee.ServiceStack;
@@ -61,7 +61,7 @@ namespace Banshee.Lyrics.Gui
             if (!IsValidUri (request.Uri)) {
                 return -1;
             }
-            if (request.Uri == Catalog.GetString ("add")) {
+            if (request.Uri == AddinManager.CurrentLocalizer.GetString ("add")) {
                 AddLinkClicked (this, null);
             } else {
                 LyricsManager.Instance.FetchLyricsFromLyrc (request.Uri);
@@ -111,7 +111,7 @@ namespace Banshee.Lyrics.Gui
             } else if (args.lyrics != null) {
                 browser_str = Utils.ToHtml(args.lyrics);
             } else {
-                browser_str = Catalog.GetString ("No lyrics found.");
+                browser_str = AddinManager.CurrentLocalizer.GetString ("No lyrics found.");
             }
 
             LoadString (browser_str);
@@ -120,14 +120,14 @@ namespace Banshee.Lyrics.Gui
         private string GetSuggestionString (string lyrics_suggestion)
         {
             StringBuilder sb = new StringBuilder ();
-            sb.Append ("<b>" + Catalog.GetString ("No lyrics found.") + "</b>");
+            sb.Append ("<b>" + AddinManager.CurrentLocalizer.GetString ("No lyrics found.") + "</b>");
             if (InsertModeAvailable) {
-                sb.Append ("<br> <a href=\"" + Catalog.GetString ("add") + "\">");
-                sb.Append (Catalog.GetString ("Click here to manually add a new lyric"));
+                sb.Append ("<br> <a href=\"" + AddinManager.CurrentLocalizer.GetString ("add") + "\">");
+                sb.Append (AddinManager.CurrentLocalizer.GetString ("Click here to manually add a new lyric"));
                 sb.Append ("</a>");
             }
             sb.Append ("<br><br>");
-            sb.Append (Catalog.GetString ("Suggestions:"));
+            sb.Append (AddinManager.CurrentLocalizer.GetString ("Suggestions:"));
             sb.Append (lyrics_suggestion);
 
             return sb.ToString ();
@@ -135,7 +135,8 @@ namespace Banshee.Lyrics.Gui
 
         public void OnLoading (object o, EventArgs args)
         {
-            String str = "<div style=\"valign:center;float:middle;font-weight:bold;font-size:13px\">" + Catalog.GetString ("Loading...") + "</div>";
+            String str = "<div style=\"valign:center;float:middle;font-weight:bold;font-size:13px\">"
+                + AddinManager.CurrentLocalizer.GetString ("Loading...") + "</div>";
             LoadString(str);
         }
 

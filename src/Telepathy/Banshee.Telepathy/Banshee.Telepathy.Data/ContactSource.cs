@@ -28,7 +28,7 @@
 
 using System;
 using System.Collections.Generic;
-using Mono.Unix;
+using Mono.Addins;
 
 using Hyena.Data.Sqlite;
 using Hyena;
@@ -84,7 +84,7 @@ namespace Banshee.Telepathy.Data
 		private SourceMessage response_message;
 		private bool getting_response = false;
 		
-        public ContactSource (Contact contact) : base (Catalog.GetString ("Contact"), 
+        public ContactSource (Contact contact) : base (AddinManager.CurrentLocalizer.GetString ("Contact"),
                                                        String.Format ("{0} ({1})", 
                                                                       contact != null ? contact.Name : String.Empty, 
                                                                       contact != null ? contact.Status.ToString () : String.Empty),
@@ -95,7 +95,7 @@ namespace Banshee.Telepathy.Data
             Contact.ContactUpdated += OnContactUpdated;
             Hyena.Log.DebugFormat ("ContactSource created for {0}", Contact.Name);
             
-            //Properties.SetString ("UnmapSourceActionLabel", Catalog.GetString ("Disconnect"));
+            //Properties.SetString ("UnmapSourceActionLabel", AddinManager.CurrentLocalizer.GetString ("Disconnect"));
             //Properties.SetString ("UnmapSourceActionIconName", "gtk-disconnect");
             Properties.SetString ("Icon.Name", "stock_person");
             Properties.SetString ("ActiveSourceUIResource", "ActiveSourceUI.xml");
@@ -319,15 +319,15 @@ namespace Banshee.Telepathy.Data
 			response_message.ClearActions ();
 			
 			string status_name = String.Format ("<i>{0}</i>", GLib.Markup.EscapeText (Name));
-			string message = String.Format (Catalog.GetString ("{0} is requesting to browse your library"), Contact.Name);
+			string message = String.Format (AddinManager.CurrentLocalizer.GetString ("{0} is requesting to browse your library"), Contact.Name);
 			response_message.Text = String.Format (GLib.Markup.EscapeText (message), status_name);
             
-            response_message.AddAction (new MessageAction (Catalog.GetString ("Accept"),
+            response_message.AddAction (new MessageAction (AddinManager.CurrentLocalizer.GetString ("Accept"),
                 delegate { 
 					tube_manager.AcceptBrowseRequest ();
 					ResetResponseMessage ();
 				}));
-            response_message.AddAction (new MessageAction (Catalog.GetString ("Reject"),
+            response_message.AddAction (new MessageAction (AddinManager.CurrentLocalizer.GetString ("Reject"),
                 delegate { 
 					tube_manager.RejectBrowseRequest ();
 					ResetResponseMessage ();
@@ -335,7 +335,7 @@ namespace Banshee.Telepathy.Data
 
             response_message.ThawNotify ();
 			TelepathyNotification.Create ().Show (Contact.Name, 
-                    	Catalog.GetString ("is requesting to browse your Banshee library"));
+                    	AddinManager.CurrentLocalizer.GetString ("is requesting to browse your Banshee library"));
 			
 			// show notify bubble every 30 seconds
 			System.Timers.Timer notify_timer = new System.Timers.Timer (30000);
@@ -344,7 +344,7 @@ namespace Banshee.Telepathy.Data
                		notify_timer.Stop ();
 				} else {
 					TelepathyNotification.Create ().Show (Contact.Name, 
-                    	Catalog.GetString ("is requesting to browse your Banshee library"));
+                    	AddinManager.CurrentLocalizer.GetString ("is requesting to browse your Banshee library"));
 				}
             };
             notify_timer.AutoReset = true;
@@ -384,7 +384,7 @@ namespace Banshee.Telepathy.Data
 				HideStatus ();
 				break;
 			case TubeManager.State.Waiting:
-				SetStatus (Catalog.GetString ("Waiting for response from contact..."), false);
+				SetStatus (AddinManager.CurrentLocalizer.GetString ("Waiting for response from contact..."), false);
 				break;
 			//case TubeManager.State.PermissionNotGranted:
 			//case TubeManager.State.PermissionGranted:
@@ -392,13 +392,13 @@ namespace Banshee.Telepathy.Data
 				if (Count > 0) {
 					CleanUpData ();
 				}
-				SetStatus (Catalog.GetString ("Loading..."), false);
+				SetStatus (AddinManager.CurrentLocalizer.GetString ("Loading..."), false);
 				break;
 			case TubeManager.State.LoadedMetadata:
-				SetStatus (Catalog.GetString ("All tracks downloaded. Loading..."), false);
+				SetStatus (AddinManager.CurrentLocalizer.GetString ("All tracks downloaded. Loading..."), false);
 				break;
 			case TubeManager.State.LoadingPlaylists:
-				SetStatus (Catalog.GetString ("Loading playlists..."), false);
+				SetStatus (AddinManager.CurrentLocalizer.GetString ("Loading playlists..."), false);
 				break;
 			//case TubeManager.State.Loaded:
 			}
@@ -410,13 +410,13 @@ namespace Banshee.Telepathy.Data
 			
 			switch (error_args.error) {
 			case TubeManager.ErrorReason.ClosedBeforeDownloaded:
-				SetStatus (Catalog.GetString ("A problem occured while downloading this contact's library"), true);
+				SetStatus (AddinManager.CurrentLocalizer.GetString ("A problem occured while downloading this contact's library"), true);
 				break;
 			case TubeManager.ErrorReason.ErrorDuringLoad:
-				SetStatus (Catalog.GetString ("An error occurred while loading data"), true);
+				SetStatus (AddinManager.CurrentLocalizer.GetString ("An error occurred while loading data"), true);
 				break;
 			case TubeManager.ErrorReason.ErrorDuringPlaylistLoad:
-				SetStatus (Catalog.GetString ("An error occurred while loading playlists"), true);
+				SetStatus (AddinManager.CurrentLocalizer.GetString ("An error occurred while loading playlists"), true);
 				break;
 			}
 		}
@@ -436,7 +436,7 @@ namespace Banshee.Telepathy.Data
             } else {
                 
                 TelepathyNotification.Create ().Show (Contact.Name, 
-                    Catalog.GetString ("is no longer sharing their Banshee library with you"));
+                    AddinManager.CurrentLocalizer.GetString ("is no longer sharing their Banshee library with you"));
             }
         }
         
@@ -461,7 +461,7 @@ namespace Banshee.Telepathy.Data
             LibraryDownload d = track_args.download as LibraryDownload;
 
 			ThreadAssist.ProxyToMain (delegate {
-				SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), 
+				SetStatus (String.Format (AddinManager.CurrentLocalizer.GetString ("Loading {0} of {1}"),
 					CalculateLoadingTracks (chunk.Length, d.TotalExpected), 
 			    	d.TotalExpected), false);
 			});
@@ -498,7 +498,7 @@ namespace Banshee.Telepathy.Data
 			LibraryDownload d = track_args.download as LibraryDownload;
 		
 			ThreadAssist.ProxyToMain (delegate {
-				SetStatus (String.Format (Catalog.GetString ("Loading {0} of {1}"), 
+				SetStatus (String.Format (AddinManager.CurrentLocalizer.GetString ("Loading {0} of {1}"),
 					CalculateLoadingTracks (chunk.Length, d.TotalExpected), 
 			    	d.TotalExpected), false);
 			});

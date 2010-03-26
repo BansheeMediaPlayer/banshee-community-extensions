@@ -29,7 +29,7 @@ using System.Reflection;
 using System.Collections.Generic;
 
 using Gtk;
-using Mono.Unix;
+using Mono.Addins;
 
 using Hyena;
 using Hyena.Data;
@@ -256,7 +256,7 @@ namespace Banshee.ClutterFlow
             window.HscrollbarPolicy = PolicyType.Automatic;
             window.VscrollbarPolicy = PolicyType.Automatic;
 
-            Expander expander = new Expander(Catalog.GetString ("Track list"));
+            Expander expander = new Expander(AddinManager.CurrentLocalizer.GetString ("Track list"));
             expander.Add(window);
             
             return expander;

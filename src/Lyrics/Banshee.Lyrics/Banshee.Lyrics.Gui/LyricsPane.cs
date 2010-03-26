@@ -28,7 +28,7 @@ using Gtk;
 
 using System;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Banshee.ContextPane;
 
@@ -105,7 +105,7 @@ namespace Banshee.Lyrics.Gui
         private void UpdateLabel ()
         {
             if (!string.IsNullOrEmpty (track_title)) {
-                label.Text = "<b>" + track_title + Catalog.GetString (" lyric") + "</b>";
+                label.Text = "<b>" + track_title + AddinManager.CurrentLocalizer.GetString (" lyric") + "</b>";
                 label.UseMarkup = true;
             }
             this.ShowAll ();

@@ -29,7 +29,7 @@
 
 using System;
 using Gtk;
-using Mono.Unix;
+using Mono.Addins;
 
 namespace Banshee.AlarmClock
 {
@@ -44,7 +44,7 @@ namespace Banshee.AlarmClock
         {
             this.plugin = plugin;
 
-            Title = Catalog.GetString ("Sleep Timer");
+            Title = AddinManager.CurrentLocalizer.GetString ("Sleep Timer");
             WidthRequest = 250;
             HeightRequest = 150;
             VBox.Spacing = 10;
@@ -64,9 +64,9 @@ namespace Banshee.AlarmClock
             sleepHour.WidthChars = 2;
             sleepMin.WidthChars  = 2;
 
-            Label prefix    = new Label (Catalog.GetString ("Sleep Timer :"));
+            Label prefix    = new Label (AddinManager.CurrentLocalizer.GetString ("Sleep Timer :"));
             Label separator = new Label (":");
-            Label comment   = new Label (Catalog.GetString ("<i>(set to 0:00 to disable)</i>"));
+            Label comment   = new Label (AddinManager.CurrentLocalizer.GetString ("<i>(set to 0:00 to disable)</i>"));
             comment.UseMarkup = true;
 
             Button OK = new Button (Gtk.Stock.Ok);

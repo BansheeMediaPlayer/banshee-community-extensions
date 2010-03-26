@@ -28,7 +28,7 @@
 
 using System;
 using Gtk;
-using Mono.Unix;
+using Mono.Addins;
 
 namespace Banshee.LCD
 {
@@ -43,7 +43,7 @@ namespace Banshee.LCD
         public ConfigurationDialog (LCDService plugin)
         {
             this.plugin = plugin;
-            Title = Catalog.GetString ("LCD configuration");
+            Title = AddinManager.CurrentLocalizer.GetString ("LCD configuration");
             BorderWidth = 5;
             HasSeparator = false;
             Resizable = false;
@@ -51,20 +51,20 @@ namespace Banshee.LCD
             VBox lcdproc_box = new VBox ();
 
             HBox host_box = new HBox ();
-            host_box.PackStart (new Label (Catalog.GetString ("Hostname:")), false, false, 3);
+            host_box.PackStart (new Label (AddinManager.CurrentLocalizer.GetString ("Hostname:")), false, false, 3);
             host_entry = new Entry ();
             host_box.PackStart (host_entry, true, true, 3);
             host_entry.Text = this.plugin.Host;
             host_entry.Changed += new EventHandler (Host_Changed);
 
             HBox port_box = new HBox ();
-            port_box.PackStart (new Label (Catalog.GetString ("Port:")), false, false, 3);
+            port_box.PackStart (new Label (AddinManager.CurrentLocalizer.GetString ("Port:")), false, false, 3);
             port_spin = new SpinButton (1, 65535, 1);
             port_box.PackStart (port_spin, true, true, 3);
             port_spin.Value = this.plugin.Port;
             port_spin.Changed += new EventHandler (Port_Changed);
 
-            Frame lcdproc_frame = new Frame (Catalog.GetString ("LCDProc Daemon:"));
+            Frame lcdproc_frame = new Frame (AddinManager.CurrentLocalizer.GetString ("LCDProc Daemon:"));
             lcdproc_box.PackStart (host_box);
             lcdproc_box.PackStart (port_box);
             lcdproc_frame.Add (lcdproc_box);

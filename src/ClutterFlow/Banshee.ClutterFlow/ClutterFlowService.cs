@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using Gtk;
+using Mono.Addins;
 
 using Hyena;
 
@@ -34,7 +35,6 @@ using Clutter;
 
 using Banshee.ServiceStack;
 using Banshee.Gui;
-using Banshee.I18n;
 using Banshee.Library;
 using Banshee.Sources;
 using Banshee.Sources.Gui;
@@ -228,8 +228,8 @@ namespace Banshee.ClutterFlow
                 clutterflow_actions = new ActionGroup ("ClutterFlowView");
 
                 ToggleActionEntry [] tae = new ToggleActionEntry [] { new ToggleActionEntry ("ClutterFlowVisibleAction", null,
-                    Catalog.GetString ("Show ClutterFlow Browser"), null,
-                    Catalog.GetString ("Show or hide the ClutterFlow browser"),
+                    AddinManager.CurrentLocalizer.GetString ("Show ClutterFlow Browser"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Show or hide the ClutterFlow browser"),
                     null, ClutterFlowSchemas.ShowClutterFlow.Get ()) };
                 clutterflow_actions.Add (tae);
                 
@@ -321,10 +321,11 @@ namespace Banshee.ClutterFlow
 		protected void InstallPreferences () 
 		{
 			if (!pref_installed) {
-				pref_page = preference_service.Add(new Page("clutterflow", Catalog.GetString ("ClutterFlow"), 10)); 
+				pref_page = preference_service.Add(new Page("clutterflow",
+                                                            AddinManager.CurrentLocalizer.GetString ("ClutterFlow"), 10));
 				
 	            general = pref_page.Add (new Section ("general", 
-	                Catalog.GetString ("General"), 1));
+	                AddinManager.CurrentLocalizer.GetString ("General"), 1));
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.InstantPlayback, UpdateLabelVisibility);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DisplayLabel, UpdateLabelVisibility);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DisplayTitle, UpdateTitleVisibility);
@@ -333,7 +334,7 @@ namespace Banshee.ClutterFlow
 				ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.ThreadedArtwork, UpdateThreadedArtwork);
 				
 				dimensions = pref_page.Add (new Section ("dimensions", 
-	                Catalog.GetString ("Dimensions"), 2));
+	                AddinManager.CurrentLocalizer.GetString ("Dimensions"), 2));
 				ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MinCoverSize, UpdateMinCoverSize);
 				ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MaxCoverSize, UpdateMinCoverSize);
 				ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.TextureSize, UpdateMinCoverSize);

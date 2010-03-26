@@ -30,7 +30,7 @@ using System;
 using System.Collections.Generic;
 //using System.Threading;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Gtk;
 
@@ -67,11 +67,11 @@ namespace Banshee.LCD
             actions = new ActionGroup ("LCD");
             actions.Add (new ActionEntry [] {
                 new ActionEntry ("LCDAction", null,
-                    Catalog.GetString ("LCD"), null,
+                    AddinManager.CurrentLocalizer.GetString ("LCD"), null,
                     null, null),
                 new ActionEntry ("LCDConfigureAction", Stock.Properties,
-                    Catalog.GetString ("_Configure..."), null,
-                    Catalog.GetString ("Configure the LCD plugin"), OnConfigure)
+                    AddinManager.CurrentLocalizer.GetString ("_Configure..."), null,
+                    AddinManager.CurrentLocalizer.GetString ("Configure the LCD plugin"), OnConfigure)
             });
             action_service.UIManager.InsertActionGroup (actions, 0);
             ui_manager_id = action_service.UIManager.AddUiFromResource ("LCDMenu.xml");

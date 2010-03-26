@@ -61,6 +61,7 @@
     <Reference Include="Hyena.Gui, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-hyena-gui</Package>
     </Reference>
+    <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AlarmClock.addin.xml">

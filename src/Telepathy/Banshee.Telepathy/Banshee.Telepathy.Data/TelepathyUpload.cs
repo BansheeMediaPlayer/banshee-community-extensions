@@ -28,7 +28,7 @@
 
 using System;
 using System.Collections.Generic;
-using Mono.Unix;
+using Mono.Addins;
 
 using Hyena;
 
@@ -100,7 +100,8 @@ namespace Banshee.Telepathy.Data
             if (FileTransfer != null) {
                 SetTransferFilename (FileTransfer);
                 TelepathyNotification.Create ().Show (FileTransfer.Contact.Name, 
-                    String.Format (Catalog.GetString ("is downloading {0} with Banshee"), FileTransfer.Filename));
+                    String.Format (AddinManager.CurrentLocalizer.GetString ("is downloading {0} with Banshee"),
+                                   FileTransfer.Filename));
                 return base.Start ();
             }
             

@@ -30,7 +30,7 @@ using System.Threading;
 
 using Gtk;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Banshee.Gui;
 using Banshee.Sources;
@@ -168,17 +168,17 @@ namespace Banshee.Lyrics
 
             lyrics_action_group.Add (new ActionEntry[] {
                 new ActionEntry ("LyricsAction", null, 
-                    Catalog.GetString ("L_yrics"), null, 
-                    Catalog.GetString ("Manage Lyrics"), null),
+                    AddinManager.CurrentLocalizer.GetString ("L_yrics"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Manage Lyrics"), null),
                 new ActionEntry ("FetchLyricsAction", null, 
-                    Catalog.GetString ("_Download Lyrics"), null, 
-                    Catalog.GetString ("Download lyrics for all tracks"), OnFetchLyrics)
+                    AddinManager.CurrentLocalizer.GetString ("_Download Lyrics"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Download lyrics for all tracks"), OnFetchLyrics)
             });
 
             lyrics_action_group.Add (new ToggleActionEntry[] {
                 new ToggleActionEntry ("ShowLyricsAction", null, 
-                            Catalog.GetString ("Show Lyrics"), "<control>T",
-                            Catalog.GetString ("Show Lyrics in a separate window"), null, false) });
+                            AddinManager.CurrentLocalizer.GetString ("Show Lyrics"), "<control>T",
+                            AddinManager.CurrentLocalizer.GetString ("Show Lyrics in a separate window"), null, false) });
 
             lyrics_action_group.GetAction ("ShowLyricsAction").Activated += OnToggleWindow;
             lyrics_action_group.GetAction ("ShowLyricsAction").Sensitive = ServiceManager.PlayerEngine.CurrentTrack != null ? true : false;

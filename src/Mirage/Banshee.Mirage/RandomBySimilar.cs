@@ -34,7 +34,7 @@ using Banshee.Collection.Database;
 using Banshee.Collection;
 using Banshee.PlaybackController;
 using Banshee.ServiceStack;
-using Mono.Unix;
+using Mono.Addins;
 using Mirage;
 
 namespace Banshee.Mirage
@@ -54,9 +54,9 @@ namespace Banshee.Mirage
             if (!MiragePlugin.Initialized)
                 throw new InvalidOperationException ("Mirage was not initialized correctly.");
 
-            Label = Catalog.GetString ("Shuffle by Similar");
-            Adverb = Catalog.GetString ("by similar");
-            Description = Catalog.GetString ("Play songs similar to those already played");
+            Label = AddinManager.CurrentLocalizer.GetString ("Shuffle by Similar");
+            Adverb = AddinManager.CurrentLocalizer.GetString ("by similar");
+            Description = AddinManager.CurrentLocalizer.GetString ("Play songs similar to those already played");
 
             // TODO Mirage's PlaylistGeneratorSource ensures no more than 50% of tracks are by same artist
             Condition = "mirage.Status = 0 AND CoreTracks.ArtistID NOT IN (?) AND Distance > 0";

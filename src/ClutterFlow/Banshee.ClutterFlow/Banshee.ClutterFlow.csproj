@@ -10,7 +10,6 @@
     <AssemblyName>Banshee.ClutterFlow</AssemblyName>
     <RootNamespace>Banshee.ClutterFlow</RootNamespace>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <ReleaseVersion>0.3.7</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -80,8 +79,9 @@
       <Package>banshee-1-nowplaying</Package>
     </Reference>
     <Reference Include="Mono.Posix" />
-    <Reference Include="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Cairo" />
+    <Reference Include="Mono.Addins" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClutterFlowService.cs" />

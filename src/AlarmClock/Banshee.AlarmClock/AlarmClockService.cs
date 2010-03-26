@@ -30,7 +30,7 @@
 using System;
 using System.Threading;
 using Gtk;
-using Mono.Unix;
+using Mono.Addins;
 
 using Hyena;
 using Banshee.Base;
@@ -68,20 +68,20 @@ namespace Banshee.AlarmClock
 
             actions.Add (new ActionEntry [] {
                 new ActionEntry ("AlarmClockAction", null,
-                    Catalog.GetString ("Alarm Clock"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Alarm Clock"), null,
                     null, null),
 
                 new ActionEntry ("SetSleepTimerAction", null,
-                    Catalog.GetString ("Sleep Timer..."), null,
-                    Catalog.GetString ("Set the sleep timer value"), OnSetSleepTimer),
+                    AddinManager.CurrentLocalizer.GetString ("Sleep Timer..."), null,
+                    AddinManager.CurrentLocalizer.GetString ("Set the sleep timer value"), OnSetSleepTimer),
 
                 new ActionEntry ("SetAlarmAction", null,
-                    Catalog.GetString ("Alarm..."), null,
-                    Catalog.GetString ("Set the alarm time"), OnSetAlarm),
+                    AddinManager.CurrentLocalizer.GetString ("Alarm..."), null,
+                    AddinManager.CurrentLocalizer.GetString ("Set the alarm time"), OnSetAlarm),
 
                 new ActionEntry ("AlarmClockConfigureAction", Stock.Properties,
-                    Catalog.GetString ("_Configure..."), null,
-                    Catalog.GetString ("Configure the Alarm Clock plugin"), OnConfigure)
+                    AddinManager.CurrentLocalizer.GetString ("_Configure..."), null,
+                    AddinManager.CurrentLocalizer.GetString ("Configure the Alarm Clock plugin"), OnConfigure)
             });
 
             action_service.UIManager.InsertActionGroup (actions, 0);

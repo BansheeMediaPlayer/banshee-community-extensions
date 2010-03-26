@@ -27,7 +27,7 @@
 //
 
 using System;
-using Mono.Unix;
+using Mono.Addins;
 
 using Banshee.Base;
 using Banshee.Collection.Database;
@@ -104,7 +104,8 @@ namespace Banshee.Telepathy.Data
                 if (base.Start ()) {
 	                FileTransfer.Start ();
 	                TelepathyNotification.Create ().Show (FileTransfer.Contact.Name, 
-	                    String.Format (Catalog.GetString ("is sending {0} with Banshee"), FileTransfer.Filename));
+	                    String.Format (AddinManager.CurrentLocalizer.GetString ("is sending {0} with Banshee"),
+                                       FileTransfer.Filename));
 	                return true;
 				}
             }

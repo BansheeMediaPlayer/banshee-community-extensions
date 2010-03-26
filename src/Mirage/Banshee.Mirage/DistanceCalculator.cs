@@ -4,7 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using Mirage;
-using Mono.Unix;
+using Mono.Addins;
 
 namespace Banshee.Mirage
 {
@@ -45,7 +45,7 @@ namespace Banshee.Mirage
         internal static double total_ms = 0;
         internal static double total_read_ms = 0;
 
-        internal static string notify_string = Catalog.GetString ("The Mirage extension is still analyzing your songs.  Until its finished, shuffle and fill by similar may not perform properly.");
+        internal static string notify_string = AddinManager.CurrentLocalizer.GetString ("The Mirage extension is still analyzing your songs.  Until its finished, shuffle and fill by similar may not perform properly.");
 
         private static object Distance (object seed_id_obj, object scms_obj)
         {

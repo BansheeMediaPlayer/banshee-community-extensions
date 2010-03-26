@@ -27,7 +27,7 @@
 //
 
 using System;
-using Mono.Unix;
+using Mono.Addins;
 
 using Banshee.Configuration;
 using Banshee.Sources;
@@ -55,7 +55,7 @@ namespace Banshee.Telepathy.Data
         public static event EventHandler<SchemaChangedEventArgs> DownloadingAllowedChanged;
         public static event EventHandler<SchemaChangedEventArgs> StreamingAllowedChanged;
         
-        public ContactContainerSource (TelepathyService service) : base (Catalog.GetString ("Contacts"), "Contacts", 1000)
+        public ContactContainerSource (TelepathyService service) : base (AddinManager.CurrentLocalizer.GetString ("Contacts"), "Contacts", 1000)
         {
             TelepathyService = service;
             TypeUniqueId = "telepathy-container";

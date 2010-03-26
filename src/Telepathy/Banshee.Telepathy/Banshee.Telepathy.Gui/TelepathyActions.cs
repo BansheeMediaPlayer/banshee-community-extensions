@@ -29,7 +29,7 @@
 using System;
 
 using Gtk;
-using Mono.Unix;
+using Mono.Addins;
 
 using Banshee.Collection;
 using Banshee.Collection.Database;
@@ -60,43 +60,43 @@ namespace Banshee.Telepathy.Gui
 
             Add (new ActionEntry [] {
                 new ActionEntry ("DownloadTrackAction", null,
-                    Catalog.GetString ("Download Track(s)"), null,
-                    Catalog.GetString ("Download selected tracks to your computer"),
+                    AddinManager.CurrentLocalizer.GetString ("Download Track(s)"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Download selected tracks to your computer"),
                     OnDownloadTrack)
             });
 
             Add (new ActionEntry [] {
                 new ActionEntry ("CancelDownloadTrackAction", null,
-                    Catalog.GetString ("Cancel Download(s)"), null,
-                    Catalog.GetString ("Cancel download of selected tracks to your computer"),
+                    AddinManager.CurrentLocalizer.GetString ("Cancel Download(s)"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Cancel download of selected tracks to your computer"),
                     OnCancelDownloadTrack)
             });    
 
             Add (new ActionEntry [] {
                 new ActionEntry ("CancelBrowseRequest", null,
-                    Catalog.GetString ("Cancel Browse Request"), "c",
-                    Catalog.GetString ("Cancel pending request to browse a contact's library"),
+                    AddinManager.CurrentLocalizer.GetString ("Cancel Browse Request"), "c",
+                    AddinManager.CurrentLocalizer.GetString ("Cancel pending request to browse a contact's library"),
                     OnCancelBrowseRequest)
             });
 
             Add (new ToggleActionEntry [] {
                 new ToggleActionEntry ("AllowDownloadsAction", null,
-                    Catalog.GetString ("Allow Downloads"), null, 
-                    Catalog.GetString ("Allow file downloads when sharing libraries"), 
+                    AddinManager.CurrentLocalizer.GetString ("Allow Downloads"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Allow file downloads when sharing libraries"),
                     OnAllowDownloads, ContactContainerSource.AllowDownloadsSchema.Get ())
             });
 
             Add (new ToggleActionEntry [] {
                 new ToggleActionEntry ("AllowStreamingAction", null,
-                    Catalog.GetString ("Allow Streaming"), null, 
-                    Catalog.GetString ("Allow streaming when sharing libraries"), 
+                    AddinManager.CurrentLocalizer.GetString ("Allow Streaming"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Allow streaming when sharing libraries"), 
                     OnAllowStreaming, ContactContainerSource.AllowStreamingSchema.Get ())
             });
                                 
             Add (new ToggleActionEntry [] {
                 new ToggleActionEntry ("ShareCurrentlyPlayingAction", null,
-                    Catalog.GetString ("Share Currently Playing"), null, 
-                    Catalog.GetString ("Set Empathy presence message to what you're currently playing"), 
+                    AddinManager.CurrentLocalizer.GetString ("Share Currently Playing"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Set Empathy presence message to what you're currently playing"),
                     OnShareCurrentlyPlaying, ContactContainerSource.ShareCurrentlyPlayingSchema.Get ())
             });
                             
@@ -139,7 +139,7 @@ namespace Banshee.Telepathy.Gui
             //Log.Debug (String.Format ("{0} announcing", ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()));
             if (announcer != null && ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()) {
                 if (track != null) {
-                    announcer.Announce (String.Format (Catalog.GetString ("Currently playing {0} by {1} from {2}"),
+                    announcer.Announce (String.Format (AddinManager.CurrentLocalizer.GetString ("Currently playing {0} by {1} from {2}"),
                                                 track.TrackTitle, track.ArtistName, track.AlbumTitle));
                 }
             }

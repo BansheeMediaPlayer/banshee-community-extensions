@@ -28,7 +28,7 @@
 
 using System;
 
-using Mono.Unix;
+using Mono.Addins;
 
 using Hyena;
 using Hyena.Jobs;
@@ -47,8 +47,8 @@ namespace Banshee.Telepathy.Gui
 
         public DownloadManagerUi () : base ()
         {
-            Title = Catalog.GetString ("Download(s) from Contacts");
-            CancelMessage = Catalog.GetString ("Downloads are in progress. Would you like to cancel them?");
+            Title = AddinManager.CurrentLocalizer.GetString ("Download(s) from Contacts");
+            CancelMessage = AddinManager.CurrentLocalizer.GetString ("Downloads are in progress. Would you like to cancel them?");
 
             download_manager.Updated += OnUpdated;
             download_manager.Completed += OnCompleted;

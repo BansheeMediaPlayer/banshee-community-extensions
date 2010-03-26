@@ -25,9 +25,7 @@
 // 
 using System;
 
-using Mono.Unix;
-
-using Banshee.Lyrics.Gui;
+using Mono.Addins;
 
 using Banshee.ContextPane;
 
@@ -44,7 +42,7 @@ namespace Banshee.Lyrics.Gui
         public ContextPage ()
         {
             Id = "lyrics";
-            Name = Catalog.GetString ("Lyrics");
+            Name = AddinManager.CurrentLocalizer.GetString ("Lyrics");
             IconNames = new string[] { "preferences-desktop-font" , "gtk-edit" };
         }
 

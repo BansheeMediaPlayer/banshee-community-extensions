@@ -26,7 +26,7 @@
 
 using System;
 
-using Banshee.I18n;
+using Mono.Addins;
 using Banshee.Configuration;
 using Banshee.Preferences;
 
@@ -45,22 +45,22 @@ namespace Banshee.ClutterFlow
         internal static readonly SchemaEntry<int> DragSensitivity = new SchemaEntry<int>(
             "clutterflow", "drag_sensitivity",
             3, 1, 20,
-            Catalog.GetString ("Sensitivity for album dragging"),
-            Catalog.GetString ("Sets the sensitivity with which albums scroll when dragged, higher values mean faster scrolling")
+            AddinManager.CurrentLocalizer.GetString ("Sensitivity for album dragging"),
+            AddinManager.CurrentLocalizer.GetString ("Sets the sensitivity with which albums scroll when dragged, higher values mean faster scrolling")
         );
 		
         internal static readonly SchemaEntry<bool> ThreadedArtwork = new SchemaEntry<bool>(
             "clutterflow", "threaded_artwork",
             true,
-            Catalog.GetString ("Enable threaded loading of artwork"),
-            Catalog.GetString ("If enabled ClutterFlow will use threading to load it's artwork")
+            AddinManager.CurrentLocalizer.GetString ("Enable threaded loading of artwork"),
+            AddinManager.CurrentLocalizer.GetString ("If enabled ClutterFlow will use threading to load it's artwork")
         );
         
         internal static readonly SchemaEntry<bool> ExpandTrackList = new SchemaEntry<bool>(
             "clutterflow", "expand_track_list",
             true,
-            Catalog.GetString ("Unfolds the track list"),
-            Catalog.GetString ("If checked it will display the track list when not in fullscreen mode")
+            AddinManager.CurrentLocalizer.GetString ("Unfolds the track list"),
+            AddinManager.CurrentLocalizer.GetString ("If checked it will display the track list when not in fullscreen mode")
         );
 
         internal static readonly SchemaEntry<bool> OldShowBrowser = new SchemaEntry<bool>(
@@ -80,50 +80,50 @@ namespace Banshee.ClutterFlow
         internal static readonly SchemaEntry<bool> InstantPlayback = new SchemaEntry<bool>(
             "clutterflow", "instant_playback",
             true,
-            Catalog.GetString ("Immediately apply playback mode changes"),
-            Catalog.GetString ("Starts playing a new song immediately after the playback mode changed (Party Mode or Album Mode)")
+            AddinManager.CurrentLocalizer.GetString ("Immediately apply playback mode changes"),
+            AddinManager.CurrentLocalizer.GetString ("Starts playing a new song immediately after the playback mode changed (Party Mode or Album Mode)")
         );
 		
         internal static readonly SchemaEntry<bool> DisplayLabel = new SchemaEntry<bool>(
             "clutterflow", "display_album_label",
             true,
-            Catalog.GetString ("Display album _label"),
-            Catalog.GetString ("Wether or not the album label needs to be shown above the artwork")
+            AddinManager.CurrentLocalizer.GetString ("Display album _label"),
+            AddinManager.CurrentLocalizer.GetString ("Wether or not the album label needs to be shown above the artwork")
         );
 
         internal static readonly SchemaEntry<bool> DisplayTitle = new SchemaEntry<bool>(
             "clutterflow", "display_track_title",
             true,
-            Catalog.GetString ("Display track _title"),
-            Catalog.GetString ("Wether or not the album title needs to be shown above the artwork in fullscreen mode")
+            AddinManager.CurrentLocalizer.GetString ("Display track _title"),
+            AddinManager.CurrentLocalizer.GetString ("Wether or not the album title needs to be shown above the artwork in fullscreen mode")
         );
 
         internal static readonly SchemaEntry<int> TextureSize = new SchemaEntry<int>(
             "clutterflow", "texture_size",
             128, 32, 512,
-            Catalog.GetString ("Texture size in pixels"),
-            Catalog.GetString ("The in-memory size of the cover textures in pixels")
+            AddinManager.CurrentLocalizer.GetString ("Texture size in pixels"),
+            AddinManager.CurrentLocalizer.GetString ("The in-memory size of the cover textures in pixels")
         );
 
         internal static readonly SchemaEntry<int> MinCoverSize = new SchemaEntry<int>(
             "clutterflow", "min_cover_size",
             64, 64, 128,
-            Catalog.GetString ("Minimal cover size in pixels"),
-            Catalog.GetString ("The on-stage minimal cover size in pixels")
+            AddinManager.CurrentLocalizer.GetString ("Minimal cover size in pixels"),
+            AddinManager.CurrentLocalizer.GetString ("The on-stage minimal cover size in pixels")
         );
 
         internal static readonly SchemaEntry<int> MaxCoverSize = new SchemaEntry<int>(
             "clutterflow", "max_cover_size",
             256, 128, 512,
-            Catalog.GetString ("Maximal cover size in pixels"),
-            Catalog.GetString ("The on-stage minimal cover size in pixels")
+            AddinManager.CurrentLocalizer.GetString ("Maximal cover size in pixels"),
+            AddinManager.CurrentLocalizer.GetString ("The on-stage minimal cover size in pixels")
         );
 
         internal static readonly SchemaEntry<int> VisibleCovers = new SchemaEntry<int>(
             "clutterflow", "visbible_covers",
             7, 1, 15,
-            Catalog.GetString ("Number of visible covers at the side"),
-            Catalog.GetString ("The number of covers that need to be displayed on the stage (at one side)")
+            AddinManager.CurrentLocalizer.GetString ("Number of visible covers at the side"),
+            AddinManager.CurrentLocalizer.GetString ("The number of covers that need to be displayed on the stage (at one side)")
         );
 	}
 	
