@@ -153,6 +153,15 @@ namespace Banshee.AppIndicator
             indicator.Dispose();
             indicator = null;
 
+            ServiceManager.PlayerEngine.DisconnectEvent (OnPlayerEvent);
+
+            elements_service.PrimaryWindowClose = null;
+
+            Gtk.Action close_action = interface_action_service.GlobalActions["CloseAction"];
+            if (close_action != null) {
+                interface_action_service.GlobalActions.Remove (close_action);
+            }
+
             if (ui_manager_id >= 0) {
                 interface_action_service.RemoveActionGroup ("AppIndicator");
                 interface_action_service.UIManager.RemoveUi ((uint)ui_manager_id);
@@ -186,7 +195,7 @@ namespace Banshee.AppIndicator
 
                     NotifyOnCloseSchema.Set (false);
                 }
-            } catch {
+            } catch (Exception e) {
                 Hyena.Log.Warning ("Error while trying to notify of window close.", e.Message, false);
             }
 
@@ -208,6 +217,10 @@ namespace Banshee.AppIndicator
     
                 // Show the tray icon
                 indicator.Status = Status.Active;
+
+                if (!QuitOnCloseSchema.Get ()) {
+                    RegisterCloseHandler ();
+                }
             } catch (Exception e) {
                 Hyena.Log.Warning ("Error while trying to create the Application Indicator.", e.Message, false);
                 return false;
