@@ -32,7 +32,7 @@
 //
 
 using System;
-using Mono.Unix;
+using Mono.Addins;
 
 using AppIndicator;
 using Gtk;
@@ -107,15 +107,15 @@ namespace Banshee.AppIndicator
         {
             interface_action_service.GlobalActions.Add (new ActionEntry [] {
                 new ActionEntry ("CloseAction", Stock.Close,
-                    Catalog.GetString ("_Close"), "<Control>W",
-                    Catalog.GetString ("Close"), CloseWindow)
+                    AddinManager.CurrentLocalizer.GetString ("_Close"), "<Control>W",
+                    AddinManager.CurrentLocalizer.GetString ("Close"), CloseWindow)
             });
 
             actions = new BansheeActionGroup (interface_action_service, "AppIndicator");
             actions.Add (new ToggleActionEntry [] {
                 new ToggleActionEntry ("ShowHideAction", null,
-                    Catalog.GetString ("_Show Banshee"), null,
-                    Catalog.GetString ("Show the Banshee main window"), ToggleShowHide, PrimaryWindowVisible)
+                    AddinManager.CurrentLocalizer.GetString ("_Show Banshee"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Show the Banshee main window"), ToggleShowHide, PrimaryWindowVisible)
             });
 
             interface_action_service.AddActionGroup (actions);
@@ -176,8 +176,9 @@ namespace Banshee.AppIndicator
             try {
                 if (NotifyOnCloseSchema.Get ()) {
                     Notification nf = new Notification (
-                        Catalog.GetString ("Still Running"),
-                        Catalog.GetString ("Banshee was closed to the notification area. " +
+                        AddinManager.CurrentLocalizer.GetString ("Still Running"),
+                        AddinManager.CurrentLocalizer.GetString (
+                            "Banshee was closed to the notification area. " +
                             "Use the <i>Quit</i> option to end your session."),
                             "media-player-banshee");
                     nf.Urgency = Urgency.Low;
@@ -250,15 +251,18 @@ namespace Banshee.AppIndicator
                 // Translators: {0} and {1} are Artist Name and
                 // Album Title, respectively;
                 // e.g. 'by Parkway Drive from Killing with a Smile'
-                markup = String.Format (Catalog.GetString ("by '{0}' from '{1}'"), display_artist, display_album);
+                markup = String.Format (AddinManager.CurrentLocalizer.GetString ("by '{0}' from '{1}'"),
+                                        display_artist, display_album);
             } else if (has_album) {
                 // Translators: {0} is for Album Title;
                 // e.g. 'from Killing with a Smile'
-                markup = String.Format (Catalog.GetString ("from '{0}'"), display_album);
+                markup = String.Format (AddinManager.CurrentLocalizer.GetString ("from '{0}'"),
+                                        display_album);
             } else {
                 // Translators: {0} is for Artist Name;
                 // e.g. 'by Parkway Drive'
-                markup = String.Format(Catalog.GetString ("by '{0}'"), display_artist);
+                markup = String.Format(AddinManager.CurrentLocalizer.GetString ("by '{0}'"),
+                                       display_artist);
             }
             return markup;
         }
