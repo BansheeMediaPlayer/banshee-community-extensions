@@ -35,6 +35,10 @@ Dependencies
 Banshee 1.5.4 and its devel packages are required.  Some extensions have
 specific requirements.
 
+AppIndicator
+  appindicator-sharp
+  notify-sharp
+
 ClutterFlow
   clutter-sharp
   clutter-gtk-sharp
