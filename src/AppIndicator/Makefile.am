@@ -7,4 +7,8 @@ RESOURCES =  \
 	AppIndicator.addin.xml \
 	Resources/AppIndicatorMenu.xml
 
+if ENABLE_APPINDICATOR
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif
