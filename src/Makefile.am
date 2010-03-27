@@ -1,6 +1,6 @@
 SUBDIRS = \
-    AppIndicator \
 	AlarmClock \
+	AppIndicator \
 	Awn \
 	ClutterFlow \
 	CoverWallpaper \
