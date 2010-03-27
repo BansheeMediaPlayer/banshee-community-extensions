@@ -166,8 +166,8 @@ ${PACKAGE}-${VERSION}
     Unit Tests:          ${enable_tests} (requires nunit >= ${NUNIT_REQUIRED}, --enable-tests)
 
   Extensions:
-    AppIndicator:        ${enable_AppIndicator}
     Alarm Clock:         ${enable_AlarmClock}
+    AppIndicator:        ${enable_AppIndicator}
     Awn:                 ${enable_Awn}
     ClutterFlow:         ${enable_ClutterFlow}
     CoverWallpaper:      ${enable_CoverWallpaper}
