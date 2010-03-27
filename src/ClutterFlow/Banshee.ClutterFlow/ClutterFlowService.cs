@@ -347,6 +347,7 @@ namespace Banshee.ClutterFlow
 
 		private void LoadPreferences ()
 		{
+			UpdateThreadedArtwork ();
 			UpdateDragSensitivity ();
 			UpdateLabelVisibility ();
 			UpdateTitleVisibility ();
@@ -355,7 +356,7 @@ namespace Banshee.ClutterFlow
 			UpdateMaxCoverSize ();
 			UpdateTextureSize ();
 		}
-
+		
         private void UpdateThreadedArtwork ()
         {
             

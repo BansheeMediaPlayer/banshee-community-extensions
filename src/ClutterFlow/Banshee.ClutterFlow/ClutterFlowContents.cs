@@ -224,7 +224,7 @@ namespace Banshee.ClutterFlow
         protected void SetupMainView ()
         {
             main_view = new TrackListView ();
-            main_view.HeaderVisible = true; //TODO copy this from FilteredListSourceContents?
+            main_view.HeaderVisible = true; //TODO copy this from FilteredListSourceContents
             main_expander = CreateScrollableExpander (main_view);
             main_expander.Expanded = ClutterFlowSchemas.ExpandTrackList.Get ();
         }
@@ -235,18 +235,14 @@ namespace Banshee.ClutterFlow
 			filter_view.FSButton.IsActive = IsFullscreen;
 			filter_view.PMButton.IsActive = InPartyMode;
 			filter_view.LabelTrackIsVisible = ClutterFlowSchemas.DisplayTitle.Get () && IsFullscreen;
+			filter_view.SortButton.IsActive = (ClutterFlowSchemas.SortBy.Get () != ClutterFlowSchemas.SortBy.DefaultValue);
         }
 		
         private Expander CreateScrollableExpander (Widget view)
         {
             ScrolledWindow window = null;
 
-            // See revision http://git.gnome.org/browse/banshee/commit/?id=2b7789ea563319fa7196e50b76b2b561d699fd71
-#if BANSHEE_V152
-            if (Banshee.Base.ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
-#else
             if (ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
-#endif
                 window = new SmoothScrolledWindow ();
             } else {
                 window = new ScrolledWindow ();
@@ -410,11 +406,12 @@ namespace Banshee.ClutterFlow
 			FilterView.UpdatedAlbum += HandleUpdatedAlbum;
 			FilterView.PMButton.Toggled += HandlePMButtonToggled;
 			FilterView.FSButton.Toggled += HandleFSButtonToggled;
+			FilterView.SortButton.Toggled += HandleSortButtonToggled;
 
 			ServiceManager.SourceManager.ActiveSourceChanged += HandleActiveSourceChanged;
             ServiceManager.PlaybackController.TrackStarted += OnPlaybackControllerTrackStarted;
 			ServiceManager.PlaybackController.SourceChanged += OnPlaybackSourceChanged;
-
+			FilterView.AlbumLoader.SortingChanged += HandleSortingChanged;
 		}
 		
 		private void HandleUpdatedAlbum(object sender, EventArgs e)
@@ -442,6 +439,24 @@ namespace Banshee.ClutterFlow
                 return;
 			service.ViewActions.Fullscreen (FilterView.FSButton.IsActive);
 		}
+		
+
+		private void HandleSortButtonToggled (object sender, EventArgs e)
+		{
+			if (!FilterView.SortButton.IsActive)
+				FilterView.AlbumLoader.SortBy = SortOptions.Artist;
+			else
+				FilterView.AlbumLoader.SortBy = SortOptions.Album;
+		}	
+		
+
+		private void HandleSortingChanged (object sender, EventArgs e)
+		{
+			if (FilterView.AlbumLoader.SortBy.GetType () == typeof(AlbumArtistComparer))
+				FilterView.SortButton.IsActive = false;
+			else
+				FilterView.SortButton.IsActive = true;
+		}		
 		
 		private void HandleActiveSourceChanged (SourceEventArgs args)
 		{
@@ -489,7 +504,6 @@ namespace Banshee.ClutterFlow
 				else
 					ServiceManager.PlaybackController.Next();
 			}
-			//source.OnUpdated (); FIXME
 		}
 		#endregion
 
@@ -549,7 +563,7 @@ namespace Banshee.ClutterFlow
 			AlbumInfo album = FilterView.ActiveAlbum;
 			if (album!=null) {
 				external_filter.Selection.Clear (false);
-				external_filter.Selection.Select (FilterView.ActiveIndex+1);
+				external_filter.Selection.Select (FilterView.ActiveModelIndex);
 			}
         }
 		protected void SelectAllTracks () 

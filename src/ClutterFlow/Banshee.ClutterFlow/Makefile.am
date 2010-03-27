@@ -12,7 +12,8 @@ SOURCES =  \
 	ClutterFlowView.cs \
 	FloatingQueue.cs \
 	FullscreenButton.cs \
-	PartyModeButton.cs
+	PartyModeButton.cs \
+	SortButton.cs
 
 RESOURCES =  \
 	ClutterFlow.addin.xml \

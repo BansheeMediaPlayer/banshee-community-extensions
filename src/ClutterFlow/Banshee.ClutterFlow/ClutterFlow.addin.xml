@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Addin 
     id="Banshee.ClutterFlow"
-    version="0.3.9"
+    version="0.4.0"
     compatVersion="1.0"
     copyright="© 2009 Mathijs Dumon Licensed under the MIT X11 license."
     name="ClutterFlow"

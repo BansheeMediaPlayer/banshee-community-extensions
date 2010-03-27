@@ -58,18 +58,28 @@ namespace Banshee.ClutterFlow
 		public AlbumInfo ActiveAlbum {
 			get { return activeAlbum; }
 			protected set { activeAlbum = value; }
-		}
+		}		
 		private int activeIndex = -1;
 		public int ActiveIndex {
 			get { return activeIndex; }
 			protected set { activeIndex = value; }
 		}
+		public int ActiveModelIndex {
+			get { 
+				int ret = AlbumLoader.ConvertIndexToModelIndex (ActiveIndex);
+				Console.WriteLine ("ActiveModelIndex_get will return " + ret);
+				return ret; 
+			}
+		}		
 		public AlbumInfo CurrentAlbum {
 			get { return albumLoader.CurrentAlbum; }
 		}
 		public int CurrentIndex {
 			get { return albumLoader.CurrentIndex; }
 		}
+		public int CurrentModelIndex {
+			get { return AlbumLoader.ConvertIndexToModelIndex (CurrentIndex); }
+		}		
         #endregion
 
         #region General
@@ -129,6 +139,10 @@ namespace Banshee.ClutterFlow
 		public FullscreenButton FSButton {
 			get { return fs_button; }
 		}
+		private SortButton sort_button;
+		public SortButton SortButton {
+			get { return sort_button; }
+		}		
 		private CoverCaption caption_cover;
 		public CoverCaption LabelCover {
 			get { return caption_cover;	}
@@ -278,8 +292,9 @@ namespace Banshee.ClutterFlow
 		{
 			pm_button = new PartyModeButton ();
 			fs_button = new FullscreenButton ();
+			sort_button = new SortButton ();
 			
-			widget_bar = new ClutterWidgetBar (new Actor[] { pm_button, fs_button });
+			widget_bar = new ClutterWidgetBar (new Actor[] { pm_button, fs_button, sort_button });
 			widget_bar.ShowAll ();
 			Stage.Add (widget_bar);
 			widget_bar.SetPosition (5, 5);

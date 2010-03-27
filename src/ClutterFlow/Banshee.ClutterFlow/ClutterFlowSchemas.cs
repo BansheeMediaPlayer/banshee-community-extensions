@@ -26,7 +26,7 @@
 
 using System;
 
-using Mono.Addins;
+using Banshee.I18n;
 using Banshee.Configuration;
 using Banshee.Preferences;
 
@@ -39,7 +39,8 @@ namespace Banshee.ClutterFlow
 	public static class ClutterFlowSchemas {
         internal static void AddToSection<T> (Section section, SchemaEntry<T> entry, SchemaPreferenceUpdatedHandler func)
         {
-            section.Add (new SchemaPreference<T> (entry, entry.ShortDescription, entry.LongDescription, func));
+			SchemaPreference<T> pref = new SchemaPreference<T> (entry, entry.ShortDescription, entry.LongDescription, func);
+			section.Add (pref);
         }
         
         internal static readonly SchemaEntry<int> DragSensitivity = new SchemaEntry<int>(
@@ -125,6 +126,13 @@ namespace Banshee.ClutterFlow
             AddinManager.CurrentLocalizer.GetString ("Number of visible covers at the side"),
             AddinManager.CurrentLocalizer.GetString ("The number of covers that need to be displayed on the stage (at one side)")
         );
+		
+        internal static readonly SchemaEntry<string> SortBy = new SchemaEntry<string>(
+            "clutterflow", "sort_by",
+            (string) Enum.GetName (typeof(SortOptions), SortOptions.Artist),
+            Catalog.GetString ("Sort covers by"),
+            Catalog.GetString ("Selects on what basis covers should be sorted")
+        );		
 	}
 	
     /*public class ClutterFlowSource : Source, IDisposable//, ITrackModelSource

@@ -79,8 +79,6 @@ namespace ClutterFlow
 		protected virtual void RefreshCoverManager () 
 		{
 			CoverManager.ReloadCovers ();
-			/*if (coverManager.Enabled) coverManager.ReloadCovers ();
-			else coverManager.NeedsReloading = true;*/
 		}
 		
 		public virtual List<ClutterFlowBaseActor> GetActors (System.Action<ClutterFlowBaseActor> method_call)
@@ -88,7 +86,7 @@ namespace ClutterFlow
 			throw new System.NotImplementedException();
 		}
 		
-		protected virtual ClutterFlowBaseActor AddActorToList(TGen generator, List<ClutterFlowBaseActor> list) {
+		protected virtual ClutterFlowBaseActor AddActorToList(TGen generator, SortedList<TGen, ClutterFlowBaseActor> list) {
 			throw new System.NotImplementedException();
 		}
 

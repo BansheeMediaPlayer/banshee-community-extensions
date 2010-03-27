@@ -72,23 +72,13 @@ namespace Banshee.ClutterFlow
 			}
 		}
 		public static string CreateCacheKey(AlbumInfo album) {
-            if (album==null)
-                return "";
-            else
-                return album.ArtistName + "\n" + album.Title;
+            return album!=null ? album.ArtistName + "\n" + album.Title : "";
 		}
 
 		public override string Label {
 			get { return album!=null ? album.ArtistName + "\n" + album.Title : ""; }
 			set {
 				throw new System.NotImplementedException ("Label cannot be set directly in a ClutterFlowAlbum, derived from the Album property.");
-			}
-		}
-
-		public override string SortLabel {
-			get { return (album!=null && album.Title!=null) ? album.Title : "?" ; }
-			set {
-				throw new System.NotImplementedException ("SortLabel cannot be set directly in a ClutterFlowAlbum, derived from the Album property.");
 			}
 		}
 
@@ -130,8 +120,8 @@ namespace Banshee.ClutterFlow
 			Lookup.Enqueue(this);
 		}
 		#endregion
-
-		public bool Equals (ClutterFlowAlbum other)
+		
+		public virtual bool Equals (ClutterFlowAlbum other)
 		{
 			return other.CacheKey==this.CacheKey;
 		}

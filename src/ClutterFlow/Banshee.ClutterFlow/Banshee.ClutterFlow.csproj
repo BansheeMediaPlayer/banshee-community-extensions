@@ -10,6 +10,7 @@
     <AssemblyName>Banshee.ClutterFlow</AssemblyName>
     <RootNamespace>Banshee.ClutterFlow</RootNamespace>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <ReleaseVersion>0.4.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -81,7 +82,9 @@
     <Reference Include="Mono.Posix" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Mono.Cairo" />
-    <Reference Include="Mono.Addins" />
+    <Reference Include="Mono.Addins">
+      <Package>mono-addins-0.2</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClutterFlowService.cs" />
@@ -94,6 +97,7 @@
     <Compile Include="FullscreenButton.cs" />
     <Compile Include="ArtworkLookup.cs" />
     <Compile Include="FloatingQueue.cs" />
+    <Compile Include="SortButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -116,8 +116,9 @@ namespace ClutterFlow
 				letter_lookup.Add(key, -1);
 			Console.WriteLine ("ResetLetterLookup called, letter_lookup is " + (letter_lookup == null ? "null" : "not null"));
 		}
-		public void UpdateLetterLookup (ClutterFlowBaseActor actor) {		
-			char letter = char.Parse(actor.SortLabel.ToUpper ().Substring (0,1));
+		public void UpdateLetterLookup (ClutterFlowBaseActor actor) {
+			string label = actor.SortLabel.ToUpper ();
+			char letter = label.Length>0 ? char.Parse(label.Substring (0,1)) : '?';
 			AlphabetChars key;
 			if (char.IsLetter(letter))
 				key = (AlphabetChars) letter;
@@ -299,12 +300,6 @@ namespace ClutterFlow
 				int old_target_index = CurrentCover!=null ? covers.IndexOf (CurrentCover) : 0;		// the old current index
 				int new_target_index = 0;					// the newly calculated index
 				bool keep_current = false;					// wether or not to keep the current cover centered
-				
-                /* Bugs:
-                 *  FIXED - when a search is cleared (or reduced) the TargetIndex is set to 4, never to the correct cover
-                 *  FIXED - when searching fast visible covers stay visible
-                 *  FIXED - when no results are found, no matches should be displayed
-                 */
                 
 				List<ClutterFlowBaseActor> old_covers = new List<ClutterFlowBaseActor>(SafeGetRange(covers, old_target_index - HalfVisCovers - 1, visibleCovers + 2));
 				foreach (ClutterFlowBaseActor actor in covers) {
@@ -316,13 +311,14 @@ namespace ClutterFlow
 
 				ResetLetterLookup ();
                 List<ClutterFlowBaseActor> persistent_covers = new List<ClutterFlowBaseActor>();
-				covers = actorLoader.GetActors (delegate (ClutterFlowBaseActor actor) {
+			
+				covers = new List<ClutterFlowBaseActor>(actorLoader.GetActors (delegate (ClutterFlowBaseActor actor) {
                     if (actor.Data.ContainsKey ("isOldCover"))
                         persistent_covers.Add (actor);
                     if (CurrentCover==actor) keep_current = true;
 					
-					UpdateLetterLookup (actor);	
-				});
+					UpdateLetterLookup (actor);
+				}));
 				InvokeLetterLookupChanged ();
 				
                 if (covers.Count==0) {

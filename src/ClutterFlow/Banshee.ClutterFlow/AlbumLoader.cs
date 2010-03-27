@@ -35,10 +35,97 @@ using ClutterFlow;
 
 namespace Banshee.ClutterFlow
 {
-    
-    public abstract class BansheeActorLoader<TGen> : ActorLoader<string, TGen> where TGen : ICacheableItem, new()  {
+ 
+	public interface ISortComparer<T> : IComparer<T>
+	{
+		string GetSortLabel (T obj);
+	}
+	
+	public abstract class AlbumComparer : ISortComparer<AlbumInfo>
+	{
+		protected virtual string GetTitle (AlbumInfo obj)
+		{
+			return (obj.TitleSort ?? obj.Title ?? obj.DisplayTitle ?? "");
+		}
+		
+		protected virtual string GetArtist (AlbumInfo obj)
+		{
+			return (obj.ArtistNameSort ?? obj.ArtistName ?? obj.DisplayArtistName ?? "");
+		}
+		
+		public abstract int Compare (AlbumInfo x, AlbumInfo y);
+		public abstract string GetSortLabel (AlbumInfo obj);
+	}
+	
+	public class AlbumAlbumComparer : AlbumComparer
+	{
+		
+		public override string GetSortLabel (AlbumInfo obj)
+		{
+			if (obj!=null) {
+				return obj.TitleSort ?? obj.Title ?? "?";
+			} else
+				return "?";
+		}
+		
+		public override int Compare (AlbumInfo x, AlbumInfo y)
+		{
+			string tx = GetTitle(x) + GetArtist(x);
+			string ty = GetTitle(y) + GetArtist(y);
+			return tx.CompareTo(ty);
+		}
+	}
 
+	public class AlbumArtistComparer : AlbumComparer
+	{
+		public override string GetSortLabel (AlbumInfo obj)
+		{
+			if (obj!=null) {
+				return obj.ArtistNameSort ?? obj.ArtistName ?? "?";
+			} else
+				return "?";
+		}			
+		
+		public override int Compare (AlbumInfo x, AlbumInfo y)
+		{
+			string tx = GetArtist(x) + GetTitle(x);
+			string ty = GetArtist(y) + GetTitle(y);
+			return tx.CompareTo(ty);
+		}
+	}
+	
+	public enum SortOptions { Artist = 0 , Album = 1 }
+	
+    public abstract class BansheeActorLoader<TGen> : ActorLoader<string, TGen> where TGen : ICacheableItem, new() 
+	{
+		
+		#region Fields
+		#pragma warning disable 0067
+		public event EventHandler SortingChanged;
+		#pragma warning restore 0067
+		protected void InvokeSortingChanged ()
+		{
+			ClutterFlowSchemas.SortBy.Set (Enum.GetName(typeof(SortOptions), SortOptions.Album));
+			if (SortingChanged!=null) SortingChanged (this, EventArgs.Empty);
+		}
+
+		protected SortOptions sort_by = (SortOptions) Enum.Parse(typeof(SortOptions), ClutterFlowSchemas.SortBy.Get ());
+		public virtual SortOptions SortBy {
+			get { return sort_by; }
+			set {
+				if (value!=sort_by) {
+					sort_by = value;
+					RefreshCoverManager ();
+					InvokeSortingChanged ();
+				}
+			}
+		}
+		
+		protected abstract ISortComparer<TGen> Comparer { get; }
+		
         private int count; //previous model count
+		
+		protected List<int> index_map; //maps list indeces to model indeces
         
         private FilterListModel<TGen> model;
         public virtual FilterListModel<TGen> Model {
@@ -61,24 +148,46 @@ namespace Banshee.ClutterFlow
                 }
             }
         }
-
+		#endregion
+		
         public BansheeActorLoader (CoverManager coverManager) : base (coverManager) { }
         public override void Dispose ()
         {
             Model = null;
             base.Dispose ();
         }
+		
+        public override List<ClutterFlowBaseActor> GetActors (System.Action<ClutterFlowBaseActor> method_call)
+        { 
+            SortedList<TGen, ClutterFlowBaseActor> list = 
+				new SortedList<TGen, ClutterFlowBaseActor>(Comparer);
+            if (Model!=null) { 
+				for (int i = 1; i < Model.Count; i++)
+                	AddActorToList(Model[i], list);
+				index_map = new List<int>(list.Values.Count);
+				for (int i = 0; i < list.Values.Count; i++) {
+					ClutterFlowBaseActor actor = list.Values[i];
+					index_map.Add(actor.Index);
+	                actor.Index = i;
+					if (method_call!=null) method_call(actor);
+				}
+			}
+            return new List<ClutterFlowBaseActor>(list.Values);
+        }
+		
+		public virtual int ConvertIndexToModelIndex (int index)
+		{
+			return (index_map!=null && index_map.Count > index) ? index_map[index] : 0;
+		}
         
         #region Event Handlers        
         protected void OnModelClearedHandler (object o, EventArgs args)
         {
-            //Hyena.Log.Information ("OnModelClearedHandler called");
             RefreshCoverManager ();
         }
         
         protected void OnModelReloadedHandler (object o, EventArgs args)
         {
-            //Hyena.Log.Information ("OnModelReloadedHandler called");
             if (count!=model.Count) {
                 count=model.Count;
                 RefreshCoverManager ();
@@ -97,7 +206,23 @@ namespace Banshee.ClutterFlow
 		}
 		#endregion
 		
-        #region Fields   
+        #region Fields
+		protected static ISortComparer<AlbumInfo> sort_by_name = new AlbumAlbumComparer ();
+		protected static ISortComparer<AlbumInfo> sort_by_arst = new AlbumArtistComparer ();
+		
+		protected override ISortComparer<AlbumInfo> Comparer {
+			get {
+				switch (SortBy) {
+				case SortOptions.Album:
+					return sort_by_name;
+				case SortOptions.Artist:
+					return sort_by_arst;
+				default:
+					return sort_by_name;
+				}
+			}
+		}
+		
 		public ClutterFlowAlbum CurrentActor {
 			get { return (ClutterFlowAlbum) coverManager.CurrentCover; }
 		}
@@ -124,35 +249,35 @@ namespace Banshee.ClutterFlow
         {
         }
         
-        public override List<ClutterFlowBaseActor> GetActors (System.Action<ClutterFlowBaseActor> method_call)
-        {
-            List<ClutterFlowBaseActor> list = new List<ClutterFlowBaseActor>();
-            if (Model!=null) for (int i = 1; i < Model.Count; i++) {
-                ClutterFlowBaseActor actor = AddActorToList(Model[i], list);
-                if (method_call!=null) method_call(actor);
-            }
-            return list;
-        }
-        
         public virtual void ScrollTo (AlbumInfo generator)
         {
             coverManager.Timeline.Timeout = 500; //give 'm some time to load the song etc.
             ScrollTo (ClutterFlowAlbum.CreateCacheKey (generator));
         }
-        
-        protected override ClutterFlowBaseActor AddActorToList (AlbumInfo generator, List<ClutterFlowBaseActor> list)
-        {
+		
+        protected override ClutterFlowBaseActor AddActorToList (AlbumInfo generator, SortedList<AlbumInfo, ClutterFlowBaseActor> list)
+        {	
             string key = ClutterFlowAlbum.CreateCacheKey(generator);
             ClutterFlowBaseActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
             if (actor==null) {
                 actor = new ClutterFlowAlbum (generator, coverManager);
+				actor.SortLabel = Comparer.GetSortLabel(generator);
 				actor.Hide ();
                 Cache.Add (key, actor);
-            }
-            actor.Index = list.Count;
-            list.Add(actor);
+            }		
+            list.Add (generator, actor);
+			actor.Index = list.Count;
             return actor;
         }
+		
+		/*public void SortByArtist ()
+		{
+			SortBy = sort_by_arst;
+		}
+		public void SortByName ()
+		{
+			SortBy = sort_by_name;
+		}*/		
 		
 		public override void HandleActorActivated (ClutterFlowBaseActor actor, EventArgs args)
 		{

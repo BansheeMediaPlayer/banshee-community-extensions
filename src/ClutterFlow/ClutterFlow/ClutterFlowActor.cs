@@ -239,7 +239,7 @@ namespace ClutterFlow
             }
         }
 
-        public int CompareTo (IIndexable obj) {
+        public virtual int CompareTo (IIndexable obj) {
             if (obj.Index==-1 && this.Index!=-1)
                 return 1;
             return obj.Index - this.Index;

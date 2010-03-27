@@ -40,16 +40,16 @@ namespace Banshee.ClutterFlow.Buttons
 		{
 		}
 		
-		public FullscreenButton() : this (false)
+		public FullscreenButton () : this (false)
 		{
 		}
 
 		#region Rendering
-		private void Render(Clutter.CairoTexture texture, int with_state, bool outwards)
+		private void Render (Clutter.CairoTexture texture, int with_state, bool outwards)
 		{
 			
-			texture.Clear();
-			Cairo.Context context = texture.Create();
+			texture.Clear ();
+			Cairo.Context context = texture.Create ();
 			
 			double lwidth = 1;
 			double hlwidth = lwidth*0.5;
@@ -74,8 +74,8 @@ namespace Banshee.ClutterFlow.Buttons
 			context.NewPath ();
 
 			double margin = 2 + hlwidth ;
-			PointD center = new PointD(texture.Width*0.5, texture.Height*0.5);
-			PointD transl = new PointD(center.X - margin, -(center.Y - margin));
+			PointD center = new PointD (texture.Width*0.5, texture.Height*0.5);
+			PointD transl = new PointD (center.X - margin, -(center.Y - margin));
 			context.LineWidth = lwidth;
 			sat =  (with_state==1 ? 0.0 : 1.0);
 			context.SetSourceRGB (sat,sat,sat);
