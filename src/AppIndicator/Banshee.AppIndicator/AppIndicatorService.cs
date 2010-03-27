@@ -186,6 +186,7 @@ namespace Banshee.AppIndicator
                     NotifyOnCloseSchema.Set (false);
                 }
             } catch {
+                Hyena.Log.Warning ("Error while trying to notify of window close.", e.Message, false);
             }
 
             PrimaryWindowVisible = false;
