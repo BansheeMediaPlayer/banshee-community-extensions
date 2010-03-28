@@ -65,22 +65,16 @@ namespace Banshee.Streamrecorder
 
         public StreamrecorderService ()
         {
-            Hyena.Log.Debug ("[StreamrecorderService] <StreamrecorderService> START");
-            
             recording = IsRecordingEnabledEntry.Get ().Equals ("True") ? true : false;
             output_directory = OutputDirectoryEntry.Get ();
             is_importing_enabled = IsImportingEnabledEntry.Get ().Equals ("True") ? true : false;
             is_splitting_enabled = IsFileSplittingEnabledEntry.Get ().Equals ("True") ? true : false;
             active_encoder = ActiveEncoderEntry.Get ();
             ui_button_id = 0;
-
-            Hyena.Log.Debug ("[StreamrecorderService] <StreamrecorderService> END");
         }
 
         void IExtensionService.Initialize ()
         {
-            Hyena.Log.Debug ("[StreamrecorderService] <Initialize> START");
-            
             recorder = new Recorder ();
             active_encoder = recorder.SetActiveEncoder (active_encoder);
             
@@ -127,12 +121,10 @@ namespace Banshee.Streamrecorder
             //    ui_button_id = action_service.UIManager.AddUiFromResource ("StreamrecorderButton.xml");
             //}
 
-            Hyena.Log.Debug ("[StreamrecorderService] <Initialize> END");
         }
 
         void OnSourceChanged (Sources.SourceEventArgs args)
         {
-            Hyena.Log.Debug ("[StreamrecorderService] <OnSourceChanged> START");
             PrimarySource primary_source = action_service.GlobalActions.ActivePrimarySource;
 
             if (primary_source == null)
@@ -152,13 +144,10 @@ namespace Banshee.Streamrecorder
                 action_service.UIManager.RemoveUi(ui_button_id);
                 ui_button_id = 0;
             }
-            Hyena.Log.Debug ("[StreamrecorderService] <OnSourceChanged> END");
         }
 
         public void OnActivateStreamrecorder (object o, EventArgs ea)
         {
-            Hyena.Log.Debug ("[StreamrecorderService] <OnActivateStreamrecorder> START");
-            
             if (!recording) {
                 StartRecording ();
             } else {
@@ -168,7 +157,6 @@ namespace Banshee.Streamrecorder
             recording = !recording;
             IsRecordingEnabledEntry.Set (recording.ToString ());
             
-            Hyena.Log.Debug ("[StreamrecorderService] <OnActivateStreamrecorder> END");
         }
 
         public void OnConfigure (object o, EventArgs ea)
