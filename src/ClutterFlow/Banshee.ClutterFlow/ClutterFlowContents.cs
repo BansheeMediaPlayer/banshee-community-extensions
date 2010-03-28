@@ -220,6 +220,7 @@ namespace Banshee.ClutterFlow
 		#endregion
 		
 		#region View Setup
+		
         protected void InitializeInterface ()
         {
             SetupMainView ();
@@ -229,7 +230,7 @@ namespace Banshee.ClutterFlow
         protected void SetupMainView ()
         {
             main_view = new TrackListView ();
-            main_view.HeaderVisible = true; //TODO copy this from FilteredListSourceContents
+            main_view.HeaderVisible = true;
             main_expander = CreateScrollableExpander (main_view);
             main_expander.Expanded = ClutterFlowSchemas.ExpandTrackList.Get ();
         }
@@ -397,18 +398,6 @@ namespace Banshee.ClutterFlow
 			ShowPack ();
 			
         }
-
-        protected override void OnRealized ()
-        {
-            base.OnRealized ();
-            MoveVideoInternal ();
-        }
-
-        protected override void OnUnrealized ()
-        {
-            MoveVideoExternal (false);
-            base.OnUnrealized ();
-        }
 		#endregion
 
 		#region Playback Handling
@@ -543,7 +532,7 @@ namespace Banshee.ClutterFlow
 				}
 			}
 			
-			TrackView.SetModel (TrackModel);
+			main_view.SetModel (TrackModel);
 			FilterView.SetModel (external_filter);
 			
 			return true;

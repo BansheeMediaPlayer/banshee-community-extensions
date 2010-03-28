@@ -105,7 +105,7 @@ namespace Banshee.ClutterFlow
 		#pragma warning restore 0067
 		protected void InvokeSortingChanged ()
 		{
-			ClutterFlowSchemas.SortBy.Set (Enum.GetName(typeof(SortOptions), SortOptions.Album));
+			ClutterFlowSchemas.SortBy.Set (Enum.GetName(typeof(SortOptions), SortBy));
 			if (SortingChanged!=null) SortingChanged (this, EventArgs.Empty);
 		}
 
