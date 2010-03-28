@@ -26,7 +26,8 @@
 
 using System;
 
-using Banshee.I18n;
+using Mono.Addins;
+
 using Banshee.Configuration;
 using Banshee.Preferences;
 
@@ -130,63 +131,8 @@ namespace Banshee.ClutterFlow
         internal static readonly SchemaEntry<string> SortBy = new SchemaEntry<string>(
             "clutterflow", "sort_by",
             (string) Enum.GetName (typeof(SortOptions), SortOptions.Artist),
-            Catalog.GetString ("Sort covers by"),
-            Catalog.GetString ("Selects on what basis covers should be sorted")
-        );		
+            AddinManager.CurrentLocalizer.GetString ("Sort covers by"),
+            AddinManager.CurrentLocalizer.GetString ("Selects on what basis covers should be sorted")
+        );
 	}
-	
-    /*public class ClutterFlowSource : Source, IDisposable//, ITrackModelSource
-    {
-	
-        private ClutterFlowInterface clutter_flow_interface;
-        
-		public ClutterFlowSource () : base("ClutterFlow", "ClutterFlow", 0)
-        {
-			
-			TypeUniqueId = "ClutterFlow";
-			Properties.SetString ("Icon.Name", "clutterflow-icon");
-			Properties.Set<bool> ("Nereid.SourceContents.HeaderVisible", true);
-			
-            clutter_flow_interface = new ClutterFlowInterface ();
-
-			
-			
-            //Properties.Set<ISourceContents> ("Nereid.SourceContents", clutter_flow_interface);
-			//SetParentSource(ServiceManager.SourceManager.MusicLibrary);
-			//Parent.AddChildSource(this);
-			//ServiceManager.SourceManager.AddSource (this);
-			
-			InstallPreferences ();
-			//CreateAlbumListModel ();
-
-			//Reload();
-        }
-		
-        public void Dispose ()
-        {		
-            if (clutter_flow_interface != null) {
-                clutter_flow_interface.Destroy ();
-                clutter_flow_interface.Dispose ();
-                clutter_flow_interface = null;
-            }
-			UninstallPreferences ();
-        }
-
-		#region FullScreen Overrides
-        public override void Activate ()
-        {
-            if (clutter_flow_interface != null) {
-                clutter_flow_interface.OverrideFullscreen ();
-            }
-        }
-
-        public override void Deactivate ()
-        {
-            if (clutter_flow_interface != null) {
-                clutter_flow_interface.RelinquishFullscreen ();
-            }
-        }
-		#endregion
-
-    }*/
 }

@@ -86,6 +86,11 @@ namespace Banshee.ClutterFlow
         private FullscreenAdapter fullscreen_adapter;
         private ScreensaverManager screensaver;
 		
+		protected bool is_fullscreen = false;
+		public bool IsFullscreen {
+			get { return is_fullscreen; }
+		}		
+		
 		//SOURCE, TRACKMODEL & (ALBUM) FILTERS:
         protected MusicLibrarySource source;
         public ISource Source {
@@ -393,10 +398,17 @@ namespace Banshee.ClutterFlow
 			
         }
 
-		protected bool is_fullscreen = false;
-		public bool IsFullscreen {
-			get { return is_fullscreen; }
-		}
+        protected override void OnRealized ()
+        {
+            base.OnRealized ();
+            MoveVideoInternal ();
+        }
+
+        protected override void OnUnrealized ()
+        {
+            MoveVideoExternal (false);
+            base.OnUnrealized ();
+        }
 		#endregion
 
 		#region Playback Handling
