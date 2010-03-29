@@ -37,6 +37,10 @@ using Banshee.ServiceStack;
 
 namespace Banshee.Streamrecorder
 {
+
+    /// <summary>
+    /// A Recorder object that uses a GStreamerMiniBinding to enable recoding of the player pipeline by attaching to the player audio tee
+    /// </summary>
     public class Recorder
     {
         private string output_directory;
@@ -63,6 +67,9 @@ namespace Banshee.Streamrecorder
         private const string flac_pipeline = "! flacenc name=audio_encoder ! flactag name=tagger ";
         private const string flac_extension = ".flac";
 
+        /// <summary>
+        /// Constructor -- creates a new Recorder that will use the GStreamerMiniBinding to connect itself to the player tee for recording streams
+        /// </summary>
         public Recorder ()
         {
             try
@@ -92,6 +99,12 @@ namespace Banshee.Streamrecorder
 
         }
 
+        /// <summary>
+        /// Creates a new recoding pipeline with the best (by user preference) available encoder
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.Boolean"/>, true if the pipeline was successfully created, false otherwise.
+        /// </returns>
         public bool Create ()
         {
             string bin_description = BuildPipeline ();
@@ -124,6 +137,12 @@ namespace Banshee.Streamrecorder
             return true;
         }
 
+        /// <summary>
+        /// Helper function to build the actual pipeline string
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> containing the pipeline description
+        /// </returns>
         private string BuildPipeline ()
         {
             string pipeline = "";
@@ -146,10 +165,22 @@ namespace Banshee.Streamrecorder
             return pipeline;
         }
 
+        /// <summary>
+        /// List of available encoders
+        /// </summary>
         public List<Encoder> Encoders {
             get { return encoders; }
         }
 
+        /// <summary>
+        /// Sets the prefered encoder for the Recorder to use
+        /// </summary>
+        /// <param name="active_encoder">
+        /// A <see cref="System.String"/> containing the Name of the encoder that is requested
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.String"/> containing the Name of the encoder that will be used
+        /// </returns>
         public string SetActiveEncoder (string active_encoder)
         {
             string ret = null;
@@ -169,6 +200,12 @@ namespace Banshee.Streamrecorder
             return ret;
         }
 
+        /// <summary>
+        /// Helper function returning the first preferred encoder from the list of encoders
+        /// </summary>
+        /// <returns>
+        /// The first <see cref="Encoder"/> object that is preferred in the list of encoders or null, if there is none.
+        /// </returns>
         private Encoder GetFirstPreferredEncoder ()
         {
             foreach (Encoder encoder in encoders) {
@@ -178,6 +215,12 @@ namespace Banshee.Streamrecorder
             return null;
         }
 
+        /// <summary>
+        /// Helper function returning the first available encoder, using preferred encoders first
+        /// </summary>
+        /// <returns>
+        /// An <see cref="Encoder"/> object or null, if there is no encoders in the list
+        /// </returns>
         public Encoder GetFirstAvailableEncoder ()
         {
             Encoder encoder = GetFirstPreferredEncoder ();
@@ -187,11 +230,26 @@ namespace Banshee.Streamrecorder
             return encoder;
         }
 
+        /// <summary>
+        /// Function to control behaviour when files would be overwritten. Should never be called in current code conditions.
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="args">
+        /// A <see cref="GLib.NotifyArgs"/> -- not used
+        /// </param>
         private void OnAllowOverwrite (object o, GLib.NotifyArgs args)
         {
             return;
         }
 
+        /// <summary>
+        /// Starts recording of the current stream by creating and attaching a new Recorder pipeline to the player audio tee
+        /// </summary>
+        /// <param name="blocked">
+        /// A <see cref="System.Boolean"/> inidicating if pad blocking should be used
+        /// </param>
         public void StartRecording (bool blocked)
         {
             if (audiotee != null && !audiotee.IsNull () && audiotee.IsAttached () && encoder_bin != null && !encoder_bin.IsNull ()) {
@@ -215,6 +273,12 @@ namespace Banshee.Streamrecorder
             Hyena.Log.Debug ("[Recorder] <StartRecording> Recording started");
         }
 
+        /// <summary>
+        /// Stops recording of the current stream by removing the Recorder pipeline from the player audio tee
+        /// </summary>
+        /// <param name="blocked">
+        /// A <see cref="System.Boolean"/> inidicating if pad blocking should be used
+        /// </param>
         public void StopRecording (bool blocked)
         {
             if (encoder_bin != null && !encoder_bin.IsNull () && audiotee != null && !audiotee.IsNull () && audiotee.IsAttached ()) {
@@ -228,6 +292,18 @@ namespace Banshee.Streamrecorder
             }
         }
 
+        /// <summary>
+        /// Adds Metadata tags to the recorded file using GStreamer TagSetter interface and splits files if requested
+        /// </summary>
+        /// <param name="track">
+        /// A <see cref="TrackInfo"/> containing the current stream and its metadata
+        /// </param>
+        /// <param name="splitfiles">
+        /// A <see cref="System.Boolean"/> indicating whether the recorded files are to be split
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Boolean"/> indicating if tagging was successful
+        /// </returns>
         public bool AddStreamTags (TrackInfo track, bool splitfiles)
         {
             if (track == null || tagger == null)
@@ -263,6 +339,18 @@ namespace Banshee.Streamrecorder
             return true;
         }
 
+        /// <summary>
+        /// Creates a new filename from title and artist
+        /// </summary>
+        /// <param name="title">
+        /// A <see cref="System.String"/> containing the track title
+        /// </param>
+        /// <param name="artist">
+        /// A <see cref="System.String"/> containing the track artist
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.String"/> the new filename including the directory and file extension
+        /// </returns>
         public string SetMetadataFilename (string title, string artist)
         {
             string new_name = artist + "_-_" + title;
@@ -277,17 +365,41 @@ namespace Banshee.Streamrecorder
             return output_file;
         }
 
+        /// <summary>
+        /// Sets the output directory and filename for recording
+        /// </summary>
+        /// <param name="directory">
+        /// A <see cref="System.String"/> containing the output directory
+        /// </param>
+        /// <param name="filename">
+        /// A <see cref="System.String"/> containing the output filename that will be used if no metadata filenames are used
+        /// </param>
         public void SetOutputParameters (string directory, string filename)
         {
             SetOutputDirectory (directory);
             SetOutputFile (filename);
         }
 
+        /// <summary>
+        /// Helper function to set the output directory
+        /// </summary>
+        /// <param name="directory">
+        /// A <see cref="System.String"/> containing the output directory
+        /// </param>
         private void SetOutputDirectory (string directory)
         {
             output_directory = directory;
         }
 
+        /// <summary>
+        /// Helper function to set the output filename, removing invalid characters
+        /// </summary>
+        /// <param name="fullfilename">
+        /// A <see cref="System.String"/> containing the desired filename including extension
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.String"/> containing the cleaned filename that will be used
+        /// </returns>
         private string SetOutputFile (string fullfilename)
         {
             string cleanfilename = fullfilename;
@@ -299,7 +411,12 @@ namespace Banshee.Streamrecorder
             return cleanfilename;
         }
 
-
+        /// <summary>
+        /// Changes the location of the file being recorded while recording is in progress, splitting the file at the current stream location
+        /// </summary>
+        /// <param name="new_location">
+        /// A <see cref="System.String"/> containing the full new filename and path
+        /// </param>
         private void SetNewTrackLocation (string new_location)
         {
             try {

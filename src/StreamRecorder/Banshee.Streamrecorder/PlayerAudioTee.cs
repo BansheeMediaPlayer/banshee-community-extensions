@@ -33,16 +33,37 @@ using System.Runtime.InteropServices;
 namespace Banshee.Streamrecorder
 {
 
+    /// <summary>
+    /// An object to capsule the gstreamer audio tee of the player and provide functionality to attach and remove a pipeline
+    /// </summary>
     public class PlayerAudioTee : Bin
     {
 
         private bool attached;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="audiotee">
+        /// A <see cref="IntPtr"/> referencing an audio player tee element
+        /// </param>
         public PlayerAudioTee (IntPtr audiotee) : base(audiotee)
         {
             attached = false;
         }
 
+        /// <summary>
+        /// Attaches a pipeline/bin to the audio player tee, optionally using pad blocking
+        /// </summary>
+        /// <param name="bin">
+        /// A <see cref="Bin"/> to attach to the player tee
+        /// </param>
+        /// <param name="use_pad_block">
+        /// A <see cref="System.Boolean"/> indicating whether to use pad blocking or not
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Boolean"/> -- always true
+        /// </returns>
         public bool AddBin (Bin bin, bool use_pad_block)
         {
             Bin[] user_bins = new Bin[2] { new Bin (this.ToIntPtr ()), bin };
@@ -66,6 +87,18 @@ namespace Banshee.Streamrecorder
             return true;
         }
 
+        /// <summary>
+        /// Helper function to really attach a bin to the audio player tee
+        /// </summary>
+        /// <param name="pad">
+        /// A <see cref="IntPtr"/> referencing the pad that may need to be unblocked
+        /// </param>
+        /// <param name="blocked">
+        /// A <see cref="System.Boolean"/> indicating if the pad is blocked
+        /// </param>
+        /// <param name="user_data">
+        /// A <see cref="IntPtr"/> containing references to the bin and the audio tee
+        /// </param>
         private void ReallyAddBin (IntPtr pad, bool blocked, IntPtr user_data)
         {
             GCHandle gch = GCHandle.FromIntPtr (user_data);
@@ -125,9 +158,18 @@ namespace Banshee.Streamrecorder
             
         }
 
-        /*
-         * Pipeline RemoveTee
-         */
+        /// <summary>
+        /// Removes a pipeline/bin from the audio player tee, optionally using pad blocking
+        /// </summary>
+        /// <param name="bin">
+        /// The <see cref="Bin"/> to remove
+        /// </param>
+        /// <param name="use_pad_block">
+        /// A <see cref="System.Boolean"/> indicating whether to use pad blocking or not
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Boolean"/> -- always true
+        /// </returns>
         public bool RemoveBin (Bin bin, bool use_pad_block)
         {
             IntPtr user_data = bin.ToIntPtr ();
@@ -148,6 +190,18 @@ namespace Banshee.Streamrecorder
             return true;
         }
 
+        /// <summary>
+        /// Helper function to really remove the bin from the audio player tee
+        /// </summary>
+        /// <param name="pad">
+        /// A <see cref="IntPtr"/> referencing the pad that may need to be unblocked
+        /// </param>
+        /// <param name="blocked">
+        /// A <see cref="System.Boolean"/> indicating if the pad is blocked
+        /// </param>
+        /// <param name="user_data">
+        /// A <see cref="IntPtr"/> containing a reference to the bin
+        /// </param>
         private void ReallyRemoveBin (IntPtr pad, bool blocked, IntPtr user_data)
         {
             Bin element = new Bin (user_data);
@@ -181,6 +235,18 @@ namespace Banshee.Streamrecorder
             
         }
 
+        /// <summary>
+        /// Helper function to revive the player pipeline after add/remove operations
+        /// </summary>
+        /// <param name="pad">
+        /// A <see cref="IntPtr"/> referencing the pad that might have been blocked
+        /// </param>
+        /// <param name="blocked">
+        /// A <see cref="System.Boolean"/> indicating whether the pad was blocked
+        /// </param>
+        /// <param name="new_pad">
+        /// A <see cref="IntPtr"/> referencing the new (ghost) pad that waits for an event or Zero for removed bins
+        /// </param>
         public void AddRemoveBinDone (IntPtr pad, bool blocked, IntPtr new_pad)
         {
             IntPtr segment;
@@ -193,6 +259,12 @@ namespace Banshee.Streamrecorder
             new Pad (new_pad).SendEvent (segment);
         }
 
+        /// <summary>
+        /// Indicates if a (recording) pipeline is attached to this player tee
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.Boolean"/> indicating whether a (recording) pipeline is attached to this player tee
+        /// </returns>
         public bool IsAttached ()
         {
             return attached;

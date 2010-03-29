@@ -30,6 +30,9 @@ using System;
 
 namespace Banshee.Streamrecorder
 {
+    /// <summary>
+    /// Class describing an (Audio) Encoder to use in a gstreamer pipeline
+    /// </summary>
     public class Encoder
     {
 
@@ -38,10 +41,37 @@ namespace Banshee.Streamrecorder
         private string file_extension;
         private bool is_preferred;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name">
+        /// A <see cref="System.String"/> giving the encoder a unique name
+        /// </param>
+        /// <param name="pipeline">
+        /// The <see cref="System.String"/> to be integrated into a pipeline using the encoder. Must start with a "!" to connect to the pipeline and must not end with "!"
+        /// </param>
+        /// <param name="file_extension">
+        /// A <see cref="System.String"/> to contain the file extension of the resulting (audio) file, including the "."
+        /// </param>
         public Encoder (string name, string pipeline, string file_extension) : this(name, pipeline, file_extension, false)
         {
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name">
+        /// A <see cref="System.String"/> giving the encoder a unique name
+        /// </param>
+        /// <param name="pipeline">
+        /// The <see cref="System.String"/> to be integrated into a pipeline using the encoder. Must start with a "!" to connect to the pipeline and must not end with "!"
+        /// </param>
+        /// <param name="file_extension">
+        /// A <see cref="System.String"/> to contain the file extension of the resulting (audio) file, including the "."
+        /// </param>
+        /// <param name="is_preferred">
+        /// A <see cref="System.Boolean"/> that indicates this encoder is preferred to others
+        /// </param>
         public Encoder (string name, string pipeline, string file_extension, bool is_preferred)
         {
             this.name = name;

@@ -39,6 +39,10 @@ using Banshee.I18n;
 
 namespace Banshee.Streamrecorder
 {
+
+    /// <summary>
+    /// A dialog to control StreamRecorder options
+    /// </summary>
     public class StreamrecorderConfigDialog : Gtk.Dialog
     {
         StreamrecorderService streamrecorder_service;
@@ -55,6 +59,24 @@ namespace Banshee.Streamrecorder
         Gtk.Button save_button = new Gtk.Button (Gtk.Stock.Save);
         Gtk.ComboBox encoderbox = new Gtk.ComboBox ();
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="service">
+        /// The <see cref="StreamrecorderService"/> that is being configured
+        /// </param>
+        /// <param name="previous_output_folder">
+        /// A <see cref="System.String"/> containing the previously configured output directory
+        /// </param>
+        /// <param name="previous_encoder">
+        /// A <see cref="System.String"/> containing the previously configured encoder
+        /// </param>
+        /// <param name="is_importing_enabled">
+        /// A <see cref="System.Boolean"/> indicating whether file scanning was previously enabled
+        /// </param>
+        /// <param name="is_splitting_enabled">
+        /// A <see cref="System.Boolean"/> indicating whether file splitting was previously enabled
+        /// </param>
         public StreamrecorderConfigDialog (StreamrecorderService service, string previous_output_folder, string previous_encoder, bool is_importing_enabled, bool is_splitting_enabled)
         {
             streamrecorder_service = service;
@@ -160,16 +182,32 @@ namespace Banshee.Streamrecorder
             ShowAll ();
         }
 
+        /// <summary>
+        /// Handles click on the Cancel button
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="a">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         private void OnCancelButtonClicked (object o, EventArgs a)
         {
             Destroy ();
         }
 
+        /// <summary>
+        /// Sets the configuration and saves it to SchemaEntries
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="a">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         private void OnSaveButtonClicked (object o, EventArgs a)
         {
-            Hyena.Log.DebugFormat ("[StreamrecorderConfigDialog] <OnSaveButtonClicked> dir: {0}", output_folder.Text);
-            Hyena.Log.DebugFormat ("[StreamrecorderConfigDialog] <OnSaveButtonClicked> enc: {0}", encoderbox.ActiveText);
-            
+
             StreamrecorderService.IsImportingEnabledEntry.Set (enable_import_ripped_songs.Active.ToString ());
             streamrecorder_service.IsImportingEnabled = enable_import_ripped_songs.Active.ToString ().Equals ("True") ? true : false;
             
@@ -190,6 +228,15 @@ namespace Banshee.Streamrecorder
             Destroy ();
         }
 
+        /// <summary>
+        /// Handles click to the output folder choose button
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="a">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         private void OnChooseOutputFolderButtonClicked (object o, EventArgs a)
         {
             FileChooserDialog output_folder_chooser = new FileChooserDialog ("Choose output folder", this, FileChooserAction.SelectFolder, "Cancel", ResponseType.Cancel, "Open", ResponseType.Accept);
@@ -203,15 +250,19 @@ namespace Banshee.Streamrecorder
             output_folder_chooser.Destroy ();
         }
 
+        /// <summary>
+        /// Validates the choosen output folder
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.Boolean"/> returns true if the output folder is valid, false otherwise
+        /// </returns>
         private bool ValidateOutputFolderField ()
         {
             if (Banshee.IO.Directory.Exists (output_folder.Text.Trim ())) {
-                Hyena.Log.Debug ("[StreamrecorderConfigDialog] <ValidateOutputFolderField> VALID!");
                 return true;
             }
             try {
                 Banshee.IO.Directory.Create (output_folder.Text);
-                Hyena.Log.Debug ("[StreamrecorderConfigDialog] <ValidateOutputFolderField> VALID!");
                 return true;
             } catch {
                 Hyena.Log.Debug ("[StreamrecorderConfigDialog] <ValidateOutputFolderField> NOT VALID!");

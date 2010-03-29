@@ -48,6 +48,10 @@ using Banshee.Sources;
 
 namespace Banshee.Streamrecorder
 {
+
+    /// <summary>
+    /// Extension Service class that adds the functionality to Banshee Media Player to record live (non-local) streams to files
+    /// </summary>
     public class StreamrecorderService : IExtensionService, IDisposable
     {
         private Recorder recorder;
@@ -62,7 +66,9 @@ namespace Banshee.Streamrecorder
         private TrackInfo track = null;
         private string active_encoder;
 
-
+        /// <summary>
+        /// Constructor -- loads previous configuration
+        /// </summary>
         public StreamrecorderService ()
         {
             recording = IsRecordingEnabledEntry.Get ().Equals ("True") ? true : false;
@@ -73,6 +79,9 @@ namespace Banshee.Streamrecorder
             ui_button_id = 0;
         }
 
+        /// <summary>
+        /// Initialize the service, creating the Recorder object, connecting events and adding GUI elements
+        /// </summary>
         void IExtensionService.Initialize ()
         {
             recorder = new Recorder ();
@@ -113,16 +122,14 @@ namespace Banshee.Streamrecorder
             action_service.UIManager.InsertActionGroup (actions, 0);
             ui_menu_id = action_service.UIManager.AddUiFromResource ("StreamrecorderMenu.xml");
 
-            //not yet set on init, skipping
-            //PrimarySource primary_source = action_service.GlobalActions.ActivePrimarySource;
-            
-            //if (primary_source != null && primary_source.IsLocal)
-            //{
-            //    ui_button_id = action_service.UIManager.AddUiFromResource ("StreamrecorderButton.xml");
-            //}
-
         }
 
+        /// <summary>
+        /// Watches source changes and dynamically adds/removes the record button in the toolbar
+        /// </summary>
+        /// <param name="args">
+        /// A <see cref="Sources.SourceEventArgs"/> -- not used
+        /// </param>
         void OnSourceChanged (Sources.SourceEventArgs args)
         {
             PrimarySource primary_source = action_service.GlobalActions.ActivePrimarySource;
@@ -143,6 +150,15 @@ namespace Banshee.Streamrecorder
             }
         }
 
+        /// <summary>
+        /// Activates stream recording
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="ea">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         public void OnActivateStreamrecorder (object o, EventArgs ea)
         {
             if (!recording) {
@@ -156,11 +172,23 @@ namespace Banshee.Streamrecorder
             
         }
 
+        /// <summary>
+        /// Triggers configuration, shows the configuration dialog
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="ea">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
         public void OnConfigure (object o, EventArgs ea)
         {
             new StreamrecorderConfigDialog (this, output_directory, active_encoder, is_importing_enabled, is_splitting_enabled);
         }
 
+        /// <summary>
+        /// Disposes the StreamRecorder service, stops recording, disconnects events, and removes GUI elements
+        /// </summary>
         public void Dispose ()
         {
             StopRecording ();
@@ -173,10 +201,19 @@ namespace Banshee.Streamrecorder
             actions = null;
         }
 
+        /// <summary>
+        /// The service name
+        /// </summary>
         string IService.ServiceName {
             get { return "StreamrecorderService"; }
         }
 
+        /// <summary>
+        /// Helper function to indicate if the current track can be recorded safely
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.Boolean"/> indicating whether it is safe to record the current track or not
+        /// </returns>
         private bool IsCurrentTrackRecordable ()
         {
             if (Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack != null
@@ -187,6 +224,12 @@ namespace Banshee.Streamrecorder
             return false;
         }
 
+        /// <summary>
+        /// Handles Metadata changes initiating tagging and file spliting
+        /// </summary>
+        /// <param name="args">
+        /// A <see cref="PlayerEventArgs"/> -- not used
+        /// </param>
         private void OnMetadata (PlayerEventArgs args)
         {
             if (recording) {
@@ -195,6 +238,12 @@ namespace Banshee.Streamrecorder
             }
         }
 
+        /// <summary>
+        /// Handles EndOfStream events and stops recording
+        /// </summary>
+        /// <param name="args">
+        /// A <see cref="PlayerEventArgs"/>
+        /// </param>
         private void OnEndOfStream (PlayerEventArgs args)
         {
             if (recording) {
@@ -202,6 +251,12 @@ namespace Banshee.Streamrecorder
             }
         }
 
+        /// <summary>
+        /// Handles Player state changes and Stops recording if appropriate
+        /// </summary>
+        /// <param name="args">
+        /// A <see cref="PlayerEventArgs"/>
+        /// </param>
         private void OnStateChange (PlayerEventArgs args)
         {
             if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Idle && recording) {
@@ -209,6 +264,9 @@ namespace Banshee.Streamrecorder
             }
         }
 
+        /// <summary>
+        /// Starts recording of the current stream if track is recordable
+        /// </summary>
         private void StartRecording ()
         {
             
@@ -231,6 +289,9 @@ namespace Banshee.Streamrecorder
             }
         }
 
+        /// <summary>
+        /// stops recording of the current track
+        /// </summary>
         private void StopRecording ()
         {
             recorder.StopRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
@@ -238,16 +299,31 @@ namespace Banshee.Streamrecorder
             StopFolderScanner ();
         }
 
+        /// <summary>
+        /// starts the folder scanner
+        /// </summary>
         public void StartFolderScanner ()
         {
             RippedFileScanner.StartScanner ();
         }
 
+        /// <summary>
+        /// stops the folder scanner
+        /// </summary>
         public void StopFolderScanner ()
         {
             RippedFileScanner.StopScanner ();
         }
 
+        /// <summary>
+        /// Initializes all parameters for recording a track
+        /// </summary>
+        /// <param name="track_in">
+        /// A <see cref="TrackInfo"/> that is to be recorded
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Boolean"/> indicating if all parameters could successfully be initialized
+        /// </returns>
         private bool InitStreamrecorderProcess (TrackInfo track_in)
         {
             active_encoder = recorder.SetActiveEncoder (active_encoder);
@@ -286,6 +362,12 @@ namespace Banshee.Streamrecorder
             return true;
         }
 
+        /// <summary>
+        /// Retrieves an array containing the Names of available encoders
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String[]"/> containing the Names of available encoders
+        /// </returns>
         public string[] GetEncoders ()
         {
             List<Encoder> encoders = recorder.Encoders;
@@ -296,6 +378,9 @@ namespace Banshee.Streamrecorder
             return encoder_names;
         }
 
+        /// <summary>
+        /// The output directory for recorded files
+        /// </summary>
         public string OutputDirectory {
             get { return output_directory; }
             set {
@@ -318,16 +403,25 @@ namespace Banshee.Streamrecorder
             }
         }
 
+        /// <summary>
+        /// the Name of the configured encoder
+        /// </summary>
         public string ActiveEncoder {
             get { return active_encoder; }
             set { active_encoder = value; }
         }
 
+        /// <summary>
+        /// Indicator if recorded tracks are imported into the music library
+        /// </summary>
         public bool IsImportingEnabled {
             get { return is_importing_enabled; }
             set { is_importing_enabled = value; }
         }
 
+        /// <summary>
+        /// Indicator if files should be split by metadata if available
+        /// </summary>
         public bool IsFileSplittingEnabled {
             get { return is_splitting_enabled; }
             set { is_splitting_enabled = value; }

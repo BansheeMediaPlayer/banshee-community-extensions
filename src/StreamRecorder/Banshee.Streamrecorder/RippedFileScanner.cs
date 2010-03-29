@@ -38,6 +38,10 @@ using Banshee.Collection.Database;
 
 namespace Banshee.Streamrecorder
 {
+
+    /// <summary>
+    /// Ripped File Scanner written by Akseli Mantila to integrate recorded files into the music library
+    /// </summary>
     public class RippedFileScanner
     {
         public static Thread folder_scanner = null;
