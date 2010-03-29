@@ -68,15 +68,10 @@ namespace Banshee.Streamrecorder
 
         private void ReallyAddBin (IntPtr pad, bool blocked, IntPtr user_data)
         {
-            Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> START" + (blocked ? " (blocked)" : " (unblocked)"));
-            
             GCHandle gch = GCHandle.FromIntPtr (user_data);
             Bin[] user_bins = (Gst.Bin[])gch.Target;
             Bin fixture = user_bins[0];
             Bin element = user_bins[1];
-            
-            Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> path for fixture: " + fixture.GetPathString ());
-            Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> path for element: " + element.GetPathString ());
             
             Element queue;
             Element audioconvert;
@@ -92,8 +87,6 @@ namespace Banshee.Streamrecorder
                 element_parent.UnRef ();
                 return;
             }
-            
-            Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<ReallyAddBin>adding tee " + element.GetPathString ());
             
             /* set up containing bin */
             bin = new Bin ();
@@ -129,8 +122,6 @@ namespace Banshee.Streamrecorder
                 parent_bin.UnRef ();
                 AddRemoveBinDone (IntPtr.Zero, false, ghost_pad.ToIntPtr ());
             }
-            
-            Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> END");
             
         }
 
@@ -169,8 +160,7 @@ namespace Banshee.Streamrecorder
                 Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<ReallyRemoveBin> element empty, assume disposed, exiting: " + element_path);
                 return;
             }
-            Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<ReallyRemoveBin> removing tee " + element_path);
-            
+
             bin = new Bin (element.GetParent ().ToIntPtr ());
             bin.Ref ();
             
@@ -185,7 +175,7 @@ namespace Banshee.Streamrecorder
             
             /* if we're supposed to be playing, unblock the sink */
             if (blocked) {
-                Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<ReallyRemoveBin>unblocking pad after removing tee");
+                Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<ReallyRemoveBin> unblocking pad after removing tee");
                 new Pad (pad).SetBlockedAsync (false, AddRemoveBinDone, IntPtr.Zero);
             }
             

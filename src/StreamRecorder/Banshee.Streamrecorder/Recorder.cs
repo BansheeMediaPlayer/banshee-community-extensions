@@ -71,18 +71,17 @@ namespace Banshee.Streamrecorder
                     encoders.Add (new Encoder ("None (unchanged stream)", "! identity ", null));
 
                     has_lame = Marshaller.CheckGstPlugin ("lame") && Marshaller.CheckGstPlugin ("id3v2mux");
-                    Hyena.Log.Information ("[Streamrecorder] GstPlugin lame" + (has_lame ? "" : " not") + " found");
+                    Hyena.Log.Debug ("[Streamrecorder] GstPlugin lame" + (has_lame ? "" : " not") + " found");
                     if (has_lame) encoders.Add (new Encoder (lame_name, lame_pipeline, lame_extension));
 
                     has_vorbis = Marshaller.CheckGstPlugin ("vorbisenc") && Marshaller.CheckGstPlugin ("oggmux") && Marshaller.CheckGstPlugin ("oggmux");
-                    Hyena.Log.Information ("[Streamrecorder] GstPlugin vorbis" + (has_vorbis ? "" : " not") + " found");
+                    Hyena.Log.Debug ("[Streamrecorder] GstPlugin vorbis" + (has_vorbis ? "" : " not") + " found");
                     if (has_vorbis) encoders.Add (new Encoder (vorbis_name, vorbis_pipeline, vorbis_extension, true));
 
                     has_flac = Marshaller.CheckGstPlugin ("flacenc") && Marshaller.CheckGstPlugin ("flactag");
-                    Hyena.Log.Information ("[Streamrecorder] GstPlugin flac" + (has_flac ? "" : " not") + " found");
+                    Hyena.Log.Debug ("[Streamrecorder] GstPlugin flac" + (has_flac ? "" : " not") + " found");
                     if (has_flac) encoders.Add (new Encoder (flac_name, flac_pipeline, flac_extension));
 
-                    Hyena.Log.Debug ("[Streamrecorder] gstreamer initialized");
                 } else {
                     Hyena.Log.Debug ("[Streamrecorder] an error occurred during gstreamer initialization, aborting.");
                 }
@@ -95,7 +94,6 @@ namespace Banshee.Streamrecorder
 
         public bool Create ()
         {
-            Hyena.Log.Debug ("[Streamrecoder.Recorder]<Create> START");
             string bin_description = BuildPipeline ();
 
             try {
@@ -106,8 +104,6 @@ namespace Banshee.Streamrecorder
                 }
                 
                 encoder_bin = Parse.BinFromDescription (bin_description, true);
-                
-                Hyena.Log.Debug ("[Streamrecoder.Recorder]<Create> encoder_bin created: " + encoder_bin.GetPathString ());
                 
                 tagger = new TagSetter (encoder_bin.GetByInterface (TagSetter.GetType ()));
                 file_sink = encoder_bin.GetByName ("file_sink").ToFileSink ();
@@ -124,8 +120,6 @@ namespace Banshee.Streamrecorder
                 Hyena.Log.Debug (e.StackTrace);
                 return false;
             }
-            
-            Hyena.Log.Debug ("[Streamrecoder.Recorder]<Create> END");
             
             return true;
         }
@@ -195,13 +189,11 @@ namespace Banshee.Streamrecorder
 
         private void OnAllowOverwrite (object o, GLib.NotifyArgs args)
         {
-            Hyena.Log.Debug ("[Recorder] <OnAllowOverwrite> Called");
+            return;
         }
 
         public void StartRecording (bool blocked)
         {
-            Hyena.Log.Debug ("[Recorder] <StartRecording> START");
-
             if (audiotee != null && !audiotee.IsNull () && audiotee.IsAttached () && encoder_bin != null && !encoder_bin.IsNull ()) {
                 try {
                     audiotee.RemoveBin (encoder_bin, blocked);
@@ -220,33 +212,29 @@ namespace Banshee.Streamrecorder
                 }
             }
             
-            Hyena.Log.Debug ("[Recorder] <StartRecording> END");
+            Hyena.Log.Debug ("[Recorder] <StartRecording> Recording started");
         }
 
         public void StopRecording (bool blocked)
         {
-            Hyena.Log.Debug ("[Recorder] <StopRecording> STOPPED");
-            
             if (encoder_bin != null && !encoder_bin.IsNull () && audiotee != null && !audiotee.IsNull () && audiotee.IsAttached ()) {
                 try {
                     audiotee.RemoveBin (encoder_bin, blocked);
+                    Hyena.Log.Debug ("[Recorder] <StopRecording> Recording stopped");
                 } catch (Exception e) {
                     Hyena.Log.Information ("[Streamrecorder] An exception occurred during gstreamer operation");
                     Hyena.Log.Debug (e.StackTrace);
                 }
             }
-            
         }
 
         public bool AddStreamTags (TrackInfo track, bool splitfiles)
         {
-            Hyena.Log.Debug ("[Recorder]<AddStreamTags> START");
-            
             if (track == null || tagger == null)
                 return false;
             
             if (tagger.IsNull ()) {
-                Hyena.Log.Debug ("[Recorder]<AddStreamTags>tagger is null, not tagging!");
+                Hyena.Log.Debug ("[Recorder]<AddStreamTags> tagger is null, not tagging!");
                 return false;
             }
 
@@ -271,8 +259,6 @@ namespace Banshee.Streamrecorder
                 SetMetadataFilename (track.TrackTitle, track.ArtistName);
                 SetNewTrackLocation (output_file + file_extension);
             }
-            
-            Hyena.Log.Debug ("[Recorder]<AddStreamTags> END");
             
             return true;
         }

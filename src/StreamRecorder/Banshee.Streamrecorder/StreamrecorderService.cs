@@ -129,18 +129,15 @@ namespace Banshee.Streamrecorder
 
             if (primary_source == null)
             {
-                Hyena.Log.Debug ("[StreamrecorderService] <OnSourceChanged> not a primary source END");
                 return;
             }
 
             if (!primary_source.IsLocal && ui_button_id == 0)
             {
-                Hyena.Log.Debug ("[StreamrecorderService] <OnSourceChanged> adding record button");
                 ui_button_id = action_service.UIManager.AddUiFromResource ("StreamrecorderButton.xml");
             }
             if (primary_source.IsLocal && ui_button_id > 0)
             {
-                Hyena.Log.Debug ("[StreamrecorderService] <OnSourceChanged> removing record button");
                 action_service.UIManager.RemoveUi(ui_button_id);
                 ui_button_id = 0;
             }
@@ -166,8 +163,6 @@ namespace Banshee.Streamrecorder
 
         public void Dispose ()
         {
-            Log.Debug ("Disposing Streamrecorder plugin");
-            
             StopRecording ();
             action_service.UIManager.RemoveUi (ui_menu_id);
             if (ui_button_id > 0)
@@ -255,8 +250,6 @@ namespace Banshee.Streamrecorder
 
         private bool InitStreamrecorderProcess (TrackInfo track_in)
         {
-            Hyena.Log.DebugFormat ("[StreamrecorderService] <InitStreamrecorderProcess> START dir: '{0}'", output_directory);
-            
             active_encoder = recorder.SetActiveEncoder (active_encoder);
             
             if (String.IsNullOrEmpty (output_directory)) {
@@ -265,12 +258,11 @@ namespace Banshee.Streamrecorder
             }
             
             if (track_in == null) {
-                Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> END. Recording not ready");
                 return false;
             }
             
             if (track_in.Uri == null || track_in.Uri.IsLocalPath) {
-                Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> END. Not recording local files");
+                Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> Not recording local files");
                 return false;
             }
             
@@ -291,7 +283,6 @@ namespace Banshee.Streamrecorder
             
             RippedFileScanner.SetScanDirectory (output_directory);
             
-            Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> END. Recording ready");
             return true;
         }
 
@@ -312,8 +303,6 @@ namespace Banshee.Streamrecorder
                 StopFolderScanner ();
                 
                 this.output_directory = value;
-                
-                Hyena.Log.DebugFormat ("[StreamrecorderService] <OutputDirectorySetter> ", value);
                 
                 if (String.IsNullOrEmpty (this.output_directory)) {
                     this.output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory
