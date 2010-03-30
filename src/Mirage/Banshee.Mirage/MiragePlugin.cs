@@ -58,17 +58,18 @@ namespace Banshee.Mirage
         internal static bool Debug;
 
         static bool initialized = false;
-        internal static bool Initialized {
-            get { return initialized; }
-        }
+
+        static MiragePlugin instance = null;
 
         void IExtensionService.Initialize ()
         {
+            if (instance != null)
+                throw new InvalidOperationException ("A MiragePlugin instance is already in use");
+
+            Init ();
+
             action_service = ServiceManager.Get<InterfaceActionService> ();
 
-            Debug = ApplicationContext.CommandLine.Contains ("debug-mirage");
-
-            Analyzer.Init ();
             TrackAnalysis.Init ();
             MigrateLegacyDb ();
             DistanceCalculator.Init ();
@@ -78,6 +79,18 @@ namespace Banshee.Mirage
             if (!ServiceStartup ()) {
                 ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
             }
+
+            instance = this;
+        }
+
+        internal static void Init ()
+        {
+            if (initialized)
+                return;
+
+            Debug = ApplicationContext.CommandLine.Contains ("debug-mirage");
+
+            Analyzer.Init ();
 
             initialized = true;
         }
@@ -122,6 +135,8 @@ namespace Banshee.Mirage
 
             action_service.UIManager.RemoveUi (uiManagerId);
             action_service.UIManager.RemoveActionGroup (actions);
+
+            instance = null;
         }
 
         private void ScanLibrary ()

@@ -51,8 +51,7 @@ namespace Banshee.Mirage
 
         public RandomBySimilar () : base ("mirage_similar")
         {
-            if (!MiragePlugin.Initialized)
-                throw new InvalidOperationException ("Mirage was not initialized correctly.");
+            MiragePlugin.Init ();
 
             Label = AddinManager.CurrentLocalizer.GetString ("Shuffle by Similar");
             Adverb = AddinManager.CurrentLocalizer.GetString ("by similar");
