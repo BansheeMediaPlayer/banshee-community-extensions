@@ -10,8 +10,21 @@ New:
 * [AppIndicator] use the new application indicator area available in Ubuntu.
 
 Enhancements:
+* [ClutterFlow] Added an alphabet bar to the scrollbar for fast browsing
+* [Lyrics] Add www.lyricsplugin.com support
 
 Bugs Fixed:
+* [ClutterFlow] Fix shade bug when there's no shader support
+* [ClutterFlow] Fix party-mode transition, fixed wrong slider label
+* [ClutterFlow] Fix small bug, now stores user sorting setting
+* [ClutterFlow] Fix asynchronous clone creation when user clicks album currently not centered
+* [ClutterFlow] Fix fullscreen bug, fixing internationalisation strings (again)
+* [I18N] Replace all Catalog calls with calls to the Mono.Addins localizer
+* [Magnatune] Replace unicode char with \u expansion
+* [Mirage] Only load RandomBySimilar if Mirage working
+* [StreamRecorder] Added "unchanged" encoder to record streams as they are
+* [StreamRecorder] fixed encoder choose to not include plugins that are not found
+* [StreamRecorder] updated deprecated lame gstreamer plugin to lamemp3enc
 
 ==============================
 Version 1.5.5 - March 10, 2010
