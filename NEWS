@@ -1,4 +1,19 @@
 ==============================
+Version 1.6.0 - March 31, 2010
+==============================
+
+Contributors:
+Alex Launi, Alexander Kojevnikov, Andrés G. Aragoneses, Bertrand Lorentz,
+Frank Ziegler, Gabriel Burt, Jo Shields, Mathijs Dumon, Sense Hofstede
+
+New:
+* [AppIndicator] use the new application indicator area available in Ubuntu.
+
+Enhancements:
+
+Bugs Fixed:
+
+==============================
 Version 1.5.5 - March 10, 2010
 ==============================
 
