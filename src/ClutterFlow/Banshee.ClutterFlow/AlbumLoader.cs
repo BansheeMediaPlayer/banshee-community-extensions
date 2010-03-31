@@ -261,23 +261,14 @@ namespace Banshee.ClutterFlow
             ClutterFlowBaseActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
             if (actor==null) {
                 actor = new ClutterFlowAlbum (generator, coverManager);
-				actor.SortLabel = Comparer.GetSortLabel(generator);
 				actor.Hide ();
                 Cache.Add (key, actor);
-            }		
+            }
+			actor.SortLabel = Comparer.GetSortLabel(generator);
             list.Add (generator, actor);
 			actor.Index = list.Count;
             return actor;
         }
-		
-		/*public void SortByArtist ()
-		{
-			SortBy = sort_by_arst;
-		}
-		public void SortByName ()
-		{
-			SortBy = sort_by_name;
-		}*/		
 		
 		public override void HandleActorActivated (ClutterFlowBaseActor actor, EventArgs args)
 		{

@@ -99,7 +99,7 @@ namespace ClutterFlow.Slider
 		{
 			if (Stage!=null) {
 				SetAnchorPoint(Width*0.5f, Height);
-				Console.WriteLine ("ClutterFlowSlider.Update, Width = " + Width + " coverManager.Behaviour.CenterX = " + coverManager.Behaviour.CenterX);
+				//Console.WriteLine ("ClutterFlowSlider.Update, Width = " + Width + " coverManager.Behaviour.CenterX = " + coverManager.Behaviour.CenterX);
 				SetPosition(coverManager.Behaviour.CenterX, Math.Min(coverManager.Behaviour.CenterY + coverManager.Behaviour.CoverWidth * 1.5f, Stage.Height));
 			}
 			slider.Update ();
@@ -127,9 +127,9 @@ namespace ClutterFlow.Slider
 		bool ignoreTargetIndexOnce = false;
 		protected void HandleTargetIndexChanged(object sender, EventArgs e)
 		{
-			if (coverManager.TargetActor!=null)
+			if (coverManager.TargetActor!=null) {
 				slider.Label = coverManager.TargetActor.SortLabel.ToUpper ().Substring (0,1);
-			else
+			} else
 				slider.Label = "?";
 			if (!ignoreTargetIndexOnce)
 				slider.HandlePostionFromIndex = coverManager.TargetIndex;
@@ -150,10 +150,10 @@ namespace ClutterFlow.Slider
 		protected void HandleAlphabetLetterClicked (object sender, AlphabetEventArgs e)
 		{
 			ignoreTargetIndexOnce = false;
-			Console.WriteLine ("HandleAlphabetLetterClicked e.Letter = " + e.Letter);
+			/*Console.WriteLine ("HandleAlphabetLetterClicked e.Letter = " + e.Letter);
 			Console.WriteLine ("CoverManager.LetterLookup is " + (CoverManager.LetterLookup == null ? "null" : "not null"));
 			Console.WriteLine ("CoverManager.LetterLookup.ContainsKey(e.Letter) = " + CoverManager.LetterLookup.ContainsKey(e.Letter));
-			Console.WriteLine ("CoverManager.LetterLookup[e.Letter] = " + CoverManager.LetterLookup[e.Letter]);
+			Console.WriteLine ("CoverManager.LetterLookup[e.Letter] = " + CoverManager.LetterLookup[e.Letter]);*/
 			CoverManager.TargetIndex = CoverManager.LetterLookup[e.Letter];
 		}
 		

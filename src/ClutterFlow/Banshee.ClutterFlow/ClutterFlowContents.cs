@@ -37,6 +37,7 @@ using Hyena.Data.Gui;
 using Hyena.Widgets;
 
 using Banshee.ServiceStack;
+using Banshee.MediaEngine;
 using Banshee.PlatformServices;
 using Banshee.Gui;
 using Banshee.Sources.Gui;
@@ -104,7 +105,7 @@ namespace Banshee.ClutterFlow
         protected FilterListModel<AlbumInfo> external_filter; //this is actually fetched from the MusicLibrary
 
 		//PLAYBACK RELATED:
-		private TrackInfo previous_track;
+		private TrackInfo transitioned_track;
 
         private bool IsParentSource {
             get { return ServiceManager.PlaybackController.Source!=null && ServiceManager.PlaybackController.Source.Parent==source; }
@@ -153,6 +154,7 @@ namespace Banshee.ClutterFlow
             ServiceManager.SourceManager.ActiveSourceChanged -= HandleActiveSourceChanged;
             ServiceManager.PlaybackController.TrackStarted -= OnPlaybackControllerTrackStarted;
             ServiceManager.PlaybackController.SourceChanged -= OnPlaybackSourceChanged;
+			ServiceManager.PlayerEngine.DisconnectEvent (OnPlayerEvent);
 
             Reset ();
             if (filter_view.Parent!=null) frame.Remove (filter_view);
@@ -409,8 +411,9 @@ namespace Banshee.ClutterFlow
 			FilterView.FSButton.Toggled += HandleFSButtonToggled;
 			FilterView.SortButton.Toggled += HandleSortButtonToggled;
 
-			ServiceManager.SourceManager.ActiveSourceChanged += HandleActiveSourceChanged;
+			ServiceManager.SourceManager.ActiveSourceChanged += HandleActiveSourceChanged;			
             ServiceManager.PlaybackController.TrackStarted += OnPlaybackControllerTrackStarted;
+			ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEvent);
 			ServiceManager.PlaybackController.SourceChanged += OnPlaybackSourceChanged;
 			FilterView.AlbumLoader.SortingChanged += HandleSortingChanged;
 		}
@@ -462,11 +465,15 @@ namespace Banshee.ClutterFlow
 		private void HandleActiveSourceChanged (SourceEventArgs args)
 		{
 			FilterView.PMButton.SetSilent (InPartyMode);
-		}
+		}	
+		private void OnPlayerEvent (PlayerEventArgs args)
+		{
+			CheckForSwitch ();
+		}		
         private void OnPlaybackControllerTrackStarted (object o, EventArgs args)
-        {			
+        {		
             CheckForSwitch ();
-        }
+        }		
         private void OnPlaybackSourceChanged (object o, EventArgs args)
         {
 			FilterView.PMButton.SetSilent (InPartyMode);
@@ -478,18 +485,21 @@ namespace Banshee.ClutterFlow
 		/// </summary>
         private void CheckForSwitch ()
         {
-            TrackInfo current_track = ServiceManager.PlaybackController.CurrentTrack;
-            if (current_track != null && previous_track != current_track) {
-				if (IsActiveSource)
-					FilterView.LabelTrack.SetValueWithAnim (current_track.TrackNumber + " - " + current_track.TrackTitle);
-				if (InPartyMode) {
-					DatabaseAlbumInfo album = DatabaseAlbumInfo.FindOrCreate (
-							DatabaseArtistInfo.FindOrCreate (current_track.AlbumArtist, current_track.AlbumArtistSort),
-							current_track.AlbumTitle, current_track.AlbumTitleSort, current_track.IsCompilation);
-					FilterView.AlbumLoader.ScrollTo(album);
+			ThreadAssist.ProxyToMain (delegate {
+	            TrackInfo current_track = ServiceManager.PlaybackController.CurrentTrack;
+	            if (current_track != null && transitioned_track != current_track) {
+					if (IsActiveSource)
+						FilterView.LabelTrack.SetValueWithAnim (current_track.TrackNumber + " - " + current_track.TrackTitle);
+					if (InPartyMode) {
+						DatabaseAlbumInfo album = DatabaseAlbumInfo.FindOrCreate (
+								DatabaseArtistInfo.FindOrCreate (current_track.AlbumArtist, current_track.AlbumArtistSort),
+								current_track.AlbumTitle, current_track.AlbumTitleSort, current_track.IsCompilation);
+						FilterView.AlbumLoader.ScrollTo(album);
+					}
+					transitioned_track = ServiceManager.PlayerEngine.CurrentTrack;
 				}
-            }
-			previous_track = current_track;
+				
+			});
         }
 		
 		private void UpdatePlayback ()
