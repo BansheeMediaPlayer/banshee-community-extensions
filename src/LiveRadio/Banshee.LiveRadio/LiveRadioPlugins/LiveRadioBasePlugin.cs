@@ -475,6 +475,39 @@ namespace Banshee.LiveRadio.Plugins
             return null;
         }
 
+        protected void SetWebIcon (string uri)
+        {
+            BackgroundWorker request_thread = new BackgroundWorker ();
+            request_thread.DoWork += DoRetrieveWebIcon;;
+            request_thread.RunWorkerCompleted += OnDoRetrieveWebIconFinished;;
+            request_thread.RunWorkerAsync (uri);
+        }
+
+        void OnDoRetrieveWebIconFinished (object sender, RunWorkerCompletedEventArgs e)
+        {
+            Gdk.Pixbuf icon = e.Result as Gdk.Pixbuf;
+            source.SetIcon (icon);
+        }
+
+        void DoRetrieveWebIcon (object sender, DoWorkEventArgs e)
+        {
+            string uri = e.Argument as string;
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create (uri);
+            request.Method = "GET";
+            request.ContentType = "HTTP/1.0";
+            request.Timeout = 10000;
+
+            try
+            {
+                Stream response = request.GetResponse ().GetResponseStream ();
+                Gdk.Pixbuf icon = new Gdk.Pixbuf (response);
+                e.Result = icon;
+            }
+            catch (Exception ex) {
+                Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"] <DoRetrieveWebIcon> Error: {1} END", Name, ex.Message);
+            }
+        }
+
         /// <summary>
         /// Cleans up any plugin specific data from a track url, such as session data or any other
         /// temporary parameters.

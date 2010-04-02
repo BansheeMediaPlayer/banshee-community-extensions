@@ -62,6 +62,7 @@ namespace Banshee.LiveRadio.Plugins
             if (!Int32.TryParse(HttpTimeoutEntry.Get (), out http_timeout_seconds))
                 http_timeout_seconds = 20;
             proxy_url = ProxyUrlEntry.Get ();
+            SetWebIcon ("http://www.xiph.org/favicon.ico");
         }
 
         /// <summary>

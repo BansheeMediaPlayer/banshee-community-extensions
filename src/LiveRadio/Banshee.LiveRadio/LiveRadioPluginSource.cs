@@ -45,6 +45,7 @@ using Gtk;
 using Hyena;
 
 using Banshee.LiveRadio.Plugins;
+using System.IO;
 
 namespace Banshee.LiveRadio
 {
@@ -73,7 +74,11 @@ namespace Banshee.LiveRadio
         {
             TypeUniqueId = "live-radio-" + plugin.Name;
             IsLocal = false;
-            
+
+            Gdk.Pixbuf icon = new Gdk.Pixbuf (System.Reflection.Assembly.GetExecutingAssembly ()
+                                      .GetManifestResourceStream ("LiveRadioIcon.svg"));
+            SetIcon (icon);
+
             plugin.SetLiveRadioPluginSource (this);
             
             AfterInitialized ();
@@ -133,6 +138,12 @@ namespace Banshee.LiveRadio
             this.PurgeTracks ();
 
         }
+
+        public void SetIcon (Gdk.Pixbuf icon)
+        {
+            Properties.Set<Gdk.Pixbuf> ("Icon.Pixbuf_22", icon.ScaleSimple (22, 22, Gdk.InterpType.Bilinear));
+        }
+
 
         /// <summary>
         /// The Widget of the source contents of this source

@@ -26,7 +26,8 @@ SOURCES =  \
 RESOURCES =  \
 	LiveRadio.addin.xml \
 	Resources/ActiveSourceUI.xml \
-	Resources/GlobalUI.xml
+	Resources/GlobalUI.xml \
+	Resources/LiveRadioIcon.svg
 
 if ENABLE_LIVERADIO
 include $(top_srcdir)/build/build.mk

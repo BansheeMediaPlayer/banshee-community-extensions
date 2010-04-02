@@ -75,6 +75,9 @@
     <EmbeddedResource Include="Resources\GlobalUI.xml">
       <LogicalName>GlobalUI.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\LiveRadioIcon.svg">
+      <LogicalName>LiveRadioIcon.svg</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.LiveRadio\LiveRadioSource.cs" />

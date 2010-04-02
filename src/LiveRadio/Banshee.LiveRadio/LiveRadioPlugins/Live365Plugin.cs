@@ -104,6 +104,7 @@ namespace Banshee.LiveRadio.Plugins
             credentials_username = HttpUsernameEntry.Get ();
             credentials_password = HttpPasswordEntry.Get ();
             proxy_url = ProxyUrlEntry.Get ();
+            SetWebIcon ("http://www.live365.com/favicon.ico");
         }
 
         /// <summary>
