@@ -196,10 +196,20 @@ namespace Banshee.Lyrics
 
         private string GetSuggestions (TrackInfo track)
         {
-            //Obtain suggestions from Lyrc
-            ILyricsSource lyrc_server = sourceList[0];
+            string suggestions = null;
+            foreach (ILyricsSource source in sourceList) {
+                try {
+                    suggestions = source.GetSuggestions (track.ArtistName, track.TrackTitle);
+                } catch (Exception e) {
+                    Log.Exception (e);
+                    continue;
+                }
 
-            return lyrc_server.GetSuggestions (track.ArtistName, track.TrackTitle);
+                if (!String.IsNullOrEmpty (suggestions)) {
+                    return suggestions;
+                }
+            }
+            return null;
         }
 
         private bool IsLyricsOk (string l)
