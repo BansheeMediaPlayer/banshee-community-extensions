@@ -122,7 +122,7 @@ namespace Banshee.Lyrics
                         return;
                     }
                 } catch (Exception e) {
-                    Hyena.Log.DebugException (e);
+                    Log.DebugException (e);
                     error = e.Message;
                 }
 
@@ -158,11 +158,14 @@ namespace Banshee.Lyrics
                 
                 if (found) {
                     lyrics = AttachFooter (Utils.ToNormalString(lyrics), source.Source.Credits);
-                    break;
+                    Log.DebugFormat ("Fetched lyrics from {0} for {1} - {2}",
+                        source.Source.Name, track.ArtistName, track.TrackTitle);
+                    return lyrics;
                 }
             }
 
-            return lyrics;
+            Log.DebugFormat ("Couldn't find lyrics for {0} - {1}", track.ArtistName, track.TrackTitle);
+            return null;
         }
 
         public void UpdateDB (TrackInfo track, string lyrics) 
@@ -214,9 +217,12 @@ namespace Banshee.Lyrics
                 }
 
                 if (found) {
+                    Log.DebugFormat ("Fetched suggestions from {0} for {1} - {2}",
+                        source.Source.Name, track.ArtistName, track.TrackTitle);
                     return suggestions;
                 }
             }
+            Log.DebugFormat ("Couldn't find any suggestions for {0} - {1}", track.ArtistName, track.TrackTitle);
             return null;
         }
 

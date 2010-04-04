@@ -56,11 +56,10 @@ namespace Banshee.Lyrics.IO
         {
             try {
                 if (File.Exists (filename)) {
-                    Hyena.Log.Debug ("Deleting lyrics: " + filename);
                     File.Delete (filename);
                 }
             } catch (Exception e) {
-                Hyena.Log.DebugFormat ("Unable to delete lyrics {0}: {1} ", filename, e.Message);
+                Hyena.Log.Exception (String.Format ("Can't delete lyrics file: {0}", filename), e);
             }
         }
 
@@ -77,7 +76,7 @@ namespace Banshee.Lyrics.IO
                     return File.ReadAllText (filename);
                 }
             } catch (Exception e) {
-                Hyena.Log.DebugFormat ("Unable to read lyrics {0}: {1} ", filename, e.Message);
+                Hyena.Log.Exception (String.Format ("Can't read lyrics file: {0}", filename), e);
             }
             return null;
         }
@@ -97,9 +96,8 @@ namespace Banshee.Lyrics.IO
 
                 //write the lyrics
                 File.WriteAllText (filename, lyrics);
-                Hyena.Log.Debug ("Lyrics successfully written " + filename);
             } catch (Exception e) {
-                Hyena.Log.DebugFormat ("Unable to save lyrics {0}: {1} ", filename, e.Message);
+                Hyena.Log.Exception (String.Format ("Can't write lyrics file: {0}", filename), e);
             }
             return;
         }

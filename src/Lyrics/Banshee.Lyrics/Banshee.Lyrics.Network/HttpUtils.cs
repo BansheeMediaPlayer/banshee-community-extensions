@@ -36,13 +36,9 @@ namespace Banshee.Lyrics.Network
         public static string ReadHtmlContent (String url, Encoding encoding)
         {
             string html = null;
-              try
-            {
+            try {
                 html = GetHtml (url, encoding);
-            } catch (Exception e)
-            {
-                Hyena.Log.DebugFormat ("{0}, {1}", e.Message, url);
-                return null;
+            } catch {
             }
             return html;
         }
