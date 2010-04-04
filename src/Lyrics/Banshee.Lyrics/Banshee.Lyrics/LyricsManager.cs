@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Banshee.Networking;
 using Banshee.ServiceStack;
@@ -62,7 +63,8 @@ namespace Banshee.Lyrics
         public event LoadFinishedEventHandler LoadFinished;
         public event LoadStartedEventHandler LoadStarted;
 
-        private List < ILyricsSource > sourceList;
+        private readonly List <SourceData> sources = new List<SourceData> ();
+        private readonly Lyrc lyrc;
 
         private LyricsCache cache = new LyricsCache ();
 
@@ -70,13 +72,12 @@ namespace Banshee.Lyrics
 
         private LyricsManager () : base()
         {
-            sourceList = new List<ILyricsSource> ();
-            sourceList.Add (new Lyrc ());
-            sourceList.Add (new LeosLyrics ());
-            sourceList.Add (new Lyriki ());
-            sourceList.Add (new AutoLyrics ());
-            sourceList.Add (new LyricWiki ());
-            sourceList.Add (new LyricsPlugin ());
+            sources.Add (new SourceData (lyrc = new Lyrc ()));
+            sources.Add (new SourceData (new LeosLyrics ()));
+            sources.Add (new SourceData (new Lyriki ()));
+            sources.Add (new SourceData (new AutoLyrics ()));
+            sources.Add (new SourceData (new LyricWiki ()));
+            sources.Add (new SourceData (new LyricsPlugin ()));
         }
 
         internal static LyricsManager Instance {
@@ -143,16 +144,20 @@ namespace Banshee.Lyrics
             
             //download the lyricss
             string lyrics = null;
-            foreach (ILyricsSource source in sourceList) {
+            foreach (var source in GetSources (SourceData.LyricsSelector)) {
+                bool found = false;
                 try {
-                    lyrics = source.GetLyrics (track.ArtistName, track.TrackTitle);
+                    lyrics = source.Source.GetLyrics (track.ArtistName, track.TrackTitle);
+                    found = IsLyricsOk (lyrics);
                 } catch (Exception e) {
                     Log.Exception (e);
                     continue;
+                } finally {
+                    source.IncrementLyrics (found);
                 }
                 
-                if (IsLyricsOk (lyrics)) {
-                    lyrics = AttachFooter (Utils.ToNormalString(lyrics), source.Credits);
+                if (found) {
+                    lyrics = AttachFooter (Utils.ToNormalString(lyrics), source.Source.Credits);
                     break;
                 }
             }
@@ -177,17 +182,16 @@ namespace Banshee.Lyrics
             LoadStarted (this, null);
 
             /*obtain absolute url for the lyrics */
-            Lyrc lyrc_server = (Lyrc) sourceList[0];
-            if (!url.Contains (lyrc_server.Url)) {
-                url = lyrc_server.Url + "/" + url;
+            if (!url.Contains (lyrc.Url)) {
+                url = lyrc.Url + "/" + url;
             }
 
             /* get the lyrics from lyrc */
-            string lyrics = lyrc_server.GetLyrics (url);
+            string lyrics = lyrc.GetLyrics (url);
 
             LyricsManager.Instance.UpdateDB (ServiceManager.PlayerEngine.CurrentTrack, lyrics);
             if ( IsLyricsOk (lyrics)) {
-                lyrics = AttachFooter (lyrics, lyrc_server.Credits);
+                lyrics = AttachFooter (lyrics, lyrc.Credits);
                 Save(ServiceManager.PlayerEngine.CurrentTrack, lyrics);
             }
 
@@ -197,15 +201,19 @@ namespace Banshee.Lyrics
         private string GetSuggestions (TrackInfo track)
         {
             string suggestions = null;
-            foreach (ILyricsSource source in sourceList) {
+            foreach (var source in GetSources (SourceData.SuggestionsSelector)) {
+                bool found = false;
                 try {
-                    suggestions = source.GetSuggestions (track.ArtistName, track.TrackTitle);
+                    suggestions = source.Source.GetSuggestions (track.ArtistName, track.TrackTitle);
+                    found = !String.IsNullOrEmpty (suggestions);
                 } catch (Exception e) {
                     Log.Exception (e);
                     continue;
+                } finally {
+                    source.IncrementSuggestions (found);
                 }
 
-                if (!String.IsNullOrEmpty (suggestions)) {
+                if (found) {
                     return suggestions;
                 }
             }
@@ -214,7 +222,7 @@ namespace Banshee.Lyrics
 
         private bool IsLyricsOk (string l)
         {
-            return l != null && !l.Equals ("");
+            return !String.IsNullOrEmpty (l);
         }
 
         private bool LyricOutOfDate (TrackInfo track)
@@ -277,6 +285,55 @@ namespace Banshee.Lyrics
             track.FileSize = Banshee.IO.File.GetSize (track.Uri);
             track.FileModifiedStamp = Banshee.IO.File.GetModifiedTime (track.Uri);
             track.LastSyncedStamp = DateTime.Now;
+        }
+
+        private IEnumerable<SourceData> GetSources (Func<SourceData, double> selector)
+        {
+            return sources.OrderBy<SourceData, double> (selector);
+        }
+
+        private class SourceData
+        {
+            public ILyricsSource Source { get; private set; }
+            public int LyricsTotal { get; private set; }
+            public int LyricsFound { get; private set; }
+            public int SuggestionsTotal { get; private set; }
+            public int SuggestionsFound { get; private set; }
+
+            public SourceData (ILyricsSource source)
+            {
+                Source = source;
+                LyricsTotal = 0;
+                LyricsFound = 0;
+                SuggestionsTotal = 0;
+                SuggestionsFound = 0;
+            }
+
+            public static double LyricsSelector (SourceData data)
+            {
+                return data.LyricsTotal > 0 ? 1d - (double)data.LyricsFound / data.LyricsTotal : 0d;
+            }
+
+            public static double SuggestionsSelector (SourceData data)
+            {
+                return data.SuggestionsTotal > 0 ? 1d - (double)data.SuggestionsFound / data.SuggestionsTotal : 0d;
+            }
+
+            public void IncrementLyrics (bool found)
+            {
+                LyricsTotal++;
+                if (found) {
+                    LyricsFound++;
+                }
+            }
+
+            public void IncrementSuggestions (bool found)
+            {
+                SuggestionsTotal++;
+                if (found) {
+                    SuggestionsFound++;
+                }
+            }
         }
     }
 }
