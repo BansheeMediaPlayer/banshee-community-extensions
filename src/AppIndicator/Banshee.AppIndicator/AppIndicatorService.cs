@@ -206,8 +206,10 @@ namespace Banshee.AppIndicator
         {
             try {
                 indicator = new ApplicationIndicator ("banshee",
-                                                    Banshee.ServiceStack.Application.IconName,
-                                                    Category.ApplicationStatus);
+                                                      (IconThemeUtils.HasIcon ("banshee-panel")) ?
+                                                      "banshee-panel" :
+                                                      Banshee.ServiceStack.Application.IconName,
+                                                      Category.ApplicationStatus);
     
                 // Load the menu
                 Menu menu = (Menu) interface_action_service.UIManager.GetWidget("/AppIndicatorTrayMenu");
