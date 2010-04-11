@@ -31,11 +31,11 @@ using System.Runtime.CompilerServices;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyTitle("Banshee.OpenVP.Visualizations")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Visualizations for Banshee.OpenVP")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyProduct("OpenVP")]
+[assembly: AssemblyCopyright("(c) 2010 Chris Howie")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
