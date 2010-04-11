@@ -34,19 +34,19 @@ namespace Banshee.OpenVP.Visualizations
     {
         public GreenFlower()
         {
-            this.Effects.Add(new RandomMovement());
+            Effects.Add(new RandomMovement());
             
             ClearScreen clear = new ClearScreen();
             clear.ClearColor = new Color(0, 0, 0, 0.14f);
-            this.Effects.Add(clear);
+            Effects.Add(clear);
 
             Scope scope = new Scope();
             scope.Color = new Color(0, 1, 0.06f, 0.5f);
             scope.LineWidth = 5;
             scope.Circular = true;
-            this.Effects.Add(scope);
+            Effects.Add(scope);
 
-            this.Effects.Add(new DiscMovement());
+            Effects.Add(new DiscMovement());
 
             BurstScope bscope = new BurstScope();
             bscope.Rays = 128;
@@ -56,12 +56,12 @@ namespace Banshee.OpenVP.Visualizations
             bscope.MaxRaySpeed = 0.15f;
             bscope.Wander = 5;
             bscope.Rotate = 0;
-            this.Effects.Add(bscope);
+            Effects.Add(bscope);
 
             Mirror mirror = new Mirror();
             mirror.HorizontalMirror = Mirror.HorizontalMirrorType.RightToLeft;
             mirror.VerticalMirror = Mirror.VerticalMirrorType.BottomToTop;
-            this.Effects.Add(mirror);
+            Effects.Add(mirror);
         }
 
         private class RandomMovement : MovementBase
@@ -70,9 +70,9 @@ namespace Banshee.OpenVP.Visualizations
             
             public RandomMovement()
             {
-                this.XResolution = 64;
-                this.YResolution = 64;
-                this.Wrap = true;
+                XResolution = 64;
+                YResolution = 64;
+                Wrap = true;
             }
 
             protected override void PlotVertex(MovementData data)
@@ -88,10 +88,10 @@ namespace Banshee.OpenVP.Visualizations
         {
             public DiscMovement()
             {
-                this.XResolution = 64;
-                this.YResolution = 64;
-                this.Wrap = true;
-                this.Static = true;
+                XResolution = 64;
+                YResolution = 64;
+                Wrap = true;
+                Static = true;
             }
 
             protected override void PlotVertex(MovementBase.MovementData data)

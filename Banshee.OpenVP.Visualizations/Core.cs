@@ -42,23 +42,23 @@ namespace Banshee.OpenVP.Visualizations
             SingleBuffer buffer = new SingleBuffer();
             buffer.Load = true;
             buffer.Texture = bufferTexture;
-            this.Effects.Add(buffer);
+            Effects.Add(buffer);
             
             ClearScreen clear = new ClearScreen();
             clear.ClearColor = new Color(0, 0, 0, 0.085f);
-            this.Effects.Add(clear);
+            Effects.Add(clear);
 
-            this.Effects.Add(new RandomMovement());
+            Effects.Add(new RandomMovement());
 
-            this.Effects.Add(new CustomScope());
-            this.Effects.Add(new OrangeScope());
+            Effects.Add(new CustomScope());
+            Effects.Add(new OrangeScope());
 
             buffer = new SingleBuffer();
             buffer.Load = false;
             buffer.Texture = bufferTexture;
-            this.Effects.Add(buffer);
+            Effects.Add(buffer);
             
-            this.Effects.Add(new CircularMovement());
+            Effects.Add(new CircularMovement());
         }
         
         private class OrangeScope : Scope
@@ -108,9 +108,9 @@ namespace Banshee.OpenVP.Visualizations
             
             public RandomMovement()
             {
-                this.XResolution = 64;
-                this.YResolution = 64;
-                this.Wrap = true;
+                XResolution = 64;
+                YResolution = 64;
+                Wrap = true;
             }
 
             protected override void PlotVertex(MovementData data)
@@ -139,7 +139,7 @@ namespace Banshee.OpenVP.Visualizations
 
                 green = Math.Min(2 * avg, 0.75f);
 
-                this.LineWidth = Math.Max(8 * avg, 0.01f);
+                LineWidth = Math.Max(8 * avg, 0.01f);
                 
                 base.RenderFrame(controller);
             }
@@ -161,9 +161,9 @@ namespace Banshee.OpenVP.Visualizations
 
             public CircularMovement()
             {
-                this.XResolution = 63;
-                this.YResolution = 63;
-                this.Wrap = true;
+                XResolution = 63;
+                YResolution = 63;
+                Wrap = true;
             }
 
             protected override void OnRenderFrame()
@@ -207,7 +207,7 @@ namespace Banshee.OpenVP.Visualizations
                 Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T,
                                    Gl.GL_CLAMP);
 
-                if (this.Load) {
+                if (Load) {
                         Gl.glColor4f(1, 1, 1, 1);
                         Gl.glBegin(Gl.GL_QUADS);
                         
@@ -235,9 +235,9 @@ namespace Banshee.OpenVP.Visualizations
 
             public override void Dispose()
             {
-                if (this.Texture != null) {
-                    this.Texture.Dispose();
-                    this.Texture = null;
+                if (Texture != null) {
+                    Texture.Dispose();
+                    Texture = null;
                 }
 
                 base.Dispose();

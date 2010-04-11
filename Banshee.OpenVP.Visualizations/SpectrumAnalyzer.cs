@@ -46,40 +46,40 @@ namespace Banshee.OpenVP.Visualizations
 
         private void UpdateSpectrumLength(int length)
         {
-            if (this.spectrumLength == length)
+            if (spectrumLength == length)
                 return;
 
-            this.spacing = 2f / length;
-            this.spectrum = new float[length];
-            this.newspec = new float[length];
-            this.spectrumLength = length;
+            spacing = 2f / length;
+            spectrum = new float[length];
+            newspec = new float[length];
+            spectrumLength = length;
         }
 
         private void MergeSpectrum()
         {
-            for (int i = 0; i < this.spectrumLength; i++) {
-                this.spectrum[i] = Math.Max(this.newspec[i], this.spectrum[i] / 1.25f);
+            for (int i = 0; i < spectrumLength; i++) {
+                spectrum[i] = Math.Max(newspec[i], spectrum[i] / 1.25f);
             }
         }
 
-        public void Render (IController controller)
+        public void Render(IController controller)
         {
             gl.glClearColor(0, 0, 0, 1);
             gl.glClear(gl.GL_COLOR_BUFFER_BIT);
 
-            this.UpdateSpectrumLength(controller.PlayerData.NativeSpectrumLength);
-            controller.PlayerData.GetSpectrum(this.newspec);
-            this.MergeSpectrum();
+            UpdateSpectrumLength(controller.PlayerData.NativeSpectrumLength);
+            controller.PlayerData.GetSpectrum(newspec);
+            MergeSpectrum();
             
             gl.glBegin(gl.GL_QUADS);
             
-            for (int i = 0; i < this.spectrumLength; i++) {
-                Color color = Color.FromHSL(120 * (1 - this.spectrum[i]), 1, 0.5f);
+            for (int i = 0; i < spectrumLength; i++) {
+                Color color = Color.FromHSL(120 * (1 - spectrum[i]), 1, 0.5f);
                 
-                float x1 = -1 + this.spacing * i;
-                float x2 = -1 + this.spacing * (i + 1);
+                float x1 = -1 + spacing * i;
+                float x2 = -1 + spacing * (i + 1);
 
-                float v = this.spectrum[i] * 2 - 1;
+                float v = spectrum[i] * 2 - 1;
 
                 color.Use();
                 gl.glVertex2f(x1, v);

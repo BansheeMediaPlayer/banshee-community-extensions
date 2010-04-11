@@ -37,59 +37,63 @@ namespace Banshee.OpenVP
 {
     public class BansheePlayerData : PlayerData, IDisposable
     {
-        private PlayerEngine mSource;
+        private PlayerEngine source;
         
-        private DataSlice mData = null;
+        private DataSlice dataSlice = null;
         
-        private Queue<DataSlice> mDataQueue = new Queue<DataSlice>();
+        private Queue<DataSlice> dataQueue = new Queue<DataSlice>();
         
-        private ManualResetEvent mDataAvailableEvent = new ManualResetEvent(false);
+        private ManualResetEvent dataAvailableEvent = new ManualResetEvent(false);
         
-        private static readonly TimeSpan SkipThreshold = TimeSpan.FromSeconds(2.0 / 60.0);
+        private static readonly TimeSpan skipThreshold = TimeSpan.FromSeconds(2.0 / 60.0);
 
-        private static readonly TimeSpan SliceStride = TimeSpan.FromSeconds(0.9 / 60.0);
+        private static readonly TimeSpan sliceStride = TimeSpan.FromSeconds(0.9 / 60.0);
 
-        private DateTime mLastSlice = DateTime.MinValue;
+        private DateTime lastSliceTime = DateTime.MinValue;
 
         private bool active = false;
 
-        public bool Active {
-            get { return this.active; }
+        public bool Active
+        {
+            get { return active; }
             set {
-                if (value == this.active)
+                if (value == active)
                     return;
 
                 if (value)
-                    ((IVisualizationDataSource) this.mSource).DataAvailable += this.OnDataAvailable;
+                    ((IVisualizationDataSource) source).DataAvailable += OnDataAvailable;
                 else
-                    ((IVisualizationDataSource) this.mSource).DataAvailable -= this.OnDataAvailable;
+                    ((IVisualizationDataSource) source).DataAvailable -= OnDataAvailable;
 
-                this.active = value;
+                active = value;
             }
         }
         
-        private DataSlice CurrentDataSlice {
+        private DataSlice CurrentDataSlice
+        {
             get {
-                if (this.mData == null)
+                if (dataSlice == null)
                     throw new InvalidOperationException("No current data slice.");
                 
-                return this.mData;
+                return dataSlice;
             }
         }
         
-        public BansheePlayerData(PlayerEngine source) {
+        public BansheePlayerData(PlayerEngine source)
+        {
             if (!(source is IVisualizationDataSource))
                 throw new ArgumentException("source is not an IVisualizationDataSource");
             
-            this.mSource = source;
-            this.Active = true;
+            this.source = source;
+            Active = true;
         }
         
-        private void OnDataAvailable(float[][] data, float[][] spectrum) {
+        private void OnDataAvailable(float[][] data, float[][] spectrum)
+        {
             // Assume there is a backlog if 5 seconds are in the queue.  This
             // is reasonable since some codec decoders give us large chunks all
             // at once.
-            if (this.mDataQueue.Count >= 60 * 5)
+            if (dataQueue.Count >= 60 * 5)
                 return;
 
             // Due to large chunk issue explained above, we need to adjust the
@@ -99,65 +103,71 @@ namespace Banshee.OpenVP
             // second.  This keeps the slice-dropping algorithm from throwing
             // out most of the slices as old.
             DateTime stamp = DateTime.Now;
-            DateTime expected = this.mLastSlice + SliceStride;
+            DateTime expected = lastSliceTime + sliceStride;
             
             if (stamp < expected)
                 stamp = expected;
             
-            DataSlice slice = new DataSlice((float) this.mSource.Position / 1000,
-                                            this.mSource.CurrentTrack.DisplayTrackTitle,
+            DataSlice slice = new DataSlice((float) source.Position / 1000,
+                                            source.CurrentTrack.DisplayTrackTitle,
                                             data, spectrum, stamp);
 
-            this.mLastSlice = stamp;
+            lastSliceTime = stamp;
             
-            lock (this.mDataQueue) {
-                this.mDataQueue.Enqueue(slice);
+            lock (dataQueue) {
+                dataQueue.Enqueue(slice);
             }
             
-            this.mDataAvailableEvent.Set();
+            dataAvailableEvent.Set();
         }
         
-        public void Dispose() {
-            this.Active = false;
-            this.mSource = null;
+        public void Dispose()
+        {
+            Active = false;
+            source = null;
         }
         
-        public override int NativePCMLength {
-            get { return this.CurrentDataSlice.PCMData[0].Length; }
+        public override int NativePCMLength
+        {
+            get { return CurrentDataSlice.PCMData[0].Length; }
         }
         
-        public override int NativeSpectrumLength {
-            get { return this.CurrentDataSlice.SpectrumData[0].Length; }
+        public override int NativeSpectrumLength
+        {
+            get { return CurrentDataSlice.SpectrumData[0].Length; }
         }
         
-        public override float SongPosition {
-            get { return this.CurrentDataSlice.SongPosition; }
+        public override float SongPosition
+        {
+            get { return CurrentDataSlice.SongPosition; }
         }
         
-        public override string SongTitle {
-            get { return this.CurrentDataSlice.SongTitle; }
+        public override string SongTitle
+        {
+            get { return CurrentDataSlice.SongTitle; }
         }
         
-        public override bool Update(int timeout) {
-            if (!this.mDataAvailableEvent.WaitOne(timeout, false))
+        public override bool Update(int timeout)
+        {
+            if (!dataAvailableEvent.WaitOne(timeout, false))
                 return false;
             
             DateTime now = DateTime.Now;
             
-            if (this.mDataQueue.Count > 0) {
-                lock (this.mDataQueue) {
+            if (dataQueue.Count > 0) {
+                lock (dataQueue) {
                     DataSlice slice;
                     
                     // Check if we're behind.  If so, dequeue everything to
                     // try and catch up.
                     do {
-                        slice = this.mDataQueue.Dequeue();
-                    } while (now - slice.Timestamp > SkipThreshold && this.mDataQueue.Count > 0);
+                        slice = dataQueue.Dequeue();
+                    } while (now - slice.Timestamp > skipThreshold && dataQueue.Count > 0);
                     
-                    this.mData = slice;
+                    dataSlice = slice;
                     
-                    if (this.mDataQueue.Count == 0)
-                        this.mDataAvailableEvent.Reset();
+                    if (dataQueue.Count == 0)
+                        dataAvailableEvent.Reset();
                 }
                 
                 return true;
@@ -210,15 +220,16 @@ namespace Banshee.OpenVP
         
         public override void GetPCM (float[][] channels)
         {
-            GetData(channels, this.CurrentDataSlice.PCMData);
+            GetData(channels, CurrentDataSlice.PCMData);
         }
         
         public override void GetSpectrum (float[][] channels)
         {
-            GetData(channels, this.CurrentDataSlice.SpectrumData);
+            GetData(channels, CurrentDataSlice.SpectrumData);
         }
         
-        private class DataSlice {
+        private class DataSlice
+        {
             public readonly float SongPosition;
             
             public readonly string SongTitle;
@@ -230,13 +241,14 @@ namespace Banshee.OpenVP
             public readonly DateTime Timestamp;
             
             public DataSlice(float position, string title, float[][] pcm,
-                             float[][] spectrum, DateTime timestamp) {
-                this.SongPosition = position;
-                this.SongTitle = title;
-                this.PCMData = pcm;
-                this.SpectrumData = spectrum;
+                             float[][] spectrum, DateTime timestamp)
+            {
+                SongPosition = position;
+                SongTitle = title;
+                PCMData = pcm;
+                SpectrumData = spectrum;
                 
-                this.Timestamp = timestamp;
+                Timestamp = timestamp;
             }
         }
     }

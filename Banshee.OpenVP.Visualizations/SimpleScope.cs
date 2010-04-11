@@ -38,13 +38,13 @@ namespace Banshee.OpenVP.Visualizations
             ClearScreen clear = new ClearScreen();
             clear.ClearColor = new Color(0, 0, 0, 0.075f);
 
-            this.Effects.Add(clear);
+            Effects.Add(clear);
 
             Scope scope = new Scope();
             scope.Color = new Color(0.25f, 0.5f, 1, 1);
             scope.LineWidth = 3;
 
-            this.Effects.Add(scope);
+            Effects.Add(scope);
         }
     }
 }

@@ -37,11 +37,11 @@ namespace Banshee.OpenVP.Visualizations
         {
             ClearScreen clear = new ClearScreen();
             clear.ClearColor = new Color(0, 0, 0, 0.075f);
-            this.Effects.Add(clear);
+            Effects.Add(clear);
 
-            this.Effects.Add(new GlassWallScope());
+            Effects.Add(new GlassWallScope());
 
-            this.Effects.Add(new GlassWallMovement());
+            Effects.Add(new GlassWallMovement());
         }
 
         private class GlassWallMovement : MovementBase
@@ -54,12 +54,12 @@ namespace Banshee.OpenVP.Visualizations
             
             public GlassWallMovement()
             {
-                this.XResolution = NUM_PANELS * 4;
-                this.YResolution = NUM_PANELS * 4;
-                this.Static = true;
+                XResolution = NUM_PANELS * 4;
+                YResolution = NUM_PANELS * 4;
+                Static = true;
             }
             
-            protected override void PlotVertex (MovementData data)
+            protected override void PlotVertex(MovementData data)
             {
                 data.Method = MovementMethod.Rectangular;
     
@@ -74,19 +74,19 @@ namespace Banshee.OpenVP.Visualizations
 
             private static readonly float LINE_LENGTH = 1 / (float) Math.Sin(Math.PI / 4);
     
-            public override void NextFrame (IController controller)
+            public override void NextFrame(IController controller)
             {
-                this.rotation = (this.rotation + 0.25f) % 360;
+                rotation = (rotation + 0.25f) % 360;
             }
             
-            public override void RenderFrame (IController controller)
+            public override void RenderFrame(IController controller)
             {
                 float[] pcm = new float[controller.PlayerData.NativePCMLength];
                 controller.PlayerData.GetPCM(pcm);
     
                 gl.glMatrixMode(gl.GL_MODELVIEW);
                 gl.glPushMatrix();
-                gl.glRotatef(this.rotation, 0, 0, -1);
+                gl.glRotatef(rotation, 0, 0, -1);
 
                 gl.glLineWidth(3);
     

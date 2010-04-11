@@ -34,7 +34,8 @@ namespace Banshee.OpenVP.Visualizations.Conway
     {
         private GenerationalLifeSquare[,] board;
 
-        public GenerationalLifeSquare this[int x, int y] {
+        public GenerationalLifeSquare this[int x, int y]
+        {
             get { return board[x, y]; }
         }
 

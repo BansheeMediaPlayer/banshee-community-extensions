@@ -37,7 +37,8 @@ namespace Banshee.OpenVP.Visualizations.Conway
         public int Y { get; private set; }
 
         public int Generation { get; private set; }
-        public bool Alive {
+        public bool Alive
+        {
             get { return Generation != 0; }
         }
 

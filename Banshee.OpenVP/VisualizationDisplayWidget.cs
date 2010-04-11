@@ -63,43 +63,43 @@ namespace Banshee.OpenVP
 
         private object cleanupLock = new object();
 
-        private Thread RenderThread;
+        private Thread renderThread;
         
         public VisualizationDisplayWidget()
         {
-            this.visualizationMenu = new Menu();
+            visualizationMenu = new Menu();
             noVisualizationsMenuItem = new MenuItem("No visualizations installed");
             noVisualizationsMenuItem.Sensitive = false;
             noVisualizationsMenuItem.Show();
             visualizationMenu.Add(noVisualizationsMenuItem);
             
-            this.glWidget = new GLWidget();
-            this.glWidget.DoubleBuffered = true;
-            this.glWidget.Render += this.OnRender;
-            this.glWidget.SizeAllocated += this.OnGlSizeAllocated;
-            this.glWidget.Show();
+            glWidget = new GLWidget();
+            glWidget.DoubleBuffered = true;
+            glWidget.Render += OnRender;
+            glWidget.SizeAllocated += OnGlSizeAllocated;
+            glWidget.Show();
             
-            this.Add(this.glWidget);
-            this.Show();
+            Add(glWidget);
+            Show();
 
-            this.playerData = new BansheePlayerData(ServiceManager.PlayerEngine.ActiveEngine);
-            this.playerData.Active = false;
+            playerData = new BansheePlayerData(ServiceManager.PlayerEngine.ActiveEngine);
+            playerData.Active = false;
 
-            this.glWidget.Realized += delegate {
-                if (!this.loopRunning) {
-                    this.loopRunning = true;
-                    this.RenderThread = new Thread(this.RenderLoop);
-                    this.RenderThread.Start();
+            glWidget.Realized += delegate {
+                if (!loopRunning) {
+                    loopRunning = true;
+                    renderThread = new Thread(RenderLoop);
+                    renderThread.Start();
                 }
                 
-                this.ConnectVisualization();
+                ConnectVisualization();
             };
 
-            this.glWidget.Unrealized += delegate {
-                this.DisposeRenderer();
+            glWidget.Unrealized += delegate {
+                DisposeRenderer();
             };
             
-            AddinManager.AddExtensionNodeHandler("/Banshee/OpenVP/Visualization", this.OnVisualizationChanged);
+            AddinManager.AddExtensionNodeHandler("/Banshee/OpenVP/Visualization", OnVisualizationChanged);
             
             InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
             
@@ -185,24 +185,24 @@ namespace Banshee.OpenVP
             }
         }
         
-        private void OnSelectVisualizationClicked (object o, EventArgs e)
+        private void OnSelectVisualizationClicked(object o, EventArgs e)
         {
             visualizationMenu.Popup();
         }
         
-        protected override void OnSizeAllocated (Rectangle allocation)
+        protected override void OnSizeAllocated(Rectangle allocation)
         {
             base.OnSizeAllocated(allocation);
             
-            this.Child.Allocation = allocation;
+            Child.Allocation = allocation;
         }
         
-        protected override void OnSizeRequested (ref Requisition requisition)
+        protected override void OnSizeRequested(ref Requisition requisition)
         {
-            requisition = this.Child.SizeRequest();
+            requisition = Child.SizeRequest();
         }
 
-        private void OnGlSizeAllocated (object o, SizeAllocatedArgs args)
+        private void OnGlSizeAllocated(object o, SizeAllocatedArgs args)
         {
             Rectangle allocation = args.Allocation;
             
@@ -220,80 +220,81 @@ namespace Banshee.OpenVP
         
         private void RenderLoop()
         {
-            this.renderLock.Set();
+            renderLock.Set();
 
-            this.haveDataSlice = false;
+            haveDataSlice = false;
             
-            while (this.loopRunning) {
-                if (this.playerData.Update(500)) {
-                    this.haveDataSlice = true;
+            while (loopRunning) {
+                if (playerData.Update(500)) {
+                    haveDataSlice = true;
                     
-                    this.renderLock.Reset();
-                    Hyena.ThreadAssist.ProxyToMain(this.glWidget.QueueDraw);
-                    this.renderLock.WaitOne(500, false);
+                    renderLock.Reset();
+                    Hyena.ThreadAssist.ProxyToMain(glWidget.QueueDraw);
+                    renderLock.WaitOne(500, false);
                 }
             }
             
-            lock (this.cleanupLock) {
-                this.haveDataSlice = false;
+            lock (cleanupLock) {
+                haveDataSlice = false;
                 
-                this.playerData.Dispose();
-                this.playerData = null;
+                playerData.Dispose();
+                playerData = null;
             }
         }
 
-        protected override void OnDestroyed ()
+        protected override void OnDestroyed()
         {
-            this.loopRunning = false;
-            if (this.RenderThread != null) {
-                this.RenderThread.Join();
+            loopRunning = false;
+            if (renderThread != null) {
+                renderThread.Join();
             }
 
-            this.DisposeRenderer();
+            DisposeRenderer();
             
-            Remove (glWidget);
-            this.glWidget.Destroy();
-            this.glWidget.Dispose();
+            Remove(glWidget);
+            glWidget.Destroy();
+            glWidget.Dispose();
             
             InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
             ias.GlobalActions.Remove(SELECT_VIS_ACTION);
             ias.GlobalActions.Remove(LOW_RES_ACTION);
             ias.UIManager.RemoveUi(global_ui_id);
             
-            base.OnDestroyed ();
+            base.OnDestroyed();
         }
         
-        protected override void OnMapped ()
+        protected override void OnMapped()
         {
-            base.OnMapped ();
-            this.playerData.Active = true;
+            base.OnMapped();
+            playerData.Active = true;
             
             InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
             ias.GlobalActions.UpdateAction(SELECT_VIS_ACTION, true);
             ias.GlobalActions.UpdateAction(LOW_RES_ACTION, true);
         }
         
-        protected override void OnUnmapped ()
+        protected override void OnUnmapped()
         {
             base.OnUnmapped();
-            this.playerData.Active = false;
+            playerData.Active = false;
             
             InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
             ias.GlobalActions.UpdateAction(SELECT_VIS_ACTION, false);
             ias.GlobalActions.UpdateAction(LOW_RES_ACTION, false);
         }
 
-        private void ConnectVisualization() {
-            this.DisposeRenderer();
+        private void ConnectVisualization()
+        {
+            DisposeRenderer();
             
             if (activeVisualization != null)
-            	this.renderer = activeVisualization.CreateObject();
+            	renderer = activeVisualization.CreateObject();
         }
 
         private void DisposeRenderer()
         {
-            IDisposable r = this.renderer as IDisposable;
-            this.renderer = null;
+            IDisposable r = renderer as IDisposable;
+            renderer = null;
 
             if (r != null) {
                 lock (cleanupLock) {
@@ -304,10 +305,10 @@ namespace Banshee.OpenVP
 
         protected virtual void OnHalfResolutionToggled(object sender, System.EventArgs e)
         {
-            InterfaceActionService ias = ServiceManager.Get<InterfaceActionService> ();
+            InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
             
-            this.halfResolution = ((ToggleAction)ias.GlobalActions[LOW_RES_ACTION]).Active;
-            this.needsResize = true;
+            halfResolution = ((ToggleAction)ias.GlobalActions[LOW_RES_ACTION]).Active;
+            needsResize = true;
         }
 
 #region IController
@@ -329,37 +330,44 @@ namespace Banshee.OpenVP
         
         private TextureHandle resizeTexture = null;
 
-        int IController.Height {
-            get { return this.renderHeight; }
+        int IController.Height
+        {
+            get { return renderHeight; }
         }
 
-        int IController.Width {
-            get { return this.renderWidth; }
+        int IController.Width
+        {
+            get { return renderWidth; }
         }
         
-        event EventHandler IController.Closed {
+        event EventHandler IController.Closed
+        {
             add { }
             remove { }
         }
 
-        event KeyboardEventHandler IController.KeyboardEvent {
+        event KeyboardEventHandler IController.KeyboardEvent
+        {
             add { }
             remove { }
         }
 
-        IRenderer IController.Renderer {
-            get { return this.renderer; }
-            set { this.renderer = value; }
+        IRenderer IController.Renderer
+        {
+            get { return renderer; }
+            set { renderer = value; }
         }
 
         private IBeatDetector beatDetector = new NullPlayerData();
 
-        IBeatDetector IController.BeatDetector {
-            get { return this.beatDetector; }
+        IBeatDetector IController.BeatDetector
+        {
+            get { return beatDetector; }
         }
 
-        PlayerData IController.PlayerData {
-            get { return this.playerData; }
+        PlayerData IController.PlayerData
+        {
+            get { return playerData; }
         }
         
         private static int NearestPowerOfTwo(int v)
@@ -382,20 +390,20 @@ namespace Banshee.OpenVP
         
         private void ResizeToWidgetSize()
         {
-            if (this.renderWidth == this.widgetWidth &&
-                this.renderHeight == this.widgetHeight) {
-                if (this.resizeTexture != null) {
-                    this.resizeTexture.Dispose();
-                    this.resizeTexture = null;
+            if (renderWidth == widgetWidth &&
+                renderHeight == widgetHeight) {
+                if (resizeTexture != null) {
+                    resizeTexture.Dispose();
+                    resizeTexture = null;
                 }
                 
                 return;
             }
             
-            if (this.resizeTexture == null)
-                this.resizeTexture = new TextureHandle();
+            if (resizeTexture == null)
+                resizeTexture = new TextureHandle();
             
-            this.resizeTexture.SetTextureSize(this.renderWidth, this.renderHeight);
+            resizeTexture.SetTextureSize(renderWidth, renderHeight);
             
             Gl.glPushAttrib(Gl.GL_ENABLE_BIT);
             Gl.glDisable(Gl.GL_DEPTH_TEST);
@@ -405,11 +413,11 @@ namespace Banshee.OpenVP
             Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP);
             Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP);
 
-            Gl.glBindTexture(Gl.GL_TEXTURE_2D, this.resizeTexture.TextureId);
+            Gl.glBindTexture(Gl.GL_TEXTURE_2D, resizeTexture.TextureId);
             Gl.glCopyTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB, 0, 0,
-                                this.renderWidth, this.renderHeight, 0);
+                                renderWidth, renderHeight, 0);
             
-            Gl.glViewport(0, 0, this.widgetWidth, this.widgetHeight);
+            Gl.glViewport(0, 0, widgetWidth, widgetHeight);
                         
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
@@ -440,11 +448,11 @@ namespace Banshee.OpenVP
         
         private void ResizeToRenderSize()
         {
-            if (this.renderWidth == this.widgetWidth &&
-                this.renderHeight == this.widgetHeight)
+            if (renderWidth == widgetWidth &&
+                renderHeight == widgetHeight)
                 return;
             
-            if (this.resizeTexture == null)
+            if (resizeTexture == null)
                 return;
             
             Gl.glPushAttrib(Gl.GL_ENABLE_BIT);
@@ -454,9 +462,9 @@ namespace Banshee.OpenVP
             Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP);
             Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP);
 
-            Gl.glBindTexture(Gl.GL_TEXTURE_2D, this.resizeTexture.TextureId);
+            Gl.glBindTexture(Gl.GL_TEXTURE_2D, resizeTexture.TextureId);
             
-            Gl.glViewport(0, 0, this.renderWidth, this.renderHeight);
+            Gl.glViewport(0, 0, renderWidth, renderHeight);
                         
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
@@ -494,36 +502,36 @@ namespace Banshee.OpenVP
             Gl.glEnable(Gl.GL_BLEND);
             Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
 
-            lock (this.cleanupLock) {
-                IRenderer r = this.renderer;
+            lock (cleanupLock) {
+                IRenderer r = renderer;
                 if (r != null) {
-		            if (this.needsResize) {
+		            if (needsResize) {
 		                Gl.glClearColor(0, 0, 0, 1);
 		                Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
 		                
-		                this.needsResize = false;
+		                needsResize = false;
 		                
-		                int w = this.widgetWidth;
-		                int h = this.widgetHeight;
+		                int w = widgetWidth;
+		                int h = widgetHeight;
 		                
-		                if (this.halfResolution) {
+		                if (halfResolution) {
 		                    w >>= 1;
 		                    h >>= 1;
 		                }
 		                
 		                if (!Gl.IsExtensionSupported("GL_ARB_texture_non_power_of_two")) {
-		                    this.renderWidth = NearestPowerOfTwo(w);
-		                    this.renderHeight = NearestPowerOfTwo(h);
+		                    renderWidth = NearestPowerOfTwo(w);
+		                    renderHeight = NearestPowerOfTwo(h);
 		                } else {
-		                    this.renderWidth = w;
-		                    this.renderHeight = h;
+		                    renderWidth = w;
+		                    renderHeight = h;
 		                }
 		            } else {
-		                this.ResizeToRenderSize();
+		                ResizeToRenderSize();
 		            }
                     
-                    if (this.haveDataSlice) {
-                        Gl.glViewport(0, 0, this.renderWidth, this.renderHeight);
+                    if (haveDataSlice) {
+                        Gl.glViewport(0, 0, renderWidth, renderHeight);
                         
                         Gl.glMatrixMode(Gl.GL_PROJECTION);
 		                Gl.glLoadIdentity();
@@ -533,15 +541,15 @@ namespace Banshee.OpenVP
                         
                         r.Render(this);
                         
-                        this.haveDataSlice = false;
-                        this.renderLock.Set();
+                        haveDataSlice = false;
+                        renderLock.Set();
                         
-                        this.ResizeToWidgetSize();
+                        ResizeToWidgetSize();
                     }
                 } else {
                     Gl.glClearColor(0, 0, 0, 1);
                     Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
-                    this.renderLock.Set();
+                    renderLock.Set();
                 }
             }
 
@@ -550,9 +558,9 @@ namespace Banshee.OpenVP
 
         void IController.Resize(int width, int height)
         {
-            this.widgetWidth = width;
-            this.widgetHeight = height;
-            this.needsResize = true;
+            widgetWidth = width;
+            widgetHeight = height;
+            needsResize = true;
         }
 #endregion
     }

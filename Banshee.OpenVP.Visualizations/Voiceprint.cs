@@ -51,18 +51,18 @@ namespace Banshee.OpenVP.Visualizations
 
         private void ResizeTexture(int w, int h)
         {
-            if (this.buffer == null) {
-                this.buffer = new TextureHandle(w, h);
+            if (buffer == null) {
+                buffer = new TextureHandle(w, h);
             } else {
-                this.buffer.SetTextureSize(w, h);
+                buffer.SetTextureSize(w, h);
             }
         }
 
         public void Render(IController controller)
         {
-            this.EnsureBufferLength(controller.Height);
+            EnsureBufferLength(controller.Height);
 
-            controller.PlayerData.GetSpectrum(this.spectrumBuffer);
+            controller.PlayerData.GetSpectrum(spectrumBuffer);
 
             Gl.glPushAttrib(Gl.GL_ENABLE_BIT);
             Gl.glDisable(Gl.GL_DEPTH_TEST);
@@ -82,9 +82,9 @@ namespace Banshee.OpenVP.Visualizations
             
             Gl.glScalef(1f / controller.Width, 1f / controller.Height, 1f);
 
-            this.ResizeTexture(controller.Width, controller.Height);
+            ResizeTexture(controller.Width, controller.Height);
 
-            Gl.glBindTexture(Gl.GL_TEXTURE_2D, this.buffer.TextureId);
+            Gl.glBindTexture(Gl.GL_TEXTURE_2D, buffer.TextureId);
             Gl.glCopyTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB, 0, 0,
                                 controller.Width, controller.Height, 0);
             
@@ -109,8 +109,8 @@ namespace Banshee.OpenVP.Visualizations
             Gl.glDisable(Gl.GL_TEXTURE_2D);
 
             Gl.glBegin(Gl.GL_POINTS);
-            for (int i = 0; i < this.spectrumBuffer.Length; i++) {
-                float v = this.spectrumBuffer[i];
+            for (int i = 0; i < spectrumBuffer.Length; i++) {
+                float v = spectrumBuffer[i];
                 
                 Color.FromHSL(120 * (1 - v), 1, Math.Min(0.5f, v)).Use();
                 //Gl.glColor3f(v, v, v);
@@ -128,11 +128,11 @@ namespace Banshee.OpenVP.Visualizations
             Gl.glPopAttrib();
         }
 
-        public void Dispose ()
+        public void Dispose()
         {
-            if (this.buffer != null) {
-                this.buffer.Dispose();
-                this.buffer = null;
+            if (buffer != null) {
+                buffer.Dispose();
+                buffer = null;
             }
         }
     }
@@ -155,10 +155,10 @@ namespace Banshee.OpenVP.Visualizations
 
         private void ResizeTexture(int w, int h)
         {
-            if (this.buffer == null) {
-                this.buffer = new TextureHandle(w, h);
+            if (buffer == null) {
+                buffer = new TextureHandle(w, h);
             } else {
-                this.buffer.SetTextureSize(w, h);
+                buffer.SetTextureSize(w, h);
             }
         }
 
@@ -167,9 +167,9 @@ namespace Banshee.OpenVP.Visualizations
             int w = controller.Width / 2;
             int h = controller.Height;
             
-            this.EnsureBufferLength(controller.Height / 2);
+            EnsureBufferLength(controller.Height / 2);
 
-            controller.PlayerData.GetSpectrum(this.spectrumBuffer);
+            controller.PlayerData.GetSpectrum(spectrumBuffer);
 
             Gl.glPushAttrib(Gl.GL_ENABLE_BIT);
             Gl.glDisable(Gl.GL_DEPTH_TEST);
@@ -188,9 +188,9 @@ namespace Banshee.OpenVP.Visualizations
             
             Gl.glScalef(1f / w, 1f / h, 1f);
 
-            this.ResizeTexture(w, h);
+            ResizeTexture(w, h);
 
-            Gl.glBindTexture(Gl.GL_TEXTURE_2D, this.buffer.TextureId);
+            Gl.glBindTexture(Gl.GL_TEXTURE_2D, buffer.TextureId);
             Gl.glCopyTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB, 0, 0,
                                 w, h, 0);
 
@@ -225,8 +225,8 @@ namespace Banshee.OpenVP.Visualizations
             Gl.glDisable(Gl.GL_TEXTURE_2D);
 
             Gl.glBegin(Gl.GL_POINTS);
-            for (int i = 0; i < this.spectrumBuffer.Length; i++) {
-                float v = this.spectrumBuffer[this.spectrumBuffer.Length - i - 1];
+            for (int i = 0; i < spectrumBuffer.Length; i++) {
+                float v = spectrumBuffer[spectrumBuffer.Length - i - 1];
                 
                 Color.FromHSL(120 * (1 - v), 1, Math.Min(0.5f, v)).Use();
                 //Gl.glColor3f(v, v, v);
@@ -245,11 +245,11 @@ namespace Banshee.OpenVP.Visualizations
             Gl.glPopAttrib();
         }
 
-        public void Dispose ()
+        public void Dispose()
         {
-            if (this.buffer != null) {
-                this.buffer.Dispose();
-                this.buffer = null;
+            if (buffer != null) {
+                buffer.Dispose();
+                buffer = null;
             }
         }
     }

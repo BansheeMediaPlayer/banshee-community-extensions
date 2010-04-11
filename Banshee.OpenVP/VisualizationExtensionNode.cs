@@ -40,7 +40,8 @@ namespace Banshee.OpenVP
 
         private Type typeObject = null;
 
-        public Type Type {
+        public Type Type
+        {
             get {
                 if (this.typeObject == null) {
                     this.typeObject = this.Addin.GetType(this.type, true);
@@ -50,17 +51,19 @@ namespace Banshee.OpenVP
             }
         }
 
-        public bool IsSchemaSelected {
+        public bool IsSchemaSelected
+        {
             get { return Settings.SelectedVisualizationSchema.Get() == Type.FullName; }
         }
 
-        public string Label {
+        public string Label
+        {
             get { return this.label; }
         }
 
         public IRenderer CreateObject()
         {
-            return (IRenderer) Activator.CreateInstance(this.Type);
+            return (IRenderer)Activator.CreateInstance(this.Type);
         }
     }
 }

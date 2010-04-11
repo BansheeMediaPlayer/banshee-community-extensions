@@ -99,10 +99,9 @@ namespace Banshee.OpenVP
         
 		#region IService implementation
         
-		public string ServiceName {
-		    get {
-		        return "OpenVPService";
-		    }
+		public string ServiceName
+        {
+		    get { return "OpenVPService"; }
 		}
 		
 		#endregion

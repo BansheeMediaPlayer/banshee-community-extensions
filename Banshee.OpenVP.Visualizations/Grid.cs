@@ -36,7 +36,7 @@ namespace Banshee.OpenVP.Visualizations
         {
             ClearScreen clear = new ClearScreen();
             clear.ClearColor = new Color(0, 0, 0, 0.075f);
-            this.Effects.Add(clear);
+            Effects.Add(clear);
 
             Laser laser = new Laser();
             laser.Count = 50;
@@ -46,11 +46,11 @@ namespace Banshee.OpenVP.Visualizations
             laser.MinSpeed = 0.5f;
             laser.Random = false;
             laser.Width = 0.05f;
-            this.Effects.Add(laser);
+            Effects.Add(laser);
 
-            this.Effects.Add(new GridMovement());
+            Effects.Add(new GridMovement());
             
-            this.Effects.Add(new GridScope());
+            Effects.Add(new GridScope());
         }
 
         private class GridScope : ScopeBase
@@ -65,8 +65,8 @@ namespace Banshee.OpenVP.Visualizations
 
             public override void RenderFrame(IController controller)
             {
-                this.dx = 0;
-                this.dy = 0;
+                dx = 0;
+                dy = 0;
 
                 float[] pcm = new float[controller.PlayerData.NativePCMLength];
                 controller.PlayerData.GetPCM(pcm);
@@ -75,8 +75,8 @@ namespace Banshee.OpenVP.Visualizations
                 for (int i = 0; i < pcm.Length; i++)
                     total += Math.Abs(pcm[i]);
 
-                this.da = this.da / 2 + total / pcm.Length;
-                this.LineWidth = 3 + this.da * 2;
+                da = da / 2 + total / pcm.Length;
+                LineWidth = 3 + da * 2;
 
                 base.RenderFrame(controller);
             }
@@ -86,18 +86,18 @@ namespace Banshee.OpenVP.Visualizations
                 int dr = rand.Next(2) == 0 ? -1 : 1;
 
                 if (rand.Next(2) == 0) {
-                    this.dx += data.Value / 4 * dr;
+                    dx += data.Value / 4 * dr;
                 } else {
-                    this.dy += data.Value / 4 * dr;
+                    dy += data.Value / 4 * dr;
                 }
 
-                data.X = this.dx;
-                data.Y = this.dy;
+                data.X = dx;
+                data.Y = dy;
 
                 data.Alpha = Math.Abs(data.Value) * 0.8f;
-                data.Red = this.da;
+                data.Red = da;
                 data.Green = data.Alpha;
-                data.Blue = 1 - this.da;
+                data.Blue = 1 - da;
             }
         }
 
@@ -105,8 +105,8 @@ namespace Banshee.OpenVP.Visualizations
         {
             public GridMovement()
             {
-                this.XResolution = 3;
-                this.YResolution = 3;
+                XResolution = 3;
+                YResolution = 3;
             }
             
             public override void RenderFrame(IController controller)
@@ -120,7 +120,7 @@ namespace Banshee.OpenVP.Visualizations
                 for (int i = 0; i < channels; i++)
                     total += spectrum[i];
 
-                this.factor = total / channels;
+                factor = total / channels;
 
                 base.RenderFrame(controller);
             }
@@ -131,7 +131,7 @@ namespace Banshee.OpenVP.Visualizations
             {
                 data.Method = MovementMethod.Polar;
                 
-                data.Distance *= 0.995f - (0.02f * this.factor);
+                data.Distance *= 0.995f - (0.02f * factor);
             }
         }
     }

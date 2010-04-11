@@ -37,10 +37,10 @@ namespace Banshee.OpenVP.Visualizations
         {
             ClearScreen clear = new ClearScreen();
             clear.ClearColor = new Color(0, 0, 0, 0.035f);
-            this.Effects.Add(clear);
+            Effects.Add(clear);
 
             InfernoMovement movement = new InfernoMovement();
-            this.Effects.Add(movement);
+            Effects.Add(movement);
 
             Laser laser = new Laser();
             laser.Count = 50;
@@ -50,17 +50,17 @@ namespace Banshee.OpenVP.Visualizations
             laser.MinSpeed = 0.5f;
             laser.Random = false;
             laser.Width = 0.05f;
-            this.Effects.Add(laser);
+            Effects.Add(laser);
 
             InfernoScope scope = new InfernoScope();
-            this.Effects.Add(scope);
+            Effects.Add(scope);
         }
 
         private class InfernoScope : ScopeBase
         {
             public InfernoScope()
             {
-                this.LineWidth = 5;
+                LineWidth = 5;
             }
             
             protected override void PlotVertex(ScopeData data)
@@ -82,8 +82,8 @@ namespace Banshee.OpenVP.Visualizations
         {
             public InfernoMovement()
             {
-                this.XResolution = 32;
-                this.YResolution = 32;
+                XResolution = 32;
+                YResolution = 32;
             }
             
             private static Random rand = new Random();
