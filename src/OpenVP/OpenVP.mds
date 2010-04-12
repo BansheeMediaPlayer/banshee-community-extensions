@@ -1,0 +1,33 @@
+<Combine name="OpenVP" fileversion="2.0" description="Open Visualization Platform">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="CombineConfiguration">
+      <Entry build="True" name="OpenVP" configuration="Debug" />
+      <Entry build="True" name="OpenVP.Core" configuration="Debug" />
+      <Entry build="True" name="OpenVP.Scripting" configuration="Debug" />
+      <Entry build="True" name="Cdh.Affe" configuration="Debug" />
+      <Entry build="True" name="Cdh.Affe.Tests" configuration="Debug" />
+    </Configuration>
+    <Configuration name="Release" ctype="CombineConfiguration">
+      <Entry build="True" name="OpenVP" configuration="Release" />
+      <Entry build="True" name="OpenVP.Core" configuration="Release" />
+      <Entry build="True" name="OpenVP.Scripting" configuration="Release" />
+      <Entry build="True" name="Cdh.Affe" configuration="Release" />
+      <Entry build="False" name="Cdh.Affe.Tests" configuration="Release" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="OpenVP" single="True">
+    <Execute type="None" entry="OpenVP" />
+    <Execute type="None" entry="OpenVP.Core" />
+    <Execute type="None" entry="OpenVP.Scripting" />
+    <Execute type="None" entry="Cdh.Affe" />
+    <Execute type="None" entry="Cdh.Affe.Tests" />
+  </StartMode>
+  <MonoDevelop.ChangeLogAddIn.ChangeLogInfo policy="UpdateNearestChangeLog" />
+  <Entries>
+    <Entry filename="OpenVP/OpenVP.mdp" />
+    <Entry filename="OpenVP.Core/OpenVP.Core.mdp" />
+    <Entry filename="OpenVP.Scripting/OpenVP.Scripting.mdp" />
+    <Entry filename="Cdh.Affe/Cdh.Affe.mdp" />
+    <Entry filename="Cdh.Affe.Tests/Cdh.Affe.Tests.mdp" />
+  </Entries>
+</Combine>

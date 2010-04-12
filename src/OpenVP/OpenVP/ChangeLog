@@ -1,0 +1,155 @@
+2009-01-27  Chris Howie  <me@chrishowie.com>
+
+	* Makefile.am: Build system sync.
+
+2009-01-23  Chris Howie  <me@chrishowie.com>
+
+	* OpenVP.mdp:
+	* Makefile.am:
+	* Makefile.in:
+	* openvp.pc.in: Commit build system for branch.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* OpenVP.mdp: Tweak project options.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* Metadata/AuthorAttribute.cs: Add XML documentation (from r57 on
+	  trunk).
+	* AssemblyInfo.cs: Set assembly version.
+
+2008-05-22  Chris Howie <me@chrishowie.com> 
+
+	* IBeatDetector.cs, IRenderer.cs, TimedPresetBase.cs,
+	  NullPlayerData.cs, LinearPreset.cs: Track API changes.
+	* OpenVP.mdp: Add new IController interface to allow consumers of the
+	  framework to implement their own controller if necessary or
+	  desired.  Rename Controller to SDLController.
+	* Controller.cs, SDLController.cs: Rename Controller to SDLController. 
+	  Implemented new IController interface.
+	* Effect.cs: Track API changes.  Implement IDeserializationCallback and
+	  provide empty virtual method to simplify deserialization when more
+	  than one class in an object's heirarchy needs to perform
+	  initialization post-deserialization.
+	* IController.cs: Add new IController interface to allow consumers of
+	  the framework to implement their own controller if necessary or
+	  desired.
+
+2008-05-20  Chris Howie <me@chrishowie.com> 
+
+	* IPreset.cs, Metadata/RangeAttribute.cs,
+	  Metadata/CategoryAttribute.cs, Metadata/BrowsableAttribute.cs,
+	  Metadata/DefaultValueAttribute.cs, Metadata/AuthorAttribute.cs,
+	  Metadata/DescriptionAttribute.cs, Metadata/FollowsAttribute.cs,
+	  Metadata/DisplayNameAttribute.cs, Color.cs, IBeatDetector.cs,
+	  IRenderer.cs, TimedPresetBase.cs, NullPlayerData.cs, Controller.cs,
+	  PlayerData.cs, Effect.cs, LinearPreset.cs, UDPPlayerData.cs,
+	  KeyboardEvent.cs, Registry.cs: Change license from GPLv2 to LGPLv3.
+
+2008-04-11  Chris Howie <me@chrishowie.com> 
+
+	* Metadata/AuthorAttribute.cs, OpenVP.mdp: Add AuthorAttribute class
+	  for specifying author credits.
+
+2008-04-09  Chris Howie <me@chrishowie.com> 
+
+	* Metadata, Metadata/CategoryAttribute.cs,
+	  Metadata/BrowsableAttribute.cs, Metadata/DefaultValueAttribute.cs,
+	  Metadata/DescriptionAttribute.cs, Metadata/DisplayNameAttribute.cs:
+	  Create new OpenVP.Metadata namespace to obsolete the use of broken
+	  System.ComponentModel attributes, and create source-compatible
+	  replacements for the used attributes.
+	* Metadata/RangeAttribute.cs, RangeAttribute.cs: Move RangeAttribute
+	  into the new OpenVP.Metadata namespace.
+	* Metadata/FollowsAttribute.cs, FollowsAttribute.cs: Move
+	  FollowsAttribute into the new OpenVP.Metadata namespace.
+	* OpenVP.mdp: Create new OpenVP.Metadata namespace to obsolete the use
+	  of broken System.ComponentModel attributes, and create
+	  source-compatible replacements for the used attributes.  Move
+	  FollowsAttribute into the new OpenVP.Metadata namespace.  Move
+	  RangeAttribute into the new OpenVP.Metadata namespace.
+	* PlayerData.cs, Effect.cs, UDPPlayerData.cs: Track move from
+	  System.ComponentModel to OpenVP.Metadata.
+
+2008-04-03  Chris Howie <me@chrishowie.com> 
+
+	* Color.cs: Copy FromHSL method from Kaffeeklatsch's GlColor struct.
+
+2008-01-22  Chris Howie <me@chrishowie.com> 
+
+	* TimedPresetBase.cs: Added AddEvent and AddEvents methods.
+
+2008-01-22  Chris Howie <me@chrishowie.com> 
+
+	* TimedPresetBase.cs: Add new class TimedPresetBase that provides a simple
+	  pattern for the designing of presets that change over time.
+	* OpenVP.mdp: Add TimedPresetBase.cs.
+
+2008-01-17  Chris Howie <me@chrishowie.com> 
+
+	* NullPlayerData.cs, UDPPlayerData.cs: Track API changes to PlayerData
+	  class.
+	* PlayerData.cs: Merge Update and UpdateWait.
+
+2007-12-30  Chris Howie <me@chrishowie.com> 
+
+	* IPreset.cs, OpenVP.mdp: Added IPreset interface.
+	* LinearPreset.cs: Implemented IPreset interface.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
+	* OpenVP.mdp, FollowsAttribute.cs: Added FollowsAttribute.
+	* Controller.cs: Added WindowWidth and WindowHeight properties.
+
+2007-12-15  Chris Howie <me@chrishowie.com> 
+
+	* RangeAttribute.cs, OpenVP.mdp: Added RangeAttribute.
+
+2007-12-14  Chris Howie <me@chrishowie.com> 
+
+	* UDPPlayerData.cs: Implemented blocking read such that the thread
+	  UpdateWait is run on can be aborted.
+
+2007-12-14  Chris Howie <me@chrishowie.com> 
+
+	* LinearPreset.cs: Implemented IDisposable.Dispose, which disposes each
+	  contained effect.
+
+2007-12-14  Chris Howie <me@chrishowie.com> 
+
+	* Color.cs: Changed the internal storage from a float[] back to four floats,
+	  since copying the array will make two Color structs behave like one and
+	  this is not expected or desired with structs.
+
+2007-12-13  Chris Howie <me@chrishowie.com> 
+
+	* IBeatDetector.cs, NullPlayerData.cs: Added real name.
+	* UDPPlayerData.cs: Added real name.  The UDPClient is now only closed when
+	  it is not null.
+	* OpenVP.mdp, Registry.cs: Added Registry static class.
+	* Controller.cs: DrawFrame now checks if Renderer is null before using it.
+
+2007-12-11  Chris Howie <me@chrishowie.com> 
+
+	* IBeatDetector.cs: Added IBeatDetector.
+	* NullPlayerData.cs: Added NullPlayerData.
+	* EffectTitleAttribute.cs: Removed EffectTitleAttribute in favor of
+	  System.ComponentModel.DisplayNameAttribute.
+	* Controller.cs: Added BeatDetector property.  PlayerData can no longer be
+	  null and is initialized with an instance of NullPlayerData.
+	* PlayerData.cs: Removed IsBeat in favor of IBeatDetector and tagged all
+	  properties as unbrowsable.
+	* Effect.cs: Removed EffectTitleAttribute in favor of
+	  System.ComponentModel.DisplayNameAttribute.  Removed GetPropertySheet
+	  and added ComponentModel attributes to all properties.
+	* UDPPlayerData.cs: Track API changes.  Add browsable Port property.
+	* Preset.cs: Deleted the Preset class for now.
+
+2007-12-10  Chris Howie <me@chrishowie.com> 
+
+	* UDPPlayerData.cs: Changed PlayerData.SongPosition from double to float. 
+	  Removed some debug code.
+	* PlayerData.cs: Changed PlayerData.SongPosition from double to float.
+	* ChangeLog: Added.
+

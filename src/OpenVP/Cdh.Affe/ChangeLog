@@ -1,0 +1,26 @@
+2009-01-27  Chris Howie  <me@chrishowie.com>
+
+	* Makefile.am: Build system sync.
+
+2009-01-23  Chris Howie  <me@chrishowie.com>
+
+	* Makefile.am:
+	* Makefile.in:
+	* Cdh.Affe.mdp:
+	* cdh.affe.pc.in: Commit build system for branch.
+
+2008-08-24  Chris Howie <cdhowie@gmail.com> 
+
+	* Cdh.Affe.mdp: Add jay/skeleton.cs with compilation disabled.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* Cdh.Affe.mdp: Tweak project options.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* affe-parser.cs, AssemblyInfo.cs, prebuild.sh, AffeCompiler.cs,
+	  SymbolTable.cs, jay, jay/skeleton.cs, jay/affe-parser.jay,
+	  Lexer.cs, Tree.cs, ScriptState.cs, Symbol.cs, Cdh.Affe.mdp,
+	  ChangeLog: Import Cdh.Affe into the build tree.
+
