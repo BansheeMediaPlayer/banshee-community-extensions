@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,6 +10,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
     <RootNamespace>Banshee.OpenVP</RootNamespace>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,51 +33,36 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="Mono.Posix" />
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <Package>mono-addins</Package>
     </Reference>
     <Reference Include="OpenVP, Version=0.0.1.0, Culture=neutral">
-      <Package>openvp</Package>
     </Reference>
     <Reference Include="OpenVP.Core, Version=0.0.1.0, Culture=neutral">
-      <Package>openvp.core</Package>
     </Reference>
     <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
-      <Package>banshee-1-core</Package>
     </Reference>
     <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">
-      <Package>banshee-1-services</Package>
     </Reference>
     <Reference Include="Banshee.ThickClient, Version=1.5.0.0, Culture=neutral">
-      <Package>banshee-1-thickclient</Package>
     </Reference>
     <Reference Include="Banshee.Widgets, Version=1.5.0.0, Culture=neutral">
-      <Package>banshee-1-thickclient</Package>
     </Reference>
     <Reference Include="Banshee.NowPlaying, Version=1.5.0.0, Culture=neutral">
-      <Package>banshee-1-nowplaying</Package>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">
-      <Package>banshee-1-hyena</Package>
     </Reference>
     <Reference Include="Tao.FreeGlut, Version=2.4.0.2, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d">
-      <Package>tao-freeglut</Package>
     </Reference>
     <Reference Include="Tao.OpenGl, Version=3.0.0.0, Culture=neutral, PublicKeyToken=1ca010269a4501ef">
-      <Package>tao-opengl</Package>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -101,8 +87,8 @@
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
-      <Properties InternalTargetFrameworkVersion="3.5">
-        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" SyncReferences="true" IsAutotoolsProject="true" RelativeConfigureInPath="..">
+      <Properties>
+        <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile.am" SyncReferences="true" IsAutotoolsProject="true" RelativeConfigureInPath="..">
           <BuildFilesVar Sync="true" Name="FILES" />
           <DeployFilesVar />
           <ResourcesVar Sync="true" Name="RESOURCES" />
