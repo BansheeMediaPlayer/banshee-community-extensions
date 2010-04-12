@@ -1,0 +1,72 @@
+2009-01-27  Chris Howie  <me@chrishowie.com>
+
+	* Makefile.am: Build system sync.
+
+2009-01-23  Chris Howie  <me@chrishowie.com>
+
+	* Makefile.am:
+	* Makefile.in:
+	* OpenVP.Scripting.mdp:
+	* openvp.scripting.pc.in: Commit build system for branch.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* OpenVP.Scripting.mdp: Tweak project options.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* OpenVP.Scripting.mdp: Switch dependency from Cdh.Affe blob to the
+	  project.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* AssemblyInfo.cs: Set assembly version.
+
+2008-05-20  Chris Howie <me@chrishowie.com> 
+
+	* AssemblyInfo.cs, ScriptCompileException.cs, UserScript.cs,
+	  AffeScript.cs, ScriptingEnvironment.cs: Change license from GPLv2
+	  to LGPLv3.
+
+2007-12-30  Chris Howie <me@chrishowie.com> 
+
+	* UserScript.cs: The Call getter will now catch any compilation exception to
+	  provide consistent behaivor; it should return null whenever the script
+	  didn't properly compile.  Run() now does nothing if the compiled call is
+	  null instead of throwing an exception.  Added Run overload matching the
+	  System.EventHandler signature for simpler tying to events (e.g.
+	  keybindings).  Added protected virtual implementation of
+	  OnDeserialization so that subclasses can override it.
+	* AffeScript.cs: Create an AffeCompiler using the type of the serialized
+	  target object by default during deserialization.
+
+2007-12-30  Chris Howie <me@chrishowie.com> 
+
+	* AffeScript.cs: Removed NonSerializedAttribute from mTargetObject.
+
+2007-12-23  Chris Howie <me@chrishowie.com> 
+
+	* UserScript.cs: Added NonSerializedAttribute to UserScript.mCallWrapper.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
+	* UserScript.cs: Renamed PerformCall to Run and made public since delegates
+	  targetting private methods cannot be deserialized.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
+	* ScriptCompileException.cs, OpenVP.Scripting.mdp: Added
+	  ScriptCompileException.
+	* UserScript.cs: Marked ScriptCall serializable.  Added CallWrapper property
+	  that returns a delegate that calls the same delegate returned by Call. 
+	  (CallWrapper would be used to serialize a delegate with its
+	  corresponding UserScript instance so that it can be properly
+	  deserialized.)
+	* AffeScript.cs: Catch AffeExceptions and turn them into instances of the
+	  new ScriptCompileException.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
+	* AssemblyInfo.cs, OpenVP.Scripting.mdp, UserScript.cs, ChangeLog,
+	  AffeScript.cs, ScriptingEnvironment.cs: Added OpenVP.Scripting project.
+

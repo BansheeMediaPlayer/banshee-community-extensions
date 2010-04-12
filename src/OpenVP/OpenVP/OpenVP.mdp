@@ -1,0 +1,57 @@
+<Project name="OpenVP" fileversion="2.0" language="C#" UseParentDirectoryAsNamespace="True" DefaultNamespace="OpenVP" clr-version="Net_2_0" targetFramework="2.0" ctype="DotNetProject">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="DotNetProjectConfiguration">
+      <Output directory="../build" assemblyKeyFile="." assembly="OpenVP" />
+      <Build debugmode="True" target="Library" />
+      <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="True" ctype="CSharpCompilerParameters" />
+    </Configuration>
+    <Configuration name="Release" ctype="DotNetProjectConfiguration">
+      <Output directory="../build" assembly="OpenVP" />
+      <Build debugmode="False" target="Library" />
+      <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="True" ctype="CSharpCompilerParameters" />
+    </Configuration>
+  </Configurations>
+  <Contents>
+    <File name="AssemblyInfo.cs" subtype="Code" buildaction="Compile" />
+    <File name="SDLController.cs" subtype="Code" buildaction="Compile" />
+    <File name="IRenderer.cs" subtype="Code" buildaction="Compile" />
+    <File name="PlayerData.cs" subtype="Code" buildaction="Compile" />
+    <File name="Effect.cs" subtype="Code" buildaction="Compile" />
+    <File name="KeyboardEvent.cs" subtype="Code" buildaction="Compile" />
+    <File name="LinearPreset.cs" subtype="Code" buildaction="Compile" />
+    <File name="Color.cs" subtype="Code" buildaction="Compile" />
+    <File name="UDPPlayerData.cs" subtype="Code" buildaction="Compile" />
+    <File name="IBeatDetector.cs" subtype="Code" buildaction="Compile" />
+    <File name="NullPlayerData.cs" subtype="Code" buildaction="Compile" />
+    <File name="Registry.cs" subtype="Code" buildaction="Compile" />
+    <File name="IPreset.cs" subtype="Code" buildaction="Compile" />
+    <File name="TimedPresetBase.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata" subtype="Directory" buildaction="Compile" />
+    <File name="Metadata/RangeAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata/BrowsableAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata/DisplayNameAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata/DefaultValueAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata/CategoryAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata/DescriptionAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata/FollowsAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Metadata/AuthorAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="IController.cs" subtype="Code" buildaction="Compile" />
+  </Contents>
+  <References>
+    <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <ProjectReference type="Gac" localcopy="True" refto="Tao.FreeGlut, Version=2.4.0.1, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d" />
+    <ProjectReference type="Gac" localcopy="True" refto="Tao.OpenGl, Version=2.1.0.7, Culture=neutral, PublicKeyToken=1ca010269a4501ef" />
+    <ProjectReference type="Gac" localcopy="True" refto="Tao.Sdl, Version=1.2.12.0, Culture=neutral, PublicKeyToken=9c7a200e36c0094e" />
+  </References>
+  <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="True" RelativeMakefileName="Makefile.am" SyncReferences="True" IsAutotoolsProject="True" RelativeConfigureInPath="..">
+    <BuildFilesVar Sync="True" Name="FILES" />
+    <DeployFilesVar />
+    <ResourcesVar Sync="True" Name="RESOURCES" />
+    <OthersVar />
+    <GacRefVar Sync="True" Name="REFERENCES" />
+    <AsmRefVar Sync="True" Name="REFERENCES" />
+    <ProjectRefVar Sync="True" Name="REFERENCES" />
+  </MonoDevelop.Autotools.MakefileInfo>
+</Project>

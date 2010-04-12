@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=@libdir@
+
+Name: OpenVP.Scripting
+Description: OpenVP.Scripting
+Version: 
+
+Requires: 
+Libs: -r:${libdir}/@PACKAGE@/OpenVP.Scripting.dll
