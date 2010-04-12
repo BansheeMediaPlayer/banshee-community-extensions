@@ -120,6 +120,7 @@ build/m4/shave/shave-libtool
 po/Makefile.in
 
 src/Makefile
+src/OpenVP/Makefile
 src/AppIndicator/Makefile
 src/AssemblyInfo.cs
 
@@ -170,6 +171,7 @@ ${PACKAGE}-${VERSION}
     Unit Tests:          ${enable_tests} (requires nunit >= ${NUNIT_REQUIRED}, --enable-tests)
 
   Extensions:
+    OpenVP:              yes
     Alarm Clock:         ${enable_AlarmClock}
     AppIndicator:        ${enable_AppIndicator}
     Awn:                 ${enable_Awn}
