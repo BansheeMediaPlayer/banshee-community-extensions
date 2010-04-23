@@ -235,22 +235,11 @@ namespace Banshee.AppIndicator
         {
             switch (args.Event) {
                 case PlayerEvent.StartOfStream:
-                    if (current_nf != null) {
-                        current_nf.Close ();
-                        current_nf = null;
-                    }
-                    current_track = ServiceManager.PlayerEngine.CurrentTrack;
-                    ShowTrackNotification ();
-                    break;
                 case PlayerEvent.TrackInfoUpdated:
                     current_track = ServiceManager.PlayerEngine.CurrentTrack;
                     ShowTrackNotification ();
                     break;
                 case PlayerEvent.EndOfStream:
-                    if (current_nf != null) {
-                        current_nf.Close ();
-                        current_nf = null;
-                    }
                     current_track = null;
                     break;
             }
