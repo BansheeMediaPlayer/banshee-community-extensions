@@ -3,11 +3,13 @@
 //
 // Authors:
 //   Sense Hofstede <qense@ubuntu.com>
+//   Chow Loong Jin <hyperair@ubuntu.com>
 //   Aaron Bockover <abockover@novell.com>
 //   Sebastian Dröge <slomo@circular-chaos.org>
 //   Alexander Hixon <hixon.alexander@mediati.org>
 //
 // Copyright (C) 2010 Sense Hofstede
+// Copyright (C) 2010 Chow Loong Jin
 // Copyright (C) 2005-2008 Novell, Inc.
 // Copyright (C) 2006-2007 Sebastian Dröge
 //
@@ -44,6 +46,7 @@ using Banshee.ServiceStack;
 using Banshee.Collection;
 using Banshee.Collection.Gui;
 using Banshee.Configuration;
+using Banshee.IO;
 using Banshee.MediaEngine;
 
 namespace Banshee.AppIndicator
@@ -51,6 +54,7 @@ namespace Banshee.AppIndicator
     public class AppIndicatorService : IExtensionService
     {
         private BansheeActionGroup actions;
+        private bool? actions_supported;
         private ArtworkManager artwork_manager_service;
         private Notification current_nf;
         private TrackInfo current_track;
@@ -174,6 +178,17 @@ namespace Banshee.AppIndicator
             disposed = true;
         }
 
+        private bool ActionsSupported {
+            get {
+                if (!actions_supported.HasValue) {
+                    actions_supported = Notifications.Global.Capabilities != null &&
+                        Array.IndexOf (Notifications.Global.Capabilities, "actions") > -1;
+                }
+
+                return actions_supported.Value;
+            }
+        }
+
         private bool OnPrimaryWindowClose ()
         {
             CloseWindow (null, null);
@@ -245,6 +260,13 @@ namespace Banshee.AppIndicator
             }
         }
 
+        private void OnSongSkipped (object o, ActionArgs args)
+        {
+            if (args.Action == "skip-song") {
+                ServiceManager.PlaybackController.Next ();
+            }
+        }
+
         private string GetByFrom (string artist, string display_artist, string album, string display_album)
         {
             bool has_artist = !String.IsNullOrEmpty (artist);
@@ -297,35 +319,55 @@ namespace Banshee.AppIndicator
                 }
             }
 
+            bool is_notification_daemon = false;
+            try {
+                var name = Notifications.Global.ServerInformation.Name;
+                is_notification_daemon = name == "notification-daemon" || name == "Notification Daemon";
+            } catch {
+                // This will be reached if no notification daemon is running
+                return;
+            }
+
+
             string message = GetByFrom (
                 current_track.ArtistName, current_track.DisplayArtistName,
                 current_track.AlbumTitle, current_track.DisplayAlbumTitle);
 
-            Gdk.Pixbuf image = null;
+            string image = null;
 
-            if (artwork_manager_service != null) {
-                image = artwork_manager_service.LookupPixbuf (current_track.ArtworkId);
-            }
+            image = is_notification_daemon
+                ? CoverArtSpec.GetPathForSize (current_track.ArtworkId, icon_size)
+                : CoverArtSpec.GetPath (current_track.ArtworkId);
 
-            if (image == null) {
-                image = IconThemeUtils.LoadIcon (48, "audio-x-generic");
-                if (image != null) {
-                    image.ScaleSimple (icon_size, icon_size, Gdk.InterpType.Bilinear);
+            if (!File.Exists (new SafeUri(image))) {
+                if (artwork_manager_service != null) {
+                    // artwork does not exist, try looking up the pixbuf to trigger scaling or conversion
+                    Gdk.Pixbuf tmp_pixbuf = is_notification_daemon
+                        ? artwork_manager_service.LookupScalePixbuf (current_track.ArtworkId, icon_size)
+                        : artwork_manager_service.LookupPixbuf (current_track.ArtworkId);
+
+                    if (tmp_pixbuf == null) {
+                        image = "audio-x-generic";
+                    } else {
+                        tmp_pixbuf.Dispose ();
+                    }
                 }
             }
-
             try {
                 if (current_nf == null) {
                     current_nf = new Notification (current_track.DisplayTrackTitle, message, image);
                 } else {
                     current_nf.Summary = current_track.DisplayTrackTitle;
                     current_nf.Body = message;
-                    current_nf.Icon = image;
+                    current_nf.IconName = image;
                 }
 
                 current_nf.Urgency = Urgency.Low;
                 current_nf.Timeout = 4500;
-
+                
+                if (!current_track.IsLive && ActionsSupported && interface_action_service.PlaybackActions["NextAction"].Sensitive) {
+                    current_nf.AddAction ("skip-song", AddinManager.CurrentLocalizer.GetString ("Skip this item"), OnSongSkipped);
+                }
                 current_nf.Show ();
 
             } catch (Exception e) {
@@ -357,7 +399,7 @@ namespace Banshee.AppIndicator
                 ((ToggleAction)actions["ShowHideAction"]).Active = value;
             }
         }
-
+        
         public bool ShowNotifications {
             get {
                 show_notifications = ShowNotificationsSchema.Get ();
