@@ -195,6 +195,14 @@ namespace Banshee.AppIndicator
             return true;
         }
 
+        private void OnPrimaryWindowMapped (object o, MapEventArgs args)
+        {
+            ToggleAction showhideaction = (ToggleAction) actions["ShowHideAction"];
+            if (showhideaction.Active == false) {
+                showhideaction.Active = true;
+            }
+        }
+
         private void CloseWindow (object o, EventArgs args)
         {
             try {
@@ -380,6 +388,7 @@ namespace Banshee.AppIndicator
             if (elements_service.PrimaryWindowClose == null) {
                 elements_service.PrimaryWindowClose = OnPrimaryWindowClose;
             }
+            elements_service.PrimaryWindow.MapEvent += OnPrimaryWindowMapped;
         }
 
         private void UnregisterCloseHandler ()
@@ -387,6 +396,7 @@ namespace Banshee.AppIndicator
             if (elements_service.PrimaryWindowClose != null) {
                 elements_service.PrimaryWindowClose = null;
             }
+            elements_service.PrimaryWindow.MapEvent -= OnPrimaryWindowMapped;
         }
 
         public bool PrimaryWindowVisible {
