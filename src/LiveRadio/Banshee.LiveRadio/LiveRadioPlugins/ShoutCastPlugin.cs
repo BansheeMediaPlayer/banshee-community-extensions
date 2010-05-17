@@ -199,7 +199,7 @@ namespace Banshee.LiveRadio.Plugins
 
                     DatabaseTrackInfo new_station = new DatabaseTrackInfo ();
     
-                    new_station.Uri = new SafeUri (base_url + tunein_url + "?" + id);
+                    new_station.Uri = new SafeUri (base_url + tunein_url + "?id=" + id);
                     new_station.ArtistName = "www.shoutcast.com";
                     new_station.Genre = genre;
                     new_station.TrackTitle = name;
