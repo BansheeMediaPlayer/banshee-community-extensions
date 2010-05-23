@@ -147,7 +147,7 @@ namespace Banshee.Streamrecorder
         {
             string pipeline = "";
             string pipeline_start = "audioresample ! audioconvert ";
-            string pipeline_end = "! gnomevfssink name=file_sink";
+            string pipeline_end = "! filesink name=file_sink";
             Encoder encoder = GetFirstAvailableEncoder ();
             
             if (encoder != null) {
