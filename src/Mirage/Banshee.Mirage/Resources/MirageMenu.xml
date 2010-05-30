@@ -4,8 +4,8 @@
             <menu name="Mirage" action="MirageAction">
                 <menuitem name="MirageRescanMusic" action="MirageRescanMusicAction" />
                 <menuitem name="MirageReset" action="MirageResetAction" />
-                <menuitem name="MirageDuplicateSearch" action="MirageDuplicateSearchAction" />
+                <!--<menuitem name="MirageDuplicateSearch" action="MirageDuplicateSearchAction" />-->
             </menu>
         </menu>
-	</menubar>
+    </menubar>
 </ui>
