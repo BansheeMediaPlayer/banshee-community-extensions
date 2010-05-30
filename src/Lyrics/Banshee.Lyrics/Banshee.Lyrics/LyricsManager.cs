@@ -251,7 +251,10 @@ namespace Banshee.Lyrics
             if (!cache.IsInCache (track)) {
                 cache.WriteLyrics (track, lyrics);
             }
-            SaveToID3 (track, lyrics);
+
+            if (Banshee.Configuration.Schema.LibrarySchema.WriteMetadata.Get ()) {
+                SaveToID3 (track, lyrics);
+            }
         }
 
         private void SaveToID3 (TrackInfo track, string lyrics)
