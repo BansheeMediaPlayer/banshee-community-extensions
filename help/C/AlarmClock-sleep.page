@@ -1,0 +1,32 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task" id="AlarmClock-sleep">
+  <info>
+    <link type="guide" xref="AlarmClock"/>
+    <link type="seealso" xref="AlarmClock-alarm"/>
+    <revision version="1.6" date="2010-06-01" status="stub"/>
+    <credit type="author copyright">
+      <name>Shaun McCance</name>
+      <email>shaunm@gnome.org</email>
+      <years>2010</years>
+    </credit>
+    <desc>Automatically stop playback at a specified time.</desc>
+  </info>
+
+  <title>Set a sleep timer</title>
+
+  <p>You can make <app>Banshee</app> automatically stop all playback at
+  a specified time using the <app xref="AlarmClock">Alarm Clock</app>
+  extension. This is useful, for example, if you like to listen to
+  music or watch videos as you go to sleep.</p>
+
+  <steps>
+    <item><p>Choose <guiseq><gui>Tools</gui><gui>Alarm Clock</gui><gui>Sleep Timer</gui></guiseq>.</p></item>
+    <item><p>Enter a time in the fields labeled <gui>Sleep Timer</gui>. Enter
+    the hour in the left field, and the minute in the right.</p></item>
+  </steps>
+
+  <note style="important">
+    <p>You must enable the <app>Alarm Clock</app> extension before using this
+    feature. See <link xref="AlarmClock#enable"/> for instructions.</p>
+  </note>
+</page>

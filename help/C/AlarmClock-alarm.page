@@ -1,0 +1,36 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task" id="AlarmClock-alarm">
+  <info>
+    <link type="guide" xref="AlarmClock"/>
+    <revision version="1.6" date="2010-06-01" status="incomplete"/>
+    <credit type="author copyright">
+      <name>Shaun McCance</name>
+      <email>shaunm@gnome.org</email>
+      <years>2010</years>
+    </credit>
+    <desc>Use Banshee as an alarm clock.</desc>
+  </info>
+
+  <title>Set an alarm</title>
+
+  <p>You can use <app>Banshee</app> as an alarm clock using the
+  <app xref="AlarmClock">Alarm Clock</app> extension.</p>
+
+  <steps>
+    <item><p>Choose <guiseq><gui>Tools</gui><gui>Alarm Clock</gui><gui>Alarm</gui></guiseq>.</p></item>
+    <item><p>Select <gui>Enable Alarm</gui>.</p></item>
+    <item><p>Enter a time in the fields labeled <gui>Set Time</gui>. Enter
+    the hour in the left field, and the minute in the right.</p></item>
+  </steps>
+
+  <note style="important">
+    <p>You must enable the <app>Alarm Clock</app> extension before using this
+    feature. See <link xref="AlarmClock#enable"/> for instructions.</p>
+  </note>
+
+  <comment>
+    <cite date="2010-06-01">shaunm</cite>
+    <p>Seems to work with 12-hour time, though there's no place for am/pm.
+    Also seems to work with 24-hour time. Ask Bertrand for details.</p>
+  </comment>
+</page>
