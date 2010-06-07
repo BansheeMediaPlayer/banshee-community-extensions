@@ -1,4 +1,20 @@
 ==============================
+Version 1.6.1 - June 7, 2010
+==============================
+
+Contributors:
+Bertrand Lorentz, Chow Loong Jin, Frank Ziegler, Sense Hofstede
+
+Bugs Fixed:
+* [AppIndicator] Fix toggle state issue when the window was launched from its starter
+* [AppIndicator] Stop the notifications from lagging and stacking up
+* [AppIndicator] Use banshee-panel icon if it exists
+* [LiveRadio] Fix ShoutCAST streams
+* [Lyrics] Follow the WriteMetadata preference
+* [Mirage] Remove the ineffective "Duplicate Search" menu entry
+* [StreamRecorder] Use a filesink in the gstreamer pipeline
+
+==============================
 Version 1.6.0 - March 31, 2010
 ==============================
 
