@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundMenu", "src\SoundMenu\SoundMenu.csproj", "{EE91126B-5500-4719-9FAA-36CBAC95DEE3}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppIndicator", "src\AppIndicator\AppIndicator.csproj", "{B3971F35-8FE0-4FED-A3A4-7A082B341D81}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UbuntuOneMusicStore", "src\UbuntuOneMusicStore\UbuntuOneMusicStore.csproj", "{3B855EBC-8E55-48DF-816B-B241BE45EBD8}"
@@ -125,6 +127,10 @@ Global
 		{DB994058-F7F4-494F-BEBC-11ADF056DF68}.Debug|x86.Build.0 = Debug|Any CPU
 		{DB994058-F7F4-494F-BEBC-11ADF056DF68}.Release|x86.ActiveCfg = Release|Any CPU
 		{DB994058-F7F4-494F-BEBC-11ADF056DF68}.Release|x86.Build.0 = Release|Any CPU
+		{EE91126B-5500-4719-9FAA-36CBAC95DEE3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EE91126B-5500-4719-9FAA-36CBAC95DEE3}.Debug|x86.Build.0 = Debug|Any CPU
+		{EE91126B-5500-4719-9FAA-36CBAC95DEE3}.Release|x86.ActiveCfg = Release|Any CPU
+		{EE91126B-5500-4719-9FAA-36CBAC95DEE3}.Release|x86.Build.0 = Release|Any CPU
 		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Debug|x86.Build.0 = Debug|Any CPU
 		{F38B53BA-8F85-4DC6-9B94-029C1CF96F24}.Release|x86.ActiveCfg = Release|Any CPU
@@ -159,6 +165,6 @@ Global
 		$3.scope = text/x-csharp
 		$0.StandardHeader = $4
 		$4.Text = @\n${FileName}\n\nAuthor:\n  ${AuthorName} <${AuthorEmail}>\n\nCopyright (c) ${Year} ${CopyrightHolder}\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the "Software"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.
-		$4.inheritsSet = MITX11License
+		$4.inheritsSet = Apache2License
 	EndGlobalSection
 EndGlobal

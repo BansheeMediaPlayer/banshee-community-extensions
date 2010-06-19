@@ -85,6 +85,7 @@ BCE_LYRICS
 BCE_MAGNATUNE
 BCE_MIRAGE
 BCE_RADIOSTATIONFETCHER
+BCE_SOUNDMENU
 BCE_STREAMRECORDER
 BCE_TELEPATHY
 BCE_U1MS
@@ -144,6 +145,7 @@ src/Mirage/Mirage/Makefile
 src/Mirage/Banshee.Mirage/Makefile
 src/Mirage/Test/Makefile
 src/RadioStationFetcher/Makefile
+src/SoundMenu/Makefile
 src/StreamRecorder/Makefile
 src/Telepathy/Makefile
 src/Telepathy/Banshee.Telepathy/Makefile
@@ -182,6 +184,7 @@ ${PACKAGE}-${VERSION}
     Magnatune:           ${enable_Magnatune}
     Mirage:              ${enable_Mirage}
     RadioStationFetcher: ${enable_RadioStationFetcher}
+    SoundMenu:           ${enable_SoundMenu}
     StreamRecorder:      ${enable_StreamRecorder}
     Telepathy:           ${enable_Telepathy}
     UbuntuOneMusicStore: ${enable_UbuntuOneMusicStore}
