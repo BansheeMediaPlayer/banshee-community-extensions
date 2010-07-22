@@ -27,10 +27,12 @@
 //
 
 using System;
+using System.IO;
 
 using Mono.Addins;
 using Mono.Unix;
 
+using Hyena;
 using Banshee.Base;
 using Banshee.Configuration;
 using Banshee.Gui;
@@ -80,6 +82,9 @@ namespace Banshee.SoundMenu
 
             InstallPreferences ();
             server = Server.RefDefault ();
+            if (Enabled) {
+                Register ();
+            }
 
             ServiceManager.ServiceStarted -= OnServiceStarted;
 
@@ -97,6 +102,9 @@ namespace Banshee.SoundMenu
         public void Register ()
         {
             server.SetType ("music.banshee");
+            string desktop_file = Path.Combine (Paths.InstalledApplicationDataRoot, "applications");
+            desktop_file = Path.Combine (desktop_file, "banshee-1.desktop");
+            server.DesktopFile (desktop_file);
             server.Show ();
         }
 
