@@ -8,11 +8,16 @@ AC_DEFUN([BCE_SOUNDMENU],
 
 	BCE_CHECK_EXTENSION_DEP([SoundMenu], [INDICATESHARP],
 		[indicate-sharp-0.1 >= 0.4.1],
-		[indicate-sharp was not found. Please install it or disable the UbuntuOneMusicStore extension by passing --disable-ubuntuonemusicstore])
+		[indicate-sharp was not found. Please install it or disable the SoundMenu extension by passing --disable-soundmenu])
+
+	BCE_CHECK_EXTENSION_DEP([SoundMenu], [NOTIFYSHARP],
+		[notify-sharp],
+		[Notify-sharp was not found. Please install it or disable the SoundMenu extension by passing --disable-soundmenu])
 
 	if test "x$enable_SoundMenu" = "xtry" \
 		&& test "x$have_BANSHEE_160" = "xyes" \
-		&& test "x$have_INDICATESHARP" = "xyes"; then
+		&& test "x$have_INDICATESHARP" = "xyes" \
+		&& test "x$have_NOTIFYSHARP" = "xyes"; then
 		enable_SoundMenu=yes
 	fi
 

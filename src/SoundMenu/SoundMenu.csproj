@@ -69,7 +69,9 @@
       <Package>mono-addins</Package>
     </Reference>
     <Reference Include="indicate-sharp, Version=0.4.1.0, Culture=neutral, PublicKeyToken=2e8e49ba7d172cb0">
-      <Package>indicate-sharp-0.1</Package>
+    </Reference>
+    <Reference Include="notify-sharp, Version=0.4.0.0, Culture=neutral, PublicKeyToken=2df29c54e245917a">
+      <Package>notify-sharp</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>
