@@ -104,7 +104,7 @@ namespace Banshee.Streamrecorder
             ServiceManager.PlayerEngine.ConnectEvent (OnMetadata, PlayerEvent.TrackInfoUpdated);
             ServiceManager.SourceManager.ActiveSourceChanged += OnSourceChanged;
 
-            action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
+            action_service = ServiceManager.Get<InterfaceActionService> ();
             actions = new ActionGroup ("Streamrecorder");
             
             

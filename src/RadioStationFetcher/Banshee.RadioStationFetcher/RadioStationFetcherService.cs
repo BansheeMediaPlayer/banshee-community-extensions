@@ -60,7 +60,7 @@ namespace Banshee.RadioStationFetcher
         {
             Log.Debug ("[RadioStationFetcherService] <Initialize> START");       
             
-            action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
+            action_service = ServiceManager.Get<InterfaceActionService> ();
             actions = new ActionGroup ("Radio-station fetcher");
             
             // Add sources

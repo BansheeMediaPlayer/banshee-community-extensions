@@ -63,7 +63,7 @@ namespace Banshee.LCD
         {
             Hyena.Log.Debug ("Initializing LCD service");
 
-            action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
+            action_service = ServiceManager.Get<InterfaceActionService> ();
             actions = new ActionGroup ("LCD");
             actions.Add (new ActionEntry [] {
                 new ActionEntry ("LCDAction", null,
