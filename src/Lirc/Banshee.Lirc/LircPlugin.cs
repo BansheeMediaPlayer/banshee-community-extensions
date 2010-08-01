@@ -31,7 +31,7 @@ namespace Banshee.Lirc
 				                null, "Configure the Lirc addin", OnConfigurePlugin),
 			});
 			
-			action_service = ServiceManager.Get<InterfaceActionService>("InterfaceActionService");
+			action_service = ServiceManager.Get<InterfaceActionService>();
 			
 			action_service.UIManager.InsertActionGroup(actions, 0);
             action_service.UIManager.AddUiFromResource("Ui.xml");
