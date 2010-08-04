@@ -28,7 +28,8 @@ libmirageaudio_la_LIBADD = \
 mirageaudiotest_SOURCES = \
 	mirageaudiotest.c
 mirageaudiotest_LDADD = \
-	libmirageaudio.la
+	libmirageaudio.la \
+	$(GSTREAMER_LIBS)
 
 all: $(top_builddir)/bin/libmirageaudio.so
 
