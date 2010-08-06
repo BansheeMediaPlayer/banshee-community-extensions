@@ -9,7 +9,7 @@
     description="Control Banshee from the Sound Menu."
     author="Bertrand Lorentz"
     url="http://banshee-project.org/"
-    defaultEnabled="true">
+    defaultEnabled="false">
 
   <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
 
