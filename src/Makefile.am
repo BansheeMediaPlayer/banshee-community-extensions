@@ -11,6 +11,7 @@ SUBDIRS = \
 	Magnatune \
 	Mirage \
 	RadioStationFetcher \
+	SoundMenu \
 	StreamRecorder \
 	Telepathy \
 	UbuntuOneMusicStore

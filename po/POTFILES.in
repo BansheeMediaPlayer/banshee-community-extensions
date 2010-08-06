@@ -36,6 +36,7 @@ src/Mirage/Banshee.Mirage/RandomBySimilar.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs
+src/SoundMenu/Banshee.SoundMenu/SoundMenuService.cs
 src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs
 src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs
 src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactContainerSource.cs
