@@ -27,7 +27,6 @@
 //
 
 using System;
-using System.IO;
 
 using Mono.Addins;
 using Mono.Unix;
@@ -40,6 +39,7 @@ using Banshee.Collection;
 using Banshee.Collection.Gui;
 using Banshee.Configuration;
 using Banshee.Gui;
+using Banshee.IO;
 using Banshee.MediaEngine;
 using Banshee.ServiceStack;
 using Banshee.Preferences;
@@ -148,8 +148,8 @@ namespace Banshee.SoundMenu
         public void Register ()
         {
             server.SetType ("music.banshee");
-            string desktop_file = Path.Combine (Paths.InstalledApplicationDataRoot, "applications");
-            desktop_file = Path.Combine (desktop_file, "banshee-1.desktop");
+            string desktop_file = Paths.Combine (Paths.InstalledApplicationDataRoot,
+                                                 "applications", "banshee-1.desktop");
             server.DesktopFile (desktop_file);
             server.Show ();
         }
