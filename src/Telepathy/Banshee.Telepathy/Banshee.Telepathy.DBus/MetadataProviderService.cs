@@ -39,6 +39,7 @@ using Banshee.Telepathy.Gui;
 using Banshee.Telepathy.API;
 using Banshee.Telepathy.API.Dispatchables;
 
+using Hyena;
 using Hyena.Data.Sqlite;
     
 using NDesk.DBus;

@@ -224,7 +224,7 @@ namespace Banshee.LiveRadio
             faketrack.TrackTitle = info;
             faketrack.ArtistName = info;
             faketrack.AlbumArtist = info;
-            faketrack.Uri = new Banshee.Base.SafeUri ("http://test.com/test.pls");
+            faketrack.Uri = new SafeUri ("http://test.com/test.pls");
     
             fakeresult.Add (faketrack);
             plugin.PluginSource.SetStations (fakeresult);

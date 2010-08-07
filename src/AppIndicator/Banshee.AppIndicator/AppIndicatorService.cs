@@ -40,6 +40,7 @@ using AppIndicator;
 using Gtk;
 using Notifications;
 
+using Hyena;
 using Banshee.Base;
 using Banshee.Gui;
 using Banshee.ServiceStack;

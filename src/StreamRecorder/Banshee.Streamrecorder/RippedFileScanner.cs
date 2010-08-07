@@ -31,6 +31,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Threading;
 
+using Hyena;
 using Banshee.Base;
 using Banshee.ServiceStack;
 using Banshee.Streaming;
