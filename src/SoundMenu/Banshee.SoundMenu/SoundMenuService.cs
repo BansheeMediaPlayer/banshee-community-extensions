@@ -71,6 +71,15 @@ namespace Banshee.SoundMenu
             elements_service = ServiceManager.Get<GtkElementsService> ();
             interface_action_service = ServiceManager.Get<InterfaceActionService> ();
 
+            var notif_addin = AddinManager.Registry.GetAddin("Banshee.NotificationArea");
+
+            if (notif_addin != null && notif_addin.Enabled) {
+                Log.Debug("NotificationArea conflicts with SoundMenu, disabling NotificationArea");
+                notif_addin.Enabled = false;
+            }
+
+            AddinManager.AddinLoaded += OnAddinLoaded;
+
             if (!ServiceStartup ()) {
                 ServiceManager.ServiceStarted += OnServiceStarted;
             }
@@ -141,8 +150,18 @@ namespace Banshee.SoundMenu
                 interface_action_service.GlobalActions.Remove (close_action);
             }
 
+            AddinManager.AddinLoaded -= OnAddinLoaded;
+
             elements_service = null;
             interface_action_service = null;
+        }
+
+        void OnAddinLoaded (object sender, AddinEventArgs args)
+        {
+            if (args.AddinId == "Banshee.NotificationArea") {
+                Log.Debug("SoundMenu conflicts with NotificationArea, disabling SoundMenu");
+                AddinManager.Registry.GetAddin("Banshee.SoundMenu").Enabled = false;
+            }
         }
 
         public void Register ()
