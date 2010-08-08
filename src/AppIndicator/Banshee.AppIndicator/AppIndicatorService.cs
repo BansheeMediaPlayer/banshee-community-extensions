@@ -79,8 +79,25 @@ namespace Banshee.AppIndicator
             elements_service = ServiceManager.Get<GtkElementsService> ();
             interface_action_service = ServiceManager.Get<InterfaceActionService> ();
 
+            var notif_addin = AddinManager.Registry.GetAddin("Banshee.NotificationArea");
+
+            if (notif_addin != null && notif_addin.Enabled) {
+                Log.Debug("NotificationArea conflicts with ApplicationIndicator, disabling NotificationArea");
+                notif_addin.Enabled = false;
+            }
+
+            AddinManager.AddinLoaded += OnAddinLoaded;
+
             if (!ServiceStartup ()) {
                 ServiceManager.ServiceStarted += OnServiceStarted;
+            }
+        }
+
+        void OnAddinLoaded (object sender, AddinEventArgs args)
+        {
+            if (args.AddinId == "Banshee.NotificationArea") {
+                Log.Debug("ApplicationIndicator conflicts with NotificationArea, disabling ApplicationIndicator");
+                AddinManager.Registry.GetAddin("Banshee.AppIndicator").Enabled = false;
             }
         }
 
@@ -175,6 +192,8 @@ namespace Banshee.AppIndicator
 
             elements_service = null;
             interface_action_service = null;
+
+            AddinManager.AddinLoaded -= OnAddinLoaded;
 
             disposed = true;
         }
