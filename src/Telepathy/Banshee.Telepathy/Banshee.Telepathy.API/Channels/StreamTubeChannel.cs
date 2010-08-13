@@ -43,14 +43,14 @@ namespace Banshee.Telepathy.API.Channels
 
         public event EventHandler <EventArgs> TubeOffered;
 
-        public StreamTubeChannel (Connection conn, 
+        public StreamTubeChannel (Connection conn,
                                   string object_path,
-                                  uint initiator_handle, 
+                                  uint initiator_handle,
                                   uint target_handle,
                                   string service_name) : base (conn, object_path, initiator_handle, target_handle)
         {
             Service = service_name;
-            
+
             Initialize ();
         }
 
@@ -58,7 +58,7 @@ namespace Banshee.Telepathy.API.Channels
         public string ClientAddress {
             get {
                 if (client_address != null) {
-                    return Encoding.ASCII.GetString ((byte[]) client_address); 
+                    return Encoding.ASCII.GetString ((byte[]) client_address);
                 }
                 else {
                     return null;
@@ -68,7 +68,7 @@ namespace Banshee.Telepathy.API.Channels
                 if (value == null) {
                     throw new ArgumentNullException ("client_address");
                 }
-                client_address = value; 
+                client_address = value;
             }
         }
 
@@ -98,7 +98,7 @@ namespace Banshee.Telepathy.API.Channels
                 service = value;
             }
         }
-        
+
         private void Initialize ()
         {
             tube.TubeChannelStateChanged += OnTubeChannelStateChanged;
@@ -113,18 +113,18 @@ namespace Banshee.Telepathy.API.Channels
         {
             tube = DBusUtility.GetProxy <IStreamTube> (Connection.BusName, ObjectPath);
         }
-        
+
         private bool SetSocketType ()
         {
-            IDictionary <uint, uint[]> supported_sockets = 
+            IDictionary <uint, uint[]> supported_sockets =
                 (IDictionary <uint, uint[]>) DBusUtility.GetProperty (BusType.Session,
                                                     Connection.BusName,
-                                                    ObjectPath, 
-                                                    Constants.CHANNEL_TYPE_STREAMTUBE, 
+                                                    ObjectPath,
+                                                    Constants.CHANNEL_TYPE_STREAMTUBE,
                                                     "SupportedSocketTypes");
-            
+
             bool supported = false;
-            
+
             if (supported_sockets.ContainsKey ((uint)SocketAddressType.Unix)) {
                supported =  true;
             }
@@ -138,7 +138,7 @@ namespace Banshee.Telepathy.API.Channels
 
             return supported;
         }
-        
+
         public void Process ()
         {
             if (InitiatorHandle != Connection.SelfHandle) {
@@ -154,48 +154,48 @@ namespace Banshee.Telepathy.API.Channels
         {
             Offer (ServerAddress);
         }
-        
+
         public void Offer (object address)
         {
             if (address == null) {
                 throw new ArgumentNullException ("address");
             }
-            
+
             Console.WriteLine ("Offering StreamTube");
-            
+
             // HACK fix this
-            tube.Offer (socket_type, 
-                        Encoding.ASCII.GetBytes (address as String), 
+            tube.Offer (socket_type,
+                        Encoding.ASCII.GetBytes (address as String),
                         socket_ac,
                         new Dictionary <string, object> ());
-            
+
             Console.WriteLine ("StreamTube from {0} offered", address);
         }
-        
+
         public void Accept ()
         {
-            client_address = tube.Accept (socket_type, 
+            client_address = tube.Accept (socket_type,
                                    socket_ac,
                                    String.Empty);
-            
+
             Console.WriteLine ("StreamTube from {0} accepted", client_address);
         }
 
         private void OnTubeChannelStateChanged (TubeChannelState state)
         {
-            Console.WriteLine ("OnTubeStateChanged: state {0}", 
+            Console.WriteLine ("OnTubeStateChanged: state {0}",
                                state);
-            
+
             switch (state) {
                 case TubeChannelState.Open:
                     OnChannelReady (EventArgs.Empty);
                     break;
-                
+
                 case TubeChannelState.NotOffered:
                     break;
-               
+
             }
-            
+
         }
 
         private void OnTubeClosed ()

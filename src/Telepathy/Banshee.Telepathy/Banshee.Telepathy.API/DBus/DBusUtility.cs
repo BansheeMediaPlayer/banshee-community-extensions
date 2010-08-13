@@ -35,11 +35,11 @@ using org.freedesktop.DBus;
 
 namespace Banshee.Telepathy.API.DBus
 {
-    public class DBusProxyObjectNotFound : Exception 
+    public class DBusProxyObjectNotFound : Exception
     {
         private const string message = "Proxy for {0} unavailable. Is application providing the proxy running?";
-            
-        public DBusProxyObjectNotFound () : base () 
+
+        public DBusProxyObjectNotFound () : base ()
         {
         }
         public DBusProxyObjectNotFound (string proxy) : base (String.Format (message, proxy))
@@ -54,7 +54,7 @@ namespace Banshee.Telepathy.API.DBus
         Session = 0,
         System = 1
     };
-    
+
     public static class DBusUtility
     {
         public static T GetProxy <T> (string bus_name, string object_path)
@@ -71,7 +71,7 @@ namespace Banshee.Telepathy.API.DBus
         {
             return GetProxy <T> (BusType.Session, bus_name, object_path, true);
         }
-        
+
         public static T GetProxy <T> (BusType bus_type, string bus_name, string object_path, bool start)
         {
             if (bus_name == null) {
@@ -100,17 +100,17 @@ namespace Banshee.Telepathy.API.DBus
                     throw new DBusProxyObjectNotFound (typeof(T).FullName);
                 }
             }
-            
+
             T proxy = bus.GetObject <T> (bus_name, new ObjectPath (object_path));
             if (proxy == null) {
                 throw new DBusProxyObjectNotFound (typeof(T).FullName);
-   
+
             }
 
             return proxy;
         }
-        
-        public static object GetProperty (BusType bus, string bus_name, 
+
+        public static object GetProperty (BusType bus, string bus_name,
                                           string object_path, string iface, string property)
         {
             if (bus_name == null) {
@@ -128,12 +128,12 @@ namespace Banshee.Telepathy.API.DBus
             if (property == null) {
                 throw new ArgumentNullException ("property");
             }
-            
+
             Properties p = GetProxy <Properties> (bus, bus_name, object_path);
             return p.Get (iface, property);
         }
 
-        public static void SetProperty (BusType bus, string bus_name, 
+        public static void SetProperty (BusType bus, string bus_name,
                                         string object_path, string iface, string property, object value)
         {
             if (bus_name == null) {
@@ -151,11 +151,11 @@ namespace Banshee.Telepathy.API.DBus
             if (property == null) {
                 throw new ArgumentNullException ("property");
             }
-            
+
             Properties p = GetProxy <Properties> (bus, bus_name, object_path);
             p.Set (iface, property, value);
         }
-        
+
         public static void Register (BusType bus_type, string bus_name, string object_path, object o)
         {
             if (bus_name == null) {

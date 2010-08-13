@@ -156,10 +156,10 @@ namespace Banshee.LiveRadio.Plugins
             //cached_results.Clear ();
 
             List<Genre> new_genres = new List<Genre> ();
-            
+
             foreach (XmlNode node in XML_station_nodes) {
                 XmlNodeList xml_attributes = node.ChildNodes;
-                
+
                 try {
                     string name = "";
                     string URI = "";
@@ -168,7 +168,7 @@ namespace Banshee.LiveRadio.Plugins
                     string now_playing = "";
                     string bitrate = "";
                     int bitrate_int = 0;
-                    
+
                     foreach (XmlNode station_attributes in xml_attributes) {
                         if (station_attributes.Name.Equals ("server_name"))
                             name = station_attributes.InnerText;
@@ -183,9 +183,9 @@ namespace Banshee.LiveRadio.Plugins
                         else if (station_attributes.Name.Equals ("bitrate"))
                             bitrate = station_attributes.InnerText;
                    }
-                    
+
                     DatabaseTrackInfo new_station = new DatabaseTrackInfo ();
-                    
+
                     new_station.Uri = new SafeUri (URI);
                     new_station.ArtistName = Name;
                     new_station.Genre = genre.Name;
@@ -196,7 +196,7 @@ namespace Banshee.LiveRadio.Plugins
                     new_station.IsLive = true;
                     Int32.TryParse (bitrate.Trim (), out bitrate_int);
                     new_station.BitRate = bitrate_int;
-                    
+
                     if (!new_genres.Contains (genre)) {
                         new_genres.Add (genre);
                         if (cached_results.ContainsKey (genre.GenreKey))
@@ -210,14 +210,14 @@ namespace Banshee.LiveRadio.Plugins
                     RaiseErrorReturned ("XML Parse Error", ex.Message);
                     continue;
                 }
-                
+
             }
-            
+
             new_genres.Sort ();
             genres = new_genres;
-            
+
             Log.DebugFormat ("[XiphOrgPlugin] <ParseCatalog> {0} genres found", genres.Count);
-            
+
         }
 
         /// <summary>
@@ -244,5 +244,5 @@ namespace Banshee.LiveRadio.Plugins
         "plugins.liveradio.xiph", "http_timeout_seconds", "", "HTTP timeout", "HTTP timeout");
 
     }
-    
+
 }

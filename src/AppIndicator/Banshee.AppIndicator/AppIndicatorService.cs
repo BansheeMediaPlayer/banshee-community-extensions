@@ -253,13 +253,13 @@ namespace Banshee.AppIndicator
                                                       "banshee-panel" :
                                                       Banshee.ServiceStack.Application.IconName,
                                                       Category.ApplicationStatus);
-    
+
                 // Load the menu
                 Menu menu = (Menu) interface_action_service.UIManager.GetWidget("/AppIndicatorTrayMenu");
                 menu.Show ();
-    
+
                 indicator.Menu = menu;
-    
+
                 // Show the tray icon
                 indicator.Status = Status.Active;
 
@@ -392,7 +392,7 @@ namespace Banshee.AppIndicator
 
                 current_nf.Urgency = Urgency.Low;
                 current_nf.Timeout = 4500;
-                
+
                 if (!current_track.IsLive && ActionsSupported && interface_action_service.PlaybackActions["NextAction"].Sensitive) {
                     current_nf.AddAction ("skip-song", AddinManager.CurrentLocalizer.GetString ("Skip this item"), OnSongSkipped);
                 }
@@ -429,7 +429,7 @@ namespace Banshee.AppIndicator
                 ((ToggleAction)actions["ShowHideAction"]).Active = value;
             }
         }
-        
+
         public bool ShowNotifications {
             get {
                 show_notifications = ShowNotificationsSchema.Get ();

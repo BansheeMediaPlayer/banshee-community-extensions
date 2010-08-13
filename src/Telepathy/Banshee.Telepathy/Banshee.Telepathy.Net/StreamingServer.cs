@@ -2,7 +2,7 @@
 // StreamingServer.cs
 //
 // Author:
-//   Neil Loknath   <neil.loknath@gmail.com             
+//   Neil Loknath   <neil.loknath@gmail.com
 //
 // Copyright (C) 2009 Neil Loknath
 //
@@ -49,12 +49,12 @@ namespace Banshee.Telepathy.Net
         {
             local_address = "/tmp/banshee-TS-" + GenerateRandomString (8);
         }
-        
+
         public StreamingServer () : base (new UnixEndPoint (StreamingServer.Address), "Streaming Server")
         {
         }
 
-        public override void Stop () 
+        public override void Stop ()
         {
             base.Stop ();
 
@@ -76,18 +76,18 @@ namespace Banshee.Telepathy.Net
 
             return false;
         }
-        
+
         protected override void HandleValidRequest (Socket client, string [] split_request, string [] body_request)
         {
             Hyena.Log.Debug ("Processing stream request from telepathy tube...");
-            
+
             long offset = 0;
             foreach (string line in body_request) {
                 if (line.ToLower ().Contains ("range:")) {
                     offset = ParseRangeRequest (line);
                 }
             }
-            
+
             if(split_request[1].StartsWith("/")) {
                split_request[1] = split_request[1].Substring(1);
             }
@@ -99,24 +99,24 @@ namespace Banshee.Telepathy.Net
             if (nodes.Length == 2 && nodes[0] != String.Empty) {
 
                 bool track_found = false;
-                
+
                 long id = 0;
                 try {
                     id = Convert.ToInt64 (nodes[0]);
-                    
+
                     Hyena.Log.Debug ("Attempting to stream track through tube...");
-                    
+
                     StreamTrack (client, id, offset);
                     track_found = true;
                 } catch {}
-                
-                
+
+
                 if (!track_found) {
                     code = HttpStatusCode.BadRequest;
                     body = GetHtmlHeader("Invalid Request");
                     body += String.Format("<p>Stream error with id `{0}'</p>", id);
                 }
-                
+
             } else {
                code = HttpStatusCode.BadRequest;
                body = GetHtmlHeader("Invalid Request");
@@ -131,11 +131,11 @@ namespace Banshee.Telepathy.Net
         {
             StreamTrack (client, track_id, 0);
         }
-        
+
         protected virtual void StreamTrack (Socket client, long track_id, long offset)
         {
             Stream stream;
-            
+
             DatabaseTrackInfo track = DatabaseTrackInfo.Provider.FetchSingle ((int) track_id);
             if (track != null) {
                 stream = new FileStream (track.LocalPath, FileMode.Open, FileAccess.Read);
@@ -143,18 +143,18 @@ namespace Banshee.Telepathy.Net
                     if (offset > 0) {
                         stream.Position = offset;
                     }
-                    
+
                     Hyena.Log.Debug ("Sending stream through tube...");
-                    
-                    WriteResponseStream (client, 
-                                         stream, 
-                                         offset == 0 ? track.FileSize : track.FileSize - offset, 
-                                         new FileInfo (track.LocalPath).Name, 
+
+                    WriteResponseStream (client,
+                                         stream,
+                                         offset == 0 ? track.FileSize : track.FileSize - offset,
+                                         new FileInfo (track.LocalPath).Name,
                                          offset);
                     stream.Close ();
                 }
             }
-            
+
             client.Close ();
         }
 
@@ -170,16 +170,16 @@ namespace Banshee.Telepathy.Net
 
             return builder.ToString ();
         }
-        
+
         protected static string GetHtmlHeader (string title)
         {
-            return String.Format ("<html><head><title>{0} - Banshee Telepathy Browser</title></head><body><h1>{0}</h1>", 
+            return String.Format ("<html><head><title>{0} - Banshee Telepathy Browser</title></head><body><h1>{0}</h1>",
                 title);
         }
-        
+
         protected static string GetHtmlFooter ()
         {
-            return String.Format ("<hr /><address>Generated on {0} by " + 
+            return String.Format ("<hr /><address>Generated on {0} by " +
                 "Banshee Telepathy Plugin (<a href=\"http://banshee-project.org\">http://banshee-project.org</a>)",
                 DateTime.Now.ToString ());
         }

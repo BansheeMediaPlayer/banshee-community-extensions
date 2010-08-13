@@ -71,6 +71,6 @@ namespace Banshee.Streamrecorder.Gst
             GLib.Marshaller.Free (native_name);
             return element_factory;
         }
-        
+
     }
 }

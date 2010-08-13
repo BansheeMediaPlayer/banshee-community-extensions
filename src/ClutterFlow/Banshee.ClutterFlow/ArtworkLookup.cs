@@ -1,21 +1,21 @@
-// 
+//
 // ArtworkLookup.cs
-//  
+//
 // Author:
 //       Mathijs Dumon <mathijsken@hotmail.com>
-// 
+//
 // Copyright (c) 2010 Mathijs Dumon
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -71,11 +71,11 @@ namespace Banshee.ClutterFlow
         public bool Threaded {
             get { return threaded; }
         }
-        
+
 	    protected readonly object stopLock = new object ();	// Lock covering stopping and stopped
 	    protected bool stopping = false;					// Whether or not the worker thread has been asked to stop
 	    protected bool stopped = true;						// Whether or not the worker thread has stopped
-	    
+	
 		/// <value>
 		/// Returns whether the worker thread has been asked to stop.
 	    /// This continues to return true even after the thread has stopped.
@@ -84,7 +84,7 @@ namespace Banshee.ClutterFlow
 	        get { lock (stopLock) { return stopping; } }
             protected set { lock (stopLock) { stopping = value; } }
 	    }
-	    
+	
 		//// <value>
 	    // Returns whether the worker thread has stopped.
 		/// </value>
@@ -94,7 +94,7 @@ namespace Banshee.ClutterFlow
 		#endregion
 
         Thread t;
-		public ArtworkLookup (CoverManager coverManager) 
+		public ArtworkLookup (CoverManager coverManager)
 		{
 			//Hyena.Log.Information ("ArtworkLookup ctor ()");
 		 	CoverManager = coverManager;
@@ -141,7 +141,7 @@ namespace Banshee.ClutterFlow
             LookupQueue.Dispose ();
 		}		
 	
-	    // Tells the worker thread to stop, typically after completing its 
+	    // Tells the worker thread to stop, typically after completing its
 	    // current work item. (The thread is *not* guaranteed to have stopped
 	    // by the time this method returns.)
 	    public void Stop ()
@@ -221,7 +221,7 @@ namespace Banshee.ClutterFlow
                 GtkInvoke (cover, pb);
             }
         }
-        
+
         private void GtkInvoke (ClutterFlowAlbum cover, Gdk.Pixbuf pb)
         {
             cover.Enqueued = false;

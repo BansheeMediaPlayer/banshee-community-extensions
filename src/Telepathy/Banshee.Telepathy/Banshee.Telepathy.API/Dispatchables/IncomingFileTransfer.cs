@@ -57,7 +57,7 @@ namespace Banshee.Telepathy.API.Dispatchables
             get { return auto_start; }
             set { auto_start = value; }
         }
-        
+
         public static IEnumerable <IncomingFileTransfer> GetAll (Connection conn)
         {
             foreach (Contact contact in conn.Roster.GetAllContacts ()) {
@@ -72,7 +72,7 @@ namespace Banshee.Telepathy.API.Dispatchables
         {
             FileTransferChannel ft = Channel as FileTransferChannel;
             ft.TransferProvided += OnTransferProvided;
-            
+
             base.Initialize ();
         }
 
@@ -83,7 +83,7 @@ namespace Banshee.Telepathy.API.Dispatchables
             }
             else if (disposing) {
                 FileTransferChannel ft = Channel as FileTransferChannel;
-                
+
                 if (ft != null) {
                     ft.TransferProvided -= OnTransferProvided;
                 }
@@ -91,26 +91,26 @@ namespace Banshee.Telepathy.API.Dispatchables
 
             base.Dispose (disposing);
         }
-                
+
 
         private void UpdateFilePath (string folder)
         {
             if (folder == null) {
                 throw new ArgumentNullException ("folder");
             }
-            
+
             FileInfo f = new FileInfo (Filename);
 
             if (f != null) {
                 Filename = folder.EndsWith ("/") ? folder + f.Name : folder + "/" + f.Name;
             }
         }
-        
+
         public void Accept ()
         {
             Accept (null);
         }
-        
+
         public void Accept (string folder)
         {
             if (State != TransferState.LocalPending) {
@@ -121,7 +121,7 @@ namespace Banshee.Telepathy.API.Dispatchables
             if (folder != null) {
                 UpdateFilePath (folder);
             }
-            
+
             (Channel as FileTransferChannel).Accept ();
             State = TransferState.RemotePending;
         }
@@ -141,7 +141,7 @@ namespace Banshee.Telepathy.API.Dispatchables
                 Close ();
             }
         }
-        
+
         private void ReceiveFile ()
         {
             Console.WriteLine ("In receiving thread...");
@@ -155,7 +155,7 @@ namespace Banshee.Telepathy.API.Dispatchables
                         bwriter.Write (data, 0, bytes_received);
                         BytesTransferred += bytes_received;
                     }
-                
+
                     bwriter.Close ();
                 }
             }
@@ -186,9 +186,9 @@ namespace Banshee.Telepathy.API.Dispatchables
             if (!AutoStart) {
                 Queue.Enqueue (this);
             }
-            
+
             OnReady (EventArgs.Empty);
-            
+
             if (State == TransferState.Connected && AutoStart) {
                 Start ();
             }

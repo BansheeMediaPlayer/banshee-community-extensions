@@ -56,7 +56,7 @@ namespace Banshee.Lirc
 			   ServiceManager.PlayerEngine.Volume = 0;
 		    }
 		    else
-		    {					   
+		    {					
 			   ServiceManager.PlayerEngine.Volume = (ushort)volume_before_mute;
 			   volume_before_mute = -1;
 		    }			

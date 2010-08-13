@@ -36,17 +36,17 @@ using Telepathy;
 
 namespace Banshee.Telepathy.API.Channels
 {
-    public delegate object AsyncProvideFileCaller (SocketAddressType address_type, 
-                                                   SocketAccessControl access_control, 
+    public delegate object AsyncProvideFileCaller (SocketAddressType address_type,
+                                                   SocketAccessControl access_control,
                                                    object access_control_param);
-    
+
     internal sealed class FileTransferChannel : RequestedChannel
     {
         private SocketAccessControl socket_ac = SocketAccessControl.Localhost;
         private SocketAddressType socket_type = SocketAddressType.Unix;
 
         public event EventHandler <EventArgs> TransferProvided;
-        
+
         public FileTransferChannel (Connection conn, string object_path,
                                 uint initiator_handle, uint target_handle,
                                 string filename, string content_type, long size) : base (conn, object_path, initiator_handle, target_handle)
@@ -54,7 +54,7 @@ namespace Banshee.Telepathy.API.Channels
             Filename = filename;
             ContentType = content_type;
             Size = size;
-                        
+
             Initialize ();
         }
 
@@ -62,14 +62,14 @@ namespace Banshee.Telepathy.API.Channels
         public string Address {
             get {
                 if (address != null) {
-                    return Encoding.ASCII.GetString ((byte[]) address); 
+                    return Encoding.ASCII.GetString ((byte[]) address);
                 }
                 else {
                     return null;
                 }
             }
         }
-        
+
         private string filename;
         public string Filename {
             get { return filename; }
@@ -105,7 +105,7 @@ namespace Banshee.Telepathy.API.Channels
                 size = value;
             }
         }
-        
+
         private IFileTransfer ft;
         internal IFileTransfer IFileTransfer {
             get { return ft; }
@@ -115,7 +115,7 @@ namespace Banshee.Telepathy.API.Channels
         {
             ft = DBusUtility.GetProxy <IFileTransfer> (Connection.BusName, ObjectPath);
         }
-        
+
         private void Initialize ()
         {
             ft.FileTransferStateChanged += OnFileTransferStateChanged;
@@ -129,15 +129,15 @@ namespace Banshee.Telepathy.API.Channels
 
         private bool SetSocketType ()
         {
-            IDictionary <uint, uint[]> supported_sockets = 
+            IDictionary <uint, uint[]> supported_sockets =
                 (IDictionary <uint, uint[]>) DBusUtility.GetProperty (BusType.Session,
                                                     Connection.BusName,
-                                                    ObjectPath, 
-                                                    Constants.CHANNEL_TYPE_FILETRANSFER, 
+                                                    ObjectPath,
+                                                    Constants.CHANNEL_TYPE_FILETRANSFER,
                                                     "AvailableSocketTypes");
-            
+
             bool supported = false;
-            
+
             if (supported_sockets.ContainsKey ((uint)SocketAddressType.Unix)) {
                supported =  true;
             }
@@ -150,7 +150,7 @@ namespace Banshee.Telepathy.API.Channels
             */
             return supported;
         }
-        
+
         public void Process ()
         {
             if (InitiatorHandle != Connection.SelfHandle) {
@@ -168,10 +168,10 @@ namespace Banshee.Telepathy.API.Channels
         {
             pf_caller = new AsyncProvideFileCaller (ft.ProvideFile);
             pf_result = pf_caller.BeginInvoke (socket_type, socket_ac, "", null, null);
-            
+
             Console.WriteLine ("FileTransfer from {0} offered", address);
         }
-        
+
         public void Accept ()
         {
             address = ft.AcceptFile (socket_type, socket_ac, "", 0);
@@ -181,17 +181,17 @@ namespace Banshee.Telepathy.API.Channels
         private void OnFileTransferStateChanged (FileTransferState state, FileTransferStateChangeReason reason)
         {
             //Console.WriteLine ("OnFileTransferStateChanged: state {0}", state);
-            
+
             switch (state) {
                 case FileTransferState.Open:
                     if (pf_result != null) {
                         address = pf_caller.EndInvoke (pf_result);
                         pf_result = null;
                     }
-                
+
                     OnChannelReady (EventArgs.Empty);
                     break;
-                
+
                 case FileTransferState.Completed:
                     Close ();
                     break;
@@ -200,14 +200,14 @@ namespace Banshee.Telepathy.API.Channels
                     Close ();
                     break;
             }
-            
+
         }
 
         private void OnInitialOffsetDefined (ulong offset)
         {
             //Console.WriteLine ("OnInitialOffsetDefined: offset {0}", offset);
         }
-        
+
         private void OnFileTransferClosed ()
         {
             IsClosed = true;

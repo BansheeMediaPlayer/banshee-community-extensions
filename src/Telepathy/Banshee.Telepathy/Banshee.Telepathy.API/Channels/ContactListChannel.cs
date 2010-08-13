@@ -64,18 +64,18 @@ namespace Banshee.Telepathy.API.Channels
         }
 
     }
-    
+
     public class ContactListChannel : Channel
     {
         public event EventHandler <MembersAddedEventArgs>  MembersAdded;
         public event EventHandler <MembersRemovedEventArgs> MembersRemoved;
-        
+
         public ContactListChannel (Connection conn, string target_id) : base (conn)
         {
             if (target_id == null) {
                 throw new ArgumentNullException ("target_id");
             }
-            
+
             this.target_id = target_id;
             ChannelType = Constants.CHANNEL_TYPE_CONTACTLIST;
         }
@@ -95,43 +95,43 @@ namespace Banshee.Telepathy.API.Channels
         public override void Request ()
         {
             IDictionary <string, object> channel_specs = new Dictionary <string, object> ();
-            channel_specs.Add (Constants.CHANNEL_IFACE + ".ChannelType", 
+            channel_specs.Add (Constants.CHANNEL_IFACE + ".ChannelType",
                                ChannelType);
-            channel_specs.Add (Constants.CHANNEL_IFACE + ".TargetHandleType", 
+            channel_specs.Add (Constants.CHANNEL_IFACE + ".TargetHandleType",
                                HandleType.List);
-            channel_specs.Add (Constants.CHANNEL_IFACE + ".TargetID", 
+            channel_specs.Add (Constants.CHANNEL_IFACE + ".TargetID",
                                this.target_id);
-            
+
             bool yours = false;
             ObjectPath object_path = null;
 
             Requests.EnsureChannel (channel_specs, out yours, out object_path, out channel_properties);
-            this.ChannPath = object_path.ToString ();   
-            
+            this.ChannPath = object_path.ToString ();
+
             group = DBusUtility.GetProxy <IGroup> (Connection.Bus, Connection.BusName, ChannPath);
             group.MembersChanged += OnMembersChanged;
 
             OnChannelReady (EventArgs.Empty);
-            
+
         }
 
         protected override void ProcessNewChannel (ChannelDetails c)
         {
         }
-        
+
         public uint [] GetContacts ()
         {
             uint[] contacts; //, local_pending, remote_pending;
             contacts = group.Members;
-            return contacts;            
+            return contacts;
         }
-        
+
         //TODO when a member is renamed, added[] and removed[] will contain one
         // handle each, as per spec. This may cause issues when contacts are
         // communitcating via channels. Wizardry may be needed.
-        protected virtual void OnMembersChanged (string message, uint[] added, 
+        protected virtual void OnMembersChanged (string message, uint[] added,
                                        uint[] removed, uint[] local_pending,
-                                       uint[] remote_pending, uint actor, 
+                                       uint[] remote_pending, uint actor,
                                        ChannelGroupChangeReason reason)
         {
             if (added.Length > 0 && MembersAdded != null) {
@@ -142,7 +142,7 @@ namespace Banshee.Telepathy.API.Channels
                 OnMembersRemoved (new MembersRemovedEventArgs (removed));
             }
         }
-        
+
         protected override void Dispose (bool disposing)
         {
             if (disposing) {
@@ -154,7 +154,7 @@ namespace Banshee.Telepathy.API.Channels
                     group = null;
                 }
             }
-            
+
             base.Dispose (disposing);
         }
 

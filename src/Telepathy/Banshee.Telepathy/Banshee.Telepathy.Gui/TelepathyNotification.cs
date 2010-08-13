@@ -38,24 +38,24 @@ namespace Banshee.Telepathy.Gui
         private Notification current_nf;
         private static TelepathyNotification instance;
 		private readonly object sync = new object ();
-        
+
         private TelepathyNotification ()
         {
         }
-        
+
         public static TelepathyNotification Create ()
         {
             if (instance == null) {
                 instance = new TelepathyNotification ();
             }
-            
+
             return instance;
         }
-        
+
         public static TelepathyNotification Get {
             get { return instance; }
         }
-        
+
         private bool? actions_supported;
         public bool ActionsSupported {
             get {
@@ -67,12 +67,12 @@ namespace Banshee.Telepathy.Gui
                 return actions_supported.Value;
             }
         }
-        
+
         public void Dispose ()
         {
             Dispose (true);
         }
-        
+
         protected virtual void Dispose (bool disposing)
         {
             if (disposing) {
@@ -82,12 +82,12 @@ namespace Banshee.Telepathy.Gui
                 instance = null;
             }
         }
-        
+
         public void Show (string summary, string body)
         {
-            Show (summary, body, null);   
+            Show (summary, body, null);
         }
-        
+
         public void Show (string summary, string body, Pixbuf image)
         {
            if (image == null) {

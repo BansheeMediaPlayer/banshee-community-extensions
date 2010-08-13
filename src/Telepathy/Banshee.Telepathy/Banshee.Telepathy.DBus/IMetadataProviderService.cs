@@ -32,14 +32,14 @@ using NDesk.DBus;
 
 namespace Banshee.Telepathy.DBus
 {
-    
+
     [Interface ("org.bansheeproject.MetadataProviderService")]
     public interface IMetadataProviderService
     {
         event PermissionSetHandler PermissionSet;
         event DownloadingAllowedHandler DownloadingAllowedChanged;
         event StreamingAllowedHandler StreamingAllowedChanged;
-        
+
         ObjectPath CreateMetadataProvider (LibraryType type);
         ObjectPath CreatePlaylistProvider (int id);
         int[] GetPlaylistIds (LibraryType type);
@@ -49,8 +49,8 @@ namespace Banshee.Telepathy.DBus
         string GetTrackPath (long id);
         bool DownloadsAllowed ();
         bool StreamingAllowed ();
-            
+
         //void Destroy ();
     }
-    
+
 }

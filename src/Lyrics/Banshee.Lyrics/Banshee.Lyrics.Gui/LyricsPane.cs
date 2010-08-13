@@ -1,9 +1,9 @@
-//  
+//
 // Author:
 //   Christian Martellini <christian.martellini@gmail.com>
 //
 // Copyright (C) 2009 Christian Martellini
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
@@ -22,7 +22,7 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
+//
 
 using Gtk;
 
@@ -55,13 +55,13 @@ namespace Banshee.Lyrics.Gui
             get { return track_artist; }
             set {track_artist = value; }
         }
-        
+
         public string TrackTitle {
             get { return track_title; }
             set { track_title = value; UpdateLabel ();}
         }
 
-        
+
         public void InitComponents ()
         {
             this.browser = new LyricsBrowser ();
@@ -101,7 +101,7 @@ namespace Banshee.Lyrics.Gui
 
             context_page.SetState (Banshee.ContextPane.ContextState.Loaded);
         }
-        
+
         private void UpdateLabel ()
         {
             if (!string.IsNullOrEmpty (track_title)) {

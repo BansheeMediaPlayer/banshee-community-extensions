@@ -86,7 +86,7 @@ namespace Banshee.Streamrecorder.Gst
         {
             return gst_bin_remove (raw, element.ToIntPtr ());
         }
-        
+
     }
-    
+
 }

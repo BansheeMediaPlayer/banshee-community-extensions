@@ -45,7 +45,7 @@ namespace Banshee.Telepathy.DBus
         private int myindex = 0;
        // private MetadataProviderService myservice;
         private DBusActivity activity;
-        
+
         public MetadataProvider (DBusActivity activity, LibraryType type) : base ()
         {
              lock (class_lock) {
@@ -57,10 +57,10 @@ namespace Banshee.Telepathy.DBus
             this.activity = activity;
             this.Id = (int) type;
         }
-        
+
         public override void GetChunk (long timestamp, int sequence_num)
         {
-            
+
             IDictionary <string, object> [] dict = {};
 
             lock (timestamp_lock) {
@@ -72,7 +72,7 @@ namespace Banshee.Telepathy.DBus
             }
 
             OnSingleChunkReady (ObjectPath, dict, timestamp, sequence_num);
- 
+
         }
 
         public override void GetChunks (int chunk_size)
@@ -84,7 +84,7 @@ namespace Banshee.Telepathy.DBus
             lock (payload_lock) {
 
                 long timestamp;
-                
+
                 lock (timestamp_lock) {
                     if (UseBuffer) {
                         buffer = new Dictionary <int, IDictionary <string, object> []> ();
@@ -92,7 +92,7 @@ namespace Banshee.Telepathy.DBus
                     timestamp = DateTime.Now.Ticks;
                     CurrentTimestamp = timestamp;
                 }
-                
+
                 switch ((LibraryType) Id) {
                     case LibraryType.Music:
                         track_model = (DatabaseTrackListModel)ServiceManager.SourceManager.MusicLibrary.TrackModel;
@@ -101,15 +101,15 @@ namespace Banshee.Telepathy.DBus
                         track_model = (DatabaseTrackListModel)ServiceManager.SourceManager.VideoLibrary.TrackModel;
                         break;
                 }
-    
+
                 if (track_model == null) {
                     IDictionary <string, object> [] empty = {};     // d-bus no like nulls
                     OnChunkReady (ObjectPath, empty, timestamp, 1, 0);
                     return;
                 }
-    
+
                 chunk_size = chunk_size < 1 ? 100 : chunk_size;         // default chunk_size
-                            
+
                 list = CachedList<DatabaseTrackInfo>.CreateFromSourceModel (track_model);
 
                 int total = track_model.UnfilteredCount;
@@ -117,11 +117,11 @@ namespace Banshee.Telepathy.DBus
                 // deliver data asynchronously via signal in chunks of chunk_size
                 // this should make things look like they are happening quickly over our tube
                 int sequence_num = 1;
-                
+
                 for (int i = 0; i < total; i += chunk_size) {
                     int dict_size = (total - i) < chunk_size ? (total - i) : chunk_size;
                     IDictionary <string, object> [] dict  = new Dictionary <string, object> [dict_size];
-                    
+
                     for (int j = 0; j < dict.Length; j++) {
                         int index = j+i;
                         dict[j] = list[index].GenerateExportable ();
@@ -134,10 +134,10 @@ namespace Banshee.Telepathy.DBus
 
                     //System.Threading.Thread.Sleep (2500); // FIXME simulate slowness
                     OnChunkReady (ObjectPath, dict, timestamp, sequence_num++, total);
-                    
+
                 }
-                
-            list.Dispose ();             
+
+            list.Dispose ();
             }
 
         }
@@ -152,7 +152,7 @@ namespace Banshee.Telepathy.DBus
             activity.UnRegisterDBusObject (ObjectPath);
             Dispose ();
         }
-        
+
         protected override void Dispose (bool disposing)
         {
             //instance_count--;
@@ -162,7 +162,7 @@ namespace Banshee.Telepathy.DBus
         public static string BusName {
             get { return "org.bansheeproject.Banshee"; }
         }
-        
+
         public string ObjectPath {
             get { return "/org/bansheeproject/MetadataProvider_" + myindex; }
         }

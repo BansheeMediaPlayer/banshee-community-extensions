@@ -50,26 +50,26 @@ namespace Banshee.Telepathy.Data
             ContentType = content_type;
             Track = track;
         }
-        
+
         public string ContentType { get; private set; }
         public DatabaseTrackInfo Track { get; private set; }
-        
+
         public bool Equals (TelepathyUploadKey other)
         {
             return base.Equals (other);
         }
     }
-    
+
     public class TelepathyUpload : TelepathyTransfer<TelepathyUploadKey, OutgoingFileTransfer>
     {
         public TelepathyUpload (TelepathyUploadKey key) : base (key)
         {
         }
-        
+
         public string ContentType {
             get { return Key.ContentType; }
         }
-        
+
         protected override void Initialize ()
         {
             OutgoingFileTransfer.AutoStart = false;
@@ -80,16 +80,16 @@ namespace Banshee.Telepathy.Data
         {
             DispatchManager dm = Contact.DispatchManager;
             if (!dm.Exists <OutgoingFileTransfer> (Contact, Name)) {
-                
+
                 IDictionary <string, object> properties = new Dictionary <string, object> ();
                 properties.Add ("Filename", Name);
                 properties.Add ("Description", "Telepathy extension for Banshee transfer");
                 properties.Add ("ContentType", ContentType);
                 properties.Add ("Size", (ulong) Key.Track.FileSize);
-    
+
                 dm.Request <OutgoingFileTransfer> (Contact, properties);
             }
-            
+
             base.Queue ();
         }
 
@@ -99,12 +99,12 @@ namespace Banshee.Telepathy.Data
 			
             if (FileTransfer != null) {
                 SetTransferFilename (FileTransfer);
-                TelepathyNotification.Create ().Show (FileTransfer.Contact.Name, 
+                TelepathyNotification.Create ().Show (FileTransfer.Contact.Name,
                     String.Format (AddinManager.CurrentLocalizer.GetString ("is downloading {0} with Banshee"),
                                    FileTransfer.Filename));
                 return base.Start ();
             }
-            
+
             return false;
         }
 
@@ -113,7 +113,7 @@ namespace Banshee.Telepathy.Data
             if (ft != null) {
                 string uri = ServiceManager.DbConnection.Query <string> (
                     "SELECT Uri FROM CoreTracks WHERE TrackID = ?", ft.OriginalFilename);
-    
+
                 if (uri != null) {
                     ft.Filename = new SafeUri (uri).LocalPath;
                     ft.Start ();
@@ -121,7 +121,7 @@ namespace Banshee.Telepathy.Data
                 else {
                     Log.DebugFormat ("Unable to get Uri for FileTransfer. Closing transfer.");
                     ft.Close ();
-                }                
+                }
             }
         }
 

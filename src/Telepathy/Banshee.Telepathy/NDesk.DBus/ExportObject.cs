@@ -179,14 +179,14 @@ namespace NDesk.DBus
 			GC.SuppressFinalize (this);
 		}
 
-		~ExportObject () 
+		~ExportObject ()
 		{
 			Dispose (false);
 		}
 
 		protected virtual void Dispose (bool disposing)
 		{
-			if (disposing) 
+			if (disposing)
 			{
 				if (obj != null)
 				{

@@ -1,9 +1,9 @@
-//  
+//
 // Author:
 //   Christian Martellini <christian.martellini@gmail.com>
 //
 // Copyright (C) 2009 Christian Martellini
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
@@ -22,22 +22,22 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
+//
 using Gtk;
 namespace Banshee.Lyrics.Gui {
-    
-    
+
+
     public partial class LyricsBrowser {
-        
+
         private Gtk.Frame frame1;
-        
+
         private Gtk.VBox vbox2;
-        
+
         private Gtk.ScrolledWindow lyricsScrollPane;
-        
+
         private Gtk.HTML htmlBrowser;
         private Gtk.TextView textBrowser;
-        
+
         protected virtual void Build ()
         {
         	Gui.Initialize (this);

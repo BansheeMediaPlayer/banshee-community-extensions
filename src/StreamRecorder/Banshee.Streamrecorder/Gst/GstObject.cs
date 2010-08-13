@@ -140,7 +140,7 @@ namespace Banshee.Streamrecorder.Gst
         {
             gst_object_ref (raw);
         }
-        
+
     }
-    
+
 }

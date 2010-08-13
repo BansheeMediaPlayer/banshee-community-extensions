@@ -60,41 +60,41 @@ namespace Banshee.Telepathy.Data
         LoadingPlaylists,
         Loaded
     };
-    
+
     public class ContactSource : PrimarySource, IContactSource
     {
         private const int chunk_length = 250;
 		private readonly TubeManager tube_manager;
 		private readonly IDictionary<LibraryDownload, ContactPlaylistSource> playlist_map = new Dictionary<LibraryDownload, ContactPlaylistSource> ();
 //        private ContactRequestDialog dialog;
-        
+
 //        private delegate bool GetBoolPropertyCaller ();
 //        private GetBoolPropertyCaller permission_caller;
 //        private GetBoolPropertyCaller downloading_caller;
-        
+
         private static readonly string tmp_download_path = Paths.Combine (TelepathyService.CacheDirectory, "partial-downloads");
         public static string TempDownloadDirectory {
             get { return tmp_download_path; }
         }
-        
+
         private HyenaSqliteCommand purge_source_command = new HyenaSqliteCommand (@"
             DELETE FROM CorePrimarySources WHERE PrimarySourceId = ?
         ");
-        
+
 		private SourceMessage response_message;
 		private bool getting_response = false;
 		
         public ContactSource (Contact contact) : base (AddinManager.CurrentLocalizer.GetString ("Contact"),
-                                                       String.Format ("{0} ({1})", 
-                                                                      contact != null ? contact.Name : String.Empty, 
+                                                       String.Format ("{0} ({1})",
+                                                                      contact != null ? contact.Name : String.Empty,
                                                                       contact != null ? contact.Status.ToString () : String.Empty),
-                                                       contact !=null ? contact.ToString () : String.Empty, 
+                                                       contact !=null ? contact.ToString () : String.Empty,
                                                        300)
         {
             Contact = contact;
             Contact.ContactUpdated += OnContactUpdated;
             Hyena.Log.DebugFormat ("ContactSource created for {0}", Contact.Name);
-            
+
             //Properties.SetString ("UnmapSourceActionLabel", AddinManager.CurrentLocalizer.GetString ("Disconnect"));
             //Properties.SetString ("UnmapSourceActionIconName", "gtk-disconnect");
             Properties.SetString ("Icon.Name", "stock_person");
@@ -111,9 +111,9 @@ namespace Banshee.Telepathy.Data
                     </column-controller>
                 "
             );
-            
+
             SupportsPlaylists = false;
-            
+
             if (SavedCount > 0) {
                 CleanUpData ();
             }
@@ -129,7 +129,7 @@ namespace Banshee.Telepathy.Data
         public ContactSourceState State {
             get { return state; }
         }
-            
+
         private Contact contact;
         public Contact Contact {
             get { return contact; }
@@ -140,7 +140,7 @@ namespace Banshee.Telepathy.Data
                 contact = value;
             }
         }
-        
+
         public string AccountId {
             get {
                 if (Contact != null) {
@@ -151,9 +151,9 @@ namespace Banshee.Telepathy.Data
         }
 
         public string ContactName {
-            get { 
+            get {
                 if (Contact != null) {
-                    return Contact.Name; 
+                    return Contact.Name;
                 }
                 return String.Empty;
             }
@@ -162,7 +162,7 @@ namespace Banshee.Telepathy.Data
         public string ContactStatus {
             get {
                 if (Contact != null) {
-                    return Contact.Status.ToString (); 
+                    return Contact.Status.ToString ();
                 }
                 return String.Empty;
             }
@@ -172,7 +172,7 @@ namespace Banshee.Telepathy.Data
         public DBusActivity CurrentActivity {
             get { return current_activity; }
         }
-        
+
         public override bool CanRemoveTracks {
             get { return false; }
         }
@@ -188,7 +188,7 @@ namespace Banshee.Telepathy.Data
         public override bool HasEditableTrackProperties {
             get { return false; }
         }
-        
+
         private bool can_activate = true;
         public override bool CanActivate {
             get { return can_activate; }
@@ -200,17 +200,17 @@ namespace Banshee.Telepathy.Data
         }
 
         public bool IsDownloadingAllowed {
-            get { 
+            get {
 				if (tube_manager != null) {
-					return tube_manager.IsDownloadingAllowed; 
+					return tube_manager.IsDownloadingAllowed;
 				} else {
 					return false;
 				}
 			}
         }
-            
+
         protected override void Initialize ()
-        { 
+        {
             base.Initialize ();
             ContactSourceInitialize ();
         }
@@ -230,28 +230,28 @@ namespace Banshee.Telepathy.Data
                     (child as Banshee.Sources.IUnmapableSource).Unmap ();
                 }
             }
-            
+
             ClearChildSources ();
         }
-            
+
         public override void Dispose ()
         {
             can_activate = false;
-            
+
             if (tube_manager != null) {
                 tube_manager.Dispose ();
             }
-            
+
             //UnregisterHandlers ();
             CleanUpData ();
 
             if (is_temporary) {
                 PurgeSelf ();
             }
-            
+
             base.Dispose ();
         }
-        
+
         private void ContactSourceInitialize ()
         {
 			tube_manager.StateChanged += OnTubeManagerStateChanged;
@@ -263,14 +263,14 @@ namespace Banshee.Telepathy.Data
 			
             TrackExternalObjectHandler = GetContactTrackInfoObject;
         }
-        
+
         public override void Activate ()
         {
             if (Contact == null) {
                 Hyena.Log.Error ("ContactSource.Activate found contact is null.");
                 return;
             }
-            
+
 			if (getting_response) {
 				return;
 			}
@@ -289,10 +289,10 @@ namespace Banshee.Telepathy.Data
         internal new void InvalidateCaches ()
         {
             ThreadAssist.SpawnFromMain (delegate {
-                base.InvalidateCaches ();    
+                base.InvalidateCaches ();
             });
         }
-        
+
 		private void ResetResponseMessage ()
 		{
 			getting_response = false;
@@ -321,20 +321,20 @@ namespace Banshee.Telepathy.Data
 			string status_name = String.Format ("<i>{0}</i>", GLib.Markup.EscapeText (Name));
 			string message = String.Format (AddinManager.CurrentLocalizer.GetString ("{0} is requesting to browse your library"), Contact.Name);
 			response_message.Text = String.Format (GLib.Markup.EscapeText (message), status_name);
-            
+
             response_message.AddAction (new MessageAction (AddinManager.CurrentLocalizer.GetString ("Accept"),
-                delegate { 
+                delegate {
 					tube_manager.AcceptBrowseRequest ();
 					ResetResponseMessage ();
 				}));
             response_message.AddAction (new MessageAction (AddinManager.CurrentLocalizer.GetString ("Reject"),
-                delegate { 
+                delegate {
 					tube_manager.RejectBrowseRequest ();
 					ResetResponseMessage ();
 				}));
 
             response_message.ThawNotify ();
-			TelepathyNotification.Create ().Show (Contact.Name, 
+			TelepathyNotification.Create ().Show (Contact.Name,
                     	AddinManager.CurrentLocalizer.GetString ("is requesting to browse your Banshee library"));
 			
 			// show notify bubble every 30 seconds
@@ -343,7 +343,7 @@ namespace Banshee.Telepathy.Data
                 if (!getting_response) {
                		notify_timer.Stop ();
 				} else {
-					TelepathyNotification.Create ().Show (Contact.Name, 
+					TelepathyNotification.Create ().Show (Contact.Name,
                     	AddinManager.CurrentLocalizer.GetString ("is requesting to browse your Banshee library"));
 				}
             };
@@ -366,14 +366,14 @@ namespace Banshee.Telepathy.Data
 		}
 		
 #region Contact Events
-        
+
         private void OnContactUpdated (object sender, ContactStatusEventArgs args)
         {
             this.Name = String.Format ("{0} ({1})", ContactName, ContactStatus);
         }
 
-#endregion        
-        
+#endregion
+
 		private void OnTubeManagerStateChanged (object sender, EventArgs args)
         {
 			TubeManagerStateChangedEventArgs state_args = args as TubeManagerStateChangedEventArgs;
@@ -424,7 +424,7 @@ namespace Banshee.Telepathy.Data
         private void OnTubeManagerClosed (object sender, EventArgs args)
         {
             TubeManager manager = sender as TubeManager;
-            
+
             if (manager.CurrentActivity.InitiatorHandle != Contact.Connection.SelfHandle) {
 //                if (dialog != null) {
 //                    dialog.Destroy ();
@@ -434,12 +434,12 @@ namespace Banshee.Telepathy.Data
 					ResetResponseMessage ();
 				}
             } else {
-                
-                TelepathyNotification.Create ().Show (Contact.Name, 
+
+                TelepathyNotification.Create ().Show (Contact.Name,
                     AddinManager.CurrentLocalizer.GetString ("is no longer sharing their Banshee library with you"));
             }
         }
-        
+
 		private long CalculateLoadingTracks (int track_count, long expected)
 		{
 			long loading = Count + track_count;
@@ -462,17 +462,17 @@ namespace Banshee.Telepathy.Data
 
 			ThreadAssist.ProxyToMain (delegate {
 				SetStatus (String.Format (AddinManager.CurrentLocalizer.GetString ("Loading {0} of {1}"),
-					CalculateLoadingTracks (chunk.Length, d.TotalExpected), 
+					CalculateLoadingTracks (chunk.Length, d.TotalExpected),
 			    	d.TotalExpected), false);
 			});
-            
+
 			ContactPlaylistSource source = null;
 			if (playlist_map.ContainsKey (d)) {	
 				source = playlist_map[d];
 			} else {
 				source = new ContactPlaylistSource (track_args.name, this);
 				playlist_map.Add (d, source);
-            } 
+            }
 
 			source.AddTracks (chunk);
 			
@@ -494,18 +494,18 @@ namespace Banshee.Telepathy.Data
             if (chunk == null) {
                 return;
             }
-            
+
 			LibraryDownload d = track_args.download as LibraryDownload;
 		
 			ThreadAssist.ProxyToMain (delegate {
 				SetStatus (String.Format (AddinManager.CurrentLocalizer.GetString ("Loading {0} of {1}"),
-					CalculateLoadingTracks (chunk.Length, d.TotalExpected), 
+					CalculateLoadingTracks (chunk.Length, d.TotalExpected),
 			    	d.TotalExpected), false);
 			});
 			
             HyenaSqliteConnection conn = ServiceManager.DbConnection;
             conn.BeginTransaction ();
-            
+
             for (int i = 0; i < chunk.Length; i++) {
                 IDictionary <string, object> track = chunk[i];
                 ContactTrackInfo contact_track = new ContactTrackInfo (track, this);
@@ -524,16 +524,16 @@ namespace Banshee.Telepathy.Data
         {
 //            DBusActivity activity = sender as DBusActivity;
 //            Hyena.Log.DebugFormat ("OnActivityResponseRequired from {0} for {1}", activity.Contact.Handle, activity.Contact.Name);
-                             
+
             //if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
                 Hyena.Log.DebugFormat ("{0} handle {1} accepting tube from ContactSource", Contact.Name, Contact.Handle);
-                                          
+
 				ShowResponseMessage ();
 //                dialog = new ContactRequestDialog (Contact.Name);
 //                dialog.ShowAll ();
 //                dialog.Response += delegate (object o, Gtk.ResponseArgs e) {
 //                    try {
-//                        if (e.ResponseId == Gtk.ResponseType.Accept) {               
+//                        if (e.ResponseId == Gtk.ResponseType.Accept) {
 //                            activity.Accept ();
 //                        } else if (e.ResponseId == Gtk.ResponseType.Reject) {
 //                            activity.Reject ();
@@ -547,7 +547,7 @@ namespace Banshee.Telepathy.Data
 //                        dialog = null;
 //                    }
 //                };
-                
+
             //}
         }
     }

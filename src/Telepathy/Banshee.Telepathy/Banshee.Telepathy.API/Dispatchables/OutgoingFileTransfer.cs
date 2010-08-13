@@ -77,16 +77,16 @@ namespace Banshee.Telepathy.API.Dispatchables
                 Close ();
             }
         }
-        
+
         private void SendFile ()
         {
             Console.WriteLine ("In sending thread...");
-            
+
             try {
                 using (FileStream fs = new FileStream (Filename, FileMode.Open, FileAccess.Read)) {
                     byte [] data = new byte[8192];
                     int read;
-    
+
                      while ( (read = fs.Read (data, 0, data.Length)) > 0) {
                         Socket.Send (data, 0, read, SocketFlags.None );
                         BytesTransferred += read;
@@ -106,7 +106,7 @@ namespace Banshee.Telepathy.API.Dispatchables
         {
             base.OnChannelReady (sender, args);
             OnReady (EventArgs.Empty);
-            
+
             if (State == TransferState.Connected && AutoStart) {
                 Start ();
             }

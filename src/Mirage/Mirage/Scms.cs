@@ -1,19 +1,19 @@
 /*
  * Mirage - High Performance Music Similarity and Automatic Playlist Generator
  * http://hop.at/mirage
- * 
+ *
  * Copyright (C) 2007-2008 Dominik Schnitzer <dominik@schnitzer.at>
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor,
@@ -58,7 +58,7 @@ namespace Mirage
         {
             DbgTimer t = new DbgTimer();
             t.Start();
-            
+
             // Mean
             Vector m = mfcc.Mean();
 
@@ -86,11 +86,11 @@ namespace Mirage
                 }
             }
 
-            
+
             long stop = 0;
             t.Stop(ref stop);
             Dbg.WriteLine("Mirage - scms created in: {0}ms", stop);
-            
+
             return s;
         }
 
@@ -172,15 +172,15 @@ namespace Mirage
             using (var stream = new MemoryStream ()) {
                 using (var bw = new BinaryWriter(stream)) {
                     bw.Write ((Int32)dim);
-        
+
                     for (int i = 0; i < mean.Length; i++) {
                         bw.Write (mean[i]);
                     }
-        
+
                     for (int i = 0; i < cov.Length; i++) {
                         bw.Write (cov[i]);
                     }
-        
+
                     for (int i = 0; i < icov.Length; i++) {
                         bw.Write (icov[i]);
                     }

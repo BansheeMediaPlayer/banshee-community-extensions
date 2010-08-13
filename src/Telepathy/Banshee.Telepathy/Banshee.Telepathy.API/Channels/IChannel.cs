@@ -35,7 +35,7 @@ namespace Banshee.Telepathy.API.Channels
     {
         event EventHandler <EventArgs> ChannelReady;
         event EventHandler <EventArgs> Closed;
-        
+
         uint InitiatorHandle { get; }
         uint TargetHandle { get; }
         string ObjectPath { get; }

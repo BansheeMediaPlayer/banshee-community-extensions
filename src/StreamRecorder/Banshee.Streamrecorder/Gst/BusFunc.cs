@@ -107,5 +107,5 @@ namespace Banshee.Streamrecorder.Gst
             return wrapper.managed;
         }
     }
-    
+
 }

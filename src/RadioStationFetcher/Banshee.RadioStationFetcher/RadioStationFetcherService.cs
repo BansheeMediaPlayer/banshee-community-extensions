@@ -39,30 +39,30 @@ using Banshee.I18n;
 using Hyena;
 
 namespace Banshee.RadioStationFetcher
-{       
+{
     public class RadioStationFetcherService : IExtensionService, IDisposable
     {
         private ActionGroup actions;
         private InterfaceActionService action_service;
         private uint ui_manager_id;
-        
+
         private FetcherDialog shoutcast = new Shoutcast ();
         private FetcherDialog xiph = new Xiph ();
-        
+
         public RadioStationFetcherService ()
         {
             Log.Debug ("[RadioStationFetcherService] <RadioStationFetcherService> Constructor START");
-            
+
             Log.Debug ("[RadioStationFetcherService] <RadioStationFetcherService> Constructor END");
         }
-        
-        void IExtensionService.Initialize () 
+
+        void IExtensionService.Initialize ()
         {
-            Log.Debug ("[RadioStationFetcherService] <Initialize> START");       
-            
+            Log.Debug ("[RadioStationFetcherService] <Initialize> START");
+
             action_service = ServiceManager.Get<InterfaceActionService> ();
             actions = new ActionGroup ("Radio-station fetcher");
-            
+
             // Add sources
             ActionEntry[] source_actions = {
                 new ActionEntry ("RadioStationFetcherAction", null,
@@ -71,25 +71,25 @@ namespace Banshee.RadioStationFetcher
                 new ActionEntry ("ShoutcastAction", null,
                     AddinManager.CurrentLocalizer.GetString ("_Shoutcast"), null,
                     AddinManager.CurrentLocalizer.GetString ("Fetch stations from shoutcast"), delegate {
-                        shoutcast.ShowDialog (); } ), 
+                        shoutcast.ShowDialog (); } ),
                 new ActionEntry ("XiphAction", null,
                     AddinManager.CurrentLocalizer.GetString ("_Xiph"), null,
                     AddinManager.CurrentLocalizer.GetString ("Fetch stations from Xiph"), delegate {
                         xiph.ShowDialog (); } )
             };
-            
+
             actions.Add (source_actions);
-            
+
             action_service.UIManager.InsertActionGroup (actions, 0);
             ui_manager_id = action_service.UIManager.AddUiFromResource ("RadioStationFetcherMenu.xml");
-            
+
             Log.Debug ("[RadioStationFetcherService] <Initialize> END");
         }
-        
+
         string IService.ServiceName {
             get { return "RadioStationFetcherService"; }
         }
-        
+
         public void Dispose ()
         {
             Log.Debug ("[RadioStationFetcherService] <Dispose>");

@@ -49,8 +49,8 @@ namespace Banshee.RadioStationFetcher
             source_name = "www.shoutcast.com";
             InitializeDialog ();
         }
-        
-        public override void FillGenreList () 
+
+        public override void FillGenreList ()
         {
             genre_list.Add ("Blues");
             genre_list.Add ("Classic Rock");
@@ -181,11 +181,11 @@ namespace Banshee.RadioStationFetcher
 
             genre_list.Sort ();
         }
-        
-        public List<DatabaseTrackInfo> FetchStationsByGenre (string genre) 
+
+        public List<DatabaseTrackInfo> FetchStationsByGenre (string genre)
         {
             Log.Debug ("[Shoutcast] <FetchStationsByGenre> Start");
-        
+
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.
                 Create ("http://207.200.98.25/sbin/newxml.phtml?genre="+genre);
             request.Method = "GET";
@@ -195,26 +195,26 @@ namespace Banshee.RadioStationFetcher
             try
             {
                 Log.DebugFormat ("[Shoutcast] <FetchStationsByGenre> Querying genre \"{0}\" ...", Genre);
-                
+
                 Stream response = request.GetResponse ().GetResponseStream ();
                 StreamReader reader = new StreamReader (response);
 
                 XmlDocument xml_response = new XmlDocument ();
                 xml_response.LoadXml (reader.ReadToEnd ());
-                
+
                 Log.Debug ("[Shoutcast] <FetchStationsByGenre> Query done");
-                
+
                 return ParseQuery (xml_response);
             }
             finally {
-                Log.Debug ("[Shoutcast] <FetchStationsByGenre> End");    
+                Log.Debug ("[Shoutcast] <FetchStationsByGenre> End");
             }
         }
 
-        public List<DatabaseTrackInfo> FetchStationsByFreetext (string text) 
+        public List<DatabaseTrackInfo> FetchStationsByFreetext (string text)
         {
             Log.Debug ("[Shoutcast] <FetchStationsByFreetext> Start");
-            
+
             HttpWebRequest request = (HttpWebRequest) HttpWebRequest.
                 Create ("http://207.200.98.25/sbin/newxml.phtml?search="+text);
             request.Method = "GET";
@@ -224,34 +224,34 @@ namespace Banshee.RadioStationFetcher
             try
             {
                 Log.DebugFormat ("[Shoutcast] <FetchStationsByFreetext> Querying freetext \"{0}\" ...", Freetext);
-            
+
                 Stream response = request.GetResponse ().GetResponseStream ();
                 StreamReader reader = new StreamReader (response);
 
                 XmlDocument xml_response = new XmlDocument();
                 xml_response.LoadXml (reader.ReadToEnd ());
-                
+
                 Log.Debug ("[Shoutcast] <FetchStationsByFreetext> Query done");
-                
+
                 return ParseQuery (xml_response);
             }
             finally {
                 Log.Debug ("[Shoutcast] <FetchStationsByFreetext> End");
             }
         }
-        
-        
+
+
         public List<DatabaseTrackInfo> ParseQuery (XmlDocument xml_response)
         {
             Log.Debug ("[Shoutcast] <ParseQuery> Start");
-            
+
             List<DatabaseTrackInfo> station_list;
             XmlNodeList XML_station_nodes = xml_response.GetElementsByTagName ("station");
 
             station_list = new List<DatabaseTrackInfo> (XML_station_nodes.Count);
-            
+
             PrimarySource source = GetInternetRadioSource (); // If not found, throws exception caught in upper level.
-            
+
             foreach (XmlNode node in XML_station_nodes)
             {
                 XmlAttributeCollection xml_attributes = node.Attributes;
@@ -265,13 +265,13 @@ namespace Banshee.RadioStationFetcher
                     string bitrate = xml_attributes.GetNamedItem ("br").InnerText;
                     int id_int;
                     int bitrate_int;
-                    
+
                     if (!Int32.TryParse (id.Trim (), out id_int)) {
                         continue; //Something wrong with id, skip this
                     }
 
                     DatabaseTrackInfo new_station = new DatabaseTrackInfo ();
-    
+
                     new_station.Uri = new SafeUri ("http://207.200.98.25/sbin/tunein-station.pls?id="+id);
                     new_station.ArtistName = "www.shoutcast.com";
                     new_station.Genre = genre;
@@ -282,13 +282,13 @@ namespace Banshee.RadioStationFetcher
                     new_station.ExternalId = id_int;
                     new_station.PrimarySource = source;
                     new_station.IsLive = true;
-                    Int32.TryParse (bitrate.Trim (), out bitrate_int);                    
+                    Int32.TryParse (bitrate.Trim (), out bitrate_int);
                     new_station.BitRate = bitrate_int;
                     new_station.IsLive = true;
-                    
-                    Log.DebugFormat ("[Shoutcast] <ParseQuery> Station found! Name: {0} URL: {1}", 
+
+                    Log.DebugFormat ("[Shoutcast] <ParseQuery> Station found! Name: {0} URL: {1}",
                         name, new_station.Uri.ToString ());
-                    
+
                     station_list.Add (new_station);
                 }
                 catch (Exception e) {
@@ -297,10 +297,10 @@ namespace Banshee.RadioStationFetcher
                 }
             }
 
-            Log.Debug ("[Shoutcast] <ParseQuery> End"); 
+            Log.Debug ("[Shoutcast] <ParseQuery> End");
             return station_list;
         }
-        
-        
+
+
     }
 }

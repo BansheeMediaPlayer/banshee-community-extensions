@@ -38,12 +38,12 @@ namespace Banshee.Telepathy.API.Dispatchables
     {
         private readonly IDictionary <Connection, IList <T>> queue = new Dictionary <Connection, IList <T>> ();
 
-        private int item_count = 0; 
+        private int item_count = 0;
         public int Count ()
         {
             /*
             int total = 0;
-            
+
             lock (queue) {
                 foreach (KeyValuePair <Connection, IList <T>> kv in queue) {
                     total += kv.Value.Count;
@@ -55,13 +55,13 @@ namespace Banshee.Telepathy.API.Dispatchables
 
             return item_count;
         }
-        
+
         public int Count (Connection conn)
         {
             if (conn == null) {
                 throw new ArgumentNullException ("conn");
             }
-            
+
             lock (queue) {
                 if (queue.ContainsKey (conn)) {
                     return queue[conn].Count;
@@ -76,9 +76,9 @@ namespace Banshee.Telepathy.API.Dispatchables
             if (obj == null) {
                 throw new ArgumentNullException ("obj");
             }
-            
+
             Connection conn = obj.Contact.Connection;
-            
+
             lock (queue) {
                 if (!queue.ContainsKey (conn)) {
                     queue.Add (conn, new List <T> ());
@@ -101,11 +101,11 @@ namespace Banshee.Telepathy.API.Dispatchables
 
             return null;
         }
-        
+
         public T Dequeue (Connection conn)
         {
             T popped = null;
-            
+
             lock (queue) {
                 if (queue.ContainsKey (conn)) {
                     if (queue[conn].Count > 0) {
@@ -127,7 +127,7 @@ namespace Banshee.Telepathy.API.Dispatchables
 
             //Console.WriteLine ("DispatchableQueue.Remove called");
             Connection conn = obj.Contact.Connection;
-            
+
             lock (queue) {
                 if (queue.ContainsKey (conn)) {
                     if (queue[conn].Contains (obj)) {
@@ -144,9 +144,9 @@ namespace Banshee.Telepathy.API.Dispatchables
             if (obj == null) {
                 throw new ArgumentNullException ("obj");
             }
-            
+
             Connection conn = obj.Contact.Connection;
-            
+
             lock (queue) {
                 if (queue.ContainsKey (conn)) {
                     if (queue[conn].Contains (obj)) {
@@ -157,7 +157,7 @@ namespace Banshee.Telepathy.API.Dispatchables
 
             return false;
         }
-                
+
         public void Empty ()
         {
             lock (queue) {
@@ -165,6 +165,6 @@ namespace Banshee.Telepathy.API.Dispatchables
                 item_count = 0;
             }
         }
-                    
+
     }
 }

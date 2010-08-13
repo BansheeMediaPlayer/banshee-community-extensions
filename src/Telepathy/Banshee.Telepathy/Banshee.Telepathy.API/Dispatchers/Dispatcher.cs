@@ -51,7 +51,7 @@ namespace Banshee.Telepathy.API.Dispatchers
             this.conn = conn;
             ChannelType = channel_type;
             this.property_keys = property_keys;
-            
+
             InitializeRequestsInterface ();
         }
 
@@ -66,7 +66,7 @@ namespace Banshee.Telepathy.API.Dispatchers
             get { return dispatch_keys; }
             protected set { dispatch_keys = value; }
         }
-        
+
         public uint SelfHandle {
             get { return conn.SelfHandle; }
         }
@@ -97,7 +97,7 @@ namespace Banshee.Telepathy.API.Dispatchers
                 dispatch_object = value;
             }
         }
-                
+
         private string channel_type;
         public string ChannelType {
             get { return channel_type; }
@@ -108,33 +108,33 @@ namespace Banshee.Telepathy.API.Dispatchers
                 channel_type = value;
             }
         }
-        
+
         public void Request (uint target_handle, HandleType handle_type, IDictionary <string, object> properties)
         {
             Request (target_handle, handle_type, properties, true);
         }
 
-        public virtual void Request (uint target_handle, 
-                                     HandleType handle_type, 
+        public virtual void Request (uint target_handle,
+                                     HandleType handle_type,
                                      IDictionary <string, object> properties,
                                      bool replace)
         {
             IDictionary <string, object> channel_specs = new Dictionary <string, object> ();
-            channel_specs.Add (Constants.CHANNEL_IFACE + ".ChannelType", 
+            channel_specs.Add (Constants.CHANNEL_IFACE + ".ChannelType",
                                ChannelType);
-            channel_specs.Add (Constants.CHANNEL_IFACE + ".TargetHandleType", 
+            channel_specs.Add (Constants.CHANNEL_IFACE + ".TargetHandleType",
                                handle_type);
-            channel_specs.Add (Constants.CHANNEL_IFACE + ".TargetHandle", 
+            channel_specs.Add (Constants.CHANNEL_IFACE + ".TargetHandle",
                                target_handle);
 
             if (VerifyRequest (target_handle, properties)) {
-                
+
                 if (replace) {
                     CleanUpIfClosed (target_handle, GetDispatchingKey (properties));
                 }
-                
+
                 CopyRequestProperties (properties, channel_specs);
-                
+
                 ObjectPath object_path;
                 Requests.CreateChannel (channel_specs, out object_path, out channel_properties);
             }
@@ -166,7 +166,7 @@ namespace Banshee.Telepathy.API.Dispatchers
             if (property_keys != null && properties == null) {
                 throw new ArgumentNullException ("properties");
             }
-            
+
             foreach (string key in property_keys) {
                 if (properties.ContainsKey (key)) {
                     channel_specs.Add (ChannelType + "." + key, properties[key]);
@@ -182,7 +182,7 @@ namespace Banshee.Telepathy.API.Dispatchers
         {
             return dispatch_keys != null ? properties[dispatch_keys[0]] : null;
         }
-        
+
         private void CleanUpIfClosed (uint target_handle, object key)
         {
             if (target_handle < 1) {
@@ -191,10 +191,10 @@ namespace Banshee.Telepathy.API.Dispatchers
             else if (key == null) {
                 throw new ArgumentNullException ("key");
             }
-            
+
             Contact contact = Connection.Roster.GetContact (target_handle);
             DispatchManager dm = contact.DispatchManager;
-            
+
             Dispatchable d = dm.Get (contact, key, DispatchObject);
             if (d != null) {
                 if (d.IsClosed) {
@@ -207,33 +207,33 @@ namespace Banshee.Telepathy.API.Dispatchers
                 }
             }
         }
-        
+
         protected void InitializeRequestsInterface ()
         {
             requests = conn.Requests;
             requests.NewChannels += OnNewChannels;
         }
 
-        protected abstract void ProcessNewChannel (string object_path, 
+        protected abstract void ProcessNewChannel (string object_path,
                                                    uint initiator_handle,
-                                                   uint target_handle, 
+                                                   uint target_handle,
                                                    ChannelDetails c);
-        
+
         protected abstract bool CanProcess (ChannelDetails details);
-        
+
         protected void OnNewChannels (ChannelDetails[] channels)
         {
             foreach (ChannelDetails c in channels) {
-                
+
                 string object_path = c.Channel.ToString ();
                 string channel_type = (string) c.Properties[Constants.CHANNEL_IFACE + ".ChannelType"];
                 HandleType handle_type = (HandleType) c.Properties[Constants.CHANNEL_IFACE + ".TargetHandleType"];
                 uint target_handle = (uint) c.Properties[Constants.CHANNEL_IFACE + ".TargetHandle"];
-                
+
                 if (channel_type.Equals (ChannelType) && CanProcess (c)) {
                     Console.WriteLine ("NewChannel detected: object path {0}, channel_type {1}, handle_type {2}, target_handle {3}",
                                    object_path, channel_type, handle_type.ToString (), target_handle);
-                    
+
                     uint initiator_handle = (uint) DBusUtility.GetProperty (Connection.Bus, Connection.BusName, object_path,
                                                                      Constants.CHANNEL_IFACE, "InitiatorHandle");
                     ProcessNewChannel (object_path, initiator_handle, target_handle, c);
@@ -246,17 +246,17 @@ namespace Banshee.Telepathy.API.Dispatchers
         {
             Dispose (true);
         }
-        
+
         protected virtual void Dispose (bool disposing)
         {
             if (!disposing) {
                 return;
             }
-            
+
             if (requests != null) {
                 requests.NewChannels -= OnNewChannels;
                 requests = null;
             }
-        }        
+        }
     }
 }

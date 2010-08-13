@@ -50,7 +50,7 @@ namespace Banshee.Telepathy.Data
             CanPlay = false;
             CanSaveToDatabase = false;
         }
-        
+
         public ContactTrackInfo (DatabaseTrackInfo track, ContactSource source) : this ()
         {
             if (track == null) {
@@ -59,7 +59,7 @@ namespace Banshee.Telepathy.Data
             else if (source == null) {
                 throw new ArgumentNullException ("source");
             }
-            
+
             this.TrackId = track.TrackId;
             this.ExternalId = track.ExternalId;
             this.AlbumTitle = track.AlbumTitle;
@@ -70,7 +70,7 @@ namespace Banshee.Telepathy.Data
 
             PrimarySource = source;
         }
-        
+
         public ContactTrackInfo (IDictionary <string, object> track, ContactSource source) : this ()
         {
             if (track == null) {
@@ -79,7 +79,7 @@ namespace Banshee.Telepathy.Data
             else if (source == null) {
                 throw new ArgumentNullException ("source");
             }
-            
+
             //TimeSpan = double
             //DateTime = long
             //Uri = string
@@ -91,14 +91,14 @@ namespace Banshee.Telepathy.Data
 			}
 			
             MediaAttributes = TrackMediaAttributes.AudioStream | TrackMediaAttributes.Music;
-            
-            // dictionary key will match up to keyValuePair key = ExportName 
+
+            // dictionary key will match up to keyValuePair key = ExportName
             // of ExportableAttribute
             foreach (KeyValuePair<string, PropertyInfo> iter in GetExportableProperties (typeof (TrackInfo))) {
                 try {
                     PropertyInfo property = iter.Value;
                     Type type = property.PropertyType;
-                    
+
                     if (track.ContainsKey (iter.Key) && property.CanWrite) {
                         if (type.Equals (typeof (DateTime))) {
                             property.SetValue (this, new DateTime ((long) track[iter.Key]), null);
@@ -112,7 +112,7 @@ namespace Banshee.Telepathy.Data
                             property.SetValue (this, Convert.ChangeType (track[iter.Key], type), null);
                         }
                     }
-                    
+
                 } catch (Exception e) {
                     Log.Exception (e);
                 }
@@ -122,7 +122,7 @@ namespace Banshee.Telepathy.Data
             remote_path = LocalPath ?? String.Empty;
 
             string ext = Path.GetExtension (LocalPath);
-            
+
             Uri = new SafeUri (String.Format (
                 "{0}{1}/{2}", TelepathyService.ProxyServer.HttpBaseAddress, this.ExternalId, ext.Substring (1)));
 
@@ -146,7 +146,7 @@ namespace Banshee.Telepathy.Data
                 }
             }
         }
-        
+
         public Contact Contact {
             get { return (PrimarySource as ContactSource).Contact; }
         }
@@ -169,16 +169,16 @@ namespace Banshee.Telepathy.Data
                 return FileTransfer != null ? FileTransfer.IsDownloadingPending : false;
             }
         }
-        
+
         private string remote_path = null;
         public string RemotePath {
-            get { 
+            get {
                 if (remote_path == null) {
                     DBusActivity activity = Contact.DispatchManager.Get <DBusActivity> (Contact, MetadataProviderService.BusName);
 
-                    if (activity != null) {            
+                    if (activity != null) {
                         IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
-                        
+
                         if (service != null) {
                             remote_path = service.GetTrackPath (this.ExternalId);
                         }

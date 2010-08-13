@@ -41,5 +41,5 @@ namespace Banshee.Streamrecorder.Gst
         Buffers = 4,
         Percent = 5
     }
-    
+
 }

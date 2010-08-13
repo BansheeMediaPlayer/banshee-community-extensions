@@ -38,9 +38,9 @@ namespace Banshee.Telepathy.API.Data {
         public string ContentType;
         public string Description;
 
-        public FileTransferChannelInfo (ChannelType type, 
-                               HandleType target, 
-                               string content_type, 
+        public FileTransferChannelInfo (ChannelType type,
+                               HandleType target,
+                               string content_type,
                                string description) : base (type, target)
         {
             ContentType = content_type;

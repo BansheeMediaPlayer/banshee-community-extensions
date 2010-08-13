@@ -32,13 +32,13 @@ using System.Collections.Generic;
 using Telepathy;
 
 namespace Banshee.Telepathy.API.Data {
-    
+
     public enum ChannelType {
         DBusTube = 0,
         StreamTube = 1,
         FileTransfer = 2
     }
-    
+
     public class ChannelInfo
     {
         public ChannelType Type;

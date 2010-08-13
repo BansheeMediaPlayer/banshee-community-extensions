@@ -43,7 +43,7 @@ namespace Banshee.Telepathy.API.DBus
         {
             registered = new Dictionary <string, object> ();
         }
-        
+
         public DBusConnection (string address) : this ()
         {
             Address = address;
@@ -104,7 +104,7 @@ namespace Banshee.Telepathy.API.DBus
             UnregisterAll ();
             // other clean up here?
         }
-        
+
         public T GetProxy <T> (string bus_name, string object_path)
         {
             if (bus_name == null) {
@@ -117,9 +117,9 @@ namespace Banshee.Telepathy.API.DBus
             T proxy = conn.GetObject <T> (bus_name, new ObjectPath (object_path));
             if (proxy == null) {
                 throw new DBusProxyObjectNotFound (typeof(T).FullName);
-   
+
             }
-            
+
             return proxy;
         }
 

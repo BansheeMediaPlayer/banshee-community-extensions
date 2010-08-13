@@ -60,7 +60,7 @@ namespace Banshee.Telepathy.Gui
         public TelepathyDownloadManager DownloadManager {
             get { return download_manager; }
         }
-        
+
         protected override void Dispose (bool disposing)
         {
             if (disposing) {
@@ -77,19 +77,19 @@ namespace Banshee.Telepathy.Gui
                 import_manager.NotifyAllSources ();
             }
         }
-        
+
         public override void CancelAll ()
         {
             download_manager.CancelAll ();
         }
-        
+
         private void OnTransferCompleted (object sender, EventArgs args)
         {
             TelepathyDownload transfer = sender as TelepathyDownload;
             if (transfer == null) {
                 return;
             }
-            
+
             ImportTrack (transfer.FileTransfer.Filename);
         }
     }

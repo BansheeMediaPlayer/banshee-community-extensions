@@ -38,10 +38,10 @@ namespace Banshee.Telepathy.Data
     {
         private readonly IDictionary <string, LibraryDownload> downloads = new Dictionary <string, LibraryDownload> ();
         //private readonly IDictionary <LibraryDownload, object> associated = new Dictionary <LibraryDownload, object> ();
-        
+
         public event EventHandler <EventArgs> AllFinished;
         public event EventHandler <EventArgs> AllProcessed;
-        
+
         public LibraryDownloadMonitor ()
         {
         }
@@ -58,7 +58,7 @@ namespace Banshee.Telepathy.Data
                 }
             }
         }
-        
+
         public void Start ()
         {
             monitoring = true;
@@ -66,7 +66,7 @@ namespace Banshee.Telepathy.Data
                 OnAllFinished (EventArgs.Empty);
             }
         }
-        
+
         public void Add (string key, LibraryDownload d)
         {
             if (key == null) {
@@ -78,7 +78,7 @@ namespace Banshee.Telepathy.Data
             else if (monitoring) {
                 throw new InvalidOperationException ("Can't add while monitoring.");
             }
-            
+
             lock (downloads) {
                 if (!downloads.ContainsKey (key)) {
                     downloads.Add (key, d);
@@ -93,13 +93,13 @@ namespace Banshee.Telepathy.Data
 //        {
 //            AssociateObject (Get (key), o);
 //        }
-//        
+//
 //        public void AssociateObject (LibraryDownload d, object o)
 //        {
 //            if (d == null) {
 //                throw new ArgumentNullException ("d");
 //            }
-//            
+//
 //            lock (associated) {
 //                if (!associated.ContainsKey (d)) {
 //                    associated.Add (d, o);
@@ -111,13 +111,13 @@ namespace Banshee.Telepathy.Data
 //        {
 //            return GetAssociatedObject (Get (key));
 //        }
-//        
+//
 //        public object GetAssociatedObject (LibraryDownload d)
 //        {
 //            if (d == null) {
 //                throw new ArgumentNullException ("d");
 //            }
-//            
+//
 //            lock (associated) {
 //                if (associated.ContainsKey (d)) {
 //                    return associated[d];
@@ -126,15 +126,15 @@ namespace Banshee.Telepathy.Data
 //
 //            return null;
 //        }
-        
+
         public LibraryDownload Get (string key)
         {
             if (key == null) {
                 throw new ArgumentNullException ("key");
             }
-            
+
             Log.DebugFormat ("Getting download with key {0}", key);
-            
+
             lock (downloads) {
                 if (downloads.ContainsKey (key)) {
                     Log.DebugFormat ("Key found");
@@ -148,17 +148,17 @@ namespace Banshee.Telepathy.Data
         public void Reset ()
         {
             Log.Debug ("resetting downloads");
-            
+
             lock (downloads) {
                 foreach (LibraryDownload d in downloads.Values) {
                     d.StopProcessing ();
                 }
-                
+
                 downloads.Clear ();
             }
-            
+
             //associated.Clear ();
-            
+
             monitoring = false;
         }
 
@@ -183,7 +183,7 @@ namespace Banshee.Telepathy.Data
 
             return true;
         }
-        
+
         protected virtual void OnAllFinished (EventArgs args)
         {
             EventHandler <EventArgs> handler = AllFinished;
@@ -206,7 +206,7 @@ namespace Banshee.Telepathy.Data
 
             if (download != null && downloads.Values.Contains (download)) {
                 download.StopProcessing ();
-                
+
                 if (monitoring && MonitoredFinished ()) {
                     OnAllFinished (EventArgs.Empty);
                 }
@@ -226,27 +226,27 @@ namespace Banshee.Telepathy.Data
     }
 
     public delegate void PayloadHandler (object sender, object [] o);
-    
+
     public class LibraryDownload
     {
         private long timestamp = 0;
         private int last_sequence_num;
         private long total_downloaded;
         private long total_expected;
-        
+
         private readonly ManualResetEvent manual_event = new ManualResetEvent (false);
         private readonly Queue <object [] > queue = new Queue<object [] > ();
         private readonly object sync = new object ();
-        
+
         public event EventHandler <EventArgs> Finished;
         public event EventHandler <EventArgs> ProcessingComplete;
-        
+
         public LibraryDownload ()
         {
             this.last_sequence_num = 0;
             this.total_downloaded = 0;
         }
-        
+
         public LibraryDownload (long timestamp, long total_expected) : this ()
         {
             this.timestamp = timestamp;
@@ -291,7 +291,7 @@ namespace Banshee.Telepathy.Data
             if (processing) {
                 throw new InvalidOperationException ("Already processing.");
             }
-            
+
             payload_handler = handler;
             processing = true;
 
@@ -307,7 +307,7 @@ namespace Banshee.Telepathy.Data
         private void Process ()
         {
             var handler = payload_handler;
-            
+
             while (processing) {
                 manual_event.WaitOne ();
                 while (handler != null && QueueCount () > 0) {
@@ -326,13 +326,13 @@ namespace Banshee.Telepathy.Data
             });
         }
 
-        private int QueueCount () 
+        private int QueueCount ()
         {
             lock (sync) {
                 return queue.Count;
             }
         }
-        
+
         private object[] Dequeue ()
         {
             lock (sync) {
@@ -340,7 +340,7 @@ namespace Banshee.Telepathy.Data
                 return queue.Dequeue ();
             }
         }
-        
+
         private void Enqueue (object[] o)
         {
             lock (sync) {
@@ -348,7 +348,7 @@ namespace Banshee.Telepathy.Data
                 manual_event.Set ();
             }
         }
-        
+
         public void UpdateDownload (long timestamp, int seq, int chunk_size, object [] payload)
         {
             long expected_stamp = this.timestamp;
@@ -361,7 +361,7 @@ namespace Banshee.Telepathy.Data
             } else if (expected_seq != seq) {
                 throw new InvalidOperationException ("Out of sequence.");
             }
-            
+
             last_sequence_num = seq;
             total_downloaded += chunk_size;
 
@@ -369,7 +369,7 @@ namespace Banshee.Telepathy.Data
                              total_expected, total_downloaded);
 
             Enqueue (payload);
-            
+
             if (IsFinished) {
                 OnFinished (EventArgs.Empty);
             }

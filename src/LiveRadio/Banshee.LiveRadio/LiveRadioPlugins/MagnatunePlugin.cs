@@ -160,9 +160,9 @@ namespace Banshee.LiveRadio.Plugins
                     RaiseErrorReturned ("XML Parse Error", ex.Message);
                     continue;
                 }
-                
+
             }
-            
+
             new_genres.Sort ();
             genres = new_genres;
 
@@ -440,5 +440,5 @@ namespace Banshee.LiveRadio.Plugins
 
 
     }
-    
+
 }

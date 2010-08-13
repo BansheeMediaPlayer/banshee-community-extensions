@@ -35,7 +35,7 @@ namespace Banshee.Telepathy.API.Dispatchables
     public class StreamActivityListener : Activity
     {
         private StreamTubeChannel tube;
-        
+
 
         internal StreamActivityListener (Contact c, StreamTubeChannel tube) : base (c, tube)
         {
@@ -44,11 +44,11 @@ namespace Banshee.Telepathy.API.Dispatchables
 
         public object Address {
             get { return tube.ServerAddress; }
-            set { 
+            set {
                 if (State == ActivityState.Connected) {
                     throw new InvalidOperationException ("Address is already connected.");
                 }
-                tube.ServerAddress = value; 
+                tube.ServerAddress = value;
             }
         }
 
@@ -58,11 +58,11 @@ namespace Banshee.Telepathy.API.Dispatchables
 
         protected new void Accept () {}
         protected new void Reject () {}
-        
+
         protected override void OnChannelReady (object sender, EventArgs args)
         {
             Console.WriteLine ("{0} Connection to address {1}", Contact.Name, Address);
-            
+
             State = ActivityState.Connected;
             OnReady (EventArgs.Empty);
         }

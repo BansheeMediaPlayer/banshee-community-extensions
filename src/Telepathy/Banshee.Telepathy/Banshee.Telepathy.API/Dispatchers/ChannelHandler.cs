@@ -43,7 +43,7 @@ namespace Banshee.Telepathy.API.DBus
         private const string BASE_BUS = "org.freedesktop.Telepathy.Client";
         private static ChannelHandler instance = null;
         private static int connection_count = 0;
-        
+
         private ChannelHandler ()
         {
         }
@@ -63,7 +63,7 @@ namespace Banshee.Telepathy.API.DBus
         {
             DBusUtility.Unregister (BusType.Session, instance.ObjectPath);
         }
-        
+
         public static ChannelHandler Create (string client_name, IDictionary<string, object>[] channels)
         {
             if (instance == null) {
@@ -84,7 +84,7 @@ namespace Banshee.Telepathy.API.DBus
                 instance = null;
             }
         }
-        
+
         private string client_name;
         public string ClientName {
             get { return client_name; }
@@ -109,24 +109,24 @@ namespace Banshee.Telepathy.API.DBus
         }
 
         private IDictionary<string, object>[] channel_filter;
-        public IDictionary<string,object>[] HandlerChannelFilter { 
+        public IDictionary<string,object>[] HandlerChannelFilter {
             get { return channel_filter; }
             private set { channel_filter = value; }
         }
-        
-        public bool BypassApproval { 
+
+        public bool BypassApproval {
             get { return true; }
         }
 
         //IDictionary<string, object>[] channels;
-        public ObjectPath[] HandledChannels { 
+        public ObjectPath[] HandledChannels {
             get { return new ObjectPath[] {}; }
         }
 
-        public string[] Capabilities { 
+        public string[] Capabilities {
             get { return new string[] {}; }
         }
-        
+
         public IDictionary <string, object> GetAll (string iface)
         {
             IDictionary <string, object> all = new Dictionary <string, object> ();
@@ -140,14 +140,14 @@ namespace Banshee.Telepathy.API.DBus
                 all.Add ("HandledChannels", HandledChannels);
                 all.Add ("Capabilities", Capabilities);
             }
-            
+
             return all;
         }
-        
+
         public void Set (string iface, string property, object value)
         {
         }
-        
+
         public object Get (string iface, string property)
         {
             if (property.Equals ("Interfaces")) {
@@ -170,11 +170,11 @@ namespace Banshee.Telepathy.API.DBus
             }
         }
 
-        public void HandleChannels (ObjectPath account, 
-                                    ObjectPath connection, 
-                                    ChannelDetails[] channels, 
-                                    ObjectPath[] requests_satisfied, 
-                                    ulong user_action_time, 
+        public void HandleChannels (ObjectPath account,
+                                    ObjectPath connection,
+                                    ChannelDetails[] channels,
+                                    ObjectPath[] requests_satisfied,
+                                    ulong user_action_time,
                                     IDictionary<string,object> handler_info)
         {
 

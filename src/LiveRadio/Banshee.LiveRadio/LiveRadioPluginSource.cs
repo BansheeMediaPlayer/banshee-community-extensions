@@ -80,11 +80,11 @@ namespace Banshee.LiveRadio
             SetIcon (icon);
 
             plugin.SetLiveRadioPluginSource (this);
-            
+
             AfterInitialized ();
-            
+
             Properties.Set<bool> ("Nereid.SourceContentsPropagate", true);
-            
+
             Properties.SetString ("TrackView.ColumnControllerXml", String.Format (@"
                 <column-controller>
                   <!--<column modify-default=""IndicatorColumn"">
@@ -124,17 +124,17 @@ namespace Banshee.LiveRadio
             ));
 
             ServiceManager.PlayerEngine.TrackIntercept += OnPlayerEngineTrackIntercept;
-            
+
             TrackEqualHandler = delegate(DatabaseTrackInfo a, TrackInfo b) {
                 RadioTrackInfo radio_track = b as RadioTrackInfo;
                 return radio_track != null && DatabaseTrackInfo.TrackEqual (radio_track.ParentTrack as DatabaseTrackInfo, a);
             };
-            
+
             source_contents = new LiveRadioPluginSourceContents (plugin);
             source_contents.SetSource (this);
-            
+
             Properties.Set<ISourceContents> ("Nereid.SourceContents", source_contents);
-            
+
             this.PurgeTracks ();
 
         }
@@ -164,7 +164,7 @@ namespace Banshee.LiveRadio
         {
             base.Dispose ();
             this.PurgeTracks ();
-            
+
             ServiceManager.PlayerEngine.TrackIntercept -= OnPlayerEngineTrackIntercept;
         }
 
@@ -184,9 +184,9 @@ namespace Banshee.LiveRadio
             if (station == null || station.PrimarySource != this) {
                 return false;
             }
-            
+
             new RadioTrackInfo (station).Play ();
-            
+
             return true;
         }
 

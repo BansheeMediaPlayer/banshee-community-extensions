@@ -50,37 +50,37 @@ namespace Banshee.Telepathy.Data
         {
             Track = track;
         }
-        
+
         public ContactTrackInfo Track { get; private set; }
-        
+
         public bool Equals (TelepathyDownloadKey other)
         {
             return base.Equals (other);
         }
     }
-    
+
     public class TelepathyDownload : TelepathyTransfer<TelepathyDownloadKey, IncomingFileTransfer>
     {
         public TelepathyDownload (TelepathyDownloadKey key) : base (key)
         {
         }
-        
+
         protected override void Initialize ()
         {
             IncomingFileTransfer.AutoStart = false;
             base.Initialize ();
         }
-        
+
         public override void Queue ()
         {
             IContactSource source = ServiceManager.SourceManager.ActiveSource as IContactSource;
             if (!source.IsDownloadingAllowed) {
                 return;
             }
-            
+
             DBusActivity activity = Contact.DispatchManager.Get <DBusActivity> (Contact, MetadataProviderService.BusName);
 
-            if (activity != null) {            
+            if (activity != null) {
                 IMetadataProviderService service = activity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
                 if (service != null) {
                     base.Queue ();
@@ -97,26 +97,26 @@ namespace Banshee.Telepathy.Data
                 }
             }
         }
-        
+
         public override bool Start ()
         {
             if (FileTransfer != null) {
                 if (base.Start ()) {
 	                FileTransfer.Start ();
-	                TelepathyNotification.Create ().Show (FileTransfer.Contact.Name, 
+	                TelepathyNotification.Create ().Show (FileTransfer.Contact.Name,
 	                    String.Format (AddinManager.CurrentLocalizer.GetString ("is sending {0} with Banshee"),
                                        FileTransfer.Filename));
 	                return true;
 				}
             }
-            
+
             return false;
         }
-        
+
         private void RefreshListView ()
         {
             DatabaseSource source = ServiceManager.SourceManager.ActiveSource as DatabaseSource;
-            
+
             if (source as ContactSource != null) {
                 (source as ContactSource).InvalidateCaches ();
             }
@@ -124,13 +124,13 @@ namespace Banshee.Telepathy.Data
                 (source as ContactPlaylistSource).InvalidateCaches ();
             }
         }
-        
+
         private void AcceptTransfer (IncomingFileTransfer transfer)
         {
             if (transfer == null) {
                 return;
             }
-            
+
             // passing extension on Uri to allow import after a download
             string ext = Key.Track.Uri.ToString ().Substring (Key.Track.Uri.ToString ().LastIndexOf ('/') + 1);
             string filename = FileNamePattern.BuildFull (ContactSource.TempDownloadDirectory, Key.Track, ext);
@@ -144,7 +144,7 @@ namespace Banshee.Telepathy.Data
                 }
             }
         }
-                
+
         protected override void OnStateChanged ()
         {
             switch (State) {
@@ -156,23 +156,23 @@ namespace Banshee.Telepathy.Data
                 RefreshListView ();
                 break;
             }
-            
+
             base.OnStateChanged ();
         }
 
         protected override void OnTransferResponseRequired (object sender, EventArgs args)
         {
             IncomingFileTransfer transfer = sender as IncomingFileTransfer;
-            
+
             // transfer was cancelled before the channel was available
             if (CancelPending) {
                 Cancel ();
                 return;
             }
-            
+
             Log.DebugFormat ("{0} handle {1} accepting transfer from ContactSource", Contact.Name, Contact.Handle);
-    
-            AcceptTransfer (transfer);        
+
+            AcceptTransfer (transfer);
         }
     }
 }

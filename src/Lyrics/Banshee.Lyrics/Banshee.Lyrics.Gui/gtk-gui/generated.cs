@@ -1,9 +1,9 @@
-//  
+//
 // Author:
 //   Christian Martellini <christian.martellini@gmail.com>
 //
 // Copyright (C) 2009 Christian Martellini
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
@@ -22,28 +22,28 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
+//
 
 namespace Banshee.Lyrics.Gui {
-    
-    
+
+
     internal class Gui {
-        
+
         private static bool initialized;
-        
+
         internal static void Initialize(Gtk.Widget iconRenderer) {
             if ((Gui.initialized == false)) {
                 Gui.initialized = true;
             }
         }
     }
-    
+
     internal class BinContainer {
-        
+
         private Gtk.Widget child;
-        
+
         private Gtk.UIManager uimanager;
-        
+
         public static BinContainer Attach(Gtk.Bin bin) {
             BinContainer bc = new BinContainer();
             bin.SizeRequested += new Gtk.SizeRequestedHandler(bc.OnSizeRequested);
@@ -51,28 +51,28 @@ namespace Banshee.Lyrics.Gui {
             bin.Added += new Gtk.AddedHandler(bc.OnAdded);
             return bc;
         }
-        
+
         private void OnSizeRequested(object sender, Gtk.SizeRequestedArgs args) {
             if ((this.child != null)) {
                 args.Requisition = this.child.SizeRequest();
             }
         }
-        
+
         private void OnSizeAllocated(object sender, Gtk.SizeAllocatedArgs args) {
             if ((this.child != null)) {
                 this.child.Allocation = args.Allocation;
             }
         }
-        
+
         private void OnAdded(object sender, Gtk.AddedArgs args) {
             this.child = args.Widget;
         }
-        
+
         public void SetUiManager(Gtk.UIManager uim) {
             this.uimanager = uim;
             this.child.Realized += new System.EventHandler(this.OnRealized);
         }
-        
+
         private void OnRealized(object sender, System.EventArgs args) {
             if ((this.uimanager != null)) {
                 Gtk.Widget w;
@@ -84,9 +84,9 @@ namespace Banshee.Lyrics.Gui {
             }
         }
     }
-    
+
     internal class IconLoader {
-        
+
         public static Gdk.Pixbuf LoadIcon(Gtk.Widget widget, string name, Gtk.IconSize size, int sz) {
             Gdk.Pixbuf res = widget.RenderIcon(name, size, null);
             if ((res != null)) {
@@ -117,13 +117,13 @@ namespace Banshee.Lyrics.Gui {
             }
         }
     }
-    
+
     internal class ActionGroups {
-        
+
         public static Gtk.ActionGroup GetActionGroup(System.Type type) {
             return ActionGroups.GetActionGroup(type.FullName);
         }
-        
+
         public static Gtk.ActionGroup GetActionGroup(string name) {
             return null;
         }

@@ -66,6 +66,6 @@ namespace Banshee.Streamrecorder.Gst
                 throw new GLib.GException (error);
             return new Bin (raw_ret);
         }
-        
+
     }
 }

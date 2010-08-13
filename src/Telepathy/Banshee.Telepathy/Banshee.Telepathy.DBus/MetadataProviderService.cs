@@ -41,42 +41,42 @@ using Banshee.Telepathy.API.Dispatchables;
 
 using Hyena;
 using Hyena.Data.Sqlite;
-    
+
 using NDesk.DBus;
 
 namespace Banshee.Telepathy.DBus
 {
     public enum LibraryType
     {
-        Music, 
+        Music,
         Video
     };
 
     public delegate void PermissionSetHandler (bool granted);
     public delegate void DownloadingAllowedHandler (bool allowed);
     public delegate void StreamingAllowedHandler (bool allowed);
-    
+
     public class MetadataProviderService : IMetadataProviderService
     {
         public event PermissionSetHandler PermissionSet;
 		public event EventHandler<EventArgs> PermissionRequired;
         public event DownloadingAllowedHandler DownloadingAllowedChanged;
         public event StreamingAllowedHandler StreamingAllowedChanged;
-        
+
         private DBusActivity activity;
-        
+
         private MetadataProviderService ()
         {
         }
-        
+
         public MetadataProviderService (DBusActivity activity)
         {
             if (activity == null) {
                 throw new ArgumentNullException ("activity");
             }
-            
+
             this.activity = activity;
-            
+
             ContactContainerSource.DownloadingAllowedChanged += (o, a) => OnDownloadingAllowedChanged (DownloadsAllowed ());
             ContactContainerSource.StreamingAllowedChanged += (o, a) => OnStreamingAllowedChanged (StreamingAllowed ());
         }
@@ -95,39 +95,39 @@ namespace Banshee.Telepathy.DBus
 			}
 		}
 		
-        public bool PermissionGranted () 
+        public bool PermissionGranted ()
         {
-            return permission_granted; 
+            return permission_granted;
         }
-        
+
         public ObjectPath CreateMetadataProvider (LibraryType type)
         {
             if (activity == null || !permission_granted) {
                 return new ObjectPath ("");
             }
-            
+
             MetadataProvider provider = new MetadataProvider (activity, type);
             activity.RegisterDBusObject (provider, provider.ObjectPath);
             return new ObjectPath (provider.ObjectPath);
             //return ServiceManager.DBusServiceManager.RegisterObject (new MetadataProvider (this, type));
         }
-        
+
         public ObjectPath CreatePlaylistProvider (int id)
         {
             if (activity == null || !permission_granted) {
                 return new ObjectPath ("");
             }
-            
+
             PlaylistProvider provider = new PlaylistProvider (activity, id);
             activity.RegisterDBusObject (provider, provider.ObjectPath);
             return new ObjectPath (provider.ObjectPath);
         }
-        
+
         public int[] GetPlaylistIds (LibraryType type)
         {
             //Console.WriteLine ("I am in GetPlaylistIds");
             int primary_source_id = 0;
-            
+
             switch (type) {
                 case LibraryType.Music:
                     primary_source_id = ServiceManager.SourceManager.MusicLibrary.DbId;
@@ -140,7 +140,7 @@ namespace Banshee.Telepathy.DBus
             int array_size = ServiceManager.DbConnection.Query<int> (
                 "SELECT COUNT(*) FROM CorePlaylists WHERE PrimarySourceID = ?", primary_source_id
             );
-            
+
             IEnumerable <int> ids = ServiceManager.DbConnection.QueryEnumerable <int> (
                 "SELECT PlaylistID FROM CorePlaylists WHERE PrimarySourceID = ?", primary_source_id
             );
@@ -150,9 +150,9 @@ namespace Banshee.Telepathy.DBus
             foreach (int id in ids) {
                 playlist_ids[index++] = id;
             }
-            
+
             return playlist_ids;
-            
+
         }
 
         public void RequestPermission ()
@@ -169,14 +169,14 @@ namespace Banshee.Telepathy.DBus
 			OnPermissionRequired (EventArgs.Empty);
 			
 //            Contact contact = activity.Contact;
-//            
+//
 //            ContactRequestDialog dialog = new ContactRequestDialog (contact.Name);
 //            dialog.ShowAll ();
 //            dialog.Response += delegate(object o, ResponseArgs e) {
-//                if (e.ResponseId == ResponseType.Accept) {               
+//                if (e.ResponseId == ResponseType.Accept) {
 //                    permission_granted = true;
 //                }
-//                
+//
 //                dialog.Destroy ();
 //                OnPermissionResponse (permission_granted);
 //            };
@@ -187,16 +187,16 @@ namespace Banshee.Telepathy.DBus
             if (activity == null || activity.Contact == null) {
                 return;
             }
-            
+
             if (!DownloadsAllowed ()) {
                 return;
             }
-            
+
             DatabaseTrackInfo track = DatabaseTrackInfo.Provider.FetchFirstMatching ("TrackID = ?", external_id);
             if (track == null) {
                 return;
             }
-            
+
             if (content_type == string.Empty || content_type == null) {
                 content_type = "application/octet-stream";
             }
@@ -224,13 +224,13 @@ namespace Banshee.Telepathy.DBus
             bool downloading_allowed = ContactContainerSource.AllowDownloadsSchema.Get ();
             return downloading_allowed;
         }
-        
+
         public bool StreamingAllowed ()
         {
             bool streaming_allowed = ContactContainerSource.AllowStreamingSchema.Get ();
             return streaming_allowed;
         }
-            
+
 		protected virtual void OnPermissionRequired (EventArgs args)
         {
             var handler = PermissionRequired;
@@ -246,7 +246,7 @@ namespace Banshee.Telepathy.DBus
                 handler (granted);
             }
         }
-        
+
         private void OnDownloadingAllowedChanged (bool allowed)
         {
             DownloadingAllowedHandler handler = DownloadingAllowedChanged;
@@ -254,7 +254,7 @@ namespace Banshee.Telepathy.DBus
                 handler (allowed);
             }
         }
-        
+
         private void OnStreamingAllowedChanged (bool allowed)
         {
             StreamingAllowedHandler handler = StreamingAllowedChanged;
@@ -262,7 +262,7 @@ namespace Banshee.Telepathy.DBus
                 handler (allowed);
             }
         }
-        
+
         public static string ObjectPath {
             get { return "/org/bansheeproject/MetadataProviderService"; }
         }
@@ -272,4 +272,4 @@ namespace Banshee.Telepathy.DBus
         }
     }
 }
-        
+

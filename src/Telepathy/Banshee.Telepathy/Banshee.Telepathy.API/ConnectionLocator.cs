@@ -41,14 +41,14 @@ namespace Banshee.Telepathy.API
         Connected,
         Disconnected
     };
-    
+
     public class ConnectionStatusEventArgs : EventArgs
     {
         private AccountConnectionStatus action;
 
-        public ConnectionStatusEventArgs (AccountConnectionStatus action, 
-                                           string account_id, 
-                                           string bus_name, 
+        public ConnectionStatusEventArgs (AccountConnectionStatus action,
+                                           string account_id,
+                                           string bus_name,
                                            string object_path,
                                            string account_object_path)
         {
@@ -86,17 +86,17 @@ namespace Banshee.Telepathy.API
 
     public class ConnectionLocator : IDisposable
     {
-        
+
         protected IAccountManager account_manager;
         protected readonly IDictionary <string, Account> connections = new Dictionary<string, Account> ();
-        
+
         public event EventHandler <ConnectionStatusEventArgs> ConnectionStatusChanged;
-        
+
         public ConnectionLocator ()
         {
             account_manager = DBusUtility.GetProxy <IAccountManager> (bus, Constants.ACCOUNTMANAGER_IFACE,
                 Constants.ACCOUNTMANAGER_PATH);
-            
+
             Initialize ();
         }
 
@@ -109,22 +109,22 @@ namespace Banshee.Telepathy.API
         {
             AddConnections ();
         }
-        
+
         private void AddConnections ()
         {
             ObjectPath[] paths = (ObjectPath[]) DBusUtility.GetProperty(bus, Constants.ACCOUNTMANAGER_IFACE, Constants.ACCOUNTMANAGER_PATH, Constants.ACCOUNTMANAGER_IFACE, "ValidAccounts");
-            
+
             foreach (ObjectPath p in paths) {
                 Account account = new Account (p.ToString ());
-                
+
                 account.ConnectionStatusChanged += delegate(object sender, ConnectionStatusEventArgs args) {
                     OnConnectionStatusChanged (args);
                 };
-                
+
                 connections.Add (p.ToString (), account);
             }
         }
-        
+
         public IEnumerable <Account> GetConnections ()
         {
             foreach (Account account in connections.Values) {
@@ -146,7 +146,7 @@ namespace Banshee.Telepathy.API
         {
             Dispose (true);
         }
-        
+
         protected virtual void Dispose (bool disposing)
         {
             if (disposing) {
@@ -162,6 +162,6 @@ namespace Banshee.Telepathy.API
             }
         }
 
-        
+
     }
 }

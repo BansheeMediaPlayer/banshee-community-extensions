@@ -1,21 +1,21 @@
-// 
+//
 // FlowBehaviour.cs
-//  
+//
 // Author:
 //       Mathijs Dumon <mathijsken@hotmail.com>
-// 
+//
 // Copyright (c) 2010 Mathijs Dumon
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -122,7 +122,7 @@ namespace ClutterFlow
         public bool TransitionAnimationBusy {
             get { return (transition_score!=null && transition_score.IsPlaying); }
         }
-        
+
 		public bool HoldUpdates {
 			get { return CoverManager.Timeline.IsPaused || TransitionAnimationBusy || transition_queue.Count > 0; }
 		}
@@ -159,18 +159,18 @@ namespace ClutterFlow
 		protected int maxCoverWidth = 256;
 		public int MaxCoverWidth {
 			get { return maxCoverWidth; }
-			set { 
+			set {
 				if (maxCoverWidth!=value) {
 					maxCoverWidth = value;
 					UpdateCoverWidth (); //TODO use a timeout instead. Multiple update calls may cause slowdowns?
 				}
 			}
 		}
-        
+
 		protected int minCoverWidth = 64;
 		public int MinCoverWidth {
 			get { return minCoverWidth; }
-			set { 
+			set {
 				if (minCoverWidth!=value) {
 					minCoverWidth = value;
 					UpdateCoverWidth (); //TODO use a timeout instead. Multiple update calls may cause slowdowns?
@@ -252,7 +252,7 @@ namespace ClutterFlow
 			
 		#region Actor Handling (animation)
 
-		public void UpdateActors () 
+		public void UpdateActors ()
 		{
 			if (!HoldUpdates && coverManager.IsVisible) {
 				//only update covers that were visible at the previous & current progress:
@@ -286,7 +286,7 @@ namespace ClutterFlow
         {
             pcb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (progress * (CoverManager.TotalCovers-1))));
             plb = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (pcb - (CoverManager.HalfVisCovers + 1))));
-            pub = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (pcb + (CoverManager.HalfVisCovers + 1))));                
+            pub = Math.Min (coverManager.TotalCovers-1, Math.Max (0, (int) (pcb + (CoverManager.HalfVisCovers + 1))));
         }
 		protected void HideActor (ClutterFlowBaseActor actor)
 		{
@@ -301,7 +301,7 @@ namespace ClutterFlow
 		protected void UpdateActor (ClutterFlowBaseActor actor, double progress)
 		{
 			UpdateActorWithAlpha (actor, AlphaFunc(actor));
-            
+
 		}
 
         protected double AlphaFunc (ClutterFlowBaseActor actor) {
@@ -312,8 +312,8 @@ namespace ClutterFlow
             if (actor.Index < 0)
                 actor.Data["last_alpha"] = (double) 0;
             else {
-				double previous_alpha = (CoverManager.HalfVisCovers - (CoverManager.TotalCovers-1) 
-                              * progress + actor.Index) 
+				double previous_alpha = (CoverManager.HalfVisCovers - (CoverManager.TotalCovers-1)
+                              * progress + actor.Index)
                               / (CoverManager.VisibleCovers-1);
                 if (previous_alpha<0) previous_alpha=0;
                 if (previous_alpha>1) previous_alpha=1;
@@ -321,7 +321,7 @@ namespace ClutterFlow
             }
             return (double) actor.Data["last_alpha"];
 		}
-        
+
 		protected void UpdateActorWithAlpha (ClutterFlowBaseActor actor, double alpha) {
 			
 			float ratio = Math.Min (0.75f * (float) coverManager.Timeline.Delta / (float) coverManager.VisibleCovers, 1.25f);
@@ -354,7 +354,7 @@ namespace ClutterFlow
             }
 		}
 			
-		private void MoveAndFadeOutActor (Actor actor, float progress,  bool left) 
+		private void MoveAndFadeOutActor (Actor actor, float progress,  bool left)
 		{
 			actor.SetPosition ((left ? 0 : Width) + (SideMargin + progress * XStep)*(left ? 1 : -1), CenterY);
 			actor.Depth = zFar - 3 + progress;
@@ -384,14 +384,14 @@ namespace ClutterFlow
         protected const int fade_slow = 1;
         Score transition_score;
         Timeline t_slide;
-        protected struct TransitionStruct {            
+        protected struct TransitionStruct {
             public List<ClutterFlowBaseActor> OldCovers;
             public List<ClutterFlowBaseActor> PersistentCovers;
             public List<ClutterFlowBaseActor> NewCovers;
             public double NewProgress;
             public EventHandler OnCompletedHandler;
 			
-            
+
             public TransitionStruct (List<ClutterFlowBaseActor> old_covers, List<ClutterFlowBaseActor> persistent_covers, List<ClutterFlowBaseActor> new_covers, double new_progress, EventHandler on_completed) {
                 OldCovers = old_covers;
                 PersistentCovers = persistent_covers;
@@ -402,7 +402,7 @@ namespace ClutterFlow
 
             public bool IsFilled {
                 get {
-                    return OldCovers!=null && 
+                    return OldCovers!=null &&
                            PersistentCovers!=null &&
                            NewCovers !=null &&
                            OnCompletedHandler != null &&
@@ -411,22 +411,22 @@ namespace ClutterFlow
             }
         }
         Queue<TransitionStruct> transition_queue = new Queue<TransitionStruct>();	
-		public void FadeCoversInAndOut (List<ClutterFlowBaseActor> old_covers, 
-                                        List<ClutterFlowBaseActor> persistent_covers, 
+		public void FadeCoversInAndOut (List<ClutterFlowBaseActor> old_covers,
+                                        List<ClutterFlowBaseActor> persistent_covers,
                                         List<ClutterFlowBaseActor> new_covers,
 		                                EventHandler on_completed)
 		{
 			FadeCoversInAndOut (old_covers, persistent_covers, new_covers, on_completed, Progress);
 		}
         protected void FadeCoversInAndOut (TransitionStruct trans) {
-            FadeCoversInAndOut (trans.OldCovers, 
-                                trans.PersistentCovers, 
+            FadeCoversInAndOut (trans.OldCovers,
+                                trans.PersistentCovers,
                                 trans.NewCovers,
                                 trans.OnCompletedHandler,
 			                    trans.NewProgress);
         }
-		private void FadeCoversInAndOut (List<ClutterFlowBaseActor> old_covers, 
-                                        List<ClutterFlowBaseActor> persistent_covers, 
+		private void FadeCoversInAndOut (List<ClutterFlowBaseActor> old_covers,
+                                        List<ClutterFlowBaseActor> persistent_covers,
                                         List<ClutterFlowBaseActor> new_covers,
 		                                EventHandler on_completed, double new_progress)
 		{
@@ -440,7 +440,7 @@ namespace ClutterFlow
 			if (fadeOutAnim!=null) { fadeOutAnim.CompleteAnimation (); fadeOutAnim = null; }
 			if (fadeInAnim!=null) { fadeInAnim.CompleteAnimation (); fadeInAnim = null; }
             if (t_slide!=null) { t_slide.Advance(t_slide.Duration); t_slide = null; }
-            
+
 			#region fade out of removed covers
 			foreach (ClutterFlowBaseActor cover in old_covers) {
 				if (cover!=null) {
@@ -522,7 +522,7 @@ namespace ClutterFlow
                 FadeCoversInAndOut (transition_queue.Dequeue());
         }
 		
-		public void CreateClickedCloneAnimation (ClutterFlowBaseActor actor, uint delay) 
+		public void CreateClickedCloneAnimation (ClutterFlowBaseActor actor, uint delay)
 		{
 			if (actor.Parent!=null) {
 				Clone clone = new Clone(actor);
@@ -548,7 +548,7 @@ namespace ClutterFlow
 			}
 		}
 		
-		public void CreateClickedCloneAnimation (ClutterFlowBaseActor actor) 
+		public void CreateClickedCloneAnimation (ClutterFlowBaseActor actor)
 		{
 			CreateClickedCloneAnimation (actor, 0);
 		}

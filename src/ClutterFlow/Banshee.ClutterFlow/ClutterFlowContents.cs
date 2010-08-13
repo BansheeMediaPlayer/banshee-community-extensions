@@ -1,21 +1,21 @@
-// 
+//
 // ClutterFlowContents.cs
-//  
+//
 // Author:
 //       Mathijs Dumon <mathijsken@hotmail.com>
-// 
+//
 // Copyright (c) 2010 Mathijs Dumon
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -62,7 +62,7 @@ namespace Banshee.ClutterFlow
 		public Paned Container {
 			get { return container; }
 		}
-        
+
 		private Hyena.Widgets.RoundedFrame frame;
 		private ClutterFlowView filter_view;
 		public ClutterFlowView FilterView {
@@ -97,11 +97,11 @@ namespace Banshee.ClutterFlow
         public ISource Source {
             get { return source; }
         }
-        
+
         public TrackListModel TrackModel {
             get { return source.TrackModel; }
         }
-        
+
         protected FilterListModel<AlbumInfo> external_filter; //this is actually fetched from the MusicLibrary
 
 		//PLAYBACK RELATED:
@@ -143,9 +143,9 @@ namespace Banshee.ClutterFlow
             if (disposed)
                 return;
             disposed = true;
-            
+
             ResetSource ();
-            
+
             video_window.Hidden -= OnFullscreenWindowHidden;
             FilterView.UpdatedAlbum -= HandleUpdatedAlbum;
             FilterView.PMButton.Toggled -= HandlePMButtonToggled;
@@ -159,7 +159,7 @@ namespace Banshee.ClutterFlow
             Reset ();
             if (filter_view.Parent!=null) frame.Remove (filter_view);
             filter_view.DetachEvents ();
-            
+
             fullscreen_adapter.Dispose ();
             screensaver.Dispose ();
 
@@ -171,7 +171,7 @@ namespace Banshee.ClutterFlow
         private void Layout ()
         {
             Reset ();
-            
+
             container = new VPaned ();
 
             frame = new Hyena.Widgets.RoundedFrame ();
@@ -199,7 +199,7 @@ namespace Banshee.ClutterFlow
             else
                 return String.Format ("{0}.browser.{1}.{2}", name, "top", filter);
         }
-        
+
         private void ShowPack ()
         {
             PackStart (container, true, true, 0);
@@ -255,14 +255,14 @@ namespace Banshee.ClutterFlow
             } else {
                 window = new ScrolledWindow ();
             }
-            
+
             window.Add (view);
             window.HscrollbarPolicy = PolicyType.Automatic;
             window.VscrollbarPolicy = PolicyType.Automatic;
 
             Expander expander = new Expander(AddinManager.CurrentLocalizer.GetString ("Track list"));
             expander.Add(window);
-            
+
             return expander;
         }
 
@@ -322,12 +322,12 @@ namespace Banshee.ClutterFlow
         internal void OverrideFullscreen ()
         {
             FullscreenHandler (false);
-            
-            InterfaceActionService service = ServiceManager.Get<InterfaceActionService> (); 
+
+            InterfaceActionService service = ServiceManager.Get<InterfaceActionService> ();
             if (service == null || service.ViewActions == null) {
                 return;
             }
-            
+
             previous_fullscreen_handler = service.ViewActions.Fullscreen;
             service.ViewActions.Fullscreen = FullscreenHandler;
             DisableFullscreenAction ();
@@ -336,12 +336,12 @@ namespace Banshee.ClutterFlow
         internal void RelinquishFullscreen ()
         {
             FullscreenHandler (false);
-            
-            InterfaceActionService service = ServiceManager.Get<InterfaceActionService> (); 
+
+            InterfaceActionService service = ServiceManager.Get<InterfaceActionService> ();
             if (service == null || service.ViewActions == null) {
                 return;
             }
-            
+
             service.ViewActions.Fullscreen = previous_fullscreen_handler;
         }
 	
@@ -372,7 +372,7 @@ namespace Banshee.ClutterFlow
 				handlingFullScreen = false;
 			}
         }
-        
+
 #endregion
 
         private void MoveVideoExternal (bool hidden)
@@ -387,7 +387,7 @@ namespace Banshee.ClutterFlow
 			else
 				video_window.Show();
         }
-        
+
         private void MoveVideoInternal ()
         {
             if (filter_view.Parent != frame) {
@@ -438,7 +438,7 @@ namespace Banshee.ClutterFlow
 
 		private void HandleFSButtonToggled(object sender, EventArgs e)
 		{
-            InterfaceActionService service = ServiceManager.Get<InterfaceActionService> (); 
+            InterfaceActionService service = ServiceManager.Get<InterfaceActionService> ();
             if (service == null || service.ViewActions == null)
                 return;
 			service.ViewActions.Fullscreen (FilterView.FSButton.IsActive);
@@ -506,11 +506,11 @@ namespace Banshee.ClutterFlow
 		{
 			if (!ClutterFlowSchemas.InstantPlayback.Get ()) {
 				ServiceManager.PlaybackController.NextSource = source;
-				if (!ServiceManager.PlayerEngine.IsPlaying()) 
+				if (!ServiceManager.PlayerEngine.IsPlaying())
 					ServiceManager.PlayerEngine.Play();
 			} else {
 				ServiceManager.PlaybackController.Source = source;
-				if (!ServiceManager.PlayerEngine.IsPlaying()) 
+				if (!ServiceManager.PlayerEngine.IsPlaying())
 					ServiceManager.PlayerEngine.Play();
 				else
 					ServiceManager.PlaybackController.Next();
@@ -577,7 +577,7 @@ namespace Banshee.ClutterFlow
 				external_filter.Selection.Select (FilterView.ActiveModelIndex);
 			}
         }
-		protected void SelectAllTracks () 
+		protected void SelectAllTracks ()
 		{
 			external_filter.Selection.SelectAll ();
 		}		

@@ -86,19 +86,19 @@ namespace Banshee.Streamrecorder
         {
             recorder = new Recorder ();
             active_encoder = recorder.SetActiveEncoder (active_encoder);
-            
+
             ServiceManager.PlaybackController.TrackStarted += delegate {
                 if (recording) {
                     StartRecording ();
                 }
             };
-            
+
             ServiceManager.PlaybackController.Stopped += delegate {
                 if (recording) {
                     StopRecording ();
                 }
             };
-            
+
             ServiceManager.PlayerEngine.ConnectEvent (OnEndOfStream, PlayerEvent.EndOfStream);
             ServiceManager.PlayerEngine.ConnectEvent (OnStateChange, PlayerEvent.StateChange);
             ServiceManager.PlayerEngine.ConnectEvent (OnMetadata, PlayerEvent.TrackInfoUpdated);
@@ -106,19 +106,19 @@ namespace Banshee.Streamrecorder
 
             action_service = ServiceManager.Get<InterfaceActionService> ();
             actions = new ActionGroup ("Streamrecorder");
-            
-            
+
+
             actions.Add (new ActionEntry[] { new ActionEntry ("StreamrecorderAction", null,
                              AddinManager.CurrentLocalizer.GetString ("_Streamrecorder"), null, null, null),
                              new ActionEntry ("StreamrecorderConfigureAction", Stock.Properties,
                                  AddinManager.CurrentLocalizer.GetString ("_Configure"), null,
                                  AddinManager.CurrentLocalizer.GetString ("Configure the Streamrecorder plugin"), OnConfigure) });
-            
+
             actions.Add (new ToggleActionEntry[] { new ToggleActionEntry ("StreamrecorderEnableAction", Stock.MediaRecord,
                              AddinManager.CurrentLocalizer.GetString ("_Activate streamrecorder"), null,
                              AddinManager.CurrentLocalizer.GetString ("Activate streamrecorder process"),
                              OnActivateStreamrecorder, recording) });
-            
+
             action_service.UIManager.InsertActionGroup (actions, 0);
             ui_menu_id = action_service.UIManager.AddUiFromResource ("StreamrecorderMenu.xml");
 
@@ -166,10 +166,10 @@ namespace Banshee.Streamrecorder
             } else {
                 StopRecording ();
             }
-            
+
             recording = !recording;
             IsRecordingEnabledEntry.Set (recording.ToString ());
-            
+
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace Banshee.Streamrecorder
                 && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsLive
                 && Banshee.ServiceStack.ServiceManager.PlaybackController.CurrentTrack.IsPlaying)
                 return true;
-            
+
             return false;
         }
 
@@ -269,21 +269,21 @@ namespace Banshee.Streamrecorder
         /// </summary>
         private void StartRecording ()
         {
-            
+
             if (recording) {
                 StopRecording ();
             }
-            
+
             if (!IsCurrentTrackRecordable ()) {
                 return;
             }
-            
+
             track = ServiceManager.PlaybackController.CurrentTrack;
-            
+
             if (InitStreamrecorderProcess (track)) {
                 recorder.StartRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
                 recorder.AddStreamTags (track, false);
-                
+
                 if (is_importing_enabled)
                     StartFolderScanner ();
             }
@@ -295,7 +295,7 @@ namespace Banshee.Streamrecorder
         private void StopRecording ()
         {
             recorder.StopRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
-            
+
             StopFolderScanner ();
         }
 
@@ -327,26 +327,26 @@ namespace Banshee.Streamrecorder
         private bool InitStreamrecorderProcess (TrackInfo track_in)
         {
             active_encoder = recorder.SetActiveEncoder (active_encoder);
-            
+
             if (String.IsNullOrEmpty (output_directory)) {
                 output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory
                                  + Path.DirectorySeparatorChar + "ripped";
             }
-            
+
             if (track_in == null) {
                 return false;
             }
-            
+
             if (track_in.Uri == null || track_in.Uri.IsLocalPath) {
                 Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> Not recording local files");
                 return false;
             }
-            
+
             DateTime dt = DateTime.Now;
             string datestr = String.Format ("{0:d_M_yyyy_HH_mm_ss}", dt);
             string filename;
             RadioTrackInfo radio_track = track as RadioTrackInfo;
-            
+
             //split only if Artist AND Title are present, i.e. stream sends complete metadata
             //do not set extension, will be done by recorder!
             if (is_splitting_enabled && track.ArtistName != null && track.ArtistName.Length > 0) {
@@ -354,11 +354,11 @@ namespace Banshee.Streamrecorder
             } else {
                 filename = (radio_track.ParentTrack == null ? track.TrackTitle : radio_track.ParentTrack.TrackTitle) + "_" + datestr;
             }
-            
+
             recorder.SetOutputParameters (output_directory, filename);
-            
+
             RippedFileScanner.SetScanDirectory (output_directory);
-            
+
             return true;
         }
 
@@ -386,18 +386,18 @@ namespace Banshee.Streamrecorder
             set {
                 StopRecording ();
                 StopFolderScanner ();
-                
+
                 this.output_directory = value;
-                
+
                 if (String.IsNullOrEmpty (this.output_directory)) {
                     this.output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory
                                           + Path.DirectorySeparatorChar + "ripped";
                 }
                 RippedFileScanner.SetScanDirectory (this.output_directory);
-                
+
                 if (is_importing_enabled)
                     StartFolderScanner ();
-                
+
                 if (recording)
                     StartRecording ();
             }

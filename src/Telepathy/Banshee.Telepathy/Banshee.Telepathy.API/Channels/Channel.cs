@@ -58,17 +58,17 @@ namespace Banshee.Telepathy.API.Channels
             if (conn == null) {
                 throw new ArgumentNullException ("conn");
             }
-            
+
             this.conn = conn;
             InitializeRequestsInterface ();
         }
-        
+
         protected Channel (Connection conn, uint target_handle, string channel_type) : this (conn)
         {
             if (target_handle == 0 || target_handle == conn.SelfHandle) {
                 throw new ArgumentException ("Invalid TargetId", "target_id");
             }
-            
+
             this.target_handle = target_handle;
             this.ChannelType = channel_type;
         }
@@ -80,11 +80,11 @@ namespace Banshee.Telepathy.API.Channels
         public uint InitiatorHandle {
             get { return initiator; }
         }
-        
+
         protected Connection Connection {
             get { return conn; }
         }
-        
+
         public virtual uint TargetHandle {
             get { return target_handle; }
             protected set { target_handle = value; }
@@ -108,7 +108,7 @@ namespace Banshee.Telepathy.API.Channels
                 channel_type = value;
             }
         }
-        
+
         public abstract void Request ();
 
         public void Close ()
@@ -119,7 +119,7 @@ namespace Banshee.Telepathy.API.Channels
                     // some channels can't be closed, so catch exception and log
                     // also, channel might be cleaned up by Telepathy already, so attempting to close
                     // may result in an exception
-                    channel.Close ();       
+                    channel.Close ();
                     channel = null;
                     chann_path = null;
                 }
@@ -127,38 +127,38 @@ namespace Banshee.Telepathy.API.Channels
             catch (Exception) {
             }
         }
-        
+
         protected void InitializeRequestsInterface ()
         {
             requests = conn.Requests;
             requests.NewChannels += OnNewChannels;
             requests.ChannelClosed += OnChannelClosed;     // TODO do I really need this?
             //self_handle = cm.SelfHandle;
-            
+
         }
 
         protected abstract void ProcessNewChannel (ChannelDetails c);
-        
+
         protected void OnNewChannels (ChannelDetails[] channels)
         {
             if (chann_path != null) {
                 return;
             }
-            
+
             foreach (ChannelDetails c in channels) {
-                
+
                 ObjectPath object_path = c.Channel;
                 string channel_type = (string) c.Properties[Constants.CHANNEL_IFACE + ".ChannelType"];
                 HandleType handle_type = (HandleType) c.Properties[Constants.CHANNEL_IFACE + ".TargetHandleType"];
                 uint target_handle = (uint) c.Properties[Constants.CHANNEL_IFACE + ".TargetHandle"];
-                
+
                 Console.WriteLine ("NewChannel detected: object path {0}, channel_type {1}, handle_type {2}, target_handle {3}",
                                    object_path, channel_type, handle_type.ToString (), target_handle);
 
                 initiator = (uint) DBusUtility.GetProperty (Connection.Bus, Connection.BusName, object_path.ToString (),
                                                                      Constants.CHANNEL_IFACE, "InitiatorHandle");
-                
-                if (channel_type.Equals (ChannelType)  && 
+
+                if (channel_type.Equals (ChannelType)  &&
                     (target_handle == TargetHandle || initiator == TargetHandle)) {
                         ChannPath = object_path.ToString ();
                         ProcessNewChannel (c);
@@ -167,14 +167,14 @@ namespace Banshee.Telepathy.API.Channels
 
             }
         }
-        
+
         protected virtual void OnChannelClosed (ObjectPath object_path)
         {
             if (object_path.ToString ().Equals (chann_path)) {
                 chann_path = null;
             }
         }
-        
+
         protected virtual void OnChannelReady (EventArgs args)
         {
             EventHandler <EventArgs> handler = ChannelReady;
@@ -187,13 +187,13 @@ namespace Banshee.Telepathy.API.Channels
         {
             Dispose (true);
         }
-        
+
         protected virtual void Dispose (bool disposing)
         {
             if (!disposing) {
                 return;
             }
-            
+
             if (requests != null) {
                 try {
                     requests.NewChannels -= OnNewChannels;
@@ -205,6 +205,6 @@ namespace Banshee.Telepathy.API.Channels
 
             Close ();
         }
-        
+
     }
 }

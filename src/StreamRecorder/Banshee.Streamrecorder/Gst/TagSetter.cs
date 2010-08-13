@@ -54,6 +54,6 @@ namespace Banshee.Streamrecorder.Gst
         {
             gst_tag_setter_merge_tags (raw, taglist.ToIntPtr (), mode);
         }
-        
+
     }
 }

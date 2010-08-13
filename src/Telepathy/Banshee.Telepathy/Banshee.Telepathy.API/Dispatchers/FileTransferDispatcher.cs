@@ -39,14 +39,14 @@ namespace Banshee.Telepathy.API.Dispatchers
 {
     internal sealed class FileTransferDispatcher : Dispatcher
     {
-        internal FileTransferDispatcher (Connection conn) : base (conn, 
-                                                                  Constants.CHANNEL_TYPE_FILETRANSFER, 
+        internal FileTransferDispatcher (Connection conn) : base (conn,
+                                                                  Constants.CHANNEL_TYPE_FILETRANSFER,
                                                                   new string [] { "Filename", "ContentType", "Size", "Description" } )
         {
             DispatchObject = typeof (OutgoingFileTransfer);
             PropertyKeysForDispatching = new string [] { "Filename" };
         }
-        
+
         protected override bool CanProcess (ChannelDetails details)
         {
             foreach (FileTransferChannelInfo info in Connection.SupportedChannels.GetAll<FileTransferChannelInfo> ()) {
@@ -56,17 +56,17 @@ namespace Banshee.Telepathy.API.Dispatchers
                     return true;
                 }
             }
-            
+
             return false;
         }
-        
-        protected override void ProcessNewChannel (string object_path, 
+
+        protected override void ProcessNewChannel (string object_path,
                                                    uint initiator_handle,
-                                                   uint target_handle, 
+                                                   uint target_handle,
                                                    ChannelDetails c)
         {
             Console.WriteLine ("Processing new channel for file transfer");
-            
+
             string filename = (string) c.Properties[Constants.CHANNEL_TYPE_FILETRANSFER + ".Filename"];
             string content_type = (string) c.Properties[Constants.CHANNEL_TYPE_FILETRANSFER + ".ContentType"];
             ulong size = (ulong) c.Properties[Constants.CHANNEL_TYPE_FILETRANSFER + ".Size"];
@@ -74,23 +74,23 @@ namespace Banshee.Telepathy.API.Dispatchers
 
             FileTransferChannel ft = null;
             FileTransfer transfer = null;
-            
+
             try {
                 ft = new FileTransferChannel (this.Connection,
                                               object_path,
-                                              initiator_handle, 
+                                              initiator_handle,
                                               target_handle,
                                               filename,
                                               content_type,
                                              (long) size);
-    
+
                 if (initiator_handle != Connection.SelfHandle) {
                     transfer = new IncomingFileTransfer (contact, ft);
                 }
                 else {
                     transfer = new OutgoingFileTransfer (contact, ft);
                 }
-    
+
                 if (transfer != null) {
                     DispatchManager dm = Connection.DispatchManager;
                     dm.Add (contact, transfer.OriginalFilename, transfer);

@@ -44,17 +44,17 @@ namespace Banshee.Telepathy.API
         private readonly IDictionary <Contact, IDictionary <string, IDictionary <object, Dispatchable>>> dispatchables = new Dictionary <Contact, IDictionary <string, IDictionary <object, Dispatchable>>> ();
 
         public event EventHandler<EventArgs> Dispatched;
-        
+
         private DispatchManager ()
-        {        
+        {
         }
-        
+
         internal DispatchManager (Connection conn)
         {
             if (conn == null) {
                 throw new ArgumentNullException ("conn");
             }
-            
+
             this.conn = conn;
             Initialize ();
         }
@@ -92,13 +92,13 @@ namespace Banshee.Telepathy.API
                 }
             }
         }
-        
+
         private void RegisterDispatcher (Dispatcher d)
         {
             if (d == null) {
                 throw new ArgumentNullException ("d");
             }
-            
+
             lock (dispatchers) {
                 dispatchers.Add (d.DispatchObject.FullName, d);
             }
@@ -128,7 +128,7 @@ namespace Banshee.Telepathy.API
             } else if (properties == null) {
                 throw new ArgumentNullException ("properties");
             }
-            
+
             string type_name = typeof (T).FullName;
             if (dispatchers.ContainsKey (type_name)) {
                 dispatchers[type_name].Request (contact.Handle, HandleType.Contact, properties);
@@ -142,7 +142,7 @@ namespace Banshee.Telepathy.API
         {
             Add (contact, key, d, true);
         }
-        
+
         internal void Add (Contact contact, object key, Dispatchable d, bool replace)
         {
             if (contact == null) {
@@ -155,10 +155,10 @@ namespace Banshee.Telepathy.API
                 throw new InvalidOperationException (String.Format ("Contact does not belong to connection {0}",
                                                      conn.AccountId));
             }
-            
+
             string type = d.GetType ().FullName;
             //Hyena.Log.DebugFormat ("DispatchManager.Add dispatchable type {0}", type);
-            
+
             lock (dispatchables) {
                 if (!dispatchables.ContainsKey (contact)) {
                     dispatchables.Add (contact, new Dictionary <string, IDictionary <object, Dispatchable>> ());
@@ -174,7 +174,7 @@ namespace Banshee.Telepathy.API
                 } else {
 					throw new InvalidOperationException ("Dispatchable could not be added to dispatch manager.");
 				}
-                
+
                 OnDispatched (d, EventArgs.Empty);
                 d.Initialize ();
             }
@@ -192,7 +192,7 @@ namespace Banshee.Telepathy.API
             } else if (key == null) {
                 throw new ArgumentNullException ("key");
             }
-            
+
             string type = obj_type.FullName;
 
             lock (dispatchables) {
@@ -216,7 +216,7 @@ namespace Banshee.Telepathy.API
             if (contact == null) {
                 throw new ArgumentNullException ("contact");
             }
-            
+
             lock (dispatchables) {
                 if (dispatchables.ContainsKey (contact)) {
                     foreach (Dispatchable d in GetAll <Dispatchable> (contact)) {
@@ -233,7 +233,7 @@ namespace Banshee.Telepathy.API
         {
             return (T) Get (contact, key, typeof (T));
         }
-        
+
         internal Dispatchable Get (Contact contact, object key, Type obj_type)
         {
             if (contact == null) {
@@ -241,9 +241,9 @@ namespace Banshee.Telepathy.API
             } else if (key == null) {
                 throw new ArgumentNullException ("key");
             }
-            
+
             string type = obj_type.FullName;
-            
+
             //Console.WriteLine (String.Format ("{0} {1} {2}", type, contact.Handle, key.ToString ()));
             lock (dispatchables) {
                 if (dispatchables.ContainsKey (contact)) {
@@ -257,21 +257,21 @@ namespace Banshee.Telepathy.API
 
             return null;
         }
-        
+
         public IEnumerable <T> GetAll <T> (Contact contact) where T : Dispatchable
         {
             if (contact == null) {
                 throw new ArgumentNullException ("contact");
             }
-            
+
             string type  = typeof (T).FullName;
-            
+
             bool everything = false;
             if (typeof (T).Name.Equals (typeof (Dispatchable).Name)) {
                 everything = true;
             }
 
-            lock (dispatchables) { 
+            lock (dispatchables) {
                 if (dispatchables.ContainsKey (contact)) {
                     if (!everything && dispatchables[contact].ContainsKey (type)) {
                         foreach (object key in new List<object> (dispatchables[contact][type].Keys)) {
@@ -295,9 +295,9 @@ namespace Banshee.Telepathy.API
             } else if (key == null) {
                 throw new ArgumentNullException ("key");
             }
-            
+
             string type  = typeof (T).FullName;
-            
+
             lock (dispatchables) {
                 if (dispatchables.ContainsKey (contact)) {
                     if (dispatchables[contact].ContainsKey (type)) {
@@ -310,7 +310,7 @@ namespace Banshee.Telepathy.API
 
             return false;
         }
-        
+
         private void OnDispatched (Dispatchable d, EventArgs args)
         {
             var handler = Dispatched;

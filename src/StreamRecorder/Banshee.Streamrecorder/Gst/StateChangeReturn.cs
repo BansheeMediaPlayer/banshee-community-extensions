@@ -39,5 +39,5 @@ namespace Banshee.Streamrecorder.Gst
         Async = 2,
         NoPreroll = 3
     }
-    
+
 }

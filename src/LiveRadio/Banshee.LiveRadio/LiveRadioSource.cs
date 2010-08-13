@@ -95,7 +95,7 @@ namespace Banshee.LiveRadio
                                   plugin.Name,
                                  (EnabledPlugins.Contains (plugin.Name)));
             }
-            
+
             AfterInitialized ();
 
             //setting up interface actions
@@ -106,7 +106,7 @@ namespace Banshee.LiveRadio
                              new ActionEntry ("LiveRadioConfigureAction", Stock.Properties,
                                  AddinManager.CurrentLocalizer.GetString ("_Configure"), null,
                                  AddinManager.CurrentLocalizer.GetString ("Configure the LiveRadio plugin"), OnConfigure) });
-            
+
             uia_service.GlobalActions.AddImportant (
                         new ActionEntry ("RefreshLiveRadioAction",
                                           Stock.Refresh, AddinManager.CurrentLocalizer.GetString ("Refresh View"), null,
@@ -119,17 +119,17 @@ namespace Banshee.LiveRadio
                                           OnAddToInternetRadio));
 
             ui_global_id = uia_service.UIManager.AddUiFromResource ("GlobalUI.xml");
-            
+
             Properties.SetString ("ActiveSourceUIResource", "ActiveSourceUI.xml");
             Properties.Set<bool> ("ActiveSourceUIResourcePropagate", true);
             Properties.Set<System.Reflection.Assembly> ("ActiveSourceUIResource.Assembly", typeof(LiveRadioPluginSource).Assembly);
 
             Properties.SetString ("GtkActionPath", "/LiveRadioContextMenu");
             Properties.Set<bool> ("Nereid.SourceContentsPropagate", false);
-            
+
             if (!SetupSourceContents ())
                 ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
-            
+
             Log.Debug ("[LiveRadioSource]<Constructor> END");
         }
 
@@ -178,7 +178,7 @@ namespace Banshee.LiveRadio
 
             source_contents = new LiveRadioSourceContents (plugins);
             Properties.Set<ISourceContents> ("Nereid.SourceContents", source_contents);
-            
+
             ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
             return true;
         }
@@ -270,12 +270,12 @@ namespace Banshee.LiveRadio
         public override void Dispose ()
         {
             base.Dispose ();
-            
+
             InterfaceActionService uia_service = ServiceManager.Get<InterfaceActionService> ();
             if (uia_service == null) {
                 return;
             }
-            
+
             if (ui_global_id > 0) {
                 uia_service.UIManager.RemoveUi (ui_global_id);
                 ui_global_id = 0;
@@ -419,7 +419,7 @@ namespace Banshee.LiveRadio
                     return (PrimarySource)source;
                 }
             }
-            
+
             throw new InternetRadioExtensionNotFoundException ();
         }
 

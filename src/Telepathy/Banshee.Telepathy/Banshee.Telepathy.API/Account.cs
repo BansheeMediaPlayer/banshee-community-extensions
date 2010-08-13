@@ -40,14 +40,14 @@ namespace Banshee.Telepathy.API
     public class Account
     {
         public event EventHandler<ConnectionStatusEventArgs> ConnectionStatusChanged;
-        
+
         private Account ()
         {
         }
 
         public Account (String object_path)
         {
-            AccountObjectPath = object_path;            
+            AccountObjectPath = object_path;
             Initialize ();
         }
 
@@ -56,7 +56,7 @@ namespace Banshee.Telepathy.API
             get { return connected; }
             private set {
                 if (connected != value) {
-                    
+
                     OnConnectionStatusChanged (new ConnectionStatusEventArgs (value ? AccountConnectionStatus.Connected : AccountConnectionStatus.Disconnected,
                                                                               AccountId,
                                                                               BusName,
@@ -66,7 +66,7 @@ namespace Banshee.Telepathy.API
                 }
             }
         }
-        
+
         private string object_path;
         public string ObjectPath {
             get { return object_path; }
@@ -89,7 +89,7 @@ namespace Banshee.Telepathy.API
                 account_path = value;
             }
         }
-        
+
         public string BusName {
             get {
                 if (ObjectPath != null) {
@@ -99,7 +99,7 @@ namespace Banshee.Telepathy.API
                 return null;
             }
         }
-        
+
         private string account_id;
         public string AccountId {
             get { return account_id; }
@@ -116,40 +116,40 @@ namespace Banshee.Telepathy.API
         public BusType BusType {
             get { return bus; }
         }
-        
+
         private IAccount iaccount;
         internal IAccount IAccount {
             get { return iaccount; }
         }
-        
+
         private void Initialize ()
         {
-            iaccount = DBusUtility.GetProxy <IAccount> (BusType.Session, 
+            iaccount = DBusUtility.GetProxy <IAccount> (BusType.Session,
                                                         Constants.ACCOUNTMANAGER_IFACE,
                                                         AccountObjectPath);
 
             iaccount.AccountPropertyChanged += OnAccountPropertyChanged;
-            
+
             ObjectPath = GetConnectionObjectPath ();
             connected = !ObjectPath.Equals ("/");
-            
-            AccountId = (string) DBusUtility.GetProperty (BusType, 
-                                                          Constants.ACCOUNTMANAGER_IFACE, 
-                                                          AccountObjectPath, 
-                                                          Constants.ACCOUNT_IFACE, 
+
+            AccountId = (string) DBusUtility.GetProperty (BusType,
+                                                          Constants.ACCOUNTMANAGER_IFACE,
+                                                          AccountObjectPath,
+                                                          Constants.ACCOUNT_IFACE,
                                                           "NormalizedName");
         }
 
         private string GetConnectionObjectPath ()
         {
-            ObjectPath path = (ObjectPath) DBusUtility.GetProperty (BusType, 
-                                                                    Constants.ACCOUNTMANAGER_IFACE, 
-                                                                    AccountObjectPath, 
-                                                                    Constants.ACCOUNT_IFACE, 
+            ObjectPath path = (ObjectPath) DBusUtility.GetProperty (BusType,
+                                                                    Constants.ACCOUNTMANAGER_IFACE,
+                                                                    AccountObjectPath,
+                                                                    Constants.ACCOUNT_IFACE,
                                                                     "Connection");
             return path.ToString ();
         }
-        
+
         private void OnAccountPropertyChanged (IDictionary <string, object> properties)
         {
             if (properties.ContainsKey ("ConnectionStatus")) {

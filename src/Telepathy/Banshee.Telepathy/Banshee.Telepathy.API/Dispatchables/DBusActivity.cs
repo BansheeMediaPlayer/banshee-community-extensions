@@ -49,7 +49,7 @@ namespace Banshee.Telepathy.API.Dispatchables
             get { return auto_accept; }
             set { auto_accept = value; }
         }
-        
+
         public void RegisterDBusObject (object o, string object_path)
         {
             if (State == ActivityState.Connected) {
@@ -82,7 +82,7 @@ namespace Banshee.Telepathy.API.Dispatchables
         protected override void OnChannelReady (object sender, EventArgs args)
         {
             Console.WriteLine ("{0} Connection to address {1}", Contact.Name, tube.Address);
-            
+
             try {
                 dbus_conn = new DBusConnection (tube.Address, true);
                 State = ActivityState.Connected;

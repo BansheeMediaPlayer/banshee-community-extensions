@@ -38,15 +38,15 @@ namespace Banshee.Telepathy.API.Channels
     internal sealed class DBusTubeChannel : RequestedChannel, Banshee.Telepathy.API.Channels.ITube
     {
         public event EventHandler <EventArgs> TubeOffered;
-        
-        public DBusTubeChannel (Connection conn, 
+
+        public DBusTubeChannel (Connection conn,
                                 string object_path,
-                                uint initiator_handle, 
+                                uint initiator_handle,
                                 uint target_handle,
                                 string service_name) : base (conn, object_path, initiator_handle, target_handle)
         {
             Service = service_name;
-            
+
             Initialize ();
         }
 
@@ -70,7 +70,7 @@ namespace Banshee.Telepathy.API.Channels
                 service = value;
             }
         }
-        
+
         private void Initialize ()
         {
             tube.TubeChannelStateChanged += OnTubeChannelStateChanged;
@@ -81,7 +81,7 @@ namespace Banshee.Telepathy.API.Channels
         {
             tube = DBusUtility.GetProxy <IDBusTube> (Connection.BusName, ObjectPath);
         }
-        
+
         public void Process ()
         {
             if (InitiatorHandle != Connection.SelfHandle) {
@@ -97,7 +97,7 @@ namespace Banshee.Telepathy.API.Channels
             address = tube.Offer (new Dictionary <string, object>(), SocketAccessControl.Localhost);
             Console.WriteLine ("Tube from {0} offered", address);
         }
-        
+
         public void Accept ()
         {
             address = tube.Accept (SocketAccessControl.Localhost);
@@ -106,18 +106,18 @@ namespace Banshee.Telepathy.API.Channels
 
         private void OnTubeChannelStateChanged (TubeChannelState state)
         {
-            Console.WriteLine ("OnTubeStateChanged: state {0}", 
+            Console.WriteLine ("OnTubeStateChanged: state {0}",
                                state);
-            
+
             switch (state) {
                 case TubeChannelState.Open:
                     OnChannelReady (EventArgs.Empty);
                     break;
-                
+
                 case TubeChannelState.NotOffered:
                     break;
             }
-            
+
         }
 
         private void OnTubeClosed ()

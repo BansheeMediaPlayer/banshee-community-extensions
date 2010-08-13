@@ -1,9 +1,9 @@
-//  
+//
 // Author:
 //   Christian Martellini <christian.martellini@gmail.com>
 //
 // Copyright (C) 2009 Christian Martellini
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
@@ -22,7 +22,7 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
+//
 
 using Gtk;
 using System;
@@ -42,7 +42,7 @@ namespace Banshee.Lyrics.Gui
         public event AddLinkClickedHandler AddLinkClicked;
 
         private bool insert_mode_available = true;
-        
+
         public bool InsertModeAvailable {
             get { return insert_mode_available; }
             set { insert_mode_available = value; }
@@ -55,7 +55,7 @@ namespace Banshee.Lyrics.Gui
             }
             return true;
         }
-        
+
         protected override int OnNavigationRequested (WebFrame frame, NetworkRequest request)
         {
             if (!IsValidUri (request.Uri)) {
@@ -84,19 +84,19 @@ namespace Banshee.Lyrics.Gui
             item.Image = new Image ("gtk-copy", IconSize.Menu);
             item.Activated += delegate { base.CopyClipboard (); };
             menu.Add (item);
-            
+
             item = new ImageMenuItem ("Select All");
             item.Image = new Image ("gtk-select-all", IconSize.Menu);
             item.Activated += delegate { base.SelectAll (); };
             menu.Add (item);
-            
+
             menu.Add (new SeparatorMenuItem ());
-            
+
             item = new ImageMenuItem ("Refresh");
             item.Image = new Image ("gtk-refresh", IconSize.Menu);
             item.Activated += delegate { OnRefresh (); };
             menu.Add (item);
-            
+
             menu.ShowAll ();
         }
 

@@ -13,13 +13,13 @@ namespace Banshee.Lirc
 {
     public class LircPlugin : IExtensionService
     {
-        
+
         private LircClient lirc;
         private Thread poll;
 		private ActionMapper ctrl;
 		private ActionGroup actions;
 		private InterfaceActionService action_service;
-        
+
         public LircPlugin()
         {
 			actions = new ActionGroup("Lirc");
@@ -61,7 +61,7 @@ namespace Banshee.Lirc
 		~LircPlugin()
         {
         }
-               
+
         private void PollThread()
         {
             Console.WriteLine("Waiting for LIRC button press...");

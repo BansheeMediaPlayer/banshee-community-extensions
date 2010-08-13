@@ -57,6 +57,6 @@ namespace Banshee.Streamrecorder.Gst
             gst_tag_list_add_value (raw, mode, native_tag, ref val);
             GLib.Marshaller.Free (native_tag);
         }
-        
+
     }
 }

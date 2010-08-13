@@ -1,4 +1,4 @@
-// 
+//
 // ContactPlaylistSource.cs
 //
 // Author:
@@ -46,10 +46,10 @@ namespace Banshee.Telepathy.Data
     public class ContactPlaylistSource : PlaylistSource, IContactSource
     {
         private HyenaSqliteCommand insert_track_command = new HyenaSqliteCommand (@"
-            INSERT INTO CorePlaylistEntries (PlaylistID, TrackID) 
+            INSERT INTO CorePlaylistEntries (PlaylistID, TrackID)
                 SELECT ?, TrackID FROM CoreTracks WHERE PrimarySourceID = ? AND ExternalID IN (?)"
         );
-        
+
         private ContactSource parent;
         public Contact Contact {
             get {
@@ -59,7 +59,7 @@ namespace Banshee.Telepathy.Data
                 return null;
             }
         }
-        
+
         public string AccountId {
             get {
                 if (Contact != null) {
@@ -70,9 +70,9 @@ namespace Banshee.Telepathy.Data
         }
 
         public string ContactName {
-            get { 
+            get {
                 if (Contact != null) {
-                    return Contact.Name; 
+                    return Contact.Name;
                 }
                 return String.Empty;
             }
@@ -81,53 +81,53 @@ namespace Banshee.Telepathy.Data
         public string ContactStatus {
             get {
                 if (Contact != null) {
-                    return Contact.Status.ToString (); 
+                    return Contact.Status.ToString ();
                 }
                 return String.Empty;
             }
         }
-        
+
         public bool IsDownloadingAllowed {
             get {
                 if (parent != null) {
                     return parent.IsDownloadingAllowed;
                 }
-                
+
                 return true;
             }
         }
-        
+
         public ContactPlaylistSource (string name, ContactSource parent) : base (name, parent)
         {
             if (parent == null) {
                 throw new ArgumentNullException ("parent");
             }
-            
+
             this.parent = parent;
             Save ();
         }
-        
+
         public ContactPlaylistSource (IDictionary <string, object> [] playlist, string name, ContactSource parent) : this (name, parent)
         {
             if (playlist == null) {
                 throw new ArgumentNullException ("playlist");
             }
-            
+
             AddTracks (playlist);
         }
-        
+
         public override bool CanDeleteTracks {
             get { return false; }
         }
-        
+
         public override bool CanAddTracks {
             get { return false; }
         }
-        
+
         public override bool CanRename {
             get { return false; }
         }
-        
+
         public override bool CanUnmap {
             get { return false; }
         }
@@ -142,7 +142,7 @@ namespace Banshee.Telepathy.Data
                 base.InvalidateCaches ();
             });
         }
-        
+
         public void AddTracks (IDictionary <string, object> [] tracks)
         {
             int count = 0;
@@ -158,7 +158,7 @@ namespace Banshee.Telepathy.Data
                     ServiceManager.DbConnection.Execute (insert_track_command, DbId, parent.DbId, external_ids);
                 }
             }
-            
+
             SavedCount += count;
 
             ThreadAssist.ProxyToMain (delegate {

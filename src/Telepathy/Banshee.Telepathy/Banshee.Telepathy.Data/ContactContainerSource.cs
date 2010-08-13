@@ -43,28 +43,28 @@ namespace Banshee.Telepathy.Data
         {
             this.allowed = allowed;
         }
-        
+
         private bool allowed;
         public bool Allowed {
             get { return allowed; }
         }
     }
-        
+
     public class ContactContainerSource : Source, IDisposable
     {
         public static event EventHandler<SchemaChangedEventArgs> DownloadingAllowedChanged;
         public static event EventHandler<SchemaChangedEventArgs> StreamingAllowedChanged;
-        
+
         public ContactContainerSource (TelepathyService service) : base (AddinManager.CurrentLocalizer.GetString ("Contacts"), "Contacts", 1000)
         {
             TelepathyService = service;
             TypeUniqueId = "telepathy-container";
-            
+
             Properties.SetString ("Icon.Name", "stock_people");
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new ContactSourceContents (this));
             Properties.Set<bool> ("Nereid.SourceContents.HeaderVisible", false);
             Properties.SetString ("GtkActionPath", "/ContactSourceContainerPopup");
-            
+
             actions = new TelepathyActions (this);
         }
 
@@ -99,19 +99,19 @@ namespace Banshee.Telepathy.Data
                 actions.Dispose ();
             }
         }
-        
+
         public void UpdateDownloadingAllowed (bool allowed)
         {
             AllowDownloadsSchema.Set (allowed);
             OnDownloadingAllowedChanged (new SchemaChangedEventArgs (allowed));
         }
-        
+
         public void UpdateStreamingAllowed (bool allowed)
         {
             AllowStreamingSchema.Set (allowed);
             OnStreamingAllowedChanged (new SchemaChangedEventArgs (allowed));
         }
-        
+
         public static readonly SchemaEntry <bool> ShareCurrentlyPlayingSchema = new SchemaEntry <bool> (
             "plugins.telepathy-container", "share_currently_playing",
             false,
@@ -132,7 +132,7 @@ namespace Banshee.Telepathy.Data
             "Allow Streaming",
             "Allow streaming when sharing libraries"
         );
-        
+
         private void OnDownloadingAllowedChanged (SchemaChangedEventArgs args)
         {
             var handler = DownloadingAllowedChanged;
@@ -140,7 +140,7 @@ namespace Banshee.Telepathy.Data
                 handler (this, args);
             }
         }
-        
+
         private void OnStreamingAllowedChanged (SchemaChangedEventArgs args)
         {
             var handler = StreamingAllowedChanged;

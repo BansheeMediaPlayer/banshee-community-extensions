@@ -102,29 +102,29 @@ namespace Banshee.LiveRadio
         {
             base.Name = plugin.Name;
             this.plugin = plugin;
-            
+
             InitializeViews ();
-            
+
             string position = ForcePosition == null ? BrowserPosition.Get () : ForcePosition;
             if (position == "top") {
                 LayoutTop ();
             } else {
                 LayoutLeft ();
             }
-            
+
             plugin.GenreListLoaded += OnPluginGenreListLoaded;
             plugin.RequestResultRetrieved += OnPluginRequestResultRetrieved;
-            
+
             if (ForcePosition != null) {
                 return;
             }
-            
+
             if (ServiceManager.Contains ("InterfaceActionService")) {
                 action_service = ServiceManager.Get<InterfaceActionService> ();
-                
+
                 if (action_service.FindActionGroup ("BrowserView") == null) {
                     browser_view_actions = new ActionGroup ("BrowserView");
-                    
+
                     browser_view_actions.Add (new RadioActionEntry [] {
                         new RadioActionEntry ("BrowserLeftAction", null,
                             AddinManager.CurrentLocalizer.GetString ("Browser on Left"), null,
@@ -146,7 +146,7 @@ namespace Banshee.LiveRadio
                     action_service.AddActionGroup (browser_view_actions);
                     action_service.UIManager.AddUiFromString (menu_xml);
                 }
-                
+
                 (action_service.FindAction ("BrowserView.BrowserLeftAction") as RadioAction).Changed += OnViewModeChanged;
                 (action_service.FindAction ("BrowserView.BrowserTopAction") as RadioAction).Changed += OnViewModeChanged;
                 action_service.FindAction ("BrowserView.BrowserVisibleAction").Activated += OnToggleBrowser;
@@ -226,7 +226,7 @@ namespace Banshee.LiveRadio
             faketrack.ArtistName = info;
             faketrack.AlbumArtist = info;
             faketrack.Uri = new SafeUri ("http://test.com/test.pls");
-    
+
             fakeresult.Add (faketrack);
             plugin.PluginSource.SetStations (fakeresult);
             main_scrolled_window.Sensitive = false;
@@ -288,17 +288,17 @@ namespace Banshee.LiveRadio
         private ScrolledWindow SetupView (Widget view)
         {
             ScrolledWindow window = null;
-            
+
             if (ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
                 window = new SmoothScrolledWindow ();
             } else {
                 window = new ScrolledWindow ();
             }
-            
+
             window.Add (view);
             window.HscrollbarPolicy = PolicyType.Automatic;
             window.VscrollbarPolicy = PolicyType.Automatic;
-            
+
             return window;
         }
 
@@ -311,7 +311,7 @@ namespace Banshee.LiveRadio
             if (container != null && main_scrolled_window != null) {
                 container.Remove (main_scrolled_window);
             }
-            
+
             if (container != null) {
                 Remove (container);
             }
@@ -342,7 +342,7 @@ namespace Banshee.LiveRadio
         private void Layout (bool top)
         {
             Reset ();
-            
+
             container = GetPane (!top);
             filter_box = new LiveRadioFilterView ();
             filter_box.Sensitive = false;
@@ -353,7 +353,7 @@ namespace Banshee.LiveRadio
             container.Pack1 (filter_box, false, false);
             container.Pack2 (main_scrolled_window, true, false);
             browser_container = filter_box;
-            
+
             container.Position = top ? 175 : 275;
             ShowPack ();
         }
@@ -480,10 +480,10 @@ namespace Banshee.LiveRadio
         private void OnToggleBrowser (object o, EventArgs args)
         {
             ToggleAction action = (ToggleAction)o;
-            
+
             browser_container.Visible = action.Active && ActiveSourceCanHasBrowser;
             BrowserVisible.Set (action.Active);
-            
+
         }
 
         protected bool ActiveSourceCanHasBrowser {
@@ -511,11 +511,11 @@ namespace Banshee.LiveRadio
             if (track_source == null) {
                 return false;
             }
-            
+
             this.source = source;
-            
+
             track_view.SetModel (track_source.TrackModel);
-            
+
             return true;
         }
 

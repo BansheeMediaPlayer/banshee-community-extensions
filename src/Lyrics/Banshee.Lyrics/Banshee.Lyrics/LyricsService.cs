@@ -1,9 +1,9 @@
-//  
+//
 // Author:
 //   Christian Martellini <christian.martellini@gmail.com>
 //
 // Copyright (C) 2009 Christian Martellini
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
@@ -22,7 +22,7 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
+//
 
 using System;
 using System.IO;
@@ -50,7 +50,7 @@ namespace Banshee.Lyrics
     public class LyricsService: IExtensionService, IDisposable
     {
         private static string lyrics_dir = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + Path.DirectorySeparatorChar +
-                ".cache" + Path.DirectorySeparatorChar + "banshee-1" + Path.DirectorySeparatorChar + 
+                ".cache" + Path.DirectorySeparatorChar + "banshee-1" + Path.DirectorySeparatorChar +
                 "extensions" + Path.DirectorySeparatorChar + "lyrics" + Path.DirectorySeparatorChar;
 
         private LyricsWindow window = new LyricsWindow ();
@@ -80,7 +80,7 @@ namespace Banshee.Lyrics
                 PlayerEvent.EndOfStream |
                 PlayerEvent.TrackInfoUpdated);
 
-            ServiceManager.PlayerEngine.ConnectEvent (window.OnPlayerEngineEventChanged, 
+            ServiceManager.PlayerEngine.ConnectEvent (window.OnPlayerEngineEventChanged,
                 PlayerEvent.StartOfStream |
                 PlayerEvent.EndOfStream |
                 PlayerEvent.TrackInfoUpdated);
@@ -95,7 +95,7 @@ namespace Banshee.Lyrics
             if (!ServiceStartup ()) {
                 ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
             }
-            
+
             /*get the lyric of the current played song and update the window */
             if (ServiceManager.PlayerEngine.CurrentTrack != null) {
                 FetchLyrics(ServiceManager.PlayerEngine.CurrentTrack);
@@ -167,16 +167,16 @@ namespace Banshee.Lyrics
             lyrics_action_group = new ActionGroup ("Lyrics");
 
             lyrics_action_group.Add (new ActionEntry[] {
-                new ActionEntry ("LyricsAction", null, 
+                new ActionEntry ("LyricsAction", null,
                     AddinManager.CurrentLocalizer.GetString ("L_yrics"), null,
                     AddinManager.CurrentLocalizer.GetString ("Manage Lyrics"), null),
-                new ActionEntry ("FetchLyricsAction", null, 
+                new ActionEntry ("FetchLyricsAction", null,
                     AddinManager.CurrentLocalizer.GetString ("_Download Lyrics"), null,
                     AddinManager.CurrentLocalizer.GetString ("Download lyrics for all tracks"), OnFetchLyrics)
             });
 
             lyrics_action_group.Add (new ToggleActionEntry[] {
-                new ToggleActionEntry ("ShowLyricsAction", null, 
+                new ToggleActionEntry ("ShowLyricsAction", null,
                             AddinManager.CurrentLocalizer.GetString ("Show Lyrics"), "<control>T",
                             AddinManager.CurrentLocalizer.GetString ("Show Lyrics in a separate window"), null, false) });
 

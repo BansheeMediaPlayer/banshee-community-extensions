@@ -7,7 +7,7 @@ namespace Lirc
     {
         private string program_name;
         private bool is_connected;
-        
+
         public string ProgramName {
             get {
                 return program_name;
@@ -16,17 +16,17 @@ namespace Lirc
                 program_name = value;
             }
         }
-        
+
         public LircClient (string prog)
         {
             program_name = prog;
             Connect();
         }
-        
+
         public string NextCommand ()
         {
             // FIXME:
-            // in the future, this method should handle errors and detect a dead server, 
+            // in the future, this method should handle errors and detect a dead server,
             // disconnect from it, and initialize a reconnect routine - which is also yet
             // to be written... :)
 
@@ -34,7 +34,7 @@ namespace Lirc
             ret = lirc_glue_next_valid_command ();
 
             string command;
-            
+
             switch (lirc_glue_get_error ()) {
                 case 0:
                     if(ret.ToInt32() != -1) {
@@ -54,7 +54,7 @@ namespace Lirc
             }
             return (command);
         }
-        
+
         public int ErrorValue {
             get {
                 return (lirc_glue_get_error ());
@@ -63,7 +63,7 @@ namespace Lirc
                 lirc_glue_set_error (value);
             }
         }
-        
+
         public string NextCode ()
         {
             string code;
@@ -72,7 +72,7 @@ namespace Lirc
             else
                 return (null);
         }
-        
+
 //        public LircConfig Config {
 //            get {
 //                LircConfig config = new LircConfig ();
@@ -86,7 +86,7 @@ namespace Lirc
 //                return (config);
 //            }
 //        }
-        
+
         public bool Connect() {
             if(!is_connected) {
                 if (lirc_init (program_name, 1) == -1) {
@@ -94,7 +94,7 @@ namespace Lirc
                     this.ErrorValue = -2;
                     return(false);
                 }
-    
+
                 if(lirc_glue_readconfig () != 0) {
                     Console.WriteLine("lirc-sharp: some sort of error on readconfig");
                     this.ErrorValue = -1;
@@ -139,7 +139,7 @@ namespace Lirc
 
     [DllImport("liblircglue")]
     private extern static void lirc_glue_freeconfig();
-    
+
     [DllImport("liblircglue")]
     private extern static int lirc_glue_get_error ();
 
@@ -147,7 +147,7 @@ namespace Lirc
     private extern static int lirc_glue_set_error (int errorvalue);
 
     /* .......................lirc_client bindings.................................................*/
-    
+
     [DllImport("lirc_client")]
     private extern static int lirc_init(string prog, int verbose);
 
@@ -181,7 +181,7 @@ namespace Lirc
        ecno = 0x08,
        startup_mode = 0x10
    }
-   
+
    [StructLayout(LayoutKind.Sequential)]
    public struct LircList
    {
@@ -205,7 +205,7 @@ namespace Lirc
        public IntPtr first;
        public int sockfd;
    }
-   
+
    [StructLayout(LayoutKind.Sequential)]
    public struct LircConfigEntry
    {
@@ -216,11 +216,11 @@ namespace Lirc
        public IntPtr config;
        public string change_mode;
        public uint flags;
-       
+
        public string mode;
        public IntPtr next_config;
        public IntPtr next_code;
-       
+
        public IntPtr next;
    }
 }

@@ -122,9 +122,9 @@ namespace Banshee.LiveRadio.Plugins
                     RaiseErrorReturned ("XML Parse Error", ex.Message);
                     continue;
                 }
-                
+
             }
-            
+
             new_genres.Sort ();
             genres = new_genres;
 
@@ -193,13 +193,13 @@ namespace Banshee.LiveRadio.Plugins
                     string bitrate = xml_attributes.GetNamedItem ("br").InnerText;
                     int id_int;
                     int bitrate_int;
-                    
+
                     if (!Int32.TryParse (id.Trim (), out id_int)) {
                         continue; //Something wrong with id, skip this
                     }
 
                     DatabaseTrackInfo new_station = new DatabaseTrackInfo ();
-    
+
                     new_station.Uri = new SafeUri (base_url + tunein_url + "?id=" + id);
                     new_station.ArtistName = "www.shoutcast.com";
                     new_station.Genre = genre;
@@ -210,7 +210,7 @@ namespace Banshee.LiveRadio.Plugins
                     new_station.ExternalId = id_int;
                     new_station.PrimarySource = source;
                     new_station.IsLive = true;
-                    Int32.TryParse (bitrate.Trim (), out bitrate_int);                    
+                    Int32.TryParse (bitrate.Trim (), out bitrate_int);
                     new_station.BitRate = bitrate_int;
                     new_station.IsLive = true;
 
@@ -263,5 +263,5 @@ namespace Banshee.LiveRadio.Plugins
 
 
     }
-    
+
 }

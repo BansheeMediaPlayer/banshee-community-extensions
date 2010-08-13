@@ -35,7 +35,7 @@ namespace Banshee.Telepathy.API.Dispatchables
     public class StreamActivity : Activity
     {
         private StreamTubeChannel tube;
-        
+
 
         internal StreamActivity (Contact c, StreamTubeChannel tube) : base (c, tube)
         {
@@ -47,7 +47,7 @@ namespace Banshee.Telepathy.API.Dispatchables
             get { return auto_accept; }
             set { auto_accept = value; }
         }
-        
+
         public string Address {
             get { return tube.ClientAddress; }
         }
@@ -56,13 +56,13 @@ namespace Banshee.Telepathy.API.Dispatchables
         {
             base.Dispose (disposing);
         }
-        
+
         protected new void Start () {}
-        
+
         protected override void OnChannelReady (object sender, EventArgs args)
         {
             //Console.WriteLine ("{0} Connection to address {1}", Contact.Name, Address);
-            
+
             State = ActivityState.Connected;
             OnReady (EventArgs.Empty);
         }

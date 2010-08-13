@@ -32,17 +32,17 @@ using NDesk.DBus;
 
 namespace Banshee.Telepathy.DBus
 {
-    
+
     [Interface ("org.bansheeproject.Banshee.Telepathy.MetadataProvider")]
     public interface IMetadataProvider
     {
         event ChunkReadyHandler ChunkReady;
         event SingleChunkReadyHandler SingleChunkReady;
-               
+
         void GetChunks (int chunk_size);
         void GetChunk (long timestamp, int sequence_num);
 
         void Destroy ();
     }
-    
+
 }

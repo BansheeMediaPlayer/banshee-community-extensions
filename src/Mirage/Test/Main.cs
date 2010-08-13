@@ -1,19 +1,19 @@
 /*
  * Mirage - High Performance Music Similarity and Automatic Playlist Generator
  * http://hop.at/mirage
- * 
+ *
  * Copyright (C) 2007-2008 Dominik Schnitzer <dominik@schnitzer.at>
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor,
@@ -48,7 +48,7 @@ class MainClass
         string song2_filename = "/home/lorentz/Music/Library/Karajan Adagios/CD 1/Pachelbel - Canon in d Major (Kanon And Gigue in d Major = d Dur) av Johann Pachelbel.mp3";
         Scms song1 = null;
         Scms song2 = null;
-        
+
         DbgTimer t1 = new DbgTimer();
         t1.Start();
         int runs = 10;
@@ -62,11 +62,11 @@ class MainClass
 
         song1 = Analyzer.Analyze(song1_filename);
         song2 = Analyzer.Analyze(song2_filename);
-        
+
         ScmsConfiguration config = new ScmsConfiguration (Analyzer.MFCC_COEFFICIENTS);
 
         Console.WriteLine("Distance = " + Scms.Distance (song1, song2, config));
-        
+
         DbgTimer t2 = new DbgTimer();
         t2.Start();
         runs = 100000;
@@ -81,7 +81,7 @@ class MainClass
 
 /*	private static void GenreClassification()
 	{
-		// Position of the Genre of the filename seperated by '/' 
+		// Position of the Genre of the filename seperated by '/'
 		int genrePos = 5;
 		
 		// Location of the mirage database
@@ -107,7 +107,7 @@ class MainClass
 			int trackId = Convert.ToInt32(reader["TrackID"]);
 			Uri uri = new Uri((string)reader["Uri"]);
 			
-			string filename = Uri.UnescapeDataString(uri.PathAndQuery);  
+			string filename = Uri.UnescapeDataString(uri.PathAndQuery);
 			ht[trackId] = filename;
 		}
 		

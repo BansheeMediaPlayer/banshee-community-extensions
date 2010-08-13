@@ -34,18 +34,18 @@ namespace Banshee.Telepathy.Gui
     {
         //private TelepathyService service = null;
         private readonly TransferManager<TelepathyUploadKey, TelepathyUpload> upload_manager = new TransferManager<TelepathyUploadKey, TelepathyUpload> ();
-        
+
         public UploadManagerUi () : base ()
         {
             //this.service = service;
             upload_manager.Completed += OnCompleted;
             upload_manager.Updated += OnUpdated;
         }
-        
+
         public TransferManager<TelepathyUploadKey, TelepathyUpload> UploadManager {
             get { return upload_manager; }
         }
-        
+
         protected override void Dispose (bool disposing)
         {
             if (disposing) {
@@ -54,7 +54,7 @@ namespace Banshee.Telepathy.Gui
                 upload_manager.Dispose ();
             }
         }
-        
+
         public override void CancelAll ()
         {
             upload_manager.CancelAll ();
