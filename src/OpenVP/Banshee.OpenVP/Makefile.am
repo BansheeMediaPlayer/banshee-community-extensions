@@ -3,8 +3,8 @@ LINK =  -r:System $(BANSHEE_LIBS) $(BANSHEE_NOWPLAYING_LIBS) $(TAO_OPENGL_LIBS) 
 	-r:$(DIR_BIN)/OpenVP.dll -r:$(DIR_BIN)/OpenVP.Core.dll
 
 SOURCES =  \
-	Gtk/GLWidget.cs \
 	BansheePlayerData.cs \
+	Gtk/GLWidget.cs \
 	OpenVPService.cs \
 	Settings.cs \
 	VisualizationDisplayWidget.cs \

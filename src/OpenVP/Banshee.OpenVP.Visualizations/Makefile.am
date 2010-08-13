@@ -16,8 +16,7 @@ SOURCES =  \
 	SpinningGrid.cs \
 	Voiceprint.cs
 
-RESOURCES =  \
-	resources/Banshee.OpenVP.Visualizations.addin.xml
+RESOURCES = resources/Banshee.OpenVP.Visualizations.addin.xml
 
 if ENABLE_OPENVP
 include $(top_srcdir)/build/build.mk

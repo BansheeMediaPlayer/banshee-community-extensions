@@ -83,7 +83,6 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="BansheePlayerData.cs" />
-    <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="VisualizationDisplayWidget.cs" />
     <Compile Include="VisualizationExtensionNode.cs" />
     <Compile Include="Gtk\GLWidget.cs" />
@@ -91,9 +90,8 @@
     <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="resources\Banshee.OpenVP.addin.xml" />
-    <EmbeddedResource Include="gtk-gui\gui.stetic">
-      <LogicalName>gui.stetic</LogicalName>
+    <EmbeddedResource Include="resources\Banshee.OpenVP.addin.xml">
+      <LogicalName>Banshee.OpenVP.addin.xml</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="resources\ActiveSourceUI.xml">
       <LogicalName>ActiveSourceUI.xml</LogicalName>
@@ -102,14 +100,15 @@
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
-        <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile.am" SyncReferences="true" IsAutotoolsProject="true" RelativeConfigureInPath="..">
-          <BuildFilesVar Sync="true" Name="FILES" />
+        <GtkDesignInfo generateGettext="false" />
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" RelativeConfigureInPath="..">
+          <BuildFilesVar Sync="true" Name="SOURCES" />
           <DeployFilesVar />
           <ResourcesVar Sync="true" Name="RESOURCES" />
           <OthersVar />
-          <GacRefVar Sync="true" Name="REFERENCES" />
-          <AsmRefVar Sync="true" Name="REFERENCES" />
-          <ProjectRefVar Sync="true" Name="REFERENCES" />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
         </MonoDevelop.Autotools.MakefileInfo>
       </Properties>
     </MonoDevelop>

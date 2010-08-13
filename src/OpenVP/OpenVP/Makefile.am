@@ -10,20 +10,20 @@ SOURCES =  \
 	IRenderer.cs \
 	KeyboardEvent.cs \
 	LinearPreset.cs \
+	Metadata/AuthorAttribute.cs \
+	Metadata/BrowsableAttribute.cs \
+	Metadata/CategoryAttribute.cs \
+	Metadata/DefaultValueAttribute.cs \
+	Metadata/DescriptionAttribute.cs \
+	Metadata/DisplayNameAttribute.cs \
+	Metadata/FollowsAttribute.cs \
+	Metadata/RangeAttribute.cs \
 	NullPlayerData.cs \
 	PlayerData.cs \
 	Registry.cs \
 	SDLController.cs \
 	TimedPresetBase.cs \
-	UDPPlayerData.cs \
-	Metadata/AuthorAttribute.cs \
-	Metadata/CategoryAttribute.cs \
-	Metadata/DescriptionAttribute.cs \
-	Metadata/FollowsAttribute.cs \
-	Metadata/BrowsableAttribute.cs \
-	Metadata/DefaultValueAttribute.cs \
-	Metadata/DisplayNameAttribute.cs \
-	Metadata/RangeAttribute.cs
+	UDPPlayerData.cs
 
 RESOURCES =  
 

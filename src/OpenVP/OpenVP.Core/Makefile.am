@@ -10,8 +10,8 @@ SOURCES =  \
 	Laser.cs \
 	Mirror.cs \
 	MovementBase.cs \
-	ScopeBase.cs \
 	Scope.cs \
+	ScopeBase.cs \
 	SharedTextureHandle.cs \
 	SuperScope.cs \
 	TextureHandle.cs

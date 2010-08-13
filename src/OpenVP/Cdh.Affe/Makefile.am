@@ -2,8 +2,8 @@ ASSEMBLY = Cdh.Affe
 LINK = -r:System
 
 SOURCES =  \
-	affe-parser.cs \
 	AffeCompiler.cs \
+	affe-parser.cs \
 	Lexer.cs \
 	ScriptState.cs \
 	Symbol.cs \
