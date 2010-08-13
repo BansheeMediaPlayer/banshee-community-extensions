@@ -5,11 +5,11 @@
     compatVersion="1.0"
     copyright="© 2008 Chris Howie. Licensed under the MIT X11 license."
     name="Visualizer"
-    category="Visualizations"
+    category="Community Extensions"
     description="Draws patterns to your music using the Open Visualization Platform."
     author="Chris Howie"
     url="http://www.chrishowie.com/"
-    defaultEnabled="true">
+    defaultEnabled="false">
 
   <Runtime>
   	<Import assembly="Banshee.OpenVP.dll" />
