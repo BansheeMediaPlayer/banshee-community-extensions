@@ -1,1 +1,96 @@
-<?xml version="1.0" encoding="utf-8"?><Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">  <PropertyGroup>    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>    <ProductVersion>9.0.21022</ProductVersion>    <SchemaVersion>2.0</SchemaVersion>    <ProjectGuid>{8684E1F1-96B9-4F74-BFBB-3946C163A6B6}</ProjectGuid>    <OutputType>Library</OutputType>    <RootNamespace>OpenVP.Core</RootNamespace>    <AssemblyName>OpenVP.Core</AssemblyName>    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>  </PropertyGroup>  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">    <DebugSymbols>true</DebugSymbols>    <DebugType>full</DebugType>    <Optimize>true</Optimize>    <OutputPath>..\build</OutputPath>    <ErrorReport>prompt</ErrorReport>    <WarningLevel>4</WarningLevel>    <ConsolePause>false</ConsolePause>    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>    <Execution>      <Execution clr-version="Net_2_0" xmlns="" />    </Execution>  </PropertyGroup>  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">    <DebugType>none</DebugType>    <Optimize>true</Optimize>    <OutputPath>..\build</OutputPath>    <ErrorReport>prompt</ErrorReport>    <WarningLevel>4</WarningLevel>    <ConsolePause>false</ConsolePause>    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>    <Execution>      <Execution clr-version="Net_2_0" xmlns="" />    </Execution>  </PropertyGroup>  <ItemGroup>    <Compile Include="AssemblyInfo.cs" />    <Compile Include="ClearScreen.cs" />    <Compile Include="Scope.cs" />    <Compile Include="SuperScope.cs" />    <Compile Include="DynamicMovement.cs" />    <Compile Include="Buffer.cs" />    <Compile Include="TextureHandle.cs" />    <Compile Include="MovementBase.cs" />    <Compile Include="SharedTextureHandle.cs" />    <Compile Include="BurstScope.cs" />    <Compile Include="Laser.cs" />    <Compile Include="Mirror.cs" />    <Compile Include="ScopeBase.cs" />  </ItemGroup>  <ItemGroup>    <Reference Include="System" />    <Reference Include="Mono.Posix" />    <Reference Include="Tao.OpenGl, Version=2.1.0.7, Culture=neutral, PublicKeyToken=1ca010269a4501ef" />    <Reference Include="Tao.FreeGlut, Version=2.4.0.1, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d" />  </ItemGroup>  <ItemGroup>    <ProjectReference Include="..\OpenVP\OpenVP.csproj">      <Project>{07680636-F897-4CDB-8B25-85D21113AD1C}</Project>      <Name>OpenVP</Name>    </ProjectReference>    <ProjectReference Include="..\OpenVP.Scripting\OpenVP.Scripting.csproj">      <Project>{05E72510-705D-463D-91B8-A2E22C78F3C2}</Project>      <Name>OpenVP.Scripting</Name>    </ProjectReference>    <ProjectReference Include="..\Cdh.Affe\Cdh.Affe.csproj">      <Project>{CF8CDE47-EE9F-42D0-8073-F7F4EAE94165}</Project>      <Name>Cdh.Affe</Name>    </ProjectReference>  </ItemGroup>  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />  <ProjectExtensions>    <MonoDevelop>      <Properties xmlns="">        <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile.am" SyncReferences="true" IsAutotoolsProject="true" RelativeConfigureInPath="..">          <BuildFilesVar Sync="true" Name="FILES" />          <DeployFilesVar />          <ResourcesVar Sync="true" Name="RESOURCES" />          <OthersVar />          <GacRefVar Sync="true" Name="REFERENCES" />          <AsmRefVar Sync="true" Name="REFERENCES" />          <ProjectRefVar Sync="true" Name="REFERENCES" />        </MonoDevelop.Autotools.MakefileInfo>      </Properties>    </MonoDevelop>  </ProjectExtensions></Project>
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8684E1F1-96B9-4F74-BFBB-3946C163A6B6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>OpenVP.Core</RootNamespace>
+    <AssemblyName>OpenVP.Core</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\bin</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <Execution>
+      <Execution clr-version="Net_2_0" />
+    </Execution>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\bin</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <Execution>
+      <Execution clr-version="Net_2_0" />
+    </Execution>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="ClearScreen.cs" />
+    <Compile Include="Scope.cs" />
+    <Compile Include="SuperScope.cs" />
+    <Compile Include="DynamicMovement.cs" />
+    <Compile Include="Buffer.cs" />
+    <Compile Include="TextureHandle.cs" />
+    <Compile Include="MovementBase.cs" />
+    <Compile Include="SharedTextureHandle.cs" />
+    <Compile Include="BurstScope.cs" />
+    <Compile Include="Laser.cs" />
+    <Compile Include="Mirror.cs" />
+    <Compile Include="ScopeBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Mono.Posix" />
+    <Reference Include="Tao.OpenGl, Version=2.1.0.7, Culture=neutral, PublicKeyToken=1ca010269a4501ef">
+      <Package>tao-opengl</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Tao.FreeGlut, Version=2.4.0.1, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d">
+      <Package>tao-freeglut</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenVP\OpenVP.csproj">
+      <Project>{07680636-F897-4CDB-8B25-85D21113AD1C}</Project>
+      <Name>OpenVP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenVP.Scripting\OpenVP.Scripting.csproj">
+      <Project>{05E72510-705D-463D-91B8-A2E22C78F3C2}</Project>
+      <Name>OpenVP.Scripting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cdh.Affe\Cdh.Affe.csproj">
+      <Project>{CF8CDE47-EE9F-42D0-8073-F7F4EAE94165}</Project>
+      <Name>Cdh.Affe</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile.am" SyncReferences="true" IsAutotoolsProject="true" RelativeConfigureInPath="..">
+          <BuildFilesVar Sync="true" Name="FILES" />
+          <DeployFilesVar />
+          <ResourcesVar Sync="true" Name="RESOURCES" />
+          <OthersVar />
+          <GacRefVar Sync="true" Name="REFERENCES" />
+          <AsmRefVar Sync="true" Name="REFERENCES" />
+          <ProjectRefVar Sync="true" Name="REFERENCES" />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>

@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\build</OutputPath>
+    <OutputPath>..\..\..\bin</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\build</OutputPath>
+    <OutputPath>..\..\..\bin</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -33,10 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Tao.OpenGl, Version=3.0.0.0, Culture=neutral, PublicKeyToken=1ca010269a4501ef">
-    </Reference>
-    <Reference Include="OpenVP.Core, Version=0.0.1.0, Culture=neutral">
-    </Reference>
-    <Reference Include="OpenVP, Version=0.0.1.0, Culture=neutral">
+      <Package>tao-opengl</Package>
     </Reference>
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -79,5 +76,15 @@
   </ProjectExtensions>
   <ItemGroup>
     <Folder Include="Conway\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenVP\OpenVP.csproj">
+      <Project>{07680636-F897-4CDB-8B25-85D21113AD1C}</Project>
+      <Name>OpenVP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenVP.Core\OpenVP.Core.csproj">
+      <Project>{8684E1F1-96B9-4F74-BFBB-3946C163A6B6}</Project>
+      <Name>OpenVP.Core</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
