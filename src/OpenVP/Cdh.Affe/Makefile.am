@@ -1,5 +1,5 @@
 ASSEMBLY = Cdh.Affe
-LINK =  -r:System
+LINK = -r:System
 
 SOURCES =  \
 	affe-parser.cs \
@@ -20,7 +20,7 @@ affe-parser.cs : $(JAY_FILES)
 
 if ENABLE_OPENVP
 include $(top_srcdir)/build/build.mk
-EXTRA_DIST = $(JAY_FILES)
+EXTRA_DIST += $(JAY_FILES)
 else
 EXTRA_DIST = $(SOURCES) $(RESOURCES) $(JAY_FILES)
 endif
