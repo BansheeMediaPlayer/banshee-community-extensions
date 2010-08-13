@@ -40,5 +40,5 @@ namespace Banshee.Streamrecorder.Gst
         Paused = 3,
         Playing = 4
     }
-    
+
 }

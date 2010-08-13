@@ -33,7 +33,6 @@ using Gtk;
 using Mono.Addins;
 
 using Hyena;
-using Banshee.Base;
 using Banshee.MediaEngine;
 using Banshee.ServiceStack;
 using Banshee.Gui;
@@ -62,7 +61,7 @@ namespace Banshee.AlarmClock
             alarm_thread = new Thread (alarmThreadStart);
             alarm_thread.Start ();
 
-            action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
+            action_service = ServiceManager.Get<InterfaceActionService> ();
 
             actions = new ActionGroup ("AlarmClock");
 

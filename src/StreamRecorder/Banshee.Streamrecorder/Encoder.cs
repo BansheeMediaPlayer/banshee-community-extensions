@@ -104,7 +104,7 @@ namespace Banshee.Streamrecorder
         {
             return name;
         }
-        
+
     }
-    
+
 }

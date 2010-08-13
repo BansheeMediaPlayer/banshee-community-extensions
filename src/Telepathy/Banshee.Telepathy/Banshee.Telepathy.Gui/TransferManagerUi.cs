@@ -41,12 +41,12 @@ namespace Banshee.Telepathy.Gui
     {
         private UserJob user_job = null;
         private readonly object sync = new object ();
-        
+
         protected TransferManagerUi ()
         {
             Initialize ();
         }
-        
+
         private string title = AddinManager.CurrentLocalizer.GetString ("Transfer(s) to Contacts");
         public string Title {
             get { return title; }
@@ -87,7 +87,7 @@ namespace Banshee.Telepathy.Gui
         private long bytes_expected = 0;
         public long BytesExpected {
             get { return bytes_expected; }
-            protected set { bytes_expected = value < 0 ? 0 : value; } 
+            protected set { bytes_expected = value < 0 ? 0 : value; }
         }
 
         private bool cancelling = false;
@@ -100,7 +100,7 @@ namespace Banshee.Telepathy.Gui
         {
             ResetCounters ();
         }
-        
+
         public void Dispose ()
         {
             Dispose (true);
@@ -120,14 +120,14 @@ namespace Banshee.Telepathy.Gui
             InProgress = 0;
             Total = 0;
         }
-        
+
         protected void CreateUserJob ()
         {
             lock (sync) {
                 if (user_job != null) {
                     return;
                 }
-                
+
                 user_job = new UserJob (Title, AddinManager.CurrentLocalizer.GetString ("Initializing"));
                 user_job.SetResources (Resource.Cpu, Resource.Disk);
                 user_job.PriorityHints = PriorityHints.SpeedSensitive | PriorityHints.DataLossIfStopped;
@@ -147,7 +147,7 @@ namespace Banshee.Telepathy.Gui
                 }
 
                 ResetCounters ();
-                
+
                 user_job.CancelRequested -= OnCancelRequested;
                 user_job.Finish ();
                 user_job = null;
@@ -165,23 +165,23 @@ namespace Banshee.Telepathy.Gui
         }
 
         public abstract void CancelAll ();
-  
-                
+
+
         protected virtual void OnUpdated (object sender, UpdatedEventArgs args)
         {
             BytesExpected = args.BytesExpected;
             BytesTransferred = args.BytesTransferred;
             InProgress = args.InProgress;
             Total = args.Total;
-            
+
             Update ();
         }
-        
+
         protected virtual void OnCompleted (object sender, EventArgs args)
         {
-            DestroyUserJob ();    
+            DestroyUserJob ();
         }
-        
+
         protected virtual void OnCancelRequested (object sender, EventArgs args)
         {
             Cancelling = true;

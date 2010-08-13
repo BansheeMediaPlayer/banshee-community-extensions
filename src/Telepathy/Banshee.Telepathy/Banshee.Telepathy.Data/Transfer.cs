@@ -29,7 +29,7 @@
 using System;
 
 namespace Banshee.Telepathy.Data
-{    
+{
     public enum TransferState {
         None,
         Queued,
@@ -40,7 +40,7 @@ namespace Banshee.Telepathy.Data
         Cancelled,
         Failed
     }
-    
+
     public class TransferEventArgs : EventArgs
     {
         public TransferEventArgs (TransferState state, long bytes_expected, long bytes_transferred) : base ()
@@ -49,12 +49,12 @@ namespace Banshee.Telepathy.Data
             BytesExpected = bytes_expected;
             BytesTransferred = bytes_transferred;
         }
-        
+
         public TransferState State { get; private set; }
         public long BytesExpected { get; private set; }
         public long BytesTransferred { get; private set; }
     }
-    
+
     public class TransferProgressEventArgs : EventArgs
     {
         public TransferProgressEventArgs (long bytes, long bytes_expected, long bytes_transferred) : base ()
@@ -63,27 +63,27 @@ namespace Banshee.Telepathy.Data
             BytesExpected = bytes_expected;
             BytesTransferred = bytes_transferred;
         }
-        
+
         public long Bytes { get; private set; }
         public long BytesExpected { get; private set; }
         public long BytesTransferred { get; private set; }
     }
-    
+
     public abstract class Transfer<T> : IDisposable where T : IEquatable<T>
     {
         public event EventHandler<TransferEventArgs> StateChanged;
         public event EventHandler<TransferProgressEventArgs> ProgressChanged;
-        
+
         public Transfer (T key)
         {
             this.key = key;
         }
-        
+
         private T key;
         public T Key {
             get { return key; }
         }
-     
+
         // make this property protected to let classes set the state without raising an event
         // use with care
         protected TransferState state = TransferState.None;
@@ -96,11 +96,11 @@ namespace Banshee.Telepathy.Data
                 }
             }
         }
-        
+
         public bool IsDownloading {
             get { return state == TransferState.InProgress; }
         }
-        
+
         public bool IsDownloadingPending {
             get { return state > TransferState.None && state < TransferState.InProgress; }
         }
@@ -110,11 +110,11 @@ namespace Banshee.Telepathy.Data
             get { return expected_bytes; }
             protected set { expected_bytes = value; }
         }
-        
+
         private long bytes_transferred;
         public long BytesTransferred {
             get { return bytes_transferred; }
-            protected set { 
+            protected set {
                 if (bytes_transferred == 0) {
                     State = TransferState.InProgress;
                 }
@@ -122,19 +122,19 @@ namespace Banshee.Telepathy.Data
                 bytes_transferred = value;
             }
         }
-        
+
         public void Dispose ()
         {
             Dispose (true);
         }
-        
+
         protected abstract void Dispose (bool disposing);
-        
+
         public virtual void Queue ()
         {
             State = TransferState.Queued;
         }
-        
+
         public virtual bool Start ()
         {
 			if (state == TransferState.Ready) {
@@ -144,12 +144,12 @@ namespace Banshee.Telepathy.Data
 			
 			return false;
 		}
-        
+
         public virtual void Cancel ()
         {
             State = TransferState.Cancelled;
         }
-        
+
         protected virtual void OnStateChanged ()
         {
             var handler = StateChanged;
@@ -157,7 +157,7 @@ namespace Banshee.Telepathy.Data
                 handler (this, new TransferEventArgs (state, expected_bytes, bytes_transferred));
             }
         }
-        
+
         protected virtual void OnProgressChanged (long bytes)
         {
             var handler = ProgressChanged;

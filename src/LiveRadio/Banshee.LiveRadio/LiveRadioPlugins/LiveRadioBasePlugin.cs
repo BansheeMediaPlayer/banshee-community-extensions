@@ -27,20 +27,17 @@
 //
 
 using System;
-using System.Net;
-using System.Xml;
 using System.Collections.Generic;
 using System.ComponentModel;
-
-using Banshee.Collection.Database;
-using Banshee.Configuration;
 using System.IO;
-using System.Reflection;
-using Hyena;
-using Gtk;
-using Banshee.Base;
+using System.Net;
+using System.Xml;
 
 using Mono.Addins;
+
+using Banshee.Collection.Database;
+using Hyena;
+using Gtk;
 
 namespace Banshee.LiveRadio.Plugins
 {

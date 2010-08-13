@@ -35,7 +35,7 @@ namespace Banshee.Telepathy.DBus
     {
         public event ChunkReadyHandler ChunkReady;
         public event SingleChunkReadyHandler SingleChunkReady;
-        
+
         protected readonly object payload_lock = new object ();
         protected readonly object timestamp_lock = new object ();
         protected IDictionary <int, IDictionary <string, object> []> buffer = null;
@@ -43,35 +43,35 @@ namespace Banshee.Telepathy.DBus
 
         public BaseProvider ()
         {
-            
+
         }
-        
+
         private bool use_buffer = true;
         public virtual bool UseBuffer {
             get { return use_buffer; }
-            protected set { 
+            protected set {
                 lock (payload_lock) {
                     use_buffer = value;
-                } 
+                }
             }
         }
-        
+
         public int Id {
             get { return id; }
             protected set { id = value; }
         }
-        
+
         private long current_timestamp = 0;
         public virtual long CurrentTimestamp {
             get { return current_timestamp; }
             protected set { current_timestamp = value; }
-            
+
         }
 
         public abstract void GetChunks (int chunk_size);
         public abstract void GetChunk (long timestamp, int sequence_num);
 
-        protected void OnChunkReady (string object_path, 
+        protected void OnChunkReady (string object_path,
                                         IDictionary <string, object> [] chunk,
                                         long timestamp,
                                         int seq_num,
@@ -84,7 +84,7 @@ namespace Banshee.Telepathy.DBus
             }
         }
 
-        protected void OnSingleChunkReady (string object_path, 
+        protected void OnSingleChunkReady (string object_path,
                                            IDictionary <string, object> [] chunk,
                                            long timestamp, int seq_num)
         {
@@ -109,12 +109,12 @@ namespace Banshee.Telepathy.DBus
 
     // send sequence number and total (total items expected to be sent)
     // so user knows when all data has been sent even if chunks come out of order
-    public delegate void ChunkReadyHandler (string object_path, 
+    public delegate void ChunkReadyHandler (string object_path,
                                                 IDictionary <string, object> [] chunk,
                                                 long timestamp,
                                                 int seq_num,
                                                 int total);
-    public delegate void SingleChunkReadyHandler (string object_path, 
+    public delegate void SingleChunkReadyHandler (string object_path,
                                                   IDictionary <string, object> [] chunk,
                                                   long timestamp, int seq_num);
 }

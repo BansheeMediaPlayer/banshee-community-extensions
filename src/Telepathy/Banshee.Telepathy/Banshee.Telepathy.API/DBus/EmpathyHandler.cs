@@ -24,7 +24,7 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//    
+//
 
 using System;
 
@@ -40,23 +40,23 @@ namespace Banshee.Telepathy.API.DBus
         public const string STREAMTUBE_HANDLER_IFACE = "org.gnome.Empathy.StreamTubeHandler";
         public const string STREAMTUBE_HANDLER_PATH = "/org/gnome/Empathy/StreamTubeHandler";
     }
-    
+
     // Empathy specific interface to tell Empathy we are handling the tube
     [Interface ("org.gnome.Empathy.TubeHandler")]
     public interface ITubeHandler
     {
-        void HandleTube (string bus_name, 
-                         ObjectPath conn, 
-                         ObjectPath channel, 
+        void HandleTube (string bus_name,
+                         ObjectPath conn,
+                         ObjectPath channel,
                          uint handle_type,
                          uint handle);
     }
-    
+
     public class EmpathyHandler : ITubeHandler
     {
-        public void HandleTube (string bus_name, 
-                                ObjectPath conn, 
-                                ObjectPath channel, 
+        public void HandleTube (string bus_name,
+                                ObjectPath conn,
+                                ObjectPath channel,
                                 uint handle_type,
                                 uint handle)
         {

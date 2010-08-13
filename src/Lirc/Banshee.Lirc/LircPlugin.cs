@@ -2,8 +2,8 @@ using System;
 using System.Threading;
 
 using Hyena;
+
 using Banshee.ServiceStack;
-using Banshee.Base;
 using Banshee.Gui;
 using Gtk;
 
@@ -13,13 +13,13 @@ namespace Banshee.Lirc
 {
     public class LircPlugin : IExtensionService
     {
-        
+
         private LircClient lirc;
         private Thread poll;
 		private ActionMapper ctrl;
 		private ActionGroup actions;
 		private InterfaceActionService action_service;
-        
+
         public LircPlugin()
         {
 			actions = new ActionGroup("Lirc");
@@ -31,7 +31,7 @@ namespace Banshee.Lirc
 				                null, "Configure the Lirc addin", OnConfigurePlugin),
 			});
 			
-			action_service = ServiceManager.Get<InterfaceActionService>("InterfaceActionService");
+			action_service = ServiceManager.Get<InterfaceActionService>();
 			
 			action_service.UIManager.InsertActionGroup(actions, 0);
             action_service.UIManager.AddUiFromResource("Ui.xml");
@@ -61,16 +61,17 @@ namespace Banshee.Lirc
 		~LircPlugin()
         {
         }
-               
+
         private void PollThread()
         {
-            Console.WriteLine("Waiting for LIRC button press...");
+            Log.Debug ("Waiting for LIRC button press...");
             string command;
             while (lirc.ErrorValue >= 0) {
                 command = lirc.NextCommand ();
                 ctrl.DispatchAction(command);
             }
-            Console.WriteLine("Lost connection to LIRC daemon.  FIXME: should try to reconnect");
+            // FIXME: Should try to reconnect
+            Log.Debug("Lost connection to LIRC daemon");
         }
 
 		string IService.ServiceName {

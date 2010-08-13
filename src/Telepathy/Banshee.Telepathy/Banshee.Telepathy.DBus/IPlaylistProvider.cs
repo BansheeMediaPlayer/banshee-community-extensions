@@ -32,18 +32,18 @@ using NDesk.DBus;
 
 namespace Banshee.Telepathy.DBus
 {
-    
+
     [Interface ("org.bansheeproject.Banshee.Telepathy.PlaylistProvider")]
     public interface IPlaylistProvider
     {
         event SingleChunkReadyHandler SingleChunkReady;
         event ChunkReadyHandler ChunkReady;
-               
+
         void GetChunks (int chunk_size);
         void GetChunk (long timestamp, int sequence_num);
         string GetName ();
 
         void Destroy ();
     }
-    
+
 }

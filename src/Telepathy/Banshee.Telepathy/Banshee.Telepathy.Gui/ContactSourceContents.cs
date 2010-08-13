@@ -48,7 +48,7 @@ using Banshee.Telepathy.API;
 namespace Banshee.Telepathy.Gui
 {
     public class ContactSourceContents : Hyena.Widgets.ScrolledWindow, ISourceContents
-    {   
+    {
         private VBox main_box;
         private Viewport viewport;
 
@@ -56,11 +56,11 @@ namespace Banshee.Telepathy.Gui
         private TileView contacts_view;
 
         private readonly IDictionary <Contact, MenuTile> tile_map = new Dictionary<Contact, MenuTile> ();
-        
+
         public ContactSourceContents (ContactContainerSource source)
         {
             this.source = source;
-            
+
             HscrollbarPolicy = PolicyType.Never;
             VscrollbarPolicy = PolicyType.Automatic;
 
@@ -79,7 +79,7 @@ namespace Banshee.Telepathy.Gui
             };
 
             viewport.Add (main_box);
-            
+
             StyleSet += delegate {
                 viewport.ModifyBg (StateType.Normal, Style.Base (StateType.Normal));
                 viewport.ModifyFg (StateType.Normal, Style.Text (StateType.Normal));
@@ -92,11 +92,11 @@ namespace Banshee.Telepathy.Gui
         public void Refresh ()
         {
             tile_map.Clear ();
-            
+
             if (contacts_view == null) {
                 contacts_view = new TileView (1);
             }
-            
+
             if (contacts == null) {
                 contacts = new TitledList (AddinManager.CurrentLocalizer.GetString ("Contacts"));
                 contacts.PackStart (contacts_view, true, true, 0);
@@ -118,7 +118,7 @@ namespace Banshee.Telepathy.Gui
             foreach (Connection conn in source.TelepathyService.GetActiveConnections ()) {
                 AppendToList (conn);
             }
-            
+
             ShowAll ();
         }
 
@@ -127,23 +127,23 @@ namespace Banshee.Telepathy.Gui
             if (conn == null || conn.Roster == null) {
                 return;
             }
-            
+
             foreach (Contact contact in conn.Roster.GetAllContacts ()) {
                 if (contact == null || contact.Avatar == null) {
                     continue;
                 }
-                
+
                 MenuTile tile = new MenuTile ();
                 tile.SizeAllocated += delegate (object o, SizeAllocatedArgs args) {
                     int main_width, main_height = 0;
                     main_box.GetSizeRequest (out main_width, out main_height);
-                    
-                    tile.WidthRequest = main_width;               
+
+                    tile.WidthRequest = main_width;
                 };
-                
+
                 tile.PrimaryText = contact.Name;
                 tile.SecondaryText = String.IsNullOrEmpty (contact.StatusMessage) ? contact.Status.ToString () : contact.StatusMessage;
-                
+
                 Avatar avatar = contact.Avatar;
                 if (avatar.State == AvatarState.Loaded) {
                     tile.Pixbuf = new Gdk.Pixbuf (avatar.Image);
@@ -158,23 +158,23 @@ namespace Banshee.Telepathy.Gui
                             if (e.State == AvatarState.Loaded) {
                                 tile_map[a.Contact].Pixbuf = new Gdk.Pixbuf (a.Image);
                                 a.Clear (false);
-                                
+
                                 main_box.QueueDraw ();
                             }
 
                             tile_map.Remove (a.Contact);
                         }
                     };
-                    
+
                     avatar.Load ();
                 }
-                
+
                 contacts_view.AddWidget (tile);
             }
         }
-        
+
 #region ISourceContents
-        
+
         public bool SetSource (ISource src)
         {
             source = src as ContactContainerSource;
@@ -200,7 +200,7 @@ namespace Banshee.Telepathy.Gui
         public Widget Widget {
             get { return this; }
         }
-        
+
 #endregion
 
     }

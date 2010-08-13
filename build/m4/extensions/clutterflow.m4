@@ -7,7 +7,7 @@ AC_DEFUN([BCE_CLUTTERFLOW],
 		[clutter-sharp was not found. Please install clutter-sharp or disable the ClutterFlow extension by passing --disable-clutterflow])
 
 	BCE_CHECK_EXTENSION_DEP([ClutterFlow], [BANSHEE_NOWPLAYING],
-		[banshee-1-nowplaying >= 1.5.3],
+		[banshee-1-nowplaying],
 		[The Banshee NowPlaying extension was not found. Please install it or disable the ClutterFlow extension by passing --disable-clutterflow])
 
 	if test "x$enable_ClutterFlow" = "xtry" \
@@ -17,6 +17,8 @@ AC_DEFUN([BCE_CLUTTERFLOW],
 	fi
 
 	if test "x$enable_ClutterFlow" = "xyes"; then
+		CLUTTER_BUNDLEFILES="`$PKG_CONFIG --variable=bundlefiles clutter-sharp` `$PKG_CONFIG --variable=bundlefiles clutter-gtk-sharp`"
+		AC_SUBST(CLUTTER_BUNDLEFILES)
 		AM_CONDITIONAL(ENABLE_CLUTTERFLOW, true)
 	else
 		enable_ClutterFlow=no

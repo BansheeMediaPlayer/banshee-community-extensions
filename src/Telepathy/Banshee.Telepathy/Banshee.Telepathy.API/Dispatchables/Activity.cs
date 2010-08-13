@@ -48,12 +48,12 @@ namespace Banshee.Telepathy.API.Dispatchables
     {
         //private Data.ChannelInfo channel;
         private Banshee.Telepathy.API.Channels.ITube tube;
-        
+
         internal Activity (Contact c,  Banshee.Telepathy.API.Channels.ITube tube) : base (c, tube)
         {
             string service = tube.Service;
             Key = service;
-            
+
 //            if (c.HasService (service)) {
 //                ContactService s = c.GetService (service);
 //                this.service = s;
@@ -100,10 +100,10 @@ namespace Banshee.Telepathy.API.Dispatchables
             if (IsDisposed) {
                 return;
             }
-            
+
             if (disposing) {
                 Close ();
-                
+
                 if (tube != null) {
                     tube.ChannelReady -= OnChannelReady;
                     tube.Closed -= OnTubeClosed;
@@ -115,18 +115,18 @@ namespace Banshee.Telepathy.API.Dispatchables
 
             base.Dispose (disposing);
         }
-            
+
         public void Start ()
         {
             if (state != ActivityState.Idle) {
                 return;
             }
-            
+
 //            if (!Contact.HasService (service)) {
 //                throw new InvalidOperationException (String.Format ("{0} does not support service {1}",
 //                                                                    Contact.Name, service));
 //            }
-            
+
             tube.Offer ();
             state = ActivityState.RemotePending;
         }
@@ -137,7 +137,7 @@ namespace Banshee.Telepathy.API.Dispatchables
                 throw new InvalidOperationException (String.Format ("Activity state is not in expected state of {0}",
                                                                     ActivityState.LocalPending));
             }
-            
+
             tube.Accept ();
             state = ActivityState.RemotePending;
         }
@@ -146,7 +146,7 @@ namespace Banshee.Telepathy.API.Dispatchables
         {
             Reject ();
         }
-        
+
         public void Reject ()
         {
             if (tube != null) {
@@ -165,6 +165,6 @@ namespace Banshee.Telepathy.API.Dispatchables
         {
             state = ActivityState.LocalPending;
         }
-        
+
     }
 }

@@ -12,6 +12,7 @@ SUBDIRS = \
 	Mirage \
 	OpenVP \
 	RadioStationFetcher \
+	SoundMenu \
 	StreamRecorder \
 	Telepathy \
 	UbuntuOneMusicStore

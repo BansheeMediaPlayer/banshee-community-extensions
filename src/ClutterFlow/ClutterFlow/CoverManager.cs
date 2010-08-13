@@ -1,21 +1,21 @@
-// 
+//
 // CoverManager.cs
-//  
+//
 // Author:
 //       Mathijs Dumon <mathijsken@hotmail.com>
-// 
+//
 // Copyright (c) 2010 Mathijs Dumon
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,7 +36,7 @@ using GLib;
 
 namespace ClutterFlow
 {
-    
+
 	public delegate void ActorEventHandler<T>(T actor, EventArgs e) where T : ClutterFlowBaseActor;
 				
 	public class CoverManager : Clutter.Group {
@@ -67,14 +67,14 @@ namespace ClutterFlow
 		}
 
         public event EventHandler TextureSizeChanged;
-        protected void InvokeTextureSizeChanged () 
+        protected void InvokeTextureSizeChanged ()
 		{
              //TODO use a timeout here, if the function is called mutliple times shortly after another, we don't get endless recalculation
             if (TextureSizeChanged!=null) TextureSizeChanged (this, EventArgs.Empty);
         }
 
         public event EventHandler<EventArgs> VisibleCoversChanged;
-        protected void InvokeVisibleCoversChanged () 
+        protected void InvokeVisibleCoversChanged ()
 		{
             if (VisibleCoversChanged!=null) VisibleCoversChanged(this, EventArgs.Empty);
         }
@@ -84,7 +84,7 @@ namespace ClutterFlow
 		{
 			if (LetterLookupChanged!=null) LetterLookupChanged(this, EventArgs.Empty);;
 		}
-        
+
         #endregion
 
         #region Fields
@@ -95,7 +95,7 @@ namespace ClutterFlow
                     timeline = new ClutterFlowTimeline(this);
                     timeline.TargetMarkerReached += HandleTargetMarkerReached;
                 }
-				return timeline; 
+				return timeline;
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace ClutterFlow
 			get { return behaviour; }
 		}
         #endregion
-        
+
         #region Cover-related fields
 
 		protected int textureSize = 128;
@@ -213,12 +213,12 @@ namespace ClutterFlow
                 return empty_actor;
             }
         }
-        
+
         internal List<ClutterFlowBaseActor> covers;     // list with cover actors
         public int TotalCovers  {               // number of covers or zero if null
             get { return (covers != null) ? covers.Count : 0; }
         }
-        
+
         private ClutterFlowBaseActor current_cover = null; // currently centered cover
         public ClutterFlowBaseActor CurrentCover {
             get { return current_cover; }
@@ -230,7 +230,7 @@ namespace ClutterFlow
             }
         }
         #endregion
-        
+
 		protected bool needs_reloading = false;
 		public bool NeedsReloading {
 			get { return needs_reloading; }
@@ -248,11 +248,11 @@ namespace ClutterFlow
             ActorLoader.Dispose ();
             Behaviour.Dispose ();
             timeline.Dispose ();
-            
+
             covers.Clear ();
             covers = null;
             current_cover = null;
-            
+
             base.Dispose ();
         }
         #endregion
@@ -262,8 +262,8 @@ namespace ClutterFlow
             return base.GetChildMeta(actor) as ClutterFlowChildMeta;
         }*/
 
-        
-		public void UpdateBehaviour () 
+
+		public void UpdateBehaviour ()
 		{
 			if (behaviour!=null && Stage!=null) {
 				behaviour.Height = Stage.Height;
@@ -289,7 +289,7 @@ namespace ClutterFlow
 				GLib.Source.Remove((uint) reload_timeout);
 			reload_timeout = (int) GLib.Timeout.Add (MaxAnimationSpan, new GLib.TimeoutHandler (reload_covers));
 		}
- 
+
      	private bool reload_covers ()
      	{   			
 			if (Timeline!=null) Timeline.Pause ();
@@ -300,11 +300,11 @@ namespace ClutterFlow
 				int old_target_index = CurrentCover!=null ? covers.IndexOf (CurrentCover) : 0;		// the old current index
 				int new_target_index = 0;					// the newly calculated index
 				bool keep_current = false;					// wether or not to keep the current cover centered
-                
+
 				List<ClutterFlowBaseActor> old_covers = new List<ClutterFlowBaseActor>(SafeGetRange(covers, old_target_index - HalfVisCovers - 1, visibleCovers + 2));
 				foreach (ClutterFlowBaseActor actor in covers) {
                     if (actor.Data.ContainsKey ("isOldCover")) actor.Data.Remove ("isOldCover");
-                    actor.Index = -1;  
+                    actor.Index = -1;
                     if (old_covers.Contains (actor))
                         actor.Data.Add ("isOldCover", true);
 				}
@@ -329,7 +329,7 @@ namespace ClutterFlow
 					}
 					keep_current = true;
                 }
-                
+
 				//recalculate timeline progression and the target index
 				if (covers.Count > 1) {
 					if (keep_current)
@@ -365,7 +365,7 @@ namespace ClutterFlow
                 foreach (ClutterFlowBaseActor actor in old_covers) {
                     if (actor!=null) actor.Data.Remove ("isOldCover");
                 }
-                
+
                 /*Console.WriteLine ("old_covers          contains " + old_covers.Count + " elements:");
                 foreach (ClutterFlowBaseActor cover in old_covers)
                     Console.WriteLine("\t- " + cover.Label.Replace("\n", " - "));
@@ -380,7 +380,7 @@ namespace ClutterFlow
                     Timeline.Play ();
                     InvokeCoversChanged();
                 };
-                
+
                 Behaviour.FadeCoversInAndOut (old_covers, truly_pers, new_covers, update_target);
 			} else {
 				//Console.WriteLine("Loading Covers");
@@ -427,7 +427,7 @@ namespace ClutterFlow
 			if (covers!=null && lBound <= uBound && lBound >= 0 && uBound < covers.Count) {
 				IEnumerator<ClutterFlowBaseActor> enumerator = covers.GetRange(lBound, uBound-lBound + 1).GetEnumerator();
 				while (enumerator.MoveNext())
-					method_call(enumerator.Current); 
+					method_call(enumerator.Current);
 			}
 		}
 		

@@ -1,9 +1,9 @@
-//  
+//
 // Author:
 //   Christian Martellini <christian.martellini@gmail.com>
 //
 // Copyright (C) 2009 Christian Martellini
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
@@ -22,7 +22,7 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
+//
 
 using System;
 using System.Collections.Generic;
@@ -141,7 +141,7 @@ namespace Banshee.Lyrics
             if (!ServiceManager.Get<Banshee.Networking.Network> ().Connected) {
                 throw new Exception ("You don't seem to be connected to internet.<br>Check your network connection.");
             }
-            
+
             //download the lyricss
             string lyrics = null;
             foreach (var source in GetSources (SourceData.LyricsSelector)) {
@@ -155,7 +155,7 @@ namespace Banshee.Lyrics
                 } finally {
                     source.IncrementLyrics (found);
                 }
-                
+
                 if (found) {
                     lyrics = AttachFooter (Utils.ToNormalString(lyrics), source.Source.Credits);
                     Log.DebugFormat ("Fetched lyrics from {0} for {1} - {2}",
@@ -168,7 +168,7 @@ namespace Banshee.Lyrics
             return null;
         }
 
-        public void UpdateDB (TrackInfo track, string lyrics) 
+        public void UpdateDB (TrackInfo track, string lyrics)
         {
             int track_id = ServiceManager.SourceManager.MusicLibrary.GetTrackIdForUri (track.Uri.AbsoluteUri);
             ServiceManager.DbConnection.Execute (
@@ -275,7 +275,10 @@ namespace Banshee.Lyrics
             if (!cache.IsInCache (track)) {
                 cache.WriteLyrics (track, lyrics);
             }
-            SaveToID3 (track, lyrics);
+
+            if (Banshee.Configuration.Schema.LibrarySchema.WriteMetadata.Get ()) {
+                SaveToID3 (track, lyrics);
+            }
         }
 
         private void SaveToID3 (TrackInfo track, string lyrics)

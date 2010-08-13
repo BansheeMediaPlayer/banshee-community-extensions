@@ -58,12 +58,12 @@ namespace Banshee.Mirage.Tests
             context.AddSeeds (new Seed [] { GetSeed (s1, SimilarityContext.ShuffledWeight) });
             Assert.IsFalse (context.IsEmpty);
             Assert.IsTrue (Math.Abs (distance_s1_s2 - context.Distance (Scms.FromBytes (Bytes (s2))).Average ()) < 0.1);
-            
+
             // Add the same seed w/ the same weight; make sure the average is the same
             context.AddSeeds (new Seed [] { GetSeed (s1, SimilarityContext.ShuffledWeight) });
             Assert.IsTrue (Math.Abs (distance_s1_s2 - context.Distance (Scms.FromBytes (Bytes (s2))).Average ()) < 0.1);
         }
-        
+
         [Test]
         public void TestDiscardedDistance ()
         {
@@ -74,7 +74,7 @@ namespace Banshee.Mirage.Tests
             Assert.IsFalse (context.IsEmpty);
             Assert.IsTrue (Math.Abs (distance_s1_s2_discarded - context.Distance (Scms.FromBytes (Bytes (s2))).Average ()) < 0.1);
         }
-        
+
         [Test]
         public void TestSameDistance ()
         {

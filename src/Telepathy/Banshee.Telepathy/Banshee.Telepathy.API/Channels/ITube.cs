@@ -34,7 +34,7 @@ namespace Banshee.Telepathy.API.Channels
     public interface ITube : IChannel
     {
         event EventHandler <EventArgs> TubeOffered;
-        
+
         string Service {
             get;
         }

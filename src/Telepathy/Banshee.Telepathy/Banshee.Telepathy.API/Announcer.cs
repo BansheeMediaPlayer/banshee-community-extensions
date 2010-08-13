@@ -55,7 +55,7 @@ namespace Banshee.Telepathy.API
                 locator = value;
             }
         }
-        
+
         public void Dispose ()
         {
             Dispose (true);
@@ -73,28 +73,28 @@ namespace Banshee.Telepathy.API
                 locator = null;
             }
         }
-        
+
         public virtual void Announce (string message)
         {
             if (message == null) {
                 throw new ArgumentNullException ("message");
             }
 
-            
+
             try {
                 foreach (Account account in locator.GetConnections ()) {
-                    object obj = DBusUtility.GetProperty (account.BusType, 
-                                                          Constants.ACCOUNTMANAGER_IFACE, 
-                                                          account.AccountObjectPath, 
-                                                          Constants.ACCOUNT_IFACE, 
+                    object obj = DBusUtility.GetProperty (account.BusType,
+                                                          Constants.ACCOUNTMANAGER_IFACE,
+                                                          account.AccountObjectPath,
+                                                          Constants.ACCOUNT_IFACE,
                                                           "CurrentPresence");
                     SimplePresence presence = (SimplePresence) System.Convert.ChangeType (obj, typeof (SimplePresence));
-                    
+
                     presence.StatusMessage = message;
-                    DBusUtility.SetProperty (account.BusType, 
-                                             Constants.ACCOUNTMANAGER_IFACE, 
-                                             account.AccountObjectPath, 
-                                             Constants.ACCOUNT_IFACE, 
+                    DBusUtility.SetProperty (account.BusType,
+                                             Constants.ACCOUNTMANAGER_IFACE,
+                                             account.AccountObjectPath,
+                                             Constants.ACCOUNT_IFACE,
                                              "RequestedPresence",
                                              presence);
                 }

@@ -36,49 +36,49 @@ namespace Banshee.Telepathy.Gui
     {
         private AccelGroup accel_group;
         private Label message;
-    
+
         public IncomingTubeDialog (string title, string msg) : base ()
         {
             Title = Catalog.GetString (title);
             HasSeparator = false;
             BorderWidth = 5;
-            
+
             IconName = "gtk-dialog-authentication";
-            
+
             accel_group = new AccelGroup ();
             AddAccelGroup (accel_group);
-            
+
             HBox hbox = new HBox (false, 12);
             VBox vbox = new VBox (false, 0);
             hbox.BorderWidth = 5;
             vbox.Spacing = 5;
             hbox.Show ();
             vbox.Show ();
-            
+
             Image image = new Image ();
             image.Yalign = 0.0f;
             image.IconName = "gtk-dialog-authentication";
             image.IconSize = (int)IconSize.Dialog;
             image.Show ();
-        
+
             hbox.PackStart (image, false, false, 0);
             hbox.PackStart (vbox, true, true, 0);
-        
+
             message = new Label (Catalog.GetString (msg));
             message.Xalign = 0.0f;
             message.Show ();
-            
+
             vbox.PackStart (message, false, false, 0);
-            
+
             VBox.PackStart (hbox, true, true, 0);
             VBox.Remove (ActionArea);
             VBox.Spacing = 10;
-            
+
             HBox bottom_box = new HBox ();
             bottom_box.PackStart (ActionArea, false, false, 0);
             bottom_box.ShowAll ();
             VBox.PackEnd (bottom_box, false, false, 0);
-           
+
             Button accept_button = new Button ();
             accept_button.Label = Catalog.GetString ("Accept");
             accept_button.ShowAll ();
@@ -101,18 +101,18 @@ namespace Banshee.Telepathy.Gui
             };
             AddActionWidget (reject_button, ResponseType.Reject);
         }
-        
+
         public void AddButton (string message, ResponseType response, bool isDefault)
         {
             Button button = (Button)AddButton (message, response);
-            
+
             if (isDefault) {
                 DefaultResponse = response;
-                button.AddAccelerator ("activate", accel_group, (uint)Gdk.Key.Return, 
+                button.AddAccelerator ("activate", accel_group, (uint)Gdk.Key.Return,
                     0, Gtk.AccelFlags.Visible);
             }
         }
-        
+
         public string Message {
             get { return message.Text; }
             set { message.Text = value; }

@@ -40,8 +40,8 @@ namespace Banshee.Telepathy.API.Dispatchers
 {
     internal sealed class StreamActivityDispatcher : Dispatcher
     {
-        internal StreamActivityDispatcher (Connection conn) : base (conn, 
-                                                                    Constants.CHANNEL_TYPE_STREAMTUBE, 
+        internal StreamActivityDispatcher (Connection conn) : base (conn,
+                                                                    Constants.CHANNEL_TYPE_STREAMTUBE,
                                                                     new string [] { "Service" })
         {
             DispatchObject = typeof (StreamActivityListener);
@@ -51,16 +51,16 @@ namespace Banshee.Telepathy.API.Dispatchers
         protected override bool VerifyRequest (uint target_handle, IDictionary <string, object> properties)
         {
             string service_name = null;
-            
+
             if (base.VerifyRequest (target_handle, properties)) {
                 service_name = (string) properties["Service"];
-            
+
                 Contact contact = Connection.Roster.GetContact (target_handle);
                 if (contact.SupportedChannels.GetChannelInfo <StreamTubeChannelInfo> (service_name) == null) {
                     throw new InvalidOperationException (String.Format ("Contact does not support service {0}",
                                                                         service_name));
                 }
-                
+
                 return true;
             }
 
@@ -74,28 +74,28 @@ namespace Banshee.Telepathy.API.Dispatchers
                     return true;
                 }
             }
-            
+
             return false;
         }
-        
-        protected override void ProcessNewChannel (string object_path, 
+
+        protected override void ProcessNewChannel (string object_path,
                                                    uint initiator_handle,
-                                                   uint target_handle, 
+                                                   uint target_handle,
                                                    ChannelDetails c)
         {
             string service_name = (string) c.Properties[Constants.CHANNEL_TYPE_STREAMTUBE + ".Service"];
             Contact contact = Connection.Roster.GetContact (target_handle);
-            
+
             StreamTubeChannel tube = null;
             Activity activity = null;
-            
+
             try {
-                tube = new StreamTubeChannel (this.Connection, 
+                tube = new StreamTubeChannel (this.Connection,
                                           object_path,
-                                          initiator_handle, 
+                                          initiator_handle,
                                           target_handle,
                                           service_name);
-                
+
                 if (initiator_handle == Connection.SelfHandle) {
                     tube.ServerAddress = Connection.SupportedChannels.GetChannelInfo <StreamTubeChannelInfo> (service_name).Address;
                     activity = new StreamActivityListener (contact, tube);

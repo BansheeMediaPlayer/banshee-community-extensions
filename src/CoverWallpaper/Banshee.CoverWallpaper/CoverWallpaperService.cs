@@ -49,19 +49,19 @@ namespace Banshee.CoverWallpaper
 
         private static GConf.Client gClient;
         private static string GCONF_BACKGROUND_PATH = "/desktop/gnome/background/picture_filename";
-        private static string albumWallpaper = 
+        private static string albumWallpaper =
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/banshee-1/banshee-wallpaper.png";
         private string userWallpaper = "";
         private string lastAlbum = "";
-        
+
         public CoverWallpaperService () {}
-        
+
         void IExtensionService.Initialize ()
-        {  
+        {
             artwork_manager_service = ServiceManager.Get<ArtworkManager> ();
-            
+
             ThreadAssist.AssertInMainThread ();
-            
+
             ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEvent,
                PlayerEvent.StartOfStream |
                PlayerEvent.TrackInfoUpdated);
@@ -75,7 +75,7 @@ namespace Banshee.CoverWallpaper
                 //TODO: handle this exception (shouldn't happen though)
             }
         }
-        
+
         public void Dispose ()
         {
             if (disposed)
@@ -86,44 +86,44 @@ namespace Banshee.CoverWallpaper
                 artwork_manager_service = null;
                 current_track = null;
                 image = null;
-            
+
                 // reestablish the user wallpaper
                 SetWallpaper(userWallpaper);
                 disposed = true;
             });
         }
-    
-        private void OnPlayerEvent (PlayerEventArgs args) 
+
+        private void OnPlayerEvent (PlayerEventArgs args)
         {
             switch (args.Event) {
                 case PlayerEvent.StartOfStream:
                 case PlayerEvent.TrackInfoUpdated:
                     current_track = ServiceManager.PlayerEngine.CurrentTrack;
-                
+
                     //check to see if there was an album change
                     if (lastAlbum != current_track.AlbumTitle) {
-                    
+
                         if (AlbumArtExists(current_track))
                             SetWallpaper(albumWallpaper);
                         else
                             SetWallpaper(userWallpaper);
-                    
+
                         lastAlbum = current_track.AlbumTitle;
                     }
                     break;
             }
         }
-        
+
         private bool AlbumArtExists(TrackInfo currentTrack)
         {
             image = artwork_manager_service.LookupPixbuf(current_track.ArtworkId);
-            
+
             if (image == null || !image.Save(albumWallpaper, "png"))
                 return false;
             else
                 return true;
         }
-        
+
         private void SetWallpaper(string filename)
         {
             try {
@@ -134,7 +134,7 @@ namespace Banshee.CoverWallpaper
                 //TODO: handle this exception
             }
         }
-        
+
         string IService.ServiceName {
             get { return "CoverWallpaperService"; }
         }

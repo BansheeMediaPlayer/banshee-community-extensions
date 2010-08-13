@@ -1,21 +1,21 @@
-// 
+//
 // ClutterFlowSchemas.cs
-//  
+//
 // Author:
 //       Mathijs Dumon <mathijsken@hotmail.com>
-// 
+//
 // Copyright (c) 2010 Mathijs Dumon
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -43,7 +43,7 @@ namespace Banshee.ClutterFlow
 			SchemaPreference<T> pref = new SchemaPreference<T> (entry, entry.ShortDescription, entry.LongDescription, func);
 			section.Add (pref);
         }
-        
+
         internal static readonly SchemaEntry<int> DragSensitivity = new SchemaEntry<int>(
             "clutterflow", "drag_sensitivity",
             3, 1, 20,
@@ -57,7 +57,7 @@ namespace Banshee.ClutterFlow
             AddinManager.CurrentLocalizer.GetString ("Enable threaded loading of artwork"),
             AddinManager.CurrentLocalizer.GetString ("If enabled ClutterFlow will use threading to load it's artwork")
         );
-        
+
         internal static readonly SchemaEntry<bool> ExpandTrackList = new SchemaEntry<bool>(
             "clutterflow", "expand_track_list",
             true,
@@ -71,7 +71,7 @@ namespace Banshee.ClutterFlow
             "Saved value for Show Browser",
             "If checked the Browser will be displayed when ClutterFlow is made invisible"
         );
-        
+
         internal static readonly SchemaEntry<bool> ShowClutterFlow = new SchemaEntry<bool>(
             "clutterflow", "show_clutterflow",
             false,

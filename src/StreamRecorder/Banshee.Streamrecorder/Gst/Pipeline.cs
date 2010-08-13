@@ -46,7 +46,7 @@ namespace Banshee.Streamrecorder.Gst
         {
             return new Bus (gst_pipeline_get_bus (raw));
         }
-        
+
     }
-    
+
 }

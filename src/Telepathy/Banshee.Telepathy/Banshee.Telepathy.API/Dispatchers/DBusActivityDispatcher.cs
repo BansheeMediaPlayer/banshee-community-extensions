@@ -40,7 +40,7 @@ namespace Banshee.Telepathy.API.Dispatchers
 {
     internal sealed class DBusActivityDispatcher : Dispatcher
     {
-        internal DBusActivityDispatcher (Connection conn) : base (conn, 
+        internal DBusActivityDispatcher (Connection conn) : base (conn,
                                                                   Constants.CHANNEL_TYPE_DBUSTUBE,
                                                                   new string [] { "ServiceName" } )
         {
@@ -51,12 +51,12 @@ namespace Banshee.Telepathy.API.Dispatchers
         protected override bool VerifyRequest (uint target_handle, IDictionary <string, object> properties)
         {
             string service_name = null;
-            
+
             if (base.VerifyRequest (target_handle, properties)) {
                 service_name = (string) properties["ServiceName"];
-            
+
                 Contact contact = Connection.Roster.GetContact (target_handle);
-                
+
                 if (contact.SupportedChannels.GetChannelInfo <DBusTubeChannelInfo> (service_name) == null) {
                     throw new InvalidOperationException (String.Format ("Contact does not support service {0}",
                                                                         service_name));
@@ -75,13 +75,13 @@ namespace Banshee.Telepathy.API.Dispatchers
                     return true;
                 }
             }
-            
+
             return false;
         }
-        
-        protected override void ProcessNewChannel (string object_path, 
+
+        protected override void ProcessNewChannel (string object_path,
                                                    uint initiator_handle,
-                                                   uint target_handle, 
+                                                   uint target_handle,
                                                    ChannelDetails c)
         {
             string service_name = (string) c.Properties[Constants.CHANNEL_TYPE_DBUSTUBE + ".ServiceName"];
@@ -91,7 +91,7 @@ namespace Banshee.Telepathy.API.Dispatchers
             try {
                 tube = new DBusTubeChannel (this.Connection,
                                             object_path,
-                                            initiator_handle, 
+                                            initiator_handle,
                                             target_handle,
                                             service_name);
 
@@ -107,7 +107,7 @@ namespace Banshee.Telepathy.API.Dispatchers
             }
         }
 
-        
+
 
     }
 }

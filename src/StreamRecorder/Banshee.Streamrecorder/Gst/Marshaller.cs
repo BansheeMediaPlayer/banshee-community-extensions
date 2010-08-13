@@ -112,7 +112,7 @@ namespace Banshee.Streamrecorder.Gst
 
         [DllImport("libgstreamer-0.10.so.0")]
         unsafe public static extern IntPtr gst_event_new_eos ();
-        
+
     }
-    
+
 }

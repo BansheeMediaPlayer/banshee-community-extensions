@@ -16,7 +16,7 @@ namespace Telepathy
         public const string CHANNEL_TYPE_STREAMTUBE = "org.freedesktop.Telepathy.Channel.Type.StreamTube";
         public const string CHANNEL_TYPE_TEXT = "org.freedesktop.Telepathy.Channel.Type.Text";
         public const string CHANNEL_TYPE_FILETRANSFER = "org.freedesktop.Telepathy.Channel.Type.FileTransfer";
-        
+
         public const string MISSIONCONTROL_IFACE = "org.freedesktop.Telepathy.MissionControl";
         public const string MISSIONCONTROL_PATH = "/org/freedesktop/Telepathy/MissionControl";
 
@@ -24,7 +24,7 @@ namespace Telepathy
         public const string ACCOUNTMANAGER_PATH = "/org/freedesktop/Telepathy/AccountManager";
 
         public const string ACCOUNT_IFACE = "org.freedesktop.Telepathy.Account";
-        
+
         public const string DBUS_PROPERTIES = "org.freedesktop.DBus.Properties";
     }
 }

@@ -27,12 +27,9 @@
 //
 
 using System;
-using System.IO;
-using System.Text;
 using System.Xml;
 using System.Collections.Generic;
 
-using Banshee.Base;
 using Banshee.Collection.Database;
 
 using Hyena;
@@ -264,7 +261,7 @@ namespace Banshee.LiveRadio.Plugins
         private void ParseGenres(XmlDocument doc)
         {
             Log.Debug ("[Live365Plugin] <ParseGenres> START");
-            
+
             XmlNodeList XML_genre_nodes = doc.GetElementsByTagName ("Genre");
             Log.DebugFormat ("[Live365Plugin] <ParseGenres> {0} nodes found", XML_genre_nodes.Count);
 
@@ -291,7 +288,7 @@ namespace Banshee.LiveRadio.Plugins
                 }
 
             }
-            
+
             new_genres.Sort ();
             genres = new_genres;
 
@@ -542,5 +539,5 @@ namespace Banshee.LiveRadio.Plugins
         "plugins.liveradio.live365", "http_timeout_seconds", "", "HTTP timeout", "HTTP timeout");
 
     }
-    
+
 }

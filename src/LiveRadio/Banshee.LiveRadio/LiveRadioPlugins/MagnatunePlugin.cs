@@ -28,11 +28,9 @@
 
 using System;
 using System.IO;
-using System.Text;
 using System.Xml;
 using System.Collections.Generic;
 
-using Banshee.Base;
 using Banshee.Collection.Database;
 
 using Hyena;
@@ -160,9 +158,9 @@ namespace Banshee.LiveRadio.Plugins
                     RaiseErrorReturned ("XML Parse Error", ex.Message);
                     continue;
                 }
-                
+
             }
-            
+
             new_genres.Sort ();
             genres = new_genres;
 
@@ -440,5 +438,5 @@ namespace Banshee.LiveRadio.Plugins
 
 
     }
-    
+
 }

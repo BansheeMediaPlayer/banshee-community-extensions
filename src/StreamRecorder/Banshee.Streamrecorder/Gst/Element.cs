@@ -99,6 +99,6 @@ namespace Banshee.Streamrecorder.Gst
         {
             return new FileSink (raw);
         }
-        
+
     }
 }

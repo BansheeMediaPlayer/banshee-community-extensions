@@ -1,9 +1,9 @@
-//  
+//
 // Author:
 //   Christian Martellini <christian.martellini@gmail.com>
 //
 // Copyright (C) 2009 Christian Martellini
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
@@ -22,7 +22,7 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
+//
 
 using System;
 using System.Xml;
@@ -37,30 +37,30 @@ namespace Banshee.Lyrics.Sources
         public string Name {
             get { return "Leo's lyrics"; }
         }
-        
+
         public string Credits {
             get{ return string.Format ("Powered by {0} ({1})", Name, "http://www.leoslyrics.com"); }
         }
-        
+
         public string GetLyrics (string artist, string title)
         {
             /*search using leo lyrics api */
             string results_xml = GetSearchResults (UrlEncode (artist), UrlEncode (title));
-            
+
             /*extract hid from search results xml */
             string hid = GetHid (results_xml);
             if (hid == null) {
                 return null;
             }
-            
+
             return GetLyrics (hid);
         }
-        
+
         public string GetSuggestions (string artist, string title)
         {
             return null;
         }
-        
+
         private string GetSearchResults (string artist, string title)
         {
             string search_url =
@@ -69,7 +69,7 @@ namespace Banshee.Lyrics.Sources
             string xml = HttpUtils.ReadHtmlContent (search_url, null);
             return xml;
         }
-        
+
         private string GetLyrics (string hid)
         {
             /*query for the lyric xml */
@@ -115,7 +115,7 @@ namespace Banshee.Lyrics.Sources
             }
             return hid;
         }
-        
+
         private string UrlEncode (string str)
         {
             string retval = "";

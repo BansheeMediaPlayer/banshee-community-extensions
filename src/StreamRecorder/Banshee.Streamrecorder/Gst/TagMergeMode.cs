@@ -43,5 +43,5 @@ namespace Banshee.Streamrecorder.Gst
         KeepAll,
         Count
     }
-    
+
 }

@@ -78,11 +78,11 @@ namespace ClutterFlow.Alphabet
 			
 			//left curvature:
 			context.MoveTo (-hlwidth, -hlwidth);
-			context.CurveTo (margin*0.33, -hlwidth, 
-			                 margin*0.5, Height*0.4, 
+			context.CurveTo (margin*0.33, -hlwidth,
+			                 margin*0.5, Height*0.4,
 			                 margin*0.5, Height*0.5);
-			context.CurveTo (margin*0.5, Height*0.6, 
-			                 margin*0.66, Height-hlwidth, 
+			context.CurveTo (margin*0.5, Height*0.6,
+			                 margin*0.66, Height-hlwidth,
 			                 margin-hlwidth, Height-hlwidth);
 			
 			

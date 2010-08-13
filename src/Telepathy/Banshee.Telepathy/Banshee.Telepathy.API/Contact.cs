@@ -42,16 +42,16 @@ namespace Banshee.Telepathy.API
      public class Contact : IDisposable
     {
         private readonly ChannelInfoCollection supported_channels = new ChannelInfoCollection ();
-        
+
         public event EventHandler <ContactStatusEventArgs>  ContactUpdated;
         public event EventHandler <EventArgs> ContactServicesChanged;
-                
+
         protected Contact ()
         {
              //Initialize ();
         }
 
-        protected internal Contact (Roster roster, string member_name, 
+        protected internal Contact (Roster roster, string member_name,
                                     uint handle, ConnectionPresenceType status) : this ()
         {
             this.Roster = roster;
@@ -63,7 +63,7 @@ namespace Banshee.Telepathy.API
         public Connection Connection {
             get {
                 if (roster != null) {
-                    return roster.Connection; 
+                    return roster.Connection;
                 }
                 return null;
             }
@@ -72,16 +72,16 @@ namespace Banshee.Telepathy.API
         public DispatchManager DispatchManager {
             get {
                 if (Connection != null) {
-                    return Connection.DispatchManager; 
+                    return Connection.DispatchManager;
                 }
                 return null;
             }
         }
-        
+
         public string AccountId {
             get {
                 if (Connection != null) {
-                    return Connection.AccountId; 
+                    return Connection.AccountId;
                 }
                 return String.Empty;
             }
@@ -94,18 +94,18 @@ namespace Banshee.Telepathy.API
                 if (value == null) {
                     throw new ArgumentNullException ("member_name");
                 }
-                member_name = value; 
+                member_name = value;
             }
         }
 
         private uint handle;
         public uint Handle {
             get { return handle; }
-            protected set { 
+            protected set {
                 if (value == 0) {
                    throw new ArgumentException ("Cannot be zero", "handle");
                 }
-                handle = value; 
+                handle = value;
             }
         }
 
@@ -118,11 +118,11 @@ namespace Banshee.Telepathy.API
         private ConnectionPresenceType status;
         public ConnectionPresenceType Status {
             get { return status; }
-            protected set { 
+            protected set {
                 if (value < ConnectionPresenceType.Unset || value > ConnectionPresenceType.Error) {
                     throw new ArgumentOutOfRangeException ("status");
                 }
-                status = value; 
+                status = value;
             }
         }
 
@@ -157,7 +157,7 @@ namespace Banshee.Telepathy.API
         public ChannelInfoCollection SupportedChannels {
             get { return supported_channels; }
         }
-        
+
         public override string ToString ()
         {
             return String.Format ("{0}:{1}", roster.Connection.AccountId, member_name);
@@ -169,7 +169,7 @@ namespace Banshee.Telepathy.API
             if (contact == null) {
                 throw new ArgumentNullException ("obj");
             }
-            
+
             return contact.AccountId.Equals (AccountId) && contact.Handle == Handle;
         }
 
@@ -185,10 +185,10 @@ namespace Banshee.Telepathy.API
 
             if (Status > ConnectionPresenceType.Offline && Status < ConnectionPresenceType.Unknown) {
                 uint [] handle = { Handle };
-    
-                IDictionary <uint, RequestableChannelClass []> dictionary = 
+
+                IDictionary <uint, RequestableChannelClass []> dictionary =
                     capabilities.GetContactCapabilities (handle);
-    
+
                 if (dictionary.ContainsKey (Handle)) {
                     //Log.DebugFormat ("{0} Loading services on Contact.Initialize()", this.Name);
                     LoadSupportedChannels (dictionary [Handle]);
@@ -202,7 +202,7 @@ namespace Banshee.Telepathy.API
         {
             Dispose (true);
         }
-        
+
         protected virtual void Dispose (bool disposing)
         {
             if (disposing) {
@@ -218,19 +218,19 @@ namespace Banshee.Telepathy.API
                     avatar.Dispose ();
                     avatar = null;
                 }
-                
+
                 roster = null;
             }
         }
-        
-        protected internal void Update (string member_name, 
+
+        protected internal void Update (string member_name,
                                         uint handle,
                                         ConnectionPresenceType status)
         {
             Update (member_name, handle, status, String.Empty);
         }
 
-        protected internal virtual void Update (string member_name, 
+        protected internal virtual void Update (string member_name,
                                         uint handle,
                                         ConnectionPresenceType status,
                                         string status_message)
@@ -247,7 +247,7 @@ namespace Banshee.Telepathy.API
         {
             LoadSupportedChannels (classes, true);
         }
-        
+
         protected virtual void LoadSupportedChannels (RequestableChannelClass [] classes, bool clear)
         {
             string service;
@@ -259,16 +259,16 @@ namespace Banshee.Telepathy.API
                 if (clear) {
                     supported_channels.Clear ();
                 }
-        
+
                 foreach (RequestableChannelClass c in classes) {
                     if (c.FixedProperties.ContainsKey (Constants.CHANNEL_TYPE_DBUSTUBE + ".ServiceName")) {
                          service = (string) c.FixedProperties[Constants.CHANNEL_TYPE_DBUSTUBE + ".ServiceName"];
                          target_type = (HandleType) c.FixedProperties[Constants.CHANNEL_IFACE + ".TargetHandleType"];
                          supported_channels.Add (new DBusTubeChannelInfo (ChannelType.DBusTube, target_type, service));
-                        
+
                         //Log.DebugFormat ("Contact {0} has {1}", this.Name, service);
                     }
-                     
+
                     else if (c.FixedProperties.ContainsKey (Constants.CHANNEL_TYPE_STREAMTUBE + ".Service")) {
                         service = (string) c.FixedProperties[Constants.CHANNEL_TYPE_STREAMTUBE + ".Service"];
                         target_type = (HandleType) c.FixedProperties[Constants.CHANNEL_IFACE + ".TargetHandleType"];
@@ -281,14 +281,14 @@ namespace Banshee.Telepathy.API
                         target_type = (HandleType) c.FixedProperties[Constants.CHANNEL_IFACE + ".TargetHandleType"];
                         supported_channels.Add (new FileTransferChannelInfo (ChannelType.StreamTube, target_type, content_type, description));
                     }
-                    
+
                     //Log.Debug ((string) c.FixedProperties[Constants.CHANNEL_IFACE + ".ChannelType"]);
                 }
             }
-            
+
             OnContactServicesChanged (EventArgs.Empty);
         }
-        
+
         protected virtual void OnContactUpdated (ContactStatusEventArgs args)
         {
             EventHandler <ContactStatusEventArgs> handler = ContactUpdated;
@@ -304,7 +304,7 @@ namespace Banshee.Telepathy.API
                 handler (this, args);
             }
         }
-        
+
         private void OnContactCapabilitiesChanged (IDictionary <uint,RequestableChannelClass[]> caps)
         {
             if (caps.ContainsKey (handle)) {

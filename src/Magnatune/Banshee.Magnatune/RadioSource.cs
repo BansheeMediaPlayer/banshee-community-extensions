@@ -24,7 +24,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using Banshee.Base;
+using Hyena;
 using Banshee.Configuration;
 using Banshee.Gui;
 using Banshee.ServiceStack;
@@ -98,7 +98,7 @@ namespace Banshee.Magnatune
                                  "Configure the Magnatune addin", OnConfigurePlugin)
             });
 
-            action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
+            action_service = ServiceManager.Get<InterfaceActionService> ();
 
             action_service.UIManager.InsertActionGroup (actions, 0);
             ui_manager_id = action_service.UIManager.AddUiFromResource ("MagnatuneMenu.xml");

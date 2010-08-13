@@ -65,7 +65,7 @@ namespace Banshee.Telepathy.API
 
         public event EventHandler <AvatarStateEventArgs> StateChanged;
         public event EventHandler <AvatarStateEventArgs> Loaded;
-        
+
         private Avatar ()
         {
             Initialize ();
@@ -110,7 +110,7 @@ namespace Banshee.Telepathy.API
                 }
             }
         }
-        
+
         private byte [] avatar_data;
         public byte [] Image {
             get { return avatar_data; }
@@ -132,11 +132,11 @@ namespace Banshee.Telepathy.API
         public string Filename {
             get { return "avatar.jpg"; }
         }
-        
+
         public string CacheDirectory {
             get { return Connection.CacheDirectory != null ? Path.Combine (Path.Combine (Connection.CacheDirectory, "avatars"), Contact.Name) : null; }
         }
-        
+
         protected virtual void Initialize ()
         {
         }
@@ -158,7 +158,7 @@ namespace Banshee.Telepathy.API
                 if (delete_thread != null && delete_thread.IsAlive) {
                     delete_thread.Abort ();
                 }
-                
+
                 try {
                     using (FileStream fs = new FileStream (Path.Combine (CacheDirectory, Filename), FileMode.Create)) {
                         fs.Write (data, 0, data.Length);
@@ -191,7 +191,7 @@ namespace Banshee.Telepathy.API
             else {
                 State = AvatarState.Loading;
             }
-            
+
             Thread thread = new Thread (new ThreadStart (delegate {
                 try {
                     using (BinaryReader reader = new BinaryReader (new FileStream (path, FileMode.Open))) {
@@ -203,7 +203,7 @@ namespace Banshee.Telepathy.API
                             }
 
                             Image = ms.ToArray ();
-                            
+
                             State = AvatarState.Loaded;
                             Gtk.Application.Invoke (delegate {
                                 OnLoaded (new AvatarStateEventArgs (State));
@@ -223,12 +223,12 @@ namespace Banshee.Telepathy.API
 
             return true;
         }
-        
+
         public void Load ()
         {
             Load (true);
         }
-        
+
         public void Load (bool from_cache)
         {
             bool retreiving = false;
@@ -239,7 +239,7 @@ namespace Banshee.Telepathy.API
             try {
                 if (!retreiving) {
                     uint [] handles = { Contact.Handle };
-                    
+
                     State = AvatarState.Loading;
 
                     IDictionary <uint, string> tokens = avatars.GetKnownAvatarTokens (handles);
@@ -262,7 +262,7 @@ namespace Banshee.Telepathy.API
         {
             Clear (true);
         }
-        
+
         public virtual void Clear (bool delete)
         {
             Image = null;
@@ -303,7 +303,7 @@ namespace Banshee.Telepathy.API
             delete_thread.Name = "Avatar.DeleteIfCached";
             delete_thread.Start ();
         }
-        
+
         public void Dispose ()
         {
             Dispose (true);
@@ -320,7 +320,7 @@ namespace Banshee.Telepathy.API
                 }
 
                 Clear ();
-                
+
                 avatars = null;
                 contact = null;
             }
@@ -341,7 +341,7 @@ namespace Banshee.Telepathy.API
                 handler (this, args);
             }
         }
-        
+
         private void OnAvatarRetrieved (uint handle, string token, byte [] avatar, string type)
         {
             Console.WriteLine ("OnAvatarRetrieved handle {0} token {1} byte.length {2} type {3}",
@@ -349,14 +349,14 @@ namespace Banshee.Telepathy.API
                                token,
                                avatar.Length,
                                type);
-            
+
             if (handle == Contact.Handle) {
                 Image = avatar;
 
                 if (cache) {
                     CacheImage (avatar);
                 }
-                
+
                 State = AvatarState.Loaded;
                 OnLoaded (new AvatarStateEventArgs (State));
             }

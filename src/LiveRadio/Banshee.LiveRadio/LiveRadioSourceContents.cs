@@ -253,7 +253,7 @@ namespace Banshee.LiveRadio
                 return true;
             return false;
         }
-        
+
         /// <summary>
         /// creates the layout of the widget
         /// </summary>
@@ -454,17 +454,17 @@ namespace Banshee.LiveRadio
         private ScrolledWindow SetupView (Widget view)
         {
             ScrolledWindow window = null;
-            
+
             if (ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
                 window = new SmoothScrolledWindow ();
             } else {
                 window = new ScrolledWindow ();
             }
-            
+
             window.Add (view);
             window.HscrollbarPolicy = PolicyType.Automatic;
             window.VscrollbarPolicy = PolicyType.Automatic;
-            
+
             return window;
         }
 

@@ -19,7 +19,7 @@ namespace ClutterFlow.Alphabet
 		O=0x004F, P=0x0050, Q=0x0051,
 		R=0x0052, S=0x0053, T=0x0054,
 		U=0x0055, V=0x0056, W=0x0057,
-		X=0x0058, Y=0x0059, Z=0x005A 
+		X=0x0058, Y=0x0059, Z=0x005A
 	}
 	
 	public class AlphabetButton : Buttons.ClutterButtonState
@@ -95,7 +95,7 @@ namespace ClutterFlow.Alphabet
 			label.SetColor (GetFontColor ());
 			label.ShowAll();
 		}
-			 
+			
 		Clutter.Color[] colors;
 		
 		protected string GetFontName ()

@@ -48,6 +48,6 @@ namespace Banshee.Streamrecorder.Gst
             this.raw = gst_ghost_pad_new (native_name, target.ToIntPtr ());
             GLib.Marshaller.Free (native_name);
         }
-        
+
     }
 }

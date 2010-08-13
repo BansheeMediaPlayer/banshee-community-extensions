@@ -36,7 +36,7 @@ using Banshee.Telepathy.API;
 using Banshee.Telepathy.API.Dispatchables;
 
 using Hyena.Data.Sqlite;
-    
+
 using NDesk.DBus;
 
 namespace Banshee.Telepathy.DBus
@@ -48,7 +48,7 @@ namespace Banshee.Telepathy.DBus
         private int myindex = 0;
         //private MetadataProviderService myservice;
         private DBusActivity activity;
-                       
+
         public PlaylistProvider (DBusActivity activity, int id) : base ()
         {
             lock (class_lock) {
@@ -73,7 +73,7 @@ namespace Banshee.Telepathy.DBus
 
         public override void GetChunk (long timestamp, int sequence_num)
         {
-            
+
             IDictionary <string, object> [] dict = {};
 
             lock (timestamp_lock) {
@@ -83,11 +83,11 @@ namespace Banshee.Telepathy.DBus
                     }
                 }
             }
-            
+
             OnSingleChunkReady (ObjectPath, dict, timestamp, sequence_num);
-                    
+
         }
-        
+
         public override void GetChunks (int chunk_size)
         {
             // mark as critical region to prevent consecutive calls from mucking things up
@@ -102,11 +102,11 @@ namespace Banshee.Telepathy.DBus
                     timestamp = DateTime.Now.Ticks;
                     CurrentTimestamp = timestamp;
                 }
-                
+
                 int total = ServiceManager.DbConnection.Query<int> (
                     "SELECT COUNT(*) FROM CorePlaylistEntries WHERE PlaylistID = ?", Id
                 );
-    
+
                 if (total == 0) {
                     IDictionary <string, object> [] empty = {};         // d-bus no like nulls
                     OnChunkReady (ObjectPath, empty, timestamp, 1, 0);
@@ -114,19 +114,19 @@ namespace Banshee.Telepathy.DBus
                 }
 
                 chunk_size = chunk_size < 1 ? 100 : chunk_size;         // default chunk_size
-                                
+
                 HyenaDataReader reader = new HyenaDataReader (ServiceManager.DbConnection.Query (
-                    "SELECT TrackID FROM CorePlaylistEntries WHERE PlaylistID = ?", Id) 
+                    "SELECT TrackID FROM CorePlaylistEntries WHERE PlaylistID = ?", Id)
                 );
-                                                                                                
+
                 // deliver data asynchronously via signal in chunks of chunk_size
                 // this should make things look like they are happening quickly over our tube
                 int sequence_num = 1;
-                
+
                 for (int i = 0; i < total; i += chunk_size) {
                     int dict_size = (total - i) < chunk_size ? (total - i) : chunk_size;
                     IDictionary <string, object> [] dict  = new Dictionary <string, object> [dict_size];
-                    
+
                     for (int j = 0; j < dict.Length; j++) {
                         dict[j] = new Dictionary <string, object> ();
                         if (reader.Read ()) {
@@ -137,13 +137,13 @@ namespace Banshee.Telepathy.DBus
                     if (UseBuffer) {
                         buffer.Add (sequence_num, dict);
                     }
-                    
+
                     OnChunkReady (ObjectPath, dict, timestamp, sequence_num++, total);
-                    
+
                 }
             }
         }
-  
+
         void IPlaylistProvider.GetChunks (int chunk_size)
         {
             ThreadPool.QueueUserWorkItem ( delegate { GetChunks (chunk_size); } );
@@ -154,7 +154,7 @@ namespace Banshee.Telepathy.DBus
             activity.UnRegisterDBusObject (ObjectPath);
             Dispose ();
         }
-        
+
         protected override void Dispose (bool disposing)
         {
             //instance_count--;
@@ -164,7 +164,7 @@ namespace Banshee.Telepathy.DBus
         public static string BusName {
             get { return "org.bansheeproject.Banshee"; }
         }
-        
+
         public string ObjectPath {
             get { return "/org/bansheeproject/PlaylistProvider_" + myindex; }
         }

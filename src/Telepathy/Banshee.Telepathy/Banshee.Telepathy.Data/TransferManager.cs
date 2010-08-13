@@ -29,13 +29,6 @@
 using System;
 using System.Collections.Generic;
 
-using Banshee.Base;
-using Banshee.ServiceStack;
-using Banshee.Sources;
-
-using Banshee.Telepathy.API;
-using Banshee.Telepathy.API.Dispatchables;
-
 using Hyena;
 
 namespace Banshee.Telepathy.Data
@@ -49,38 +42,38 @@ namespace Banshee.Telepathy.Data
             this.bytes_expected = bytes_expected;
             this.bytes_transferred = bytes_transferred;
         }
-        
+
         private int total;
         public int Total {
             get { return total; }
         }
-        
+
         private int in_progress;
         public int InProgress {
             get { return in_progress; }
         }
-        
+
         private long bytes_expected;
         public long BytesExpected {
             get { return bytes_expected; }
         }
-        
+
         private long bytes_transferred;
         public long BytesTransferred {
             get { return bytes_transferred; }
         }
     }
-    
+
     public class TransferManager<K, T> : IDisposable where T : Transfer<K> where K : IEquatable<K>
     {
         protected readonly TransferList<K, T> transfers = new TransferList<K, T> ();
         protected readonly IList<K> initiated = new List<K> ();
         protected readonly object sync = new object ();
-        
+
         public event EventHandler<EventArgs> TransferCompleted;
         public event EventHandler<EventArgs> Completed;
         public event EventHandler<UpdatedEventArgs> Updated;
-        
+
         private int total = 0;
         public int Total {
             get { return total; }
@@ -90,7 +83,7 @@ namespace Banshee.Telepathy.Data
         public int Initiated {
             get { return initiated.Count; }
         }
-        
+
         private int in_progress = 0;
         public int InProgress {
             get { return in_progress; }
@@ -106,7 +99,7 @@ namespace Banshee.Telepathy.Data
         private long bytes_expected = 0;
         public long BytesExpected {
             get { return bytes_expected; }
-            protected set { bytes_expected = value < 0 ? 0 : value; } 
+            protected set { bytes_expected = value < 0 ? 0 : value; }
         }
 
         private bool cancelling = false;
@@ -114,18 +107,18 @@ namespace Banshee.Telepathy.Data
             get { return cancelling; }
             protected set { cancelling = value; }
         }
-        
+
         private int max_downloads = 2;
         public int MaxConcurrentDownloads {
             get { return max_downloads; }
             set { max_downloads = value; }
         }
-        
+
         public void Dispose ()
         {
             Dispose (true);
         }
-        
+
         protected virtual void Dispose (bool disposing)
         {
             if (disposing) {
@@ -137,23 +130,23 @@ namespace Banshee.Telepathy.Data
                 transfers.Clear ();
             }
         }
-        
+
         public bool Exists (K key)
         {
             return transfers.ContainsKey (key);
         }
-        
+
         public T Get (K key)
         {
             if (Exists (key)) {
                 return transfers[key];
             }
-            
+
             return default(T);
         }
-        
+
         protected virtual void StartReady ()
-        {   
+        {
 			lock (sync) {
 	            foreach (T t in transfers.Ready ()) {
 	                if (Initiated == max_downloads) break;
@@ -161,10 +154,10 @@ namespace Banshee.Telepathy.Data
 	                 	Log.DebugFormat ("Starting download for {0}", t.Key.ToString ());
 	                   	if (t.Start ()) initiated.Add (t.Key);
 	                }
-	            } 
+	            }
 			}
         }
-        
+
         public void CancelAll ()
         {
             foreach (T t in new List<T> (transfers.Values)) {
@@ -178,10 +171,10 @@ namespace Banshee.Telepathy.Data
                 transfers.Add (t.Key, t);
                 t.StateChanged += OnTransferStateChanged;
                 t.ProgressChanged += OnTransferProgressChanged;
-                t.Queue ();                
+                t.Queue ();
             }
         }
-        
+
 		protected void CleanUpTransfer (T t)
 		{
 			CleanUpTransfer (t, true);	
@@ -198,7 +191,7 @@ namespace Banshee.Telepathy.Data
                 transfers.Remove (t.Key);
             }
         }
-        
+
         protected virtual void OnTransferCompleted (T t, EventArgs args)
         {
             var handler = TransferCompleted;
@@ -206,7 +199,7 @@ namespace Banshee.Telepathy.Data
                 handler (t, args);
             }
         }
-        
+
         protected virtual void OnCompleted (EventArgs args)
         {
             var handler = Completed;
@@ -214,22 +207,22 @@ namespace Banshee.Telepathy.Data
                 handler (this, args);
             }
         }
-        
+
         protected virtual void OnUpdated ()
         {
             Log.DebugFormat ("OnUpdated: total {0} inprogress {1} expected {2} transferred {3}",
                 total, in_progress, bytes_expected, bytes_transferred);
-            
+
             var handler = Updated;
             if (handler != null) {
                 handler (this, new UpdatedEventArgs (total, in_progress, bytes_expected, bytes_transferred));
             }
         }
-        
+
         protected virtual void OnTransferStateChanged (object sender, TransferEventArgs args)
         {
             Log.DebugFormat ("OnTransferStateChanged: {0}", args.State.ToString ());
-            
+
             switch (args.State) {
             case TransferState.Queued:
                 total++;
@@ -238,7 +231,7 @@ namespace Banshee.Telepathy.Data
                 ThreadAssist.SpawnFromMain (delegate {
                     StartReady ();
                 });
-                
+
                 break;
             case TransferState.InProgress:
 				bytes_expected += args.BytesExpected;
@@ -249,7 +242,7 @@ namespace Banshee.Telepathy.Data
             case TransferState.Failed:
                 T t = sender as T;
                 CleanUpTransfer (t);
-                
+
                 bool start = true;
                 if (args.State == TransferState.Completed) {
                     OnTransferCompleted (t, EventArgs.Empty);
@@ -259,7 +252,7 @@ namespace Banshee.Telepathy.Data
                     bytes_expected -= args.BytesExpected;
                     bytes_transferred -= args.BytesTransferred;
                 }
-                
+
                 if (args.BytesTransferred > 0) {
                     in_progress--;
                 }
@@ -267,9 +260,9 @@ namespace Banshee.Telepathy.Data
                 if (initiated.Contains (t.Key)) {
                     initiated.Remove (t.Key);
                 }
-                
+
                 total--;
-                
+
                 if (start) {
                     ThreadAssist.SpawnFromMain (delegate {
                         StartReady ();
@@ -277,19 +270,19 @@ namespace Banshee.Telepathy.Data
                 }
                 break;
             }
-            
+
             OnUpdated ();
-            
+
             if (in_progress == 0 && total == 0) {
                 bytes_expected = 0;
                 bytes_transferred = 0;
                 OnCompleted (EventArgs.Empty);
             }
         }
-        
+
         private void OnTransferProgressChanged (object sender, TransferProgressEventArgs args)
         {
-            //Log.DebugFormat ("OnTransferProgressChanged: transferred {0} expected {1}", 
+            //Log.DebugFormat ("OnTransferProgressChanged: transferred {0} expected {1}",
 	//                         args.BytesTransferred, args.BytesExpected);
             bytes_transferred += args.Bytes;
             OnUpdated ();

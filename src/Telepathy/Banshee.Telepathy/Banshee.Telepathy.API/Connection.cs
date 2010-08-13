@@ -55,7 +55,7 @@ namespace Banshee.Telepathy.API
         protected Connection ()
         {
         }
-        
+
         public Connection (Account account) : this (account.BusName, account.ObjectPath, account.AccountId, account.AccountObjectPath)
         {
         }
@@ -63,21 +63,21 @@ namespace Banshee.Telepathy.API
         public Connection (Account account, ConnectionCapabilities capabilities_mask) : this (account.BusName, account.ObjectPath, account.AccountId, account.AccountObjectPath, capabilities_mask)
         {
         }
-            
+
         public Connection (string bus_name, string object_path, string account_id, string account_path)
         {
             this.AccountId = account_id;
             this.AccountObjectPath = account_path;
             this.BusName = bus_name;
             this.ObjectPath = object_path;
-            
+
             this.conn = DBusUtility.GetProxy <IConnection> (bus, bus_name, object_path);
-            self_handle = (uint) DBusUtility.GetProperty (bus, bus_name, object_path, 
+            self_handle = (uint) DBusUtility.GetProperty (bus, bus_name, object_path,
                                                    Constants.CONNECTION_IFACE, "SelfHandle");
             Initialize ();
         }
 
-        public Connection (string bus_name, 
+        public Connection (string bus_name,
                            string object_path,
                            string account_id,
                            string account_path,
@@ -100,7 +100,7 @@ namespace Banshee.Telepathy.API
         internal ChannelHandler ChannelHandler {
             get { return channel_handler; }
         }
-        
+
         private IConnection conn = null;
         internal IConnection DBusProxy {
             get { return conn; }
@@ -128,44 +128,44 @@ namespace Banshee.Telepathy.API
         private string bus_name;
         public string BusName {
             get { return bus_name; }
-            private set { 
+            private set {
                 if (value == null) {
                     throw new ArgumentNullException ("bus_name");
                 }
-                bus_name = value; 
+                bus_name = value;
             }
         }
 
         private string object_path;
         public string ObjectPath {
             get { return object_path; }
-            private set { 
+            private set {
                 if (value == null) {
                    throw new ArgumentNullException ("object_path");
                 }
-                object_path = value; 
+                object_path = value;
             }
         }
 
         private string account_path;
         public string AccountObjectPath {
             get { return account_path; }
-            private set { 
+            private set {
                 if (value == null) {
                    throw new ArgumentNullException ("account_path");
                 }
-                account_path = value; 
+                account_path = value;
             }
         }
-        
+
         private string account_id;
         public string AccountId {
             get { return account_id; }
-            private set { 
+            private set {
                 if (value == null) {
                     throw new ArgumentNullException ("account_id");
                 }
-                account_id = value; 
+                account_id = value;
             }
         }
 
@@ -207,13 +207,13 @@ namespace Banshee.Telepathy.API
         public ChannelInfoCollection SupportedChannels {
             get { return supported_channels; }
         }
-        
+
         public override bool Equals (object obj)
         {
             if (obj as Connection == null) {
                 throw new ArgumentNullException ("obj");
             }
-            
+
             return object_path.Equals ((obj as Connection).ObjectPath);
         }
 
@@ -232,13 +232,13 @@ namespace Banshee.Telepathy.API
 
             RegisterChannelHandler ();
         }
-        
+
         private void AddChannel (Data.ChannelInfo channel)
         {
-            if (channel.Type == ChannelType.DBusTube && 
+            if (channel.Type == ChannelType.DBusTube &&
                !CapabilitiesSupported (ConnectionCapabilities.DBusTube)) {
                 throw new InvalidOperationException ("This connection does not support DBus tubes.");
-            } 
+            }
             else if (channel.Type == ChannelType.StreamTube &&
                !CapabilitiesSupported (ConnectionCapabilities.StreamTube)) {
                 throw new InvalidOperationException ("This connection does not support Stream tubes.");
@@ -246,7 +246,7 @@ namespace Banshee.Telepathy.API
             else if (channel.Type == ChannelType.FileTransfer &&
                !CapabilitiesSupported (ConnectionCapabilities.FileTransfer)) {
                 throw new InvalidOperationException ("This connection does not support file transfers.");
-            } 
+            }
             lock (supported_channels) {
                 supported_channels.Add (channel);
             }
@@ -265,8 +265,8 @@ namespace Banshee.Telepathy.API
         {
             requests = DBusUtility.GetProxy <IRequests> (bus, bus_name, object_path);
             capabilities = DBusUtility.GetProxy <IContactCapabilities> (bus, bus_name, object_path);
-            
-            
+
+
             conn.StatusChanged += OnStatusChanged;
             conn.SelfHandleChanged += OnSelfHandleChanged;
 
@@ -274,7 +274,7 @@ namespace Banshee.Telepathy.API
 
             dispatch_manager = new DispatchManager (this);
 
-            
+
             CreateRoster ();
         }
 
@@ -283,7 +283,7 @@ namespace Banshee.Telepathy.API
             //Log.DebugFormat ("Creating Roster for {0}", this.AccountId);
             roster = new Roster (this);
         }
-        
+
         public void Dispose ()
         {
             Dispose (true);
@@ -302,12 +302,12 @@ namespace Banshee.Telepathy.API
             if (ChannelHandler == null) {
                 ChannelHandler.Destroy ();
             }
-                
+
             if (roster != null) {
                 roster.Dispose ();
                 roster = null;
             }
-            
+
             if (conn != null) {
                 try {
                     conn.SelfHandleChanged -= OnSelfHandleChanged;
@@ -321,13 +321,13 @@ namespace Banshee.Telepathy.API
             dispatch_manager = null;
             requests = null;
         }
-        
+
         protected virtual bool IsMaskValid (ConnectionCapabilities mask)
         {
             const ConnectionCapabilities max_caps = ConnectionCapabilities.DBusTube |
                 ConnectionCapabilities.StreamTube |
                     ConnectionCapabilities.FileTransfer;
-            
+
             if (mask <= ConnectionCapabilities.None || mask > max_caps) {
                 return false;
             }
@@ -346,7 +346,7 @@ namespace Banshee.Telepathy.API
             if (protocol != null && protocol.Equals ("jabber")) {
                 capabilities_mask = ConnectionCapabilities.DBusTube |
                 ConnectionCapabilities.FileTransfer |
-                ConnectionCapabilities.StreamTube; 
+                ConnectionCapabilities.StreamTube;
             }
         }
 
@@ -354,7 +354,7 @@ namespace Banshee.Telepathy.API
         {
             IDictionary<string, object> [] caps;
             int channel_count;
-            
+
             lock (supported_channels) {
                 channel_count = supported_channels.Count;
                 if (channel_count == 0) {
@@ -366,14 +366,14 @@ namespace Banshee.Telepathy.API
 
                 foreach (Data.ChannelInfo channel in supported_channels) {
                     caps[counter] = new Dictionary<string, object> ();
-    
+
                     if (channel.Type == ChannelType.DBusTube) {
                         DBusTubeChannelInfo tube_info = channel as DBusTubeChannelInfo;
                         if (tube_info != null) {
                             caps[counter].Add ("org.freedesktop.Telepathy.Channel.ChannelType", Constants.CHANNEL_TYPE_DBUSTUBE);
                             caps[counter].Add (Constants.CHANNEL_TYPE_DBUSTUBE + ".ServiceName", tube_info.Service);
                         }
-                        
+
                         //Log.DebugFormat ("{0} adding service {1}", this.account_id, service.Service);
                     }
                     else if (channel.Type == ChannelType.StreamTube) {
@@ -384,7 +384,7 @@ namespace Banshee.Telepathy.API
                         }
                     }
                     else if (channel.Type == ChannelType.FileTransfer) {
-                        
+
                         FileTransferChannelInfo transfer_info = channel as FileTransferChannelInfo;
                         if (transfer_info != null) {
                             caps[counter].Add ("org.freedesktop.Telepathy.Channel.ChannelType", Constants.CHANNEL_TYPE_FILETRANSFER);
@@ -410,7 +410,7 @@ namespace Banshee.Telepathy.API
                 handler (this, args);
             }
         }
-        
+
         protected virtual void OnStatusChanged (ConnectionStatus status, ConnectionStatusReason reason)
         {
             this.status = status;
@@ -432,9 +432,9 @@ namespace Banshee.Telepathy.API
 
             Properties p = bus.GetObject<Properties> (bus_name, object_path);
             object o = p.Get (Constants.REQUESTS_IFACE, "RequestableChannelClasses");
-            
+
             RequestableChannelClass [] classes = (RequestableChannelClass []) Convert.ChangeType (o, typeof (RequestableChannelClass []));
-            
+
             foreach (RequestableChannelClass c in classes) {
                 if (c.FixedProperties.ContainsKey ("org.freedesktop.Telepathy.Channel.ChannelType")) {
                     if (c.FixedProperties["org.freedesktop.Telepathy.Channel.ChannelType"].Equals (Constants.CHANNEL_TYPE_DBUSTUBE)) {
@@ -445,7 +445,7 @@ namespace Banshee.Telepathy.API
                     }
                 }
             }
-            
+
             if (supports_dbustube && supports_filetransfer) {
                 return true;
             }
@@ -455,4 +455,4 @@ namespace Banshee.Telepathy.API
 */
     }
 }
-                
+

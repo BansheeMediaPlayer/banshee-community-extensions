@@ -30,39 +30,36 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Net;
-using System.Threading;
 using System.Collections.Generic;
 
 using Mono.Addins;
 
-using Banshee.Base;
 using Banshee.Kernel;
 using Banshee.Collection.Database;
 using Banshee.Sources;
-using Banshee.I18n;
 
 using Hyena;
 
 namespace Banshee.RadioStationFetcher
 {
     public class Xiph : FetcherDialog, IFreetextSearchable, IGenreSearchable
-    {     
+    {
         List<DatabaseTrackInfo> station_list = new List<DatabaseTrackInfo>();
         bool stations_fetched = false;
-        
+
         public Xiph ()
         {
             source_name = "www.xiph.org";
             InitializeDialog ();
         }
-        
-        public override void ShowDialog () 
+
+        public override void ShowDialog ()
         {
             Banshee.Kernel.Scheduler.Schedule (new DelegateJob (FetchStations));
             base.ShowDialog ();
         }
-        
-        public override void FillGenreList () 
+
+        public override void FillGenreList ()
         {
             genre_list.Add ("Alternative");
             genre_list.Add ("Indie");
@@ -132,41 +129,41 @@ namespace Banshee.RadioStationFetcher
             genre_list.Add ("Film");
             genre_list.Add ("Show");
             genre_list.Add ("Instrumental");
-            
+
             genre_list.Sort ();
         }
-         
 
-        public List<DatabaseTrackInfo> FetchStationsByGenre (string genre) 
-        {            
-            if (!stations_fetched) {
-                FetchStations ();
-            }
-            
-            if (station_list == null) {
-                return null;
-            }
-            
-            return station_list.FindAll (delegate (DatabaseTrackInfo station) 
-                {
-                    if (station.Genre.ToLower ().Trim ().Equals (genre.ToLower ().Trim ()))
-                        return true;
-                    
-                    return false;
-                } );
-        }
 
-        public List<DatabaseTrackInfo> FetchStationsByFreetext (string text) 
+        public List<DatabaseTrackInfo> FetchStationsByGenre (string genre)
         {
             if (!stations_fetched) {
                 FetchStations ();
             }
-            
+
             if (station_list == null) {
                 return null;
             }
-            
-            return station_list.FindAll (delegate (DatabaseTrackInfo station) 
+
+            return station_list.FindAll (delegate (DatabaseTrackInfo station)
+                {
+                    if (station.Genre.ToLower ().Trim ().Equals (genre.ToLower ().Trim ()))
+                        return true;
+
+                    return false;
+                } );
+        }
+
+        public List<DatabaseTrackInfo> FetchStationsByFreetext (string text)
+        {
+            if (!stations_fetched) {
+                FetchStations ();
+            }
+
+            if (station_list == null) {
+                return null;
+            }
+
+            return station_list.FindAll (delegate (DatabaseTrackInfo station)
                 {
                     if (station.ArtistName.ToLower ().Trim ().Contains (text.ToLower ().Trim ()))
                         return true;
@@ -180,56 +177,56 @@ namespace Banshee.RadioStationFetcher
                         return true;
                     if (station.MimeType.ToLower ().Trim ().Contains (text.ToLower ().Trim ()))
                         return true;
-                    
+
                     return false;
                 } );
         }
-         
-        public void FetchStations () 
+
+        public void FetchStations ()
         {
             Log.Debug ("[Xiph] <FetchStations> Start");
-        
+
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create ("http://dir.xiph.org/yp.xml");
             request.Method = "GET";
             request.ContentType = "HTTP/1.0";
             request.Timeout = 10 * 1000; // 10 seconds
-            
+
             try
             {
                 if (GetInternetRadioSource () == null) {
                     throw new InternetRadioExtensionNotFoundException ();
                 }
-                
+
                 Log.Debug ("[Xiph] <FetchStations> Querying");
-                
+
                 Stream response = request.GetResponse().GetResponseStream ();
                 StreamReader reader = new StreamReader (response);
-              
+
                 XmlDocument xml_response = new XmlDocument ();
                 xml_response.LoadXml (reader.ReadToEnd ());
-                
+
                 Log.Debug ("[Xiph] <FetchStations> Query done");
-                
+
                 ParseQuery (xml_response);
             }
             finally {
-                Log.Debug ("[Xiph] <FetchStations> End");    
+                Log.Debug ("[Xiph] <FetchStations> End");
             }
         }
-        
+
         public void ParseQuery (XmlDocument xml_response)
         {
             Log.Debug ("[Xiph] <ParseQuery> Start");
-            
+
             XmlNodeList XML_station_nodes = xml_response.GetElementsByTagName ("entry");
             Log.DebugFormat ("[Xiph] <ParseQuery> Num stations found: {0}", XML_station_nodes.Count);
-            
+
             PrimarySource source = GetInternetRadioSource ();
-            
+
             if (source == null) {
                 throw new InternetRadioExtensionNotFoundException ();
             }
-            
+
             foreach (XmlNode node in XML_station_nodes)
             {
                 XmlNodeList xml_attributes = node.ChildNodes;
@@ -242,7 +239,7 @@ namespace Banshee.RadioStationFetcher
                     string now_playing = "";
                     string bitrate = "";
                     int bitrate_int = 0;
-                    
+
                     foreach (XmlNode station_attributes in xml_attributes) {
                         if (station_attributes.Name.Equals ("server_name"))
                             name = station_attributes.InnerText;
@@ -256,10 +253,10 @@ namespace Banshee.RadioStationFetcher
                             now_playing = station_attributes.InnerText;
                         else if (station_attributes.Name.Equals ("bitrate"))
                             bitrate = station_attributes.InnerText;
-                    }                           
-                    
+                    }
+
                     DatabaseTrackInfo new_station = new DatabaseTrackInfo ();
-    
+
                     new_station.Uri = new SafeUri (URI);
                     new_station.ArtistName = "www.xiph.org";
                     new_station.Genre = genre;
@@ -269,12 +266,12 @@ namespace Banshee.RadioStationFetcher
                     new_station.MimeType = media_type;
                     new_station.PrimarySource = source;
                     new_station.IsLive = true;
-                    Int32.TryParse (bitrate.Trim (), out bitrate_int);                    
+                    Int32.TryParse (bitrate.Trim (), out bitrate_int);
                     new_station.BitRate = bitrate_int;
-                    
+
                     Log.DebugFormat ("[Xiph] <ParseQuery> Station found! Name: {0} URL: {1}",
                         name, new_station.Uri.ToString ());
-                    
+
                     station_list.Add (new_station);
                 }
                 catch (Exception e) {
@@ -282,10 +279,10 @@ namespace Banshee.RadioStationFetcher
                     continue;
                 }
             }
-            
+
             Log.Debug ("[Xiph] <ParseQuery> END");
-            
-            SetStatusBarMessage (String.Format (AddinManager.CurrentLocalizer.GetString ("www.xiph.org {0} stations available."), 
+
+            SetStatusBarMessage (String.Format (AddinManager.CurrentLocalizer.GetString ("www.xiph.org {0} stations available."),
                 station_list.Count.ToString ()));
             stations_fetched = true;
         }

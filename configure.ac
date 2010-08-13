@@ -1,5 +1,5 @@
 AC_PREREQ(2.52)
-AC_INIT([banshee-community-extensions], 1.6.0,
+AC_INIT([banshee-community-extensions], 1.7.0,
 	[http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions])
 
 AM_INIT_AUTOMAKE([1.9 dist-bzip2 tar-ustar dist-zip foreign])
@@ -20,13 +20,16 @@ SHAMROCK_EXPAND_LIBDIR
 SHAMROCK_EXPAND_BINDIR
 SHAMROCK_EXPAND_DATADIR
 
+dnl User help
+SHAMROCK_CHECK_GNOME_DOC_UTILS(0.17.3)
+
 dnl Mono and gmcs
 SHAMROCK_CHECK_MONO_MODULE(1.9.1)
 SHAMROCK_FIND_MONO_2_0_COMPILER
 SHAMROCK_FIND_MONO_RUNTIME
 
 dnl Banshee deps
-PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.5.3)
+PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.7.4)
 AC_SUBST(BANSHEE_LIBS)
 
 dnl Banshee Extensions Path
@@ -85,6 +88,7 @@ BCE_LYRICS
 BCE_MAGNATUNE
 BCE_MIRAGE
 BCE_RADIOSTATIONFETCHER
+BCE_SOUNDMENU
 BCE_STREAMRECORDER
 BCE_TELEPATHY
 BCE_U1MS
@@ -117,6 +121,8 @@ build/m4/Makefile
 build/m4/shave/shave
 build/m4/shave/shave-libtool
 
+help/Makefile
+
 po/Makefile.in
 
 src/Makefile
@@ -145,6 +151,7 @@ src/Mirage/Mirage/Makefile
 src/Mirage/Banshee.Mirage/Makefile
 src/Mirage/Test/Makefile
 src/RadioStationFetcher/Makefile
+src/SoundMenu/Makefile
 src/StreamRecorder/Makefile
 src/Telepathy/Makefile
 src/Telepathy/Banshee.Telepathy/Makefile
@@ -169,6 +176,7 @@ ${PACKAGE}-${VERSION}
     Release Build:       ${enable_release}
     Vendor Build ID:     ${vendor_build_id}
     Unit Tests:          ${enable_tests} (requires nunit >= ${NUNIT_REQUIRED}, --enable-tests)
+    User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
     OpenVP:              yes
@@ -184,6 +192,7 @@ ${PACKAGE}-${VERSION}
     Magnatune:           ${enable_Magnatune}
     Mirage:              ${enable_Mirage}
     RadioStationFetcher: ${enable_RadioStationFetcher}
+    SoundMenu:           ${enable_SoundMenu}
     StreamRecorder:      ${enable_StreamRecorder}
     Telepathy:           ${enable_Telepathy}
     UbuntuOneMusicStore: ${enable_UbuntuOneMusicStore}

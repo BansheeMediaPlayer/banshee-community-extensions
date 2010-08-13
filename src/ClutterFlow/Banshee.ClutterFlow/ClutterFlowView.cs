@@ -1,21 +1,21 @@
-// 
+//
 // ClutterFlowView.cs
-//  
+//
 // Author:
 //       Mathijs Dumon <mathijsken@hotmail.com>
-// 
+//
 // Copyright (c) 2010 Mathijs Dumon
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -65,10 +65,10 @@ namespace Banshee.ClutterFlow
 			protected set { activeIndex = value; }
 		}
 		public int ActiveModelIndex {
-			get { 
+			get {
 				int ret = AlbumLoader.ConvertIndexToModelIndex (ActiveIndex);
-				Console.WriteLine ("ActiveModelIndex_get will return " + ret);
-				return ret; 
+				Hyena.Log.DebugFormat ("ActiveModelIndex_get will return {0}", ret);
+				return ret;
 			}
 		}		
 		public AlbumInfo CurrentAlbum {
@@ -205,10 +205,10 @@ namespace Banshee.ClutterFlow
         {
 			SetSizeRequest (300, 200);
 			Clutter.Global.MotionEventsEnabled = true;
-            
+
 			coverManager = new CoverManager();
 			albumLoader = new AlbumLoader (coverManager);
- 
+
             AttachEvents ();
 			
 			SetupViewport ();
@@ -222,7 +222,7 @@ namespace Banshee.ClutterFlow
             if (attached)
                 return;
             attached = true;
-            
+
             Stage.AllocationChanged += HandleAllocationChanged;
             Stage.ScrollEvent += HandleScroll;
             Stage.ButtonReleaseEvent += HandleButtonReleaseEvent;
@@ -235,25 +235,25 @@ namespace Banshee.ClutterFlow
         {
             if (!attached)
                 return;
-            
+
             Stage.AllocationChanged -= HandleAllocationChanged;
             Stage.ScrollEvent -= HandleScroll;
             Stage.ButtonReleaseEvent -= HandleButtonReleaseEvent;
             Stage.ButtonPressEvent -= HandleButtonPressEvent;
             Stage.MotionEvent -= HandleMotionEvent;
 			albumLoader.ActorActivated -= HandleActorActivated;
-            
+
             attached = false;
         }
-        
+
         protected bool disposed = false;
         public override void Dispose ()
         {
             if (disposed)
                 return;
             disposed = true;
-            
-            DetachEvents ();            
+
+            DetachEvents ();
             CoverManager.Dispose ();
 
             //base.Dispose ();
@@ -265,7 +265,7 @@ namespace Banshee.ClutterFlow
 			Stage.Color = new Clutter.Color (0x00, 0x00, 0x00, 0xff);
 			coverManager.SetRotation (RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
 			Stage.Add (coverManager);
-            
+
 			coverManager.EmptyActor.SetToPb(
 	            IconThemeUtils.LoadIcon (coverManager.TextureSize, "gtk-stop", "clutterflow-large.png")
             );
@@ -303,7 +303,7 @@ namespace Banshee.ClutterFlow
 		
 		#region Rendering
 		//Update all elements:
-		protected void RedrawInterface () 
+		protected void RedrawInterface ()
 		{
 			slider.Update ();
 			caption_cover.Update ();
@@ -314,7 +314,7 @@ namespace Banshee.ClutterFlow
 		}
 		
 		//Update the coverStage position:
-		protected void RedrawViewport () 
+		protected void RedrawViewport ()
 		{
 			coverManager.UpdateBehaviour();
 			coverManager.SetRotation(RotateAxis.X, viewportAngleX, coverManager.Width*0.5f, coverManager.Height*0.5f,0);

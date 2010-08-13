@@ -1,19 +1,19 @@
 /*
  * Mirage - High Performance Music Similarity and Automatic Playlist Generator
  * http://hop.at/mirage
- * 
+ *
  * Copyright (C) 2007-2008 Dominik Schnitzer <dominik@schnitzer.at>
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor,
@@ -40,7 +40,7 @@ namespace Mirage
         public float[,] d;
         public int columns;
         public int rows;
-        
+
         /// create a NxM Matrix
         public Matrix (int rows, int columns)
         {
@@ -48,13 +48,13 @@ namespace Mirage
             this.columns = columns;
             d = new float[rows, columns];
         }
-        
+
         public Matrix Multiply (Matrix m2)
         {
             if (columns != m2.rows) {
                 throw new MatrixDimensionMismatchException ();
             }
-            
+
             Matrix m3 = new Matrix (this.rows, m2.columns);
             int m1rows = this.rows;
             int m2columns = m2.columns;
@@ -74,10 +74,10 @@ namespace Mirage
                     }
                 }
             }
-            
+
             return m3;
         }
-        
+
         public Vector Mean ()
         {
             Vector mean = new Vector (rows);
@@ -86,7 +86,7 @@ namespace Mirage
                     mean.d[i, 0] += d[i, j] / columns;
                 }
             }
-            
+
             return mean;
         }
 
@@ -94,12 +94,12 @@ namespace Mirage
         {
             Print (rows, columns);
         }
-        
+
         public void Print (int rows, int columns)
         {
             System.Console.WriteLine ("Rows: " + this.rows + " Columns: " + this.columns);
             System.Console.WriteLine ("[");
-            
+
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < columns; j++) {
                     System.Console.Write (d[i, j] + " ");
@@ -107,19 +107,19 @@ namespace Mirage
                 System.Console.WriteLine (";");
             }
             System.Console.WriteLine ("]");
-            
+
         }
 
         public void PrintTurn ()
         {
             PrintTurn (rows, columns);
         }
-        
+
         public void PrintTurn (int rows, int columns)
         {
             System.Console.WriteLine ("Rows: " + this.rows + " Columns: " + this.columns);
             System.Console.WriteLine ("[");
-            
+
             for (int i = 0; i < columns; i++) {
                 for (int j = 0; j < rows; j++) {
                     System.Console.Write (d[j, i] + " ");
@@ -138,7 +138,7 @@ namespace Mirage
                     cache.d[j, i] = (d[j, i] - mean.d[j, 0]);
                 }
             }
-            
+
             Matrix cov = new Matrix (mean.rows, mean.rows);
             for (int i = 0; i < cov.rows; i++) {
                 for (int j = 0; j <= i; j++) {
@@ -163,7 +163,7 @@ namespace Mirage
             using (var binWriter = new BinaryWriter (File.Open (file, FileMode.Create))) {
                 binWriter.Write (rows);
                 binWriter.Write (columns);
-                
+
                 for (int i = 0; i < rows; i++) {
                     for (int j = 0; j < columns; j++) {
                         binWriter.Write (d[i, j]);
@@ -171,14 +171,14 @@ namespace Mirage
                 }
             }
         }
-        
+
         public static Matrix Load (Stream filestream)
         {
             using (var binReader = new BinaryReader (filestream)) {
                 int rows = binReader.ReadInt32 ();
                 int columns = binReader.ReadInt32 ();
                 Matrix m = new Matrix (rows, columns);
-    
+
                 for (int i = 0; i < rows; i++) {
                     for (int j = 0; j < columns; j++) {
                         m.d[i, j] = binReader.ReadSingle();
@@ -203,16 +203,16 @@ namespace Mirage
                     m[i, j] = (decimal) d[i-1, j-1];
                 }
             }
-            
+
             GaussJordan (ref m, rows, ref e, rows);
             Matrix inv = new Matrix (rows, columns);
-            
+
             for (int i = 1; i <= rows; i++) {
                 for (int j = 1; j <= columns; j++) {
                     inv.d[i-1, j-1] = (float) m[i, j];
                 }
             }
-            
+
             return inv;
         }
 
@@ -223,11 +223,11 @@ namespace Mirage
             int [] ipiv = new int[n+1];
             int i, icol = 0, irow = 0, j, k, l, ll;
             decimal big, dum, pivinv, temp;
-            
+
             for (j = 1; j <= n; j++) {
                 ipiv[j] = 0;
             }
-            
+
             for (i = 1; i <= n; i++) {
                 big = 0;
                 for (j = 1; j <= n; j++) {
@@ -246,7 +246,7 @@ namespace Mirage
                         }
                     }
                 }
-                
+
                 ipiv[icol]++;
                 if (irow != icol) {
                     for (l = 1; l <= n; l++) {
@@ -260,17 +260,17 @@ namespace Mirage
                         b[icol,l] = temp;
                     }
                 }
-                
+
                 indxr[i] = irow;
                 indxc[i] = icol;
                 if (a[icol,icol] == 0) {
                        Dbg.WriteLine ("Mirage - Gauss/Jordan Singular Matrix (2)");
                        throw new MatrixSingularException ();
                 }
-                
+
                 pivinv = 1 / a[icol,icol];
                 a[icol,icol] = 1;
-                
+
                 for (l = 1; l <= n; l++) {
                     a[icol,l] *= pivinv;
                 }
@@ -278,7 +278,7 @@ namespace Mirage
                 for (l = 1; l <= m; l++) {
                     b[icol,l] *= pivinv;
                 }
-                    
+
                 for (ll = 1; ll <= n; ll++) {
                     if (ll != icol) {
                         dum = a[ll,icol];
@@ -294,7 +294,7 @@ namespace Mirage
                     }
                 }
             }
-            
+
             for (l = n; l >= 1; l--) {
                 if (indxr[l] != indxc[l]) {
                     for (k = 1; k <= n; k++) {

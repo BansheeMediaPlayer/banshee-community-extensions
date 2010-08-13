@@ -28,13 +28,6 @@
 
 using System;
 
-using Banshee.Base;
-using Banshee.Collection.Database;
-using Banshee.ServiceStack;
-using Banshee.Sources;
-
-using Banshee.Telepathy.DBus;
-
 using Banshee.Telepathy.API;
 using Banshee.Telepathy.API.Dispatchables;
 
@@ -49,10 +42,10 @@ namespace Banshee.Telepathy.Data
             Contact = contact;
             Name = name;
         }
-        
+
         public Contact Contact { get; private set; }
         public string Name { get; private set; }
-        
+
         public override bool Equals (object obj)
         {
             return Equals (obj as TelepathyTransferKey);
@@ -63,7 +56,7 @@ namespace Banshee.Telepathy.Data
             if (other == null) return false;
             return Name.Equals (other.Name) && Contact.Equals (other.Contact);
         }
-        
+
         public override int GetHashCode ()
         {
             return Name.GetHashCode () + Contact.GetHashCode ();
@@ -74,31 +67,31 @@ namespace Banshee.Telepathy.Data
             return Name;
         }
     }
-    
-    public abstract class TelepathyTransfer<K, T> : Transfer<K> where T : FileTransfer 
+
+    public abstract class TelepathyTransfer<K, T> : Transfer<K> where T : FileTransfer
         where K : TelepathyTransferKey, IEquatable<K>
     {
 		protected readonly object sync = new object ();
 		
         public TelepathyTransfer (K key) : base (key)
         {
-            Initialize ();    
+            Initialize ();
         }
-        
+
         public Contact Contact {
             get { return Key.Contact; }
         }
-        
+
         public string Name {
             get { return Key.Name; }
         }
-        
+
         private bool cancel_pending = false;
         public bool CancelPending {
             get { return cancel_pending; }
             protected set { cancel_pending = value; }
         }
-        
+
         private T file_transfer = null;
         public T FileTransfer {
             get {
@@ -108,14 +101,14 @@ namespace Banshee.Telepathy.Data
                 return file_transfer;
             }
         }
-        
+
         protected virtual void Initialize ()
         {
             if (Contact != null) {
                 Contact.DispatchManager.Dispatched += OnDispatched;
             }
         }
-        
+
         protected override void Dispose (bool disposing)
         {
             if (disposing) {
@@ -125,7 +118,7 @@ namespace Banshee.Telepathy.Data
                 UnregisterHandlers ();
             }
         }
-    
+
         public override void Cancel ()
         {
             if (FileTransfer != null) {
@@ -134,10 +127,10 @@ namespace Banshee.Telepathy.Data
             } else {
                 cancel_pending = true;
             }
-            
-            base.Cancel ();    
+
+            base.Cancel ();
         }
-        
+
         private void UnregisterHandlers ()
         {
             if (file_transfer != null) {
@@ -148,7 +141,7 @@ namespace Banshee.Telepathy.Data
                 file_transfer = null;
             }
         }
-        
+
         protected virtual void OnTransferInitialized (object sender, EventArgs args)
         {
             T transfer = sender as T;
@@ -157,23 +150,23 @@ namespace Banshee.Telepathy.Data
                 if (ft != null) {
                     Log.DebugFormat ("OnProgressChanged: {0}", e.Bytes);
                     BytesTransferred += e.Bytes;
-                }                  
+                }
             };
-            
+
             ExpectedBytes += transfer.ExpectedBytes;
         }
-        
+
         protected virtual void OnTransferReady (object sender, EventArgs args)
         {
             State = TransferState.Ready;
         }
-        
+
         protected virtual void OnTransferClosed (object sender, EventArgs args)
         {
             TransferClosedEventArgs transfer_args = args as TransferClosedEventArgs;
 
             Log.Debug (transfer_args.State.ToString ());
-            
+
             switch (transfer_args.State) {
             case API.Dispatchables.TransferState.Completed:
                 State = TransferState.Completed;
@@ -192,9 +185,9 @@ namespace Banshee.Telepathy.Data
 
             UnregisterHandlers ();
         }
-        
+
         protected abstract void OnTransferResponseRequired (object sender, EventArgs args);
-        
+
         private void OnDispatched (object sender, EventArgs args)
         {
             T transfer = sender as T;
@@ -206,7 +199,7 @@ namespace Banshee.Telepathy.Data
 				if (Contact != null) {
                     Contact.DispatchManager.Dispatched -= OnDispatched;
                 }
-            }    
+            }
         }
     }
 }

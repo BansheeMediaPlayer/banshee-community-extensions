@@ -3,14 +3,11 @@ using System;
 
 using Mono.Addins;
 
-using Banshee.Base;
 using Banshee.ServiceStack;
 using Banshee.Collection.Database;
-using Banshee.Sources;
-using Banshee.MediaEngine;
 
-using Hyena.Jobs;
 using Hyena;
+using Hyena.Jobs;
 using Hyena.Data.Sqlite;
 
 namespace Banshee.Lyrics

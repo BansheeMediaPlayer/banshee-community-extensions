@@ -1,9 +1,9 @@
-//  
+//
 // Author:
 //   Christian Martellini <christian.martellini@gmail.com>
 //
 // Copyright (C) 2009 Christian Martellini
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
@@ -22,7 +22,7 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
+//
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -40,11 +40,11 @@ namespace Banshee.Lyrics.Sources
         /*regex used to parse html content */
         protected Regex regexLyric;
         protected Regex regexSuggestion;
-        
+
         public abstract string Name { get; }
-        
+
         public abstract string Url { get; }
-        
+
         public string Credits {
             get {
                 return string.Format (AddinManager.CurrentLocalizer.GetString ("Powered by {0} ({1})"),
@@ -83,14 +83,14 @@ namespace Banshee.Lyrics.Sources
         }
 
         protected abstract string GetLyricUrl (string artist, string title);
-        
+
         protected abstract string GetSuggestionUrl (string artist, string title);
-        
+
         protected string CleanArtistName (string artist)
         {
             return artist.EndsWith (" ") ? artist.Substring (0, artist.Length - 2) : artist;
         }
-        
+
         protected string CleanSongTitle (string title)
         {
             return title.EndsWith (" ") ? title.Substring (0, title.Length - 1) : title;
@@ -106,7 +106,7 @@ namespace Banshee.Lyrics.Sources
             if (url == null || r == null) {
                 return null;
             }
-            
+
             string html = HttpUtils.ReadHtmlContent (url, this.Encoding);
             if (html == null) {
                 return null;

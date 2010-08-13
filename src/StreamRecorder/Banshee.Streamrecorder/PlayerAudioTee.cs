@@ -69,21 +69,21 @@ namespace Banshee.Streamrecorder
             Bin[] user_bins = new Bin[2] { new Bin (this.ToIntPtr ()), bin };
             GCHandle gch = GCHandle.Alloc (user_bins);
             IntPtr user_data = GCHandle.ToIntPtr (gch);
-            
+
             Pad fixture_pad = this.GetStaticPad ("sink");
             Pad block_pad = fixture_pad.GetPeer ();
             fixture_pad.UnRef ();
-            
+
             if (use_pad_block) {
                 Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<AddBin> blockin pad " + block_pad.GetPathString () + " to perform an operation");
-                
+
                 block_pad.SetBlockedAsync (true, ReallyAddBin, user_data);
             } else {
                 Hyena.Log.Debug ("Streamrecorder.PlayerAudioTee]<AddBin> not using blockin pad, calling operation directly");
                 ReallyAddBin (block_pad.ToIntPtr (), false, user_data);
             }
             block_pad.UnRef ();
-            
+
             return true;
         }
 
@@ -105,7 +105,7 @@ namespace Banshee.Streamrecorder
             Bin[] user_bins = (Gst.Bin[])gch.Target;
             Bin fixture = user_bins[0];
             Bin element = user_bins[1];
-            
+
             Element queue;
             Element audioconvert;
             Bin bin;
@@ -113,38 +113,38 @@ namespace Banshee.Streamrecorder
             Pad sink_pad;
             Pad ghost_pad;
             GstObject element_parent;
-            
+
             element_parent = element.GetParent ();
             if (element_parent != null && !element_parent.IsNull ()) {
                 Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<ReallyAddBin>element already linked, exiting. assume double function call");
                 element_parent.UnRef ();
                 return;
             }
-            
+
             /* set up containing bin */
             bin = new Bin ();
             queue = ElementFactory.Make ("queue");
             audioconvert = ElementFactory.Make ("audioconvert");
-            
+
             bin.SetBooleanProperty ("async-handling", true);
             queue.SetIntegerProperty ("max-size-buffers", 10);
-            
+
             bin.AddMany (new Element[3] { queue, audioconvert, element });
             queue.LinkMany (new Element[2] { audioconvert, element });
-            
+
             sink_pad = queue.GetStaticPad ("sink");
             ghost_pad = new GhostPad ("sink", sink_pad);
             bin.AddPad (ghost_pad);
-            
+
             parent_bin = new Bin (fixture.GetParent ().ToIntPtr ());
             parent_bin.Add (bin);
             fixture.Link (bin);
-            
+
             attached = true;
-            
+
             if (blocked) {
                 Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<ReallyAddBin> unblocking pad after adding tee");
-                
+
                 parent_bin.SetState (State.Playing);
                 ghost_pad.Ref ();
                 parent_bin.UnRef ();
@@ -155,7 +155,7 @@ namespace Banshee.Streamrecorder
                 parent_bin.UnRef ();
                 AddRemoveBinDone (IntPtr.Zero, false, ghost_pad.ToIntPtr ());
             }
-            
+
         }
 
         /// <summary>
@@ -173,14 +173,14 @@ namespace Banshee.Streamrecorder
         public bool RemoveBin (Bin bin, bool use_pad_block)
         {
             IntPtr user_data = bin.ToIntPtr ();
-            
+
             Pad fixture_pad = this.GetStaticPad ("sink");
             Pad block_pad = fixture_pad.GetPeer ();
             fixture_pad.UnRef ();
-            
+
             if (use_pad_block) {
                 Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<RemoveBin> blockin pad " + block_pad.GetPathString () + " to perform an operation");
-                
+
                 block_pad.SetBlockedAsync (true, ReallyRemoveBin, user_data);
             } else {
                 Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<RemoveBin> not using blockin pad, calling operation directly");
@@ -205,10 +205,10 @@ namespace Banshee.Streamrecorder
         private void ReallyRemoveBin (IntPtr pad, bool blocked, IntPtr user_data)
         {
             Bin element = new Bin (user_data);
-            
+
             Bin bin;
             Bin parent_bin;
-            
+
             string element_path = element.GetPathString ();
             if (!element_path.Contains (":") && element_path.StartsWith ("/0x")) {
                 Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<ReallyRemoveBin> element empty, assume disposed, exiting: " + element_path);
@@ -217,22 +217,22 @@ namespace Banshee.Streamrecorder
 
             bin = new Bin (element.GetParent ().ToIntPtr ());
             bin.Ref ();
-            
+
             parent_bin = new Bin (bin.GetParent ().ToIntPtr ());
             parent_bin.Remove (bin);
-            
+
             bin.SetState (State.Null);
             bin.Remove (element);
             bin.UnRef ();
-            
+
             attached = false;
-            
+
             /* if we're supposed to be playing, unblock the sink */
             if (blocked) {
                 Hyena.Log.Debug ("[Streamrecorder.PlayerAudioTee]<ReallyRemoveBin> unblocking pad after removing tee");
                 new Pad (pad).SetBlockedAsync (false, AddRemoveBinDone, IntPtr.Zero);
             }
-            
+
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace Banshee.Streamrecorder
             if (new_pad == IntPtr.Zero) {
                 return;
             }
-            
+
             // send a very unimaginative new segment through the new pad
             segment = Marshaller.CreateSegment ();
             new Pad (new_pad).SendEvent (segment);

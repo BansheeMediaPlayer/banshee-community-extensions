@@ -80,7 +80,7 @@ namespace Banshee.Streamrecorder
         public StreamrecorderConfigDialog (StreamrecorderService service, string previous_output_folder, string previous_encoder, bool is_importing_enabled, bool is_splitting_enabled)
         {
             streamrecorder_service = service;
-            
+
             preferences_image.Yalign = 0f;
             preferences_image.IconName = "gtk-preferences";
             preferences_image.IconSize = (int)IconSize.Dialog;
@@ -107,14 +107,14 @@ namespace Banshee.Streamrecorder
             enable_import_ripped_songs.Active = StreamrecorderService.IsImportingEnabledEntry.Get ().Equals ("True") ? true : false;
             enable_automatic_splitting.Label = AddinManager.CurrentLocalizer.GetString ("Enable automatic files splitting by Metadata");
             enable_automatic_splitting.Active = StreamrecorderService.IsFileSplittingEnabledEntry.Get ().Equals ("True") ? true : false;
-            
+
             encoderbox.Clear ();
             CellRendererText cell = new CellRendererText ();
             encoderbox.PackStart (cell, false);
             encoderbox.AddAttribute (cell, "text", 0);
             ListStore store = new ListStore (typeof(string));
             encoderbox.Model = store;
-            
+
             int row = -1;
             int chosen_row = -1;
             foreach (string encoder in streamrecorder_service.GetEncoders ()) {
@@ -125,7 +125,7 @@ namespace Banshee.Streamrecorder
                     Hyena.Log.DebugFormat ("[StreamrecorderConfigDialog] found active encoder in row {1}: {0}", encoder, chosen_row);
                 }
             }
-            
+
             if (chosen_row > -1) {
                 Gtk.TreeIter iter;
                 encoderbox.Model.IterNthChild (out iter, chosen_row);
@@ -135,13 +135,13 @@ namespace Banshee.Streamrecorder
                 encoderbox.Model.GetIterFirst (out iter);
                 encoderbox.SetActiveIter (iter);
             }
-            
+
             HBox main_container = new HBox ();
             VBox action_container = new VBox ();
-            
+
             main_container.Spacing = 12;
             main_container.BorderWidth = 6;
-            
+
             action_container.PackStart (header_label, true, true, 0);
             action_container.PackStart (description_label, true, true, 0);
             VBox choosing_labels = new VBox ();
@@ -156,29 +156,29 @@ namespace Banshee.Streamrecorder
             HBox all_choosing = new HBox ();
             all_choosing.PackStart (choosing_labels, true, true, 0);
             all_choosing.PackStart (box_choosing, true, true, 0);
-            
+
             action_container.PackStart (all_choosing, true, true, 5);
             action_container.PackStart (enable_automatic_splitting, true, true, 5);
             action_container.PackStart (enable_import_ripped_songs, true, true, 5);
-            
+
             main_container.PackStart (preferences_image, true, true, 5);
             main_container.PackEnd (action_container, true, true, 5);
             this.VBox.PackStart (main_container, true, true, 5);
-            
+
             AddActionWidget (cancel_button, 0);
             AddActionWidget (save_button, 0);
-            
+
             choose_output_folder_button.Clicked += new EventHandler (OnChooseOutputFolderButtonClicked);
             cancel_button.Clicked += new EventHandler (OnCancelButtonClicked);
             save_button.Clicked += new EventHandler (OnSaveButtonClicked);
-            
+
             Title = "Streamrecorder configuration";
             IconName = "gtk-preferences";
             Resizable = false;
             BorderWidth = 6;
             HasSeparator = false;
             this.VBox.Spacing = 12;
-            
+
             ShowAll ();
         }
 
@@ -210,21 +210,21 @@ namespace Banshee.Streamrecorder
 
             StreamrecorderService.IsImportingEnabledEntry.Set (enable_import_ripped_songs.Active.ToString ());
             streamrecorder_service.IsImportingEnabled = enable_import_ripped_songs.Active.ToString ().Equals ("True") ? true : false;
-            
+
             StreamrecorderService.IsFileSplittingEnabledEntry.Set (enable_automatic_splitting.Active.ToString ());
             streamrecorder_service.IsFileSplittingEnabled = enable_automatic_splitting.Active.ToString ().Equals ("True") ? true : false;
-            
+
             if (ValidateOutputFolderField ()) {
                 streamrecorder_service.OutputDirectory = output_folder.Text.Trim ();
                 StreamrecorderService.OutputDirectoryEntry.Set (output_folder.Text.Trim ());
             }
-            
+
             streamrecorder_service.OutputDirectory = output_folder.Text.Trim ();
             StreamrecorderService.OutputDirectoryEntry.Set (output_folder.Text.Trim ());
-            
+
             streamrecorder_service.ActiveEncoder = encoderbox.ActiveText;
             StreamrecorderService.ActiveEncoderEntry.Set (encoderbox.ActiveText);
-            
+
             Destroy ();
         }
 
@@ -240,13 +240,13 @@ namespace Banshee.Streamrecorder
         private void OnChooseOutputFolderButtonClicked (object o, EventArgs a)
         {
             FileChooserDialog output_folder_chooser = new FileChooserDialog ("Choose output folder", this, FileChooserAction.SelectFolder, "Cancel", ResponseType.Cancel, "Open", ResponseType.Accept);
-            
+
             ResponseType response = (ResponseType)output_folder_chooser.Run ();
-            
+
             if (response == ResponseType.Accept) {
                 output_folder.Text = output_folder_chooser.Filename;
             }
-            
+
             output_folder_chooser.Destroy ();
         }
 

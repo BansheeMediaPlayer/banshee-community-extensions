@@ -109,7 +109,7 @@ namespace Banshee.LiveRadio
 
             main_container.Spacing = 12;
             main_container.BorderWidth = 6;
-            
+
             action_container.PackStart (header_label, true, true, 0);
             action_container.PackStart (description_label, true, true, 0);
 
@@ -126,14 +126,14 @@ namespace Banshee.LiveRadio
             cancel_button.Clicked += new EventHandler (OnCancelButtonClicked);
             apply_button.Clicked += new EventHandler (OnApplyButtonClicked);
             save_button.Clicked += new EventHandler (OnSaveButtonClicked);
-            
+
             Title = "LiveRadio configuration";
             IconName = "gtk-preferences";
             Resizable = false;
             BorderWidth = 6;
             HasSeparator = false;
             this.VBox.Spacing = 12;
-            
+
             ShowAll ();
         }
 

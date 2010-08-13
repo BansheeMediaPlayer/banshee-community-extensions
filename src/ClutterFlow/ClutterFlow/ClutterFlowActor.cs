@@ -1,21 +1,21 @@
-// 
+//
 // ClutterFlowActor.cs
-//  
+//
 // Author:
 //       Mathijs Dumon <mathijsken@hotmail.com>
-// 
+//
 // Copyright (c) 2010 Mathijs Dumon
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -37,12 +37,12 @@ using GLib;
 namespace ClutterFlow
 {
 
-    public interface IIndexable : IComparable<IIndexable> 
+    public interface IIndexable : IComparable<IIndexable>
     {
         int Index { get; }
         event IndexChangedEventHandler IndexChanged;
     }
-    
+
 	public delegate Gdk.Pixbuf NeedPixbuf();
     public delegate void IndexChangedEventHandler(IIndexable item, int old_index, int new_index);
 	
@@ -68,7 +68,7 @@ namespace ClutterFlow
 		public Gdk.Pixbuf DefaultPb {
 			get {
 				if (default_pb==null && GetDefaultPb!=null) default_pb = ClutterFlowActor.MakeReflection(GetDefaultPb());
-				return default_pb; 
+				return default_pb;
 			}
 		}
 		
@@ -90,7 +90,7 @@ namespace ClutterFlow
 		
 		public NeedPixbuf GetDefaultPb;
 		#endregion
-        
+
 		#region Initialisation
 		public TextureHolder (CoverManager coverManager, NeedPixbuf getDefaultPb)
 		{
@@ -124,7 +124,7 @@ namespace ClutterFlow
 			SetupShadeTexture ();
 		}
 
-		public void SetupDefaultTexture () 
+		public void SetupDefaultTexture ()
 		{
 			if (defltTexture==IntPtr.Zero) {
 				if (DefaultPb!=null) {
@@ -134,7 +134,7 @@ namespace ClutterFlow
 					else
 						fm = PixelFormat.Rgb888;
 					unsafe {
-						defltTexture = ClutterHelper.cogl_texture_new_from_data((uint) DefaultPb.Width, (uint) DefaultPb.Height, Cogl.TextureFlags.None, 
+						defltTexture = ClutterHelper.cogl_texture_new_from_data((uint) DefaultPb.Width, (uint) DefaultPb.Height, Cogl.TextureFlags.None,
 						                                         fm, Cogl.PixelFormat.Any, (uint) DefaultPb.Rowstride, DefaultPb.Pixels);
 					}
 				} else {
@@ -144,7 +144,7 @@ namespace ClutterFlow
 			}
 		}
 
-		public void SetupShadeTexture () 
+		public void SetupShadeTexture ()
 		{
 			if (shadeTexture==IntPtr.Zero) {
 
@@ -173,7 +173,7 @@ namespace ClutterFlow
 				}
 
 				unsafe {
-					shadeTexture = ClutterHelper.cogl_texture_new_from_data((uint) finalPb.Width, (uint) finalPb.Height, Cogl.TextureFlags.None, 
+					shadeTexture = ClutterHelper.cogl_texture_new_from_data((uint) finalPb.Width, (uint) finalPb.Height, Cogl.TextureFlags.None,
 					                                         PixelFormat.Rgba8888, Cogl.PixelFormat.Any, (uint) finalPb.Rowstride, finalPb.Pixels);
 				}
 			}
@@ -211,7 +211,7 @@ namespace ClutterFlow
             get { return cache_key; }
             set { cache_key = value; }
         }
-        
+
         protected string label = "";
         public virtual string Label {
             get { return label; }
@@ -225,11 +225,11 @@ namespace ClutterFlow
         }
 
         public virtual event IndexChangedEventHandler IndexChanged;
-        
+
         protected int index = -1; //-1 = not visible
         public virtual int Index {
             get { return index; }
-            set { 
+            set {
                 if (value!=index) {
                     int old_index = index;
                     index = value;
@@ -261,7 +261,7 @@ namespace ClutterFlow
             if (disposed)
                 return;
             disposed = true;
-            
+
             CoverManager = null;
         }
 
@@ -286,13 +286,13 @@ namespace ClutterFlow
                 int src_height = border_pb.Height;
                 byte * src_byte = (byte *) border_pb.Pixels;
                 byte * src_base = src_byte;
-                
+
                 int dst_rowstride = final_pb.Rowstride;
                 int dst_width = final_pb.Width;
                 int dst_height = final_pb.Height;
                 byte * dst_byte = (byte *) final_pb.Pixels;
                 byte * dst_base = dst_byte;
-    
+
                 byte * refl_byte = dst_base + (dst_height-1) * dst_rowstride + (dst_width-1) * 4  + 3;
 
                 for (int j = 0; j < src_height; j++) {
@@ -306,7 +306,7 @@ namespace ClutterFlow
                         byte a = 0xff;
                         if (alpha)
                             a = *(src_byte++);
-                        
+
                         *dst_byte++ = r;
                         *dst_byte++ = g;
                         *dst_byte++ = b;
@@ -323,7 +323,7 @@ namespace ClutterFlow
         }
         #endregion
     }
-    
+
     /// <summary>
     /// A ClutterFlowActor is a group containing the actor texture and it's reflection
     /// It does not contain any animation code, as this is provided by the FlowBehaviour class.
@@ -338,7 +338,7 @@ namespace ClutterFlow
             get { return is_setup; }
             protected set { is_setup = value; }
         }
-    
+
         private bool swapped = false;
         private bool delayed_cover_swap = false;
         private bool delayed_shade_swap = false;
@@ -377,7 +377,7 @@ namespace ClutterFlow
             	delayed_shade_swap = false;
 			}
         }
-        
+
         protected Clutter.Texture cover = null;
         public Clutter.Texture Cover {
             get { return cover; }
@@ -387,7 +387,7 @@ namespace ClutterFlow
             get { return shade; }
         }
 
-        
+
         public override CoverManager CoverManager {
             get { return base.CoverManager; }
             set {
@@ -431,12 +431,12 @@ namespace ClutterFlow
             this.ButtonPressEvent -= HandleButtonPressEvent;
             this.ButtonReleaseEvent -= HandleButtonReleaseEvent;
             getDefaultPb = null;
-            
+
             DisposeStatics ();
         }
 		protected virtual bool SetupStatics ()
 		{
-			if (textureHolder==null) 
+			if (textureHolder==null)
 				textureHolder = new TextureHolder(CoverManager, GetDefaultPb);
 			return true;
 		}
@@ -564,7 +564,7 @@ namespace ClutterFlow
 		#endregion
 
 		#region Behaviour Functions
-		public void SetShade (byte opacity, bool left) 
+		public void SetShade (byte opacity, bool left)
 		{
 			if (!has_shader) {
 				shade.Opacity = opacity;
@@ -575,7 +575,7 @@ namespace ClutterFlow
 			}
 		}
 		
-		public ClutterFlowActor CreateClickClone () 
+		public ClutterFlowActor CreateClickClone ()
 		{
 			if (CoverManager.CurrentCover!=this)
 				CoverManager.NewCurrentCover += HandleNewCurrentCover;
@@ -597,10 +597,10 @@ namespace ClutterFlow
 			if (!shifted_outwards)
 				return;
 			shifted_outwards = false;
-			Animation anm = Animatev ((ulong) Clutter.AnimationMode.EaseOutBack.value__, CoverManager.MaxAnimationSpan, 
+			Animation anm = Animatev ((ulong) Clutter.AnimationMode.EaseOutBack.value__, CoverManager.MaxAnimationSpan,
 			          new string[] { "anchor-x" }, new GLib.Value ((float) Width*0.5f));
 			if (!has_shader)
-				shade.AnimateWithTimelinev ((ulong) Clutter.AnimationMode.EaseOutSine.value__, anm.Timeline, 
+				shade.AnimateWithTimelinev ((ulong) Clutter.AnimationMode.EaseOutSine.value__, anm.Timeline,
 				          new string[] { "anchor-x" }, new GLib.Value (0.0f));
 		}
 		
@@ -612,23 +612,23 @@ namespace ClutterFlow
 			float x, y, z;
 			double angle = GetRotation(RotateAxis.Y, out x, out y, out z);
 			float new_anchor_x = (float) (Width * (0.5f + 1.6f*Math.Tan (angle)));
-			Animation anm = Animatev ((ulong) Clutter.AnimationMode.EaseOutBack.value__, CoverManager.MaxAnimationSpan, 
+			Animation anm = Animatev ((ulong) Clutter.AnimationMode.EaseOutBack.value__, CoverManager.MaxAnimationSpan,
 			          new string[] { "anchor-x" }, new GLib.Value ((float) new_anchor_x));
 			if (!has_shader)
-				shade.AnimateWithTimelinev ((ulong) Clutter.AnimationMode.EaseOutSine.value__, anm.Timeline, 
+				shade.AnimateWithTimelinev ((ulong) Clutter.AnimationMode.EaseOutSine.value__, anm.Timeline,
 				          new string[] { "anchor-x" }, new GLib.Value ((float) -new_anchor_x*0.5f));			
 		}
 		#endregion
-        
+
 		#region Event Handling
         void HandleParentSet(object o, ParentSetArgs args)
         {
             if (this.Stage != null) {
-                if (delayed_shade_swap) SetShadeSwap ();                
+                if (delayed_shade_swap) SetShadeSwap ();
                 if (delayed_cover_swap) SetCoverSwap ();
             }
         }
-        
+
 		protected virtual void HandleLeaveEvent (object o, LeaveEventArgs args)
 		{
 			SlideIn ();

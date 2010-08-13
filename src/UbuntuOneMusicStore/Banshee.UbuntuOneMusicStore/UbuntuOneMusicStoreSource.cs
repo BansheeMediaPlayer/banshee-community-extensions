@@ -26,14 +26,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-
 using Mono.Addins;
 using Gdk;
 
 using Hyena;
 
-using Banshee.Base;
 using Banshee.Collection;
 using Banshee.Gui;
 using Banshee.ServiceStack;
@@ -46,20 +43,29 @@ namespace Banshee.UbuntuOneMusicStore
     {
         // In the sources TreeView, sets the order value for this source, small on top
         const int sort_order = 190;
+        CustomView custom_view;
 
         public UbuntuOneMusicStoreSource () : base (AddinManager.CurrentLocalizer.GetString ("Ubuntu One Music Store"), AddinManager.CurrentLocalizer.GetString ("Ubuntu One Music Store"), sort_order)
         {
             Pixbuf icon = new Pixbuf (System.Reflection.Assembly.GetExecutingAssembly ()
                                       .GetManifestResourceStream ("ubuntuone.png"));
             Properties.Set<Pixbuf> ("Icon.Pixbuf_22", icon.ScaleSimple (22, 22, InterpType.Bilinear));
-            Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
-
-            Log.Debug ("U1MS: Initialized");
         }
 
         // A count of 0 will be hidden in the source TreeView
         public override int Count {
             get { return 0; }
+        }
+
+        // Defer any UI creation until it's actually needed.
+        public override void Activate ()
+        {
+            if (custom_view == null) {
+                Properties.Set<ISourceContents> ("Nereid.SourceContents", custom_view = new CustomView ());
+            }
+
+            base.Activate ();
+            Log.Debug ("U1MS: Initialized");
         }
 
         public class StoreWrapper: UbuntuOne.U1MusicStore, IDisableKeybindings

@@ -46,7 +46,7 @@ namespace Banshee.Telepathy.API
         Added = 0,
         Removed = 1
     };
-    
+
     public class RosterEventArgs : EventArgs
     {
         private RosterState action;
@@ -74,7 +74,7 @@ namespace Banshee.Telepathy.API
             get { return action; }
         }
     }
-    
+
     public class ContactMembershipEventArgs : EventArgs
     {
         private ContactMembership action;
@@ -88,7 +88,7 @@ namespace Banshee.Telepathy.API
             get { return action; }
         }
      }
-    
+
     public class Roster : IDisposable
     {
         private readonly IDictionary <uint, Contact> roster = new Dictionary <uint, Contact> ();
@@ -97,7 +97,7 @@ namespace Banshee.Telepathy.API
         public event EventHandler <ContactStatusEventArgs> ContactStatusChanged;
         public event EventHandler <ContactMembershipEventArgs> ContactMembershipChanged;
         public event EventHandler <RosterEventArgs> RosterStateChanged;
-        
+
         protected Roster ()
         {
             state = RosterState.Unloaded;
@@ -151,13 +151,13 @@ namespace Banshee.Telepathy.API
         {
             Dispose (true);
         }
-        
+
         protected virtual void Dispose (bool disposing)
         {
             if (!disposing) {
                 return;
             }
-            
+
             if (contact_list != null) {
                 contact_list.ChannelReady -= OnContactListChannelReady;
                 contact_list.MembersAdded -= OnMembersAdded;
@@ -179,7 +179,7 @@ namespace Banshee.Telepathy.API
                     kv.Value.Dispose ();
                 }
             }
-            
+
             roster.Clear ();
             conn = null;
         }
@@ -198,7 +198,7 @@ namespace Banshee.Telepathy.API
             if (state != RosterState.Unloaded) {
                 return;
             }
-            
+
             state = RosterState.Loading;
 
             contact_list = new ContactListChannel (this.Connection, "subscribe");
@@ -207,7 +207,7 @@ namespace Banshee.Telepathy.API
             contact_list.MembersRemoved += OnMembersRemoved;
             contact_list.Request ();
         }
-        
+
         public Contact GetContact (uint key)
         {
             lock (roster) {
@@ -215,39 +215,39 @@ namespace Banshee.Telepathy.API
                     return roster[key];
                 }
             }
-            
+
             return null;
-              
+
         }
 
-        protected Contact CreateContact (string member_name, 
-                                                 uint handle, 
+        protected Contact CreateContact (string member_name,
+                                                 uint handle,
                                                  ConnectionPresenceType status)
         {
             return CreateContact (member_name, handle, status, null);
         }
 
-        protected virtual Contact CreateContact (string member_name, 
-                                                 uint handle, 
+        protected virtual Contact CreateContact (string member_name,
+                                                 uint handle,
                                                  ConnectionPresenceType status,
                                                  string status_message)
         {
-            Contact c = new Contact (this, member_name, 
-                                                 handle, 
+            Contact c = new Contact (this, member_name,
+                                                 handle,
                                                  status);
             if (status_message != null) {
                 c.StatusMessage = status_message;
             }
-            
+
             return c;
         }
-        
+
         private void GetPresenceInfo (uint[] contacts)
-        {    
+        {
             IDictionary<uint,SimplePresence> presence_info = new Dictionary<uint,SimplePresence>();
             presence_info = presence.GetPresences (contacts);
 
-            GetPresenceInfo (contacts, presence_info, false);            
+            GetPresenceInfo (contacts, presence_info, false);
         }
 
         private void GetPresenceInfo (uint [] contacts, IDictionary <uint, SimplePresence> presence_info, bool raise_events)
@@ -265,22 +265,22 @@ namespace Banshee.Telepathy.API
             for (int i = 0; i < contacts.Length; i++) {
                 uint handle = contacts[i];
                 if (presence_info.ContainsKey(handle)) {
-                    Console.WriteLine ("Presence change for {0} with handle {1} is {2}", 
-                                     member_names[i], 
-                                     handle, 
+                    Console.WriteLine ("Presence change for {0} with handle {1} is {2}",
+                                     member_names[i],
+                                     handle,
                                      presence_info[handle].Status);
 
                     lock (roster) {
                         if (!roster.ContainsKey (handle)) {
                             Contact c = CreateContact (member_names[i],
-                                        handle, 
+                                        handle,
                                         presence_info[handle].Type,
                                         presence_info[handle].StatusMessage);
                             roster.Add (handle, c);
                             c.Initialize ();
                         }
                         else {
-                            roster[handle].Update (member_names[i], 
+                            roster[handle].Update (member_names[i],
                                                         handle,
                                                         presence_info[handle].Type);
                             roster[handle].StatusMessage = presence_info[handle].StatusMessage;
@@ -288,19 +288,19 @@ namespace Banshee.Telepathy.API
                     }
 
                     if (raise_events) {
-                        OnContactStatusChanged (roster[handle], 
+                        OnContactStatusChanged (roster[handle],
                                                 new ContactStatusEventArgs (presence_info[handle].Type));
                     }
                 }
             }
 
         }
-        
+
         private void OnPresencesChanged (IDictionary <uint,SimplePresence> presences_changed)
         {
             uint[] handles = new uint[presences_changed.Keys.Count];
             presences_changed.Keys.CopyTo(handles, 0);
-            
+
             GetPresenceInfo (handles, presences_changed, true);
         }
 
@@ -319,16 +319,16 @@ namespace Banshee.Telepathy.API
                 handler (this, args);
             }
         }
-        
+
         protected virtual void OnContactListChannelReady (object sender, EventArgs args)
         {
             uint [] contacts = contact_list.GetContacts ();
             //Log.DebugFormat ("Account {0} has {1} contacts", conn.AccountId, contacts.Length);
-            
+
             presence = DBusUtility.GetProxy <ISimplePresence> (conn.Bus, conn.BusName, conn.ObjectPath);
             GetPresenceInfo (contacts);
             presence.PresencesChanged += OnPresencesChanged;
-            
+
             state = RosterState.Loaded;
             OnRosterStateChanged (new RosterEventArgs (state));
         }
@@ -340,13 +340,13 @@ namespace Banshee.Telepathy.API
                 handler (o, args);
             }
         }
-        
+
         private void OnMembersAdded (object sender, MembersAddedEventArgs args)
         {
             GetPresenceInfo (args.Added);
-            
+
             foreach (uint handle in args.Added) {
-               OnContactMembershipChanged (roster[handle], 
+               OnContactMembershipChanged (roster[handle],
                                           new ContactMembershipEventArgs (ContactMembership.Added));
             }
         }
@@ -354,7 +354,7 @@ namespace Banshee.Telepathy.API
         private void OnMembersRemoved (object sender, MembersRemovedEventArgs args)
         {
             foreach (uint handle in args.Removed) {
-                OnContactMembershipChanged (roster[handle], 
+                OnContactMembershipChanged (roster[handle],
                                           new ContactMembershipEventArgs (ContactMembership.Removed));
 
                 lock (roster) {
@@ -362,6 +362,6 @@ namespace Banshee.Telepathy.API
                 }
             }
         }
-        
+
     }
 }

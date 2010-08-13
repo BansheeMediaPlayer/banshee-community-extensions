@@ -41,30 +41,45 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
     <Reference Include="Mono.Posix" />
-    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Mono.Cairo" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
     <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-core</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-services</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.ThickClient, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-thickclient</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Package>mono-addins</Package>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="Banshee.Widgets, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-thickclient</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-1-hyena</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="nunit.core, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
-    <Reference Include="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
+    <Reference Include="nunit.core, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <Package>nunit</Package>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <Package>nunit</Package>
+    </Reference>
+    <Reference Include="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Banshee.Mirage.addin.xml">

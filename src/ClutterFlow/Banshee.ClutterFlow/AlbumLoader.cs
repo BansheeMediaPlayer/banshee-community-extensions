@@ -1,21 +1,21 @@
-// 
+//
 // AlbumLoader.cs
-//  
+//
 // Author:
 //       Mathijs Dumon <mathijsken@hotmail.com>
-// 
+//
 // Copyright (c) 2010 Mathijs Dumon
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,7 +35,7 @@ using ClutterFlow;
 
 namespace Banshee.ClutterFlow
 {
- 
+
 	public interface ISortComparer<T> : IComparer<T>
 	{
 		string GetSortLabel (T obj);
@@ -96,7 +96,7 @@ namespace Banshee.ClutterFlow
 	
 	public enum SortOptions { Artist = 0 , Album = 1 }
 	
-    public abstract class BansheeActorLoader<TGen> : ActorLoader<string, TGen> where TGen : ICacheableItem, new() 
+    public abstract class BansheeActorLoader<TGen> : ActorLoader<string, TGen> where TGen : ICacheableItem, new()
 	{
 		
 		#region Fields
@@ -126,7 +126,7 @@ namespace Banshee.ClutterFlow
         private int count; //previous model count
 		
 		protected List<int> index_map; //maps list indeces to model indeces
-        
+
         private FilterListModel<TGen> model;
         public virtual FilterListModel<TGen> Model {
             get { return model; }
@@ -136,9 +136,9 @@ namespace Banshee.ClutterFlow
                         model.Cleared -= OnModelClearedHandler;
                         model.Reloaded -= OnModelReloadedHandler;
                     }
-                    
+
                     model = value;
-                    
+
                     if (model != null) {
                         model.Cleared += OnModelClearedHandler;
                         model.Reloaded += OnModelReloadedHandler;
@@ -158,10 +158,10 @@ namespace Banshee.ClutterFlow
         }
 		
         public override List<ClutterFlowBaseActor> GetActors (System.Action<ClutterFlowBaseActor> method_call)
-        { 
-            SortedList<TGen, ClutterFlowBaseActor> list = 
+        {
+            SortedList<TGen, ClutterFlowBaseActor> list =
 				new SortedList<TGen, ClutterFlowBaseActor>(Comparer);
-            if (Model!=null) { 
+            if (Model!=null) {
 				for (int i = 1; i < Model.Count; i++)
                 	AddActorToList(Model[i], list);
 				index_map = new List<int>(list.Values.Count);
@@ -179,13 +179,13 @@ namespace Banshee.ClutterFlow
 		{
 			return (index_map!=null && index_map.Count > index) ? index_map[index] : 0;
 		}
-        
-        #region Event Handlers        
+
+        #region Event Handlers
         protected void OnModelClearedHandler (object o, EventArgs args)
         {
             RefreshCoverManager ();
         }
-        
+
         protected void OnModelReloadedHandler (object o, EventArgs args)
         {
             if (count!=model.Count) {
@@ -195,7 +195,7 @@ namespace Banshee.ClutterFlow
         }
         #endregion
     }
-    
+
     public class AlbumLoader : BansheeActorLoader<AlbumInfo>
     {
 
@@ -244,11 +244,11 @@ namespace Banshee.ClutterFlow
             }
         }
         #endregion
-        
-        public AlbumLoader (CoverManager coverManager) : base (coverManager) 
+
+        public AlbumLoader (CoverManager coverManager) : base (coverManager)
         {
         }
-        
+
         public virtual void ScrollTo (AlbumInfo generator)
         {
             coverManager.Timeline.Timeout = 500; //give 'm some time to load the song etc.

@@ -1,21 +1,21 @@
-// 
+//
 // ClutterFlowService.cs
-//  
+//
 // Author:
 //       Mathijs Dumon <mathijsken@hotmail.com>
-// 
+//
 // Copyright (c) 2010 Mathijs Dumon
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -49,7 +49,7 @@ namespace Banshee.ClutterFlow
     {
         private static int state = 0;
         public static event EventHandler BeforeQuit;
-        
+
         public static void Init ()
         {
             if (state < 1) {
@@ -114,7 +114,7 @@ namespace Banshee.ClutterFlow
 		protected ToggleAction BrowserAction {
 			get {
 				if (browser_action==null)
-					browser_action = (ToggleAction) action_service.FindAction("BrowserView.BrowserVisibleAction"); 
+					browser_action = (ToggleAction) action_service.FindAction("BrowserView.BrowserVisibleAction");
 				return browser_action;
 			}
 		}
@@ -122,7 +122,7 @@ namespace Banshee.ClutterFlow
 		protected ToggleAction CfBrowsAction {
 			get {
 				if (cfbrows_action==null)
-					cfbrows_action = (ToggleAction) action_service.FindAction("ClutterFlowView.ClutterFlowVisibleAction"); 
+					cfbrows_action = (ToggleAction) action_service.FindAction("ClutterFlowView.ClutterFlowVisibleAction");
 				return cfbrows_action;
 			}
 		}
@@ -142,7 +142,7 @@ namespace Banshee.ClutterFlow
 		#endregion
 		
 		#region Initialization
-        
+
 		public ClutterFlowService ()
 		{
             ClutterFlowManager.Init ();
@@ -186,7 +186,7 @@ namespace Banshee.ClutterFlow
 			}
 		}
 		
-		private void OnSourceAdded (SourceAddedArgs args) 
+		private void OnSourceAdded (SourceAddedArgs args)
 		{
 			if (args.Source is MusicLibrarySource)
 				music_library = args.Source as MusicLibrarySource;
@@ -232,7 +232,7 @@ namespace Banshee.ClutterFlow
                     AddinManager.CurrentLocalizer.GetString ("Show or hide the ClutterFlow browser"),
                     null, ClutterFlowSchemas.ShowClutterFlow.Get ()) };
                 clutterflow_actions.Add (tae);
-                
+
                 action_service.AddActionGroup (clutterflow_actions);
                 ui_manager_id = action_service.UIManager.AddUiFromString (menu_xml);
             }
@@ -254,7 +254,7 @@ namespace Banshee.ClutterFlow
            else
                 clutterflow_actions.Visible = false;
         }
-                
+
 		private void OnToggleBrowser (object sender, EventArgs e)
 		{
 			if (BrowserAction.Active) {
@@ -290,7 +290,7 @@ namespace Banshee.ClutterFlow
             Clutter.Threads.Leave ();
             clutter_flow_contents.Dispose ();
             clutter_flow_contents = null;
-            
+
             source_manager.ActiveSourceChanged -= HandleActiveSourceChanged;
 			BrowserAction.Activated -= OnToggleBrowser;
             BrowserAction.Active = ClutterFlowSchemas.OldShowBrowser.Get ();
@@ -318,13 +318,13 @@ namespace Banshee.ClutterFlow
         private Section general;
 		private Section dimensions;
 		
-		protected void InstallPreferences () 
+		protected void InstallPreferences ()
 		{
 			if (!pref_installed) {
 				pref_page = preference_service.Add(new Page("clutterflow",
                                                             AddinManager.CurrentLocalizer.GetString ("ClutterFlow"), 10));
 				
-	            general = pref_page.Add (new Section ("general", 
+	            general = pref_page.Add (new Section ("general",
 	                AddinManager.CurrentLocalizer.GetString ("General"), 1));
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.InstantPlayback, UpdateLabelVisibility);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DisplayLabel, UpdateLabelVisibility);
@@ -333,7 +333,7 @@ namespace Banshee.ClutterFlow
 				ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DragSensitivity, UpdateDragSensitivity);
 				ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.ThreadedArtwork, UpdateThreadedArtwork);
 				
-				dimensions = pref_page.Add (new Section ("dimensions", 
+				dimensions = pref_page.Add (new Section ("dimensions",
 	                AddinManager.CurrentLocalizer.GetString ("Dimensions"), 2));
 				ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MinCoverSize, UpdateMinCoverSize);
 				ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MaxCoverSize, UpdateMinCoverSize);
@@ -359,7 +359,7 @@ namespace Banshee.ClutterFlow
 		
         private void UpdateThreadedArtwork ()
         {
-            
+
         }
 		
 		private void UpdateDragSensitivity ()
@@ -368,18 +368,18 @@ namespace Banshee.ClutterFlow
 				clutter_flow_contents.FilterView.DragSensitivity =
 					(float) ClutterFlowSchemas.DragSensitivity.Get () * 0.1f;
 		}
-        
+
 		private void UpdateLabelVisibility ()
 		{
 			if (clutter_flow_contents != null)
-				clutter_flow_contents.FilterView.LabelCoverIsVisible = 
+				clutter_flow_contents.FilterView.LabelCoverIsVisible =
 					ClutterFlowSchemas.DisplayLabel.Get ();
 		}
 		
 		private void UpdateTitleVisibility ()
 		{
 			if (clutter_flow_contents != null)
-				clutter_flow_contents.FilterView.LabelTrackIsVisible = 
+				clutter_flow_contents.FilterView.LabelTrackIsVisible =
 					ClutterFlowSchemas.DisplayTitle.Get ();
 		}
 		
@@ -393,21 +393,21 @@ namespace Banshee.ClutterFlow
 		private void UpdateMinCoverSize ()
 		{
 			if (clutter_flow_contents != null)
-				clutter_flow_contents.FilterView.CoverManager.Behaviour.MinCoverWidth = 
+				clutter_flow_contents.FilterView.CoverManager.Behaviour.MinCoverWidth =
 					ClutterFlowSchemas.MinCoverSize.Get ();
 		}
 
 		private void UpdateMaxCoverSize ()
 		{
 			if (clutter_flow_contents != null)
-				clutter_flow_contents.FilterView.CoverManager.Behaviour.MaxCoverWidth = 
+				clutter_flow_contents.FilterView.CoverManager.Behaviour.MaxCoverWidth =
 					ClutterFlowSchemas.MaxCoverSize.Get ();
 		}
 
 		private void UpdateTextureSize ()
 		{
 			if (clutter_flow_contents != null)
-				clutter_flow_contents.FilterView.CoverManager.TextureSize = 
+				clutter_flow_contents.FilterView.CoverManager.TextureSize =
 					ClutterFlowSchemas.TextureSize.Get ();
 		}
 		
@@ -427,10 +427,10 @@ namespace Banshee.ClutterFlow
             if (disposed)
                 return;
             disposed = true;
-            
+
             ServiceManager.ServiceStarted -= OnServiceStarted;
             source_manager.SourceAdded -= OnSourceAdded;
-                    
+
             UninstallPreferences ();
             RemoveClutterFlow ();
  		}

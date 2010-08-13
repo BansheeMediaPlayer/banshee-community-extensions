@@ -35,21 +35,21 @@ namespace Banshee.Telepathy.API.Channels
     {
         public event EventHandler <EventArgs> Closed;
         public event EventHandler <EventArgs> ChannelReady;
-        
+
         private RequestedChannel ()
         {
         }
 
-        public RequestedChannel (Connection conn, 
+        public RequestedChannel (Connection conn,
                                  string object_path,
-                                 uint initiator_handle, 
+                                 uint initiator_handle,
                                  uint target_handle)
         {
             this.conn = conn;
             ObjectPath = object_path;
             InitiatorHandle = initiator_handle;
             TargetHandle = target_handle;
-                        
+
             SetProxyObject ();
         }
 
@@ -57,11 +57,11 @@ namespace Banshee.Telepathy.API.Channels
         protected Connection Connection {
             get { return conn; }
         }
-        
+
         private uint initiator_handle;
         public uint InitiatorHandle {
             get { return initiator_handle; }
-            protected set { 
+            protected set {
                 if (value == 0) {
                     throw new ArgumentException ("InitiatorHandle must be > 0.");
                 }
@@ -73,7 +73,7 @@ namespace Banshee.Telepathy.API.Channels
         private uint target_handle;
         public uint TargetHandle {
             get { return target_handle; }
-            protected set { 
+            protected set {
                 if (value == 0) {
                     throw new ArgumentException ("TargetHandle must be > 0.");
                 }
@@ -98,12 +98,12 @@ namespace Banshee.Telepathy.API.Channels
             get { return is_closed; }
             protected set { is_closed = value; }
         }
-        
+
         public void Dispose ()
         {
             Dispose (true);
         }
-        
+
         protected virtual void Dispose (bool disposing)
         {
             if (disposing) {
@@ -112,7 +112,7 @@ namespace Banshee.Telepathy.API.Channels
                 }
             }
         }
-        
+
         protected abstract void SetProxyObject ();
         public abstract void Close ();
 

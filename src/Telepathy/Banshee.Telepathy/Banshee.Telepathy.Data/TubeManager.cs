@@ -39,21 +39,21 @@ using Banshee.Telepathy.API.Dispatchables;
 
 namespace Banshee.Telepathy.Data
 {
-	public class TubeManagerErrorEventArgs : EventArgs 
+	public class TubeManagerErrorEventArgs : EventArgs
 	{
 		public TubeManager.ErrorReason error;
 		
-		public TubeManagerErrorEventArgs (TubeManager.ErrorReason error) 
+		public TubeManagerErrorEventArgs (TubeManager.ErrorReason error)
 		{
 			this.error = error;	
 		}
 	}
 	
-	public class TubeManagerStateChangedEventArgs : EventArgs 
+	public class TubeManagerStateChangedEventArgs : EventArgs
 	{
 		public TubeManager.State state;
 		
-		public TubeManagerStateChangedEventArgs (TubeManager.State state) 
+		public TubeManagerStateChangedEventArgs (TubeManager.State state)
 		{
 			this.state = state;	
 		}
@@ -121,8 +121,8 @@ namespace Banshee.Telepathy.Data
 		public Contact Contact { get; private set; }
 		
 		private State current_state = State.Unloaded;
-		public State CurrentState { 
-			get { return current_state; } 
+		public State CurrentState {
+			get { return current_state; }
 			private set {
 				if (current_state != value) {
 					current_state = value;
@@ -140,20 +140,20 @@ namespace Banshee.Telepathy.Data
 //            if (contact == null) {
 //                return;
 //            }
-//            
+//
 //            if (source.CurrentActivity != null) {
 //                source.CurrentActivity.Close ();
 //            }
-//            
+//
 //            StopStreaming (source);
 //        }
-        
+
         public static void StopStreaming (Contact contact)
         {
             if (contact == null) {
                 return;
             }
-            
+
             Activity activity = contact.DispatchManager.Get <StreamActivityListener> (contact, StreamingServer.ServiceName);
             if (activity != null) {
                 activity.Close ();
@@ -184,7 +184,7 @@ namespace Banshee.Telepathy.Data
 				if (Contact != null) {
                 	Contact.DispatchManager.Dispatched -= OnDispatched;
             	}
-            
+
             	UnregisterHandlers ();
 			}
 		}
@@ -192,12 +192,12 @@ namespace Banshee.Telepathy.Data
 		public void Browse ()
 		{
 			EnsureDBusActivity ();
-            
+
             if (CurrentActivity != null) {
-                // user clicked to browse a contact, but contact on the other end sent a 
+                // user clicked to browse a contact, but contact on the other end sent a
                 // request also. The tube is probably slow and states have not changed yet,
                 // so set waiting
-                // TODO there is probably a race condition here - TEST                
+                // TODO there is probably a race condition here - TEST
                 if (CurrentActivity.State == ActivityState.RemotePending) {
                     CurrentState = State.Waiting;
                 } else {
@@ -207,7 +207,7 @@ namespace Banshee.Telepathy.Data
                 if (Contact.SupportedChannels.GetChannelInfo <DBusTubeChannelInfo> (MetadataProviderService.BusName) != null) {
                     if (CurrentState == State.Unloaded) {
 						CurrentState = State.Waiting;
-                        RequestDBusTube ();                    
+                        RequestDBusTube ();
                     }
                 }
             }
@@ -236,13 +236,13 @@ namespace Banshee.Telepathy.Data
             if (Contact == null) {
                 return;
             }
-            
+
             if (CurrentActivity == null) {
                 DispatchManager dm = Contact.DispatchManager;
                 CurrentActivity = dm.Get <DBusActivity> (Contact, MetadataProviderService.BusName);
             }
         }
-        
+
         private void RequestDBusTube ()
         {
             IDictionary <string, object> properties = new Dictionary <string, object> ();
@@ -254,14 +254,14 @@ namespace Banshee.Telepathy.Data
                 Hyena.Log.Exception (e);
             }
         }
-        
+
         private void RequestStreamTube ()
         {
             try {
                 if (!Contact.DispatchManager.Exists <StreamActivityListener> (Contact, StreamingServer.ServiceName)) {
                     IDictionary <string, object> properties = new Dictionary <string, object> ();
                     properties.Add ("Service", StreamingServer.ServiceName);
-                
+
                     Contact.DispatchManager.Request <StreamActivityListener> (Contact, properties);
                 }
             } catch (Exception e) {
@@ -279,7 +279,7 @@ namespace Banshee.Telepathy.Data
             if (CurrentActivity == null) {
                 return;
             }
-            
+
             provider_service = new MetadataProviderService (CurrentActivity, permission);
 			provider_service.PermissionRequired += (o, a) => {
 				//ShowResponseMessage (o as MetadataProviderService);
@@ -291,8 +291,8 @@ namespace Banshee.Telepathy.Data
 		
 		private bool IsActivityMatch (DBusActivity activity)
 		{
-			return (activity != null && 
-                activity.Contact.Equals (Contact) && 
+			return (activity != null &&
+                activity.Contact.Equals (Contact) &&
                 activity.Service.Equals (MetadataProviderService.BusName));
 		}
 		
@@ -308,7 +308,7 @@ namespace Banshee.Telepathy.Data
                 Hyena.Log.Debug (String.Format ("activity state {0} is invalid.", CurrentActivity.State));
                 return;
             }
-        
+
             IMetadataProviderService service = CurrentActivity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
             if (service == null) {
                 Hyena.Log.Debug ("ContactSource.LoadData found service null");
@@ -326,25 +326,25 @@ namespace Banshee.Telepathy.Data
 						if (CurrentState != State.Waiting) {
                 			return;
             			}
-            
+
 			            GetBoolPropertyCaller caller = (GetBoolPropertyCaller) result.AsyncState;
 			            bool granted = caller.EndInvoke (result);
-			            
+			
 			            if (granted) {
-			                CurrentState = State.PermissionGranted;                
+			                CurrentState = State.PermissionGranted;
 			            } else {
 			                CurrentState = State.PermissionNotGranted;
 			            }
-			            
+			
 			            LoadData ();
 						
 					}), permission_caller);
-    
+
                 } else if (CurrentState == State.PermissionGranted) {
                     service.DownloadingAllowedChanged += delegate (bool allowed) {
-                        IsDownloadingAllowed = allowed;            
+                        IsDownloadingAllowed = allowed;
                     };
-                
+
                     // determine if downloading is allowed asynchronously
                     downloading_caller = new GetBoolPropertyCaller (service.DownloadsAllowed);
                     downloading_caller.BeginInvoke (new AsyncCallback (delegate (IAsyncResult result) {
@@ -353,11 +353,11 @@ namespace Banshee.Telepathy.Data
             			IsDownloadingAllowed = caller.EndInvoke (result);
 						
 					}), downloading_caller);
-                    
+
                     // clean up any residual tracks
                     download_monitor.Reset ();
                     CurrentState = State.LoadingMetadata;
-    
+
                     string metadata_path = service.CreateMetadataProvider (LibraryType.Music).ToString ();
                     IMetadataProvider library_provider = CurrentActivity.GetDBusObject <IMetadataProvider> (MetadataProvider.BusName, metadata_path);
 
@@ -370,9 +370,9 @@ namespace Banshee.Telepathy.Data
 
                     library_provider.ChunkReady += OnLibraryChunkReady;
                     library_provider.GetChunks (chunk_length);
-    
+
                     download_monitor.Start ();
-                
+
                 } else if (CurrentState == State.PermissionNotGranted) {
 					CurrentState = State.Waiting;
                     service.PermissionSet += OnPermissionSet;
@@ -400,9 +400,9 @@ namespace Banshee.Telepathy.Data
             try {
                 IMetadataProviderService service = CurrentActivity.GetDBusObject <IMetadataProviderService> (MetadataProviderService.BusName, MetadataProviderService.ObjectPath);
                 int [] playlist_ids = service.GetPlaylistIds (LibraryType.Music);
-    
+
                 download_monitor.Reset ();
-                
+
                 if (playlist_ids.Length == 0) {
                     CurrentState = State.Loaded;
                 } else {
@@ -414,15 +414,15 @@ namespace Banshee.Telepathy.Data
                         LibraryDownload download = new LibraryDownload ();
                         download_monitor.Add (playlist_path, download);
                         //download_monitor.AssociateObject (playlist_path, new ContactPlaylistSource (playlist_provider.GetName (), this));
-                        
+
                         download.ProcessIncomingPayloads (delegate (object sender, object [] o) {
                             OnPlaylistTracksDownloaded (new DownloadedTracksEventArgs (sender as LibraryDownload, o, playlist_provider.GetName ()));
                         });
-                        
+
                         playlist_provider.ChunkReady += OnPlaylistChunkReady;
                         playlist_provider.GetChunks (chunk_length);
                     }
-    
+
                     download_monitor.Start ();
                 }
             } catch (Exception e) {
@@ -431,7 +431,7 @@ namespace Banshee.Telepathy.Data
                 OnError (new TubeManagerErrorEventArgs (ErrorReason.ErrorDuringPlaylistLoad));
             }
         }
- 
+
 		private void ResetState ()
         {
             CurrentState = State.Unloaded;
@@ -459,7 +459,7 @@ namespace Banshee.Telepathy.Data
                 activity.ResponseRequired += OnActivityResponseRequired;
                 activity.Ready += OnActivityReady;
                 activity.Closed += OnActivityClosed;
-                
+
                 CurrentActivity = activity;
             }
         }
@@ -474,10 +474,10 @@ namespace Banshee.Telepathy.Data
             // necessary. But, the OnReady and OnPermissionRequired events
             // only get raised for one contact.
             RequestStreamTube ();
-        
+
             if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
                 RegisterActivityServices ();
-                
+
                 // tube was not ready at the time user clicked source
                 // so it was put into waiting state
                 if (CurrentState == State.Waiting) {
@@ -493,26 +493,26 @@ namespace Banshee.Telepathy.Data
         {
             DBusActivity activity = sender as DBusActivity;
 			ResetState ();
-            
+
             if (activity.InitiatorHandle == Contact.Connection.SelfHandle) {
                 StopStreaming (Contact);
-                
+
                 // the tube was closed before the library was fully downloaded
                 // this seems to occur randomly
                 if (!download_monitor.ProcessingFinished ()) {
                     OnError (new TubeManagerErrorEventArgs (ErrorReason.ClosedBeforeDownloaded));
                 }
             }
-            
+
 			OnClosed (EventArgs.Empty);
             UnregisterHandlers ();
         }
-        
+
         private void OnActivityResponseRequired (object sender, EventArgs args)
         {
             DBusActivity activity = sender as DBusActivity;
             Hyena.Log.DebugFormat ("OnActivityResponseRequired from {0} for {1}", activity.Contact.Handle, activity.Contact.Name);
-                             
+
             if (activity.InitiatorHandle != Contact.Connection.SelfHandle) {
                 Hyena.Log.DebugFormat ("{0} handle {1} accepting tube from ContactSource", Contact.Name, Contact.Handle);
 				OnResponseRequired (EventArgs.Empty);
@@ -552,12 +552,12 @@ namespace Banshee.Telepathy.Data
             }
         }
 		
-		private void OnLibraryChunkReady (string object_path, IDictionary<string, object>[] chunk, 
+		private void OnLibraryChunkReady (string object_path, IDictionary<string, object>[] chunk,
                            long timestamp, int seq_num, int total)
         {
             Hyena.Log.DebugFormat ("Library Chunk Ready timestamp {0} seq {1} tracks {2} path {3}",
                        timestamp, seq_num, chunk.Length, object_path);
-            
+
             LibraryDownload current_download = download_monitor.Get (object_path);
             if (current_download != null)  {
                 if (!current_download.IsStarted) {
@@ -570,14 +570,14 @@ namespace Banshee.Telepathy.Data
             }
         }
 
-        private void OnPlaylistChunkReady (string object_path, IDictionary<string, object>[] chunk, 
+        private void OnPlaylistChunkReady (string object_path, IDictionary<string, object>[] chunk,
                            long timestamp, int seq_num, int total)
         {
             Hyena.Log.DebugFormat ("Playlist Chunk Ready timestamp {0} seq {1} tracks {2} path {3}",
                        timestamp, seq_num, chunk.Length, object_path);
 
             LibraryDownload current_download = download_monitor.Get (object_path);
-            if (current_download != null) {            
+            if (current_download != null) {
                 if (!current_download.IsStarted) {
                     Hyena.Log.Debug ("Initializing download");
                     current_download.Timestamp = timestamp;

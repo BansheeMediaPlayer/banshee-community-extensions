@@ -37,5 +37,5 @@ namespace Banshee.Streamrecorder.Gst
         Source,
         Sink
     }
-    
+
 }

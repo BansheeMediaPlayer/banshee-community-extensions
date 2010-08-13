@@ -103,6 +103,6 @@ namespace Banshee.Streamrecorder.Gst
                 return null;
             return wrapper.managed;
         }
-        
+
     }
 }

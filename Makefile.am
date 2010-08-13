@@ -1,5 +1,6 @@
 SUBDIRS = \
 	build \
+	help \
 	src \
 	po
 

@@ -27,11 +27,9 @@
 //
 
 using Gtk;
-using System;
 
 using Hyena.Data.Gui;
 
-using Banshee.Base;
 using Banshee.Gui;
 using Banshee.Collection;
 using Banshee.Collection.Gui;
@@ -44,51 +42,51 @@ namespace Banshee.Telepathy.Gui
         public ColumnCellContactStatusIndicator (string property) : base (property)
         {
         }
-        
+
         public ColumnCellContactStatusIndicator (string property, bool expand) : base (property, expand)
         {
         }
-        
+
         protected override int PixbufCount {
             get { return base.PixbufCount + 1; }
         }
-        
+
         protected override void LoadPixbufs ()
         {
             base.LoadPixbufs ();
-            
+
             // Downloading
             Pixbufs[base.PixbufCount + 0] = IconThemeUtils.LoadIcon (PixbufSize, "document-save", "go-bottom");
-            
+
             // Downloaded
             //Pixbufs[base.PixbufCount + 1] = IconThemeUtils.LoadIcon (PixbufSize, "podcast-new");
         }
-        
+
         protected override int GetIconIndex (TrackInfo track)
         {
             ContactTrackInfo ci = ContactTrackInfo.From (track);
             if (track == null || ci == null) {
                 return -1;
             }
-            
+
             if (ci.IsDownloading || ci.IsDownloadPending) {
                 return base.PixbufCount + 0;
             }
             else {
                 return -1;
-            } 
-            
+            }
+
         }
-        
+
         public override void Render (CellContext context, StateType state, double cellWidth, double cellHeight)
         {
             ContactTrackInfo ci = ContactTrackInfo.From (BoundTrack);
             if (ci != null) {
                 if (ci.IsDownloadPending) {
                     context.Opaque = false;
-                } 
+                }
             }
-            
+
             base.Render (context, state, cellWidth, cellHeight);
         }
     }

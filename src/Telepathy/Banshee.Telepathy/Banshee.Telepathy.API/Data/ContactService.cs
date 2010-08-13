@@ -36,7 +36,7 @@ namespace Banshee.Telepathy.API.Data {
         DBusTransport = 0,
         SocketTransport = 1
     }
-    
+
     public struct ContactService
     {
         public ContactServiceType Type;
@@ -44,23 +44,23 @@ namespace Banshee.Telepathy.API.Data {
         public string Service;
         public object Address;
 
-        public ContactService (ContactServiceType type, 
-                               HandleType target, 
+        public ContactService (ContactServiceType type,
+                               HandleType target,
                                string service) : this (type, target, service, null)
         {
         }
 
-        public ContactService (ContactServiceType type, 
-                               HandleType target, 
-                               string service, 
-                               object address) 
+        public ContactService (ContactServiceType type,
+                               HandleType target,
+                               string service,
+                               object address)
         {
             Type = type;
             TargetHandleType = target;
             Service = service;
             Address = address;
         }
-        
+
         public override string ToString ()
         {
             return Service;

@@ -30,7 +30,7 @@ using System;
 using System.Collections.Generic;
 
 namespace Banshee.Telepathy.Data
-{  
+{
     public class TransferList<K, V> : Dictionary<K, V> where V : Transfer<K> where K : IEquatable<K>
     {
 		private readonly object sync = new object ();
@@ -44,7 +44,7 @@ namespace Banshee.Telepathy.Data
                 }
             }
         }
-        
+
         public IEnumerable<V> Ready ()
         {
 			IList<V> values = new List<V> (Values);
@@ -54,14 +54,14 @@ namespace Banshee.Telepathy.Data
                 }
             }
         }
-        
+
         public new void Add (K key, V value)
         {
             lock (sync) {
                 base.Add (key, value);
             }
         }
-        
+
         public new bool Remove (K key)
         {
             lock (sync) {

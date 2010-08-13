@@ -1,8 +1,8 @@
 /*
  *   Copyright (C) 2009 Neil Loknath <neil.loknath@gmail.com>
- * 
+ *
  *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU Lesser General Public License as published 
+ *   it under the terms of the GNU Lesser General Public License as published
  *   by the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  *
@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU Lesser General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU LesserGeneral Public License as published 
+ *   it under the terms of the GNU LesserGeneral Public License as published
  *   by the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  */
@@ -28,7 +28,7 @@ using NDesk.DBus;
 
 namespace Telepathy
 {
-        
+
     [Interface ("org.freedesktop.Telepathy.ConnectionManager")]
     public interface IConnectionManager
     {
@@ -43,7 +43,7 @@ namespace Telepathy
         // Property
         string[] Interfaces { get; }
 #endif
-    
+
         event NewConnectionHandler NewConnection;
 
     }
@@ -55,14 +55,14 @@ namespace Telepathy
         public string Signature;
         public object DefaultValue;
     }
-    
+
     [Flags]
     public enum ConnMgrParamFlags : uint
     {
         None = 0,
-        Required = 1, Register = 2, HasDefault = 4, Secret = 8, DBusProperty = 16, 
+        Required = 1, Register = 2, HasDefault = 4, Secret = 8, DBusProperty = 16,
     }
-    
+
     public delegate void NewConnectionHandler (string @bus_name, ObjectPath @object_path, string @protocol);
     [Interface ("org.freedesktop.Telepathy.Connection")]
     public interface IConnection //: IRequests, IContacts
@@ -96,7 +96,7 @@ namespace Telepathy
         // Property
         uint SelfHandle { get; }
 #endif
-    
+
         event SelfHandleChangedHandler SelfHandleChanged;
 
         event NewChannelHandler NewChannel;
@@ -114,22 +114,22 @@ namespace Telepathy
         public HandleType HandleType;
         public uint Handle;
     }
-    
+
     public enum HandleType : uint
     {
-        None = 0, Contact = 1, Room = 2, List = 3, Group = 4, 
+        None = 0, Contact = 1, Room = 2, List = 3, Group = 4,
     }
-    
+
     public enum ConnectionStatus : uint
     {
-        Connected = 0, Connecting = 1, Disconnected = 2, 
+        Connected = 0, Connecting = 1, Disconnected = 2,
     }
-    
+
     public enum ConnectionStatusReason : uint
     {
-        NoneSpecified = 0, Requested = 1, NetworkError = 2, AuthenticationFailed = 3, EncryptionError = 4, NameInUse = 5, CertNotProvided = 6, CertUntrusted = 7, CertExpired = 8, CertNotActivated = 9, CertHostnameMismatch = 10, CertFingerprintMismatch = 11, CertSelfSigned = 12, CertOtherError = 13, 
+        NoneSpecified = 0, Requested = 1, NetworkError = 2, AuthenticationFailed = 3, EncryptionError = 4, NameInUse = 5, CertNotProvided = 6, CertUntrusted = 7, CertExpired = 8, CertNotActivated = 9, CertHostnameMismatch = 10, CertFingerprintMismatch = 11, CertSelfSigned = 12, CertOtherError = 13,
     }
-    
+
     public delegate void SelfHandleChangedHandler (uint @self_handle);
     public delegate void NewChannelHandler (ObjectPath @object_path, string @channel_type, HandleType @handle_type, uint @handle, bool @suppress_handler);
     public delegate void ConnectionErrorHandler (string @error, IDictionary<string,object> @details);
@@ -155,14 +155,14 @@ namespace Telepathy
         public uint Handle;
         public string Alias;
     }
-    
+
     [Flags]
     public enum ConnectionAliasFlags : uint
     {
         None = 0,
-        UserSet = 1, 
+        UserSet = 1,
     }
-    
+
     public delegate void AliasesChangedHandler (AliasPair[] @aliases);
     [Interface ("org.freedesktop.Telepathy.Connection.Interface.Avatars")]
     public interface IAvatars : IConnection
@@ -186,42 +186,42 @@ namespace Telepathy
         // Property
         string[] SupportedAvatarMIMETypes { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint MinimumAvatarHeight { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint MinimumAvatarWidth { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint RecommendedAvatarHeight { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint RecommendedAvatarWidth { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint MaximumAvatarHeight { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint MaximumAvatarWidth { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint MaximumAvatarBytes { get; }
 #endif
-    
+
         event AvatarUpdatedHandler AvatarUpdated;
 
         event AvatarRetrievedHandler AvatarRetrieved;
@@ -247,7 +247,7 @@ namespace Telepathy
         public string ChannelType;
         public uint TypeSpecificFlags;
     }
-    
+
     public struct ContactCapability
     {
         public uint Handle;
@@ -255,7 +255,7 @@ namespace Telepathy
         public ConnectionCapabilityFlags GenericFlags;
         public uint TypeSpecificFlags;
     }
-    
+
     public struct CapabilityChange
     {
         public uint Handle;
@@ -265,17 +265,17 @@ namespace Telepathy
         public uint OldTypeSpecificFlags;
         public uint NewTypeSpecificFlags;
     }
-    
+
     [Flags]
     public enum ConnectionCapabilityFlags : uint
     {
         None = 0,
-        Create = 1, Invite = 2, 
+        Create = 1, Invite = 2,
     }
-    
+
     public delegate void CapabilitiesChangedHandler (CapabilityChange[] @caps);
-    
-    
+
+
     [Interface ("org.freedesktop.Telepathy.Connection.Interface.ContactCapabilities")]
     public interface IContactCapabilities : IConnection
     {
@@ -294,16 +294,16 @@ namespace Telepathy
         public IDictionary<string, object>[] ChannelClasses;
         public string[] Capabilities;
     }
-    
+
     public delegate void ContactCapabilitiesChangedHandler (IDictionary<uint,RequestableChannelClass[]> @caps);
-    
+
     namespace Draft
     {
-    
+
         [Interface ("org.freedesktop.Telepathy.Connection.Interface.ContactInfo.DRAFT")]
         public interface IContactInfo : IConnection
         {
-    
+
             // Method
             IDictionary<uint,ContactInfoField[]> GetContactInfo (uint[] @contacts);
             // Method
@@ -314,23 +314,23 @@ namespace Telepathy
             // Property
             ContactInfoFlag ContactInfoFlags { get; }
     #endif
-        
+
     #if USE_DBUS_PROPERTIES
             // Property
             FieldSpec[] SupportedFields { get; }
     #endif
-        
+
             event ContactInfoChangedHandler ContactInfoChanged;
-    
+
         }
-    
+
         public struct ContactInfoField
         {
             public string FieldName;
             public string[] Parameters;
             public string[] FieldValue;
         }
-        
+
         public struct FieldSpec
         {
             public string Name;
@@ -338,22 +338,22 @@ namespace Telepathy
             public ContactInfoFieldFlags Flags;
             public uint Max;
         }
-        
+
         public enum ContactInfoFlag : uint
         {
-            CanSet = 1, Push = 2, 
+            CanSet = 1, Push = 2,
         }
-        
+
         [Flags]
         public enum ContactInfoFieldFlags : uint
         {
             None = 0,
-            ParametersMandatory = 1, 
+            ParametersMandatory = 1,
         }
-        
+
         public delegate void ContactInfoChangedHandler (uint @contact, ContactInfoField[] @contactinfo);
     }
-    
+
     [Interface ("org.freedesktop.Telepathy.Connection.Interface.Contacts")]
     public interface IContacts : IConnection
     {
@@ -364,16 +364,16 @@ namespace Telepathy
         // Property
         string[] ContactAttributeInterfaces { get; }
 #endif
-    
+
     }
 
     namespace Draft
     {
-    
+
         [Interface ("org.freedesktop.Telepathy.Connection.Interface.Location.DRAFT")]
         public interface ILocation : IConnection
         {
-    
+
             // Method
             IDictionary<uint,IDictionary<string,object>> GetLocations (uint[] @contacts);
             // Method
@@ -384,24 +384,24 @@ namespace Telepathy
             // Property
             RichPresenceAccessControlType[] LocationAccessControlTypes { get; }
     #endif
-        
+
     #if USE_DBUS_PROPERTIES
             // Property
             RichPresenceAccessControl LocationAccessControl { get; set; }
     #endif
-        
+
             event LocationUpdatedHandler LocationUpdated;
-    
+
         }
-    
+
         public enum LocationAccuracyLevel : int
         {
-            None = 0, Country = 1, Region = 2, Locality = 3, PostalCode = 4, Street = 5, Detailed = 6, 
+            None = 0, Country = 1, Region = 2, Locality = 3, PostalCode = 4, Street = 5, Detailed = 6,
         }
-        
+
         public delegate void LocationUpdatedHandler (uint @contact, IDictionary<string,object> @location);
     }
-    
+
     [Interface ("org.freedesktop.Telepathy.Connection.Interface.Presence")]
     public interface IPresence : IConnection, ISimplePresence
     {
@@ -431,7 +431,7 @@ namespace Telepathy
         public uint LastActivity;
         public IDictionary<string,IDictionary<string,object>> Statuses;
     }
-    
+
     public struct StatusSpec
     {
         public ConnectionPresenceType Type;
@@ -439,7 +439,7 @@ namespace Telepathy
         public bool Exclusive;
         public IDictionary<string,string> ParameterTypes;
     }
-    
+
     public delegate void PresenceUpdateHandler (IDictionary<uint,LastActivityAndStatuses> @presence);
     [Interface ("org.freedesktop.Telepathy.Connection.Interface.Renaming")]
     public interface IRenaming : IConnection
@@ -464,12 +464,12 @@ namespace Telepathy
         // Property
         ChannelDetails[] Channels { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         RequestableChannelClass[] RequestableChannelClasses { get; }
 #endif
-    
+
         event NewChannelsHandler NewChannels;
 
         event ChannelClosedHandler ChannelClosed;
@@ -481,13 +481,13 @@ namespace Telepathy
         public ObjectPath Channel;
         public IDictionary<string,object> Properties;
     }
-    
+
     public struct RequestableChannelClass
     {
         public IDictionary<string,object> FixedProperties;
         public string[] AllowedProperties;
     }
-    
+
     public delegate void NewChannelsHandler (ChannelDetails[] @channels);
     public delegate void ChannelClosedHandler (ObjectPath @removed);
     [Interface ("org.freedesktop.Telepathy.Connection.Interface.SimplePresence")]
@@ -502,7 +502,7 @@ namespace Telepathy
         // Property
         IDictionary<string,SimpleStatusSpec> Statuses { get; }
 #endif
-    
+
         event PresencesChangedHandler PresencesChanged;
 
     }
@@ -513,49 +513,49 @@ namespace Telepathy
         public string Status;
         public string StatusMessage;
     }
-    
+
     public struct SimpleStatusSpec
     {
         public ConnectionPresenceType Type;
         public bool MaySetOnSelf;
         public bool CanHaveMessage;
     }
-    
+
     public struct RichPresenceAccessControl
     {
         public RichPresenceAccessControlType Type;
         public object Detail;
     }
-    
+
     public enum ConnectionPresenceType : uint
     {
-        Unset = 0, Offline = 1, Available = 2, Away = 3, ExtendedAway = 4, Hidden = 5, Busy = 6, Unknown = 7, Error = 8, 
+        Unset = 0, Offline = 1, Available = 2, Away = 3, ExtendedAway = 4, Hidden = 5, Busy = 6, Unknown = 7, Error = 8,
     }
-    
+
     public enum RichPresenceAccessControlType : uint
     {
-        Whitelist = 0, PublishList = 1, Group = 2, Open = 3, 
+        Whitelist = 0, PublishList = 1, Group = 2, Open = 3,
     }
-    
+
     public delegate void PresencesChangedHandler (IDictionary<uint,SimplePresence> @presence);
-    
-    
+
+
     namespace Draft
     {
-    
+
         [Interface ("org.freedesktop.Telepathy.ChannelBundle.DRAFT")]
         public interface IChannelBundle
         {
-    
+
     #if USE_DBUS_PROPERTIES
             // Property
             string[] Interfaces { get; }
     #endif
-        
+
         }
 
     }
-    
+
     [Interface ("org.freedesktop.Telepathy.Channel")]
     public interface IChannel
     {
@@ -572,42 +572,42 @@ namespace Telepathy
         // Property
         string ChannelType { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string[] Interfaces { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint TargetHandle { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string TargetID { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         HandleType TargetHandleType { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         bool Requested { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint InitiatorHandle { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string InitiatorID { get; }
 #endif
-    
+
         event ClosedHandler Closed;
 
     }
@@ -621,7 +621,7 @@ namespace Telepathy
         // Property
         ObjectPath Bundle { get; }
 #endif
-    
+
     }
 
     [Interface ("org.freedesktop.Telepathy.Channel.Type.ContactList")]
@@ -663,36 +663,36 @@ namespace Telepathy
         public MediaStreamDirection Direction;
         public MediaStreamPendingSend PendingSendFlags;
     }
-    
+
     public enum MediaStreamType : uint
     {
-        Audio = 0, Video = 1, 
+        Audio = 0, Video = 1,
     }
-    
+
     public enum MediaStreamState : uint
     {
-        Disconnected = 0, Connecting = 1, Connected = 2, 
+        Disconnected = 0, Connecting = 1, Connected = 2,
     }
-    
+
     public enum MediaStreamDirection : uint
     {
-        None = 0, Send = 1, Receive = 2, Bidirectional = 3, 
+        None = 0, Send = 1, Receive = 2, Bidirectional = 3,
     }
-    
+
     [Flags]
     public enum MediaStreamPendingSend : uint
     {
         None = 0,
-        LocalSend = 1, RemoteSend = 2, 
+        LocalSend = 1, RemoteSend = 2,
     }
-    
+
     [Flags]
     public enum ChannelMediaCapabilities : uint
     {
         None = 0,
-        Audio = 1, Video = 2, NATTraversalSTUN = 4, NATTraversalGTalkP2P = 8, NATTraversalICEUDP = 16, 
+        Audio = 1, Video = 2, NATTraversalSTUN = 4, NATTraversalGTalkP2P = 8, NATTraversalICEUDP = 16,
     }
-    
+
     public delegate void StreamAddedHandler (uint @stream_id, uint @contact_handle, MediaStreamType @stream_type);
     public delegate void StreamDirectionChangedHandler (uint @stream_id, MediaStreamDirection @stream_direction, MediaStreamPendingSend @pending_flags);
     public delegate void StreamErrorHandler (uint @stream_id, MediaStreamError @error_code, string @message);
@@ -706,12 +706,12 @@ namespace Telepathy
         // Property
         bool InitialAudio { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         bool InitialVideo { get; }
 #endif
-    
+
     }
 
     [Interface ("org.freedesktop.Telepathy.Channel.Type.RoomList")]
@@ -728,7 +728,7 @@ namespace Telepathy
         // Property
         string Server { get; }
 #endif
-    
+
         event GotRoomsHandler GotRooms;
 
         event ListingRoomsHandler ListingRooms;
@@ -741,7 +741,7 @@ namespace Telepathy
         public string ChannelType;
         public IDictionary<string,object> Info;
     }
-    
+
     public delegate void GotRoomsHandler (RoomInfo[] @rooms);
     public delegate void ListingRoomsHandler (bool @listing);
     [Interface ("org.freedesktop.Telepathy.Channel.Type.Text")]
@@ -760,72 +760,72 @@ namespace Telepathy
         // Property
         bool anonymous { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         bool invite-only { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         uint limit { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         bool limited { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         bool moderated { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         string name { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         string description { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         string password { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         bool password-required { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         bool persistent { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         bool private { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         string subject { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         uint subject-contact { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         uint subject-timestamp { get; set; }
 #endif
-    
+
         event LostMessageHandler LostMessage;
 
         event ReceivedHandler Received;
@@ -845,24 +845,24 @@ namespace Telepathy
         public ChannelTextMessageFlags Flags;
         public string Text;
     }
-    
+
     public enum ChannelTextSendError : uint
     {
-        Unknown = 0, Offline = 1, InvalidContact = 2, PermissionDenied = 3, TooLong = 4, NotImplemented = 5, 
+        Unknown = 0, Offline = 1, InvalidContact = 2, PermissionDenied = 3, TooLong = 4, NotImplemented = 5,
     }
-    
+
     public enum ChannelTextMessageType : uint
     {
-        Normal = 0, Action = 1, Notice = 2, AutoReply = 3, DeliveryReport = 4, 
+        Normal = 0, Action = 1, Notice = 2, AutoReply = 3, DeliveryReport = 4,
     }
-    
+
     [Flags]
     public enum ChannelTextMessageFlags : uint
     {
         None = 0,
-        Truncated = 1, NonTextContent = 2, Scrollback = 4, Rescued = 8, 
+        Truncated = 1, NonTextContent = 2, Scrollback = 4, Rescued = 8,
     }
-    
+
     public delegate void LostMessageHandler ();
     public delegate void ReceivedHandler (uint @id, uint @timestamp, uint @sender, ChannelTextMessageType @type, ChannelTextMessageFlags @flags, string @text);
     public delegate void SendErrorHandler (ChannelTextSendError @error, uint @timestamp, ChannelTextMessageType @type, string @text);
@@ -914,40 +914,40 @@ namespace Telepathy
         public IDictionary<string,object> Parameters;
         public TubeState State;
     }
-    
+
     public struct DBusTubeMember
     {
         public uint Handle;
         public string UniqueName;
     }
-    
+
     public enum TubeType : uint
     {
-        DBus = 0, Stream = 1, 
+        DBus = 0, Stream = 1,
     }
-    
+
     public enum TubeState : uint
     {
-        LocalPending = 0, RemotePending = 1, Open = 2, 
+        LocalPending = 0, RemotePending = 1, Open = 2,
     }
-    
+
     public enum SocketAddressType : uint
     {
-        Unix = 0, AbstractUnix = 1, IPv4 = 2, IPv6 = 3, 
+        Unix = 0, AbstractUnix = 1, IPv4 = 2, IPv6 = 3,
     }
-    
+
     public enum SocketAccessControl : uint
     {
-        Localhost = 0, Port = 1, Netmask = 2, Credentials = 3, 
+        Localhost = 0, Port = 1, Netmask = 2, Credentials = 3,
     }
-    
+
     public delegate void NewTubeHandler (uint @id, uint @initiator, TubeType @type, string @service, IDictionary<string,object> @parameters, TubeState @state);
     public delegate void TubeStateChangedHandler (uint @id, TubeState @state);
     public delegate void TubeClosedHandler (uint @id);
     public delegate void DBusNamesChangedHandler (uint @id, DBusTubeMember[] @added, uint[] @removed);
     public delegate void StreamTubeNewConnectionHandler (uint @id, uint @handle);
-    
-    
+
+
     [Interface ("org.freedesktop.Telepathy.Channel.Type.StreamTube")]
     public interface IStreamTube : IChannel, ITube
     {
@@ -960,12 +960,12 @@ namespace Telepathy
         // Property
         string Service { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         IDictionary<SocketAddressType,SocketAccessControl[]> SupportedSocketTypes { get; }
 #endif
-    
+
         event NewRemoteConnectionHandler NewRemoteConnection;
         event NewLocalConnectionHandler NewLocalConnection;
         event ConnectionClosedHandler ConnectionClosed;
@@ -988,19 +988,19 @@ namespace Telepathy
         // Property
         string ServiceName { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         IDictionary<uint,string> DBusNames { get; }
 #endif
-    
+
         event DBusNamesChangedHandler DBusNamesChanged;
 
     }
 
     //already defined for StreamTube
     //public delegate void DBusNamesChangedHandler (IDictionary<uint,string> @added, uint[] @removed);
-    
+
     [Interface ("org.freedesktop.Telepathy.Channel.Type.FileTransfer")]
     public interface IFileTransfer : IChannel
     {
@@ -1013,57 +1013,57 @@ namespace Telepathy
         // Property
         FileTransferState State { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string ContentType { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string Filename { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         ulong Size { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         FileHashType ContentHashType { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string ContentHash { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string Description { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         long Date { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         IDictionary<SocketAddressType,SocketAccessControl[]> AvailableSocketTypes { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         ulong TransferredBytes { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         ulong InitialOffset { get; }
 #endif
-    
+
         event FileTransferStateChangedHandler FileTransferStateChanged;
 
         event TransferredBytesChangedHandler TransferredBytesChanged;
@@ -1074,31 +1074,31 @@ namespace Telepathy
 
     public enum FileTransferState : uint
     {
-        None = 0, Pending = 1, Accepted = 2, Open = 3, Completed = 4, Cancelled = 5, 
+        None = 0, Pending = 1, Accepted = 2, Open = 3, Completed = 4, Cancelled = 5,
     }
-    
+
     public enum FileTransferStateChangeReason : uint
     {
-        None = 0, Requested = 1, LocalStopped = 2, RemoteStopped = 3, LocalError = 4, RemoteError = 5, 
+        None = 0, Requested = 1, LocalStopped = 2, RemoteStopped = 3, LocalError = 4, RemoteError = 5,
     }
-    
+
     public enum FileHashType : uint
     {
-        None = 0, MD5 = 1, SHA1 = 2, SHA256 = 3, 
+        None = 0, MD5 = 1, SHA1 = 2, SHA256 = 3,
     }
-    
+
     public delegate void FileTransferStateChangedHandler (FileTransferState @state, FileTransferStateChangeReason @reason);
     public delegate void TransferredBytesChangedHandler (ulong @count);
     public delegate void InitialOffsetDefinedHandler (ulong @initialoffset);
-    
-    
+
+
     namespace Draft
     {
-    
+
         [Interface ("org.freedesktop.Telepathy.Channel.Type.ContactSearch.DRAFT")]
         public interface IContactSearch : IChannel
         {
-    
+
             // Method
             void Search (IDictionary<string,string> @terms);
             // Method
@@ -1109,37 +1109,37 @@ namespace Telepathy
             // Property
             ChannelContactSearchState SearchState { get; }
     #endif
-        
+
     #if USE_DBUS_PROPERTIES
             // Property
             uint Limit { get; }
     #endif
-        
+
     #if USE_DBUS_PROPERTIES
             // Property
             string[] AvailableSearchKeys { get; }
     #endif
-        
+
     #if USE_DBUS_PROPERTIES
             // Property
             string Server { get; }
     #endif
-        
+
             event SearchStateChangedHandler SearchStateChanged;
-    
+
             event SearchResultReceivedHandler SearchResultReceived;
-    
+
         }
-    
+
         public enum ChannelContactSearchState : uint
         {
-            NotStarted = 0, InProgress = 1, MoreAvailable = 2, Completed = 3, Failed = 4, 
+            NotStarted = 0, InProgress = 1, MoreAvailable = 2, Completed = 3, Failed = 4,
         }
-        
+
         public delegate void SearchStateChangedHandler (ChannelContactSearchState @state, string @error, IDictionary<string,object> @details);
         public delegate void SearchResultReceivedHandler (uint @contact, ContactInfoField[] @info);
     }
-    
+
     [Interface ("org.freedesktop.Telepathy.Channel.Interface.CallMerging")]
     public interface ICallMerging : IStreamedMedia
     {
@@ -1164,9 +1164,9 @@ namespace Telepathy
     public enum ChannelCallStateFlags : uint
     {
         None = 0,
-        Ringing = 1, Queued = 2, Held = 4, Forwarded = 8, 
+        Ringing = 1, Queued = 2, Held = 4, Forwarded = 8,
     }
-    
+
     public delegate void CallStateChangedHandler (uint @contact, ChannelCallStateFlags @state);
     [Interface ("org.freedesktop.Telepathy.Channel.Interface.ChatState")]
     public interface IChatState : IChannel
@@ -1180,9 +1180,9 @@ namespace Telepathy
 
     public enum ChannelChatState : uint
     {
-        Gone = 0, Inactive = 1, Active = 2, Paused = 3, Composing = 4, 
+        Gone = 0, Inactive = 1, Active = 2, Paused = 3, Composing = 4,
     }
-    
+
     public delegate void ChatStateChangedHandler (uint @contact, ChannelChatState @state);
     [Interface ("org.freedesktop.Telepathy.Channel.Interface.Destroyable")]
     public interface IDestroyable : IChannel
@@ -1204,9 +1204,9 @@ namespace Telepathy
 
     public enum DTMFEvent : byte
     {
-        Digit0 = 0, Digit1 = 1, Digit2 = 2, Digit3 = 3, Digit4 = 4, Digit5 = 5, Digit6 = 6, Digit7 = 7, Digit8 = 8, Digit9 = 9, Asterisk = 10, Hash = 11, LetterA = 12, LetterB = 13, LetterC = 14, LetterD = 15, 
+        Digit0 = 0, Digit1 = 1, Digit2 = 2, Digit3 = 3, Digit4 = 4, Digit5 = 5, Digit6 = 6, Digit7 = 7, Digit8 = 8, Digit9 = 9, Asterisk = 10, Hash = 11, LetterA = 12, LetterB = 13, LetterC = 14, LetterD = 15,
     }
-    
+
     [Interface ("org.freedesktop.Telepathy.Channel.Interface.Group")]
     public interface IGroup : IChannel
     {
@@ -1237,32 +1237,32 @@ namespace Telepathy
         // Property
         ChannelGroupFlags GroupFlags { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         IDictionary<uint,uint> HandleOwners { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         LocalPendingInfo[] LocalPendingMembers { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint[] Members { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint[] RemotePendingMembers { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint SelfHandle { get; }
 #endif
-    
+
         event HandleOwnersChangedHandler HandleOwnersChanged;
 
         event SelfHandleChangedHandler SelfHandleChanged;
@@ -1282,19 +1282,19 @@ namespace Telepathy
         public ChannelGroupChangeReason Reason;
         public string Message;
     }
-    
+
     public enum ChannelGroupChangeReason : uint
     {
-        None = 0, Offline = 1, Kicked = 2, Busy = 3, Invited = 4, Banned = 5, Error = 6, InvalidContact = 7, NoAnswer = 8, Renamed = 9, PermissionDenied = 10, Separated = 11, 
+        None = 0, Offline = 1, Kicked = 2, Busy = 3, Invited = 4, Banned = 5, Error = 6, InvalidContact = 7, NoAnswer = 8, Renamed = 9, PermissionDenied = 10, Separated = 11,
     }
-    
+
     [Flags]
     public enum ChannelGroupFlags : uint
     {
         None = 0,
-        CanAdd = 1, CanRemove = 2, CanRescind = 4, MessageAdd = 8, MessageRemove = 16, MessageAccept = 32, MessageReject = 64, MessageRescind = 128, ChannelSpecificHandles = 256, OnlyOneGroup = 512, HandleOwnersNotAvailable = 1024, Properties = 2048, MembersChangedDetailed = 4096, MessageDepart = 8192, 
+        CanAdd = 1, CanRemove = 2, CanRescind = 4, MessageAdd = 8, MessageRemove = 16, MessageAccept = 32, MessageReject = 64, MessageRescind = 128, ChannelSpecificHandles = 256, OnlyOneGroup = 512, HandleOwnersNotAvailable = 1024, Properties = 2048, MembersChangedDetailed = 4096, MessageDepart = 8192,
     }
-    
+
     public delegate void HandleOwnersChangedHandler (IDictionary<uint,uint> @added, uint[] @removed);
     public delegate void GroupFlagsChangedHandler (ChannelGroupFlags @added, ChannelGroupFlags @removed);
     public delegate void MembersChangedHandler (string @message, uint[] @added, uint[] @removed, uint[] @local_pending, uint[] @remote_pending, uint @actor, ChannelGroupChangeReason @reason);
@@ -1313,28 +1313,28 @@ namespace Telepathy
 
     public enum LocalHoldState : uint
     {
-        Unheld = 0, Held = 1, PendingHold = 2, PendingUnhold = 3, 
+        Unheld = 0, Held = 1, PendingHold = 2, PendingUnhold = 3,
     }
-    
+
     public enum LocalHoldStateReason : uint
     {
-        None = 0, Requested = 1, ResourceNotAvailable = 2, 
+        None = 0, Requested = 1, ResourceNotAvailable = 2,
     }
-    
+
     public delegate void HoldStateChangedHandler (LocalHoldState @holdstate, LocalHoldStateReason @reason);
-    
-    
+
+
     namespace Draft
     {
-    
+
         [Interface ("org.freedesktop.Telepathy.Channel.Interface.HTML.DRAFT")]
         public interface IHTML : IText, IMessages
         {
-    
+
         }
 
     }
-    
+
     [Interface ("org.freedesktop.Telepathy.Channel.Interface.Password")]
     public interface IPassword : IChannel
     {
@@ -1351,9 +1351,9 @@ namespace Telepathy
     public enum ChannelPasswordFlags : uint
     {
         None = 0,
-        Provide = 8, 
+        Provide = 8,
     }
-    
+
     public delegate void PasswordFlagsChangedHandler (ChannelPasswordFlags @added, ChannelPasswordFlags @removed);
     [Interface ("org.freedesktop.Telepathy.Channel.Interface.MediaSignalling")]
     public interface IMediaSignalling : IChannel, IStreamedMedia
@@ -1365,22 +1365,22 @@ namespace Telepathy
         // Property
         string nat-traversal { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         string stun-server { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         short stun-port { get; set; }
 #endif
-    
+
 #if USE_TP_PROPERTIES
         // Property
         string gtalk-p2p-relay-token { get; set; }
 #endif
-    
+
         event NewSessionHandlerHandler NewSessionHandler;
 
     }
@@ -1390,7 +1390,7 @@ namespace Telepathy
         public ObjectPath SessionHandler;
         public string MediaSessionType;
     }
-    
+
     public delegate void NewSessionHandlerHandler (ObjectPath @session_handler, string @session_type);
     [Interface ("org.freedesktop.Telepathy.Channel.Interface.MediaSignalling.FUTURE")]
     public interface IMediaSignallingFuture : IChannel, IStreamedMedia, IMediaSignalling
@@ -1400,27 +1400,27 @@ namespace Telepathy
         // Property
         bool ICETransportAvailable { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         bool RawUDPTransportAvailable { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         bool GTalkP2PTransportAvailable { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         bool WLM85TransportAvailable { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         bool WLM2009TransportAvailable { get; }
 #endif
-    
+
     }
 
     [Interface ("org.freedesktop.Telepathy.Channel.Interface.Messages")]
@@ -1435,22 +1435,22 @@ namespace Telepathy
         // Property
         string[] SupportedContentTypes { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         MessagePartSupportFlags MessagePartSupportFlags { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         IDictionary<string,object>[] PendingMessages { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         DeliveryReportingSupportFlags DeliveryReportingSupport { get; }
 #endif
-    
+
         event MessageSentHandler MessageSent;
 
         event PendingMessagesRemovedHandler PendingMessagesRemoved;
@@ -1461,34 +1461,34 @@ namespace Telepathy
 
     public enum DeliveryStatus : uint
     {
-        Unknown = 0, Delivered = 1, TemporarilyFailed = 2, PermanentlyFailed = 3, Accepted = 4, 
+        Unknown = 0, Delivered = 1, TemporarilyFailed = 2, PermanentlyFailed = 3, Accepted = 4,
     }
-    
+
     [Flags]
     public enum MessagePartSupportFlags : uint
     {
         None = 0,
-        OneAttachment = 1, MultipleAttachments = 2, 
+        OneAttachment = 1, MultipleAttachments = 2,
     }
-    
+
     [Flags]
     public enum MessageSendingFlags : uint
     {
         None = 0,
-        ReportDelivery = 1, 
+        ReportDelivery = 1,
     }
-    
+
     [Flags]
     public enum DeliveryReportingSupportFlags : uint
     {
         None = 0,
-        ReceiveFailures = 1, ReceiveSuccesses = 2, 
+        ReceiveFailures = 1, ReceiveSuccesses = 2,
     }
-    
+
     public delegate void MessageSentHandler (IDictionary<string,object>[] @content, MessageSendingFlags @flags, string @message_token);
     public delegate void PendingMessagesRemovedHandler (uint[] @message_ids);
     public delegate void MessageReceivedHandler (IDictionary<string,object>[] @message);
-    
+
 
     [Interface ("org.freedesktop.Telepathy.Channel.Interface.Tube")]
     public interface ITube : IChannel
@@ -1498,25 +1498,25 @@ namespace Telepathy
         // Property
         IDictionary<string,object> Parameters { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         TubeChannelState State { get; }
 #endif
-    
+
         event TubeChannelStateChangedHandler TubeChannelStateChanged;
 
     }
 
     public enum TubeChannelState : uint
     {
-        LocalPending = 0, RemotePending = 1, Open = 2, NotOffered = 3, 
+        LocalPending = 0, RemotePending = 1, Open = 2, NotOffered = 3,
     }
-    
+
     public delegate void TubeChannelStateChangedHandler (TubeChannelState @state);
 
-    
-                
+
+
     [Interface ("org.freedesktop.Telepathy.Media.SessionHandler")]
     public interface ISessionHandler
     {
@@ -1562,22 +1562,22 @@ namespace Telepathy
         // Property
         SocketAddressIP[] STUNServers { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         bool CreatedLocally { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string NATTraversal { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         IDictionary<string,object>[] RelayInfo { get; }
 #endif
-    
+
         event AddRemoteCandidateHandler AddRemoteCandidate;
 
         event CloseHandler Close;
@@ -1607,13 +1607,13 @@ namespace Telepathy
         public string Address;
         public short Port;
     }
-        
+
     public struct MediaStreamHandlerCandidate
     {
         public string Name;
         public MediaStreamHandlerTransport[] Transports;
     }
-    
+
     public struct MediaStreamHandlerTransport
     {
         public uint ComponentNumber;
@@ -1627,7 +1627,7 @@ namespace Telepathy
         public string Username;
         public string Password;
     }
-    
+
     public struct MediaStreamHandlerCodec
     {
         public uint CodecID;
@@ -1637,22 +1637,22 @@ namespace Telepathy
         public uint NumberOfChannels;
         public IDictionary<string,string> Parameters;
     }
-    
+
     public enum MediaStreamError : uint
     {
-        Unknown = 0, EOS = 1, 
+        Unknown = 0, EOS = 1,
     }
-    
+
     public enum MediaStreamBaseProto : uint
     {
-        UDP = 0, TCP = 1, 
+        UDP = 0, TCP = 1,
     }
-    
+
     public enum MediaStreamTransportType : uint
     {
-        Local = 0, Derived = 1, Relay = 2, 
+        Local = 0, Derived = 1, Relay = 2,
     }
-    
+
     public delegate void AddRemoteCandidateHandler (string @candidate_id, MediaStreamHandlerTransport[] @transports);
     public delegate void CloseHandler ();
     public delegate void RemoveRemoteCandidateHandler (string @candidate_id);
@@ -1664,7 +1664,7 @@ namespace Telepathy
     public delegate void StartTelephonyEventHandler (byte @event);
     public delegate void StopTelephonyEventHandler ();
     public delegate void SetStreamHeldHandler (bool @held);
-            
+
     namespace Draft
     {
         [Interface ("org.freedesktop.Telepathy.Debug.DRAFT")]
@@ -1690,10 +1690,10 @@ namespace Telepathy
         public enum DebugLevel : uint {
             Error = 0, Critical = 1, Warning = 2, Message = 3, Info = 4, Debug = 5
         };
-            
+
         public delegate void NewDebugMessageHandler (double @date, string @domain, DebugLevel @level, string @message);
     }
-                
+
     [Interface ("org.freedesktop.Telepathy.AccountManager")]
     public interface IAccountManager
     {
@@ -1704,17 +1704,17 @@ namespace Telepathy
         // Property
         string[] Interfaces { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         ObjectPath[] ValidAccounts { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         ObjectPath[] InvalidAccounts { get; }
 #endif
-    
+
         event AccountRemovedHandler AccountRemoved;
 
         event AccountValidityChangedHandler AccountValidityChanged;
@@ -1723,7 +1723,7 @@ namespace Telepathy
 
     public delegate void AccountRemovedHandler (ObjectPath @account);
     public delegate void AccountValidityChangedHandler (ObjectPath @account, bool @valid);
-    
+
     [Interface ("org.freedesktop.Telepathy.Account")]
     public interface IAccount
     {
@@ -1736,82 +1736,82 @@ namespace Telepathy
         // Property
         string[] Interfaces { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string DisplayName { get; set; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string Icon { get; set; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         bool Valid { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         bool Enabled { get; set; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string Nickname { get; set; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         IDictionary<string,object> Parameters { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         SimplePresence AutomaticPresence { get; set; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         bool ConnectAutomatically { get; set; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         ObjectPath Connection { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint ConnectionStatus { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         uint ConnectionStatusReason { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         SimplePresence CurrentPresence { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         SimplePresence RequestedPresence { get; set; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string NormalizedName { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         bool HasBeenOnline { get; }
 #endif
-    
+
         event RemovedHandler Removed;
 
         event AccountPropertyChangedHandler AccountPropertyChanged;
@@ -1820,7 +1820,7 @@ namespace Telepathy
 
     public delegate void RemovedHandler ();
     public delegate void AccountPropertyChangedHandler (IDictionary<string,object> @properties);
-    
+
     [Interface ("org.freedesktop.Telepathy.Account.Interface.Avatar")]
     public interface IAvatar : IAccount
     {
@@ -1829,7 +1829,7 @@ namespace Telepathy
         // Property
         Avatar Avatar { get; set; }
 #endif
-    
+
         event AvatarChangedHandler AvatarChanged;
 
     }
@@ -1839,9 +1839,9 @@ namespace Telepathy
         public byte[] AvatarData;
         public string MIMEType;
     }
-    
+
     public delegate void AvatarChangedHandler ();
-    
+
     [Interface ("org.freedesktop.Telepathy.ChannelDispatcher")]
     public interface IChannelDispatcher
     {
@@ -1854,7 +1854,7 @@ namespace Telepathy
         // Property
         string[] Interfaces { get; }
 #endif
-    
+
     }
 
     [Interface ("org.freedesktop.Telepathy.ChannelDispatcher.Interface.OperationList")]
@@ -1865,7 +1865,7 @@ namespace Telepathy
         // Property
         DispatchOperationDetails[] DispatchOperations { get; }
 #endif
-    
+
         event NewDispatchOperationHandler NewDispatchOperation;
 
         event DispatchOperationFinishedHandler DispatchOperationFinished;
@@ -1877,10 +1877,10 @@ namespace Telepathy
         public ObjectPath ChannelDispatchOperation;
         public IDictionary<string,object> Properties;
     }
-    
+
     public delegate void NewDispatchOperationHandler (ObjectPath @dispatch_operation, IDictionary<string,object> @properties);
     public delegate void DispatchOperationFinishedHandler (ObjectPath @dispatch_operation);
-    
+
     [Interface ("org.freedesktop.Telepathy.ChannelDispatchOperation")]
     public interface IChannelDispatchOperation
     {
@@ -1893,27 +1893,27 @@ namespace Telepathy
         // Property
         string[] Interfaces { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         ObjectPath Connection { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         ObjectPath Account { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         ChannelDetails[] Channels { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string[] PossibleHandlers { get; }
 #endif
-    
+
         event ChannelLostHandler ChannelLost;
 
         event FinishedHandler Finished;
@@ -1922,7 +1922,7 @@ namespace Telepathy
 
     public delegate void ChannelLostHandler (ObjectPath @channel, string @error, string @message);
     public delegate void FinishedHandler ();
-    
+
     [Interface ("org.freedesktop.Telepathy.ChannelRequest")]
     public interface IChannelRequest
     {
@@ -1935,27 +1935,27 @@ namespace Telepathy
         // Property
         ObjectPath Account { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         long UserActionTime { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string PreferredHandler { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         IDictionary<string,object>[] Requests { get; }
 #endif
-    
+
 #if USE_DBUS_PROPERTIES
         // Property
         string[] Interfaces { get; }
 #endif
-    
+
         event FailedHandler Failed;
 
         event SucceededHandler Succeeded;
@@ -1964,63 +1964,63 @@ namespace Telepathy
 
     public delegate void FailedHandler (string @error, string @message);
     public delegate void SucceededHandler ();
-        
-    
+
+
     namespace Client
     {
         [Interface ("org.freedesktop.Telepathy.Client")]
         public interface IClient
         {
-    
+
     #if USE_DBUS_PROPERTIES
             // Property
             string[] Interfaces { get; }
     #endif
-        
+
         }
-    
+
         [Interface ("org.freedesktop.Telepathy.Client.Observer")]
         public interface IObserver : IClient
         {
-    
+
             // Method
             void ObserveChannels (ObjectPath @account, ObjectPath @connection, ChannelDetails[] @channels, ObjectPath @dispatch_operation, ObjectPath[] @requests_satisfied, IDictionary<string,object> @observer_info);
     #if USE_DBUS_PROPERTIES
             // Property
             IDictionary<string,object>[] ObserverChannelFilter { get; }
     #endif
-        
+
         }
-    
+
         [Interface ("org.freedesktop.Telepathy.Client.Approver")]
         public interface IApprover : IClient
         {
-    
+
             // Method
             void AddDispatchOperation (ChannelDetails[] @channels, ObjectPath @dispatchoperation, IDictionary<string,object> @properties);
     #if USE_DBUS_PROPERTIES
             // Property
             IDictionary<string,object>[] ApproverChannelFilter { get; }
     #endif
-        
+
         }
-    
+
         [Interface ("org.freedesktop.Telepathy.Client.Handler")]
         public interface IHandler : IClient
         {
-    
+
             // Method
             void HandleChannels (ObjectPath @account, ObjectPath @connection, ChannelDetails[] @channels, ObjectPath[] @requests_satisfied, ulong @user_action_time, IDictionary<string,object> @handler_info);
     #if USE_DBUS_PROPERTIES
             // Property
             IDictionary<string,object>[] HandlerChannelFilter { get; }
     #endif
-        
+
     #if USE_DBUS_PROPERTIES
             // Property
             bool BypassApproval { get; }
     #endif
-        
+
     #if USE_DBUS_PROPERTIES
             // Property
             ObjectPath[] HandledChannels { get; }
@@ -2030,21 +2030,21 @@ namespace Telepathy
             // Property
             string[] Capabilities { get; }
     #endif
-        
+
         }
-    
+
         [Interface ("org.freedesktop.Telepathy.Client.Interface.Requests")]
         public interface IRequests : IClient, IHandler
         {
-    
+
             // Method
             void AddRequest (ObjectPath @request, IDictionary<string,object> @properties);
             // Method
             void RemoveRequest (ObjectPath @request, string @error, string @message);
         }
-        
+
     } // end Client namespace
-                
+
     [Interface ("org.freedesktop.Telepathy.ChannelHandler")]
     public interface IChannelHandler
     {
@@ -2076,26 +2076,26 @@ namespace Telepathy
         public string Signature;
         public PropertyFlags Flags;
     }
-    
+
     public struct PropertyFlagsChange
     {
         public uint PropertyID;
         public uint NewFlags;
     }
-    
+
     public struct PropertyValue
     {
         public uint Identifier;
         public object Value;
     }
-    
+
     [Flags]
     public enum PropertyFlags : uint
     {
         None = 0,
-        Read = 1, Write = 2, 
+        Read = 1, Write = 2,
     }
-    
+
     public delegate void PropertiesChangedHandler (PropertyValue[] @properties);
     public delegate void PropertyFlagsChangedHandler (PropertyFlagsChange[] @properties);
 }

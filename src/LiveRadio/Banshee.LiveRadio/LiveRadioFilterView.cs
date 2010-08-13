@@ -91,7 +91,7 @@ namespace Banshee.LiveRadio
             stringlist.Add (new Genre(AddinManager.CurrentLocalizer.GetString ("Loading...")));
             genre_view.SetModel (new GenreListModel (stringlist));
             genre_view.Model.Selection.FocusChanged += OnViewGenreSelected;
-            
+
             Label query_label = new Label (AddinManager.CurrentLocalizer.GetString ("Choose By Query"));
             HBox query_box = new HBox ();
             query_box.BorderWidth = 1;
@@ -101,7 +101,7 @@ namespace Banshee.LiveRadio
             query_button.Clicked += OnViewQuerySent;
             query_box.PackStart (query_input, true, true, 5);
             query_box.PackStart (query_button, false, true, 5);
-            
+
             this.PackStart (SetupView (genre_view), true, true, 0);
             this.PackStart (query_label, false, true, 0);
             this.PackStart (query_box, false, true, 5);
@@ -191,17 +191,17 @@ namespace Banshee.LiveRadio
         private ScrolledWindow SetupView (Widget view)
         {
             ScrolledWindow window = null;
-            
+
             if (ApplicationContext.CommandLine.Contains ("smooth-scroll")) {
                 window = new SmoothScrolledWindow ();
             } else {
                 window = new ScrolledWindow ();
             }
-            
+
             window.Add (view);
             window.HscrollbarPolicy = PolicyType.Automatic;
             window.VscrollbarPolicy = PolicyType.Automatic;
-            
+
             return window;
         }
 

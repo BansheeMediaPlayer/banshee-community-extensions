@@ -1,9 +1,9 @@
-//  
+//
 // Author:
 //   Christian Martellini <christian.martellini@gmail.com>
 //
 // Copyright (C) 2009 Christian Martellini
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
@@ -22,7 +22,7 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
+//
 
 using System.Web;
 using System.Text.RegularExpressions;
@@ -32,7 +32,7 @@ namespace Banshee.Lyrics.Sources
 {
     public class Lyrc : LyricsWebSource
     {
-    
+
         public Lyrc ()
         {
         	base.regexLyric =
@@ -44,42 +44,42 @@ namespace Banshee.Lyrics.Sources
                 new Regex ("Suggestions :(.*?)<br><br> If none is your song <br>",
                            RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
-        
+
         public override string Name {
             get { return "Lyrc"; }
         }
-        
+
         public override string Url {
             get { return "http://lyrc.com.ar"; }
         }
-        
+
         public override string GetLyrics (string artist, string title)
         {
             string lyric = base.GetLyrics (artist, title);
-            
-            /*HACK: on Lyrc lyrics and suggestions share the same html code. 
+
+            /*HACK: on Lyrc lyrics and suggestions share the same html code.
                Sometimes text downloaded as a lyric could be a suggestion. */
             if (GetSuggestions (artist, title) != null) {
                 return null;
             }
 
             /* HACK: Sometimes lyrics is''t found but an invalid content were parsed in lyrc and autolyrics */
-            if (lyric != null && 
+            if (lyric != null &&
                 (lyric.Contains ("<b> Nothing found :</b>") || lyric.Contains ("</addalyric/?tema=:"))) {
                 return null;
             }
             return lyric;
         }
-        
+
         protected override string GetLyricUrl (string artist, string title)
         {
             string url_artist = HttpUtility.UrlEncode (base.CleanArtistName (artist));
             string url_song_title = HttpUtility.UrlEncode (base.CleanSongTitle (title));
             string url = string.Format (this.Url + "/tema1en.php?artist={0}&songname={1}", url_artist, url_song_title);
-            
+
             return url;
         }
-        
+
         protected override string GetSuggestionUrl (string artist, string title)
         {
             if (artist == null) {

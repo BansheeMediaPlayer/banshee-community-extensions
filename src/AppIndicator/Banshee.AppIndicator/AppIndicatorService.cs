@@ -3,11 +3,13 @@
 //
 // Authors:
 //   Sense Hofstede <qense@ubuntu.com>
+//   Chow Loong Jin <hyperair@ubuntu.com>
 //   Aaron Bockover <abockover@novell.com>
 //   Sebastian Dröge <slomo@circular-chaos.org>
 //   Alexander Hixon <hixon.alexander@mediati.org>
 //
 // Copyright (C) 2010 Sense Hofstede
+// Copyright (C) 2010 Chow Loong Jin
 // Copyright (C) 2005-2008 Novell, Inc.
 // Copyright (C) 2006-2007 Sebastian Dröge
 //
@@ -38,12 +40,14 @@ using AppIndicator;
 using Gtk;
 using Notifications;
 
+using Hyena;
 using Banshee.Base;
 using Banshee.Gui;
 using Banshee.ServiceStack;
 using Banshee.Collection;
 using Banshee.Collection.Gui;
 using Banshee.Configuration;
+using Banshee.IO;
 using Banshee.MediaEngine;
 
 namespace Banshee.AppIndicator
@@ -51,6 +55,7 @@ namespace Banshee.AppIndicator
     public class AppIndicatorService : IExtensionService
     {
         private BansheeActionGroup actions;
+        private bool? actions_supported;
         private ArtworkManager artwork_manager_service;
         private Notification current_nf;
         private TrackInfo current_track;
@@ -74,8 +79,25 @@ namespace Banshee.AppIndicator
             elements_service = ServiceManager.Get<GtkElementsService> ();
             interface_action_service = ServiceManager.Get<InterfaceActionService> ();
 
+            var notif_addin = AddinManager.Registry.GetAddin("Banshee.NotificationArea");
+
+            if (notif_addin != null && notif_addin.Enabled) {
+                Log.Debug("NotificationArea conflicts with ApplicationIndicator, disabling NotificationArea");
+                notif_addin.Enabled = false;
+            }
+
+            AddinManager.AddinLoaded += OnAddinLoaded;
+
             if (!ServiceStartup ()) {
                 ServiceManager.ServiceStarted += OnServiceStarted;
+            }
+        }
+
+        void OnAddinLoaded (object sender, AddinEventArgs args)
+        {
+            if (args.AddinId == "Banshee.NotificationArea") {
+                Log.Debug("ApplicationIndicator conflicts with NotificationArea, disabling ApplicationIndicator");
+                AddinManager.Registry.GetAddin("Banshee.AppIndicator").Enabled = false;
             }
         }
 
@@ -171,13 +193,34 @@ namespace Banshee.AppIndicator
             elements_service = null;
             interface_action_service = null;
 
+            AddinManager.AddinLoaded -= OnAddinLoaded;
+
             disposed = true;
+        }
+
+        private bool ActionsSupported {
+            get {
+                if (!actions_supported.HasValue) {
+                    actions_supported = Notifications.Global.Capabilities != null &&
+                        Array.IndexOf (Notifications.Global.Capabilities, "actions") > -1;
+                }
+
+                return actions_supported.Value;
+            }
         }
 
         private bool OnPrimaryWindowClose ()
         {
             CloseWindow (null, null);
             return true;
+        }
+
+        private void OnPrimaryWindowMapped (object o, MapEventArgs args)
+        {
+            ToggleAction showhideaction = (ToggleAction) actions["ShowHideAction"];
+            if (showhideaction.Active == false) {
+                showhideaction.Active = true;
+            }
         }
 
         private void CloseWindow (object o, EventArgs args)
@@ -210,13 +253,13 @@ namespace Banshee.AppIndicator
                                                       "banshee-panel" :
                                                       Banshee.ServiceStack.Application.IconName,
                                                       Category.ApplicationStatus);
-    
+
                 // Load the menu
                 Menu menu = (Menu) interface_action_service.UIManager.GetWidget("/AppIndicatorTrayMenu");
                 menu.Show ();
-    
+
                 indicator.Menu = menu;
-    
+
                 // Show the tray icon
                 indicator.Status = Status.Active;
 
@@ -235,24 +278,20 @@ namespace Banshee.AppIndicator
         {
             switch (args.Event) {
                 case PlayerEvent.StartOfStream:
-                    if (current_nf != null) {
-                        current_nf.Close ();
-                        current_nf = null;
-                    }
-                    current_track = ServiceManager.PlayerEngine.CurrentTrack;
-                    ShowTrackNotification ();
-                    break;
                 case PlayerEvent.TrackInfoUpdated:
                     current_track = ServiceManager.PlayerEngine.CurrentTrack;
                     ShowTrackNotification ();
                     break;
                 case PlayerEvent.EndOfStream:
-                    if (current_nf != null) {
-                        current_nf.Close ();
-                        current_nf = null;
-                    }
                     current_track = null;
                     break;
+            }
+        }
+
+        private void OnSongSkipped (object o, ActionArgs args)
+        {
+            if (args.Action == "skip-song") {
+                ServiceManager.PlaybackController.Next ();
             }
         }
 
@@ -308,35 +347,55 @@ namespace Banshee.AppIndicator
                 }
             }
 
+            bool is_notification_daemon = false;
+            try {
+                var name = Notifications.Global.ServerInformation.Name;
+                is_notification_daemon = name == "notification-daemon" || name == "Notification Daemon";
+            } catch {
+                // This will be reached if no notification daemon is running
+                return;
+            }
+
+
             string message = GetByFrom (
                 current_track.ArtistName, current_track.DisplayArtistName,
                 current_track.AlbumTitle, current_track.DisplayAlbumTitle);
 
-            Gdk.Pixbuf image = null;
+            string image = null;
 
-            if (artwork_manager_service != null) {
-                image = artwork_manager_service.LookupPixbuf (current_track.ArtworkId);
-            }
+            image = is_notification_daemon
+                ? CoverArtSpec.GetPathForSize (current_track.ArtworkId, icon_size)
+                : CoverArtSpec.GetPath (current_track.ArtworkId);
 
-            if (image == null) {
-                image = IconThemeUtils.LoadIcon (48, "audio-x-generic");
-                if (image != null) {
-                    image.ScaleSimple (icon_size, icon_size, Gdk.InterpType.Bilinear);
+            if (!File.Exists (new SafeUri(image))) {
+                if (artwork_manager_service != null) {
+                    // artwork does not exist, try looking up the pixbuf to trigger scaling or conversion
+                    Gdk.Pixbuf tmp_pixbuf = is_notification_daemon
+                        ? artwork_manager_service.LookupScalePixbuf (current_track.ArtworkId, icon_size)
+                        : artwork_manager_service.LookupPixbuf (current_track.ArtworkId);
+
+                    if (tmp_pixbuf == null) {
+                        image = "audio-x-generic";
+                    } else {
+                        tmp_pixbuf.Dispose ();
+                    }
                 }
             }
-
             try {
                 if (current_nf == null) {
                     current_nf = new Notification (current_track.DisplayTrackTitle, message, image);
                 } else {
                     current_nf.Summary = current_track.DisplayTrackTitle;
                     current_nf.Body = message;
-                    current_nf.Icon = image;
+                    current_nf.IconName = image;
                 }
 
                 current_nf.Urgency = Urgency.Low;
                 current_nf.Timeout = 4500;
 
+                if (!current_track.IsLive && ActionsSupported && interface_action_service.PlaybackActions["NextAction"].Sensitive) {
+                    current_nf.AddAction ("skip-song", AddinManager.CurrentLocalizer.GetString ("Skip this item"), OnSongSkipped);
+                }
                 current_nf.Show ();
 
             } catch (Exception e) {
@@ -349,6 +408,7 @@ namespace Banshee.AppIndicator
             if (elements_service.PrimaryWindowClose == null) {
                 elements_service.PrimaryWindowClose = OnPrimaryWindowClose;
             }
+            elements_service.PrimaryWindow.MapEvent += OnPrimaryWindowMapped;
         }
 
         private void UnregisterCloseHandler ()
@@ -356,6 +416,7 @@ namespace Banshee.AppIndicator
             if (elements_service.PrimaryWindowClose != null) {
                 elements_service.PrimaryWindowClose = null;
             }
+            elements_service.PrimaryWindow.MapEvent -= OnPrimaryWindowMapped;
         }
 
         public bool PrimaryWindowVisible {

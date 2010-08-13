@@ -4,7 +4,7 @@
 // Author:
 //   Aaron Bockover <aaron@aaronbock.net>
 //   James Wilcox   <snorp@snorp.net>
-//   Neil Loknath   <neil.loknath@gmail.com             
+//   Neil Loknath   <neil.loknath@gmail.com
 //
 // Copyright (C) 2005-2006 Novell, Inc.
 // Copyright (C) 2009 Neil Loknath
@@ -44,10 +44,10 @@ namespace Banshee.Web
     public abstract class BaseWebServer
     {
         protected Socket server;
-        
+
         protected readonly ArrayList clients = new ArrayList();
-              
-        public BaseWebServer () 
+
+        public BaseWebServer ()
         {
         }
 
@@ -79,7 +79,7 @@ namespace Banshee.Web
         public AddressFamily AddressFamily {
             get { return end_point.AddressFamily; }
         }
-            
+
         private EndPoint end_point = new IPEndPoint (IPAddress.Any, 8089);
         protected EndPoint EndPoint {
             get { return end_point; }
@@ -90,7 +90,7 @@ namespace Banshee.Web
                 if (running) {
                     throw new InvalidOperationException ("Cannot set EndPoint while running.");
                 }
-                end_point = value; 
+                end_point = value;
             }
         }
 
@@ -101,10 +101,10 @@ namespace Banshee.Web
                 if (running) {
                     throw new InvalidOperationException ("Cannot set DefaultEndPoint while running.");
                 }
-                default_end_point = value; 
+                default_end_point = value;
             }
         }
-        
+
         private bool running;
         public bool Running {
             get { return running; }
@@ -129,17 +129,17 @@ namespace Banshee.Web
         {
             Start (10);
         }
-        
-        public virtual void Start (int backlog) 
+
+        public virtual void Start (int backlog)
         {
             if (backlog < 0) {
                 throw new ArgumentOutOfRangeException ("backlog");
             }
-            
+
             if (running) {
                 return;
             }
-            
+
             server = new Socket (this.EndPoint.AddressFamily, SocketType.Stream, ProtocolType.IP);
             try {
                 server.Bind (this.EndPoint);
@@ -151,7 +151,7 @@ namespace Banshee.Web
                     throw;
                 }
             }
-            
+
             server.Listen (backlog);
 
             running = true;
@@ -161,10 +161,10 @@ namespace Banshee.Web
             thread.Start ();
         }
 
-        public virtual void Stop () 
+        public virtual void Stop ()
         {
             running = false;
-            
+
             if (server != null) {
                 server.Close ();
                 server = null;
@@ -174,7 +174,7 @@ namespace Banshee.Web
                 client.Close ();
             }
         }
-        
+
         private void ServerLoop ()
         {
             while (true) {
@@ -182,7 +182,7 @@ namespace Banshee.Web
                     if (!running) {
                         break;
                     }
-                    
+
                     Socket client = server.Accept ();
                     clients.Add (client);
                     ThreadPool.QueueUserWorkItem (HandleConnection, client);
@@ -191,8 +191,8 @@ namespace Banshee.Web
                 }
             }
         }
-        
-        private void HandleConnection (object o) 
+
+        private void HandleConnection (object o)
         {
             Socket client = (Socket) o;
 
@@ -223,26 +223,26 @@ namespace Banshee.Web
 
             return offset;
         }
-        
-        protected virtual bool HandleRequest (Socket client) 
+
+        protected virtual bool HandleRequest (Socket client)
         {
             if (client == null || !client.Connected) {
                 return false;
             }
-            
+
             bool keep_connection = true;
-            
+
             using (StreamReader reader = new StreamReader(new NetworkStream(client, false))) {
 
                 string request = reader.ReadLine ();
-                
+
                 if (request == null) {
                     return false;
                 }
 
                 List <string> body = new List <string> ();
                 string line = null;
-                
+
                 do {
                     line = reader.ReadLine ();
                     if (line.ToLower () == "connection: close") {
@@ -252,7 +252,7 @@ namespace Banshee.Web
                 } while (line != String.Empty && line != null);
 
                 string [] split_request = request.Split ();
-                
+
                 if (split_request.Length < 3) {
                     WriteResponse (client, HttpStatusCode.BadRequest, "Bad Request");
                     return keep_connection;
@@ -275,15 +275,15 @@ namespace Banshee.Web
         {
             HandleValidRequest (client, split_request, null);
         }
-        
+
         protected abstract void HandleValidRequest(Socket client, string [] split_request, string [] request_body);
-            
-        protected void WriteResponse (Socket client, HttpStatusCode code, string body) 
+
+        protected void WriteResponse (Socket client, HttpStatusCode code, string body)
         {
             WriteResponse (client, code, Encoding.UTF8.GetBytes (body));
         }
-        
-        protected virtual void WriteResponse (Socket client, HttpStatusCode code, byte [] body) 
+
+        protected virtual void WriteResponse (Socket client, HttpStatusCode code, byte [] body)
         {
             if (client == null || !client.Connected) {
                 return;
@@ -291,19 +291,19 @@ namespace Banshee.Web
             else if (body == null) {
                 throw new ArgumentNullException ("body");
             }
-            
+
             string headers = String.Empty;
             headers += String.Format("HTTP/1.1 {0} {1}\r\n", (int) code, code.ToString ());
             headers += String.Format("Content-Length: {0}\r\n", body.Length);
             headers += "Content-Type: text/html\r\n";
             headers += "Connection: close\r\n";
             headers += "\r\n";
-            
+
             using (BinaryWriter writer = new BinaryWriter (new NetworkStream (client, false))) {
                 writer.Write (Encoding.UTF8.GetBytes (headers));
                 writer.Write (body);
             }
-            
+
             client.Close ();
         }
 
@@ -311,7 +311,7 @@ namespace Banshee.Web
         {
             WriteResponseStream (client, response, length, filename, 0);
         }
-        
+
         protected virtual void WriteResponseStream (Socket client, Stream response, long length, string filename, long offset)
         {
             if (client == null || !client.Connected) {
@@ -338,26 +338,26 @@ namespace Banshee.Web
                 if (length > 0) {
                     headers += String.Format ("Content-Length: {0}\r\n", length);
                 }
-                
+
                 if (filename != null) {
                     headers += String.Format ("Content-Disposition: attachment; filename=\"{0}\"\r\n",
                         filename.Replace ("\"", "\\\""));
                 }
-                
+
                 headers += "Connection: close\r\n";
                 headers += "\r\n";
-                
+
                 writer.Write (Encoding.UTF8.GetBytes(headers));
-                    
+
                 using (BinaryReader reader = new BinaryReader (response)) {
                     while (true) {
                         byte [] buffer = reader.ReadBytes (ChunkLength);
                         if (buffer == null) {
                             break;
                         }
-                        
+
                         writer.Write(buffer);
-                        
+
                         if (buffer.Length < ChunkLength) {
                             break;
                         }
@@ -370,16 +370,16 @@ namespace Banshee.Web
         {
             return String.IsNullOrEmpty (input) ? "" : System.Web.HttpUtility.HtmlEncode (input);
         }
-        
+
         protected static string GetHtmlHeader (string title)
         {
-            return String.Format ("<html><head><title>{0} - Banshee Web Server</title></head><body><h1>{0}</h1>", 
+            return String.Format ("<html><head><title>{0} - Banshee Web Server</title></head><body><h1>{0}</h1>",
                 title);
         }
-        
+
         protected static string GetHtmlFooter ()
         {
-            return String.Format ("<hr /><address>Generated on {0} by " + 
+            return String.Format ("<hr /><address>Generated on {0} by " +
                 "Banshee Web Server (<a href=\"http://banshee-project.org\">http://banshee-project.org</a>)",
                 DateTime.Now.ToString ());
         }

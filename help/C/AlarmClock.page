@@ -1,0 +1,24 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" id="AlarmClock">
+  <info>
+    <link type="guide" xref="index#extensions"/>
+    <revision version="1.6" date="2010-06-01" status="stub"/>
+    <credit type="author copyright">
+      <name>Shaun McCance</name>
+      <email>shaunm@gnome.org</email>
+      <years>2010</years>
+    </credit>
+  </info>
+  <title><app>Alarm Clock</app> Extension</title>
+
+  <section id="enable">
+    <title>Enable <app>Alarm Clock</app></title>
+    <p>Before you can set an alarm or set <app>Banshee</app> to sleep, you must
+    enable the <app>Alarm Clock</app> extension.</p>
+    <steps>
+      <item><p>Choose <guiseq><gui>Edit</gui><gui>Preferences</gui></guiseq>.</p></item>
+      <item><p>Click the <gui>Extension</gui> tab.</p></item>
+      <item><p>Select the check box next to <gui>Alarm Clock</gui>.</p></item>
+    </steps>
+  </section>
+</page>

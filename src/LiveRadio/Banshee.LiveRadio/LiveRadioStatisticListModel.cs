@@ -132,7 +132,7 @@ namespace Banshee.LiveRadio
         public Selection Selection {
             get { return selection; }
         }
-        
+
     }
 
 }

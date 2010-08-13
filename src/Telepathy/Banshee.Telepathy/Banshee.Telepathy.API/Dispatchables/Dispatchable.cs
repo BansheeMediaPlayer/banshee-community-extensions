@@ -38,7 +38,7 @@ namespace Banshee.Telepathy.API.Dispatchables
         Unsupported,
         Unknown
     };
-    
+
     public class ErrorEventArgs : EventArgs
     {
         private ErrorReason reason;
@@ -52,7 +52,7 @@ namespace Banshee.Telepathy.API.Dispatchables
             get { return reason; }
         }
     }
-    
+
     public abstract class Dispatchable : IDisposable
     {
         public event EventHandler <EventArgs> ResponseRequired;
@@ -88,7 +88,7 @@ namespace Banshee.Telepathy.API.Dispatchables
             get { return channel; }
             set { channel = value; }
         }
-        
+
         private bool disposed = false;
         protected bool IsDisposed {
             get { return disposed; }
@@ -105,39 +105,39 @@ namespace Banshee.Telepathy.API.Dispatchables
             get { return key; }
             protected set { key = value; }
         }
-        
+
         public uint InitiatorHandle {
             get {
                 if (channel != null) {
-                    return channel.InitiatorHandle; 
+                    return channel.InitiatorHandle;
                 }
                 return 0;
             }
         }
 
-        public bool IsSelfInitiated { 
+        public bool IsSelfInitiated {
             get {
                 if (channel != null && Contact != null) {
-                    return channel.InitiatorHandle == Contact.Connection.SelfHandle; 
+                    return channel.InitiatorHandle == Contact.Connection.SelfHandle;
                 }
                 return false;
             }
         }
-        
+
         private static bool auto_remove = true;
         public bool AutoRemoveOnClose {
             get { return auto_remove; }
             set { auto_remove = value; }
         }
-        
+
         public static int Count <T> (Connection conn) where T : Dispatchable
         {
             if (conn == null) {
                 throw new ArgumentNullException ("conn");
             }
-            
+
             int count = 0;
-            
+
             foreach (Contact contact in conn.Roster.GetAllContacts ()) {
                 DispatchManager dm = contact.DispatchManager;
                 foreach (T obj in dm.GetAll <T> (contact)) {
@@ -170,12 +170,12 @@ namespace Banshee.Telepathy.API.Dispatchables
             if (Contact == null) {
                 return base.GetHashCode ();
             }
-            
+
             return Contact.GetHashCode () + Key.GetHashCode () + GetType ().GetHashCode ();
         }
 
         internal protected abstract void Initialize ();
-        
+
         public void Dispose ()
         {
             Dispose (true);
@@ -186,10 +186,10 @@ namespace Banshee.Telepathy.API.Dispatchables
             if (disposed) {
                 return;
             }
-            
+
             if (disposing) {
                 OnDisposing (EventArgs.Empty);
-                
+
                 disposed = true;
             }
         }
@@ -219,16 +219,16 @@ namespace Banshee.Telepathy.API.Dispatchables
                 handler (this, args);
             }
         }
-        
+
         protected virtual void OnClosed (EventArgs args)
         {
             IsClosed = true;
-            
+
             EventHandler <EventArgs> handler = Closed;
             if (handler != null) {
                 handler (this, args);
             }
-            
+
             if (!disposed && key != null && AutoRemoveOnClose && Contact != null) {
                 DispatchManager dm = contact.DispatchManager;
                 dm.Remove (contact, key, this.GetType ());

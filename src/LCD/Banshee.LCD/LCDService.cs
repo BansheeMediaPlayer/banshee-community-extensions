@@ -28,13 +28,10 @@
 
 using System;
 using System.Collections.Generic;
-//using System.Threading;
-
-using Mono.Addins;
 
 using Gtk;
+using Mono.Addins;
 
-using Banshee.Base;
 using Banshee.ServiceStack;
 using Banshee.MediaEngine;
 using Banshee.Gui;
@@ -63,7 +60,7 @@ namespace Banshee.LCD
         {
             Hyena.Log.Debug ("Initializing LCD service");
 
-            action_service = ServiceManager.Get<InterfaceActionService> ("InterfaceActionService");
+            action_service = ServiceManager.Get<InterfaceActionService> ();
             actions = new ActionGroup ("LCD");
             actions.Add (new ActionEntry [] {
                 new ActionEntry ("LCDAction", null,

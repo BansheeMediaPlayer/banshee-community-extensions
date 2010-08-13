@@ -1,21 +1,21 @@
-// 
+//
 // ClutterFlowTimeline.cs
-//  
+//
 // Author:
 //       Mathijs Dumon <mathijsken@hotmail.com>
-// 
+//
 // Copyright (c) 2010 Mathijs Dumon
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,44 +30,44 @@ using Clutter;
 
 namespace ClutterFlow
 {
-    
-    public class NewFrameEventArgs : EventArgs 
+
+    public class NewFrameEventArgs : EventArgs
     {
         public double Progress;
         public NewFrameEventArgs (double progress) : base ()
-        { 
+        {
             Progress = progress;
         }
     }
-    
-    public class TargetReachedEventArgs : EventArgs 
+
+    public class TargetReachedEventArgs : EventArgs
     {
         public uint Target;
         public TargetReachedEventArgs (uint target) : base ()
-        { 
+        {
             Target = target;
         }
     }
-    
+
     public class ThrottledTimeline : IDisposable
     {
-        
+
         #region Fields
         public event EventHandler<NewFrameEventArgs> NewFrame;
-        protected void InvokeNewFrameEvent () 
+        protected void InvokeNewFrameEvent ()
         {
             if (NewFrame!=null) NewFrame (this, new NewFrameEventArgs (progress));
         }
-        
+
         public event EventHandler<TargetReachedEventArgs> TargetMarkerReached;
         protected void InvokeTargetReached() {
             if (TargetMarkerReached!=null) TargetMarkerReached(this, new TargetReachedEventArgs(Target));
-        }        
-        
+        }
+
         public TimelineDirection Direction {
             get { return Target>AbsoluteProgress ? TimelineDirection.Forward : TimelineDirection.Backward; }
         }
-        
+
         protected uint target = 0;
         public virtual uint Target {
             get { return target; }
@@ -83,11 +83,11 @@ namespace ClutterFlow
                 }
             }
         }
-        
+
         public double RelativeTarget {
             get { return (IndexCount > 0 ? (double) Target / (double) (IndexCount-1) : 0.0); }
         }
-        
+
         protected double progress = 0;
         public virtual double Progress {
             get { return progress; }
@@ -108,31 +108,31 @@ namespace ClutterFlow
         public double AbsoluteProgress {
             get { return (IndexCount > 0 ? (progress*(double)(IndexCount-1)) : 0); }
         }
-        
+
         protected int delta = 0;
         public int Delta {
             get { return delta; }
         }
-        
+
         protected int timeout = -1;
         public virtual int Timeout {
             get { return timeout; }
             set {
                 last_time = DateTime.Now;
-                timeout = value; 
+                timeout = value;
             }
         }
-        
+
         protected static double time_threshold = 1000;          // threshold to assure visible animations
         protected static double target_fps = 30;                // target fps, TODO needs a setting
         protected static double target_tmd = 1000 / target_fps; // target timestep in ms;
-        
+
         private readonly double frequency;
         protected virtual double Frequency {
             get { return frequency; }
         }
         protected DateTime last_time = DateTime.Now;   // last iteration timestamp
-        
+
         protected uint index_count = 0;
         //// <value>
         /// The number of indeces currently set on this Timeline. This should be equal
@@ -147,17 +147,17 @@ namespace ClutterFlow
             }
             get { return index_count; }
         }
-        
+
         protected bool is_paused = false;
         public bool IsPaused {
             get { return is_paused; }
             set { is_paused = value; }
         }
-        
+
         public bool CanPlay {
             get { return (Target != AbsoluteProgress); }
         }
-        
+
         private bool run_frame_source = false;
         protected bool RunFrameSource {
             get { return run_frame_source; }
@@ -169,11 +169,11 @@ namespace ClutterFlow
                 }
             }
         }
-        
+
         protected uint func_id;
         protected bool stop_timeout = false;
         #endregion
-        
+
         public ThrottledTimeline ()
         {
             RunFrameSource = true;
@@ -184,7 +184,7 @@ namespace ClutterFlow
             Clutter.Threads.RemoveRepaintFunc (func_id);
             RunFrameSource = false;
         }
-        
+
         public ThrottledTimeline (uint index_count, double frequency) : this()
         {
             this.index_count = index_count;
@@ -200,7 +200,7 @@ namespace ClutterFlow
         {
             JumpToIndex (Target);
         }
-        
+
         protected virtual bool RepaintFunc ()
         {
             DateTime now = DateTime.Now;
@@ -235,7 +235,7 @@ namespace ClutterFlow
             }
             return RunFrameSource; //keep on calling this function
         }
-        
+
         public void Play ()
         {
             if (IsPaused) {
@@ -243,13 +243,13 @@ namespace ClutterFlow
                 IsPaused = false;
             }
         }
-        
+
         public void Pause ()
         {
             IsPaused = true;
         }
     }
-    
+
     public class ClutterFlowTimeline : ThrottledTimeline
     {
         #region Fields
@@ -267,7 +267,7 @@ namespace ClutterFlow
         	get { return coverManager; }
         	set { coverManager = value; }
         }
-    
+
         public override uint Target {
             get {
                 return (uint) (CoverManager!=null ? CoverManager.TargetIndex : 0);
@@ -276,7 +276,7 @@ namespace ClutterFlow
                 throw new System.NotImplementedException();
             }
         }
-    
+
         public override uint IndexCount {
             get {
                 return (uint) (CoverManager!=null ? CoverManager.TotalCovers : 0);
@@ -285,11 +285,11 @@ namespace ClutterFlow
                 throw new System.NotImplementedException();
             }
         }
-    
-    
-    
+
+
+
         #endregion
-        
+
         public ClutterFlowTimeline (CoverManager coverManager) : base((uint) coverManager.TotalCovers, 1 / (double) CoverManager.MaxAnimationSpan)
         {
             this.CoverManager = coverManager;

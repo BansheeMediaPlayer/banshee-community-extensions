@@ -53,7 +53,7 @@ namespace Banshee.Telepathy.Gui
         private uint actions_id;
         private ContactContainerSource container;
         private Announcer announcer = null;
-        
+
         public TelepathyActions (ContactContainerSource container) : base (ServiceManager.Get<InterfaceActionService> (), "telepathy-container")
         {
             this.container = container;
@@ -70,7 +70,7 @@ namespace Banshee.Telepathy.Gui
                     AddinManager.CurrentLocalizer.GetString ("Cancel Download(s)"), null,
                     AddinManager.CurrentLocalizer.GetString ("Cancel download of selected tracks to your computer"),
                     OnCancelDownloadTrack)
-            });    
+            });
 
             Add (new ActionEntry [] {
                 new ActionEntry ("CancelBrowseRequest", null,
@@ -89,25 +89,25 @@ namespace Banshee.Telepathy.Gui
             Add (new ToggleActionEntry [] {
                 new ToggleActionEntry ("AllowStreamingAction", null,
                     AddinManager.CurrentLocalizer.GetString ("Allow Streaming"), null,
-                    AddinManager.CurrentLocalizer.GetString ("Allow streaming when sharing libraries"), 
+                    AddinManager.CurrentLocalizer.GetString ("Allow streaming when sharing libraries"),
                     OnAllowStreaming, ContactContainerSource.AllowStreamingSchema.Get ())
             });
-                                
+
             Add (new ToggleActionEntry [] {
                 new ToggleActionEntry ("ShareCurrentlyPlayingAction", null,
                     AddinManager.CurrentLocalizer.GetString ("Share Currently Playing"), null,
                     AddinManager.CurrentLocalizer.GetString ("Set Empathy presence message to what you're currently playing"),
                     OnShareCurrentlyPlaying, ContactContainerSource.ShareCurrentlyPlayingSchema.Get ())
             });
-                            
+
             actions_id = Actions.UIManager.AddUiFromResource ("GlobalUI.xml");
             Actions.AddActionGroup (this);
 
-            ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEvent, 
+            ServiceManager.PlayerEngine.ConnectEvent (OnPlayerEvent,
                 PlayerEvent.StartOfStream | PlayerEvent.StateChange);
 
             //OnUpdated (null, null);
-            
+
             //Register ();
 
             Actions.TrackActions.PostActivate += OnTrackActionsActiviated;
@@ -126,7 +126,7 @@ namespace Banshee.Telepathy.Gui
             if (announcer != null) {
                 announcer.Dispose ();
             }
-                                    
+
             base.Dispose ();
         }
 
@@ -135,8 +135,7 @@ namespace Banshee.Telepathy.Gui
             if (announcer == null) {
                 announcer = new Announcer (container.TelepathyService.ConnectionLocator);
             }
-                                    
-            //Log.Debug (String.Format ("{0} announcing", ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()));
+
             if (announcer != null && ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()) {
                 if (track != null) {
                     announcer.Announce (String.Format (AddinManager.CurrentLocalizer.GetString ("Currently playing {0} by {1} from {2}"),
@@ -144,7 +143,7 @@ namespace Banshee.Telepathy.Gui
                 }
             }
         }
-                                
+
         private void OnAllowDownloads (object o, EventArgs args)
         {
             ToggleAction action = this["AllowDownloadsAction"] as Gtk.ToggleAction;
@@ -156,7 +155,7 @@ namespace Banshee.Telepathy.Gui
             ToggleAction action = this["AllowStreamingAction"] as Gtk.ToggleAction;
             container.UpdateStreamingAllowed (action.Active);
         }
-                                
+
         private void OnShareCurrentlyPlaying (object o, EventArgs args)
         {
             ToggleAction action = this["ShareCurrentlyPlayingAction"] as Gtk.ToggleAction;
@@ -169,14 +168,14 @@ namespace Banshee.Telepathy.Gui
                 AnnounceTrack (ServiceManager.PlayerEngine.CurrentTrack);
             }
         }
-                            
+
         private void OnDownloadTrack (object o, EventArgs args)
         {
             IContactSource source = ServiceManager.SourceManager.ActiveSource as IContactSource;
             if (source == null || !source.IsDownloadingAllowed) {
                 return;
             }
-            
+
             foreach (DatabaseTrackInfo track in source.DatabaseTrackModel.SelectedItems) {
                 TelepathyDownloadKey key = new TelepathyDownloadKey (ContactTrackInfo.From (track));
                 TelepathyDownload download = TelepathyService.DownloadManager.DownloadManager.Get (key);
@@ -194,12 +193,12 @@ namespace Banshee.Telepathy.Gui
             if (source == null) {
                 return;
             }
-            
+
             foreach (DatabaseTrackInfo track in source.DatabaseTrackModel.SelectedItems) {
                 ContactTrackInfo.From (track).CancelTransfer ();
             }
         }
-                        
+
         private void OnCancelBrowseRequest (object o, EventArgs args)
         {
             // FIXME https://bugs.freedesktop.org/show_bug.cgi?id=22337
@@ -222,12 +221,12 @@ namespace Banshee.Telepathy.Gui
             if (source == null) {
                 return;
             }
-                                    
+
             Contact contact = source.Contact;
             if (contact == null) {
                 return;
             }
-                                                      
+
             if (source.IsDownloadingAllowed) {
                 this["DownloadTrackAction"].Sensitive = true;
             }
@@ -235,13 +234,13 @@ namespace Banshee.Telepathy.Gui
                 this["DownloadTrackAction"].Sensitive = false;
             }
         }
-                
+
         private void OnPlayerEvent (PlayerEventArgs args)
         {
-            if (ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()) {                                    
+            if (ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()) {
                 switch (args.Event) {
                     case PlayerEvent.StartOfStream:
-                        //AnnounceTrack (ServiceManager.PlayerEngine.CurrentTrack);
+                        AnnounceTrack (ServiceManager.PlayerEngine.CurrentTrack);
                         break;
                     case PlayerEvent.StateChange:
                         PlayerEventStateChangeArgs state = args as PlayerEventStateChangeArgs;
@@ -252,7 +251,7 @@ namespace Banshee.Telepathy.Gui
                                     break;
                                 case PlayerState.Playing:
                                     AnnounceTrack (ServiceManager.PlayerEngine.CurrentTrack);
-                                    break;                                                
+                                    break;
                             }
                         }
                         break;

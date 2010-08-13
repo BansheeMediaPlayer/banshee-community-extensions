@@ -111,20 +111,20 @@ namespace Banshee.Streamrecorder
 
             try {
                 audiotee = new PlayerAudioTee (ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements ()[2]);
-                
+
                 if (bin_description.Equals ("")) {
                     return false;
                 }
-                
+
                 encoder_bin = Parse.BinFromDescription (bin_description, true);
-                
+
                 tagger = new TagSetter (encoder_bin.GetByInterface (TagSetter.GetType ()));
                 file_sink = encoder_bin.GetByName ("file_sink").ToFileSink ();
 
                 file_sink.Location = output_file + file_extension;
                 file_sink.SetBooleanProperty ("sync", true);
                 file_sink.SetBooleanProperty ("async", false);
-                
+
                 GLib.Object.GetObject (file_sink.ToIntPtr ()).AddNotification ("allow-overwrite", OnAllowOverwrite);
 
                 ghost_pad = encoder_bin.GetStaticPad ("sink").ToGhostPad ();
@@ -133,7 +133,7 @@ namespace Banshee.Streamrecorder
                 Hyena.Log.Debug (e.StackTrace);
                 return false;
             }
-            
+
             return true;
         }
 
@@ -147,9 +147,9 @@ namespace Banshee.Streamrecorder
         {
             string pipeline = "";
             string pipeline_start = "audioresample ! audioconvert ";
-            string pipeline_end = "! gnomevfssink name=file_sink";
+            string pipeline_end = "! filesink name=file_sink";
             Encoder encoder = GetFirstAvailableEncoder ();
-            
+
             if (encoder != null) {
                 pipeline = pipeline_start + encoder.Pipeline + pipeline_end;
                 if (String.IsNullOrEmpty (encoder.FileExtension))
@@ -161,7 +161,7 @@ namespace Banshee.Streamrecorder
                     file_extension = encoder.FileExtension;
                 }
             }
-            
+
             return pipeline;
         }
 
@@ -269,7 +269,7 @@ namespace Banshee.Streamrecorder
                     Hyena.Log.Debug (e.StackTrace);
                 }
             }
-            
+
             Hyena.Log.Debug ("[Recorder] <StartRecording> Recording started");
         }
 
@@ -308,7 +308,7 @@ namespace Banshee.Streamrecorder
         {
             if (track == null || tagger == null)
                 return false;
-            
+
             if (tagger.IsNull ()) {
                 Hyena.Log.Debug ("[Recorder]<AddStreamTags> tagger is null, not tagging!");
                 return false;
@@ -324,7 +324,7 @@ namespace Banshee.Streamrecorder
                     taglist.AddStringValue (TagMergeMode.ReplaceAll, "artist", track.ArtistName);
                 if (track.AlbumArtist != null)
                     taglist.AddStringValue (TagMergeMode.ReplaceAll, "album-artist", track.AlbumArtist);
-                
+
                 tagger.MergeTags (taglist, TagMergeMode.ReplaceAll);
             } catch (Exception e) {
                 Hyena.Log.Information ("[Streamrecorder] An exception occurred during gstreamer operation");
@@ -335,7 +335,7 @@ namespace Banshee.Streamrecorder
                 SetMetadataFilename (track.TrackTitle, track.ArtistName);
                 SetNewTrackLocation (output_file + file_extension);
             }
-            
+
             return true;
         }
 
@@ -433,7 +433,7 @@ namespace Banshee.Streamrecorder
                 Hyena.Log.Debug (e.StackTrace);
             }
         }
-        
+
     }
-    
+
 }
