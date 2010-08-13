@@ -10,6 +10,7 @@ SUBDIRS = \
 	Lyrics \
 	Magnatune \
 	Mirage \
+	OpenVP \
 	RadioStationFetcher \
 	SoundMenu \
 	StreamRecorder \

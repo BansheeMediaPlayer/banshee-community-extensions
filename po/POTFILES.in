@@ -33,6 +33,7 @@ src/Mirage/Banshee.Mirage/AnalyzeLibraryJob.cs
 src/Mirage/Banshee.Mirage/DistanceCalculator.cs
 src/Mirage/Banshee.Mirage/MiragePlugin.cs
 src/Mirage/Banshee.Mirage/RandomBySimilar.cs
+src/OpenVP/Banshee.OpenVP/VisualizationDisplayWidget.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs

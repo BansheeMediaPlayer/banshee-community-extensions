@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Banshee.OpenVP.Visualizations</AssemblyName>
+    <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
+    <RootNamespace>Banshee.OpenVP.Visualizations</RootNamespace>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\bin</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\bin</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Tao.OpenGl, Version=3.0.0.0, Culture=neutral, PublicKeyToken=1ca010269a4501ef">
+      <Package>tao-opengl</Package>
+    </Reference>
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GlassWall.cs" />
+    <Compile Include="Grid.cs" />
+    <Compile Include="Inferno.cs" />
+    <Compile Include="SimpleScope.cs" />
+    <Compile Include="SpectrumAnalyzer.cs" />
+    <Compile Include="Voiceprint.cs" />
+    <Compile Include="Core.cs" />
+    <Compile Include="GreenFlower.cs" />
+    <Compile Include="SpinningGrid.cs" />
+    <Compile Include="Conway\GenerationalLifeBoard.cs" />
+    <Compile Include="Conway\GenerationalLifeSquare.cs" />
+    <Compile Include="Conway\GenerationalLifeVis.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <EmbeddedResource Include="resources\Banshee.OpenVP.Visualizations.addin.xml">
+      <LogicalName>Banshee.OpenVP.Visualizations.addin.xml</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="Hierarchical" ResourceNamePolicy="FileFormatDefault" />
+        </Policies>
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" RelativeConfigureInPath="..">
+          <BuildFilesVar Sync="true" Name="SOURCES" />
+          <DeployFilesVar />
+          <ResourcesVar Sync="true" Name="RESOURCES" />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="Conway\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenVP\OpenVP.csproj">
+      <Project>{07680636-F897-4CDB-8B25-85D21113AD1C}</Project>
+      <Name>OpenVP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenVP.Core\OpenVP.Core.csproj">
+      <Project>{8684E1F1-96B9-4F74-BFBB-3946C163A6B6}</Project>
+      <Name>OpenVP.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,6 @@
+Name: Cdh.Affe
+Description: Cdh.Affe
+Version: 
+
+Requires: 
+Libs: -r:@expanded_libdir@/@PACKAGE@/Cdh.Affe.dll

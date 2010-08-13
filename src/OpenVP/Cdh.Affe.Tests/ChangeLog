@@ -1,0 +1,19 @@
+2009-01-27  Chris Howie  <me@chrishowie.com>
+
+	* Makefile.am: Build system sync.
+
+2009-01-23  Chris Howie  <me@chrishowie.com>
+
+	* Makefile.am:
+	* Makefile.in:
+	* Cdh.Affe.Tests.mdp: Commit build system for branch.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* Cdh.Affe.Tests.mdp: Tweak project options.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* AssemblyInfo.cs, Tests.cs, Main.cs, Cdh.Affe.Tests.mdp, ChangeLog:
+	  Import Cdh.Affe into the build tree.
+

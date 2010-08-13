@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.OpenVP.Visualizations"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="© 2008 Chris Howie. Licensed under the MIT X11 license."
+    name="Visualizations"
+    category=""
+    description="Provides some basic visualizations for the visualizer."
+    author="Chris Howie"
+    url="http://www.chrishowie.com/"
+    defaultEnabled="true">
+
+  <Runtime>
+  	<Import assembly="Banshee.OpenVP.Visualizations.dll" />
+  </Runtime>
+  
+  <Dependencies>
+    <Addin id="Banshee.OpenVP" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/OpenVP/Visualization">
+  	<Visualization type="Banshee.OpenVP.Visualizations.SimpleScope" label="Simple scope" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.SpectrumAnalyzer" label="Spectrum analyzer" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.Voiceprint" label="Voiceprint" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.MirrorVoiceprint" label="Mirrored Voiceprint" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.Grid" label="Grid" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.SpinningGrid" label="Spinning Grid" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.Inferno" label="Inferno" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.GlassWall" label="Glass wall" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.Core" label="Power core" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.GreenFlower" label="Green flower" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.Conway.GenerationalLifeVis" label="Conway" />
+  </Extension>
+</Addin>

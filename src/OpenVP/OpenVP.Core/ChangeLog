@@ -1,0 +1,185 @@
+2009-01-27  Chris Howie  <me@chrishowie.com>
+
+	* Makefile.am:
+	* Makefile.in: Build system sync.
+
+	* BurstScope.cs: Rename namespace accidentally left over from the port.
+
+2009-01-23  Chris Howie  <me@chrishowie.com>
+
+	* Makefile.am:
+	* Makefile.in:
+	* OpenVP.Core.mdp:
+	* openvp.core.pc.in: Commit build system for branch.
+
+2008-10-10  Chris Howie <me@chrishowie.com> 
+
+	* ScopeBase.cs: Copy r77 from trunk.
+
+2008-08-24  Chris Howie <cdhowie@gmail.com> 
+
+	* MovementBase.cs, ScopeBase.cs, OpenVP.Core.mdp: Merge r65 with 0.0.1
+	  branch.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* OpenVP.Core.mdp: Tweak project options.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* OpenVP.Core.mdp: Switch dependency from Cdh.Affe blob to the project.
+
+2008-08-21  Chris Howie <cdhowie@gmail.com> 
+
+	* AssemblyInfo.cs: Set assembly version.
+
+2008-05-22  Chris Howie <me@chrishowie.com> 
+
+	* DynamicMovement.cs, ClearScreen.cs, Laser.cs, SuperScope.cs,
+	  Buffer.cs, BurstScope.cs, Scope.cs: Track API changes.
+	* MovementBase.cs: Track API changes.  Fix bug that would cause
+	  deserialized objects to crash when rendered.
+
+2008-05-20  Chris Howie <me@chrishowie.com> 
+
+	* TextureHandle.cs, DynamicMovement.cs, SharedTextureHandle.cs,
+	  MovementBase.cs, ClearScreen.cs, Laser.cs, SuperScope.cs,
+	  Buffer.cs, BurstScope.cs, Scope.cs, Mirror.cs: Change license from
+	  GPLv2 to LGPLv3.
+
+2008-04-24  Chris Howie <me@chrishowie.com> 
+
+	* BurstScope.cs: Allow random ray speed between a minimum and maximum,
+	  to avoid the appearance of circles.
+
+2008-04-11  Chris Howie <me@chrishowie.com> 
+
+	* DynamicMovement.cs, ClearScreen.cs, SuperScope.cs, Scope.cs,
+	  Buffer.cs: Add AuthorAttribute.
+	* MovementBase.cs: Add missing SerializableAttribute.  Remove metadata
+	  from properties and make them protected, since subclasses may not
+	  want these exposed in the designer (e.g. the new Mirror effect). 
+	  Add protected MakeStaticDirty method to allow subclasses to notify
+	  MovementBase that the static movement data needs to be recomputed.
+	* Laser.cs: Add AuthorAttribute.  Change default end color.
+	* OpenVP.Core.mdp, Mirror.cs: Add Mirror effect.
+	* BurstScope.cs: Add AuthorAttribute.  Multiply final ray alpha by the
+	  alpha of the selected color.
+
+2008-04-09  Chris Howie <me@chrishowie.com> 
+
+	* Laser.cs, OpenVP.Core.mdp: Finish Laser port and add some new
+	  properties.
+	* BurstScope.cs: Remove some unused code.
+
+2008-04-09  Chris Howie <me@chrishowie.com> 
+
+	* DynamicMovement.cs, MovementBase.cs, ClearScreen.cs, SuperScope.cs,
+	  Scope.cs, Buffer.cs: Track move from System.ComponentModel to
+	  OpenVP.Metadata.
+	* Laser.cs: Copy Kaffeeklatsch's Laser effect, which is not yet ported
+	  (build disabled).
+	* OpenVP.Core.mdp: Port Kaffeeklatsch's FountainScope effect to OpenVP
+	  and call it BurstScope.  Copy Kaffeeklatsch's Laser effect, which
+	  is not yet ported (build disabled).
+	* BurstScope.cs: Port Kaffeeklatsch's FountainScope effect to OpenVP
+	  and call it BurstScope.
+
+2008-04-01  Chris Howie <me@chrishowie.com> 
+
+	* DynamicMovement.cs: Add missing matrix pop.
+	* MovementBase.cs: Properly allocate point data array on construction. 
+	  Add missing matrix pop.  Initialize MovementData.mAlpha to 1.
+
+2008-04-01  Chris Howie <me@chrishowie.com> 
+
+	* MovementBase.cs: Fix null-dereference bug.
+
+2008-04-01  Chris Howie <me@chrishowie.com> 
+
+	* MovementBase.cs: Make OnRenderFrame and OnBeat virtual with no
+	  implementation instead of abstract.
+
+2008-04-01  Chris Howie <me@chrishowie.com> 
+
+	* TextureHandle.cs: Prevent deletion of the texture when requested on a
+	  thread other than the one the texture was allocated on.  Add
+	  destructor.
+	* DynamicMovement.cs: Use SharedTextureHandle for the movement texture.
+	* SharedTextureHandle.cs: Add class encapsulating a texture that will
+	  be used by multiple consumers.
+	* MovementBase.cs: Add abstract class that implements movement.  Will
+	  become the base class for DynamicMovement.
+	* OpenVP.Core.mdp: Add MovementBase and SharedTextureHandle classes.
+
+2008-03-27  Chris Howie <me@chrishowie.com> 
+
+	* DynamicMovement.cs: The movement texture is now shared across all
+	  instances of DynamicMovement.
+
+2008-02-28  Chris Howie <me@chrishowie.com> 
+
+	* Scope.cs: Add Frequency property.
+
+2007-12-30  Chris Howie <me@chrishowie.com> 
+
+	* DynamicMovement.cs: Set mStaticDirty when Rectangular is set.
+
+2007-12-30  Chris Howie <me@chrishowie.com> 
+
+	* DynamicMovement.cs, SuperScope.cs: Made ScriptHost serializable, and added
+	  a no-op ISerializable implementation.
+
+2007-12-28  Chris Howie <me@chrishowie.com> 
+
+	* DynamicMovement.cs: Added Static property.
+
+2007-12-21  Chris Howie <me@chrishowie.com> 
+
+	* TextureHandle.cs: Added TextureHandle class.
+	* DynamicMovement.cs: Refactored to use TextureHandle.
+	* OpenVP.Core.mdp: Added Buffer load/save effect.  Added TextureHandle
+	  class.
+	* Buffer.cs: Added Buffer load/save effect.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
+	* DynamicMovement.cs, OpenVP.Core.mdp: Added DynamicMovement effect.
+	* ClearScreen.cs, Scope.cs: Changed category.
+	* SuperScope.cs: Changed category.  Added beat script.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
+	* SuperScope.cs: Added linewidth bound variable for glLineWidth.  Added
+	  bound ScriptState.
+
+2007-12-18  Chris Howie <me@chrishowie.com> 
+
+	* SuperScope.cs: Added SuperScope effect.
+	* OpenVP.Core.mdp: Added SuperScope effect.  Added OpenVP and Cdh.Affe to
+	  references.
+
+2007-12-14  Chris Howie <me@chrishowie.com> 
+
+	* Scope.cs: Fix description for Circular property.
+
+2007-12-14  Chris Howie <me@chrishowie.com> 
+
+	* ClearScreen.cs: Added CategoryAttribute to class.
+	* OpenVP.Core.mdp, Scope.cs: Added basic scope effect.
+
+2007-12-13  Chris Howie <me@chrishowie.com> 
+
+	* gtk-gui, gtk-gui/generated.cs, gtk-gui/gui.stetic, OpenVP.Core.mdp:
+	  Removed Gtk# support.
+	* ClearScreen.cs: Added Browsable and Description attributes.
+
+2007-12-11  Chris Howie <me@chrishowie.com> 
+
+	* ClearScreen.cs: Track API changes.  Changed clear technique so that the
+	  alpha component can be used.  Made ClearColor browsable.
+
+2007-12-10  Chris Howie <me@chrishowie.com> 
+
+	* ChangeLog: Added.
+
