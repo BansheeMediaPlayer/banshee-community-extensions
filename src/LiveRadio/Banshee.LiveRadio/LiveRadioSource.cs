@@ -440,7 +440,7 @@ namespace Banshee.LiveRadio
                 }
                 LiveRadioSource.EnabledPluginsEntry.Set (sb.ToString ());
             } else {
-                LiveRadioSource.EnabledPluginsEntry.Set (null);
+                LiveRadioSource.EnabledPluginsEntry.Set (String.Empty);
             }
         }
 
