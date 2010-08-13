@@ -82,7 +82,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BansheePlayerData.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="VisualizationDisplayWidget.cs" />

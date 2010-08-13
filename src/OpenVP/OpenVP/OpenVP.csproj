@@ -40,7 +40,6 @@
     </Execution>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="SDLController.cs" />
     <Compile Include="IRenderer.cs" />
     <Compile Include="PlayerData.cs" />

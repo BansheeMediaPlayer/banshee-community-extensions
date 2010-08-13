@@ -47,7 +47,6 @@
     </Execution>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="SymbolTable.cs" />
     <Compile Include="Symbol.cs" />
     <Compile Include="Tree.cs" />

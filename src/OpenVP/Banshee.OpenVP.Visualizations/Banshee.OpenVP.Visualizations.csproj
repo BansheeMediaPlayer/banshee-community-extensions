@@ -38,7 +38,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="GlassWall.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="Inferno.cs" />
