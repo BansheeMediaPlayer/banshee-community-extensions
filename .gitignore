@@ -57,3 +57,8 @@ tests/results/
 src/Mirage/libmirageaudio/mirageaudiotest
 src/RadioStationFetcher/RadioStationFetcher.addin.xml
 run_debug
+help/*/*.mo
+help/*/*.page
+!help/C/*.page
+gnome-doc-utils.make
+build/m4/gnome-doc-utils.m4

@@ -20,6 +20,9 @@ SHAMROCK_EXPAND_LIBDIR
 SHAMROCK_EXPAND_BINDIR
 SHAMROCK_EXPAND_DATADIR
 
+dnl User help
+SHAMROCK_CHECK_GNOME_DOC_UTILS(0.17.3)
+
 dnl Mono and gmcs
 SHAMROCK_CHECK_MONO_MODULE(1.9.1)
 SHAMROCK_FIND_MONO_2_0_COMPILER
@@ -118,6 +121,8 @@ build/m4/Makefile
 build/m4/shave/shave
 build/m4/shave/shave-libtool
 
+help/Makefile
+
 po/Makefile.in
 
 src/Makefile
@@ -170,6 +175,7 @@ ${PACKAGE}-${VERSION}
     Release Build:       ${enable_release}
     Vendor Build ID:     ${vendor_build_id}
     Unit Tests:          ${enable_tests} (requires nunit >= ${NUNIT_REQUIRED}, --enable-tests)
+    User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
     Alarm Clock:         ${enable_AlarmClock}
