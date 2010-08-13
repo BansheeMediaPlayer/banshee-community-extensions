@@ -1,6 +1,7 @@
 <page xmlns="http://projectmallard.org/1.0/"
       type="guide" id="AlarmClock">
   <info>
+    <link type="guide" xref="index#extensions"/>
     <revision version="1.6" date="2010-06-01" status="stub"/>
     <credit type="author copyright">
       <name>Shaun McCance</name>
