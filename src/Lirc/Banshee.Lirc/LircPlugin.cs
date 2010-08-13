@@ -1,6 +1,8 @@
 using System;
 using System.Threading;
 
+using Hyena;
+
 using Banshee.ServiceStack;
 using Banshee.Gui;
 using Gtk;
@@ -62,13 +64,14 @@ namespace Banshee.Lirc
 
         private void PollThread()
         {
-            Console.WriteLine("Waiting for LIRC button press...");
+            Log.Debug ("Waiting for LIRC button press...");
             string command;
             while (lirc.ErrorValue >= 0) {
                 command = lirc.NextCommand ();
                 ctrl.DispatchAction(command);
             }
-            Console.WriteLine("Lost connection to LIRC daemon.  FIXME: should try to reconnect");
+            // FIXME: Should try to reconnect
+            Log.Debug("Lost connection to LIRC daemon");
         }
 
 		string IService.ServiceName {

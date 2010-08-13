@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
 
+using Hyena;
+
 namespace Lirc
 {
     public class LircClient
@@ -49,7 +51,7 @@ namespace Lirc
                     break;
                 default:
                     command = null;
-                    Console.WriteLine("lirc-sharp: unhandled return value of {0}", ret);
+                    Log.DebugFormat ("lirc-sharp: unhandled return value of {0}", ret);
                     break;
             }
             return (command);
@@ -90,13 +92,13 @@ namespace Lirc
         public bool Connect() {
             if(!is_connected) {
                 if (lirc_init (program_name, 1) == -1) {
-                    Console.WriteLine("lirc-sharp: lirc_init() failed");
+                    Log.Warning ("lirc-sharp: lirc_init() failed");
                     this.ErrorValue = -2;
                     return(false);
                 }
 
                 if(lirc_glue_readconfig () != 0) {
-                    Console.WriteLine("lirc-sharp: some sort of error on readconfig");
+                    Log.Warning ("lirc-sharp: some sort of error on readconfig");
                     this.ErrorValue = -1;
                     return(false);
                 }
@@ -108,11 +110,11 @@ namespace Lirc
 
         public void Disconnect() {
             if(is_connected) {
-                Console.Write("lirc-sharp: Disconnecting LIRC connection...");
+                Log.Debug ("lirc-sharp: Disconnecting LIRC connection...");
                 lirc_glue_freeconfig ();
                 lirc_deinit ();
                 ErrorValue = -3;
-                Console.WriteLine("done.");
+                Log.Debug ("LIRC connection disconnected");
                 is_connected = false;
             }
         }

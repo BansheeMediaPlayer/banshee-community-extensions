@@ -67,7 +67,7 @@ namespace Banshee.ClutterFlow
 		public int ActiveModelIndex {
 			get {
 				int ret = AlbumLoader.ConvertIndexToModelIndex (ActiveIndex);
-				Console.WriteLine ("ActiveModelIndex_get will return " + ret);
+				Hyena.Log.DebugFormat ("ActiveModelIndex_get will return {0}", ret);
 				return ret;
 			}
 		}		
