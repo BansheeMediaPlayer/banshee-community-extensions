@@ -33,6 +33,7 @@ using Clutter;
 
 using Banshee.ServiceStack;
 using Banshee.Collection.Gui;
+using Hyena;
 using Hyena.Collections;
 
 using ClutterFlow;
@@ -96,9 +97,10 @@ namespace Banshee.ClutterFlow
         Thread t;
 		public ArtworkLookup (CoverManager coverManager)
 		{
-			//Hyena.Log.Information ("ArtworkLookup ctor ()");
+			//Log.Debug ("ArtworkLookup ctor ()");
 		 	CoverManager = coverManager;
 			artwork_manager = ServiceManager.Get<ArtworkManager> ();
+			artwork_manager.AddCachedSize (CoverManager.TextureSize);
 
             threaded = ClutterFlowSchemas.ThreadedArtwork.Get ();
             //Start ();
@@ -121,9 +123,9 @@ namespace Banshee.ClutterFlow
 		private object focusLock = new object ();
 		protected void HandleTargetIndexChanged(object sender, EventArgs e)
 		{
-			//Hyena.Log.Information ("ArtworkLookup HandleTargetIndexChanged locking focusLock");
+			//Log.Debug ("ArtworkLookup HandleTargetIndexChanged locking focusLock");
 			lock (focusLock) {
-				//Hyena.Log.Information ("ArtworkLookup HandleTargetIndexChanged locked focusLock");
+				//Log.Debug ("ArtworkLookup HandleTargetIndexChanged locked focusLock");
 				new_focus = coverManager.TargetIndex;
 			}
 		}
@@ -136,17 +138,17 @@ namespace Banshee.ClutterFlow
             if (disposed)
                 return;
             disposed = true;
-            Hyena.Log.Information ("ArtworkLookup Dispose ()");
+            Log.Debug ("ArtworkLookup Dispose ()");
 			Stop ();
             LookupQueue.Dispose ();
-		}		
+		}
 	
 	    // Tells the worker thread to stop, typically after completing its
 	    // current work item. (The thread is *not* guaranteed to have stopped
 	    // by the time this method returns.)
 	    public void Stop ()
 	    {
-            Hyena.Log.Information ("ArtworkLookup Stop ()");
+            Log.Debug ("ArtworkLookup Stop ()");
             Stopping = true;
             if (SyncRoot!=null) lock (SyncRoot) {
                 Monitor.Pulse (SyncRoot);
@@ -172,11 +174,11 @@ namespace Banshee.ClutterFlow
 	    private void Run ()
 	    {
             if (!disposed) try {
-                Hyena.Log.Information ("ArtworkLookup Run ()");
+                Log.Debug ("ArtworkLookup Run ()");
 	            while (!Stopping) {
-                    //Hyena.Log.Information ("ArtworkLookup Run locking focusLock");
+                    //Log.Debug ("ArtworkLookup Run locking focusLock");
                     lock (focusLock) {
-                        //Hyena.Log.Information ("ArtworkLookup Run locked focusLock");
+                        //Log.Debug ("ArtworkLookup Run locked focusLock");
                         if (new_focus>-1)
                             LookupQueue.Focus = new_focus;
                         new_focus = -1;
@@ -184,10 +186,10 @@ namespace Banshee.ClutterFlow
 
 					while (!Stopping && LookupQueue!=null && LookupQueue.Count==0) {
 						lock (SyncRoot) {
-                            //Hyena.Log.Information ("ArtworkLookup Run - waiting for pulse");
+                            //Log.Debug ("ArtworkLookup Run - waiting for pulse");
 							bool ret = Monitor.Wait (SyncRoot, 5000);
                             if (!ret) Stopping = true;
-                            //Hyena.Log.Information ("ArtworkLookup Run - pulsed");
+                            //Log.Debug ("ArtworkLookup Run - pulsed");
 						}
 					}
                     if (Stopping) return;
@@ -205,7 +207,7 @@ namespace Banshee.ClutterFlow
                     t.IsBackground = true;
 	            }
 	        } finally {
-	           Hyena.Log.Information ("ArtworkLookup stopped");
+	           Log.Debug ("ArtworkLookup stopped");
                threaded = ClutterFlowSchemas.ThreadedArtwork.Get ();
                t = null;
 	        }
