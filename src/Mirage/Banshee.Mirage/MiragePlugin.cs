@@ -25,23 +25,16 @@ using Gtk;
 
 using System;
 using System.Threading;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 
 using Mono.Addins;
 
 using Hyena;
-using Hyena.Widgets;
 
-using Banshee.IO;
-using Banshee.Base;
 using Banshee.Collection.Database;
 using Banshee.ServiceStack;
 using Banshee.Sources;
 using Banshee.Gui;
 using Banshee.Playlist;
-using Banshee.Widgets;
 
 using Mirage;
 

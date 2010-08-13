@@ -32,10 +32,8 @@ using Mono.Addins;
 
 using Hyena;
 
-using Banshee.Base;
 using Banshee.Collection.Database;
 using Banshee.ServiceStack;
-using Banshee.Telepathy;
 using Banshee.Telepathy.Gui;
 
 using Banshee.Telepathy.API;

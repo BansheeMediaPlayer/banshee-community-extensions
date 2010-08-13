@@ -30,22 +30,15 @@ using System;
 using System.Collections.Generic;
 using Mono.Addins;
 
-using Hyena.Data.Sqlite;
 using Hyena;
+using Hyena.Data.Sqlite;
 
-using Banshee.Base;
-using Banshee.Collection;
 using Banshee.Collection.Database;
-using Banshee.Gui.Dialogs;
-using Banshee.Library;
 using Banshee.Sources;
 using Banshee.ServiceStack;
 using Banshee.Telepathy.Gui;
-using Banshee.Telepathy.DBus;
-using Banshee.Telepathy.Net;
 
 using Banshee.Telepathy.API;
-using Banshee.Telepathy.API.Data;
 using Banshee.Telepathy.API.Dispatchables;
 
 namespace Banshee.Telepathy.Data

@@ -32,16 +32,15 @@
 using System;
 using System.Collections.Generic;
 
-using Mono.Addins;
-
 using Gtk;
 using ScrolledWindow = Gtk.ScrolledWindow;
+
+using Mono.Addins;
 
 using Hyena;
 using Hyena.Widgets;
 using Hyena.Data.Gui;
 
-using Banshee.Base;
 using Banshee.Configuration;
 using Banshee.Sources;
 using Banshee.Sources.Gui;

@@ -32,10 +32,7 @@ using System.Xml;
 using System.Net;
 using System.Collections.Generic;
 
-using Banshee.I18n;
 using Banshee.Collection.Database;
-using Banshee.Base;
-using Banshee.ServiceStack;
 using Banshee.Sources;
 
 using Hyena;

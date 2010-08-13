@@ -30,9 +30,6 @@ using System;
 using System.Collections.Generic;
 
 using Hyena;
-using Banshee.Base;
-using Banshee.Collection;
-using Banshee.Sources;
 using Banshee.ServiceStack;
 using Banshee.Telepathy.Data;
 using Banshee.Telepathy.DBus;
@@ -46,7 +43,6 @@ using Banshee.Telepathy.API.DBus;
 using Banshee.Telepathy.API.Dispatchables;
 
 using Telepathy;
-using Telepathy.MissionControl;
 
 namespace Banshee.Telepathy
 {

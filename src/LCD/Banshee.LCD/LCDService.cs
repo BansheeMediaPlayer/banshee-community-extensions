@@ -28,13 +28,10 @@
 
 using System;
 using System.Collections.Generic;
-//using System.Threading;
-
-using Mono.Addins;
 
 using Gtk;
+using Mono.Addins;
 
-using Banshee.Base;
 using Banshee.ServiceStack;
 using Banshee.MediaEngine;
 using Banshee.Gui;

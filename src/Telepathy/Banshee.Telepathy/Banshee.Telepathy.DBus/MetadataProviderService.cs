@@ -26,21 +26,16 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using Gtk;
 using System;
 using System.Collections.Generic;
 
-using Banshee.Base;
 using Banshee.Collection.Database;
 using Banshee.ServiceStack;
 using Banshee.Telepathy.Data;
-using Banshee.Telepathy.Gui;
 
-using Banshee.Telepathy.API;
 using Banshee.Telepathy.API.Dispatchables;
 
 using Hyena;
-using Hyena.Data.Sqlite;
 
 using NDesk.DBus;
 

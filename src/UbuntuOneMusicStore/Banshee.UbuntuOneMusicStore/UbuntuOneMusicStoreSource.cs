@@ -26,14 +26,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-
 using Mono.Addins;
 using Gdk;
 
 using Hyena;
 
-using Banshee.Base;
 using Banshee.Collection;
 using Banshee.Gui;
 using Banshee.ServiceStack;

@@ -27,7 +27,6 @@
 //
 
 using System.Collections.Generic;
-using Banshee.Base;
 using Hyena;
 
 namespace Banshee.LiveRadio.Plugins

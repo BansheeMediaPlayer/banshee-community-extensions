@@ -27,11 +27,9 @@
 //
 
 using Gtk;
-using System;
 
 using Hyena.Data.Gui;
 
-using Banshee.Base;
 using Banshee.Gui;
 using Banshee.Collection;
 using Banshee.Collection.Gui;

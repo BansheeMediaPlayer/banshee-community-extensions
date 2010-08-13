@@ -26,14 +26,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading;
 
 using Hyena;
-using Banshee.Base;
-using Banshee.ServiceStack;
+
 using Banshee.Streaming;
 using Banshee.Collection.Database;
 

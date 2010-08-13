@@ -30,7 +30,6 @@ using System;
 using Mono.Addins;
 
 using Banshee.Base;
-using Banshee.Collection.Database;
 using Banshee.ServiceStack;
 using Banshee.Sources;
 

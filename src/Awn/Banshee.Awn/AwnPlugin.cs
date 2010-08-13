@@ -28,7 +28,6 @@
 using System;
 using System.IO;
 using Banshee.Base;
-using Banshee.Configuration;
 using Banshee.MediaEngine;
 using Banshee.ServiceStack;
 using Hyena;

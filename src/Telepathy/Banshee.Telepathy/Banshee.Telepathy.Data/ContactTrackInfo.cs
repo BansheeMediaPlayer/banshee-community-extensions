@@ -33,7 +33,6 @@ using System.Reflection;
 
 using Hyena;
 
-using Banshee.Base;
 using Banshee.Collection;
 using Banshee.Collection.Database;
 using Banshee.Telepathy.DBus;

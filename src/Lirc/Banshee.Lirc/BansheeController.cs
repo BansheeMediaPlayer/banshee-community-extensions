@@ -1,6 +1,4 @@
-using System;
 using Banshee.ServiceStack;
-using Banshee.Base;
 
 namespace Banshee.Lirc
 {

@@ -29,9 +29,6 @@
 using System;
 using System.Collections.Generic;
 
-using Mono.Addins;
-
-using Banshee.Base;
 using Banshee.Sources;
 using Banshee.Sources.Gui;
 using Banshee.ServiceStack;
@@ -42,10 +39,11 @@ using Banshee.Collection.Database;
 
 using Gtk;
 
+using Mono.Addins;
+
 using Hyena;
 
 using Banshee.LiveRadio.Plugins;
-using System.IO;
 
 namespace Banshee.LiveRadio
 {

@@ -33,7 +33,6 @@ using Gtk;
 using Mono.Addins;
 
 using Hyena;
-using Banshee.Base;
 using Banshee.MediaEngine;
 using Banshee.ServiceStack;
 using Banshee.Gui;

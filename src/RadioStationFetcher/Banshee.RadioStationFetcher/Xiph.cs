@@ -30,16 +30,13 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Net;
-using System.Threading;
 using System.Collections.Generic;
 
 using Mono.Addins;
 
-using Banshee.Base;
 using Banshee.Kernel;
 using Banshee.Collection.Database;
 using Banshee.Sources;
-using Banshee.I18n;
 
 using Hyena;
 

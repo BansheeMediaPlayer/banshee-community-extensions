@@ -28,13 +28,6 @@
 
 using System;
 
-using Banshee.Base;
-using Banshee.Collection.Database;
-using Banshee.ServiceStack;
-using Banshee.Sources;
-
-using Banshee.Telepathy.DBus;
-
 using Banshee.Telepathy.API;
 using Banshee.Telepathy.API.Dispatchables;
 

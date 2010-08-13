@@ -1,9 +1,7 @@
 using System;
 using System.Threading;
 
-using Hyena;
 using Banshee.ServiceStack;
-using Banshee.Base;
 using Banshee.Gui;
 using Gtk;
 

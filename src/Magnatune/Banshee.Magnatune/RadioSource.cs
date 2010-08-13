@@ -25,7 +25,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using Hyena;
-using Banshee.Base;
 using Banshee.Configuration;
 using Banshee.Gui;
 using Banshee.ServiceStack;

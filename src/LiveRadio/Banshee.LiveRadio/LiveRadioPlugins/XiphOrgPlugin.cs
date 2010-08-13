@@ -27,12 +27,9 @@
 //
 
 using System;
-using System.Net;
-using System.IO;
 using System.Xml;
 using System.Collections.Generic;
 
-using Banshee.Base;
 using Banshee.Collection.Database;
 
 using Hyena;

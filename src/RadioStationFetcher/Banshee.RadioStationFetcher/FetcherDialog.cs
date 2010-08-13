@@ -28,15 +28,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Net;
 
 using Gtk;
 using Mono.Addins;
 
 using Banshee.Kernel;
-using Banshee.Base;
-using Banshee.I18n;
 using Banshee.Collection.Database;
 using Banshee.Sources;
 
@@ -44,7 +41,6 @@ using Hyena;
 
 namespace Banshee.RadioStationFetcher
 {
-
     public abstract class FetcherDialog : Gtk.Dialog
     {
         public string source_name;

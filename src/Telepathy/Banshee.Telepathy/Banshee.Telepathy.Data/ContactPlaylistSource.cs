@@ -32,12 +32,8 @@ using System.Collections.Generic;
 using Hyena;
 using Hyena.Data.Sqlite;
 
-using Banshee.Base;
 using Banshee.ServiceStack;
-using Banshee.Collection;
-using Banshee.Collection.Database;
 using Banshee.Playlist;
-using Banshee.Sources;
 
 using Banshee.Telepathy.API;
 
