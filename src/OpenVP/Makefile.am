@@ -1,8 +1,8 @@
-ASSEMBLY = Banshee.OpenVP
-LINK = $(BANSHEE_LIBS)
-
-SOURCES =
-
-RESOURCES =
-
-include $(top_srcdir)/build/build.mk
+SUBDIRS = \
+	Cdh.Affe \
+	Cdh.Affe.Tests \
+	OpenVP \
+	OpenVP.Scripting \
+	OpenVP.Core \
+	Banshee.OpenVP \
+	Banshee.OpenVP.Visualizations

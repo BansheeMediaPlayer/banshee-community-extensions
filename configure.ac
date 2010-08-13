@@ -87,6 +87,7 @@ BCE_LIVERADIO
 BCE_LYRICS
 BCE_MAGNATUNE
 BCE_MIRAGE
+BCE_OPENVP
 BCE_RADIOSTATIONFETCHER
 BCE_SOUNDMENU
 BCE_STREAMRECORDER
@@ -126,7 +127,6 @@ help/Makefile
 po/Makefile.in
 
 src/Makefile
-src/OpenVP/Makefile
 src/AppIndicator/Makefile
 src/AssemblyInfo.cs
 
@@ -144,6 +144,14 @@ src/Lirc/GUITestHarness/Makefile
 src/Lirc/NUnitTests/Makefile
 src/LiveRadio/Makefile
 src/Lyrics/Makefile
+src/OpenVP/Makefile
+src/OpenVP/Cdh.Affe/Makefile
+src/OpenVP/Cdh.Affe.Tests/Makefile
+src/OpenVP/OpenVP/Makefile
+src/OpenVP/OpenVP.Core/Makefile
+src/OpenVP/OpenVP.Scripting/Makefile
+src/OpenVP/Banshee.OpenVP/Makefile
+src/OpenVP/Banshee.OpenVP.Visualizations/Makefile
 src/Magnatune/Makefile
 src/Mirage/Makefile
 src/Mirage/libmirageaudio/Makefile
@@ -179,7 +187,6 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
-    OpenVP:              yes
     Alarm Clock:         ${enable_AlarmClock}
     AppIndicator:        ${enable_AppIndicator}
     Awn:                 ${enable_Awn}
@@ -191,6 +198,7 @@ ${PACKAGE}-${VERSION}
     Lyrics:              ${enable_Lyrics}
     Magnatune:           ${enable_Magnatune}
     Mirage:              ${enable_Mirage}
+    OpenVP:              ${enable_OpenVP}
     RadioStationFetcher: ${enable_RadioStationFetcher}
     SoundMenu:           ${enable_SoundMenu}
     StreamRecorder:      ${enable_StreamRecorder}
