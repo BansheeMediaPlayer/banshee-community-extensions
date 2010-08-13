@@ -47,7 +47,7 @@ using Mirage;
 
 namespace Banshee.Mirage
 {
-    public class MiragePlugin : IExtensionService, IDisposable
+    public class MiragePlugin : IExtensionService, IDelayedInitializeService, IDisposable
     {
         AnalyzeLibraryJob analysis_job;
         Thread dupesearchThread;
@@ -62,6 +62,10 @@ namespace Banshee.Mirage
         static MiragePlugin instance = null;
 
         void IExtensionService.Initialize ()
+        {
+        }
+
+        public void DelayedInitialize ()
         {
             if (instance != null)
                 throw new InvalidOperationException ("A MiragePlugin instance is already in use");
