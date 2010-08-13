@@ -7,15 +7,15 @@ AC_DEFUN([BCE_OPENVP],
 		[The Banshee NowPlaying extension was not found. Please install it or disable the OpenVP extension by passing --disable-openvp])
 
 	BCE_CHECK_EXTENSION_DEP([OpenVP], [TAO_OPENGL],
-		[tao-opengl],
+		[tao-opengl >= 3.0],
 		[The Tao.OpenGl library was not found. Please install it or disable the OpenVP extension by passing --disable-openvp])
 
 	BCE_CHECK_EXTENSION_DEP([OpenVP], [TAO_FREEGLUT],
-		[tao-freeglut],
+		[tao-freeglut >= 2.4],
 		[The Tao.FreeGlut library was not found. Please install it or disable the OpenVP extension by passing --disable-openvp])
 
 	BCE_CHECK_EXTENSION_DEP([OpenVP], [TAO_SDL],
-		[tao-sdl],
+		[tao-sdl >= 1.2.13],
 		[The Tao.Sdl library was not found. Please install it or disable the OpenVP extension by passing --disable-openvp])
 
 	AC_PATH_PROG(JAY, jay, no)
