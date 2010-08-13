@@ -16,7 +16,7 @@ JAY_FILES = jay/affe-parser.jay \
 	jay/skeleton.cs
 
 affe-parser.cs : $(JAY_FILES)
-	$JAY -b .cs -c $< < jay/skeleton.cs > $@
+	$(JAY) -b .cs -c $< < jay/skeleton.cs > $@
 
 if ENABLE_OPENVP
 include $(top_srcdir)/build/build.mk
