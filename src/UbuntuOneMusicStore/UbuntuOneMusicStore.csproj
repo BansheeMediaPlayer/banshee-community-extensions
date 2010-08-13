@@ -65,6 +65,9 @@
       <Package>banshee-1-core</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Package>mono-addins</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UbuntuOneMusicStore.addin.xml">

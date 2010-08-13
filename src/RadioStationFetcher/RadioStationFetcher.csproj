@@ -65,6 +65,9 @@
       <Package>banshee-1-thickclient</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="Hyena, Version=1.7.0.0, Culture=neutral">
+      <Package>banshee-1-hyena</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="RadioStationFetcher.addin.xml">
