@@ -136,7 +136,6 @@ namespace Banshee.Telepathy.Gui
                 announcer = new Announcer (container.TelepathyService.ConnectionLocator);
             }
                                     
-            //Log.Debug (String.Format ("{0} announcing", ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()));
             if (announcer != null && ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()) {
                 if (track != null) {
                     announcer.Announce (String.Format (AddinManager.CurrentLocalizer.GetString ("Currently playing {0} by {1} from {2}"),
@@ -241,7 +240,7 @@ namespace Banshee.Telepathy.Gui
             if (ContactContainerSource.ShareCurrentlyPlayingSchema.Get ()) {                                    
                 switch (args.Event) {
                     case PlayerEvent.StartOfStream:
-                        //AnnounceTrack (ServiceManager.PlayerEngine.CurrentTrack);
+                        AnnounceTrack (ServiceManager.PlayerEngine.CurrentTrack);
                         break;
                     case PlayerEvent.StateChange:
                         PlayerEventStateChangeArgs state = args as PlayerEventStateChangeArgs;
