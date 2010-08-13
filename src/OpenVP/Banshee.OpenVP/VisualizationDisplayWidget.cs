@@ -29,8 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Banshee.ServiceStack;
-using Banshee.Sources;
-using Banshee.Sources.Gui;
 using Banshee.Gui;
 using Mono.Addins;
 using Gdk;
@@ -38,8 +36,6 @@ using Gtk;
 using OpenVP;
 using OpenVP.Core;
 using Tao.OpenGl;
-using Banshee.Collection;
-using Banshee.Configuration;
 
 namespace Banshee.OpenVP
 {
@@ -68,7 +64,8 @@ namespace Banshee.OpenVP
         public VisualizationDisplayWidget()
         {
             visualizationMenu = new Menu();
-            noVisualizationsMenuItem = new MenuItem("No visualizations installed");
+            noVisualizationsMenuItem = new MenuItem(
+                AddinManager.CurrentLocalizer.GetString ("No visualizations installed"));
             noVisualizationsMenuItem.Sensitive = false;
             noVisualizationsMenuItem.Show();
             visualizationMenu.Add(noVisualizationsMenuItem);
@@ -104,12 +101,14 @@ namespace Banshee.OpenVP
             InterfaceActionService ias = ServiceManager.Get<InterfaceActionService>();
 
             ias.GlobalActions.AddImportant(new ActionEntry(SELECT_VIS_ACTION,
-                                                           null, "Select visualization",
+                                                           null,
+                                                           AddinManager.CurrentLocalizer.GetString ("Select visualization"),
                                                            null, null,
                                                            OnSelectVisualizationClicked));
 
             ias.GlobalActions.AddImportant(new ToggleActionEntry(LOW_RES_ACTION,
-                                                                 null, "Low resolution",
+                                                                 null,
+                                                                 AddinManager.CurrentLocalizer.GetString ("Low resolution"),
                                                                  null, null,
                                                                  OnHalfResolutionToggled, false));
 
