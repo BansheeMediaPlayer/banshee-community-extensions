@@ -61,7 +61,13 @@ namespace ClutterFlow
 		}
 		public static bool CheckForExtension (string extension)
 		{
-			return OpenGLGetString(Cogl.GL.GL_EXTENSIONS).Contains (extension);
+			string extensions = OpenGLGetString(Cogl.GL.GL_EXTENSIONS);
+			if (String.IsNullOrEmpty (extensions)) {
+				return false;
+			}
+            else {
+				return extensions.Contains (extension);
+			}
 		}
 		
 		
