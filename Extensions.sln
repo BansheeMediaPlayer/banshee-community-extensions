@@ -26,6 +26,21 @@ EndProject
 Project("{2857B73E-F847-4B02-9238-064979017E93}") = "libmirageaudio", "src\Mirage\libmirageaudio\libmirageaudio.cproj", "{D8618AEA-5F05-48DE-86BB-0A1F601AE5DC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClutterFlow", "ClutterFlow", "{C54CC0D3-C05D-4A06-9918-5BF9B61C35BF}"
+	ProjectSection(MonoDevelopProperties) = preProject
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.FileWidth = 120
+		$1.TabWidth = 4
+		$1.NoTabsAfterNonTabs = True
+		$1.RemoveTrailingWhitespace = True
+		$1.inheritsSet = Mono
+		$1.inheritsScope = text/plain
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClutterFlow", "src\ClutterFlow\ClutterFlow\ClutterFlow.csproj", "{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}"
 EndProject
