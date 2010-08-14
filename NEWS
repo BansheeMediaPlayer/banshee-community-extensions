@@ -1,3 +1,38 @@
+===============================
+Version 1.7.4 - August 14, 2010
+===============================
+
+Contributors:
+Aaron Bockover, Alex Launi, Alexander Kojevnikov, Andrés G. Aragoneses,
+Bertrand Lorentz, Chow Loong Jin, Chris Howie, Frank Ziegler, Gabriel Burt,
+Iain Lane, Ruben Vermeersch, Sense Hofstede
+
+New:
+* [OpenVP] Add various visualizations to the Now Playing source
+* [SoundMenu] Control Banshee from the sound menu available in Ubuntu
+
+Enhancements:
+* User help is now available, automatically integrated into the Banshee help pages.
+  To contribute to it, get in touch with the GNOME Documentation Project at
+  http://live.gnome.org/DocumentationProject
+* [AppIndicator] Avoid conflicts with NotificationArea by not being enabled at the same time
+
+Bugs Fixed:
+* [AppIndicator] Fix toggle state issue when the window was launched from its starter
+* [AppIndicator] Stop the notifications from lagging and stacking up (bgo#616652)
+* [AppIndicator] Use banshee-panel icon if it exists
+* [ClutterFlow] Fix crash when checking GL extensions
+* [ClutterFlow] Copy the clutter-sharp assemblies during installation
+* [LiveRadio] Fix ShoutCAST streams (lp#572819)
+* [LiveRadio] Fix crash when disabling last enabled plugin (bgo#623983)
+* [Lyrics] Follow the WriteMetadata preference
+* [Mirage] Remove the ineffective "Duplicate Search" menu entry
+* [Mirage] Explicitly link mirageaudiotest to GStreamer libs (bgo#624084)
+* [Mirage] Delay initialization to avoid slowing down Banshee's startup
+* [StreamRecorder] Use a filesink in the gstreamer pipeline (bgo#616167)
+* [Telepathy] Update Now Playing information when gapless is on
+* [UbuntuOneMusicStore] Delay initialization until actually needed
+
 ==============================
 Version 1.6.0 - March 31, 2010
 ==============================
