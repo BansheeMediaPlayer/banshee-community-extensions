@@ -45,7 +45,10 @@ namespace Banshee.UbuntuOneMusicStore
         const int sort_order = 190;
         CustomView custom_view;
 
-        public UbuntuOneMusicStoreSource () : base (AddinManager.CurrentLocalizer.GetString ("Ubuntu One Music Store"), AddinManager.CurrentLocalizer.GetString ("Ubuntu One Music Store"), sort_order)
+        public UbuntuOneMusicStoreSource () : base (
+            AddinManager.CurrentLocalizer.GetString ("Ubuntu One Music Store"),
+            AddinManager.CurrentLocalizer.GetString ("Ubuntu One Music Store"),
+            sort_order, "ubuntu-one-music-store")
         {
             Pixbuf icon = new Pixbuf (System.Reflection.Assembly.GetExecutingAssembly ()
                                       .GetManifestResourceStream ("ubuntuone.png"));
