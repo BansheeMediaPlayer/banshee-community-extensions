@@ -73,10 +73,10 @@ namespace Banshee.Lyrics
         private LyricsManager () : base()
         {
             sources.Add (new SourceData (lyrc = new Lyrc ()));
+            sources.Add (new SourceData (new LyricWiki ()));
             sources.Add (new SourceData (new LeosLyrics ()));
             sources.Add (new SourceData (new Lyriki ()));
             sources.Add (new SourceData (new AutoLyrics ()));
-            sources.Add (new SourceData (new LyricWiki ()));
             sources.Add (new SourceData (new LyricsPlugin ()));
         }
 

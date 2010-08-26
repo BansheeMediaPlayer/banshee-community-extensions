@@ -36,7 +36,7 @@ namespace Banshee.Lyrics.Sources
         public LyricWiki ()
         {
             base.regexLyric =
-                new Regex ("<div class='lyricbox' >(.*)<p><!--",
+                new Regex ("&lt;lyrics&gt;(.*)&lt;/lyrics&gt;",
                            RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
         public override string Name {
@@ -44,7 +44,7 @@ namespace Banshee.Lyrics.Sources
         }
 
         public override string Url {
-            get { return "http://lyricwiki.org"; }
+            get { return "http://lyrics.wikia.com/api.php?action=query&prop=revisions&rvprop=content&format=xml&titles="; }
         }
 
         protected override string GetSuggestionUrl (string artist, string title)
@@ -59,7 +59,7 @@ namespace Banshee.Lyrics.Sources
             string relative_url = string.Format ("{0}:{1}", url_artist, url_song_title);
             string[]splitted_strings = relative_url.Split ('+');
 
-            string lyricwiki_url = this.Url + "/";
+            string lyricwiki_url = this.Url;
             /*make first character of each word upper and separate each word with '_' */
             foreach (string str in splitted_strings) {
                 if (str.Length == 0) {
