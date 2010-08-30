@@ -60,5 +60,3 @@ run_debug
 help/*/*.mo
 help/*/*.page
 !help/C/*.page
-gnome-doc-utils.make
-build/m4/gnome-doc-utils.m4

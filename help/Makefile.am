@@ -1,5 +1,5 @@
 if HAVE_GNOME_DOC_UTILS
-include $(top_srcdir)/gnome-doc-utils.make
+include $(top_srcdir)/build/gnome-doc-utils.make
 
 DOC_ID = banshee
 DOC_INCLUDES = 
