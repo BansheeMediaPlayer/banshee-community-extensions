@@ -55,6 +55,10 @@ namespace Banshee.Lyrics.Sources
             if (lyrics == null || lyrics.Trim().Length == 0) {
                 return null;
             }
+            // We sometimes just get a link when no lyrics are found
+            if (lyrics.Trim() == "<a href=\"http://www.lyricsvip.com/\" target=\"_blank\">http://www.lyricsvip.com</a>") {
+                return null;
+            }
 
             return lyrics;
         }
