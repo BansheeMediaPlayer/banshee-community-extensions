@@ -166,6 +166,7 @@ namespace Banshee.SoundMenu
 
         public void Register ()
         {
+            Log.Debug ("Registering with sound indicator");
             server.SetType ("music.banshee");
             string desktop_file = Paths.Combine (Paths.InstalledApplicationDataRoot,
                                                  "applications", "banshee-1.desktop");
@@ -395,7 +396,7 @@ namespace Banshee.SoundMenu
 
         private static readonly SchemaEntry<bool> EnabledSchema = new SchemaEntry<bool> (
             "plugins.soundmenu", "enabled",
-            false,
+            true,
             "Show Banshee in the sound menu",
             "Show Banshee in the sound menu"
         );
