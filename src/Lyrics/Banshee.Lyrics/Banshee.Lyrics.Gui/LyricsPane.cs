@@ -30,6 +30,7 @@ using System;
 
 using Mono.Addins;
 
+using Banshee.Collection;
 using Banshee.ContextPane;
 
 namespace Banshee.Lyrics.Gui
@@ -42,25 +43,13 @@ namespace Banshee.Lyrics.Gui
 
         private ContextPage context_page;
 
-        private string track_title;
-        private string track_artist;
-
         public LyricsPane (ContextPage context_page)
         {
             this.context_page = context_page;
             InitComponents ();
         }
 
-        public string TrackArtist {
-            get { return track_artist; }
-            set {track_artist = value; }
-        }
-
-        public string TrackTitle {
-            get { return track_title; }
-            set { track_title = value; UpdateLabel ();}
-        }
-
+        public TrackInfo Track { get; set; }
 
         public void InitComponents ()
         {
@@ -104,8 +93,8 @@ namespace Banshee.Lyrics.Gui
 
         private void UpdateLabel ()
         {
-            if (!string.IsNullOrEmpty (track_title)) {
-                label.Text = "<b>" + track_title + AddinManager.CurrentLocalizer.GetString (" lyric") + "</b>";
+            if (Track != null) {
+                label.Text = String.Format ("<b>{0}</b>", Track.DisplayTrackTitle);
                 label.UseMarkup = true;
             }
             this.ShowAll ();

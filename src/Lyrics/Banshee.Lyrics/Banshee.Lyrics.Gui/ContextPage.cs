@@ -53,9 +53,7 @@ namespace Banshee.Lyrics.Gui
 
         public override void SetTrack (Banshee.Collection.TrackInfo track)
         {
-            lyrics_pane.TrackArtist = track.ArtistName;
-            lyrics_pane.TrackTitle = track.TrackTitle;
-
+            lyrics_pane.Track = track;
         }
 
         public override Widget Widget {
