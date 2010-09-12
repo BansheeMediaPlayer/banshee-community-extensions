@@ -31,55 +31,107 @@ using System.Threading;
 using Mono.Addins;
 
 using Gtk;
-using Gdk;
 
 using Banshee.Gui;
+using Banshee.Gui.Widgets;
 using Banshee.Collection;
 using Banshee.MediaEngine;
 using Banshee.ServiceStack;
 
 namespace Banshee.Lyrics.Gui
 {
-    public partial class LyricsWindow : Gtk.Window
+    public class LyricsWindow : Window
     {
-        private TrackInfo saved_track;
-
         private int current_mode;
 
         public static int HTML_MODE = 0;
         public static int INSERT_MODE = 1;
 
-        private Button buttonCopy;
+        private TrackInfo saved_track;
 
-        public LyricsWindow () : base(Gtk.WindowType.Toplevel)
+        private ClassicTrackInfoDisplay track_info_display;
+        private LyricsBrowser lyrics_browser;
+        private ScrolledWindow lyrics_pane;
+        private Button refresh_button;
+        private Button save_button;
+        private TextView text_view;
+
+        public LyricsWindow () : base (WindowType.Toplevel)
         {
-            this.Build ();
             InitComponents ();
         }
 
         private void InitComponents ()
         {
-            this.KeyPressEvent += OnKeyPressed;
-            this.DeleteEvent += delegate(object o, DeleteEventArgs args) {
+            Resizable = true;
+            HeightRequest = 425;
+            WidthRequest = 410;
+            WindowPosition = WindowPosition.Center;
+            Icon = IconThemeUtils.LoadIcon ("banshee", 16);
+
+            var vbox = new VBox () {
+                Spacing = 6,
+                BorderWidth = 12
+            };
+
+            track_info_display = new ClassicTrackInfoDisplay ();
+            vbox.PackStart (track_info_display, false, false, 0);
+
+            lyrics_browser = new LyricsBrowser ();
+
+            lyrics_pane = new ScrolledWindow ();
+            lyrics_pane.Add (lyrics_browser);
+
+            var frame = new Frame ();
+            frame.Add (lyrics_pane);
+
+            vbox.PackStart (frame, true, true, 0);
+
+            var button_box = new HButtonBox () {
+                Spacing = 6,
+                BorderWidth = 1,
+                LayoutStyle = ButtonBoxStyle.End
+            };
+
+            var copy_button = new Button ("gtk-copy") {
+                TooltipText = AddinManager.CurrentLocalizer.GetString ("Copy lyrics to clipboard")
+            };
+            var close_button = new Button ("gtk-close");
+            refresh_button = new Button ("gtk-refresh");
+            save_button = new Button ("gtk-save");
+
+            button_box.PackStart (copy_button, false, false, 0);
+            button_box.PackStart (refresh_button, false, false, 0);
+            button_box.PackStart (save_button, false, false, 0);
+            button_box.PackStart (close_button, false, false, 0);
+
+            vbox.PackStart (button_box, false, false, 0);
+
+            Add (vbox);
+            if (Child != null) {
+                Child.ShowAll ();
+            }
+
+            text_view = new TextView ();
+            text_view.WrapMode = WrapMode.Word;
+
+            Hide ();
+
+            KeyPressEvent += OnKeyPressed;
+            DeleteEvent += delegate(object o, DeleteEventArgs args) {
                 OnClose (this, null);
                 args.RetVal = true;
             };
 
-            buttonCopy = new Button (AddinManager.CurrentLocalizer.GetString ("Copy")) {
-                TooltipText = AddinManager.CurrentLocalizer.GetString ("Copy lyrics to clipboard")
-            };
-            this.dialog1_ActionArea1.PackStart (buttonCopy, false, false, 0);
-            buttonCopy.Show ();
+            refresh_button.Clicked += OnRefresh;
+            save_button.Clicked += OnSaveLyrics;
+            close_button.Clicked += OnClose;
+            copy_button.Clicked += OnCopy;
 
-            this.buttonRefresh.Clicked += new EventHandler (OnRefresh);
-            this.buttonSave.Clicked += new EventHandler (OnSaveLyrics);
-            this.buttonClose.Clicked += new EventHandler (OnClose);
-            this.buttonCopy.Clicked += OnCopy;
-
-            this.lyricsBrowser.AddLinkClicked += ManuallyAddLyrics;
-            LyricsManager.Instance.LoadStarted += this.lyricsBrowser.OnLoading;
-            LyricsManager.Instance.LoadFinished += this.lyricsBrowser.LoadString;
-            this.SwitchTo (HTML_MODE);
+            lyrics_browser.AddLinkClicked += ManuallyAddLyrics;
+            LyricsManager.Instance.LoadStarted += lyrics_browser.OnLoading;
+            LyricsManager.Instance.LoadFinished += lyrics_browser.LoadString;
+            SwitchTo (HTML_MODE);
         }
 
         public void ForceUpdate ()
@@ -95,7 +147,7 @@ namespace Banshee.Lyrics.Gui
                 artist = AddinManager.CurrentLocalizer.GetString ("Unknown Artist");
             }
             window_title += by_str + artist;
-            this.Title = window_title;
+            Title = window_title;
 
         }
 
@@ -108,15 +160,14 @@ namespace Banshee.Lyrics.Gui
             ForceUpdate ();
         }
 
-        public LyricsBrowser GetBrowser ()
-        {
-            return this.lyricsBrowser;
+        public LyricsBrowser Browser {
+            get { return lyrics_browser; }
         }
 
         public new void Show ()
         {
             if (current_mode != HTML_MODE) {
-                this.SwitchTo (HTML_MODE);
+                SwitchTo (HTML_MODE);
             }
             base.Show ();
         }
@@ -131,7 +182,7 @@ namespace Banshee.Lyrics.Gui
 
         void OnClose (object sender, EventArgs args)
         {
-            this.Hide ();
+            Hide ();
 
             /*deselect the toggle action "Show lyrics" in the View menu */
             InterfaceActionService action_service = ServiceManager.Get<InterfaceActionService> ();
@@ -143,46 +194,46 @@ namespace Banshee.Lyrics.Gui
 
         private void OnRefresh (object sender, EventArgs args)
         {
-            this.GetBrowser ().OnRefresh ();
+            Browser.OnRefresh ();
         }
 
         private void OnCopy (object sender, EventArgs args)
         {
-            this.GetBrowser ().CopyLyricsToClipboard ();
+            Browser.CopyLyricsToClipboard ();
         }
 
         private void ManuallyAddLyrics (object sender, EventArgs args)
         {
-            this.SwitchTo (INSERT_MODE);
+            SwitchTo (INSERT_MODE);
         }
 
         public void SwitchTo (int mode)
         {
-            this.lyricsScrollPane.Remove (this.lyricsScrollPane.Child);
+            lyrics_pane.Remove (lyrics_pane.Child);
             if (mode == HTML_MODE) {
-                this.buttonRefresh.Show ();
-                this.buttonSave.Hide ();
-                this.lyricsScrollPane.Add (this.lyricsBrowser);
+                refresh_button.Show ();
+                save_button.Hide ();
+                lyrics_pane.Add (lyrics_browser);
             } else {
-                this.buttonSave.Show ();
-                this.buttonRefresh.Hide ();
+                save_button.Show ();
+                refresh_button.Hide ();
 
-                this.lyricsScrollPane.Add (this.textBrowser);
-                this.textBrowser.Buffer.Text = "";
-                this.textBrowser.GrabFocus ();
+                lyrics_pane.Add (text_view);
+                text_view.Buffer.Text = "";
+                text_view.GrabFocus ();
 
-                this.saved_track = ServiceManager.PlayerEngine.CurrentTrack;
+                saved_track = ServiceManager.PlayerEngine.CurrentTrack;
             }
 
-            this.lyricsScrollPane.ResizeChildren ();
-            this.lyricsScrollPane.ShowAll ();
+            lyrics_pane.ResizeChildren ();
+            lyrics_pane.ShowAll ();
 
             current_mode = mode;
         }
 
         public void OnSaveLyrics (object sender, EventArgs args)
         {
-            string lyrics = this.textBrowser.Buffer.Text;
+            string lyrics = text_view.Buffer.Text;
             LyricsManager.Instance.SaveLyrics (saved_track, lyrics, true);
 
             /*refresh all the views. Now the track is taken from the cache */
@@ -190,7 +241,7 @@ namespace Banshee.Lyrics.Gui
                 LyricsManager.Instance.FetchLyrics (saved_track);
             }
 
-            this.SwitchTo (HTML_MODE);
+            SwitchTo (HTML_MODE);
         }
     }
 }

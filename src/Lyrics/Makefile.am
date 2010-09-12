@@ -3,8 +3,6 @@ LINK = $(BANSHEE_LIBS) $(BANSHEE_WEBBROWSER_LIBS) $(GCONF_SHARP_20_LIBS) -r:Syst
 
 SOURCES =  \
 	Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs \
-	Banshee.Lyrics/Banshee.Lyrics.Gui/gtk-gui/generated.cs \
-	Banshee.Lyrics/Banshee.Lyrics.Gui/gtk-gui/LyricsWindow.cs \
 	Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs \
 	Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsPane.cs \
 	Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs \

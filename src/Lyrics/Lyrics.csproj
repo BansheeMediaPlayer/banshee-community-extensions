@@ -100,8 +100,6 @@
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\Lyriki.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\LeosLyrics.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\LyricsWindow.cs" />
-    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\gtk-gui\generated.cs" />
-    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\gtk-gui\LyricsWindow.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.IO\LyricsCache.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Gui\LyricsBrowser.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics\LyricsService.cs" />
@@ -117,7 +115,7 @@
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
-        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" BuildTargetName="" CleanTargetName="">
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am">
           <BuildFilesVar Sync="true" Name="SOURCES" />
           <DeployFilesVar />
           <ResourcesVar Sync="true" Name="RESOURCES" />
