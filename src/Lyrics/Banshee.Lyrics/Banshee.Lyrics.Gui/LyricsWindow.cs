@@ -49,6 +49,8 @@ namespace Banshee.Lyrics.Gui
         public static int HTML_MODE = 0;
         public static int INSERT_MODE = 1;
 
+        private Button buttonCopy;
+
         public LyricsWindow () : base(Gtk.WindowType.Toplevel)
         {
             this.Build ();
@@ -63,9 +65,16 @@ namespace Banshee.Lyrics.Gui
                 args.RetVal = true;
             };
 
+            buttonCopy = new Button (AddinManager.CurrentLocalizer.GetString ("Copy")) {
+                TooltipText = AddinManager.CurrentLocalizer.GetString ("Copy lyrics to clipboard")
+            };
+            this.dialog1_ActionArea1.PackStart (buttonCopy, false, false, 0);
+            buttonCopy.Show ();
+
             this.buttonRefresh.Clicked += new EventHandler (OnRefresh);
             this.buttonSave.Clicked += new EventHandler (OnSaveLyrics);
             this.buttonClose.Clicked += new EventHandler (OnClose);
+            this.buttonCopy.Clicked += OnCopy;
 
             this.lyricsBrowser.AddLinkClicked += ManuallyAddLyrics;
             LyricsManager.Instance.LoadStarted += this.lyricsBrowser.OnLoading;
@@ -135,6 +144,11 @@ namespace Banshee.Lyrics.Gui
         private void OnRefresh (object sender, EventArgs args)
         {
             this.GetBrowser ().OnRefresh ();
+        }
+
+        private void OnCopy (object sender, EventArgs args)
+        {
+            this.GetBrowser ().CopyLyricsToClipboard ();
         }
 
         private void ManuallyAddLyrics (object sender, EventArgs args)

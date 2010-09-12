@@ -39,6 +39,8 @@ namespace Banshee.Lyrics.Gui
 
     public class LyricsBrowser : OssiferWebView
     {
+        private string lyrics_text;
+
         public event AddLinkClickedHandler AddLinkClicked;
 
         private bool insert_mode_available = true;
@@ -74,32 +76,31 @@ namespace Banshee.Lyrics.Gui
             LyricsManager.Instance.RefreshLyrics (ServiceManager.PlayerEngine.CurrentTrack);
         }
 
-        // TODO: Implement Select All and Copy
-        /*protected override void OnPopulatePopup (Menu menu)
+        private const int TextType = 1;
+        private const int UTF8_FORMAT = 8;
+        private static readonly Gdk.Atom CLIPBOARD_ATOM = Gdk.Atom.Intern ("CLIPBOARD", false);
+
+        public void CopyLyricsToClipboard ()
         {
-            foreach (Widget child in menu.Children) {
-                menu.Remove (child);
+            Clipboard clipboard = Clipboard.Get (CLIPBOARD_ATOM);
+            var targets = new TargetList ();
+            targets.AddTextTargets (TextType);
+            clipboard.SetWithData ((Gtk.TargetEntry[])targets, ClipboardGetFunc, ClipboardClearFunc);
+        }
+
+        public void ClipboardGetFunc (Clipboard clipboard, SelectionData selection_data, uint info)
+        {
+            if (selection_data == null)
+                return;
+            switch (info) {
+                case TextType:
+                    selection_data.Text = Utils.ToNormalString (lyrics_text);
+                    break;
             }
+        }
 
-            ImageMenuItem item = new ImageMenuItem ("Copy");
-            item.Image = new Image ("gtk-copy", IconSize.Menu);
-            item.Activated += delegate { base.CopyClipboard (); };
-            menu.Add (item);
-
-            item = new ImageMenuItem ("Select All");
-            item.Image = new Image ("gtk-select-all", IconSize.Menu);
-            item.Activated += delegate { base.SelectAll (); };
-            menu.Add (item);
-
-            menu.Add (new SeparatorMenuItem ());
-
-            item = new ImageMenuItem ("Refresh");
-            item.Image = new Image ("gtk-refresh", IconSize.Menu);
-            item.Activated += delegate { OnRefresh (); };
-            menu.Add (item);
-
-            menu.ShowAll ();
-        }*/
+        public void ClipboardClearFunc (Clipboard clipboard)
+        { }
 
         public void LoadString (object o, LoadFinishedEventArgs args)
         {
@@ -143,6 +144,8 @@ namespace Banshee.Lyrics.Gui
 
         public void LoadString (string str)
         {
+            lyrics_text = str;
+
             if (str == null) {
                 str = " ";
             }
