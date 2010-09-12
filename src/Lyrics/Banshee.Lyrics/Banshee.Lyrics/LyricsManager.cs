@@ -94,7 +94,7 @@ namespace Banshee.Lyrics
         }
 
         /*
-         * Get the lyricss for the current track
+         * Get the lyrics for the current track
          */
         public void FetchLyrics (TrackInfo track)
         {
@@ -137,12 +137,12 @@ namespace Banshee.Lyrics
                 return null;
             }
 
-            //check if the netowrk is up
+            //check if the network is up
             if (!ServiceManager.Get<Banshee.Networking.Network> ().Connected) {
                 throw new Exception ("You don't seem to be connected to internet.<br>Check your network connection.");
             }
 
-            //download the lyricss
+            //download the lyrics
             string lyrics = null;
             foreach (var source in GetSources (SourceData.LyricsSelector)) {
                 bool found = false;
