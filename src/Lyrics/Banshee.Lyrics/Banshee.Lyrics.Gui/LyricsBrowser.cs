@@ -30,14 +30,14 @@ using System.Text;
 
 using Mono.Addins;
 using System.Threading;
-using WebKit;
 using Banshee.ServiceStack;
+using Banshee.WebBrowser;
 
 namespace Banshee.Lyrics.Gui
 {
     public delegate void AddLinkClickedHandler (object o, EventArgs e);
 
-    public class LyricsBrowser : WebView
+    public class LyricsBrowser : OssiferWebView
     {
         public event AddLinkClickedHandler AddLinkClicked;
 
@@ -56,17 +56,17 @@ namespace Banshee.Lyrics.Gui
             return true;
         }
 
-        protected override int OnNavigationRequested (WebFrame frame, NetworkRequest request)
+        protected override OssiferNavigationResponse OnNavigationPolicyDecisionRequested (string uri)
         {
-            if (!IsValidUri (request.Uri)) {
-                return -1;
+            if (!IsValidUri (uri)) {
+                return OssiferNavigationResponse.Unhandled;
             }
-            if (request.Uri == AddinManager.CurrentLocalizer.GetString ("add")) {
+            if (uri == AddinManager.CurrentLocalizer.GetString ("add")) {
                 AddLinkClicked (this, null);
             } else {
-                LyricsManager.Instance.FetchLyricsFromLyrc (request.Uri);
+                LyricsManager.Instance.FetchLyricsFromLyrc (uri);
             }
-            return 0;
+            return OssiferNavigationResponse.Accept;
         }
 
         public void OnRefresh ()
@@ -74,7 +74,8 @@ namespace Banshee.Lyrics.Gui
             LyricsManager.Instance.RefreshLyrics (ServiceManager.PlayerEngine.CurrentTrack);
         }
 
-        protected override void OnPopulatePopup (Menu menu)
+        // TODO: Implement Select All and Copy
+        /*protected override void OnPopulatePopup (Menu menu)
         {
             foreach (Widget child in menu.Children) {
                 menu.Remove (child);
@@ -98,7 +99,7 @@ namespace Banshee.Lyrics.Gui
             menu.Add (item);
 
             menu.ShowAll ();
-        }
+        }*/
 
         public void LoadString (object o, LoadFinishedEventArgs args)
         {
@@ -146,7 +147,7 @@ namespace Banshee.Lyrics.Gui
                 str = " ";
             }
             str = "<div style=\"margin-left:5px;font-size:12px\">" +  str + "</div>";
-            this.LoadHtmlString (str, "");
+            LoadString (str, "text/html", "UTF-8", null);
         }
     }
 }

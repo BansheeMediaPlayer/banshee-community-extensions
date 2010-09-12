@@ -1,5 +1,5 @@
 ASSEMBLY = Banshee.Lyrics
-LINK = $(BANSHEE_LIBS) $(WEBKIT_SHARP_LIBS) $(GCONF_SHARP_20_LIBS) -r:System.Web.Services -r:System.Xml 
+LINK = $(BANSHEE_LIBS) $(BANSHEE_WEBBROWSER_LIBS) $(GCONF_SHARP_20_LIBS) -r:System.Web.Services -r:System.Xml
 
 SOURCES =  \
 	Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs \
