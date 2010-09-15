@@ -32,7 +32,7 @@ Points of Contact
 Dependencies
 =======================
 
-Banshee 1.5.4 and its devel packages are required.  Some extensions have
+Banshee 1.7.4 and its devel packages are required.  Some extensions have
 specific requirements.
 
 AppIndicator
@@ -49,11 +49,7 @@ LCD
 Lirc
   LIRC
 
-Lyrics
-  webkit-sharp
-
 Mirage:
-  Banshee 1.5.5
   glib-2.0
   fftw3f
   samplerate
@@ -69,7 +65,6 @@ Telepathy
 
 UbuntuOneMusicStore
   ubuntuone-sharp-1.0
-  Banshee 1.5.5
 
 =======================
 Create a New Extension

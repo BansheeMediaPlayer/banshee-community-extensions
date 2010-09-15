@@ -1,3 +1,21 @@
+==================================
+Version 1.7.6 - September 15, 2010
+==================================
+
+Contributors:
+Aaron Bockover, Bertrand Lorentz, Patrick Niklaus
+
+Enhancements:
+* [Lyrics] Add a Copy button to the lyrics window
+* [Lyrics] Fix up the label in LyricsPane
+* [Lyrics] Use Banshee.WebBrowser instead of webkit-sharp
+
+Bugs Fixed:
+* [build] Bring gnome-doc-utils autofoo into the tree
+* [Lyrics] Detect a false positive from lyricsplugin.com
+* [Lyrics] Fixed LyricsWiki source
+* [U1MS] Set a TypeUniqueId for the source (bgo#626965)
+
 ===============================
 Version 1.7.4 - August 14, 2010
 ===============================
