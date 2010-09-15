@@ -75,7 +75,9 @@ endif
 # Release Targets
 # ---------------
 
--include release-rc
+RELEASE_WEB_USER=banshee
+RELEASE_WEB_HOST=banshee.fm
+RELEASE_WEB_PATH=/home/banshee/web/download.banshee.fm/banshee-community-extensions
 
 prepare-release: distcheck
 	rm -rf release-data
