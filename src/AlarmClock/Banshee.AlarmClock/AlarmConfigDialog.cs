@@ -89,8 +89,8 @@ namespace Banshee.AlarmClock
 
         private void OnOKClicked (object o, EventArgs e)
         {
-            // The alarm thread has to be re-initialized to take into account the new alarm time
-            plugin.ReloadAlarm ();
+            // The alarm has to be reset to take into account the new alarm time
+            plugin.ResetAlarm ();
             Destroy ();
         }
 

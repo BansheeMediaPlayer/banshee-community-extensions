@@ -87,8 +87,15 @@ namespace Banshee.AlarmClock
             ui_manager_id = action_service.UIManager.AddUiFromResource ("AlarmMenu.xml");
         }
 
+        private bool disposing = false;
+        public bool Disposing {
+            get { return disposing; }
+        }
+
         public void Dispose ()
         {
+            disposing = true;
+
             Log.Debug ("Disposing Alarm Plugin");
             action_service.UIManager.RemoveUi (ui_manager_id);
             action_service.UIManager.RemoveActionGroup (actions);
@@ -98,8 +105,10 @@ namespace Banshee.AlarmClock
                 GLib.Source.Remove (sleep_timer_id);
                 Log.Debug ("Disabling old sleep timer");
             }
-            alarm_thread.Abort ();
+
+            ResetAlarm ();
             alarm_thread.Join ();
+            alarm_thread = null;
         }
 
         public static void DoWait ()
@@ -114,10 +123,15 @@ namespace Banshee.AlarmClock
             new AlarmConfigDialog (this);
         }
 
-        public void ReloadAlarm ()
+        private AutoResetEvent alarm_reset_event = new AutoResetEvent (false);
+        public AutoResetEvent AlarmResetEvent {
+            get { return alarm_reset_event; }
+        }
+
+        public void ResetAlarm ()
         {
-            // The alarm thread has to be re-initialized to take into account the new alarm time
-            alarm_thread.Interrupt ();
+            // The alarm has to be reset to take into account the new alarm time
+            AlarmResetEvent.Set ();
         }
 
         protected void OnSetSleepTimer (object o, EventArgs a)
