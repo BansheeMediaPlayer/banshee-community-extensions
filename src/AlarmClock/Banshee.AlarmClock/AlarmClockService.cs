@@ -99,6 +99,7 @@ namespace Banshee.AlarmClock
                 Log.Debug ("Disabling old sleep timer");
             }
             alarm_thread.Abort ();
+            alarm_thread.Join ();
         }
 
         public static void DoWait ()
