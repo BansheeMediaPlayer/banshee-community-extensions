@@ -31,23 +31,23 @@ using System;
 using Gtk;
 using Mono.Addins;
 
+using Banshee.Gui.Dialogs;
+
 namespace Banshee.AlarmClock
 {
-    public class SleepTimerConfigDialog : Dialog
+    public class SleepTimerConfigDialog : BansheeDialog
     {
-        AlarmClockService plugin;
+        AlarmClockService service;
 
         SpinButton sleepHour;
         SpinButton sleepMin;
 
-        public SleepTimerConfigDialog (AlarmClockService plugin) : base ()
+        public SleepTimerConfigDialog (AlarmClockService service) : base (AddinManager.CurrentLocalizer.GetString ("Sleep Timer"))
         {
-            this.plugin = plugin;
+            this.service = service;
 
-            Title = AddinManager.CurrentLocalizer.GetString ("Sleep Timer");
             WidthRequest = 250;
             HeightRequest = 150;
-            VBox.Spacing = 10;
 
             BuildWidget ();
             ShowAll ();
@@ -58,8 +58,8 @@ namespace Banshee.AlarmClock
             sleepHour = new SpinButton (0,23,1);
             sleepMin  = new SpinButton (0,59,1);
 
-            sleepHour.Value = (int) plugin.GetSleepTimer () / 60 ;
-            sleepMin.Value = plugin.GetSleepTimer () - (sleepHour.Value * 60);
+            sleepHour.Value = (int) service.GetSleepTimer () / 60 ;
+            sleepMin.Value = service.GetSleepTimer () - (sleepHour.Value * 60);
 
             sleepHour.WidthChars = 2;
             sleepMin.WidthChars  = 2;
@@ -79,17 +79,17 @@ namespace Banshee.AlarmClock
             topbox.PackStart (separator);
             topbox.PackStart (sleepMin);
 
-            this.AddActionWidget (OK, 0);
+            AddActionWidget (OK, 0);
 
-            this.VBox.PackStart (topbox);
-            this.VBox.PackStart (comment);
+            VBox.PackStart (topbox);
+            VBox.PackStart (comment);
         }
 
         public void OnSleepTimerOK (object o, EventArgs a)
         {
             int timervalue = (int)sleepHour.Value * 60 + (int)sleepMin.Value;
-            plugin.SetSleepTimer (timervalue);
-            this.Destroy ();
+            service.SetSleepTimer (timervalue);
+            Destroy ();
         }
     }
 }

@@ -38,43 +38,43 @@ namespace Banshee.AlarmClock
 {
     public class AlarmThread
     {
-        AlarmClockService plugin;
+        AlarmClockService service;
 
-        public AlarmThread (AlarmClockService plugin)
+        public AlarmThread (AlarmClockService service)
         {
-            this.plugin = plugin;
+            this.service = service;
         }
 
         public void MainLoop ()
         {
-            while (!plugin.Disposing) {
+            while (!service.Disposing) {
                 uint delay = (uint)TimeUntilAlarm ().TotalMilliseconds;
 
                 uint timeout_id = GLib.Timeout.Add (delay, StartPlaying);
-                plugin.AlarmResetEvent.WaitOne ();
+                service.AlarmResetEvent.WaitOne ();
                 GLib.Source.Remove (timeout_id);
             }
         }
 
         private bool StartPlaying ()
         {
-            plugin.AlarmResetEvent.Set ();
+            service.AlarmResetEvent.Set ();
             if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing) {
                 return false;
             }
 
             Log.Debug ("Alarm Plugin: Start playing ");
 
-            if (this.plugin.FadeDuration > 0) {
-                ServiceManager.PlayerEngine.Volume = plugin.FadeStartVolume;
-                new VolumeFade (plugin.FadeStartVolume, plugin.FadeEndVolume, plugin.FadeDuration);
+            if (this.service.FadeDuration > 0) {
+                ServiceManager.PlayerEngine.Volume = service.FadeStartVolume;
+                new VolumeFade (service.FadeStartVolume, service.FadeEndVolume, service.FadeDuration);
             }
             // PlayerEngine.Play () only works if we are paused in a track
             // PlayerEngine.TogglePlaying () starts the first track if we're not paused in a track
             ServiceManager.PlayerEngine.TogglePlaying ();
 
-            if (!String.IsNullOrEmpty (plugin.AlarmCommand)) {
-                System.Diagnostics.Process.Start (plugin.AlarmCommand);
+            if (!String.IsNullOrEmpty (service.AlarmCommand)) {
+                System.Diagnostics.Process.Start (service.AlarmCommand);
             }
 
             return false;
@@ -83,7 +83,7 @@ namespace Banshee.AlarmClock
         private TimeSpan TimeUntilAlarm ()
         {
             DateTime now = DateTime.Now;
-            DateTime alarmTime = new DateTime (now.Year, now.Month, now.Day, plugin.AlarmHour, plugin.AlarmMinute, 0);
+            DateTime alarmTime = new DateTime (now.Year, now.Month, now.Day, service.AlarmHour, service.AlarmMinute, 0);
 
             TimeSpan delay = alarmTime - now;
             if (delay < TimeSpan.Zero) {

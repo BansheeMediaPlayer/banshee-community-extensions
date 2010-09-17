@@ -31,24 +31,22 @@ using System;
 using Gtk;
 using Mono.Addins;
 
+using Banshee.Gui.Dialogs;
+
 namespace Banshee.AlarmClock
 {
-    public class ConfigurationDialog : Gtk.Dialog
+    public class ConfigurationDialog : BansheeDialog
     {
-        private AlarmClockService plugin;
+        private AlarmClockService service;
         private Entry command_entry;
         private VScale fade_start;
         private VScale fade_end;
         private SpinButton fade_duration;
         int volumeSliderHeight = 120;
 
-        public ConfigurationDialog(AlarmClockService plugin) : base()
+        public ConfigurationDialog (AlarmClockService service) : base (AddinManager.CurrentLocalizer.GetString ("Alarm Clock configuration"))
         {
-            this.plugin = plugin;
-
-            Title = AddinManager.CurrentLocalizer.GetString ("Alarm Clock configuration");
-            HasSeparator = false;
-            BorderWidth = 5;
+            this.service = service;
 
             fade_start = new VScale (0, 100, 1);
             fade_start.Inverted = true;
@@ -103,13 +101,13 @@ namespace Banshee.AlarmClock
             VBox.PackStart (alarm_fade_frame, false, false, 3);
             VBox.PackStart (alarm_misc_frame, false, false, 3);
 
-            AddButton (Stock.Close, ResponseType.Close);
+            AddDefaultCloseButton ();
 
             // initialize values
-            command_entry.Text = plugin.AlarmCommand;
-            fade_start.Value = plugin.FadeStartVolume;
-            fade_end.Value = plugin.FadeEndVolume;
-            fade_duration.Value = plugin.FadeDuration;
+            command_entry.Text = service.AlarmCommand;
+            fade_start.Value = service.FadeStartVolume;
+            fade_end.Value = service.FadeEndVolume;
+            fade_duration.Value = service.FadeDuration;
 
             // attach change handlers
             command_entry.Changed += new EventHandler (AlarmCommand_Changed);
@@ -120,22 +118,22 @@ namespace Banshee.AlarmClock
 
         private void AlarmCommand_Changed (object source, System.EventArgs args)
         {
-            plugin.AlarmCommand = command_entry.Text;
+            service.AlarmCommand = command_entry.Text;
         }
 
         private void FadeStartVolume_Changed (object source, System.EventArgs args)
         {
-            plugin.FadeStartVolume = (ushort) fade_start.Value;
+            service.FadeStartVolume = (ushort) fade_start.Value;
         }
 
         private void FadeEndVolume_Changed (object source, System.EventArgs args)
         {
-            plugin.FadeEndVolume = (ushort) fade_end.Value;
+            service.FadeEndVolume = (ushort) fade_end.Value;
         }
 
         private void FadeDuration_Changed (object source, System.EventArgs args)
         {
-            plugin.FadeDuration = (ushort) fade_duration.Value;
+            service.FadeDuration = (ushort) fade_duration.Value;
         }
     }
 }

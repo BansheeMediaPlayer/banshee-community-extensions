@@ -31,20 +31,21 @@ using System;
 using Gtk;
 using Mono.Addins;
 
+using Banshee.Gui.Dialogs;
+
 namespace Banshee.AlarmClock
 {
-    public class AlarmConfigDialog : Dialog
+    public class AlarmConfigDialog : BansheeDialog
     {
-        private AlarmClockService plugin;
+        private AlarmClockService service;
         private SpinButton spbHour;
         private SpinButton spbMinute;
         private CheckButton isEnabled;
 
-        public AlarmConfigDialog (AlarmClockService plugin) : base ()
+        public AlarmConfigDialog (AlarmClockService service) : base (AddinManager.CurrentLocalizer.GetString ("Alarm Time"))
         {
-            this.plugin = plugin;
+            this.service = service;
 
-            Title = "Alarm";
             WidthRequest = 250;
             HeightRequest = 150;
 
@@ -78,9 +79,9 @@ namespace Banshee.AlarmClock
             VBox.PackStart (time_box_outer, true, false, 6);
 
             // Initialize with current values
-            spbHour.Value = plugin.AlarmHour;
-            spbMinute.Value = plugin.AlarmMinute;
-            isEnabled.Active = plugin.AlarmEnabled;
+            spbHour.Value = service.AlarmHour;
+            spbMinute.Value = service.AlarmMinute;
+            isEnabled.Active = service.AlarmEnabled;
 
             isEnabled.Toggled += new EventHandler (AlarmEnabled_Changed);
             spbHour.ValueChanged += new EventHandler (AlarmHour_Changed);
@@ -90,23 +91,23 @@ namespace Banshee.AlarmClock
         private void OnOKClicked (object o, EventArgs e)
         {
             // The alarm has to be reset to take into account the new alarm time
-            plugin.ResetAlarm ();
+            service.ResetAlarm ();
             Destroy ();
         }
 
         private void AlarmEnabled_Changed (object source, System.EventArgs args)
         {
-            plugin.AlarmEnabled = isEnabled.Active;
+            service.AlarmEnabled = isEnabled.Active;
         }
 
         private void AlarmHour_Changed (object source, System.EventArgs args)
         {
-            plugin.AlarmHour = (ushort) spbHour.Value;
+            service.AlarmHour = (ushort) spbHour.Value;
         }
 
         private void AlarmMinute_Changed (object source, System.EventArgs args)
         {
-            plugin.AlarmMinute = (ushort) spbMinute.Value;
+            service.AlarmMinute = (ushort) spbMinute.Value;
         }
     }
 }
