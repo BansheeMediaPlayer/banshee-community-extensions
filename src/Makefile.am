@@ -1,4 +1,5 @@
 SUBDIRS = \
+    RandomByLastfm \
 	AlarmClock \
 	AppIndicator \
 	Awn \

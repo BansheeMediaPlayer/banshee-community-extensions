@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.RandomByLastfm"
+    version="0.3"
+    compatVersion="0.3"
+    copyright="Copyright © 2010 Raimo Radczewski Licensed under the MIT X11 license."
+    name="Lastfm Shuffle Mode"
+    category="Community Extensions"
+    description="Shuffle your library with similar tracks to what you're listening to"
+    author="Raimo Radczewski"
+    url="http://banshee-project.org/"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/PlaybackController/ShuffleModes">
+    <ShuffleMode class="Banshee.RandomByLastfm.RandomByLastfm"/>
+  </Extension>
+
+</Addin>
