@@ -37,6 +37,7 @@ src/OpenVP/Banshee.OpenVP/VisualizationDisplayWidget.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs
+src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfm.cs
 src/SoundMenu/Banshee.SoundMenu/SoundMenuService.cs
 src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs
 src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs

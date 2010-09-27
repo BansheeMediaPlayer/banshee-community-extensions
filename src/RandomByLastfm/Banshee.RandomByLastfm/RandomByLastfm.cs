@@ -47,6 +47,8 @@ namespace Banshee.RandomByLastfm
         public static List<string> artistsAdded;
         public static List<string> similarArtists;
 
+        // These values have proved to assure a good mix
+        // possible future enhancement would be to let the user change these via gui
         public static readonly int MAX_ARTISTS = 50;
         public static readonly int MAX_ARTIST_ADD = 40;
         public static readonly int MIN_ARTIST_ADD = 5;
@@ -113,7 +115,7 @@ namespace Banshee.RandomByLastfm
 
                 if (!similarArtists.Contains (currentTrack.AlbumArtist.ToLower ())) {
                     // User changed Track to a not similar artist, clear list
-                    Hyena.Log.Debug ("User changed track, clearing lists and resetting depth");
+                    Hyena.Log.Debug ("RandomByLastfm: User changed track, clearing lists and resetting depth");
                     similarArtists.Clear ();
                     artistsAdded.Clear ();
                     similarityDepth = 0;
@@ -126,13 +128,13 @@ namespace Banshee.RandomByLastfm
 
         public static void ScheduleQueryjob()
         {
-                Hyena.Log.Debug (string.Format ("Scheduling new LastfmQueryJob at Thread: {0}", Thread.CurrentThread.Name));
+                Hyena.Log.Debug (string.Format ("RandomByLastfm: Scheduling new LastfmQueryJob at Thread: {0}", Thread.CurrentThread.Name));
                 Banshee.Kernel.Scheduler.Schedule (new LastfmQueryjob ());
         }
 
         public static void UnscheduleQueryjob ()
         {
-            Hyena.Log.Debug ("Unscheduling old LastfmQueryjobs");
+            Hyena.Log.Debug ("RandomByLastfm: Unscheduling old LastfmQueryjobs");
             Banshee.Kernel.Scheduler.Unschedule (typeof(LastfmQueryjob));
         }
 
@@ -146,6 +148,7 @@ namespace Banshee.RandomByLastfm
             LastfmArtistData artist = new LastfmArtistData (currentTrack.AlbumArtist);
             
             // Formular: numTake = Max(MIN_ARTIST_ADD, MAX_ARTIST_ADD/(2^similarityDepth))
+            // Simple formular, so "derived" artists don't change the list too much
             int numTake = Math.Max ((int)Math.Floor (MAX_ARTIST_ADD / (Math.Pow (2, similarityDepth))), MIN_ARTIST_ADD);
             
             // Artists from LastfmQuery
@@ -158,12 +161,12 @@ namespace Banshee.RandomByLastfm
             // - Reduced by max number to get
             var newArtists = GetPresentArtists (lastfmArtists).Take (numTake);
             
-            Hyena.Log.Debug (string.Format ("[RandomByLastfm] {0} present similar Artists, adding {1} at Depth {2}", similarArtists.Count, newArtists.Count (), similarityDepth));
+            Hyena.Log.Debug (string.Format ("RandomByLastfm: {0} present similar Artists, adding {1} at Depth {2}", similarArtists.Count, newArtists.Count (), similarityDepth));
             
             similarArtists.AddRange (newArtists);
             
             if (similarArtists.Count > MAX_ARTISTS) {
-                Hyena.Log.Debug ("Maximum reached, clearing random artists");
+                Hyena.Log.Debug ("RandomByLastfm: Maximum reached, clearing random artists");
                 LimitList ();
             }
             
