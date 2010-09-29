@@ -1,4 +1,16 @@
 ==================================
+Version 1.8.0 - September 29, 2010
+==================================
+
+Contributors:
+Bertrand Lorentz, Gabriel Burt, Gianvito Cavasoli
+
+Bugs Fixed:
+* [AlarmClock] Rework synchronization to avoid an infinite loop
+* [AlarmClock] Fix a crash on exit
+* [SoundMenu] Add dependency on the MPRIS extension
+
+==================================
 Version 1.7.6 - September 15, 2010
 ==================================
 
