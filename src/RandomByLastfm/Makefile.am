@@ -1,5 +1,5 @@
 ASSEMBLY = Banshee.RandomByLastfm
-LINK = $(BANSHEE_LIBS) -r:/usr/local/lib/banshee-1/Lastfm.dll
+LINK = $(BANSHEE_LIBS) $(BANSHEE_LASTFM_LIBS)
 TARGET = library
 
 SOURCES =  \
@@ -8,4 +8,8 @@ SOURCES =  \
 
 RESOURCES = RandomByLastfm.addin.xml
 
+if ENABLE_RANDOMBYLASTFM
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif

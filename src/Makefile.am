@@ -1,5 +1,4 @@
 SUBDIRS = \
-    RandomByLastfm \
 	AlarmClock \
 	AppIndicator \
 	Awn \
@@ -13,6 +12,7 @@ SUBDIRS = \
 	Mirage \
 	OpenVP \
 	RadioStationFetcher \
+	RandomByLastfm \
 	SoundMenu \
 	StreamRecorder \
 	Telepathy \

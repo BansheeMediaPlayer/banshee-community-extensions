@@ -89,6 +89,7 @@ BCE_MAGNATUNE
 BCE_MIRAGE
 BCE_OPENVP
 BCE_RADIOSTATIONFETCHER
+BCE_RANDOMBYLASTFM
 BCE_SOUNDMENU
 BCE_STREAMRECORDER
 BCE_TELEPATHY
@@ -127,7 +128,6 @@ help/Makefile
 po/Makefile.in
 
 src/Makefile
-src/RandomByLastfm/Makefile
 src/AppIndicator/Makefile
 src/AssemblyInfo.cs
 
@@ -160,6 +160,7 @@ src/Mirage/Mirage/Makefile
 src/Mirage/Banshee.Mirage/Makefile
 src/Mirage/Test/Makefile
 src/RadioStationFetcher/Makefile
+src/RandomByLastfm/Makefile
 src/SoundMenu/Makefile
 src/StreamRecorder/Makefile
 src/Telepathy/Makefile
@@ -188,7 +189,6 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
-    RandomByLastfm:      yes
     Alarm Clock:         ${enable_AlarmClock}
     AppIndicator:        ${enable_AppIndicator}
     Awn:                 ${enable_Awn}
@@ -202,6 +202,7 @@ ${PACKAGE}-${VERSION}
     Mirage:              ${enable_Mirage}
     OpenVP:              ${enable_OpenVP}
     RadioStationFetcher: ${enable_RadioStationFetcher}
+    RandomByLastfm:      ${enable_RandomByLastfm}
     SoundMenu:           ${enable_SoundMenu}
     StreamRecorder:      ${enable_StreamRecorder}
     Telepathy:           ${enable_Telepathy}
