@@ -1,0 +1,200 @@
+//
+// RandomByLastfm.cs
+//
+// Author:
+//   Raimo Radczewski <raimoradczewski@googlemail.com>
+//
+// Copyright (C) 2010 Raimo Radczewski
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+
+using Mono.Addins;
+using Lastfm.Data;
+using Hyena;
+using Banshee.Collection.Database;
+using Banshee.Collection;
+using Banshee.ServiceStack;
+using Banshee.MediaEngine;
+
+namespace Banshee.RandomByLastfm
+{
+    public class RandomByLastfm : RandomBy
+    {
+        private static List<string> artists_added;
+        private static List<string> similar_artists;
+
+        // These values have proved to assure a good mix
+        // possible future enhancement would be to let the user change these via gui
+        private const int MAX_ARTISTS = 50;
+        private const int MAX_ARTIST_ADD = 40;
+        private const int MIN_ARTIST_ADD = 5;
+        private const string ARTIST_QUERY = @"SELECT DISTINCT(CoreArtists.NameLowered) FROM CoreArtists WHERE CoreArtists.NameLowered in (?)";
+
+        private static int similarity_depth;
+
+        private static bool initiated = false;
+        private static object initiated_lock = new object ();
+
+        public RandomByLastfm () : base("lastfm_shuffle")
+        {
+            Label = AddinManager.CurrentLocalizer.GetString ("Shuffle by similar Artist (via Lastfm)");
+            Adverb = AddinManager.CurrentLocalizer.GetString ("by similar artist");
+            Description = AddinManager.CurrentLocalizer.GetString ("Play songs similar to those already played (via Lastfm)");
+
+            lock (initiated_lock) {
+                if (!initiated) {
+                    ServiceManager.PlayerEngine.ConnectEvent (RandomByLastfm.OnPlayerEvent, PlayerEvent.StateChange);
+                    initiated = true;
+                    artists_added = new List<string> ();
+                    similar_artists = new List<string> ();
+                }
+            }
+
+            Condition = "CoreArtists.NameLowered in (?)";
+            OrderBy = "RANDOM()";
+        }
+
+        public override TrackInfo GetPlaybackTrack (DateTime after)
+        {
+            TrackInfo track = GetShufflerTrack (after);
+            return track;
+        }
+
+        public override bool Next (DateTime after)
+        {
+            return true;
+        }
+
+        public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
+        {
+            DatabaseTrackInfo track = GetTrack (ShufflerQuery, similar_artists.ToArray (), after);
+            if (track == null)
+                return null;
+
+            if (!similar_artists.Contains (track.AlbumArtist.ToLower ()))
+                similar_artists.Add (track.AlbumArtist.ToLower ());
+
+            return track;
+        }
+
+        /// <summary>
+        /// Catch PlayerEvent and schedule new lastfm query, as long as current Artist is not the last artist queried
+        /// </summary>
+        /// <param name="args">
+        /// A <see cref="PlayerEventArgs"/>
+        /// </param>
+        private static void OnPlayerEvent (PlayerEventArgs args)
+        {
+            TrackInfo currentTrack = ServiceManager.PlayerEngine.CurrentTrack;
+
+            if (ServiceManager.PlayerEngine.ActiveEngine.CurrentState == PlayerState.Playing && !artists_added.Contains (currentTrack.ArtistName.ToLower ())) {
+
+                if (!similar_artists.Contains (currentTrack.AlbumArtist.ToLower ())) {
+                    // User changed Track to a not similar artist, clear list
+                    Log.Debug ("RandomByLastfm: User changed track, clearing lists and resetting depth");
+                    similar_artists.Clear ();
+                    artists_added.Clear ();
+                    similarity_depth = 0;
+                }
+
+                ThreadAssist.SpawnFromMain (delegate {
+                    QueryLastfm ();
+                });
+            }
+        }
+
+        /// <summary>
+        /// Query Lastfm for similar Artists
+        /// </summary>
+        /// <remarks>Executed via Kernel Scheduler</remarks>
+        public static void QueryLastfm ()
+        {
+            TrackInfo currentTrack = ServiceManager.PlayerEngine.ActiveEngine.CurrentTrack;
+            LastfmArtistData artist = new LastfmArtistData (currentTrack.AlbumArtist);
+
+            // Formular: numTake = Max(MIN_ARTIST_ADD, MAX_ARTIST_ADD/(2^similarityDepth))
+            // Simple formular, so "derived" artists don't change the list too much
+            int numTake = Math.Max ((int)Math.Floor (MAX_ARTIST_ADD / (Math.Pow (2, similarity_depth))), MIN_ARTIST_ADD);
+
+            // Artists from LastfmQuery
+            // - Numbers are filtered
+            // - SimilarArtists doesnt already contain artists
+            // - Ordered by Matching Score
+            var lastfmArtists = artist.SimilarArtists.Where (a => !IsNumber (a.Name) && !similar_artists.Contains (a.Name.ToLower ())).OrderByDescending (ar => ar.Match).Select (a => a.Name.ToLower ());
+
+            // Artists that are present on local database
+            // - Reduced by max number to get
+            var newArtists = GetPresentArtists (lastfmArtists).Take (numTake);
+
+            Log.DebugFormat ("RandomByLastfm: {0} present similar Artists, adding {1} at Depth {2}", similar_artists.Count, newArtists.Count (), similarity_depth);
+
+            similar_artists.AddRange (newArtists);
+
+            if (similar_artists.Count > MAX_ARTISTS) {
+                Log.Debug ("RandomByLastfm: Maximum reached, clearing random artists");
+                LimitList ();
+            }
+
+            artists_added.Add (currentTrack.AlbumArtist.ToLower ());
+            similarity_depth++;
+        }
+
+        public static List<string> GetPresentArtists (IEnumerable<string> aLastfmArtists)
+        {
+            List<string> presentArtists = new List<string> ();
+
+            using (var reader = ServiceManager.DbConnection.Query (ARTIST_QUERY, new object[] { aLastfmArtists.ToArray () })) {
+                while (reader.Read ()) {
+                    presentArtists.Add (reader[0] as string);
+                }
+            }
+            return presentArtists;
+        }
+
+
+        public static void LimitList ()
+        {
+            Random rand = new Random (DateTime.Now.Millisecond);
+            while (similar_artists.Count > MAX_ARTISTS) {
+                similar_artists.RemoveAt (rand.Next (similar_artists.Count));
+            }
+        }
+
+        /// <summary>
+        /// Helper Method - Determines whether string is just a plain number
+        /// </summary>
+        /// <param name="aInput">
+        /// A <see cref="System.String"/>
+        /// </param>
+        /// <returns>
+        /// A <see cref="Boolean"/>
+        /// </returns>
+        public static Boolean IsNumber (string aInput)
+        {
+            int num;
+            return int.TryParse (aInput, out num);
+        }
+    }
+}

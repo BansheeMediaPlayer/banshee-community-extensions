@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomByLastfm", "src\RandomByLastfm\RandomByLastfm.csproj", "{04568A95-2430-41EB-82D6-939F5E7E8403}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundMenu", "src\SoundMenu\SoundMenu.csproj", "{EE91126B-5500-4719-9FAA-36CBAC95DEE3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppIndicator", "src\AppIndicator\AppIndicator.csproj", "{B3971F35-8FE0-4FED-A3A4-7A082B341D81}"
@@ -86,6 +88,10 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04568A95-2430-41EB-82D6-939F5E7E8403}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{04568A95-2430-41EB-82D6-939F5E7E8403}.Debug|x86.Build.0 = Debug|Any CPU
+		{04568A95-2430-41EB-82D6-939F5E7E8403}.Release|x86.ActiveCfg = Release|Any CPU
+		{04568A95-2430-41EB-82D6-939F5E7E8403}.Release|x86.Build.0 = Release|Any CPU
 		{05E72510-705D-463D-91B8-A2E22C78F3C2}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{05E72510-705D-463D-91B8-A2E22C78F3C2}.Debug|x86.Build.0 = Debug|Any CPU
 		{05E72510-705D-463D-91B8-A2E22C78F3C2}.Release|x86.ActiveCfg = Release|Any CPU

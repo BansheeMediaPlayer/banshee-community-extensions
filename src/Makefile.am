@@ -12,6 +12,7 @@ SUBDIRS = \
 	Mirage \
 	OpenVP \
 	RadioStationFetcher \
+	RandomByLastfm \
 	SoundMenu \
 	StreamRecorder \
 	Telepathy \
