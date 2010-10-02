@@ -80,7 +80,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.RandomByLastfm\RandomByLastfm.cs" />
-    <Compile Include="Banshee.RandomByLastfm\LastfmQueryjob.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

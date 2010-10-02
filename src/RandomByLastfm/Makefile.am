@@ -2,9 +2,7 @@ ASSEMBLY = Banshee.RandomByLastfm
 LINK = $(BANSHEE_LIBS) $(BANSHEE_LASTFM_LIBS)
 TARGET = library
 
-SOURCES =  \
-	Banshee.RandomByLastfm/LastfmQueryjob.cs \
-	Banshee.RandomByLastfm/RandomByLastfm.cs
+SOURCES = Banshee.RandomByLastfm/RandomByLastfm.cs
 
 RESOURCES = RandomByLastfm.addin.xml
 
