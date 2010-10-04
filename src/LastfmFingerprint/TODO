@@ -1,0 +1,30 @@
+TODO LIST:
+
+C PART:
+
+Done a C lib who are inspired of lastfmfpclient & libmirageaudio:
+- based on Gstreamer
+- but with same formula for fingerprint calculation
+- simple API to call.
+DONE!
+BUT NEED DEBUG
+
+
+.NET PART:
+- Service: 
+	Analyser.Init
+	Create or update DB strcture to store last fm puid
+	Get metadata for this puid
+	Interface:
+		menu:
+			Scan entire library
+			Scan selected
+			(Reset for debug)
+		context menu
+			Scan selected
+
+- AnalyzerJob
+	Done the job to call the C DLL
+
+
+READ http://cgit.freedesktop.org/gstreamer/gst-plugins-bad/tree/ext/ofa/gstofa.c

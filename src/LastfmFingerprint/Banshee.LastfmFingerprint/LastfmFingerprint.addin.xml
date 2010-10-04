@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.LastfmFingerprint"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="Copyright © 2010 Olivier Dufour. Licensed under the MIT X11 license."
+    name="Last.fm Fingerprint"
+    category="Community Extensions"
+    description="Identify your music automatically, using the Last.fm online service."
+    author="Olivier Dufour"
+    url="http://banshee.fm/"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.LastfmFingerprint.LastfmFingerprintService"/>
+  </Extension>
+
+</Addin>

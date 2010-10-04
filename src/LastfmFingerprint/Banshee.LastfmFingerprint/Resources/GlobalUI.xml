@@ -1,0 +1,14 @@
+<ui>
+    <menubar name="MainMenu" action="MainMenuAction">
+        <menu name="EditMenu" action="EditMenuAction">
+            <placeholder name="BelowAddToPlaylist">
+                <menuitem name="LastfmFingerprint" action="FingerprintAction"></menuitem>
+            </placeholder>
+        </menu>
+    </menubar>
+    <popup name="TrackContextMenu" action="TrackContextMenuAction">
+        <placeholder name="BelowAddToPlaylist">
+            <menuitem name="LastfmFingerprint" action="FingerprintAction"></menuitem>
+        </placeholder>
+    </popup>
+</ui>
