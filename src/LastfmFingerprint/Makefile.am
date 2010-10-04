@@ -1,0 +1,1 @@
+SUBDIRS = liblastfmfpbridge Banshee.LastfmFingerprint

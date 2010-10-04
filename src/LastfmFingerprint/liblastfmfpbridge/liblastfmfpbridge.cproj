@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}</ProjectGuid>
+    <Target>Bin</Target>
+    <Language>CPP</Language>
+    <Compiler>
+      <Compiler ctype="GppCompiler" />
+    </Compiler>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\bin</OutputPath>
+    <DefineSymbols>DEBUG MONODEVELOP</DefineSymbols>
+    <SourceDirectory>.</SourceDirectory>
+    <OutputName>liblastfmfpbridge</OutputName>
+    <CompileTarget>SharedLibrary</CompileTarget>
+    <Includes>
+      <Includes>
+        <Include>/usr/include/gstreamer-0.10</Include>
+        <Include>/usr/include/glib-2.0</Include>
+        <Include>/usr/lib/glib-2.0/include</Include>
+        <Include>/usr/include/libxml2</Include>
+      </Includes>
+    </Includes>
+    <Libs>
+      <Libs>
+        <Lib>/usr/lib/libfftw3f.so</Lib>
+        <Lib>/usr/lib/libsamplerate.so</Lib>
+        <Lib>/usr/lib/libcurl.so</Lib>
+      </Libs>
+    </Libs>
+    <ExtraCompilerArguments>-lfftw</ExtraCompilerArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release</OutputPath>
+    <DefineSymbols>MONODEVELOP</DefineSymbols>
+    <SourceDirectory>.</SourceDirectory>
+    <OptimizationLevel>3</OptimizationLevel>
+    <OutputName>liblastfmfpBridge</OutputName>
+    <CompileTarget>SharedLibrary</CompileTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="gst-lastfmfpbridge.h" />
+    <None Include="HTTPClient.h" />
+    <None Include="mbid_mp3.h" />
+    <None Include="Sha256.h" />
+    <None Include="Sha256File.h" />
+    <None Include="CircularArray.h" />
+    <None Include="Filter.h" />
+    <None Include="FingerprintExtractor.h" />
+    <None Include="FloatingAverage.h" />
+    <None Include="fp_helper_fun.h" />
+    <None Include="OptFFT.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gst-lastfmfpbridge.cpp" />
+    <Compile Include="HTTPClient.cpp" />
+    <Compile Include="Sha256.cpp" />
+    <Compile Include="Sha256File.cpp" />
+    <Compile Include="Filter.cpp" />
+    <Compile Include="FingerprintExtractor.cpp" />
+    <Compile Include="OptFFT.cpp" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile.am" IsAutotoolsProject="true" RelativeConfigureInPath="../../../..">
+          <BuildFilesVar Sync="true" Name="liblastfmfpBridge_la_SOURCES" />
+          <DeployFilesVar />
+          <ResourcesVar Sync="true" Name="INCLUDES" />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+          <MessageRegex Name="gcc" />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>

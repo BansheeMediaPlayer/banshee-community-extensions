@@ -82,10 +82,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenVP.Core", "src\OpenVP\O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenVP.Scripting", "src\OpenVP\OpenVP.Scripting\OpenVP.Scripting.csproj", "{05E72510-705D-463D-91B8-A2E22C78F3C2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LastfmFingerprint", "LastfmFingerprint", "{32AD215B-5CE4-4D53-88C0-5F8B3CDCEB99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LastfmFingerprint", "src\LastfmFingerprint\Banshee.LastfmFingerprint\LastfmFingerprint.csproj", "{C00E6610-4E5D-40D2-9C38-54EADBFDC88A}"
+EndProject
+Project("{2857B73E-F847-4B02-9238-064979017E93}") = "liblastfmfpbridge", "src\LastfmFingerprint\liblastfmfpbridge\liblastfmfpbridge.cproj", "{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
+		Windows|Any CPU = Windows|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{04568A95-2430-41EB-82D6-939F5E7E8403}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -136,6 +143,12 @@ Global
 		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Debug|x86.Build.0 = Debug|Any CPU
 		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Release|x86.ActiveCfg = Release|Any CPU
 		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Release|x86.Build.0 = Release|Any CPU
+		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}.Debug|x86.Build.0 = Debug|Any CPU
+		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}.Release|x86.ActiveCfg = Release|Any CPU
+		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}.Release|x86.Build.0 = Release|Any CPU
+		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}.Windows|Any CPU.ActiveCfg = Debug|Any CPU
+		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}.Windows|Any CPU.Build.0 = Debug|Any CPU
 		{8684E1F1-96B9-4F74-BFBB-3946C163A6B6}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{8684E1F1-96B9-4F74-BFBB-3946C163A6B6}.Debug|x86.Build.0 = Debug|Any CPU
 		{8684E1F1-96B9-4F74-BFBB-3946C163A6B6}.Release|x86.ActiveCfg = Release|Any CPU
@@ -172,6 +185,12 @@ Global
 		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Debug|x86.Build.0 = Debug|Any CPU
 		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Release|x86.ActiveCfg = Release|Any CPU
 		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Release|x86.Build.0 = Release|Any CPU
+		{C00E6610-4E5D-40D2-9C38-54EADBFDC88A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C00E6610-4E5D-40D2-9C38-54EADBFDC88A}.Debug|x86.Build.0 = Debug|Any CPU
+		{C00E6610-4E5D-40D2-9C38-54EADBFDC88A}.Release|x86.ActiveCfg = Debug|Any CPU
+		{C00E6610-4E5D-40D2-9C38-54EADBFDC88A}.Release|x86.Build.0 = Debug|Any CPU
+		{C00E6610-4E5D-40D2-9C38-54EADBFDC88A}.Windows|Any CPU.ActiveCfg = Windows|Any CPU
+		{C00E6610-4E5D-40D2-9C38-54EADBFDC88A}.Windows|Any CPU.Build.0 = Windows|Any CPU
 		{C6F7D7EA-0245-4A29-AC8E-714E1677F0FC}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{C6F7D7EA-0245-4A29-AC8E-714E1677F0FC}.Debug|x86.Build.0 = Debug|Any CPU
 		{C6F7D7EA-0245-4A29-AC8E-714E1677F0FC}.Release|x86.ActiveCfg = Debug|Any CPU
@@ -217,6 +236,8 @@ Global
 		{07680636-F897-4CDB-8B25-85D21113AD1C} = {673A23F5-67E8-4BE7-A47B-1BEE9B8C33CD}
 		{8684E1F1-96B9-4F74-BFBB-3946C163A6B6} = {673A23F5-67E8-4BE7-A47B-1BEE9B8C33CD}
 		{05E72510-705D-463D-91B8-A2E22C78F3C2} = {673A23F5-67E8-4BE7-A47B-1BEE9B8C33CD}
+		{C00E6610-4E5D-40D2-9C38-54EADBFDC88A} = {32AD215B-5CE4-4D53-88C0-5F8B3CDCEB99}
+		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C} = {32AD215B-5CE4-4D53-88C0-5F8B3CDCEB99}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = src\AlarmClock\AlarmClock.csproj
