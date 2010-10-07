@@ -39,9 +39,11 @@ using Banshee.Sources;
 
 namespace Banshee.LastfmFingerprint
 {
-    public class LastfmFingerprintService : IExtensionService
+    public class LastfmFingerprintService : IExtensionService, IDisposable
     {
-        private bool disposed;
+        private InterfaceActionService uia_service;
+        private ActionGroup actions;
+        private uint ui_manager_id;
 
         string IService.ServiceName {
             get { return "LastfmFingerprintService"; }
@@ -58,8 +60,11 @@ namespace Banshee.LastfmFingerprint
 
         public void InterfaceInitialize ()
         {
-            InterfaceActionService uia_service = ServiceManager.Get<InterfaceActionService> ();
-            uia_service.TrackActions.Add (new ActionEntry [] {
+            uia_service = ServiceManager.Get<InterfaceActionService> ();
+
+            actions = new ActionGroup ("LastfmFingerprint");
+
+            actions.Add (new ActionEntry [] {
                 new ActionEntry ("FingerprintAction", null,
                     AddinManager.CurrentLocalizer.GetString ("Get Information From Track Fingerprint"), null,
                     AddinManager.CurrentLocalizer.GetString ("Get track information from last.fm acoustic fingerprint"),
@@ -71,11 +76,19 @@ namespace Banshee.LastfmFingerprint
             //Gtk.Action action = uia_service.TrackActions["FingerprintAction"];
             //action.IconName = "fingerprint";
 
-            uia_service.UIManager.AddUiFromResource ("GlobalUI.xml");
+            uia_service.UIManager.InsertActionGroup (actions, 0);
+            ui_manager_id = uia_service.UIManager.AddUiFromResource ("GlobalUI.xml");
 
             UpdateActions ();
-            uia_service.TrackActions.SelectionChanged += delegate { ThreadAssist.ProxyToMain (UpdateActions); };
-            ServiceManager.SourceManager.ActiveSourceChanged += delegate { ThreadAssist.ProxyToMain (UpdateActions); };
+            ServiceManager.SourceManager.ActiveSourceChanged += HandleActiveSourceChanged;
+        }
+
+        public void Dispose ()
+        {
+            ServiceManager.SourceManager.ActiveSourceChanged -= HandleActiveSourceChanged;
+
+            uia_service.UIManager.RemoveUi (ui_manager_id);
+            uia_service.UIManager.RemoveActionGroup (actions);
         }
 
         private void OnGetTagFromFingerprint (object sender, EventArgs args)
@@ -148,43 +161,35 @@ namespace Banshee.LastfmFingerprint
         }
 
 
-        void UpdateActions ()
+        private void HandleActiveSourceChanged (SourceEventArgs args)
         {
-            InterfaceActionService uia_service = ServiceManager.Get<InterfaceActionService> ();
-            Gtk.Action action = uia_service.TrackActions["FingerprintAction"];
-
-            /*Source source = ServiceManager.SourceManager.ActiveSource;
-            bool sensitive = false;
-            bool visible = false;
-
-            if (source != null) {
-                //TODO test MusicLibrarySource ?
-                var track_source = source as ITrackModelSource;
-                if (track_source != null) {
-                    var selection = track_source.TrackModel.Selection;
-                    visible = source.HasEditableTrackProperties;
-                    sensitive = selection.Count > 0;
-                }
-            }
-
-            action.Sensitive = sensitive;
-            action.Visible = visible;
-            */
-
-            action.Sensitive = true;
-            action.Visible = true;
+            UpdateActions ();
         }
 
-
-        void IDisposable.Dispose ()
+        void UpdateActions ()
         {
-            if (disposed) {
-                return;
-            }
+            ThreadAssist.ProxyToMain (delegate {
+                /*Source source = ServiceManager.SourceManager.ActiveSource;
+                bool sensitive = false;
+                bool visible = false;
 
-            //TODO dispose resource here
+                if (source != null) {
+                    //TODO test MusicLibrarySource ?
+                    var track_source = source as ITrackModelSource;
+                    if (track_source != null) {
+                        var selection = track_source.TrackModel.Selection;
+                        visible = source.HasEditableTrackProperties;
+                        sensitive = selection.Count > 0;
+                    }
+                }
 
-            disposed = true;
+                action.Sensitive = sensitive;
+                action.Visible = visible;
+                */
+
+                actions.Sensitive = true;
+                actions.Visible = true;
+            });
         }
     }
 }
