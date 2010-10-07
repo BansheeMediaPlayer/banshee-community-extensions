@@ -1,5 +1,5 @@
 ASSEMBLY = Banshee.LastfmFingerprint
-LINK = $(BANSHEE_LIBS)
+LINK = $(BANSHEE_LIBS) $(BANSHEE_LASTFM_LIBS)
 
 SOURCES =  \
 	AudioDecoder.cs \

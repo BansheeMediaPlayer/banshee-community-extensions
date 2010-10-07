@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using Banshee.ServiceStack;
 using Banshee.Sources;
 using Banshee.Gui;
@@ -39,6 +40,8 @@ using Banshee.Collection;
 using System.Net;
 using System.IO;
 using System.Xml;
+using Hyena.Json;
+using Lastfm;
 
 namespace Banshee.LastfmFingerprint
 {
@@ -127,51 +130,31 @@ namespace Banshee.LastfmFingerprint
 
         void FetchMetadata (TrackInfo track, int fpid)
         {
-            string query = string.Format("http://ws.audioscrobbler.com/2.0/?method=track.getfingerprintmetadata&fingerprintid={0}&api_key=2bfed60da64b96c16ea77adbf5fe1a82", fpid);
-            WebRequest request = WebRequest.Create (query);
-            WebResponse rsp =  request.GetResponse ();
-            XmlDocument doc = new XmlDocument();
-            /*StreamReader reader = new StreamReader(rsp.GetResponseStream ());
-            string str = reader.ReadLine();
-            while(str != null)
-            {
-                Console.WriteLine(str);
-                str = reader.ReadLine();
-            }*/
+            var request = new LastfmRequest ("track.getFingerprintMetadata");
+            request.AddParameter ("fingerprintid", fpid.ToString ());
+            request.Send ();
+            var response = request.GetResponseObject ();
+            var json_tracks = (JsonObject)response["tracks"];
+            var json_tracklist = (JsonArray)json_tracks["track"];
+            var json_track = (JsonObject)json_tracklist[0];
 
-            //editor_track = new EditorTrackInfo (sourceTrack);
-            using (Stream stream = rsp.GetResponseStream ())
-            {
-                //XmlTextReader reader = new XmlTextReader(Stream);
-                //reader.re
-                doc.Load (stream);
-                //get the first track (higher rank)
-                XmlNode node = doc.SelectSingleNode("/lfm/tracks/track");
+            if (json_track !=null) {
+                track.TrackTitle = (string)json_track["name"];
+                track.MusicBrainzId = (string)json_track["mbid"];
+                track.MoreInfoUri = new SafeUri ((string)json_track["url"]);
 
-                if (node.HasChildNodes) {
-                    track.TrackTitle = node["name"].Value;
-                    Log.DebugFormat ("title={0}", track.TrackTitle);
-                    track.MusicBrainzId = node["mbid"].Value;
-                    track.MoreInfoUri = new SafeUri (node["url"].Value);
-    
-                    //node["streamable"].Value;
-                    XmlNode anode = node["artist"];
-                    if (anode.HasChildNodes) {
-                        track.ArtistName = anode["name"].Value;
-                        track.ArtistMusicBrainzId = anode["mbid"].Value;
-                        //anode["url"].Value;//more infor artiste
-                    }
-    
-                    track.Save ();
-                    ServiceManager.PlayerEngine.TrackInfoUpdated ();
-                    //TODO Get cover
-                    //best is to use code of MetadataServiceJob.SaveHttpStreamCover
-                    //but hard to get it because protected... TODO find a way to reuse this code
-                    // size = small, medium, large or extralarge
-                    //node["image"].Value;//depend of size
+                var json_artist = (JsonObject)json_track["artist"];
+                if (json_artist != null) {
+                    track.ArtistName = (string)json_artist["name"];
+                    track.ArtistMusicBrainzId = (string)json_artist["mbid"];
                 }
-            }
+                // TODO Get cover from URL in json_track["image"] array
+                // Maybe reuse MetadataServiceJob.SaveHttpStreamCover to fetch it
+                // but it's protected...
 
+                track.Save ();
+                ServiceManager.PlayerEngine.TrackInfoUpdated ();
+            }
         }
 
 

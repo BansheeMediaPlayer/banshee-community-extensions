@@ -20,6 +20,10 @@ AC_DEFUN([BCE_LASTFMFINGERPRINT],
 		[samplerate],
 		[The samplerate library was not found. Please install it or disable the LastfmFingerprint extension by passing --disable-lastfmfingerprint])
 
+	BCE_CHECK_EXTENSION_DEP([LastfmFingerprint], [BANSHEE_LASTFM],
+		[banshee-1-lastfm],
+		[banshee-1-lastfm was not found. Please install it or disable the LastfmFingerprint extension by passing --disable-lastfmfingerprint])
+
 	GSTREAMER_REQUIRED_VERSION=0.10.15
 	BCE_CHECK_EXTENSION_DEP([LastfmFingerprint], [GSTREAMER],
 		[gstreamer-0.10 >= $GSTREAMER_REQUIRED_VERSION
@@ -32,6 +36,7 @@ AC_DEFUN([BCE_LASTFMFINGERPRINT],
 		&& test "x$have_FFTW3F" = "xyes" \
 		&& test "x$have_LIBSAMPLERATE" = "xyes" \
 		&& test "x$have_LIBCURL" = "xyes" \
+		&& test "x$have_BANSHEE_LASTFM" = "xyes" \
 		&& test "x$have_GSTREAMER" = "xyes"; then
 		enable_LastfmFingerprint=yes
 	fi

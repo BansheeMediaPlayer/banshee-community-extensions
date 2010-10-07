@@ -83,6 +83,9 @@
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
+    <Reference Include="Lastfm, Version=1.8.0.0, Culture=neutral">
+      <Package>banshee-1-lastfm</Package>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
