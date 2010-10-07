@@ -25,23 +25,17 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using Banshee.ServiceStack;
-using Banshee.Sources;
-using Banshee.Gui;
-using Banshee.Gui.TrackEditor;
 using Gtk;
-using Mono.Unix;
-using System.Threading;
-using Hyena.Jobs;
+using Mono.Addins;
+
 using Hyena;
-using System.Runtime.InteropServices;
-using Banshee.Collection;
-using System.Net;
-using System.IO;
-using System.Xml;
+using Hyena.Jobs;
 using Hyena.Json;
 using Lastfm;
+using Banshee.Collection;
+using Banshee.Gui;
+using Banshee.ServiceStack;
+using Banshee.Sources;
 
 namespace Banshee.LastfmFingerprint
 {
@@ -67,8 +61,8 @@ namespace Banshee.LastfmFingerprint
             InterfaceActionService uia_service = ServiceManager.Get<InterfaceActionService> ();
             uia_service.TrackActions.Add (new ActionEntry [] {
                 new ActionEntry ("FingerprintAction", null,
-                    Catalog.GetString ("Get tag from song fingerprint"), null,
-                    Catalog.GetString ("Get tag from lastfm acoustic fingerprint"),
+                    AddinManager.CurrentLocalizer.GetString ("Get Information From Track Fingerprint"), null,
+                    AddinManager.CurrentLocalizer.GetString ("Get track information from last.fm acoustic fingerprint"),
                     OnGetTagFromFingerprint)
             });
 
@@ -88,10 +82,10 @@ namespace Banshee.LastfmFingerprint
         {
             Source source = ServiceManager.SourceManager.ActiveSource;
 
-            UserJob job = new UserJob (Catalog.GetString ("Getting sound fingerprint"));
+            UserJob job = new UserJob (AddinManager.CurrentLocalizer.GetString ("Getting sound fingerprint"));
             job.SetResources (Resource.Cpu, Resource.Disk, Resource.Database);
             job.PriorityHints = PriorityHints.SpeedSensitive;
-            job.Status = Catalog.GetString ("Scanning...");
+            job.Status = AddinManager.CurrentLocalizer.GetString ("Scanning...");
             job.IconNames = new string [] { "system-search", "gtk-find" };
             job.Register ();
 
@@ -109,20 +103,16 @@ namespace Banshee.LastfmFingerprint
                                                       track.TrackTitle, track.TrackNumber, track.Year, track.Genre);
 
                     int fpid = ad.Decode (track.Uri.AbsolutePath);
-                    Console.WriteLine("fpid:{0}", fpid);
+                    Log.DebugFormat ("Last.fm fingerprint id for {0} is {1}", track.TrackTitle, fpid);
                     //TODO get metadata from id
                     FetchMetadata (track, fpid);
 
                     job.Progress = (double)++count / (double)total;
                 }
 
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine (e);
-            }
-            finally
-            {
+            } catch (Exception e) {
+                Log.Exception (e);
+            } finally {
                 job.Finish ();
             }
             //});
