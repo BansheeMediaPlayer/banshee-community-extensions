@@ -101,7 +101,7 @@ namespace Banshee.CoverWallpaper
                     current_track = ServiceManager.PlayerEngine.CurrentTrack;
 
                     //check to see if there was an album change
-                    if (lastAlbum != current_track.AlbumTitle) {
+                    if (current_track != null && lastAlbum != current_track.AlbumTitle) {
 
                         if (AlbumArtExists(current_track))
                             SetWallpaper(albumWallpaper);
