@@ -251,14 +251,8 @@ Lastfmfp_cb_have_data(GstElement *element, GstBuffer *buffer, GstPad *pad, Lastf
     return;
 }
 
-void initForQuery(LastfmfpAudio *ma, int freq, int nchannels, int duration = -1)
-{
-    ma->extractor = new fingerprint::FingerprintExtractor();
-    ma->extractor->initForQuery(freq, nchannels, duration);
-}
-
 extern "C"  LastfmfpAudio*
-Lastfmfp_initialize(gint rate, gint seconds, gint nchannels, const gchar *artist, const gchar *album, const gchar *title, gint tracknum, gint year, const gchar *genre)
+Lastfmfp_initialize(gint rate, gint seconds, const gchar *artist, const gchar *album, const gchar *title, gint tracknum, gint year, const gchar *genre)
 {
     LastfmfpAudio *ma;
     gint i;
@@ -267,7 +261,6 @@ Lastfmfp_initialize(gint rate, gint seconds, gint nchannels, const gchar *artist
     ma = g_new0(LastfmfpAudio, 1);
     ma->rate = rate;
     ma->seconds = seconds;
-    ma->nchannels = nchannels;
 	
 	//std::map<std::string, std::string> urlParams;
 
@@ -298,9 +291,6 @@ Lastfmfp_initialize(gint rate, gint seconds, gint nchannels, const gchar *artist
 
     urlParams["username"]   = "banshee client";
     urlParams["samplerate"] = toString(rate);
-    
-    
-    initForQuery(ma, rate, nchannels, seconds);
     
     // cancel decoding mutex
     ma->decoding_mutex = g_mutex_new();
@@ -393,7 +383,7 @@ Lastfmfp_initgstreamer(LastfmfpAudio *ma, const gchar *file)
     if (GST_IS_CAPS(caps)) {
         GstStructure *str = gst_caps_get_structure(caps, 0);
         gst_structure_get_int(str, "rate", &ma->filerate);
-
+        gst_structure_get_int(str, "channels", &ma->nchannels);
     } else {
         ma->filerate = -1;
     }
@@ -414,6 +404,10 @@ Lastfmfp_decode(LastfmfpAudio *ma, const gchar *file, int* size, int* ret)
 
     // Gstreamer setup
     Lastfmfp_initgstreamer(ma, file);
+    //lastfm setup
+    ma->extractor = new fingerprint::FingerprintExtractor();
+    ma->extractor->initForQuery(ma->rate, ma->nchannels, ma->seconds);
+    
     if (ma->filerate < 0) {
         *size = 0;
         *ret = -1;
