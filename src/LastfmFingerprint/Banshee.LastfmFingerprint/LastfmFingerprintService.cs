@@ -173,9 +173,9 @@ namespace Banshee.LastfmFingerprint
                 // but it's protected...
 
                 track.Save ();
-                //set the current track to provide origine of the event to handler
-                ServiceManager.PlayerEngine.Open (track);
-                ServiceManager.PlayerEngine.TrackInfoUpdated ();
+
+                if (track == ServiceManager.PlayerEngine.CurrentTrack)
+                    ServiceManager.PlayerEngine.TrackInfoUpdated ();
             }
         }
 
