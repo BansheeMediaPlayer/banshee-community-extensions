@@ -36,6 +36,7 @@ using Banshee.Collection;
 using Banshee.Gui;
 using Banshee.ServiceStack;
 using Banshee.Sources;
+using System.Threading;
 
 namespace Banshee.LastfmFingerprint
 {
@@ -102,7 +103,7 @@ namespace Banshee.LastfmFingerprint
             job.IconNames = new string [] { "system-search", "gtk-find" };
             job.Register ();
 
-            //ThreadPool.QueueUserWorkItem (delegate {
+            ThreadPool.QueueUserWorkItem (delegate {
             try {
 
                 var selection = ((ITrackModelSource)source).TrackModel.Selection;
@@ -118,7 +119,12 @@ namespace Banshee.LastfmFingerprint
                     int fpid = ad.Decode (track.Uri.AbsolutePath);
                     Log.DebugFormat ("Last.fm fingerprint id for {0} is {1}", track.TrackTitle, fpid);
                     //TODO get metadata from id
-                    FetchMetadata (track, fpid);
+                    if (fpid != 0)
+                        FetchMetadata (track, fpid);
+                    else
+                    {
+                        //TODO warn user that do not found fpid
+                    }
 
                     job.Progress = (double)++count / (double)total;
                 }
@@ -128,18 +134,29 @@ namespace Banshee.LastfmFingerprint
             } finally {
                 job.Finish ();
             }
-            //});
+            });
         }
 
         void FetchMetadata (TrackInfo track, int fpid)
         {
+
+
             var request = new LastfmRequest ("track.getFingerprintMetadata");
             request.AddParameter ("fingerprintid", fpid.ToString ());
             request.Send ();
+
             var response = request.GetResponseObject ();
+
             var json_tracks = (JsonObject)response["tracks"];
-            var json_tracklist = (JsonArray)json_tracks["track"];
-            var json_track = (JsonObject)json_tracklist[0];
+            var obj_track = json_tracks["track"];
+            JsonObject json_track = null;
+
+            Log.Debug ("obj_track:" + obj_track.ToString ());
+
+            if (obj_track is JsonArray)
+                json_track = (JsonObject) (((JsonArray)obj_track)[0]);
+            else if (obj_track is JsonObject)
+                json_track = (JsonObject)obj_track;
 
             if (json_track !=null) {
                 track.TrackTitle = (string)json_track["name"];
@@ -156,6 +173,8 @@ namespace Banshee.LastfmFingerprint
                 // but it's protected...
 
                 track.Save ();
+                //set the current track to provide origine of the event to handler
+                ServiceManager.PlayerEngine.Open (track);
                 ServiceManager.PlayerEngine.TrackInfoUpdated ();
             }
         }
