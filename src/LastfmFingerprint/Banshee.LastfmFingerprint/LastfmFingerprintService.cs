@@ -113,7 +113,7 @@ namespace Banshee.LastfmFingerprint
                 foreach (TrackInfo track in ((ITrackModelSource)source).TrackModel.SelectedItems) {
 
                     //TODO : hardcoded nchannels (stereo only )
-                    AudioDecoder ad = new AudioDecoder(track.SampleRate, (int)track.Duration.TotalSeconds, 2, track.ArtistName, track.AlbumTitle,
+                    AudioDecoder ad = new AudioDecoder(track.SampleRate, (int)track.Duration.TotalSeconds, track.ArtistName, track.AlbumTitle,
                                                       track.TrackTitle, track.TrackNumber, track.Year, track.Genre);
 
                     int fpid = ad.Decode (track.Uri.AbsolutePath);
@@ -173,9 +173,9 @@ namespace Banshee.LastfmFingerprint
                 // but it's protected...
 
                 track.Save ();
-                //set the current track to provide origine of the event to handler
-                ServiceManager.PlayerEngine.Open (track);
-                ServiceManager.PlayerEngine.TrackInfoUpdated ();
+
+                if (track == ServiceManager.PlayerEngine.CurrentTrack)
+                    ServiceManager.PlayerEngine.TrackInfoUpdated ();
             }
         }
 

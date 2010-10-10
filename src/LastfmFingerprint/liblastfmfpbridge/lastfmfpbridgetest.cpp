@@ -34,10 +34,10 @@ main (gint   argc,
   int size = 0;
   int ret = 0;
 
-
-LastfmfpAudio *ma = Lastfmfp_initialize(44100, 215, 2, "", "", "", 0, 0, "");
+//TODO parse argv for param of initialize
+LastfmfpAudio *ma = Lastfmfp_initialize(44100, 215, "", "", "", 0, 0, "");
   
-int fpid = Lastfmfp_decode(ma, "/home/dufoli/Musique/music/Rock (Hard Pop)/PopRock En/hard metal/(MATRIX)  DEFTONES   my own summer .mp3", &size, &ret);
+int fpid = Lastfmfp_decode(ma, argv[0], &size, &ret);
 
   printf("return fpid: %d ret: %d ", fpid, ret);
 

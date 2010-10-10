@@ -41,7 +41,7 @@ namespace Banshee.LastfmFingerprint
     public class AudioDecoder
     {
         [DllImport("liblastfmfpbridge")]
-        static extern IntPtr Lastfmfp_initialize (int rate, int seconds, int winsize, string artist, string album, string title, int tracknum, int year, string genre);
+        static extern IntPtr Lastfmfp_initialize (int rate, int seconds, string artist, string album, string title, int tracknum, int year, string genre);
 
         [DllImport("liblastfmfpbridge")]
         static extern int Lastfmfp_decode (IntPtr ma, string file, ref int size, ref int ret);
@@ -55,9 +55,9 @@ namespace Banshee.LastfmFingerprint
 
         IntPtr ma;
 
-        public AudioDecoder (int rate, int seconds, int winsize, string artist, string album, string title, int tracknum, int year, string genre)
+        public AudioDecoder (int rate, int seconds, string artist, string album, string title, int tracknum, int year, string genre)
         {
-            ma = Lastfmfp_initialize (rate, seconds, winsize, artist??string.Empty, album??string.Empty, title??string.Empty, tracknum, year, genre??string.Empty);
+            ma = Lastfmfp_initialize (rate, seconds, artist??string.Empty, album??string.Empty, title??string.Empty, tracknum, year, genre??string.Empty);
         }
 
         public int Decode (string file)
