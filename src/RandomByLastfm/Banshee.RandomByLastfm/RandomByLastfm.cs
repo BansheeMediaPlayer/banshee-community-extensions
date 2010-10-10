@@ -37,6 +37,7 @@ using Banshee.Collection.Database;
 using Banshee.Collection;
 using Banshee.ServiceStack;
 using Banshee.MediaEngine;
+using System.Net;
 
 namespace Banshee.RandomByLastfm
 {
@@ -47,8 +48,8 @@ namespace Banshee.RandomByLastfm
 
         // These values have proved to assure a good mix
         // possible future enhancement would be to let the user change these via gui
-        private const int MAX_ARTISTS = 50;
-        private const int MAX_ARTIST_ADD = 40;
+        private const int MAX_ARTISTS = 20;
+        private const int MAX_ARTIST_ADD = 10;
         private const int MIN_ARTIST_ADD = 5;
         private const string ARTIST_QUERY = @"SELECT DISTINCT(CoreArtists.NameLowered) FROM CoreArtists WHERE CoreArtists.NameLowered in (?)";
 
@@ -56,6 +57,8 @@ namespace Banshee.RandomByLastfm
 
         private static bool initiated = false;
         private static object initiated_lock = new object ();
+
+        private bool disposed = false;
 
         public RandomByLastfm () : base("lastfm_shuffle")
         {
@@ -76,6 +79,20 @@ namespace Banshee.RandomByLastfm
             OrderBy = "RANDOM()";
         }
 
+        public void Dispose()
+        {
+            if(disposed)
+                return;
+
+            ThreadAssist.ProxyToMain (delegate {
+                ServiceManager.PlayerEngine.DisconnectEvent(OnPlayerEvent);
+                similar_artists = null;
+                artists_added = null;
+                initiated = false;
+                disposed = true;
+            });
+        }
+
         public override TrackInfo GetPlaybackTrack (DateTime after)
         {
             TrackInfo track = GetShufflerTrack (after);
@@ -89,14 +106,7 @@ namespace Banshee.RandomByLastfm
 
         public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
         {
-            DatabaseTrackInfo track = GetTrack (ShufflerQuery, similar_artists.ToArray (), after);
-            if (track == null)
-                return null;
-
-            if (!similar_artists.Contains (track.AlbumArtist.ToLower ()))
-                similar_artists.Add (track.AlbumArtist.ToLower ());
-
-            return track;
+            return GetTrack (ShufflerQuery, similar_artists.ToArray (), after);
         }
 
         /// <summary>
@@ -108,6 +118,7 @@ namespace Banshee.RandomByLastfm
         private static void OnPlayerEvent (PlayerEventArgs args)
         {
             TrackInfo currentTrack = ServiceManager.PlayerEngine.CurrentTrack;
+            if(currentTrack == null) return;
 
             if (ServiceManager.PlayerEngine.ActiveEngine.CurrentState == PlayerState.Playing && !artists_added.Contains (currentTrack.ArtistName.ToLower ())) {
 
@@ -117,6 +128,7 @@ namespace Banshee.RandomByLastfm
                     similar_artists.Clear ();
                     artists_added.Clear ();
                     similarity_depth = 0;
+                    similar_artists.Add(currentTrack.AlbumArtist.ToLower());
                 }
 
                 ThreadAssist.SpawnFromMain (delegate {
@@ -138,11 +150,21 @@ namespace Banshee.RandomByLastfm
             // Simple formular, so "derived" artists don't change the list too much
             int numTake = Math.Max ((int)Math.Floor (MAX_ARTIST_ADD / (Math.Pow (2, similarity_depth))), MIN_ARTIST_ADD);
 
+            LastfmData<SimilarArtist> lastfmSimilarArtists;
+
+            try {
+                lastfmSimilarArtists = artist.SimilarArtists;
+            } catch(WebException e)
+            {
+                Log.Warning(e.ToString());
+                return;
+            }
+
             // Artists from LastfmQuery
             // - Numbers are filtered
             // - SimilarArtists doesnt already contain artists
             // - Ordered by Matching Score
-            var lastfmArtists = artist.SimilarArtists.Where (a => !IsNumber (a.Name) && !similar_artists.Contains (a.Name.ToLower ())).OrderByDescending (ar => ar.Match).Select (a => a.Name.ToLower ());
+            var lastfmArtists = lastfmSimilarArtists.Where (a => !IsNumber (a.Name) && !similar_artists.Contains (a.Name.ToLower ())).OrderByDescending (ar => ar.Match).Select (a => a.Name.ToLower ());
 
             // Artists that are present on local database
             // - Reduced by max number to get
@@ -161,16 +183,13 @@ namespace Banshee.RandomByLastfm
             similarity_depth++;
         }
 
-        public static List<string> GetPresentArtists (IEnumerable<string> aLastfmArtists)
+        public static IEnumerable<string> GetPresentArtists (IEnumerable<string> aLastfmArtists)
         {
-            List<string> presentArtists = new List<string> ();
-
             using (var reader = ServiceManager.DbConnection.Query (ARTIST_QUERY, new object[] { aLastfmArtists.ToArray () })) {
                 while (reader.Read ()) {
-                    presentArtists.Add (reader[0] as string);
+                    yield return reader[0] as string;
                 }
             }
-            return presentArtists;
         }
 
 
