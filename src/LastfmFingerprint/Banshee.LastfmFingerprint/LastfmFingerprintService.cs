@@ -145,7 +145,8 @@ namespace Banshee.LastfmFingerprint
             request.Send ();
 
             var response = request.GetResponseObject ();
-
+            if (response == null)
+                return;
             var json_tracks = (JsonObject)response["tracks"];
             var obj_track = json_tracks["track"];
             JsonObject json_track = null;
