@@ -102,7 +102,7 @@ namespace Banshee.LastfmFingerprint
             job.Status = AddinManager.CurrentLocalizer.GetString ("Scanning...");
             job.IconNames = new string [] { "system-search", "gtk-find" };
             job.Register ();
-
+            System.DateTime start;
             ThreadPool.QueueUserWorkItem (delegate {
             try {
 
@@ -114,7 +114,8 @@ namespace Banshee.LastfmFingerprint
 
                     AudioDecoder ad = new AudioDecoder(track.SampleRate, (int)track.Duration.TotalSeconds, track.ArtistName, track.AlbumTitle,
                                                       track.TrackTitle, track.TrackNumber, track.Year, track.Genre);
-
+                    start = DateTime.Now;
+                    
                     int fpid = ad.Decode (track.Uri.AbsolutePath);
                     Log.DebugFormat ("Last.fm fingerprint id for {0} is {1}", track.TrackTitle, fpid);
 
@@ -126,6 +127,11 @@ namespace Banshee.LastfmFingerprint
                     }
 
                     job.Progress = (double)++count / (double)total;
+                    //respect last fm term of service :
+                    //You will not make more than 5 requests per originating IP address per second, averaged over a 5 minute period
+                    // 2 requests are done on each loop ==> time allowed by loop : 400ms
+                    // But I add 100ms to be sure that we were not banned
+                    Thread.Sleep (new TimeSpan (0, 0, 0, 0, 500).Subtract (System.DateTime.Now - start));
                 }
 
             } catch (Exception e) {
@@ -138,8 +144,6 @@ namespace Banshee.LastfmFingerprint
 
         void FetchMetadata (TrackInfo track, int fpid)
         {
-
-
             var request = new LastfmRequest ("track.getFingerprintMetadata");
             request.AddParameter ("fingerprintid", fpid.ToString ());
             request.Send ();
@@ -147,6 +151,7 @@ namespace Banshee.LastfmFingerprint
             var response = request.GetResponseObject ();
             if (response == null)
                 return;
+
             var json_tracks = (JsonObject)response["tracks"];
             var obj_track = json_tracks["track"];
             JsonObject json_track = null;
