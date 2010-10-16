@@ -112,18 +112,17 @@ namespace Banshee.LastfmFingerprint
 
                 foreach (TrackInfo track in ((ITrackModelSource)source).TrackModel.SelectedItems) {
 
-                    //TODO : hardcoded nchannels (stereo only )
                     AudioDecoder ad = new AudioDecoder(track.SampleRate, (int)track.Duration.TotalSeconds, track.ArtistName, track.AlbumTitle,
                                                       track.TrackTitle, track.TrackNumber, track.Year, track.Genre);
 
                     int fpid = ad.Decode (track.Uri.AbsolutePath);
                     Log.DebugFormat ("Last.fm fingerprint id for {0} is {1}", track.TrackTitle, fpid);
-                    //TODO get metadata from id
+
                     if (fpid != 0)
                         FetchMetadata (track, fpid);
                     else
                     {
-                        //TODO warn user that do not found fpid
+                        Log.WarningFormat ("Could not find fingerprint id for the track {0} !", track.TrackTitle);
                     }
 
                     job.Progress = (double)++count / (double)total;
