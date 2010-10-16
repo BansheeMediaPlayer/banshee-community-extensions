@@ -45,6 +45,11 @@ namespace Banshee.LastfmFingerprint
         private InterfaceActionService uia_service;
         private ActionGroup actions;
         private uint ui_manager_id;
+        private bool active;
+        private AudioDecoder ad;
+        //in a perfect word 400ms is enough but still get timeout and banned so increase time between last fm request
+        private TimeSpan lastFmTOSMinTimeout = TimeSpan.FromMilliseconds (1000);
+
 
         string IService.ServiceName {
             get { return "LastfmFingerprintService"; }
@@ -94,6 +99,7 @@ namespace Banshee.LastfmFingerprint
 
         private void OnGetTagFromFingerprint (object sender, EventArgs args)
         {
+            active = true;
             Source source = ServiceManager.SourceManager.ActiveSource;
 
             UserJob job = new UserJob (AddinManager.CurrentLocalizer.GetString ("Getting sound fingerprint"));
@@ -101,45 +107,61 @@ namespace Banshee.LastfmFingerprint
             job.PriorityHints = PriorityHints.SpeedSensitive;
             job.Status = AddinManager.CurrentLocalizer.GetString ("Scanning...");
             job.IconNames = new string [] { "system-search", "gtk-find" };
+            job.CanCancel = true;
+            job.CancelRequested += HandleJobCancelRequested;
             job.Register ();
-            System.DateTime start;
+            System.DateTime start = System.DateTime.MinValue;
             ThreadPool.QueueUserWorkItem (delegate {
-            try {
+                try {
+    
+                    var selection = ((ITrackModelSource)source).TrackModel.Selection;
+                    int total = selection.Count;
+                    int count = 0;
+    
+                    foreach (TrackInfo track in ((ITrackModelSource)source).TrackModel.SelectedItems) {
+                        if (!active)
+                            break;
+                        ad = new AudioDecoder(track.SampleRate, (int)track.Duration.TotalSeconds, track.ArtistName, track.AlbumTitle,
+                                                          track.TrackTitle, track.TrackNumber, track.Year, track.Genre);
+                        //respect last fm term of service :
+                        //You will not make more than 5 requests per originating IP address per second, averaged over a 5 minute period
+                        // 2 requests are done on each loop ==> time allowed by loop : 400ms
+                        if (start != System.DateTime.MinValue) {
+                            TimeSpan span = System.DateTime.Now - start;
+                            if (lastFmTOSMinTimeout > span)
+                                Thread.Sleep (lastFmTOSMinTimeout - span);
+                        }
+                        start = DateTime.Now;
 
-                var selection = ((ITrackModelSource)source).TrackModel.Selection;
-                int total = selection.Count;
-                int count = 0;
+                        int fpid = ad.Decode (track.Uri.AbsolutePath);
+                        //force GC to dispose
+                        ad = null;
 
-                foreach (TrackInfo track in ((ITrackModelSource)source).TrackModel.SelectedItems) {
+                        Log.DebugFormat ("Last.fm fingerprint id for {0} is {1}", track.TrackTitle, fpid);
 
-                    AudioDecoder ad = new AudioDecoder(track.SampleRate, (int)track.Duration.TotalSeconds, track.ArtistName, track.AlbumTitle,
-                                                      track.TrackTitle, track.TrackNumber, track.Year, track.Genre);
-                    start = DateTime.Now;
-                    
-                    int fpid = ad.Decode (track.Uri.AbsolutePath);
-                    Log.DebugFormat ("Last.fm fingerprint id for {0} is {1}", track.TrackTitle, fpid);
-
-                    if (fpid != 0)
-                        FetchMetadata (track, fpid);
-                    else
-                    {
-                        Log.WarningFormat ("Could not find fingerprint id for the track {0} !", track.TrackTitle);
+                        if (fpid != 0)
+                            FetchMetadata (track, fpid);
+                        else
+                        {
+                            Log.WarningFormat ("Could not find fingerprint id for the track {0} !", track.TrackTitle);
+                        }
+    
+                        job.Progress = (double)++count / (double)total;
                     }
 
-                    job.Progress = (double)++count / (double)total;
-                    //respect last fm term of service :
-                    //You will not make more than 5 requests per originating IP address per second, averaged over a 5 minute period
-                    // 2 requests are done on each loop ==> time allowed by loop : 400ms
-                    // But I add 100ms to be sure that we were not banned
-                    Thread.Sleep (new TimeSpan (0, 0, 0, 0, 500).Subtract (System.DateTime.Now - start));
+                } catch (Exception e) {
+                    Log.Exception (e);
+                } finally {
+                    job.Finish ();
                 }
-
-            } catch (Exception e) {
-                Log.Exception (e);
-            } finally {
-                job.Finish ();
-            }
             });
+        }
+
+        void HandleJobCancelRequested (object sender, EventArgs e)
+        {
+            active = false;
+            if (ad != null)
+                ad.CancelDecode ();
         }
 
         void FetchMetadata (TrackInfo track, int fpid)
