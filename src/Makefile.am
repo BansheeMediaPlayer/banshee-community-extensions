@@ -1,4 +1,5 @@
 SUBDIRS = \
+    Ampache \
 	AlarmClock \
 	AppIndicator \
 	Awn \

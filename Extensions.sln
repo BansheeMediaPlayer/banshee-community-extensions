@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ampache", "src\Ampache\Ampache.csproj", "{5521665C-C822-4A1A-BB0A-6FD2422093C3}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomByLastfm", "src\RandomByLastfm\RandomByLastfm.csproj", "{04568A95-2430-41EB-82D6-939F5E7E8403}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundMenu", "src\SoundMenu\SoundMenu.csproj", "{EE91126B-5500-4719-9FAA-36CBAC95DEE3}"
@@ -95,6 +97,10 @@ Global
 		Windows|Any CPU = Windows|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5521665C-C822-4A1A-BB0A-6FD2422093C3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5521665C-C822-4A1A-BB0A-6FD2422093C3}.Debug|x86.Build.0 = Debug|Any CPU
+		{5521665C-C822-4A1A-BB0A-6FD2422093C3}.Release|x86.ActiveCfg = Release|Any CPU
+		{5521665C-C822-4A1A-BB0A-6FD2422093C3}.Release|x86.Build.0 = Release|Any CPU
 		{04568A95-2430-41EB-82D6-939F5E7E8403}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{04568A95-2430-41EB-82D6-939F5E7E8403}.Debug|x86.Build.0 = Debug|Any CPU
 		{04568A95-2430-41EB-82D6-939F5E7E8403}.Release|x86.ActiveCfg = Release|Any CPU

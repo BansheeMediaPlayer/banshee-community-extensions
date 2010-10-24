@@ -129,6 +129,7 @@ help/Makefile
 po/Makefile.in
 
 src/Makefile
+src/Ampache/Makefile
 src/AppIndicator/Makefile
 src/AssemblyInfo.cs
 
@@ -193,6 +194,7 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
+    Ampache:             yes
     Alarm Clock:         ${enable_AlarmClock}
     AppIndicator:        ${enable_AppIndicator}
     Awn:                 ${enable_Awn}
