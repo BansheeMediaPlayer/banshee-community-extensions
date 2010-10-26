@@ -45,7 +45,7 @@ namespace Banshee.Ampache
 			result.Id = int.Parse(raw.Attribute("id").Value);
 			result.TrackTitle = raw.Descendants("title").First().Value;
 			result.TrackTitleSort = raw.Descendants("title").First().Value;
-			result.Uri = new Banshee.Base.SafeUri(raw.Descendants("url").First().Value);
+			result.Uri = new Hyena.SafeUri(raw.Descendants("url").First().Value);
 			result.ArtUrl = raw.Descendants("art").First().Value;
 			int.TryParse(raw.Descendants("track").First().Value, out tmp);
 			result.TrackNumber = tmp;

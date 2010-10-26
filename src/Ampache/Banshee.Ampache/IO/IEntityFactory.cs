@@ -30,8 +30,23 @@ using System.Xml.Linq;
 
 namespace Banshee.Ampache
 {
+    /// <summary>
+    /// Classes that implement this interface are tasked with constructing Ampache Entities
+    /// from the XML provided by Amapche
+    /// </summary>
 	public interface IEntityFactory<TFinish> where TFinish : IEntity
 	{
+        /// <summary>
+        /// Converts a collection of Ampache xml elements to a collection of entites that
+        /// are consumable by this extension.
+        /// </summary>
+        /// <param name="raw">
+        /// A <see cref="ICollection<XElement>"/> that represents the xml defined by ampache
+        /// http://ampache.org/wiki/dev:xmlapi
+        /// </param>
+        /// <returns>
+        /// An <see cref="ICollection<TFinish>"/>
+        /// </returns>
 		ICollection<TFinish> Construct(ICollection<XElement> raw);
 	}
 }

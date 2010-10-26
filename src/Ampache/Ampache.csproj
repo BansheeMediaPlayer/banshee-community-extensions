@@ -33,21 +33,27 @@
     <Reference Include="System" />
     <Reference Include="Banshee.Core, Version=1.6.0.0, Culture=neutral">
       <Package>banshee-1-core</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.CollectionIndexer, Version=1.6.0.0, Culture=neutral">
       <Package>banshee-1-collection-indexer</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.NowPlaying, Version=1.6.0.0, Culture=neutral">
       <Package>banshee-1-nowplaying</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.Services, Version=1.6.0.0, Culture=neutral">
       <Package>banshee-1-services</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.ThickClient, Version=1.6.0.0, Culture=neutral">
       <Package>banshee-1-thickclient</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.Widgets, Version=1.6.0.0, Culture=neutral">
       <Package>banshee-1-thickclient</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>gtk-sharp-2.0</Package>
@@ -58,6 +64,12 @@
     <Reference Include="Mono.Posix" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="Hyena, Version=1.8.0.0, Culture=neutral">
+      <Package>banshee-1-hyena</Package>
+    </Reference>
+    <Reference Include="Hyena.Gui, Version=1.8.0.0, Culture=neutral">
+      <Package>banshee-1-hyena-gui</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />

@@ -31,8 +31,25 @@ namespace Banshee.Ampache
 {
 	public interface IAmpacheSelector<TEntity> where TEntity : IEntity
 	{
+        /// <summary>
+        /// A method to query for all items in Ampache
+        /// </summary>
+        /// <returns>
+        /// A complete collection of all <see cref="TEntity"/> that are in the Ampache server
+        /// </returns>
 		ICollection<TEntity> SelectAll();
-		
+
+        /// <summary>
+        /// Queries ampache for all <see cref="TEntity"/> that are associated with the provided <see cref="TParameter"/>,
+        /// i.e. finding all albums associated with an artist.
+        /// </summary>
+        /// <param name="parameter">
+        /// A <see cref="TParameter"/>, this can be in implementer of <see cref="IEntity"/>
+        /// </param>
+        /// <returns>
+        /// A <see cref="ICollection<TEntity>"/> where all elements are associated the the provided <see cref="TParameter"/>
+        /// if Ampache cannot be queried with the provided parameter then <see cref="SelectAll"/> will be used.
+        /// </returns>
 		ICollection<TEntity> SelectBy<TParameter>(TParameter parameter) where TParameter : IEntity;
 	}
 	

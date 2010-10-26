@@ -30,8 +30,19 @@ namespace Banshee.Ampache
 {
 	internal static class AmpacheSongExtensions
 	{
+        /// <summary>
+        /// The Ampache Song XML only provides an album and artist id, this operation
+        /// hydrates the <see cref="AmpacheSong"/> with relevent album and artist information
+        /// </summary>
+        /// <param name="song">
+        /// A <see cref="AmpacheSong"/>
+        /// </param>
+        /// <param name="album">
+        /// A <see cref="AmpacheAlbum"/>
+        /// </param>
 		public static void Hydrate(this AmpacheSong song, AmpacheAlbum album)
 		{
+            // TODO: accept an Ampache Artist as a parameter to account for albums with "various" artists
 			song.ArtistName = album.ArtistName;
 			song.ArtistNameSort = album.ArtistNameSort;
 			song.AlbumTitle = album.Title;

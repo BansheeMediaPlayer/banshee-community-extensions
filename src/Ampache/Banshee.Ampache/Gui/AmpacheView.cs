@@ -189,8 +189,9 @@ namespace Banshee.Ampache
 					}
 					
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
+                    Console.WriteLine (e.Message);
 					_connected = false;
 				}
 				Gtk.Application.Invoke((o,e) => LoadNodeLists());
