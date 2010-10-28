@@ -30,31 +30,39 @@ using System.Linq;
 
 namespace Banshee.Ampache
 {
-	[TreeNode(ListOnly=true)]
-	internal class SongLabel : TreeNode
-	{
-		public SongLabel (AmpacheSong song)
-		{
-			AmpacheId = song.Id;
-			AlbumId = song.AlbumId;
-			ArtistId = song.ArtistId;
-			Url = song.Uri.AbsoluteUri;
-			name = song.TrackTitle;
-			_artistName = song.ArtistName;
-			albumName = song.AlbumTitle;
-		}
-		public int AmpacheId {get; set;}
-		public int AlbumId {get; set;}
-		public int ArtistId {get; set;}
-		public string Url {get;set;}
-		string name;
-		[TreeNodeValue(Column=0)]
-		public string Name {get { return new string((name ?? string.Empty).Take(50).ToArray()); } set { name = value; }}
-		string _artistName;
-		[TreeNodeValue(Column=1)]
-		public string ArtistName {get { return new string((_artistName ?? string.Empty).Take(35).ToArray()); } set { _artistName = value; }}
-		string albumName;
-		[TreeNodeValue(Column=2)]
-		public string AlbumName {get { return new string((albumName ?? string.Empty).Take(35).ToArray()); } set { albumName = value; }}
-	}
+    [TreeNode(ListOnly=true)]
+    internal class SongLabel : TreeNode
+    {
+        private string name;
+        private string artistName;
+        private string albumName;
+
+        public SongLabel (AmpacheSong song)
+        {
+            AmpacheId = song.Id;
+            AlbumId = song.AlbumId;
+            ArtistId = song.ArtistId;
+            Url = song.Uri.AbsoluteUri;
+            name = song.TrackTitle;
+            artistName = song.ArtistName;
+            albumName = song.AlbumTitle;
+        }
+
+        public int AmpacheId {get; set;}
+
+        public int AlbumId {get; set;}
+
+        public int ArtistId {get; set;}
+
+        public string Url {get;set;}
+
+        [TreeNodeValue(Column=0)]
+        public string Name {get { return new string((name ?? string.Empty).Take(50).ToArray()); } set { name = value; }}
+
+        [TreeNodeValue(Column=1)]
+        public string ArtistName {get { return new string((artistName ?? string.Empty).Take(35).ToArray()); } set { artistName = value; }}
+
+        [TreeNodeValue(Column=2)]
+        public string AlbumName {get { return new string((albumName ?? string.Empty).Take(35).ToArray()); } set { albumName = value; }}
+    }
 }

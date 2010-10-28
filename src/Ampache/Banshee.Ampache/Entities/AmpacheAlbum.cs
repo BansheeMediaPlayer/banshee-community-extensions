@@ -30,27 +30,27 @@ using Banshee.Collection;
 
 namespace Banshee.Ampache
 {
-	public class AmpacheAlbum : AlbumInfo, IRatable
-	{
-		public int ArtistId { get; set; }
-		public int Year { get; set; }
-		public string ArtUrl { get; set; }
-		public override DateTime ReleaseDate { get { return new DateTime(Year, 1,1); } set { base.ReleaseDate = value; } }
+    public class AmpacheAlbum : AlbumInfo, IRatable
+    {
+        public int ArtistId { get; set; }
+        public int Year { get; set; }
+        public string ArtUrl { get; set; }
+        public override DateTime ReleaseDate { get { return new DateTime(Year, 1,1); } set { base.ReleaseDate = value; } }
 
-		#region IRatable implementation
-		
-		public int PerciseRating { get; set; }
-		
-		public int Rating  { get; set; }
+        #region IRatable implementation
+        
+        public int PerciseRating { get; set; }
+        
+        public int Rating  { get; set; }
 
-		public ICollection<Tag> Tags  { get; set; }
-		
-		#endregion
+        public ICollection<Tag> Tags  { get; set; }
+        
+        #endregion
 
-		#region IEntity implementation
-		
-		public int Id  { get; set; }
-		
-		#endregion
+        #region IEntity implementation
+        
+        public int Id  { get; set; }
+        
+        #endregion
 }
 }

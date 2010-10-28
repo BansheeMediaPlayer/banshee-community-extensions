@@ -29,32 +29,32 @@ using System.Threading;
 
 namespace Banshee.Ampache
 {
-	public static class AmpacheSelectionFactory
-	{
-		private static Authenticate _handshake;
-		private static System.Threading.Timer _keepAlive;
-		
-		public static void Initialize(Authenticate handshake)
-		{
-			_handshake = handshake;
-			_keepAlive = new System.Threading.Timer((o)=>(_handshake).Ping(), new object(), TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
-		}
-		
-		public static IAmpacheSelector<TEntity> GetSelectorFor<TEntity>() where TEntity : IEntity
-		{
-			if (typeof(TEntity) == typeof(AmpacheArtist)) {
-				return new ArtistSelector(_handshake, new ArtistFactory()) as IAmpacheSelector<TEntity>;
-			}
-			if (typeof(TEntity) == typeof(AmpacheAlbum)) {
-				return new AlbumSelector(_handshake, new AlbumFactory()) as IAmpacheSelector<TEntity>;
-			}
-			if (typeof(TEntity) == typeof(AmpacheSong)) {
-				return new SongSelector(_handshake, new SongFactory()) as IAmpacheSelector<TEntity>;
-			}
-			if (typeof(TEntity) == typeof(AmpachePlaylist)){
-				return new PlaylistSelector(_handshake, new PlaylistFactory(), new SongFactory()) as IAmpacheSelector<TEntity>;
-			}
-			throw new InvalidOperationException(string.Format("{0} is not yet supported for selection from ampache", typeof(TEntity).Name));
-		}
-	}
+    public static class AmpacheSelectionFactory
+    {
+        private static Authenticate _handshake;
+        private static System.Threading.Timer _keepAlive;
+        
+        public static void Initialize(Authenticate handshake)
+        {
+            _handshake = handshake;
+            _keepAlive = new System.Threading.Timer((o)=>(_handshake).Ping(), new object(), TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
+        }
+        
+        public static IAmpacheSelector<TEntity> GetSelectorFor<TEntity>() where TEntity : IEntity
+        {
+            if (typeof(TEntity) == typeof(AmpacheArtist)) {
+                return new ArtistSelector(_handshake, new ArtistFactory()) as IAmpacheSelector<TEntity>;
+            }
+            if (typeof(TEntity) == typeof(AmpacheAlbum)) {
+                return new AlbumSelector(_handshake, new AlbumFactory()) as IAmpacheSelector<TEntity>;
+            }
+            if (typeof(TEntity) == typeof(AmpacheSong)) {
+                return new SongSelector(_handshake, new SongFactory()) as IAmpacheSelector<TEntity>;
+            }
+            if (typeof(TEntity) == typeof(AmpachePlaylist)){
+                return new PlaylistSelector(_handshake, new PlaylistFactory(), new SongFactory()) as IAmpacheSelector<TEntity>;
+            }
+            throw new InvalidOperationException(string.Format("{0} is not yet supported for selection from ampache", typeof(TEntity).Name));
+        }
+    }
 }

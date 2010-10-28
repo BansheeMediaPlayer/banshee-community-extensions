@@ -29,30 +29,30 @@ using System.Collections.Generic;
 
 namespace Banshee.Ampache
 {
-	internal class ArtistSelector : AmpacheSelectorBase<AmpacheArtist>
-	{
-		private const string NODE_NAME = @"artist";
-		private const string ACTION = @"artists";
-		private const string TAG_ACTION = @"tag_artists";
-		private static Dictionary<Type, string> MAP;
-		
-		static ArtistSelector ()
-		{
-			MAP = new Dictionary<Type, string>();
-			MAP.Add(typeof(Tag), TAG_ACTION);
-		}
-		
-		public ArtistSelector (Handshake handshake, IEntityFactory<AmpacheArtist> factory) : base (handshake, factory)
-		{}
-		
-		#region implemented abstract members of Banshee.Ampache.AmpacheSelectorBase[Banshee.Ampache.AmpacheSong]
-		protected override string SelectAllMethod { get { return ACTION; } }
-				
-		protected override string XmlNodeName { get { return NODE_NAME; } }
-				
-		protected override Dictionary<Type, string> SelectMethodMap { get { return MAP; } }
-		
-		#endregion
-		
-	}
+    internal class ArtistSelector : AmpacheSelectorBase<AmpacheArtist>
+    {
+        private const string NODE_NAME = @"artist";
+        private const string ACTION = @"artists";
+        private const string TAG_ACTION = @"tag_artists";
+        private static Dictionary<Type, string> MAP;
+        
+        static ArtistSelector ()
+        {
+            MAP = new Dictionary<Type, string>();
+            MAP.Add(typeof(Tag), TAG_ACTION);
+        }
+        
+        public ArtistSelector (Handshake handshake, IEntityFactory<AmpacheArtist> factory) : base (handshake, factory)
+        {}
+        
+        #region implemented abstract members of Banshee.Ampache.AmpacheSelectorBase[Banshee.Ampache.AmpacheSong]
+        protected override string SelectAllMethod { get { return ACTION; } }
+                
+        protected override string XmlNodeName { get { return NODE_NAME; } }
+                
+        protected override Dictionary<Type, string> SelectMethodMap { get { return MAP; } }
+        
+        #endregion
+        
+    }
 }

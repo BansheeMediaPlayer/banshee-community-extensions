@@ -28,8 +28,8 @@ using System;
 
 namespace Banshee.Ampache
 {
-	public static class AmpacheAlbumExtensions
-	{
+    public static class AmpacheAlbumExtensions
+    {
         /// <summary>
         /// The Album XML returned from Ampache only containes the artist id, use this operation
         /// to hydrate a <see cref="AmpacheAlbum"/> with the artist's information
@@ -40,11 +40,11 @@ namespace Banshee.Ampache
         /// <param name="artist">
         /// A <see cref="AmpacheArtist"/> the artist of the the album
         /// </param>
-		public static void Hydrate(this AmpacheAlbum album, AmpacheArtist artist)
-		{
-			album.ArtistName = artist.Name;
-			album.ArtistNameSort = artist.NameSort;
-		}
-	}
+        public static void Hydrate(this AmpacheAlbum album, AmpacheArtist artist)
+        {
+            album.ArtistName = artist.Name;
+            album.ArtistNameSort = artist.NameSort;
+        }
+    }
 }
 

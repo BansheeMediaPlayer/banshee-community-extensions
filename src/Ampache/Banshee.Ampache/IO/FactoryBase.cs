@@ -30,13 +30,13 @@ using System.Linq;
 using System.Collections.Generic;
 namespace Banshee.Ampache
 {
-	internal class FactoryBase<TEntity> where TEntity : IEntity, new()
-	{
-		protected virtual TEntity BuildBase(XElement element)
-		{
-			TEntity result = new TEntity();
-			result.Id = int.Parse(element.Attribute("id").Value);
-			return result;
-		}
-	}
+    internal class FactoryBase<TEntity> where TEntity : IEntity, new()
+    {
+        protected virtual TEntity BuildBase(XElement element)
+        {
+            TEntity result = new TEntity();
+            result.Id = int.Parse(element.Attribute("id").Value);
+            return result;
+        }
+    }
 }

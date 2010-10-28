@@ -28,9 +28,9 @@ using System;
 using System.Collections.Generic;
 namespace Banshee.Ampache
 {
-	public interface IRatable : ITagable
-	{		
-		int PerciseRating { get; set; }
-		int Rating { get; set; }
-	}
+    public interface IRatable : ITagable
+    {        
+        int PerciseRating { get; set; }
+        int Rating { get; set; }
+    }
 }

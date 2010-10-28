@@ -31,22 +31,22 @@ using System.Collections.Generic;
 
 namespace Banshee.Ampache
 {
-	internal class ArtistFactory : FactoryBase<AmpacheArtist>, IEntityFactory<AmpacheArtist>
-	{
-		public ICollection<AmpacheArtist> Construct(ICollection<XElement> raw)
-		{
-			return new HashSet<AmpacheArtist>(raw.Select(n=>Construct(n)));
-		}
-		
-		public AmpacheArtist Construct(XElement raw)
-		{
-			var result = this.BuildBase(raw);
-			result.Id = int.Parse(raw.Attribute("id").Value);
-			result.Name = raw.Descendants("name").First().Value;
-			result.NameSort = raw.Descendants("name").First().Value;
-			result.AlbumCount = int.Parse(raw.Descendants("albums").First().Value);
-			result.SongCount = int.Parse(raw.Descendants("songs").First().Value);
-			return result;
-		}
-	}
+    internal class ArtistFactory : FactoryBase<AmpacheArtist>, IEntityFactory<AmpacheArtist>
+    {
+        public ICollection<AmpacheArtist> Construct(ICollection<XElement> raw)
+        {
+            return new HashSet<AmpacheArtist>(raw.Select(n=>Construct(n)));
+        }
+        
+        public AmpacheArtist Construct(XElement raw)
+        {
+            var result = this.BuildBase(raw);
+            result.Id = int.Parse(raw.Attribute("id").Value);
+            result.Name = raw.Descendants("name").First().Value;
+            result.NameSort = raw.Descendants("name").First().Value;
+            result.AlbumCount = int.Parse(raw.Descendants("albums").First().Value);
+            result.SongCount = int.Parse(raw.Descendants("songs").First().Value);
+            return result;
+        }
+    }
 }

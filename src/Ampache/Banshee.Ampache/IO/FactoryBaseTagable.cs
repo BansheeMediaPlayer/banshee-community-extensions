@@ -30,17 +30,20 @@ using System.Linq;
 using System.Collections.Generic;
 namespace Banshee.Ampache
 {
-	internal class FactoryBaseTagable<TEntity> : FactoryBase<TEntity> where TEntity : ITagable, new()
-	{
-		protected override TEntity BuildBase(XElement element)
-		{
-			var result = base.BuildBase(element);
-			result.Tags = new HashSet<Tag>(
-			               	  element.Descendants("tag").Select(n => new Tag{
-																 Id = int.Parse(n.Attribute("id").Value), 
-																 Count = int.Parse(n.Attribute("count").Value), 
-																 Name = n.Value}));
-			return result;
-		}
-	}
+    internal class FactoryBaseTagable<TEntity> : FactoryBase<TEntity> where TEntity : ITagable, new()
+    {
+        protected override TEntity BuildBase(XElement element)
+        {
+            var result = base.BuildBase(element);
+            var tags = element.Descendants("tag")
+                              .Select(n => new Tag
+                                               {
+                                                   Id = int.Parse(n.Attribute("id").Value),
+                                                   Count = int.Parse(n.Attribute("count").Value),
+                                                   Name = n.Value
+                                               });
+            result.Tags = new HashSet<Tag>(tags);
+            return result;
+        }
+    }
 }

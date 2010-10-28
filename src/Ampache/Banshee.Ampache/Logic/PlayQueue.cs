@@ -33,76 +33,73 @@ using Banshee.Base;
 
 namespace Banshee.Ampache
 {
-	internal class PlayQueue	
-	{
-		private IList<TrackInfo> _playList;
-		private readonly IList<TrackInfo> _original;
-		private int _playing;
-		
-		private readonly TrackInfo _first;
-		
-		public PlayQueue (IEnumerable<AmpacheSong> songs) : this (songs, Enumerable.Empty<AmpacheSong>())
-		{}
-		
-		public PlayQueue (IEnumerable<AmpacheSong> nexts, IEnumerable<AmpacheSong> prevs)
-		{
-			var tmp = prevs.Cast<TrackInfo>().ToList();
-			_playing = tmp.Count;
-			tmp.AddRange(nexts.Cast<TrackInfo>());
-			_playList = tmp;
-			_first = _playList[SafePlaying];
-			_original = new List<TrackInfo>(tmp).AsReadOnly();
-		}
-		
-		public TrackInfo Current { get { return _playList[SafePlaying]; } }
-		private int SafePlaying { get { return _playing % _playList.Count; } }
-		public TrackInfo First { get { return _first; } }
-		public TrackInfo PeekNext()
-		{
-			return _playList[(_playing + 1) % _playList.Count];
-		}
-		public TrackInfo Next()
-		{
-			_playing ++;
-			return _playList[SafePlaying];
-		}
-		public TrackInfo PeekPrevious()
-		{
-			if (_playing != 0) 
-			{
-				return _playList[SafePlaying - 1];
-			}
-			return _playList.Last();
-		}
-		public TrackInfo Previous()
-		{
-			if (_playing == 0) 
-			{
-				_playing = _playList.Count;
-			}
-			_playing --;
-			return _playList[SafePlaying];
-		}
-		public void Shuffle(object o)
-		{
-			var tmp = Current;
-			var old = _playList;
-			old.Remove(tmp);
-			_playList = new List<TrackInfo>();
-			_playList.Add(tmp);
-			Random rand = new Random();
-			while (old.Count != 0)
-			{
-				tmp = old[rand.Next(old.Count)];
-				old.Remove(tmp);
-				_playList.Add(tmp);
-			}
-		}
-		public void Unshuffle(object o)
-		{
-			var tmp = Current;
-			_playList = _original.ToList();
-			_playing = _playList.IndexOf(tmp);
-		}
-	}
+    internal class PlayQueue    
+    {
+        private IList<TrackInfo> _playList;
+        private readonly IList<TrackInfo> _original;
+        private int _playing;
+        
+        private readonly TrackInfo _first;
+        
+        public PlayQueue (IEnumerable<AmpacheSong> songs) : this (songs, Enumerable.Empty<AmpacheSong>())
+        {}
+        
+        public PlayQueue (IEnumerable<AmpacheSong> nexts, IEnumerable<AmpacheSong> prevs)
+        {
+            var tmp = prevs.Cast<TrackInfo>().ToList();
+            _playing = tmp.Count;
+            tmp.AddRange(nexts.Cast<TrackInfo>());
+            _playList = tmp;
+            _first = _playList[SafePlaying];
+            _original = new List<TrackInfo>(tmp).AsReadOnly();
+        }
+        
+        public TrackInfo Current { get { return _playList[SafePlaying]; } }
+        private int SafePlaying { get { return _playing % _playList.Count; } }
+        public TrackInfo First { get { return _first; } }
+        public TrackInfo PeekNext()
+        {
+            return _playList[(_playing + 1) % _playList.Count];
+        }
+        public TrackInfo Next()
+        {
+            _playing ++;
+            return _playList[SafePlaying];
+        }
+        public TrackInfo PeekPrevious()
+        {
+            if (_playing != 0) {
+                return _playList[SafePlaying - 1];
+            }
+            return _playList.Last();
+        }
+        public TrackInfo Previous()
+        {
+            if (_playing == 0) {
+                _playing = _playList.Count;
+            }
+            _playing --;
+            return _playList[SafePlaying];
+        }
+        public void Shuffle(object o)
+        {
+            var tmp = Current;
+            var old = _playList;
+            old.Remove(tmp);
+            _playList = new List<TrackInfo>();
+            _playList.Add(tmp);
+            Random rand = new Random();
+            while (old.Count != 0) {
+                tmp = old[rand.Next(old.Count)];
+                old.Remove(tmp);
+                _playList.Add(tmp);
+            }
+        }
+        public void Unshuffle(object o)
+        {
+            var tmp = Current;
+            _playList = _original.ToList();
+            _playing = _playList.IndexOf(tmp);
+        }
+    }
 }

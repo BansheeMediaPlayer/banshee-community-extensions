@@ -28,8 +28,8 @@ using System;
 using System.Collections.Generic;
 namespace Banshee.Ampache
 {
-	public interface ITagable : IEntity
-	{
-		ICollection<Tag> Tags { get; set; }
-	}
+    public interface ITagable : IEntity
+    {
+        ICollection<Tag> Tags { get; set; }
+    }
 }

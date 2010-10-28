@@ -30,26 +30,26 @@ using Banshee.Collection;
 
 namespace Banshee.Ampache
 {
-	public class AmpacheArtist : ArtistInfo, IRatable		
-	{
-		public int SongCount { get; set; }
-		public int AlbumCount { get; set; }
-	
+    public class AmpacheArtist : ArtistInfo, IRatable        
+    {
+        public int SongCount { get; set; }
+        public int AlbumCount { get; set; }
+    
 
-		#region IRatable implementation
-		
-		public int PerciseRating { get; set; }
-		
-		public int Rating { get; set; }
+        #region IRatable implementation
+        
+        public int PerciseRating { get; set; }
+        
+        public int Rating { get; set; }
 
-		public ICollection<Tag> Tags { get; set; }
-		
-		#endregion
+        public ICollection<Tag> Tags { get; set; }
+        
+        #endregion
 
-		#region IEntity implementation
-		
-		public int Id { get; set; }
-		
-		#endregion
+        #region IEntity implementation
+        
+        public int Id { get; set; }
+        
+        #endregion
 }
 }

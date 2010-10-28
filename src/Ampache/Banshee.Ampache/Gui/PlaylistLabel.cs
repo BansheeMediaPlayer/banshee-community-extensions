@@ -29,21 +29,21 @@ using Gtk;
 using System.Linq;
 namespace Banshee.Ampache
 {
-	[TreeNode(ListOnly=true)]
-	internal class PlaylistLabel : TreeNode
-	{
-		public PlaylistLabel()
-		{}
-		
-		public PlaylistLabel (AmpachePlaylist playlist)
-		{
-			Name = playlist.Name;
-			AmpacheId = playlist.Id;
-		}
-		
-		public int AmpacheId { get; set; }
-		
-		[TreeNodeValue(Column=0)]
-		public string Name { get; set; }
-	}
+    [TreeNode(ListOnly=true)]
+    internal class PlaylistLabel : TreeNode
+    {
+        public PlaylistLabel()
+        {}
+        
+        public PlaylistLabel (AmpachePlaylist playlist)
+        {
+            Name = playlist.Name;
+            AmpacheId = playlist.Id;
+        }
+        
+        public int AmpacheId { get; set; }
+        
+        [TreeNodeValue(Column=0)]
+        public string Name { get; set; }
+    }
 }

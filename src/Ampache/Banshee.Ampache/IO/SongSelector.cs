@@ -29,34 +29,34 @@ using System.Collections.Generic;
 
 namespace Banshee.Ampache
 {
-	internal class SongSelector : AmpacheSelectorBase<AmpacheSong>
-	{
-		private const string NODE_NAME = @"song";
-		private const string ACTION = @"songs";
-		private const string ALBUM_ACTION = @"album_songs";
-		private const string ARTIST_ACTION = @"artist_songs";
-		private const string TAG_ACTION = @"tag_songs";
-		private static Dictionary<Type, string> MAP;
-		
-		static SongSelector ()
-		{
-			MAP = new Dictionary<Type, string>();
-			MAP.Add(typeof(AmpacheAlbum), ALBUM_ACTION);
-			MAP.Add(typeof(AmpacheArtist), ARTIST_ACTION);
-			MAP.Add(typeof(Tag), TAG_ACTION);
-		}
-		
-		public SongSelector (Handshake handshake, IEntityFactory<AmpacheSong> factory) : base (handshake, factory)
-		{}
-		
-		#region implemented abstract members of Banshee.Ampache.AmpacheSelectorBase[Banshee.Ampache.AmpacheSong]
-		protected override string SelectAllMethod { get { return ACTION; } }
-				
-		protected override string XmlNodeName { get { return NODE_NAME; } }
-				
-		protected override Dictionary<Type, string> SelectMethodMap { get { return MAP; } }
-		
-		#endregion
-		
-	}
+    internal class SongSelector : AmpacheSelectorBase<AmpacheSong>
+    {
+        private const string NODE_NAME = @"song";
+        private const string ACTION = @"songs";
+        private const string ALBUM_ACTION = @"album_songs";
+        private const string ARTIST_ACTION = @"artist_songs";
+        private const string TAG_ACTION = @"tag_songs";
+        private static Dictionary<Type, string> MAP;
+        
+        static SongSelector ()
+        {
+            MAP = new Dictionary<Type, string>();
+            MAP.Add(typeof(AmpacheAlbum), ALBUM_ACTION);
+            MAP.Add(typeof(AmpacheArtist), ARTIST_ACTION);
+            MAP.Add(typeof(Tag), TAG_ACTION);
+        }
+        
+        public SongSelector (Handshake handshake, IEntityFactory<AmpacheSong> factory) : base (handshake, factory)
+        {}
+        
+        #region implemented abstract members of Banshee.Ampache.AmpacheSelectorBase[Banshee.Ampache.AmpacheSong]
+        protected override string SelectAllMethod { get { return ACTION; } }
+                
+        protected override string XmlNodeName { get { return NODE_NAME; } }
+                
+        protected override Dictionary<Type, string> SelectMethodMap { get { return MAP; } }
+        
+        #endregion
+        
+    }
 }

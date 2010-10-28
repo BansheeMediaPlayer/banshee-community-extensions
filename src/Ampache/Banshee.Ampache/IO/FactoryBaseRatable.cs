@@ -31,15 +31,15 @@ using System.Collections.Generic;
 
 namespace Banshee.Ampache
 {
-	internal class FactoryBaseRatable<TEntity> : FactoryBaseTagable<TEntity> where TEntity : IRatable, new()
-	{
-		protected override TEntity BuildBase(XElement element)
-		{
-			TEntity result = base.BuildBase(element);
-			result.PerciseRating = int.Parse(element.Descendants("preciserating").First().Value);
-			result.Rating = int.Parse(element.Descendants("rating").First().Value);
-			
-			return result;
-		}
-	}
+    internal class FactoryBaseRatable<TEntity> : FactoryBaseTagable<TEntity> where TEntity : IRatable, new()
+    {
+        protected override TEntity BuildBase(XElement element)
+        {
+            TEntity result = base.BuildBase(element);
+            result.PerciseRating = int.Parse(element.Descendants("preciserating").First().Value);
+            result.Rating = int.Parse(element.Descendants("rating").First().Value);
+            
+            return result;
+        }
+    }
 }

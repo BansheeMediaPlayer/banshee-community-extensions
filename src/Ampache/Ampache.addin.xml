@@ -7,8 +7,8 @@
     name="Ampache"
     category="Community Extensions"
     description="This extension allows access an Ampache music server."
-    author="Jo Shields"
-    url="http://one.ubuntu.com/"
+    author="John Moore"
+    url="http://banshee.fm/"
     defaultEnabled="false">
 
   <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>

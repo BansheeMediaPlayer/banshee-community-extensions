@@ -30,12 +30,12 @@ using Gtk;
 
 namespace Banshee.Ampache
 {
-	[TreeNode(ListOnly=true)]
-	internal class AlbumLabel : TreeNode
-	{
-		public int AmpacheId {get; set;}
-		public int ArtistId {get; set;}
-		[TreeNodeValue(Column=0)]
-		public string Name {get; set;}
-	}	
+    [TreeNode(ListOnly=true)]
+    internal class AlbumLabel : TreeNode
+    {
+        public int AmpacheId {get; set;}
+        public int ArtistId {get; set;}
+        [TreeNodeValue(Column=0)]
+        public string Name {get; set;}
+    }    
 }

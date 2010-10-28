@@ -1,4 +1,4 @@
-ASSEMBLY = Banshee.LiveRadio
+ASSEMBLY = Banshee.Ampache
 LINK = $(BANSHEE_LIBS)
 
 SOURCES =  \

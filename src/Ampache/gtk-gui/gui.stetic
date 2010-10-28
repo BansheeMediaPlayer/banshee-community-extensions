@@ -8,8 +8,8 @@
     <widget-library name="Banshee.NowPlaying, Version=1.8.0.0, Culture=neutral" />
     <widget-library name="Banshee.ThickClient, Version=1.8.0.0, Culture=neutral" />
     <widget-library name="Banshee.Widgets, Version=1.8.0.0, Culture=neutral" />
-    <widget-library name="../bin/Debug/Banshee.Ampache.dll" internal="true" />
     <widget-library name="Hyena.Gui, Version=1.8.0.0, Culture=neutral" />
+    <widget-library name="../bin/Release/Banshee.Ampache.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="Banshee.Ampache.AmpacheView" design-size="391 300">
     <property name="MemberName" />

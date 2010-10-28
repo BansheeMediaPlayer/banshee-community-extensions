@@ -29,32 +29,32 @@ using System.Collections.Generic;
 
 namespace Banshee.Ampache
 {
-	internal class AlbumSelector : AmpacheSelectorBase<AmpacheAlbum>
-	{
-		private const string NODE_NAME = @"album";
-		private const string ACTION = @"albums";
-		private const string ARTIST_ACTION = @"artist_albums";
-		private const string TAG_ACTION = @"tag_albums";
-		private static Dictionary<Type, string> MAP;
-		
-		static AlbumSelector ()
-		{
-			MAP = new Dictionary<Type, string>();
-			MAP.Add(typeof(AmpacheArtist), ARTIST_ACTION);
-			MAP.Add(typeof(Tag), TAG_ACTION);
-		}
-		
-		public AlbumSelector (Handshake handshake, IEntityFactory<AmpacheAlbum> factory) : base (handshake, factory)
-		{}
-		
-		#region implemented abstract members of Banshee.Ampache.AmpacheSelectorBase[Banshee.Ampache.AmpacheSong]
-		protected override string SelectAllMethod { get { return ACTION; } }
-				
-		protected override string XmlNodeName { get { return NODE_NAME; } }
-				
-		protected override Dictionary<Type, string> SelectMethodMap { get { return MAP; } }
-		
-		#endregion
-		
-	}
+    internal class AlbumSelector : AmpacheSelectorBase<AmpacheAlbum>
+    {
+        private const string NODE_NAME = @"album";
+        private const string ACTION = @"albums";
+        private const string ARTIST_ACTION = @"artist_albums";
+        private const string TAG_ACTION = @"tag_albums";
+        private static Dictionary<Type, string> MAP;
+        
+        static AlbumSelector ()
+        {
+            MAP = new Dictionary<Type, string>();
+            MAP.Add(typeof(AmpacheArtist), ARTIST_ACTION);
+            MAP.Add(typeof(Tag), TAG_ACTION);
+        }
+        
+        public AlbumSelector (Handshake handshake, IEntityFactory<AmpacheAlbum> factory) : base (handshake, factory)
+        {}
+        
+        #region implemented abstract members of Banshee.Ampache.AmpacheSelectorBase[Banshee.Ampache.AmpacheSong]
+        protected override string SelectAllMethod { get { return ACTION; } }
+                
+        protected override string XmlNodeName { get { return NODE_NAME; } }
+                
+        protected override Dictionary<Type, string> SelectMethodMap { get { return MAP; } }
+        
+        #endregion
+        
+    }
 }

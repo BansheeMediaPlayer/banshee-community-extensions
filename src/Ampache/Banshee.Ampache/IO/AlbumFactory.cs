@@ -31,25 +31,25 @@ using System.Linq;
 
 namespace Banshee.Ampache
 {
-	internal class AlbumFactory : FactoryBase<AmpacheAlbum>, IEntityFactory<AmpacheAlbum>
-	{
-		public ICollection<AmpacheAlbum> Construct(ICollection<XElement> raw)
-		{
-			return new HashSet<AmpacheAlbum>(raw.Select(n=>Construct(n)));
-		}
-		
-		public AmpacheAlbum Construct(XElement raw)
-		{
-			var result = BuildBase(raw);
-			result.Id = int.Parse(raw.Attribute("id").Value);
-			result.ArtistId = int.Parse(raw.Descendants("artist").First().Attribute("id").Value);
-			result.Title = raw.Descendants("name").First().Value;
-			result.TitleSort = raw.Descendants("name").First().Value;
-			int yr = 1900;
-			int.TryParse(raw.Descendants("year").First().Value, out yr);
-			result.Year = yr;
-			result.ArtUrl = raw.Descendants("art").First().Value;
-			return result;
-		}
-	}
+    internal class AlbumFactory : FactoryBase<AmpacheAlbum>, IEntityFactory<AmpacheAlbum>
+    {
+        public ICollection<AmpacheAlbum> Construct(ICollection<XElement> raw)
+        {
+            return new HashSet<AmpacheAlbum>(raw.Select(n=>Construct(n)));
+        }
+        
+        public AmpacheAlbum Construct(XElement raw)
+        {
+            var result = BuildBase(raw);
+            result.Id = int.Parse(raw.Attribute("id").Value);
+            result.ArtistId = int.Parse(raw.Descendants("artist").First().Attribute("id").Value);
+            result.Title = raw.Descendants("name").First().Value;
+            result.TitleSort = raw.Descendants("name").First().Value;
+            int yr = 1900;
+            int.TryParse(raw.Descendants("year").First().Value, out yr);
+            result.Year = yr;
+            result.ArtUrl = raw.Descendants("art").First().Value;
+            return result;
+        }
+    }
 }

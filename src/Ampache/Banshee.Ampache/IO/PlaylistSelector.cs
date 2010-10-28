@@ -33,45 +33,45 @@ using System.IO;
 using System.Linq;
 namespace Banshee.Ampache
 {
-	internal class PlaylistSelector : AmpacheSelectorBase<AmpachePlaylist>
-	{
-		private const string NODE_NAME = @"playlist";
-		private const string ACTION = @"playlists";
-		private const string SONG_ACTION = @"playlist_songs";
-		private static Dictionary<Type, string> MAP = new Dictionary<Type, string>();
-		private readonly IEntityFactory<AmpacheSong> _songFactory;
-		
-		public PlaylistSelector (Handshake handshake, IEntityFactory<AmpachePlaylist> factory,  IEntityFactory<AmpacheSong> songFactory)
-			: base (handshake, factory)
-		{
-			_songFactory = songFactory;
-		}
-		#region implemented abstract members of Banshee.Ampache.AmpacheSelectorBase[Banshee.Ampache.AmpachePlaylist]
-		
-		protected override string SelectAllMethod { get { return ACTION;} }
-		
-		protected override string XmlNodeName { get { return NODE_NAME; } }
-		
-		protected override Dictionary<Type, string> SelectMethodMap { get { return MAP; } }
-		
-		#endregion
-		
-		public override ICollection<AmpachePlaylist> SelectAll ()
-		{
-			var results = base.SelectAll ();
-			foreach (var playlist in results)
-			{
-				StringBuilder builder = new StringBuilder();
-				builder.AppendFormat(BASE_URL, _handshake.Server, SONG_ACTION, _handshake.Passphrase);
-				builder.AppendFormat(FILTER_PARAMETER, playlist.Id);
-				var request = (HttpWebRequest)WebRequest.Create (builder.ToString());
-				var response = request.GetResponse();
-				var raw = XElement.Load(new StreamReader(response.GetResponseStream()));
-				//Console.WriteLine (raw.ToString());
-				playlist.Songs = _songFactory.Construct(raw.Descendants("song").ToList()).ToList();
-			}
-			return results;
-		}
-		
-	}
+    internal class PlaylistSelector : AmpacheSelectorBase<AmpachePlaylist>
+    {
+        private const string NODE_NAME = @"playlist";
+        private const string ACTION = @"playlists";
+        private const string SONG_ACTION = @"playlist_songs";
+        private static Dictionary<Type, string> MAP = new Dictionary<Type, string>();
+        private readonly IEntityFactory<AmpacheSong> _songFactory;
+        
+        public PlaylistSelector (Handshake handshake, IEntityFactory<AmpachePlaylist> factory,  IEntityFactory<AmpacheSong> songFactory)
+            : base (handshake, factory)
+        {
+            _songFactory = songFactory;
+        }
+        #region implemented abstract members of Banshee.Ampache.AmpacheSelectorBase[Banshee.Ampache.AmpachePlaylist]
+        
+        protected override string SelectAllMethod { get { return ACTION;} }
+        
+        protected override string XmlNodeName { get { return NODE_NAME; } }
+        
+        protected override Dictionary<Type, string> SelectMethodMap { get { return MAP; } }
+        
+        #endregion
+        
+        public override ICollection<AmpachePlaylist> SelectAll ()
+        {
+            var results = base.SelectAll ();
+            foreach (var playlist in results)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.AppendFormat(BASE_URL, _handshake.Server, SONG_ACTION, _handshake.Passphrase);
+                builder.AppendFormat(FILTER_PARAMETER, playlist.Id);
+                var request = (HttpWebRequest)WebRequest.Create (builder.ToString());
+                var response = request.GetResponse();
+                var raw = XElement.Load(new StreamReader(response.GetResponseStream()));
+                //Console.WriteLine (raw.ToString());
+                playlist.Songs = _songFactory.Construct(raw.Descendants("song").ToList()).ToList();
+            }
+            return results;
+        }
+        
+    }
 }

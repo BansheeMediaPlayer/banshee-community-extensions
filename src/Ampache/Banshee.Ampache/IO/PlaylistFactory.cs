@@ -30,20 +30,20 @@ using System.Linq;
 using System.Collections.Generic;
 namespace Banshee.Ampache
 {
-	internal class PlaylistFactory : FactoryBase<AmpachePlaylist>, IEntityFactory<AmpachePlaylist>
-	{
-		#region IEntityFactory[AmpachePlaylist] implementation
-		public ICollection<AmpachePlaylist> Construct (ICollection<XElement> raw)
-		{
-			return new HashSet<AmpachePlaylist>(raw.Select(n=> Construct(n)));
-		}
-		#endregion
-		
-		private AmpachePlaylist Construct(XElement raw)
-		{
-			var result = BuildBase(raw);
-			result.Name = raw.Descendants("name").First().Value;	
-			return result;
-		}
-	}
+    internal class PlaylistFactory : FactoryBase<AmpachePlaylist>, IEntityFactory<AmpachePlaylist>
+    {
+        #region IEntityFactory[AmpachePlaylist] implementation
+        public ICollection<AmpachePlaylist> Construct (ICollection<XElement> raw)
+        {
+            return new HashSet<AmpachePlaylist>(raw.Select(n=> Construct(n)));
+        }
+        #endregion
+        
+        private AmpachePlaylist Construct(XElement raw)
+        {
+            var result = BuildBase(raw);
+            result.Name = raw.Descendants("name").First().Value;    
+            return result;
+        }
+    }
 }

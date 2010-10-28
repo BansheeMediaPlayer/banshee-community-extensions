@@ -31,33 +31,33 @@ using System.Linq;
 
 namespace Banshee.Ampache
 {
-	internal class SongFactory : FactoryBase<AmpacheSong>, IEntityFactory<AmpacheSong>
-	{
-		public ICollection<AmpacheSong> Construct(ICollection<XElement> raw)
-		{
-			return new HashSet<AmpacheSong>(raw.Select(n=> Construct(n)));
-		}
-		
-		public AmpacheSong Construct(XElement raw)
-		{
-			var result = BuildBase(raw);
-			int tmp = int.MinValue;
-			result.Id = int.Parse(raw.Attribute("id").Value);
-			result.TrackTitle = raw.Descendants("title").First().Value;
-			result.TrackTitleSort = raw.Descendants("title").First().Value;
-			result.Uri = new Hyena.SafeUri(raw.Descendants("url").First().Value);
-			result.ArtUrl = raw.Descendants("art").First().Value;
-			int.TryParse(raw.Descendants("track").First().Value, out tmp);
-			result.TrackNumber = tmp;
-			tmp = 0;
-			int.TryParse(raw.Descendants("time").First().Value, out tmp);
-			result.Duration = TimeSpan.FromSeconds(tmp);
-			tmp = int.MinValue;
-			int.TryParse(raw.Descendants("size").First().Value, out tmp);
-			result.FileSize = tmp;
-			result.ArtistId = int.Parse(raw.Descendants("artist").First().Attribute("id").Value);
-			result.AlbumId = int.Parse(raw.Descendants("album").First().Attribute("id").Value);
-			return result;
-		}
-	}
+    internal class SongFactory : FactoryBase<AmpacheSong>, IEntityFactory<AmpacheSong>
+    {
+        public ICollection<AmpacheSong> Construct(ICollection<XElement> raw)
+        {
+            return new HashSet<AmpacheSong>(raw.Select(n=> Construct(n)));
+        }
+        
+        public AmpacheSong Construct(XElement raw)
+        {
+            var result = BuildBase(raw);
+            int tmp = int.MinValue;
+            result.Id = int.Parse(raw.Attribute("id").Value);
+            result.TrackTitle = raw.Descendants("title").First().Value;
+            result.TrackTitleSort = raw.Descendants("title").First().Value;
+            result.Uri = new Hyena.SafeUri(raw.Descendants("url").First().Value);
+            result.ArtUrl = raw.Descendants("art").First().Value;
+            int.TryParse(raw.Descendants("track").First().Value, out tmp);
+            result.TrackNumber = tmp;
+            tmp = 0;
+            int.TryParse(raw.Descendants("time").First().Value, out tmp);
+            result.Duration = TimeSpan.FromSeconds(tmp);
+            tmp = int.MinValue;
+            int.TryParse(raw.Descendants("size").First().Value, out tmp);
+            result.FileSize = tmp;
+            result.ArtistId = int.Parse(raw.Descendants("artist").First().Attribute("id").Value);
+            result.AlbumId = int.Parse(raw.Descendants("album").First().Attribute("id").Value);
+            return result;
+        }
+    }
 }

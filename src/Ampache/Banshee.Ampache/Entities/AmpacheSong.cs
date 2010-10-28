@@ -31,37 +31,36 @@ using Banshee.Collection;
 
 namespace Banshee.Ampache
 {
-	public class AmpacheSong : TrackInfo, IRatable
-	{
-		public int ArtistId { get; set; }
-		public int AlbumId { get; set; }
-		public string ArtUrl { get; set; }
-	
+    public class AmpacheSong : TrackInfo, IRatable
+    {
+        public int ArtistId { get; set; }
+        public int AlbumId { get; set; }
+        public string ArtUrl { get; set; }
 
-		#region IRatable implementation
+        #region IRatable implementation
 
-		public int PerciseRating  { get; set; }
+        public int PerciseRating  { get; set; }
 
-		public ICollection<Tag> Tags { get; set; }
-	
-		#endregion
+        public ICollection<Tag> Tags { get; set; }
+    
+        #endregion
 
-		#region IEntity implementation
-		
-		public int Id { get; set; }
-		
-		#endregion
-	}
-	public class AmpachePlaylist : IEntity
-	{
-		public string Name { get; set; }
-		
-		public IList<AmpacheSong> Songs { get; set; }
-		
-		#region IEntity implementation
-		
-		public int Id { get; set; }
-		
-		#endregion
-	}
+        #region IEntity implementation
+        
+        public int Id { get; set; }
+        
+        #endregion
+    }
+    public class AmpachePlaylist : IEntity
+    {
+        public string Name { get; set; }
+        
+        public IList<AmpacheSong> Songs { get; set; }
+        
+        #region IEntity implementation
+        
+        public int Id { get; set; }
+        
+        #endregion
+    }
 }

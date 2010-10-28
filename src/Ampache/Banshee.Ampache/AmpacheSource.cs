@@ -40,36 +40,36 @@ using Gdk;
 
 namespace Banshee.Ampache
 {
-	public class AmpacheSource : Source, IBasicPlaybackController, ITrackModelSource
-	{	
-		private AmpacheSourceContents _contents;
-		private TrackListModel _trackModel;
+    public class AmpacheSource : Source, IBasicPlaybackController, ITrackModelSource
+    {    
+        private AmpacheSourceContents _contents;
+        private TrackListModel _trackModel;
         private PlayQueue _queue;
 
-		public AmpacheSource () : base ("Ampache", "Ampache", 90, "Ampache")
-		{
-			_trackModel = new MemoryTrackListModel();
-			Pixbuf icon = new Pixbuf (System.Reflection.Assembly.GetExecutingAssembly ()
+        public AmpacheSource () : base ("Ampache", "Ampache", 90, "Ampache")
+        {
+            _trackModel = new MemoryTrackListModel();
+            Pixbuf icon = new Pixbuf (System.Reflection.Assembly.GetExecutingAssembly ()
                                       .GetManifestResourceStream ("Ampache.Resources.ampache.png"));
             Properties.Set<Pixbuf> ("Icon.Pixbuf_22", icon.ScaleSimple (22, 22, InterpType.Bilinear));
-			//InterfaceActionService svc = Get<InterfaceActionService>("InterfaceActionService");
-			//svc.PlaybackActions.ShuffleActions
-		}
-		
-		public override int Count { get { return 0; } }
-		
-		public override void Activate ()
-		{
-			if (_contents == null)
-			{
-				Properties.Set<ISourceContents> ("Nereid.SourceContents", _contents = new AmpacheSourceContents ());
+            //InterfaceActionService svc = Get<InterfaceActionService>("InterfaceActionService");
+            //svc.PlaybackActions.ShuffleActions
+        }
+        
+        public override int Count { get { return 0; } }
+        
+        public override void Activate ()
+        {
+            if (_contents == null)
+            {
+                Properties.Set<ISourceContents> ("Nereid.SourceContents", _contents = new AmpacheSourceContents ());
                 _contents.View.NewPlayList += Handle_NewPlayList;
-			}
-			base.Activate ();
-			ServiceManager.PlaybackController.NextSource = this;
-			ServiceManager.PlayerEngine.ConnectEvent(Next, PlayerEvent.RequestNextTrack);
-			ServiceManager.PlaybackController.ShuffleModeChanged += HandleServiceManagerPlaybackControllerShuffleModeChanged;
-		}
+            }
+            base.Activate ();
+            ServiceManager.PlaybackController.NextSource = this;
+            ServiceManager.PlayerEngine.ConnectEvent(Next, PlayerEvent.RequestNextTrack);
+            ServiceManager.PlaybackController.ShuffleModeChanged += HandleServiceManagerPlaybackControllerShuffleModeChanged;
+        }
 
         void Handle_NewPlayList (object sender, Hyena.EventArgs<PlayQueue> e)
         {
@@ -80,96 +80,96 @@ namespace Banshee.Ampache
             }
         }
 
-		void HandleServiceManagerPlaybackControllerShuffleModeChanged (object sender, Hyena.EventArgs<string> e)
-		{
-			if (_queue == null)	{
-				return;
-			}
-			if (e.Value == "off") {
-				_queue.Unshuffle(new object());
-			}
-			else {
-				_queue.Shuffle(new object());
-			}
-		}	
-		
-		private void Next (PlayerEventArgs args)
-		{
-			Next(true, true);
-		}
-		public override void Deactivate ()
-		{
-			base.Deactivate ();
-		}
-		
-		#region IBasicPlaybackController implementation
-		public bool First ()
-		{
-			return false;
-		}
+        void HandleServiceManagerPlaybackControllerShuffleModeChanged (object sender, Hyena.EventArgs<string> e)
+        {
+            if (_queue == null)    {
+                return;
+            }
+            if (e.Value == "off") {
+                _queue.Unshuffle(new object());
+            }
+            else {
+                _queue.Shuffle(new object());
+            }
+        }    
+        
+        private void Next (PlayerEventArgs args)
+        {
+            Next(true, true);
+        }
+        public override void Deactivate ()
+        {
+            base.Deactivate ();
+        }
+        
+        #region IBasicPlaybackController implementation
+        public bool First ()
+        {
+            return false;
+        }
 
-		public bool Next (bool restart, bool changeImmediately)
-		{
-			if (_queue == null) {
-				return false;
-			}
-			var song = _queue.PeekNext();
-			if (changeImmediately) {
-				ServiceManager.PlayerEngine.Open(song);
-				_contents.View.SelectPlayingSong(song);
-				_queue.Next();
-			}
-			return true;
-		}
+        public bool Next (bool restart, bool changeImmediately)
+        {
+            if (_queue == null) {
+                return false;
+            }
+            var song = _queue.PeekNext();
+            if (changeImmediately) {
+                ServiceManager.PlayerEngine.Open(song);
+                _contents.View.SelectPlayingSong(song);
+                _queue.Next();
+            }
+            return true;
+        }
 
-		public bool Previous (bool restart)
-		{
-			if (_queue == null) {
-				return false;
-			}
-			var song = _queue.Previous();
-			ServiceManager.PlayerEngine.Open(song);
-			_contents.View.SelectPlayingSong(song);
-			return true;
-        }		
-		#endregion
-		
-		#region ITrackModelSource implementation
-		public void Reload ()
-		{
-			//throw new NotImplementedException ();
-		}
+        public bool Previous (bool restart)
+        {
+            if (_queue == null) {
+                return false;
+            }
+            var song = _queue.Previous();
+            ServiceManager.PlayerEngine.Open(song);
+            _contents.View.SelectPlayingSong(song);
+            return true;
+        }        
+        #endregion
+        
+        #region ITrackModelSource implementation
+        public void Reload ()
+        {
+            //throw new NotImplementedException ();
+        }
 
-		public void RemoveSelectedTracks ()
-		{
-			//throw new NotImplementedException ();
-		}
+        public void RemoveSelectedTracks ()
+        {
+            //throw new NotImplementedException ();
+        }
 
-		public void DeleteSelectedTracks ()
-		{
-			//throw new NotImplementedException ();
-		}
+        public void DeleteSelectedTracks ()
+        {
+            //throw new NotImplementedException ();
+        }
 
-		public TrackListModel TrackModel { get { return _trackModel; } }
+        public TrackListModel TrackModel { get { return _trackModel; } }
 
-		public bool HasDependencies { get { return false; } }
+        public bool HasDependencies { get { return false; } }
 
-		public bool CanAddTracks { get { return false; } }
+        public bool CanAddTracks { get { return false; } }
 
-		public bool CanRemoveTracks { get { return false; } }
+        public bool CanRemoveTracks { get { return false; } }
 
-		public bool CanDeleteTracks { get { return false; } }
+        public bool CanDeleteTracks { get { return false; } }
 
-		public bool ConfirmRemoveTracks { get { return false; } }
+        public bool ConfirmRemoveTracks { get { return false; } }
 
-		public bool CanRepeat { get { return false; } }
+        public bool CanRepeat { get { return false; } }
 
-		public bool CanShuffle { get { return true; } }
+        public bool CanShuffle { get { return true; } }
 
-		public bool ShowBrowser { get { return false; } }
+        public bool ShowBrowser { get { return false; } }
 
-		public bool Indexable { get { return false; } }
-		#endregion
-	}
+        public bool Indexable { get { return false; } }
+        #endregion
+    }
 }
 
