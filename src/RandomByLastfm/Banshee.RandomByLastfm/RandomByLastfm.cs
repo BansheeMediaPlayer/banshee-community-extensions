@@ -38,6 +38,7 @@ using Banshee.Collection;
 using Banshee.ServiceStack;
 using Banshee.MediaEngine;
 using System.Net;
+using System.IO;
 
 namespace Banshee.RandomByLastfm
 {
@@ -143,9 +144,9 @@ namespace Banshee.RandomByLastfm
                 lock (searchActive_lock) {
                     if (searchActive) {
                         Log.Debug ("Another Query is already running, aborting");
-                        return;
-                    }
-                    searchActive = true;
+                    } else {
+	                searchActive = true;
+		    }
                 }
                 
                 ThreadAssist.SpawnFromMain (delegate {
@@ -171,10 +172,11 @@ namespace Banshee.RandomByLastfm
             int numTake = Math.Max ((int)Math.Floor (MAX_ARTIST_ADD / (Math.Pow (2, similarity_depth))), MIN_ARTIST_ADD);
             
             LastfmData<SimilarArtist> lastfmSimilarArtists;
-            
+
+            // Gotta catch 'em all Pattern
             try {
                 lastfmSimilarArtists = artist.SimilarArtists;
-            } catch (WebException e) {
+            } catch (Exception e) {
                 Log.Warning (e.ToString ());
                 return;
             }
