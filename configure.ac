@@ -95,6 +95,7 @@ BCE_SOUNDMENU
 BCE_STREAMRECORDER
 BCE_TELEPATHY
 BCE_U1MS
+BCE_ZEITGEISTDP
 
 AC_ARG_WITH(vendor-build-id,
 	AC_HELP_STRING([--with-vendor-build-id=<vendor-build-id>],
@@ -129,6 +130,7 @@ help/Makefile
 po/Makefile.in
 
 src/Makefile
+src/ZeitgeistDataprovider/Makefile
 src/AppIndicator/Makefile
 src/AssemblyInfo.cs
 
@@ -193,6 +195,7 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
+    ZeitgeistDataprovider: no
     Alarm Clock:         ${enable_AlarmClock}
     AppIndicator:        ${enable_AppIndicator}
     Awn:                 ${enable_Awn}

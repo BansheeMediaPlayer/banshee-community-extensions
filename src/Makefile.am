@@ -1,4 +1,5 @@
 SUBDIRS = \
+    ZeitgeistDataprovider \
 	AlarmClock \
 	AppIndicator \
 	Awn \
