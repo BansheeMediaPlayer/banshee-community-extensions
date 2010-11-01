@@ -1,5 +1,5 @@
 ASSEMBLY = Banshee.RandomByLastfm
-LINK = $(BANSHEE_LIBS) $(BANSHEE_LASTFM_LIBS) -r:$(EXTENSION_DIR)/Banshee.Lastfm.dll
+LINK = $(BANSHEE_LIBS) $(BANSHEE_LASTFM_LIBS)
 TARGET = library
 SOURCES =  \
 	Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs \

@@ -32,7 +32,6 @@ using System.Threading;
 
 using Mono.Addins;
 using Lastfm.Data;
-using Banshee.Lastfm;
 using Hyena;
 using Banshee.Collection.Database;
 using Banshee.Collection;
