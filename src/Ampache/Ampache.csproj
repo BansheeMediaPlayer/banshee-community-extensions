@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AB92D9F2-74A4-4D6A-9882-9D180A544CED}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Banshee.Ampache</RootNamespace>
+    <AssemblyName>Banshee.Ampache</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Banshee.Core, Version=1.6.0.0, Culture=neutral">
+      <Package>banshee-1-core</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Banshee.CollectionIndexer, Version=1.6.0.0, Culture=neutral">
+      <Package>banshee-1-collection-indexer</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Banshee.NowPlaying, Version=1.6.0.0, Culture=neutral">
+      <Package>banshee-1-nowplaying</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Banshee.Services, Version=1.6.0.0, Culture=neutral">
+      <Package>banshee-1-services</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Banshee.ThickClient, Version=1.6.0.0, Culture=neutral">
+      <Package>banshee-1-thickclient</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Banshee.Widgets, Version=1.6.0.0, Culture=neutral">
+      <Package>banshee-1-thickclient</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="Mono.Posix" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Hyena, Version=1.8.0.0, Culture=neutral">
+      <Package>banshee-1-hyena</Package>
+    </Reference>
+    <Reference Include="Hyena.Gui, Version=1.8.0.0, Culture=neutral">
+      <Package>banshee-1-hyena-gui</Package>
+    </Reference>
+    <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Package>mono-addins</Package>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="gtk-gui\Banshee.Ampache.AmpacheView.cs" />
+    <Compile Include="Banshee.Ampache\Entities\AmpacheAlbum.cs" />
+    <Compile Include="Banshee.Ampache\Entities\AmpacheArtist.cs" />
+    <Compile Include="Banshee.Ampache\Entities\Handshake.cs" />
+    <Compile Include="Banshee.Ampache\Entities\IEntity.cs" />
+    <Compile Include="Banshee.Ampache\Entities\IRatable.cs" />
+    <Compile Include="Banshee.Ampache\Entities\AmpacheSong.cs" />
+    <Compile Include="Banshee.Ampache\Entities\Tag.cs" />
+    <Compile Include="Banshee.Ampache\Entities\ITagable.cs" />
+    <Compile Include="Banshee.Ampache\IO\IAmpacheSelector.cs" />
+    <Compile Include="Banshee.Ampache\IO\AlbumFactory.cs" />
+    <Compile Include="Banshee.Ampache\IO\ArtistFactory.cs" />
+    <Compile Include="Banshee.Ampache\IO\FactoryBaseRatable.cs" />
+    <Compile Include="Banshee.Ampache\IO\IEntityFactory.cs" />
+    <Compile Include="Banshee.Ampache\IO\SongFactory.cs" />
+    <Compile Include="Banshee.Ampache\IO\Authenticate.cs" />
+    <Compile Include="Banshee.Ampache\IO\AmpacheSelectorBase.cs" />
+    <Compile Include="Banshee.Ampache\IO\SongSelector.cs" />
+    <Compile Include="Banshee.Ampache\IO\ArtistSelector.cs" />
+    <Compile Include="Banshee.Ampache\IO\AlbumSelector.cs" />
+    <Compile Include="Banshee.Ampache\IO\AmpacheSelectionFactory.cs" />
+    <Compile Include="Banshee.Ampache\IO\FactoryBase.cs" />
+    <Compile Include="Banshee.Ampache\IO\FactoryBaseTagable.cs" />
+    <Compile Include="Banshee.Ampache\IO\PlaylistFactory.cs" />
+    <Compile Include="Banshee.Ampache\IO\PlaylistSelector.cs" />
+    <Compile Include="Banshee.Ampache\Logic\AmpacheAlbumExtensions.cs" />
+    <Compile Include="Banshee.Ampache\Logic\AmpacheSongExtensions.cs" />
+    <Compile Include="Banshee.Ampache\Logic\PlayQueue.cs" />
+    <Compile Include="Banshee.Ampache\AmpacheSource.cs" />
+    <Compile Include="Banshee.Ampache\AmpacheSourceContents.cs" />
+    <Compile Include="Banshee.Ampache\Gui\AlbumLabel.cs" />
+    <Compile Include="Banshee.Ampache\Gui\AmpacheView.cs" />
+    <Compile Include="Banshee.Ampache\Gui\ArtistLabel.cs" />
+    <Compile Include="Banshee.Ampache\Gui\SongLabel.cs" />
+    <Compile Include="Banshee.Ampache\Gui\PlaylistLabel.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="Banshee.Ampache\" />
+    <Folder Include="Banshee.Ampache\Entities\" />
+    <Folder Include="Banshee.Ampache\IO\" />
+    <Folder Include="Banshee.Ampache\Logic\" />
+    <Folder Include="Banshee.Ampache\Gui\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Ampache.addin.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <LogicalName>Ampache.addin.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ampache.png">
+      <LogicalName>ampache.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <GtkDesignInfo gettextClass="Mono.Addins.AddinManager.CurrentLocalizer" />
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am">
+          <BuildFilesVar Sync="true" Name="SOURCES" />
+          <DeployFilesVar />
+          <ResourcesVar Sync="true" Name="RESOURCES" />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>

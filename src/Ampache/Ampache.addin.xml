@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin
+    id="Banshee.Ampache"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="Copyright © 2010 John Moore. Licensed under the MIT X11 license."
+    name="Ampache"
+    category="Community Extensions"
+    description="Access an Ampache music server."
+    author="John Moore"
+    url="http://banshee.fm/"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/SourceManager/Source">
+    <Source class="Banshee.Ampache.AmpacheSource"/>
+  </Extension>
+
+</Addin>
+

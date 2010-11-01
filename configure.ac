@@ -77,6 +77,7 @@ SHAMROCK_CHECK_UNIT_TESTS
 
 dnl Extensions
 BCE_ALARMCLOCK
+BCE_AMPACHE
 BCE_APPINDICATOR
 BCE_AWN
 BCE_CLUTTERFLOW
@@ -129,6 +130,7 @@ help/Makefile
 po/Makefile.in
 
 src/Makefile
+src/Ampache/Makefile
 src/AppIndicator/Makefile
 src/AssemblyInfo.cs
 
@@ -194,6 +196,7 @@ ${PACKAGE}-${VERSION}
 
   Extensions:
     Alarm Clock:         ${enable_AlarmClock}
+    Ampache:             ${enable_Ampache}
     AppIndicator:        ${enable_AppIndicator}
     Awn:                 ${enable_Awn}
     ClutterFlow:         ${enable_ClutterFlow}
