@@ -2,7 +2,7 @@
 // ArtistFactory.cs
 //
 // Author:
-//       John Moore <>
+//       John Moore <jcwmoore@gmail.com>
 //
 // Copyright (c) 2010 John Moore
 //
