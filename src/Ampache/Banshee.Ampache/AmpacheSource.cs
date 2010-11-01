@@ -50,7 +50,7 @@ namespace Banshee.Ampache
         {
             _trackModel = new MemoryTrackListModel();
             Pixbuf icon = new Pixbuf (System.Reflection.Assembly.GetExecutingAssembly ()
-                                      .GetManifestResourceStream ("Ampache.Resources.ampache.png"));
+                                      .GetManifestResourceStream ("ampache.png"));
             Properties.Set<Pixbuf> ("Icon.Pixbuf_22", icon.ScaleSimple (22, 22, InterpType.Bilinear));
             //InterfaceActionService svc = Get<InterfaceActionService>("InterfaceActionService");
             //svc.PlaybackActions.ShuffleActions
