@@ -2,7 +2,6 @@
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
-    <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
     <widget-library name="Banshee.NowPlaying, Version=1.8.0.0, Culture=neutral" />

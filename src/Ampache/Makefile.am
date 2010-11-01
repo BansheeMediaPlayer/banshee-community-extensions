@@ -3,7 +3,7 @@ LINK = $(BANSHEE_LIBS)
 
 SOURCES =  \
 	Banshee.Ampache/AmpacheSource.cs \
-	Banshee.Ampache/AmpacheSourceContext.cs \
+	Banshee.Ampache/AmpacheSourceContents.cs \
 	Banshee.Ampache/Entities/AmpacheAlbum.cs \
 	Banshee.Ampache/Entities/AmpacheArtist.cs \
 	Banshee.Ampache/Entities/AmpacheSong.cs \
@@ -34,14 +34,15 @@ SOURCES =  \
 	Banshee.Ampache/IO/SongFactory.cs \
 	Banshee.Ampache/IO/SongSelector.cs \
 	Banshee.Ampache/Logic/AmpacheAlbumExtensions.cs \
-	Banshee.Ampache/Logic/AmpachesongExtensions.cs \
+	Banshee.Ampache/Logic/AmpacheSongExtensions.cs \
 	Banshee.Ampache/Logic/PlayQueue.cs \
 	gtk-gui/Banshee.Ampache.AmpacheView.cs \
-	gtk-gui/generated.cs \
+	gtk-gui/generated.cs
 
 RESOURCES =  \
 	Ampache.addin.xml \
-	Resources/ampache.png \
+	gtk-gui/gui.stetic \
+	Resources/ampache.png
 
 if ENABLE_AMPACHE
 include $(top_srcdir)/build/build.mk
