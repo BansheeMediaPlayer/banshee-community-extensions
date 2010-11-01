@@ -79,13 +79,15 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Banshee.RandomByLastfm\RandomByLastfm.cs" />
+    <Compile Include="Banshee.RandomByLastfm\RandomByLastfmUserTopArtists.cs" />
+    <Compile Include="Banshee.RandomByLastfm\RandomByLastfmSimilarArtists.cs" />
+    <Compile Include="Banshee.RandomByLastfm\WeightedRandom.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
-        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am">
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" ExecuteTargetName="run">
           <BuildFilesVar Sync="true" Name="SOURCES" />
           <DeployFilesVar />
           <ResourcesVar Sync="true" Name="RESOURCES" />

@@ -42,46 +42,44 @@ using System.IO;
 
 namespace Banshee.RandomByLastfm
 {
-    public class RandomByLastfm : RandomBy
+    public class RandomByLastfmSimilarArtists : RandomBy
     {
-        private static List<string> artists_added;
-        private static List<string> similar_artists;
-
         // These values have proved to assure a good mix
         // possible future enhancement would be to let the user change these via gui
-        private const int MAX_ARTISTS = 20;
-        private const int MAX_ARTIST_ADD = 10;
-        private const int MIN_ARTIST_ADD = 5;
-        private const string ARTIST_QUERY = @"SELECT DISTINCT(CoreArtists.NameLowered) FROM CoreArtists WHERE CoreArtists.NameLowered in (?)";
+        private const int MAX_ARTISTS = 200;
+        private const string ARTIST_QUERY = @"SELECT ArtistID, NameLowered FROM CoreArtists GROUP BY NameLowered HAVING NameLowered in (?)";
 
-        private static string track_condition = String.Format ("AND CoreArtists.NameLowered in (?) {0} ORDER BY RANDOM()", RANDOM_CONDITION);
-
-        private static int similarity_depth;
+        private static string track_condition = String.Format ("AND CoreArtists.ArtistID = ? {0} ORDER BY RANDOM()", RANDOM_CONDITION);
 
         private static bool initiated = false;
         private static object initiated_lock = new object ();
+        private static short instanceCount = 0;
 
         private static bool searchActive = false;
         private static object searchActive_lock = new object ();
 
+        private static WeightedRandom<int> weightedRandom;
+        private static List<int> processedArtists;
+
         private bool disposed = false;
 
-        public RandomByLastfm () : base("lastfm_shuffle")
+        public RandomByLastfmSimilarArtists () : base("lastfm_shuffle_similar_artists")
         {
-            Label = AddinManager.CurrentLocalizer.GetString ("Shuffle by similar Artist (via Lastfm)");
-            Adverb = AddinManager.CurrentLocalizer.GetString ("by similar artist");
+            Label = AddinManager.CurrentLocalizer.GetString ("Shuffle by similar Artists (via Lastfm)");
+            Adverb = AddinManager.CurrentLocalizer.GetString ("by similar artists");
             Description = AddinManager.CurrentLocalizer.GetString ("Play songs similar to those already played (via Lastfm)");
             
             lock (initiated_lock) {
+                instanceCount++;
                 if (!initiated) {
-                    ServiceManager.PlayerEngine.ConnectEvent (RandomByLastfm.OnPlayerEvent, PlayerEvent.StateChange);
+                    ServiceManager.PlayerEngine.ConnectEvent (RandomByLastfmSimilarArtists.OnPlayerEvent, PlayerEvent.StateChange);
                     initiated = true;
-                    artists_added = new List<string> ();
-                    similar_artists = new List<string> ();
+                    weightedRandom = new WeightedRandom<int> ();
+                    processedArtists = new List<int> ();
                 }
             }
             
-            Condition = "CoreArtists.NameLowered in (?)";
+            Condition = "CoreArtists.ArtistID = ?";
             OrderBy = "RANDOM()";
         }
 
@@ -91,19 +89,24 @@ namespace Banshee.RandomByLastfm
                 return;
             
             ThreadAssist.ProxyToMain (delegate {
-                ServiceManager.PlayerEngine.DisconnectEvent (OnPlayerEvent);
-                similar_artists = null;
-                artists_added = null;
-                lock (initiated_lock)
+                ServiceManager.PlayerEngine.DisconnectEvent (RandomByLastfmSimilarArtists.OnPlayerEvent);
+                lock (initiated_lock) {
                     initiated = false;
-                
+                    instanceCount--;
+                    if (instanceCount < 1) {
+                        weightedRandom = null;
+                        processedArtists = null;
+                    }
+                }
                 disposed = true;
             });
         }
 
         public override TrackInfo GetPlaybackTrack (DateTime after)
         {
-            return Cache.GetSingleWhere (track_condition, similar_artists.ToArray (), after, after);
+            int randomId = weightedRandom.GetRandom();
+            Log.Debug("Found "+randomId);
+            return Cache.GetSingleWhere (track_condition, randomId, after, after);
         }
 
         public override bool Next (DateTime after)
@@ -113,7 +116,9 @@ namespace Banshee.RandomByLastfm
 
         public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
         {
-            return GetTrack (ShufflerQuery, similar_artists.ToArray (), after);
+            int randomId = weightedRandom.GetRandom();
+            Log.Debug("Found "+randomId);
+            return GetTrack (ShufflerQuery, randomId, after);
         }
 
         /// <summary>
@@ -124,29 +129,27 @@ namespace Banshee.RandomByLastfm
         /// </param>
         private static void OnPlayerEvent (PlayerEventArgs args)
         {
-            TrackInfo currentTrack = ServiceManager.PlayerEngine.CurrentTrack;
+            DatabaseTrackInfo currentTrack = ServiceManager.PlayerEngine.CurrentTrack as DatabaseTrackInfo;
             if (currentTrack == null)
                 return;
             
-            string currentArtist = Hyena.StringUtil.SearchKey (currentTrack.AlbumArtist);
-            
-            if (ServiceManager.PlayerEngine.ActiveEngine.CurrentState == PlayerState.Playing && !artists_added.Contains (currentArtist)) {
-                
-                if (!similar_artists.Contains (currentArtist)) {
+            int currentArtistId = currentTrack.ArtistId;
+            if (ServiceManager.PlayerEngine.ActiveEngine.CurrentState == PlayerState.Playing
+                && !processedArtists.Contains(currentArtistId)) {
+                if (!weightedRandom.Contains (currentArtistId)) {
                     // User changed Track to a not similar artist, clear list
-                    Log.Debug ("RandomByLastfm: User changed track, clearing lists and resetting depth");
-                    similar_artists.Clear ();
-                    artists_added.Clear ();
-                    similarity_depth = 0;
-                    similar_artists.Add (currentArtist);
+                    Log.Debug ("RandomByLastfmSimilarArtists: User changed track, clearing lists and resetting depth");
+                    weightedRandom.Clear ();
+                    weightedRandom.Add(currentArtistId, 1d);
                 }
                 
                 lock (searchActive_lock) {
                     if (searchActive) {
-                        Log.Debug ("Another Query is already running, aborting");
+                        Log.Debug ("RandomByLastfmSimilarArtists: Another Query is already running, aborting");
+                        return;
                     } else {
-	                searchActive = true;
-		    }
+                        searchActive = true;
+                    }
                 }
                 
                 ThreadAssist.SpawnFromMain (delegate {
@@ -164,13 +167,11 @@ namespace Banshee.RandomByLastfm
         /// <remarks>Executed via Kernel Scheduler</remarks>
         public static void QueryLastfm ()
         {
-            TrackInfo currentTrack = ServiceManager.PlayerEngine.ActiveEngine.CurrentTrack;
+            DatabaseTrackInfo currentTrack = ServiceManager.PlayerEngine.ActiveEngine.CurrentTrack as DatabaseTrackInfo;
+            if(currentTrack == null) return;
+
             LastfmArtistData artist = new LastfmArtistData (currentTrack.AlbumArtist);
-            
-            // Formular: numTake = Max(MIN_ARTIST_ADD, MAX_ARTIST_ADD/(2^similarityDepth))
-            // Simple formular, so "derived" artists don't change the list too much
-            int numTake = Math.Max ((int)Math.Floor (MAX_ARTIST_ADD / (Math.Pow (2, similarity_depth))), MIN_ARTIST_ADD);
-            
+
             LastfmData<SimilarArtist> lastfmSimilarArtists;
 
             // Gotta catch 'em all Pattern
@@ -180,45 +181,60 @@ namespace Banshee.RandomByLastfm
                 Log.Warning (e.ToString ());
                 return;
             }
-            
+
             // Artists from LastfmQuery
             // - Numbers are filtered
-            // - SimilarArtists doesnt already contain artists
             // - Ordered by Matching Score
-            var lastfmArtists = lastfmSimilarArtists.Where (a => !IsNumber (a.Name) && !similar_artists.Contains (Hyena.StringUtil.SearchKey (a.Name))).OrderByDescending (ar => ar.Match).Select (a => Hyena.StringUtil.SearchKey (a.Name));
-            
+            var lastfmArtists = lastfmSimilarArtists.Where (a => !IsNumber (a.Name)).OrderByDescending (a => a.Match).Select (a => a);
+
             // Artists that are present on local database
             // - Reduced by max number to get
-            var newArtists = GetPresentArtists (lastfmArtists).Take (numTake);
-            
-            Log.DebugFormat ("RandomByLastfm: {0} present similar Artists, adding {1} at Depth {2}", similar_artists.Count, newArtists.Count (), similarity_depth);
-            
-            similar_artists.AddRange (newArtists);
-            
-            if (similar_artists.Count > MAX_ARTISTS) {
-                Log.Debug ("RandomByLastfm: Maximum reached, clearing random artists");
+            var newArtists = GetPresentArtists(lastfmArtists);
+
+            Log.DebugFormat ("RandomByLastfmSimilarArtists: {0} present similar Artists, adding {1} with factor {2}", weightedRandom.Count, newArtists.Count (), weightedRandom.Value(currentTrack.ArtistId));
+
+            foreach(int currentId in newArtists.Keys) {
+                weightedRandom.Add(currentId, newArtists[currentId], currentTrack.ArtistId);
+            }
+
+            if (weightedRandom.Count > MAX_ARTISTS) {
+                Log.Debug ("RandomByLastfmSimilarArtists: Maximum reached, clearing random artists");
                 LimitList ();
             }
-            
-            artists_added.Add (currentTrack.AlbumArtist.ToLower ());
-            similarity_depth++;
+
+            Log.Debug(weightedRandom.ToString());
+
+            processedArtists.Add (currentTrack.ArtistId);
         }
 
-        public static IEnumerable<string> GetPresentArtists (IEnumerable<string> aLastfmArtists)
+        public static Dictionary<int, double> GetPresentArtists (IEnumerable<SimilarArtist> aLastfmArtists)
         {
-            using (var reader = ServiceManager.DbConnection.Query (ARTIST_QUERY, new object[] { aLastfmArtists.ToArray () })) {
+            Dictionary<string, double> nameToMatch = new Dictionary<string, double>();
+            Dictionary<int, double> artistIdAndMatch = new Dictionary<int, double>();
+            foreach(SimilarArtist cArtist in aLastfmArtists) {
+                string tmpName = Hyena.StringUtil.SearchKey (cArtist.Name);
+                if(!nameToMatch.ContainsKey(tmpName))
+                    nameToMatch.Add(tmpName, cArtist.Match);
+            }
+
+            using (var reader = ServiceManager.DbConnection.Query (ARTIST_QUERY, new object[] { nameToMatch.Keys.ToArray () })) {
                 while (reader.Read ()) {
-                    yield return reader[0] as string;
+                    int cArtistId = (int)(long)reader[0];
+                    string cArtistName = reader[1] as string;
+                    if(!artistIdAndMatch.ContainsKey(cArtistId)
+                       && nameToMatch.ContainsKey(cArtistName)) {
+                        artistIdAndMatch.Add(cArtistId, nameToMatch[cArtistName]);
+                    }
                 }
             }
+            return artistIdAndMatch;
         }
 
 
         public static void LimitList ()
         {
-            Random rand = new Random (DateTime.Now.Millisecond);
-            while (similar_artists.Count > MAX_ARTISTS) {
-                similar_artists.RemoveAt (rand.Next (similar_artists.Count));
+            while (weightedRandom.Count > MAX_ARTISTS) {
+                weightedRandom.Remove(weightedRandom.GetInvertedRandom());
             }
         }
 
@@ -237,5 +253,6 @@ namespace Banshee.RandomByLastfm
             int num;
             return int.TryParse (aInput, out num);
         }
+
     }
 }

@@ -1,8 +1,10 @@
 ASSEMBLY = Banshee.RandomByLastfm
-LINK = $(BANSHEE_LIBS) $(BANSHEE_LASTFM_LIBS)
+LINK = $(BANSHEE_LIBS) $(BANSHEE_LASTFM_LIBS) -r:$(EXTENSION_DIR)/Banshee.Lastfm.dll
 TARGET = library
-
-SOURCES = Banshee.RandomByLastfm/RandomByLastfm.cs
+SOURCES =  \
+	Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs \
+	Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs \
+	Banshee.RandomByLastfm/WeightedRandom.cs
 
 RESOURCES = RandomByLastfm.addin.xml
 
