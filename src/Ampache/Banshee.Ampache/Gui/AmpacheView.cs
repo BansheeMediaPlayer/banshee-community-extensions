@@ -55,25 +55,31 @@ namespace Banshee.Ampache
         private Dictionary<int, AmpachePlaylist> _playlists = new Dictionary<int, AmpachePlaylist>();
         internal event EventHandler<Hyena.EventArgs<PlayQueue>> NewPlayList;
 
+        // Short alias for the translations
+        private static string _(string s)
+        {
+            return Mono.Addins.AddinManager.CurrentLocalizer.GetString (s);
+        }
+
         public AmpacheView ()
         {
             this.Build ();
             _artistStore = new NodeStore(typeof(ArtistLabel));
             ndvArtists.NodeStore = _artistStore;
-            ndvArtists.AppendColumn("Name", new CellRendererText(), "text", 0);
+            ndvArtists.AppendColumn(_("Name"), new CellRendererText(), "text", 0);
             ndvArtists.NodeSelection.Changed += HandleNdvArtistsNodeSelectionChanged;
             _albumStore = new NodeStore(typeof(AlbumLabel));
             ndvAlbums.NodeStore = _albumStore;
-            ndvAlbums.AppendColumn("Name", new CellRendererText(), "text", 0);
+            ndvAlbums.AppendColumn(_("Name"), new CellRendererText(), "text", 0);
             ndvAlbums.NodeSelection.Changed += HandleNdvAlbumsNodeSelectionChanged;
             _songStore = new NodeStore(typeof(SongLabel));
             ndvSongs.NodeStore = _songStore;
-            ndvSongs.AppendColumn("Name ", new CellRendererText(), "text", 0);
-            ndvSongs.AppendColumn("Artist", new CellRendererText(), "text", 1);
-            ndvSongs.AppendColumn("Album", new CellRendererText(), "text", 2);
+            ndvSongs.AppendColumn(_("Name"), new CellRendererText(), "text", 0);
+            ndvSongs.AppendColumn(_("Artist"), new CellRendererText(), "text", 1);
+            ndvSongs.AppendColumn(_("Album"), new CellRendererText(), "text", 2);
             ndvSongs.NodeSelection.Changed += HandleNdvSongsNodeSelectionChanged;
             _playlistStore = new NodeStore(typeof(PlaylistLabel));
-            ndvPlaylists.AppendColumn("Name ", new CellRendererText(), "text", 0);
+            ndvPlaylists.AppendColumn(_("Name "), new CellRendererText(), "text", 0);
             ndvPlaylists.NodeStore = _playlistStore;
             ndvPlaylists.NodeSelection.Changed += HandleNdvPlaylistsNodeSelectionChanged;
         }
@@ -147,9 +153,9 @@ namespace Banshee.Ampache
         {
             if (!_connected) {
                 System.Threading.ThreadPool.QueueUserWorkItem(LoadAmpache);
-                _artistStore.AddNode(new ArtistLabel{Name = "LOADING..."});
-                _albumStore.AddNode(new AlbumLabel{Name = "LOADING..."});
-                _playlistStore.AddNode(new PlaylistLabel{Name = "LOADING..."});
+                _artistStore.AddNode(new ArtistLabel{Name = _("Loading...")});
+                _albumStore.AddNode(new AlbumLabel{Name = _("Loading...")});
+                _playlistStore.AddNode(new PlaylistLabel{Name = _("Loading...")});
                 btnConnect.Hide();
             }
         }
