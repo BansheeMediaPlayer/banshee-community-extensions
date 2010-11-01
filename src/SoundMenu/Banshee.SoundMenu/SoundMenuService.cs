@@ -377,7 +377,12 @@ namespace Banshee.SoundMenu
 
         private void UninstallPreferences ()
         {
-            ServiceManager.SourceManager.MusicLibrary.PreferencesPage["misc"].Remove (enabled_pref);
+            PreferenceService service = ServiceManager.Get<PreferenceService> ();
+            if (service == null) {
+                return;
+            }
+
+            service["general"]["misc"].Remove (enabled_pref);
         }
 
         public bool Enabled {
