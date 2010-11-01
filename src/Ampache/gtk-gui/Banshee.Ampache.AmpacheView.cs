@@ -122,7 +122,7 @@ namespace Banshee.Ampache
 			// Container child table1.Gtk.Table+TableChild
 			this.lblPassword = new global::Gtk.Label ();
 			this.lblPassword.Name = "lblPassword";
-			this.lblPassword.LabelProp = global::Mono.Unix.Catalog.GetString ("Password:");
+			this.lblPassword.LabelProp = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("Password:");
 			this.lblPassword.Justify = ((global::Gtk.Justification)(1));
 			this.lblPassword.SingleLineMode = true;
 			this.table1.Add (this.lblPassword);
@@ -134,7 +134,7 @@ namespace Banshee.Ampache
 			// Container child table1.Gtk.Table+TableChild
 			this.lblUrl = new global::Gtk.Label ();
 			this.lblUrl.Name = "lblUrl";
-			this.lblUrl.LabelProp = global::Mono.Unix.Catalog.GetString ("Ampache Server Name:");
+			this.lblUrl.LabelProp = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("Ampache Server Name:");
 			this.lblUrl.Justify = ((global::Gtk.Justification)(1));
 			this.lblUrl.SingleLineMode = true;
 			this.table1.Add (this.lblUrl);
@@ -144,7 +144,7 @@ namespace Banshee.Ampache
 			// Container child table1.Gtk.Table+TableChild
 			this.lblUser = new global::Gtk.Label ();
 			this.lblUser.Name = "lblUser";
-			this.lblUser.LabelProp = global::Mono.Unix.Catalog.GetString ("User Name:");
+			this.lblUser.LabelProp = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("User Name:");
 			this.lblUser.Justify = ((global::Gtk.Justification)(1));
 			this.lblUser.SingleLineMode = true;
 			this.table1.Add (this.lblUser);
@@ -165,7 +165,7 @@ namespace Banshee.Ampache
 			this.btnConnect.CanFocus = true;
 			this.btnConnect.Name = "btnConnect";
 			this.btnConnect.UseUnderline = true;
-			this.btnConnect.Label = global::Mono.Unix.Catalog.GetString ("Connect");
+			this.btnConnect.Label = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("Connect");
 			this.vbox5.Add (this.btnConnect);
 			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.btnConnect]));
 			w8.Position = 0;
@@ -207,7 +207,7 @@ namespace Banshee.Ampache
 			this.frame2.Add (this.GtkAlignment);
 			this.lblArtist = new global::Gtk.Label ();
 			this.lblArtist.Name = "lblArtist";
-			this.lblArtist.LabelProp = global::Mono.Unix.Catalog.GetString ("Artists");
+			this.lblArtist.LabelProp = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("Artists");
 			this.lblArtist.UseMarkup = true;
 			this.frame2.LabelWidget = this.lblArtist;
 			this.hbox3.Add (this.frame2);
@@ -234,7 +234,7 @@ namespace Banshee.Ampache
 			this.frame3.Add (this.GtkAlignment1);
 			this.lblAlbums = new global::Gtk.Label ();
 			this.lblAlbums.Name = "lblAlbums";
-			this.lblAlbums.LabelProp = global::Mono.Unix.Catalog.GetString ("Albums");
+			this.lblAlbums.LabelProp = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("Albums");
 			this.lblAlbums.UseMarkup = true;
 			this.frame3.LabelWidget = this.lblAlbums;
 			this.hbox3.Add (this.frame3);
@@ -261,7 +261,7 @@ namespace Banshee.Ampache
 			this.frame4.Add (this.GtkAlignment2);
 			this.lblPlaylists = new global::Gtk.Label ();
 			this.lblPlaylists.Name = "lblPlaylists";
-			this.lblPlaylists.LabelProp = global::Mono.Unix.Catalog.GetString ("Playlists");
+			this.lblPlaylists.LabelProp = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("Playlists");
 			this.lblPlaylists.UseMarkup = true;
 			this.frame4.LabelWidget = this.lblPlaylists;
 			this.hbox3.Add (this.frame4);

@@ -2,15 +2,16 @@
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
+    <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
     <widget-library name="Banshee.NowPlaying, Version=1.8.0.0, Culture=neutral" />
     <widget-library name="Banshee.ThickClient, Version=1.8.0.0, Culture=neutral" />
     <widget-library name="Banshee.Widgets, Version=1.8.0.0, Culture=neutral" />
     <widget-library name="Hyena.Gui, Version=1.8.0.0, Culture=neutral" />
-    <widget-library name="../bin/Release/Banshee.Ampache.dll" internal="true" />
+    <widget-library name="../../../bin/Banshee.Ampache.dll" internal="true" />
   </import>
-  <widget class="Gtk.Bin" id="Banshee.Ampache.AmpacheView" design-size="391 300">
+  <widget class="Gtk.Bin" id="Banshee.Ampache.AmpacheView" design-size="395 300">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
