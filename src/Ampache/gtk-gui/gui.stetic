@@ -97,6 +97,7 @@
                 <child>
                   <widget class="Gtk.Label" id="lblPassword">
                     <property name="MemberName" />
+                    <property name="Xalign">0</property>
                     <property name="LabelProp" translatable="yes">Password:</property>
                     <property name="Justify">Right</property>
                     <property name="SingleLineMode">True</property>
@@ -118,6 +119,7 @@
                 <child>
                   <widget class="Gtk.Label" id="lblUrl">
                     <property name="MemberName" />
+                    <property name="Xalign">0</property>
                     <property name="LabelProp" translatable="yes">Ampache Server Name:</property>
                     <property name="Justify">Right</property>
                     <property name="SingleLineMode">True</property>
@@ -137,6 +139,7 @@
                 <child>
                   <widget class="Gtk.Label" id="lblUser">
                     <property name="MemberName" />
+                    <property name="Xalign">0</property>
                     <property name="LabelProp" translatable="yes">User Name:</property>
                     <property name="Justify">Right</property>
                     <property name="SingleLineMode">True</property>

@@ -122,6 +122,7 @@ namespace Banshee.Ampache
 			// Container child table1.Gtk.Table+TableChild
 			this.lblPassword = new global::Gtk.Label ();
 			this.lblPassword.Name = "lblPassword";
+			this.lblPassword.Xalign = 0f;
 			this.lblPassword.LabelProp = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("Password:");
 			this.lblPassword.Justify = ((global::Gtk.Justification)(1));
 			this.lblPassword.SingleLineMode = true;
@@ -134,6 +135,7 @@ namespace Banshee.Ampache
 			// Container child table1.Gtk.Table+TableChild
 			this.lblUrl = new global::Gtk.Label ();
 			this.lblUrl.Name = "lblUrl";
+			this.lblUrl.Xalign = 0f;
 			this.lblUrl.LabelProp = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("Ampache Server Name:");
 			this.lblUrl.Justify = ((global::Gtk.Justification)(1));
 			this.lblUrl.SingleLineMode = true;
@@ -144,6 +146,7 @@ namespace Banshee.Ampache
 			// Container child table1.Gtk.Table+TableChild
 			this.lblUser = new global::Gtk.Label ();
 			this.lblUser.Name = "lblUser";
+			this.lblUser.Xalign = 0f;
 			this.lblUser.LabelProp = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("User Name:");
 			this.lblUser.Justify = ((global::Gtk.Justification)(1));
 			this.lblUser.SingleLineMode = true;
