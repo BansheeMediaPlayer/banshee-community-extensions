@@ -32,12 +32,10 @@ namespace Banshee.Ampache
     public static class AmpacheSelectionFactory
     {
         private static Authenticate _handshake;
-        private static System.Threading.Timer _keepAlive;
-        
+
         public static void Initialize(Authenticate handshake)
         {
             _handshake = handshake;
-            _keepAlive = new System.Threading.Timer((o)=>(_handshake).Ping(), new object(), TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
         }
         
         public static IAmpacheSelector<TEntity> GetSelectorFor<TEntity>() where TEntity : IEntity
