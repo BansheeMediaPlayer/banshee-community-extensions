@@ -6,7 +6,7 @@
     copyright="Copyright © 2010 John Moore. Licensed under the MIT X11 license."
     name="Ampache"
     category="Community Extensions"
-    description="This extension allows access an Ampache music server."
+    description="Access an Ampache music server."
     author="John Moore"
     url="http://banshee.fm/"
     defaultEnabled="false">
