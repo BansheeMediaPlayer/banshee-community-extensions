@@ -1,6 +1,6 @@
 SUBDIRS = \
-    Ampache \
 	AlarmClock \
+	Ampache \
 	AppIndicator \
 	Awn \
 	ClutterFlow \
