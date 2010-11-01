@@ -1,21 +1,21 @@
-// 
+//
 // AmpacheView.cs
-//  
+//
 // Author:
 //       John Moore <jcwmoore@gmail.com>
-// 
+//
 // Copyright (c) 2010 John Moore
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -96,7 +96,7 @@ namespace Banshee.Ampache
             _songStore.Clear();
             _playlists[ply.AmpacheId].Songs.ToList().ForEach(s=>_songStore.AddNode(new SongLabel(s)));
         }
-        
+
         private void HandleNdvAlbumsNodeSelectionChanged (object sender, EventArgs e)
         {
             var sel = sender as Gtk.NodeSelection;
@@ -123,7 +123,7 @@ namespace Banshee.Ampache
                 NewPlayList(this, new Hyena.EventArgs<PlayQueue>(tmp));
             }
         }
-        
+
         //todo: change to event
         internal void SelectPlayingSong(TrackInfo song)
         {
@@ -134,7 +134,7 @@ namespace Banshee.Ampache
                 ndvSongs.NodeSelection.Changed += HandleNdvSongsNodeSelectionChanged;
             }
         }
-        
+
         private void HandleNdvArtistsNodeSelectionChanged (object sender, EventArgs e)
         {
             var sel = sender as Gtk.NodeSelection;
@@ -148,7 +148,7 @@ namespace Banshee.Ampache
             _songs.Values.Where(a=>a.ArtistId == art.ArtistId).ToList().ForEach(s=>_songStore.AddNode(new SongLabel(s)));
             ndvPlaylists.NodeSelection.UnselectAll();
         }
-        
+
         protected virtual void btnConnect_OnClicked (object sender, System.EventArgs e)
         {
             if (!_connected) {
@@ -182,7 +182,7 @@ namespace Banshee.Ampache
                             song.Hydrate(_albums[song.AlbumId], _artists[song.ArtistId]);
                         }
                     }
-                    
+
                 }
                 catch (Exception e) {
                     Hyena.Log.Error(e.Message);
@@ -191,10 +191,10 @@ namespace Banshee.Ampache
                 Gtk.Application.Invoke((o,e) => LoadNodeLists());
             }
         }
-        
+
         private void LoadNodeLists()
         {
-            if (_connected) 
+            if (_connected)
             {
                 LoginArea.Hide();
             }
@@ -202,12 +202,12 @@ namespace Banshee.Ampache
             {
                 btnConnect.Show();
             }
-            
+
             _artistStore.Clear();
             _artists.Values.ToList().ForEach(a => _artistStore.AddNode(new ArtistLabel{ArtistId = a.Id, Name = a.Name}));
             _albumStore.Clear();
             _albums.Values.ToList().ForEach(a =>_albumStore.AddNode(new AlbumLabel{AmpacheId = a.Id, ArtistId = a.ArtistId, Name = a.DisplayTitle}));
-            _songStore.Clear();    
+            _songStore.Clear();
             _songs.Values.ToList().ForEach(s =>_songStore.AddNode(new SongLabel(s)));
             _playlistStore.Clear();
             _playlists.Values.ToList().ForEach(p => _playlistStore.AddNode(new PlaylistLabel(p)));

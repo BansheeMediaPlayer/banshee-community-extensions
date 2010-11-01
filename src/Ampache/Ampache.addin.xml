@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Addin 
+<Addin
     id="Banshee.Ampache"
     version="1.0"
     compatVersion="1.0"
@@ -18,8 +18,6 @@
     <Addin id="Banshee.ThickClient" version="1.0"/>
   </Dependencies>
 
-  <!-- Define a Source extension.  This will instantiate a new Source object,
-       listed in the left-most Source TreeView. -->
   <Extension path="/Banshee/SourceManager/Source">
     <Source class="Banshee.Ampache.AmpacheSource"/>
   </Extension>

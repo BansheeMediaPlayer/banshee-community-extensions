@@ -1,21 +1,21 @@
-// 
+//
 // AmpacheSource.cs
-//  
+//
 // Author:
 //       John Moore <jcwmoore@gmail.com>
-// 
+//
 // Copyright (c) 2010 John Moore
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -41,7 +41,7 @@ using Gdk;
 namespace Banshee.Ampache
 {
     public class AmpacheSource : Source, IBasicPlaybackController, ITrackModelSource
-    {    
+    {
         private AmpacheSourceContents _contents;
         private TrackListModel _trackModel;
         private PlayQueue _queue;
@@ -55,9 +55,9 @@ namespace Banshee.Ampache
             //InterfaceActionService svc = Get<InterfaceActionService>("InterfaceActionService");
             //svc.PlaybackActions.ShuffleActions
         }
-        
+
         public override int Count { get { return 0; } }
-        
+
         public override void Activate ()
         {
             if (_contents == null)
@@ -91,8 +91,8 @@ namespace Banshee.Ampache
             else {
                 _queue.Shuffle(new object());
             }
-        }    
-        
+        }
+
         private void Next (PlayerEventArgs args)
         {
             Next(true, true);
@@ -101,7 +101,7 @@ namespace Banshee.Ampache
         {
             base.Deactivate ();
         }
-        
+
         #region IBasicPlaybackController implementation
         public bool First ()
         {
@@ -131,9 +131,9 @@ namespace Banshee.Ampache
             ServiceManager.PlayerEngine.Open(song);
             _contents.View.SelectPlayingSong(song);
             return true;
-        }        
+        }
         #endregion
-        
+
         #region ITrackModelSource implementation
         public void Reload ()
         {

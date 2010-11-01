@@ -11,8 +11,8 @@ namespace Banshee.Ampache
     public class Authenticate : Handshake
     {
         const string REQUEST = "http://{0}/ampache/server/xml.server.php?action=handshake&auth={1}&timestamp={2}&version=350001&user={3}";
-        const string PING = "http://{0}/ampache/server/xml.server.php?action=ping&auth={1}";        
-        
+        const string PING = "http://{0}/ampache/server/xml.server.php?action=ping&auth={1}";
+
         public Authenticate(string server, string user, string password) : base ()
         {
             if(string.IsNullOrEmpty(server))
@@ -34,18 +34,18 @@ namespace Banshee.Ampache
                 throw new ArgumentException("Invalid username password combination");
             }
         }
-        
+
         private bool AuthenticateToServer(string password)
         {
             byte[] passBytes = Encoding.UTF8.GetBytes(password);
             var hasher = new SHA256Managed();
             var tmpBytes = hasher.ComputeHash(passBytes);
-            
+
             var hashword = HexString(tmpBytes);
             var now = DateTime.Now.UnixEpoch();
             tmpBytes = Encoding.UTF8.GetBytes(now + hashword);
             tmpBytes = hasher.ComputeHash(tmpBytes);
-            
+
             hashword = HexString(tmpBytes);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(string.Format(REQUEST, Server, hashword, now, User));
             var response = request.GetResponse();
@@ -59,13 +59,13 @@ namespace Banshee.Ampache
             }
             return false;
         }
-        
+
         public void Ping()
         {
             var request = (HttpWebRequest)WebRequest.Create(string.Format(PING, Server, Passphrase));
             request.GetResponse();
         }
-        
+
         private string HexString(byte[] bytes)
         {
             StringBuilder hex = new StringBuilder(bytes.Length * 2);
@@ -76,7 +76,7 @@ namespace Banshee.Ampache
             return hex.ToString();
         }
     }
-    
+
     public static class DateTimeExtensions
     {
         public static int UnixEpoch(this DateTime time)
