@@ -77,6 +77,7 @@ SHAMROCK_CHECK_UNIT_TESTS
 
 dnl Extensions
 BCE_ALARMCLOCK
+BCE_AMPACHE
 BCE_APPINDICATOR
 BCE_AWN
 BCE_CLUTTERFLOW
@@ -194,8 +195,8 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
-    Ampache:             yes
     Alarm Clock:         ${enable_AlarmClock}
+    Ampache:             ${enable_Ampache}
     AppIndicator:        ${enable_AppIndicator}
     Awn:                 ${enable_Awn}
     ClutterFlow:         ${enable_ClutterFlow}

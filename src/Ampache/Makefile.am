@@ -1,5 +1,5 @@
 ASSEMBLY = Banshee.Ampache
-LINK = $(BANSHEE_LIBS)
+LINK = $(BANSHEE_LIBS) -r:System.Xml.Linq
 
 SOURCES =  \
 	Banshee.Ampache/AmpacheSource.cs \
