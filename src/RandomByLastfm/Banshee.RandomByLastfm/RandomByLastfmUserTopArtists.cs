@@ -1,5 +1,5 @@
 //
-// RandomByLastfm.cs
+// RandomByLastfmUserTopArtists.cs
 //
 // Author:
 //   Raimo Radczewski <raimoradczewski@googlemail.com>
@@ -65,17 +65,16 @@ namespace Banshee.RandomByLastfm
             
             Condition = "CoreArtists.ArtistID = ?";
             OrderBy = "RANDOM()";
-
+            
             lock (initiated_lock) {
                 instanceCount++;
                 if (!initiated) {
                     ServiceManager.PlayerEngine.ConnectEvent (RandomByLastfmUserTopArtists.OnPlayerEvent, PlayerEvent.StateChange);
                     initiated = true;
-                    Log.Debug("RandomByLastfm: Initialising List");
-                    weightedRandom = new WeightedRandom<int>();
+                    Log.Debug ("RandomByLastfmUserTopArtists: Initialising List");
+                    weightedRandom = new WeightedRandom<int> ();
                 }
             }
-            //QueryLastfm();
         }
 
         public void Dispose ()
@@ -84,11 +83,10 @@ namespace Banshee.RandomByLastfm
                 return;
             
             ThreadAssist.ProxyToMain (delegate {
-                //ServiceManager.PlayerEngine.DisconnectEvent (RandomByLastfmUserTopArtists.OnPlayerEvent);
                 lock (initiated_lock) {
                     initiated = false;
                     instanceCount--;
-                    if(instanceCount < 1) {
+                    if (instanceCount < 1) {
                         weightedRandom = null;
                     }
                 }
@@ -96,18 +94,20 @@ namespace Banshee.RandomByLastfm
             });
         }
 
-        private static void OnPlayerEvent (PlayerEventArgs args) {
-            if(ServiceManager.PlayerEngine.CurrentState != PlayerState.Ready) return;
+        private static void OnPlayerEvent (PlayerEventArgs args)
+        {
+            if (ServiceManager.PlayerEngine.CurrentState != PlayerState.Ready)
+                return;
             ThreadAssist.ProxyToMain (delegate {
-                Log.Debug("RandomByLastfmUserTopArtists: Starting Query");
-                QueryLastfm();
-                ServiceManager.PlayerEngine.DisconnectEvent(RandomByLastfmUserTopArtists.OnPlayerEvent);
+                Log.Debug ("RandomByLastfmUserTopArtists: Starting Query");
+                QueryLastfm ();
+                ServiceManager.PlayerEngine.DisconnectEvent (RandomByLastfmUserTopArtists.OnPlayerEvent);
             });
         }
 
         public override TrackInfo GetPlaybackTrack (DateTime after)
         {
-            return Cache.GetSingleWhere (track_condition, weightedRandom.GetInvertedRandom(), after, after);
+            return Cache.GetSingleWhere (track_condition, weightedRandom.GetInvertedRandom (), after, after);
         }
 
         public override bool Next (DateTime after)
@@ -117,7 +117,7 @@ namespace Banshee.RandomByLastfm
 
         public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
         {
-            return GetTrack (ShufflerQuery, weightedRandom.GetInvertedRandom(), after);
+            return GetTrack (ShufflerQuery, weightedRandom.GetInvertedRandom (), after);
         }
 
 
@@ -128,39 +128,40 @@ namespace Banshee.RandomByLastfm
         public static void QueryLastfm ()
         {
             Account account = LastfmCore.Account;
-
-            if(account.UserName == null | account.UserName == string.Empty) return;
-            LastfmUserData userData = new LastfmUserData(account.UserName);
-            LastfmData<UserTopArtist> topArtists = userData.GetTopArtists(TopType.Overall);
-
-            Log.Debug("RandomByLastfmUserTopArtists: Searching for present artists");
-            Dictionary<int, int> artists = GetPresentArtists(topArtists);
-            Log.Debug(String.Format("RandomByLastfmUserTopArtists: Found {0} of {1} Artists", artists.Count, topArtists.Count));
-            foreach(int cArtistId in artists.Keys) {
-                weightedRandom.Add(cArtistId, artists[cArtistId]);
+            
+            if (account.UserName == null | account.UserName == string.Empty)
+                return;
+            LastfmUserData userData = new LastfmUserData (account.UserName);
+            LastfmData<UserTopArtist> topArtists = userData.GetTopArtists (TopType.Overall);
+            
+            Log.Debug ("RandomByLastfmUserTopArtists: Searching for present artists");
+            Dictionary<int, int> artists = GetPresentArtists (topArtists);
+            Log.Debug (String.Format ("RandomByLastfmUserTopArtists: Found {0} of {1} Artists", artists.Count, topArtists.Count));
+            foreach (int cArtistId in artists.Keys) {
+                weightedRandom.Add (cArtistId, artists[cArtistId]);
             }
-            Log.Debug(weightedRandom.ToString());
+            Log.Debug (weightedRandom.ToString ());
         }
 
         public static Dictionary<int, int> GetPresentArtists (LastfmData<UserTopArtist> aData)
         {
-            Dictionary<string, int> artistMatch = new Dictionary<string, int>();
-            Dictionary<int, int> artistIdsAndRank = new Dictionary<int, int>();
-            List<string> mbids = new List<string>();
-            foreach(UserTopArtist cArtist in aData) {
+            Dictionary<string, int> artistMatch = new Dictionary<string, int> ();
+            Dictionary<int, int> artistIdsAndRank = new Dictionary<int, int> ();
+            List<string> mbids = new List<string> ();
+            foreach (UserTopArtist cArtist in aData) {
                 string tmp = Hyena.StringUtil.SearchKey (cArtist.Name);
-                if(!artistMatch.ContainsKey(tmp)) {
-                    artistMatch.Add(tmp, cArtist.Rank);
-                    mbids.Add(cArtist.MbId);
+                if (!artistMatch.ContainsKey (tmp)) {
+                    artistMatch.Add (tmp, cArtist.Rank);
+                    mbids.Add (cArtist.MbId);
                 }
             }
-
-            using (var reader = ServiceManager.DbConnection.Query (ARTIST_QUERY, artistMatch.Keys.ToArray(), mbids.ToArray ())) {
+            
+            using (var reader = ServiceManager.DbConnection.Query (ARTIST_QUERY, artistMatch.Keys.ToArray (), mbids.ToArray ())) {
                 while (reader.Read ()) {
                     int cId = (int)(long)reader[0];
                     string cName = reader[1] as string;
-                    if(artistMatch.ContainsKey(cName)) {
-                        artistIdsAndRank.Add(cId, artistMatch[cName]);
+                    if (artistMatch.ContainsKey (cName)) {
+                        artistIdsAndRank.Add (cId, artistMatch[cName]);
                     }
                 }
             }

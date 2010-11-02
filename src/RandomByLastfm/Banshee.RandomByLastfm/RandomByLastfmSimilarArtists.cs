@@ -1,5 +1,5 @@
 //
-// RandomByLastfm.cs
+// RandomByLastfmSimilarArtists.cs
 //
 // Author:
 //   Raimo Radczewski <raimoradczewski@googlemail.com>
@@ -104,8 +104,7 @@ namespace Banshee.RandomByLastfm
 
         public override TrackInfo GetPlaybackTrack (DateTime after)
         {
-            int randomId = weightedRandom.GetRandom();
-            Log.Debug("Found "+randomId);
+            int randomId = weightedRandom.GetRandom ();
             return Cache.GetSingleWhere (track_condition, randomId, after, after);
         }
 
@@ -116,8 +115,7 @@ namespace Banshee.RandomByLastfm
 
         public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
         {
-            int randomId = weightedRandom.GetRandom();
-            Log.Debug("Found "+randomId);
+            int randomId = weightedRandom.GetRandom ();
             return GetTrack (ShufflerQuery, randomId, after);
         }
 
@@ -134,13 +132,12 @@ namespace Banshee.RandomByLastfm
                 return;
             
             int currentArtistId = currentTrack.ArtistId;
-            if (ServiceManager.PlayerEngine.ActiveEngine.CurrentState == PlayerState.Playing
-                && !processedArtists.Contains(currentArtistId)) {
+            if (ServiceManager.PlayerEngine.ActiveEngine.CurrentState == PlayerState.Playing && !processedArtists.Contains (currentArtistId)) {
                 if (!weightedRandom.Contains (currentArtistId)) {
                     // User changed Track to a not similar artist, clear list
                     Log.Debug ("RandomByLastfmSimilarArtists: User changed track, clearing lists and resetting depth");
                     weightedRandom.Clear ();
-                    weightedRandom.Add(currentArtistId, 1d);
+                    weightedRandom.Add (currentArtistId, 1d);
                 }
                 
                 lock (searchActive_lock) {
@@ -168,12 +165,13 @@ namespace Banshee.RandomByLastfm
         public static void QueryLastfm ()
         {
             DatabaseTrackInfo currentTrack = ServiceManager.PlayerEngine.ActiveEngine.CurrentTrack as DatabaseTrackInfo;
-            if(currentTrack == null) return;
-
+            if (currentTrack == null)
+                return;
+            
             LastfmArtistData artist = new LastfmArtistData (currentTrack.AlbumArtist);
-
+            
             LastfmData<SimilarArtist> lastfmSimilarArtists;
-
+            
             // Gotta catch 'em all Pattern
             try {
                 lastfmSimilarArtists = artist.SimilarArtists;
@@ -181,49 +179,48 @@ namespace Banshee.RandomByLastfm
                 Log.Warning (e.ToString ());
                 return;
             }
-
+            
             // Artists from LastfmQuery
             // - Numbers are filtered
             // - Ordered by Matching Score
             var lastfmArtists = lastfmSimilarArtists.Where (a => !IsNumber (a.Name)).OrderByDescending (a => a.Match).Select (a => a);
-
+            
             // Artists that are present on local database
             // - Reduced by max number to get
-            var newArtists = GetPresentArtists(lastfmArtists);
-
-            Log.DebugFormat ("RandomByLastfmSimilarArtists: {0} present similar Artists, adding {1} with factor {2}", weightedRandom.Count, newArtists.Count (), weightedRandom.Value(currentTrack.ArtistId));
-
-            foreach(int currentId in newArtists.Keys) {
-                weightedRandom.Add(currentId, newArtists[currentId], currentTrack.ArtistId);
+            var newArtists = GetPresentArtists (lastfmArtists);
+            
+            Log.DebugFormat ("RandomByLastfmSimilarArtists: {0} present similar Artists, adding {1} with factor {2}", weightedRandom.Count, newArtists.Count (), weightedRandom.Value (currentTrack.ArtistId));
+            
+            foreach (int currentId in newArtists.Keys) {
+                weightedRandom.Add (currentId, newArtists[currentId], currentTrack.ArtistId);
             }
-
+            
             if (weightedRandom.Count > MAX_ARTISTS) {
                 Log.Debug ("RandomByLastfmSimilarArtists: Maximum reached, clearing random artists");
                 LimitList ();
             }
-
-            Log.Debug(weightedRandom.ToString());
-
+            
+            Log.Debug (weightedRandom.ToString ());
+            
             processedArtists.Add (currentTrack.ArtistId);
         }
 
         public static Dictionary<int, double> GetPresentArtists (IEnumerable<SimilarArtist> aLastfmArtists)
         {
-            Dictionary<string, double> nameToMatch = new Dictionary<string, double>();
-            Dictionary<int, double> artistIdAndMatch = new Dictionary<int, double>();
-            foreach(SimilarArtist cArtist in aLastfmArtists) {
+            Dictionary<string, double> nameToMatch = new Dictionary<string, double> ();
+            Dictionary<int, double> artistIdAndMatch = new Dictionary<int, double> ();
+            foreach (SimilarArtist cArtist in aLastfmArtists) {
                 string tmpName = Hyena.StringUtil.SearchKey (cArtist.Name);
-                if(!nameToMatch.ContainsKey(tmpName))
-                    nameToMatch.Add(tmpName, cArtist.Match);
+                if (!nameToMatch.ContainsKey (tmpName))
+                    nameToMatch.Add (tmpName, cArtist.Match);
             }
-
+            
             using (var reader = ServiceManager.DbConnection.Query (ARTIST_QUERY, new object[] { nameToMatch.Keys.ToArray () })) {
                 while (reader.Read ()) {
                     int cArtistId = (int)(long)reader[0];
                     string cArtistName = reader[1] as string;
-                    if(!artistIdAndMatch.ContainsKey(cArtistId)
-                       && nameToMatch.ContainsKey(cArtistName)) {
-                        artistIdAndMatch.Add(cArtistId, nameToMatch[cArtistName]);
+                    if (!artistIdAndMatch.ContainsKey (cArtistId) && nameToMatch.ContainsKey (cArtistName)) {
+                        artistIdAndMatch.Add (cArtistId, nameToMatch[cArtistName]);
                     }
                 }
             }
@@ -234,7 +231,7 @@ namespace Banshee.RandomByLastfm
         public static void LimitList ()
         {
             while (weightedRandom.Count > MAX_ARTISTS) {
-                weightedRandom.Remove(weightedRandom.GetInvertedRandom());
+                weightedRandom.Remove (weightedRandom.GetInvertedRandom ());
             }
         }
 
@@ -253,6 +250,6 @@ namespace Banshee.RandomByLastfm
             int num;
             return int.TryParse (aInput, out num);
         }
-
+        
     }
 }
