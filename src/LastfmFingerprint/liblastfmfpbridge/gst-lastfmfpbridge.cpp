@@ -72,6 +72,9 @@ struct LastfmfpAudio {
     short *data_in;
     size_t num_samples;
 	
+    //output
+    const char* data_out;
+    size_t data_out_size;
     
     int fpid;
 
@@ -176,7 +179,11 @@ Lastfmfp_cb_newpad(GstElement *decodebin, GstPad *pad, gboolean last, LastfmfpAu
 static void FingerprintFound(LastfmfpAudio *ma)
 {
 	//we have the fingerprint
-    std::pair<const char*, size_t> fpData = ma->extractor->getFingerprint();
+    
+    std::pair<const char*, size_t> fpData =  ma->extractor->getFingerprint();
+    ma->data_out = fpData.first;
+    ma->data_out_size = fpData.second;
+    /*
     
     // Musicbrainz ID
     char mbid_ch[MBID_BUFFER_SIZE];
@@ -206,6 +213,7 @@ static void FingerprintFound(LastfmfpAudio *ma)
                                 HTTP_POST_DATA_NAME, false );
     std::istringstream iss(c);
     iss >> ma->fpid;
+    */
 }
 
 extern "C" unsigned int
@@ -397,7 +405,7 @@ Lastfmfp_initgstreamer(LastfmfpAudio *ma, const gchar *file)
     gst_object_unref(pad);
 }
 
-extern "C" int
+extern "C" const char*
 Lastfmfp_decode(LastfmfpAudio *ma, const gchar *file, int* size, int* ret)
 {
     GstBus *bus;
@@ -476,15 +484,17 @@ Lastfmfp_decode(LastfmfpAudio *ma, const gchar *file, int* size, int* ret)
     gst_object_unref(GST_OBJECT(ma->pipeline));
 
     if (ma->invalidate) {
-        *size = 0;
+        //*size = 0;
         *ret = -2;
     } else {
-        *size = ma->nchannels/2 + 1;
+        //*size = ma->nchannels/2 + 1;
     }
 
+	*size = ma->data_out_size;
+	
     g_mutex_unlock(ma->decoding_mutex);
 
-    return ma->fpid;
+    return ma->data_out;
 }
 
 extern "C" LastfmfpAudio*

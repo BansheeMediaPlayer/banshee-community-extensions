@@ -61,17 +61,18 @@ namespace Lastfm
             response_stream = Post (API_ROOT, BuildPostData (track), fingerprint);
         }
 
-        public JsonObject GetResponseObject ()
+        public int GetFpId ()
         {
-            Deserializer deserializer = new Deserializer (response_stream);
-            object obj = deserializer.Deserialize ();
-            JsonObject json_obj = obj as Hyena.Json.JsonObject;
+            if (response_stream.Length < 4)
+                return -1;
 
-            if (json_obj == null) {
-                throw new ApplicationException ("Lastfm invalid response : not a JSON object");
-            }
+            int ret = 0;
+            ret = response_stream.ReadByte();
+            ret = (ret << 8 ) + response_stream.ReadByte();
+            ret = (ret << 8 ) + response_stream.ReadByte();
+            ret = (ret << 8 ) + response_stream.ReadByte();
 
-            return json_obj;
+            return ret;
         }
 
         private string BuildPostData (TrackInfo track)
@@ -114,8 +115,10 @@ namespace Lastfm
 
         string GetlfmpVersion ()
         {
-            return string.Empty;
+            //TODO get from lib
+            return "1";
         }
+
         #region HTTP helpers
 
         private Stream Post (string uri, string urlParams, byte[] fingerprint)

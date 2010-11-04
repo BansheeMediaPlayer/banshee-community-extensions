@@ -133,7 +133,11 @@ namespace Banshee.LastfmFingerprint
                         }
                         start = DateTime.Now;
 
-                        int fpid = ad.Decode (track.Uri.AbsolutePath);
+                        byte[] fingerprint = ad.Decode (track.Uri.AbsolutePath);
+                        FingerprintRequest request = new FingerprintRequest();
+                        request.Send (track, fingerprint);
+
+                        int fpid = request.GetFpId ();
                         //force GC to dispose
                         ad = null;
 

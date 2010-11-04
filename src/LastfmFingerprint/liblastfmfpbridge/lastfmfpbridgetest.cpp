@@ -37,9 +37,9 @@ main (gint   argc,
 //TODO parse argv for param of initialize
 LastfmfpAudio *ma = Lastfmfp_initialize(44100, 215, "", "", "", 0, 0, "");
   
-int fpid = Lastfmfp_decode(ma, argv[0], &size, &ret);
+const char* fpid = Lastfmfp_decode(ma, argv[0], &size, &ret);
 
-  printf("return fpid: %d ret: %d ", fpid, ret);
+  //printf("return fpid: %d ret: %d ", fpid, ret);
 
   ma = Lastfmfp_destroy(ma);
 
