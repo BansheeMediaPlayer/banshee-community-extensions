@@ -44,7 +44,7 @@ namespace Lastfm
 {
     public class FingerprintRequest
     {
-        private const string API_ROOT = "ws.audioscrobbler.com/fingerprint/query/";
+        private const string API_ROOT = "http://ws.audioscrobbler.com/fingerprint/query/";
 
         private Stream response_stream;
 
@@ -78,9 +78,9 @@ namespace Lastfm
         private string BuildPostData (TrackInfo track)
         {
             StringBuilder data = new StringBuilder ();
-            data.AppendFormat ("artist={0}", Uri.EscapeDataString (track.ArtistName));
-            data.AppendFormat ("&album={0}", Uri.EscapeDataString (track.AlbumTitle));
-            data.AppendFormat ("&track={0}", Uri.EscapeDataString (track.TrackTitle));
+            data.AppendFormat ("artist={0}", Uri.EscapeDataString (track.ArtistName ?? string.Empty));
+            data.AppendFormat ("&album={0}", Uri.EscapeDataString (track.AlbumTitle ?? string.Empty));
+            data.AppendFormat ("&track={0}", Uri.EscapeDataString (track.TrackTitle ?? string.Empty));
 
             if (track.TrackNumber > 0)
                 data.AppendFormat ("&tracknum={0}", track.TrackNumber);
@@ -88,19 +88,19 @@ namespace Lastfm
             if (track.Year > 0)
                 data.AppendFormat ("&year={0}", track.Year);
 
-            data.AppendFormat ("&genre={0}", Uri.EscapeDataString (track.Genre));
+            data.AppendFormat ("&genre={0}", Uri.EscapeDataString (track.Genre ?? string.Empty));
             data.AppendFormat ("&duration={0}", track.Duration.TotalSeconds);
-            data.AppendFormat ("&username={0}", Uri.EscapeDataString (track.AlbumTitle));
+            data.AppendFormat ("&username={0}", Uri.EscapeDataString (track.AlbumTitle ?? string.Empty));
             data.AppendFormat ("&samplerate={0}", track.SampleRate);
-            data.AppendFormat ("&mbid={0}", Uri.EscapeDataString (track.MusicBrainzId));
+            data.AppendFormat ("&mbid={0}", Uri.EscapeDataString (track.MusicBrainzId ?? string.Empty));
             string[] slashedUri = track.Uri.LocalPath.Split('/', '\\');
             data.AppendFormat ("&filename={0}", Uri.EscapeDataString (slashedUri [slashedUri.Length - 1]));
 
             SHA256Managed cr = new  SHA256Managed ();
-            byte[] hash = cr.ComputeHash (File.ReadAllBytes (track.Uri.AbsoluteUri));
+            byte[] hash = cr.ComputeHash (File.ReadAllBytes (track.Uri.AbsolutePath));
 
             data.AppendFormat ("&sha256={0}", ToHex (hash));
-            data.AppendFormat ("&fpversion={0}", Uri.EscapeDataString (GetlfmpVersion ()));
+            data.AppendFormat ("&fpversion={0}", Uri.EscapeDataString (GetlfmpVersion () ?? string.Empty));
 
             return data.ToString ();
         }
@@ -132,12 +132,11 @@ namespace Lastfm
             request.ContentType = "multipart/form-data";
             //request.Expect = "100-continue";
             byte[] data2 = Encoding.ASCII.GetBytes ("fpdata=");
+            request.ContentLength = data2.Length + fingerprint.Length;
             Stream newStream = request.GetRequestStream ();
             newStream.Write (data2, 0, data2.Length);
             newStream.Write (fingerprint, 0, fingerprint.Length);
             newStream.Close ();
-
-            request.ContentLength = newStream.Length;
 
             HttpWebResponse response = null;
             try {
