@@ -208,6 +208,12 @@ static void FingerprintFound(LastfmfpAudio *ma)
     iss >> ma->fpid;
 }
 
+extern "C" unsigned int
+Lastfmfp_getVersion (LastfmfpAudio *ma)
+{
+	return ma->extractor->getVersion (); 
+}
+
 static void
 Lastfmfp_cb_have_data(GstElement *element, GstBuffer *buffer, GstPad *pad, LastfmfpAudio *ma)
 {

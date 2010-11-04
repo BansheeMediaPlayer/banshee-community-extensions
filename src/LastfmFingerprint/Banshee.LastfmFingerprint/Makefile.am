@@ -3,6 +3,7 @@ LINK = $(BANSHEE_LIBS) $(BANSHEE_LASTFM_LIBS)
 
 SOURCES =  \
 	AudioDecoder.cs \
+	FingerprintRequest.cs \
 	LastfmFingerprintService.cs
 
 RESOURCES =  \

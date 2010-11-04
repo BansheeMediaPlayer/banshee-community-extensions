@@ -96,6 +96,7 @@
   <ItemGroup>
     <Compile Include="AudioDecoder.cs" />
     <Compile Include="LastfmFingerprintService.cs" />
+    <Compile Include="FingerprintRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GlobalUI.xml">

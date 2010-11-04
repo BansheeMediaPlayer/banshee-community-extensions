@@ -39,3 +39,6 @@ Lastfmfp_canceldecode(LastfmfpAudio *ma);
 
 extern "C" void
 Lastfmfp_initgst();
+
+extern "C" unsigned int
+Lastfmfp_getVersion (LastfmfpAudio *ma);
