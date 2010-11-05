@@ -111,6 +111,9 @@
     <Compile Include="Banshee.Ampache\Gui\ArtistLabel.cs" />
     <Compile Include="Banshee.Ampache\Gui\SongLabel.cs" />
     <Compile Include="Banshee.Ampache\Gui\PlaylistLabel.cs" />
+    <Compile Include="Banshee.Ampache\AmpachePreferences.cs" />
+    <Compile Include="Banshee.Ampache\Gui\PreferenceView.cs" />
+    <Compile Include="gtk-gui\Banshee.Ampache.PreferenceView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

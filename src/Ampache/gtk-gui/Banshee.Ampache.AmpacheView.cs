@@ -8,19 +8,7 @@ namespace Banshee.Ampache
 
 		private global::Gtk.HBox LoginArea;
 
-		private global::Gtk.Table table1;
-
-		private global::Gtk.Entry entPassword;
-
-		private global::Gtk.Entry entUrl;
-
-		private global::Gtk.Entry entUser;
-
-		private global::Gtk.Label lblPassword;
-
-		private global::Gtk.Label lblUrl;
-
-		private global::Gtk.Label lblUser;
+		private global::Gtk.Label lblConfigure;
 
 		private global::Gtk.VBox vbox5;
 
@@ -77,88 +65,14 @@ namespace Banshee.Ampache
 			this.LoginArea.Name = "LoginArea";
 			this.LoginArea.Spacing = 6;
 			// Container child LoginArea.Gtk.Box+BoxChild
-			this.table1 = new global::Gtk.Table (((uint)(3)), ((uint)(2)), false);
-			this.table1.Name = "table1";
-			this.table1.RowSpacing = ((uint)(6));
-			this.table1.ColumnSpacing = ((uint)(6));
-			// Container child table1.Gtk.Table+TableChild
-			this.entPassword = new global::Gtk.Entry ();
-			this.entPassword.CanFocus = true;
-			this.entPassword.Name = "entPassword";
-			this.entPassword.IsEditable = true;
-			this.entPassword.Visibility = false;
-			this.entPassword.InvisibleChar = '●';
-			this.table1.Add (this.entPassword);
-			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table1[this.entPassword]));
-			w1.TopAttach = ((uint)(2));
-			w1.BottomAttach = ((uint)(3));
-			w1.LeftAttach = ((uint)(1));
-			w1.RightAttach = ((uint)(2));
-			w1.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child table1.Gtk.Table+TableChild
-			this.entUrl = new global::Gtk.Entry ();
-			this.entUrl.CanFocus = true;
-			this.entUrl.Name = "entUrl";
-			this.entUrl.IsEditable = true;
-			this.entUrl.InvisibleChar = '●';
-			this.table1.Add (this.entUrl);
-			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1[this.entUrl]));
-			w2.LeftAttach = ((uint)(1));
-			w2.RightAttach = ((uint)(2));
-			w2.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child table1.Gtk.Table+TableChild
-			this.entUser = new global::Gtk.Entry ();
-			this.entUser.CanFocus = true;
-			this.entUser.Name = "entUser";
-			this.entUser.IsEditable = true;
-			this.entUser.InvisibleChar = '●';
-			this.table1.Add (this.entUser);
-			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1[this.entUser]));
-			w3.TopAttach = ((uint)(1));
-			w3.BottomAttach = ((uint)(2));
-			w3.LeftAttach = ((uint)(1));
-			w3.RightAttach = ((uint)(2));
-			w3.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child table1.Gtk.Table+TableChild
-			this.lblPassword = new global::Gtk.Label ();
-			this.lblPassword.Name = "lblPassword";
-			this.lblPassword.Xalign = 0f;
-			this.lblPassword.LabelProp = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("Password:");
-			this.lblPassword.Justify = ((global::Gtk.Justification)(1));
-			this.lblPassword.SingleLineMode = true;
-			this.table1.Add (this.lblPassword);
-			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1[this.lblPassword]));
-			w4.TopAttach = ((uint)(2));
-			w4.BottomAttach = ((uint)(3));
-			w4.XOptions = ((global::Gtk.AttachOptions)(4));
-			w4.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child table1.Gtk.Table+TableChild
-			this.lblUrl = new global::Gtk.Label ();
-			this.lblUrl.Name = "lblUrl";
-			this.lblUrl.Xalign = 0f;
-			this.lblUrl.LabelProp = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("Ampache Server Name:");
-			this.lblUrl.Justify = ((global::Gtk.Justification)(1));
-			this.lblUrl.SingleLineMode = true;
-			this.table1.Add (this.lblUrl);
-			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1[this.lblUrl]));
-			w5.XOptions = ((global::Gtk.AttachOptions)(4));
-			w5.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child table1.Gtk.Table+TableChild
-			this.lblUser = new global::Gtk.Label ();
-			this.lblUser.Name = "lblUser";
-			this.lblUser.Xalign = 0f;
-			this.lblUser.LabelProp = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("User Name:");
-			this.lblUser.Justify = ((global::Gtk.Justification)(1));
-			this.lblUser.SingleLineMode = true;
-			this.table1.Add (this.lblUser);
-			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1[this.lblUser]));
-			w6.TopAttach = ((uint)(1));
-			w6.BottomAttach = ((uint)(2));
-			w6.XOptions = ((global::Gtk.AttachOptions)(4));
-			w6.YOptions = ((global::Gtk.AttachOptions)(4));
-			this.LoginArea.Add (this.table1);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.LoginArea[this.table1]));
-			w7.Position = 0;
+			this.lblConfigure = new global::Gtk.Label ();
+			this.lblConfigure.Name = "lblConfigure";
+			this.lblConfigure.LabelProp = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("Please configure the Ampache extension, Edit > Perferences");
+			this.LoginArea.Add (this.lblConfigure);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.LoginArea[this.lblConfigure]));
+			w1.Position = 0;
+			w1.Expand = false;
+			w1.Fill = false;
 			// Container child LoginArea.Gtk.Box+BoxChild
 			this.vbox5 = new global::Gtk.VBox ();
 			this.vbox5.Name = "vbox5";
@@ -170,20 +84,20 @@ namespace Banshee.Ampache
 			this.btnConnect.UseUnderline = true;
 			this.btnConnect.Label = global::Mono.Addins.AddinManager.CurrentLocalizer.GetString ("Connect");
 			this.vbox5.Add (this.btnConnect);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.btnConnect]));
-			w8.Position = 0;
-			w8.Expand = false;
-			w8.Fill = false;
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.btnConnect]));
+			w2.Position = 0;
+			w2.Expand = false;
+			w2.Fill = false;
 			this.LoginArea.Add (this.vbox5);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.LoginArea[this.vbox5]));
-			w9.Position = 1;
-			w9.Expand = false;
-			w9.Fill = false;
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.LoginArea[this.vbox5]));
+			w3.Position = 2;
+			w3.Expand = false;
+			w3.Fill = false;
 			this.vbox1.Add (this.LoginArea);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.LoginArea]));
-			w10.Position = 0;
-			w10.Expand = false;
-			w10.Fill = false;
+			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.LoginArea]));
+			w4.Position = 0;
+			w4.Expand = false;
+			w4.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.hbox3 = new global::Gtk.HBox ();
 			this.hbox3.Name = "hbox3";
@@ -214,8 +128,8 @@ namespace Banshee.Ampache
 			this.lblArtist.UseMarkup = true;
 			this.frame2.LabelWidget = this.lblArtist;
 			this.hbox3.Add (this.frame2);
-			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.frame2]));
-			w14.Position = 0;
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.frame2]));
+			w8.Position = 0;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.frame3 = new global::Gtk.Frame ();
 			this.frame3.Name = "frame3";
@@ -241,8 +155,8 @@ namespace Banshee.Ampache
 			this.lblAlbums.UseMarkup = true;
 			this.frame3.LabelWidget = this.lblAlbums;
 			this.hbox3.Add (this.frame3);
-			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.frame3]));
-			w18.Position = 1;
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.frame3]));
+			w12.Position = 1;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.frame4 = new global::Gtk.Frame ();
 			this.frame4.Name = "frame4";
@@ -268,11 +182,11 @@ namespace Banshee.Ampache
 			this.lblPlaylists.UseMarkup = true;
 			this.frame4.LabelWidget = this.lblPlaylists;
 			this.hbox3.Add (this.frame4);
-			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.frame4]));
-			w22.Position = 2;
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.frame4]));
+			w16.Position = 2;
 			this.vbox1.Add (this.hbox3);
-			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.hbox3]));
-			w23.Position = 1;
+			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.hbox3]));
+			w17.Position = 1;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.GtkScrolledWindow3 = new global::Gtk.ScrolledWindow ();
 			this.GtkScrolledWindow3.Name = "GtkScrolledWindow3";
@@ -284,8 +198,8 @@ namespace Banshee.Ampache
 			this.ndvSongs.SearchColumn = 0;
 			this.GtkScrolledWindow3.Add (this.ndvSongs);
 			this.vbox1.Add (this.GtkScrolledWindow3);
-			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkScrolledWindow3]));
-			w25.Position = 2;
+			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkScrolledWindow3]));
+			w19.Position = 2;
 			this.Add (this.vbox1);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();

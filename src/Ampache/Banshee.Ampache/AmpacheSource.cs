@@ -26,6 +26,7 @@
 
 using System;
 
+using Banshee.Configuration;
 using Banshee.Collection;
 using Banshee.Gui;
 using Banshee.Base;
@@ -40,11 +41,12 @@ using Gdk;
 
 namespace Banshee.Ampache
 {
-    public class AmpacheSource : Source, IBasicPlaybackController, ITrackModelSource
+    public class AmpacheSource : Source, IBasicPlaybackController, ITrackModelSource, IDisposable
     {
         private AmpacheSourceContents _contents;
         private TrackListModel _trackModel;
         private PlayQueue _queue;
+        private AmpachePreferences preferences;
 
         public AmpacheSource () : base ("Ampache", "Ampache", 90, "Ampache")
         {
@@ -52,11 +54,19 @@ namespace Banshee.Ampache
             Pixbuf icon = new Pixbuf (System.Reflection.Assembly.GetExecutingAssembly ()
                                       .GetManifestResourceStream ("ampache.png"));
             Properties.Set<Pixbuf> ("Icon.Pixbuf_22", icon.ScaleSimple (22, 22, InterpType.Bilinear));
+            ServiceManager.SourceManager.AddSource(this);
+            preferences = new AmpachePreferences(this);
             //InterfaceActionService svc = Get<InterfaceActionService>("InterfaceActionService");
             //svc.PlaybackActions.ShuffleActions
         }
 
         public override int Count { get { return 0; } }
+
+        public override string PreferencesPageId {
+            get {
+                return preferences.PageId;
+            }
+        }
 
         public override void Activate ()
         {
@@ -82,7 +92,7 @@ namespace Banshee.Ampache
 
         void HandleServiceManagerPlaybackControllerShuffleModeChanged (object sender, Hyena.EventArgs<string> e)
         {
-            if (_queue == null)    {
+            if (_queue == null) {
                 return;
             }
             if (e.Value == "off") {
@@ -170,6 +180,29 @@ namespace Banshee.Ampache
 
         public bool Indexable { get { return false; } }
         #endregion
+
+        #region Schema Entries
+
+        public static readonly SchemaEntry<string> UserName = new SchemaEntry<string>(
+            "plugins.ampache", "username", string.Empty, "Ampache user", "Ampache user name"
+        );
+
+        private const string DEFAULT_AMPACHE_URL = "http://nameofserver/ampache";
+        public static readonly SchemaEntry<string> AmpacheRootAddress = new SchemaEntry<string>(
+           "plugins.ampache", "address", DEFAULT_AMPACHE_URL, "Ampache root address", "The address of your Ampache server"
+        );
+
+        // TODO: is this really best practice?
+        public static readonly SchemaEntry<string> UserPassword = new SchemaEntry<string>(
+            "plugins.ampache", "password", string.Empty, "User's password", "User's password"
+        );
+        #endregion
+
+        #region IDisposable implementation
+        public void Dispose ()
+        {
+            this.preferences.Dispose();
+        }
+        #endregion
     }
 }
-
