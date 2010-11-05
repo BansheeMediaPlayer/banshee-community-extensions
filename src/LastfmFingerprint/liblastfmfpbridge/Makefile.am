@@ -5,7 +5,6 @@ INCLUDES = \
 	-D_FORTIFY_SOURCE=2 \
 	$(GLIB_CFLAGS) \
 	$(GSTREAMER_CFLAGS) \
-	$(LIBCURL_CFLAGS) \
 	$(LIBSAMPLERATE_CFLAGS) \
 	$(FFTW3F_CFLAGS)
 
@@ -26,19 +25,11 @@ liblastfmfpbridge_la_SOURCES = \
 	fp_helper_fun.h \
 	gst-lastfmfpbridge.cpp \
 	gst-lastfmfpbridge.h \
-	HTTPClient.cpp \
-	HTTPClient.h \
-	mbid_mp3.h \
 	OptFFT.cpp \
-	OptFFT.h \
-	Sha256.cpp \
-	Sha256File.cpp \
-	Sha256File.h \
-	Sha256.h
+	OptFFT.h
 
 liblastfmfpbridge_la_LIBADD = \
 	$(GLIB_LIBS) \
-	$(LIBCURL_LIBS) \
 	$(LIBSAMPLERATE_LIBS) \
 	$(FFTW3F_LIBS) \
 	$(GSTREAMER_LIBS)
@@ -47,7 +38,6 @@ lastfmfpbridgetest_SOURCES = \
 	lastfmfpbridgetest.cpp
 lastfmfpbridgetest_LDADD = \
 	liblastfmfpbridge.la \
-	$(LIBCURL_LIBS) \
 	$(GSTREAMER_LIBS)
 
 all: $(top_builddir)/bin/liblastfmfpbridge.so

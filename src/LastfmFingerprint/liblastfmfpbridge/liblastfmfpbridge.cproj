@@ -46,10 +46,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="gst-lastfmfpbridge.h" />
-    <None Include="HTTPClient.h" />
-    <None Include="mbid_mp3.h" />
-    <None Include="Sha256.h" />
-    <None Include="Sha256File.h" />
     <None Include="CircularArray.h" />
     <None Include="Filter.h" />
     <None Include="FingerprintExtractor.h" />
@@ -59,9 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gst-lastfmfpbridge.cpp" />
-    <Compile Include="HTTPClient.cpp" />
-    <Compile Include="Sha256.cpp" />
-    <Compile Include="Sha256File.cpp" />
     <Compile Include="Filter.cpp" />
     <Compile Include="FingerprintExtractor.cpp" />
     <Compile Include="OptFFT.cpp" />

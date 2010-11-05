@@ -29,12 +29,8 @@
 
 #include "gst-lastfmfpbridge.h"
 
-#include "Sha256File.h" // for SHA 256
-#include "mbid_mp3.h"   // for musicbrainz ID
-
 #include "FingerprintExtractor.h"
 
-#include "HTTPClient.h" // for connection
 #include <map>
 #include <cstring>
 #include <iostream>
@@ -82,7 +78,6 @@ struct LastfmfpAudio {
     gboolean invalidate;
 };
 
-std::map<std::string, std::string> urlParams;
 std::string filename;
     
 static const int NUM_FRAMES_CLIENT = 32; // ~= 10 secs.
@@ -183,37 +178,6 @@ static void FingerprintFound(LastfmfpAudio *ma)
     std::pair<const char*, size_t> fpData =  ma->extractor->getFingerprint();
     ma->data_out = fpData.first;
     ma->data_out_size = fpData.second;
-    /*
-    
-    // Musicbrainz ID
-    char mbid_ch[MBID_BUFFER_SIZE];
-    if ( getMP3_MBID(filename.c_str(), mbid_ch) != -1 )
-          urlParams["mbid"] = std::string(mbid_ch);
-
-    size_t lastSlash = filename.find_last_of(SLASH);
-    if ( lastSlash != std::string::npos )
-       urlParams["filename"] = filename.substr(lastSlash+1);
-    else
-       urlParams["filename"] = filename;
-
-    const int SHA_SIZE = 32;
-    unsigned char sha256[SHA_SIZE]; // 32 bytes
-    Sha256File::getHash(filename, sha256);
-    
-    urlParams["sha256"] = Sha256File::toHexString(sha256, SHA_SIZE);
-    
-    size_t version = ma->extractor->getVersion();
-    // wow, that's odd.. If I god directly with getVersion I get a strange warning with VS2005.. :P
-    urlParams["fpversion"]  = toString( version ); 
-    
-    // send the fingerprint data, and get the fingerprint ID
-    HTTPClient client;
-    std::string c = client.postRawObj( FP_SERVER_NAME, urlParams, 
-                                fpData.first, fpData.second, 
-                                HTTP_POST_DATA_NAME, false );
-    std::istringstream iss(c);
-    iss >> ma->fpid;
-    */
 }
 
 extern "C" unsigned int
@@ -266,7 +230,7 @@ Lastfmfp_cb_have_data(GstElement *element, GstBuffer *buffer, GstPad *pad, Lastf
 }
 
 extern "C"  LastfmfpAudio*
-Lastfmfp_initialize(gint rate, gint seconds, const gchar *artist, const gchar *album, const gchar *title, gint tracknum, gint year, const gchar *genre)
+Lastfmfp_initialize(gint rate, gint seconds)
 {
     LastfmfpAudio *ma;
     gint i;
@@ -276,36 +240,6 @@ Lastfmfp_initialize(gint rate, gint seconds, const gchar *artist, const gchar *a
     ma->rate = rate;
     ma->seconds = seconds;
 	
-	//std::map<std::string, std::string> urlParams;
-
-    //TODO if all work! remove the httpclient and tags urlparams
-    //and just return the finger print and let csharp done the 
-    
-    // artist
-    addEntry(urlParams, "artist", std::string(g_strdup(artist)));//artist)));
-
-    // album
-    addEntry(urlParams, "album", std::string(g_strdup(album)));//album
-
-    // title
-    addEntry(urlParams, "track", std::string(g_strdup(title)));//title
-
-    // track num
-    if ( tracknum > 0 )
-    addEntry(urlParams, "tracknum", toString(tracknum));
-
-    // year
-    if ( year > 0 )
-    	addEntry(urlParams, "year", toString(year));
-
-    // genre
-    addEntry(urlParams, "genre", g_strdup(genre));
-
-    urlParams["duration"] = toString(seconds);
-
-    urlParams["username"]   = "banshee client";
-    urlParams["samplerate"] = toString(rate);
-    
     // cancel decoding mutex
     ma->decoding_mutex = g_mutex_new();
 

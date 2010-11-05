@@ -48,7 +48,7 @@ namespace Banshee.LastfmFingerprint
         private bool active;
         private AudioDecoder ad;
         //in a perfect word 400ms is enough but still get timeout and banned so increase time between last fm request
-        private TimeSpan lastFmTOSMinTimeout = TimeSpan.FromMilliseconds (1000);
+        //private TimeSpan lastFmTOSMinTimeout = TimeSpan.FromMilliseconds (1000);
 
 
         string IService.ServiceName {
@@ -110,7 +110,8 @@ namespace Banshee.LastfmFingerprint
             job.CanCancel = true;
             job.CancelRequested += HandleJobCancelRequested;
             job.Register ();
-            System.DateTime start = System.DateTime.MinValue;
+            //comment the timeout system for TOS because still have issue and not seems to be linked...
+            //System.DateTime start = System.DateTime.MinValue;
             ThreadPool.QueueUserWorkItem (delegate {
                 try {
     
@@ -126,13 +127,13 @@ namespace Banshee.LastfmFingerprint
                         //respect last fm term of service :
                         //You will not make more than 5 requests per originating IP address per second, averaged over a 5 minute period
                         // 2 requests are done on each loop ==> time allowed by loop : 400ms
-                        if (start != System.DateTime.MinValue) {
+                        /*if (start != System.DateTime.MinValue) {
                             TimeSpan span = System.DateTime.Now - start;
                             if (lastFmTOSMinTimeout > span)
                                 Thread.Sleep (lastFmTOSMinTimeout - span);
                         }
                         start = DateTime.Now;
-
+                        */
                         byte[] fingerprint = ad.Decode (track.Uri.AbsolutePath);
                         FingerprintRequest request = new FingerprintRequest();
                         request.Send (track, fingerprint);

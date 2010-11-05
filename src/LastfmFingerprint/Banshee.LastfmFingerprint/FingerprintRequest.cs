@@ -63,24 +63,49 @@ namespace Lastfm
 
         public int GetFpId ()
         {
-            if (response_stream.Length < 4)
+            if (response_stream == null)
                 return -1;
 
-            int ret = 0;
-            ret = response_stream.ReadByte();
-            ret = (ret << 8 ) + response_stream.ReadByte();
-            ret = (ret << 8 ) + response_stream.ReadByte();
-            ret = (ret << 8 ) + response_stream.ReadByte();
-
+            StringBuilder bld = new StringBuilder ();
+            char c;
+            while (response_stream.CanRead)
+            {
+                c = (char)(byte)response_stream.ReadByte ();
+                if (c == ' ')
+                    break;
+                bld.Append(c);
+            }
+            int ret = -1;
+            if (Int32.TryParse(bld.ToString (), out ret))
+                return -2;
             return ret;
+        }
+
+        private string EscapeUri (string str)
+        {
+            //TODO if c > 'z' || c < 'a' ==> %ascii
+            return Uri.EscapeUriString (str ?? string.Empty).Replace ("-", "%2D").Replace (".", "%2E").Replace("(", "%28").Replace (")", "%29");
         }
 
         private string BuildPostData (TrackInfo track)
         {
             StringBuilder data = new StringBuilder ();
-            data.AppendFormat ("artist={0}", Uri.EscapeDataString (track.ArtistName ?? string.Empty));
-            data.AppendFormat ("&album={0}", Uri.EscapeDataString (track.AlbumTitle ?? string.Empty));
-            data.AppendFormat ("&track={0}", Uri.EscapeDataString (track.TrackTitle ?? string.Empty));
+            data.AppendFormat ("artist={0}", EscapeUri (track.ArtistName));
+            data.AppendFormat ("&duration={0}", (int)track.Duration.TotalSeconds);
+
+            string[] slashedUri = track.Uri.LocalPath.Split('/', '\\');
+            data.AppendFormat ("&filename={0}", EscapeUri(slashedUri [slashedUri.Length - 1]));
+            data.AppendFormat ("&fpversion={0}", EscapeUri (GetlfmpVersion ()));
+            data.AppendFormat ("&genre={0}", EscapeUri (track.Genre));
+            data.AppendFormat ("&samplerate={0}", track.SampleRate);
+
+            SHA256Managed cr = new  SHA256Managed ();
+            byte[] hash = cr.ComputeHash (File.ReadAllBytes (track.Uri.AbsolutePath));
+            data.AppendFormat ("&sha256={0}", ToHex (hash));
+            data.AppendFormat ("&track={0}", EscapeUri (track.TrackTitle));
+
+            if (!string.IsNullOrEmpty(track.AlbumTitle))
+                data.AppendFormat ("&album={0}", EscapeUri (track.AlbumTitle));
 
             if (track.TrackNumber > 0)
                 data.AppendFormat ("&tracknum={0}", track.TrackNumber);
@@ -88,19 +113,10 @@ namespace Lastfm
             if (track.Year > 0)
                 data.AppendFormat ("&year={0}", track.Year);
 
-            data.AppendFormat ("&genre={0}", Uri.EscapeDataString (track.Genre ?? string.Empty));
-            data.AppendFormat ("&duration={0}", track.Duration.TotalSeconds);
-            data.AppendFormat ("&username={0}", Uri.EscapeDataString (track.AlbumTitle ?? string.Empty));
-            data.AppendFormat ("&samplerate={0}", track.SampleRate);
-            data.AppendFormat ("&mbid={0}", Uri.EscapeDataString (track.MusicBrainzId ?? string.Empty));
-            string[] slashedUri = track.Uri.LocalPath.Split('/', '\\');
-            data.AppendFormat ("&filename={0}", Uri.EscapeDataString (slashedUri [slashedUri.Length - 1]));
+            data.AppendFormat ("&username={0}", EscapeUri ("fp client 1.6"));//"banshee client" seems to stuck in 3 requests
+            if (!string.IsNullOrEmpty(track.MusicBrainzId))
+                data.AppendFormat ("&mbid={0}", EscapeUri (track.MusicBrainzId));
 
-            SHA256Managed cr = new  SHA256Managed ();
-            byte[] hash = cr.ComputeHash (File.ReadAllBytes (track.Uri.AbsolutePath));
-
-            data.AppendFormat ("&sha256={0}", ToHex (hash));
-            data.AppendFormat ("&fpversion={0}", Uri.EscapeDataString (GetlfmpVersion () ?? string.Empty));
 
             return data.ToString ();
         }
@@ -109,7 +125,7 @@ namespace Lastfm
         {
             StringBuilder bld = new StringBuilder (hash.Length * 2);
             for (int i = 0; i < hash.Length; i++)
-                bld.Append (hash[i].ToString ("X2"));
+                bld.Append (hash[i].ToString ("x2"));
             return bld.ToString ();
         }
 
@@ -123,29 +139,49 @@ namespace Lastfm
 
         private Stream Post (string uri, string urlParams, byte[] fingerprint)
         {
+            Log.DebugFormat ("send post last.fm fingerprint.");
             // Do not trust docs : it doesn't work if parameters are in the request body
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create (String.Concat (uri, "?", urlParams));
             request.UserAgent = LastfmCore.UserAgent;
             request.Timeout = 10000;
+            request.ProtocolVersion = HttpVersion.Version11;
             request.Method = "POST";
-            request.KeepAlive = false;
-            request.ContentType = "multipart/form-data";
-            //request.Expect = "100-continue";
-            byte[] data2 = Encoding.ASCII.GetBytes ("fpdata=");
-            request.ContentLength = data2.Length + fingerprint.Length;
-            Stream newStream = request.GetRequestStream ();
-            newStream.Write (data2, 0, data2.Length);
-            newStream.Write (fingerprint, 0, fingerprint.Length);
-            newStream.Close ();
+            request.ServicePoint.Expect100Continue = false;
+            string boundary = "----" + System.Guid.NewGuid().ToString();
+            request.PreAuthenticate = true;
+            request.AllowWriteStreamBuffering = true;
 
-            HttpWebResponse response = null;
-            try {
-                response = (HttpWebResponse) request.GetResponse ();
-            } catch (WebException e) {
-                Log.DebugException (e);
-                response = (HttpWebResponse)e.Response;
+            request.UserAgent = "libcurl-agent/1.0";
+            request.Accept = "*/*";
+
+            // Build Contents for Post
+            string header = string.Format("--{0}\r\nContent-Disposition: form-data; name=\"fpdata\"\r\n\r\n", boundary);
+            string footer = string.Format("\r\n--{0}--\r\n", boundary);
+
+            // This is sent to the Post
+            byte[] bytes = Encoding.UTF8.GetBytes(header);
+            byte[] bytes2 = Encoding.UTF8.GetBytes(footer);
+
+            request.ContentLength = bytes.Length + fingerprint.Length + bytes2.Length;
+            request.ContentType = string.Format("multipart/form-data; boundary={0}", boundary);
+
+            using(Stream newStream = request.GetRequestStream ())
+            {
+                newStream.Write (bytes, 0, bytes.Length);
+                newStream.Write (fingerprint, 0, fingerprint.Length);
+                newStream.Write (bytes2, 0, bytes2.Length);
+                newStream.Close ();
+
+                HttpWebResponse response = null;
+                try {
+                    response = (HttpWebResponse) request.GetResponse ();
+                } catch (WebException e) {
+                    Log.DebugException (e);
+                    response = (HttpWebResponse)e.Response;
+                }
+                Log.DebugFormat ("get response stream.");
+                return response.GetResponseStream ();
             }
-            return response.GetResponseStream ();
         }
 
 #endregion
