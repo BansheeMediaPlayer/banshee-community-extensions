@@ -36,7 +36,7 @@ namespace Banshee.Ampache
 {
     internal abstract class AmpacheSelectorBase<TEntity> : IAmpacheSelector<TEntity> where TEntity : IEntity
     {
-        protected const string BASE_URL = @"http://{0}/ampache/server/xml.server.php?action={1}&auth={2}";
+        protected const string BASE_URL = @"{0}/server/xml.server.php?action={1}&auth={2}";
         protected const string FILTER_PARAMETER = @"&filter={0}";
         protected const string OFFSET_PARAMETER = @"&offset={0}";
         protected const string LIMIT_PARAMETER = @"&limit={0}";

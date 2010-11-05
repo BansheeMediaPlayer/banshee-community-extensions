@@ -2,6 +2,7 @@ ASSEMBLY = Banshee.Ampache
 LINK = $(BANSHEE_LIBS) -r:System.Xml.Linq
 
 SOURCES =  \
+	Banshee.Ampache/AmpachePreferences.cs \
 	Banshee.Ampache/AmpacheSource.cs \
 	Banshee.Ampache/AmpacheSourceContents.cs \
 	Banshee.Ampache/Entities/AmpacheAlbum.cs \
@@ -16,6 +17,7 @@ SOURCES =  \
 	Banshee.Ampache/Gui/AmpacheView.cs \
 	Banshee.Ampache/Gui/ArtistLabel.cs \
 	Banshee.Ampache/Gui/PlaylistLabel.cs \
+	Banshee.Ampache/Gui/PreferenceView.cs \
 	Banshee.Ampache/Gui/SongLabel.cs \
 	Banshee.Ampache/IO/AlbumFactory.cs \
 	Banshee.Ampache/IO/AlbumSelector.cs \
@@ -37,6 +39,7 @@ SOURCES =  \
 	Banshee.Ampache/Logic/AmpacheSongExtensions.cs \
 	Banshee.Ampache/Logic/PlayQueue.cs \
 	gtk-gui/Banshee.Ampache.AmpacheView.cs \
+	gtk-gui/Banshee.Ampache.PreferenceView.cs \
 	gtk-gui/generated.cs
 
 RESOURCES =  \

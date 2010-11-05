@@ -32,10 +32,13 @@ namespace Banshee.Ampache
     public static class AmpacheSelectionFactory
     {
         private static Authenticate _handshake;
+        // TODO: move the ping time to the source class (IDisposable)
+        private static Timer _pingTimer;
 
         public static void Initialize(Authenticate handshake)
         {
             _handshake = handshake;
+            _pingTimer = new Timer((o) => handshake.Ping(), null, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
         }
 
         public static IAmpacheSelector<TEntity> GetSelectorFor<TEntity>() where TEntity : IEntity
@@ -53,6 +56,19 @@ namespace Banshee.Ampache
                 return new PlaylistSelector(_handshake, new PlaylistFactory(), new SongFactory()) as IAmpacheSelector<TEntity>;
             }
             throw new InvalidOperationException(string.Format("{0} is not yet supported for selection from ampache", typeof(TEntity).Name));
+        }
+
+        public static void TearDown()
+        {
+            if(_handshake != null)
+            {
+                _handshake = null;
+            }
+            if(_pingTimer != null)
+            {
+                _pingTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                _pingTimer = null;
+            }
         }
     }
 }

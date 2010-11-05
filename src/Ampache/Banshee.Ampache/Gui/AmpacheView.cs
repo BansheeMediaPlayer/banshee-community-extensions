@@ -82,6 +82,14 @@ namespace Banshee.Ampache
             ndvPlaylists.AppendColumn(_("Name "), new CellRendererText(), "text", 0);
             ndvPlaylists.NodeStore = _playlistStore;
             ndvPlaylists.NodeSelection.Changed += HandleNdvPlaylistsNodeSelectionChanged;
+            if (!string.IsNullOrEmpty(AmpacheSource.UserName.Get())) {
+                lblConfigure.Hide();
+                System.Threading.ThreadPool.QueueUserWorkItem(LoadAmpache);
+                _artistStore.AddNode(new ArtistLabel{Name = _("Loading...")});
+                _albumStore.AddNode(new AlbumLabel{Name = _("Loading...")});
+                _playlistStore.AddNode(new PlaylistLabel{Name = _("Loading...")});
+                btnConnect.Hide();
+            }
         }
 
         void HandleNdvPlaylistsNodeSelectionChanged(object sender, EventArgs e)
@@ -164,7 +172,7 @@ namespace Banshee.Ampache
         {
             if(!_connected) {
                 try {
-                    var tmp = new Authenticate(entUrl.Text, entUser.Text, entPassword.Text);
+                    var tmp = new Authenticate(AmpacheSource.AmpacheRootAddress.Get(), AmpacheSource.UserName.Get(), AmpacheSource.UserPassword.Get());
                     AmpacheSelectionFactory.Initialize(tmp);
                     _artists = AmpacheSelectionFactory.GetSelectorFor<AmpacheArtist>().SelectAll().ToDictionary(k=>k.Id, v=>v);
                     _albums = AmpacheSelectionFactory.GetSelectorFor<AmpacheAlbum>().SelectAll().ToDictionary(k=>k.Id, v=>v);
