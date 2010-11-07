@@ -12,10 +12,6 @@ AC_DEFUN([BCE_LASTFMFINGERPRINT],
 		[fftw3f],
 		[The fftw3f library was not found. Please install it or disable the LastfmFingerprint extension by passing --disable-lastfmfingerprint])
 
-	BCE_CHECK_EXTENSION_DEP([LastfmFingerprint], [LIBCURL],
-		[libcurl],
-		[The curl library was not found. Please install it or disable the LastfmFingerprint extension by passing --disable-lastfmfingerprint])
-
 	BCE_CHECK_EXTENSION_DEP([LastfmFingerprint], [LIBSAMPLERATE],
 		[samplerate],
 		[The samplerate library was not found. Please install it or disable the LastfmFingerprint extension by passing --disable-lastfmfingerprint])
@@ -35,7 +31,6 @@ AC_DEFUN([BCE_LASTFMFINGERPRINT],
 		&& test "x$have_GLIB" = "xyes" \
 		&& test "x$have_FFTW3F" = "xyes" \
 		&& test "x$have_LIBSAMPLERATE" = "xyes" \
-		&& test "x$have_LIBCURL" = "xyes" \
 		&& test "x$have_BANSHEE_LASTFM" = "xyes" \
 		&& test "x$have_GSTREAMER" = "xyes"; then
 		enable_LastfmFingerprint=yes

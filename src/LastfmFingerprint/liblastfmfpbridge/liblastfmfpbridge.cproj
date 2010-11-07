@@ -31,7 +31,6 @@
       <Libs>
         <Lib>/usr/lib/libfftw3f.so</Lib>
         <Lib>/usr/lib/libsamplerate.so</Lib>
-        <Lib>/usr/lib/libcurl.so</Lib>
       </Libs>
     </Libs>
     <ExtraCompilerArguments>-lfftw</ExtraCompilerArguments>
