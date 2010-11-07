@@ -8,6 +8,7 @@ src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs
 src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs
 src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs
 src/Ampache/gtk-gui/Banshee.Ampache.AmpacheView.cs
+src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs
 src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs
 src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs
 src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs
@@ -40,7 +41,8 @@ src/OpenVP/Banshee.OpenVP/VisualizationDisplayWidget.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs
 src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs
-src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfm.cs
+src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs
+src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs
 src/SoundMenu/Banshee.SoundMenu/SoundMenuService.cs
 src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs
 src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs
