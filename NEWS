@@ -1,3 +1,18 @@
+===============================
+Version 1.9.0 - November 10, 2010
+===============================
+
+Contributors:
+Bertrand Lorentz, John Moore, Olivier Dufour, Raimo Radczewski
+
+New:
+* [Ampache] Browse and play your remote music with Ampache
+* [LastfmFingerprint] Identify your music automatically, using the Last.fm online service
+* [RandomByLastfm] Shuffle your library using information from the Last.fm online service
+
+Bugs Fixed:
+* [SoundMenu] Fix removal of the preference checkbox (bgo#633708)
+
 ==================================
 Version 1.8.0 - September 29, 2010
 ==================================
