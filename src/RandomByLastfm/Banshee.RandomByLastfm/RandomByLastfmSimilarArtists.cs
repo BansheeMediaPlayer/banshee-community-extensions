@@ -200,8 +200,6 @@ namespace Banshee.RandomByLastfm
                 LimitList ();
             }
             
-            Log.Debug (weightedRandom.ToString ());
-            
             processedArtists.Add (currentTrack.ArtistId);
         }
 

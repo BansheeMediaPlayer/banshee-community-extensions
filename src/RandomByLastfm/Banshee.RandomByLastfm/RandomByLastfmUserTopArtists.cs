@@ -140,7 +140,6 @@ namespace Banshee.RandomByLastfm
             foreach (int cArtistId in artists.Keys) {
                 weightedRandom.Add (cArtistId, artists[cArtistId]);
             }
-            Log.Debug (weightedRandom.ToString ());
         }
 
         public static Dictionary<int, int> GetPresentArtists (LastfmData<UserTopArtist> aData)
