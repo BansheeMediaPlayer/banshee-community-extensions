@@ -6,7 +6,7 @@
     copyright="Copyright © 2010 Raimo Radczewski Licensed under the MIT X11 license."
     name="Last.fm Shuffle Modes"
     category="Community Extensions"
-    description="Shuffle your library with Lastfm"
+    description="Shuffle your library using information from the Last.fm online service."
     author="Raimo Radczewski"
     url="http://banshee-project.org/"
     defaultEnabled="false">
