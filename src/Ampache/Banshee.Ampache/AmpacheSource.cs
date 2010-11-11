@@ -150,12 +150,12 @@ namespace Banshee.Ampache
             //throw new NotImplementedException ();
         }
 
-        public void RemoveSelectedTracks ()
+        public void RemoveTracks (Hyena.Collections.Selection selection)
         {
             //throw new NotImplementedException ();
         }
 
-        public void DeleteSelectedTracks ()
+        public void DeleteTracks (Hyena.Collections.Selection selection)
         {
             //throw new NotImplementedException ();
         }
