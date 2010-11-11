@@ -43,6 +43,14 @@ ClutterFlow
   clutter-sharp
   clutter-gtk-sharp
 
+LastfmFingerprint
+  glib-2.0
+  fftw3f
+  samplerate
+  gstreamer-0.10 >= 0.10.15
+  gstreamer-base-0.10 >= 0.10.15
+  gstreamer-plugins-base-0.10 >= 0.10.15
+
 LCD
   LCDProc
 
