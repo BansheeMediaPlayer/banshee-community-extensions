@@ -43,7 +43,7 @@ namespace ClutterFlow
         event IndexChangedEventHandler IndexChanged;
     }
 
-	public delegate Gdk.Pixbuf NeedPixbuf();
+	public delegate Cairo.ImageSurface NeedSurface();
     public delegate void IndexChangedEventHandler(IIndexable item, int old_index, int new_index);
 	
 	public class TextureHolder : IDisposable {
@@ -64,11 +64,11 @@ namespace ClutterFlow
 			}
 		}
 		
-		protected Gdk.Pixbuf default_pb;
-		public Gdk.Pixbuf DefaultPb {
+		protected Cairo.ImageSurface default_surface;
+		public Cairo.ImageSurface DefaultSurface {
 			get {
-				if (default_pb==null && GetDefaultPb!=null) default_pb = ClutterFlowActor.MakeReflection(GetDefaultPb());
-				return default_pb;
+				if (default_surface==null && GetDefaultSurface!=null) default_surface = ClutterFlowActor.MakeReflection(GetDefaultSurface());
+				return default_surface;
 			}
 		}
 		
@@ -88,14 +88,14 @@ namespace ClutterFlow
 			}
 		}
 		
-		public NeedPixbuf GetDefaultPb;
+		public NeedSurface GetDefaultSurface;
 		#endregion
 
 		#region Initialisation
-		public TextureHolder (CoverManager coverManager, NeedPixbuf getDefaultPb)
+		public TextureHolder (CoverManager coverManager, NeedSurface getDefaultSurface)
 		{
 			this.CoverManager = coverManager;
-			this.GetDefaultPb = getDefaultPb;
+			this.GetDefaultSurface = getDefaultSurface;
 			ReloadDefaultTextures ();
 		}
         ~ TextureHolder () {
@@ -108,8 +108,8 @@ namespace ClutterFlow
                 return;
             disposed = true;
             CoverManager = null;
-            GetDefaultPb = null;
-            default_pb.Dispose ();
+            GetDefaultSurface = null;
+            ((IDisposable) default_surface).Dispose ();
             Cogl.Handle.Unref (defltTexture);
             Cogl.Handle.Unref (shadeTexture);
             defltTexture = IntPtr.Zero;
@@ -119,7 +119,10 @@ namespace ClutterFlow
 
 		public void ReloadDefaultTextures ()
 		{
-			default_pb = null; //reset this so it gets reloaded
+			if (default_surface != null)
+				((IDisposable) default_surface).Dispose ();
+			default_surface = null; //reset this so it gets reloaded
+			
 			SetupDefaultTexture ();
 			SetupShadeTexture ();
 		}
@@ -127,15 +130,17 @@ namespace ClutterFlow
 		public void SetupDefaultTexture ()
 		{
 			if (defltTexture==IntPtr.Zero) {
-				if (DefaultPb!=null) {
+				if (DefaultSurface!=null) {
 					Cogl.PixelFormat fm;
-					if (DefaultPb.HasAlpha)
-						fm = PixelFormat.Rgba8888;
-					else
+					if (DefaultSurface.Format == Cairo.Format.ARGB32)
+						fm = PixelFormat.Argb8888Pre;
+					else //if (DefaultSurface.Format == Cairo.Format.RGB24)
 						fm = PixelFormat.Rgb888;
+					
 					unsafe {
-						defltTexture = ClutterHelper.cogl_texture_new_from_data((uint) DefaultPb.Width, (uint) DefaultPb.Height, Cogl.TextureFlags.None,
-						                                         fm, Cogl.PixelFormat.Any, (uint) DefaultPb.Rowstride, DefaultPb.Pixels);
+						
+						defltTexture = ClutterHelper.cogl_texture_new_from_data((uint) DefaultSurface.Width, (uint) DefaultSurface.Height, Cogl.TextureFlags.None,
+						                                         fm, Cogl.PixelFormat.Any, (uint) DefaultSurface.Stride, DefaultSurface.DataPtr);
 					}
 				} else {
 					defltTexture = Cogl.Texture.NewWithSize ((uint) coverManager.TextureSize, (uint) coverManager.TextureSize,
@@ -266,61 +271,58 @@ namespace ClutterFlow
         }
 
         #region Texture Handling
-        public static Gdk.Pixbuf MakeReflection (Pixbuf pb) {
-            if (pb.BitsPerSample != 8)
-                throw new System.Exception ("Invalid bits per sample");
+        public static void MakeReflection (Cairo.ImageSurface source, CairoTexture dest) {
+	        int w = source.Width + 4;
+	        int h = source.Height * 2 + 4;
+			
+			dest.SetSurfaceSize ((uint) w, (uint) h);
 			
 			
-			Gdk.Pixbuf border_pb = new Gdk.Pixbuf(Colorspace.Rgb, true, pb.BitsPerSample, pb.Width+4, pb.Height+2);
-			border_pb.Fill (0x00000000);
-			pb.CopyArea (0, 0, pb.Width, pb.Height, border_pb, 2, 2);
 			
-			Gdk.Pixbuf final_pb = new Gdk.Pixbuf(Colorspace.Rgb, true, border_pb.BitsPerSample, border_pb.Width, border_pb.Height*2);
-
-
-            unsafe {
-
-                bool alpha = border_pb.HasAlpha;
-                int src_rowstride = border_pb.Rowstride;
-                int src_width = border_pb.Width;
-                int src_height = border_pb.Height;
-                byte * src_byte = (byte *) border_pb.Pixels;
-                byte * src_base = src_byte;
-
-                int dst_rowstride = final_pb.Rowstride;
-                int dst_width = final_pb.Width;
-                int dst_height = final_pb.Height;
-                byte * dst_byte = (byte *) final_pb.Pixels;
-                byte * dst_base = dst_byte;
-
-                byte * refl_byte = dst_base + (dst_height-1) * dst_rowstride + (dst_width-1) * 4  + 3;
-
-                for (int j = 0; j < src_height; j++) {
-                    src_byte = ((byte *) src_base) + j * src_rowstride;
-                    dst_byte = ((byte *) dst_base) + j * dst_rowstride;
-                    refl_byte = ((byte *) dst_base) + (dst_height-1-j) * dst_rowstride;
-                    for (int i = 0; i < src_width; i++) {
-                        byte r = *(src_byte++);
-                        byte g = *(src_byte++);
-                        byte b = *(src_byte++);
-                        byte a = 0xff;
-                        if (alpha)
-                            a = *(src_byte++);
-
-                        *dst_byte++ = r;
-                        *dst_byte++ = g;
-                        *dst_byte++ = b;
-                        *dst_byte++ = a;
-                        *refl_byte++ = r;
-                        *refl_byte++ = g;
-                        *refl_byte++ = b;
-                        *refl_byte++ = (byte) ((float) a * (float) (Math.Max(0, j - 0.3*src_height) / src_height));
-                    }
-                }
-            }
+			Cairo.Context context = dest.Create();
 			
-            return final_pb;
+			MakeReflection (context, source,  w, h);
+
+			//((IDisposable) context.Target).Dispose();
+			((IDisposable) context).Dispose();
         }
+		
+		
+        public static Cairo.ImageSurface MakeReflection (Cairo.ImageSurface source) {
+	        int w = source.Width + 4;
+	        int h = source.Height * 2 + 4;
+			
+			Cairo.ImageSurface dest = new Cairo.ImageSurface(Cairo.Format.ARGB32, w, h);
+			Cairo.Context context = new Cairo.Context(dest);
+	
+			MakeReflection (context, source, w, h);
+
+			//((IDisposable) context.Target).Dispose();
+			((IDisposable) context).Dispose();
+			
+			return dest;
+        }
+		
+		private static void MakeReflection (Cairo.Context context, Cairo.ImageSurface source, int w, int h) {
+
+			context.ResetClip ();			
+			context.SetSourceSurface(source, 2, 2);
+	        context.Paint();
+			
+	        double alpha = -0.3;
+	        double step = 1.0 / (double) source.Height;
+
+			context.Translate(0, h);
+			context.Scale (1, -1);
+			context.SetSourceSurface(source, 2, 2);
+	        for (int i = 0; i < source.Height; i++) {
+				context.Rectangle(0, i+2, w, 1);
+	            context.Clip();
+				alpha += step;
+	            context.PaintWithAlpha(Math.Max(Math.Min(alpha, 0.7), 0.0));
+	            context.ResetClip();
+			}
+		}
         #endregion
     }
 
@@ -339,10 +341,10 @@ namespace ClutterFlow
             protected set { is_setup = value; }
         }
 
-        private bool swapped = false;
-        private bool delayed_cover_swap = false;
+       /* private bool swapped = false;
+        private bool delayed_cover_swap = false;*/
         private bool delayed_shade_swap = false;
-        public bool SwappedToDefault {
+        /*public bool SwappedToDefault {
             get { return swapped; }
             set {
                 if (value!=swapped) {
@@ -353,15 +355,15 @@ namespace ClutterFlow
                         SetCoverSwap ();
                 }
             }
-        }
+        }*/
 		
 		protected bool CanUseShader {
 			get {
-				return ClutterHelper.CheckForExtension ("GL_ARB_vertex_shader");
+				return Clutter.Feature.Available (Clutter.FeatureFlags.ShadersGlsl);
 			}
 		}
 		
-        private void SetCoverSwap () {
+        /*private void SetCoverSwap () {
             if (swapped) {
                 cover.CoglTexture = textureHolder.DefaultTexture;
             } else {
@@ -369,7 +371,7 @@ namespace ClutterFlow
                                                              Cogl.TextureFlags.NoSlicing, Cogl.PixelFormat.Argb8888);
             }
             delayed_cover_swap = false;
-        }
+        }*/
 
         private void SetShadeSwap () {
 			if (!has_shader) {
@@ -378,8 +380,8 @@ namespace ClutterFlow
 			}
         }
 
-        protected Clutter.Texture cover = null;
-        public Clutter.Texture Cover {
+        protected Clutter.CairoTexture cover = null;
+        public Clutter.CairoTexture Cover {
             get { return cover; }
         }
         protected Clutter.Texture shade = null;
@@ -399,15 +401,15 @@ namespace ClutterFlow
             }
         }
 
-		private NeedPixbuf getDefaultPb;
+		private NeedSurface getDefaultSurface;
 		
 		protected bool shifted_outwards;
 		#endregion
 		
 		#region Initialization	
-		public ClutterFlowActor (CoverManager cover_manager, NeedPixbuf getDefaultPb) : base (cover_manager)
+		public ClutterFlowActor (CoverManager cover_manager, NeedSurface getDefaultSurface) : base (cover_manager)
 		{
-			this.getDefaultPb = getDefaultPb;
+			this.getDefaultSurface = getDefaultSurface;
 
             this.ParentSet += HandleParentSet;
 			this.LeaveEvent += HandleLeaveEvent;
@@ -430,14 +432,14 @@ namespace ClutterFlow
 			this.LeaveEvent -= HandleLeaveEvent;
             this.ButtonPressEvent -= HandleButtonPressEvent;
             this.ButtonReleaseEvent -= HandleButtonReleaseEvent;
-            getDefaultPb = null;
+            getDefaultSurface = null;
 
             DisposeStatics ();
         }
 		protected virtual bool SetupStatics ()
 		{
 			if (textureHolder==null)
-				textureHolder = new TextureHolder(CoverManager, GetDefaultPb);
+				textureHolder = new TextureHolder(CoverManager, getDefaultSurface);
 			return true;
 		}
         protected virtual void DisposeStatics ()
@@ -465,7 +467,7 @@ namespace ClutterFlow
 		protected bool has_shader = false;
 		protected virtual void TryShading ()
 		{
-			if (CanUseShader/*Clutter.Feature.Available (Clutter.FeatureFlags.ShadersGlsl)*/) {
+			/*if (CanUseShader) {
 				shader = new Clutter.Shader ();
 				shader.VertexSource = @"
 					attribute vec4 gl_Color;
@@ -497,13 +499,13 @@ namespace ClutterFlow
 				OnAngleChanged (this, new GLib.NotifyArgs());
 				OnAnchorChanged (this, new GLib.NotifyArgs());
 				has_shader = true;
-			}
+			}*/
 		}
 		
 		protected virtual void SetupCover ()
 		{
 			if (cover==null) {
-				cover = new Clutter.Texture();				
+				cover = new Clutter.CairoTexture((uint) coverManager.TextureSize, (uint) coverManager.TextureSize*2);				
 				Add (cover);
 				cover.Show ();
 				cover.Realize ();
@@ -512,7 +514,7 @@ namespace ClutterFlow
 			cover.SetPosition (0, 0);
 			cover.Opacity = 255;
 			
-			SwappedToDefault = true;
+			//SwappedToDefault = true;
 		}
 		
 		protected virtual void OnOpacityChanged (object sender, NotifyArgs args)
@@ -552,9 +554,9 @@ namespace ClutterFlow
 		#endregion
 
 		#region Texture Handling
-		protected virtual Gdk.Pixbuf GetDefaultPb ()
+		protected virtual Cairo.ImageSurface GetDefaultSurface ()
 		{
-			return (getDefaultPb!=null) ? getDefaultPb() : null;
+			return (getDefaultSurface!=null) ? getDefaultSurface() : null;
 		}
 
 		protected virtual void HandleTextureSizeChanged(object sender, EventArgs e)
@@ -625,7 +627,7 @@ namespace ClutterFlow
         {
             if (this.Stage != null) {
                 if (delayed_shade_swap) SetShadeSwap ();
-                if (delayed_cover_swap) SetCoverSwap ();
+                //if (delayed_cover_swap) SetCoverSwap ();
             }
         }
 

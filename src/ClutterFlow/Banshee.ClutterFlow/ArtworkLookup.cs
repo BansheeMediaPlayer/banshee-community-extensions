@@ -197,11 +197,10 @@ namespace Banshee.ClutterFlow
 					ClutterFlowAlbum cover = LookupQueue.Dequeue ();
 					float size = cover.CoverManager.TextureSize;
 					string cache_id = cover.PbId;
-					Gdk.Pixbuf pb = artwork_manager.LookupScalePixbuf (cache_id, (int) size);
-					if (pb!=null) {
-                        pb = ClutterFlowActor.MakeReflection(pb);
+					Cairo.ImageSurface surface = artwork_manager.LookupScaleSurface(cache_id, (int) size);
+					if (surface!=null) {
                         Gtk.Application.Invoke (delegate {
-                            GtkInvoke (cover, pb);
+							SetCoverToSurface(cover, surface);
                         });
 					}
                     t.IsBackground = true;
@@ -217,19 +216,17 @@ namespace Banshee.ClutterFlow
         {
             float size = cover.CoverManager.TextureSize;
             string cache_id = cover.PbId;
-            Gdk.Pixbuf pb = artwork_manager.LookupScalePixbuf (cache_id, (int) size);
-            if (pb!=null) {
-                pb = ClutterFlowActor.MakeReflection(pb);
-                GtkInvoke (cover, pb);
+            Cairo.ImageSurface surface = artwork_manager.LookupScaleSurface(cache_id, (int) size);
+            if (surface!=null) {
+                SetCoverToSurface(cover, surface);
             }
         }
 
-        private void GtkInvoke (ClutterFlowAlbum cover, Gdk.Pixbuf pb)
+        private void SetCoverToSurface (ClutterFlowAlbum cover, Cairo.ImageSurface surface)
         {
-            cover.Enqueued = false;
-            cover.SwappedToDefault = false;
-            GtkUtil.TextureSetFromPixbuf (cover.Cover, pb);
-            pb.Dispose ();
+	            cover.Enqueued = false;
+	            //cover.SwappedToDefault = false;
+				ClutterFlowActor.MakeReflection(surface, cover.Cover);
         }
 	}
 }

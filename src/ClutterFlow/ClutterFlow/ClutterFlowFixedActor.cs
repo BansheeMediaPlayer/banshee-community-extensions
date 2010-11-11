@@ -38,11 +38,11 @@ namespace ClutterFlow
     {
 
         #region Fields
-        protected Clutter.Texture texture;
-        public Clutter.Texture Texture {
+        protected Clutter.CairoTexture texture;
+        public Clutter.CairoTexture Texture {
             get {
                 if (texture==null) {
-                    texture = new Clutter.Texture ();
+                    texture = new Clutter.CairoTexture ((uint) coverManager.Behaviour.CoverWidth, (uint) coverManager.Behaviour.CoverWidth*2);				
                     Add (texture);
                     texture.Show ();
                 }
@@ -93,8 +93,13 @@ namespace ClutterFlow
 			SetAnchorPoint (0, 0);
 				
             if (pb!=null) {
-                GtkUtil.TextureSetFromPixbuf (Texture, MakeReflection(pb));
-                pb.Dispose ();
+				Cairo.Context context = Texture.Create();
+				
+				Gdk.CairoHelper.SetSourcePixbuf(context, pb, 0, 0);
+				context.Paint();
+				
+				((IDisposable) context.Target).Dispose ();
+				((IDisposable) context).Dispose ();
             }
 
 			Texture.SetPosition (0, 0);

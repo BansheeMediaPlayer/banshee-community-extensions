@@ -266,6 +266,8 @@ namespace Banshee.ClutterFlow
 			coverManager.SetRotation (RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
 			Stage.Add (coverManager);
 
+			
+			
 			coverManager.EmptyActor.SetToPb(
 	            IconThemeUtils.LoadIcon (coverManager.TextureSize, "gtk-stop", "clutterflow-large.png")
             );

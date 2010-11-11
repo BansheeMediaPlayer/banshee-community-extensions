@@ -52,7 +52,7 @@ namespace ClutterFlow
 		[DllImport ("libclutter-glx-1.0.so.0")]
 		private static extern void clutter_actor_box_from_vertices (ref ActorBox box, IntPtr[] vtx);
 		
-		[DllImport("libGL.so", EntryPoint = "glGetString")]
+		/*[DllImport("libGL.so", EntryPoint = "glGetString")]
 		private static extern IntPtr glGetString(int s);
 
 		public static string OpenGLGetString (int i)
@@ -68,7 +68,7 @@ namespace ClutterFlow
             else {
 				return extensions.Contains (extension);
 			}
-		}
+		}*/
 		
 		
 		public unsafe static ActorBox GetAbsAllocationBox (Actor actor)

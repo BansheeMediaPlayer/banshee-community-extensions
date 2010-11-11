@@ -110,9 +110,15 @@ namespace Banshee.ClutterFlow
 		#endregion
 		
 		#region Texture Handling
-		protected override Gdk.Pixbuf GetDefaultPb ()
+		protected override Cairo.ImageSurface GetDefaultSurface ()
 		{
-			return IconThemeUtils.LoadIcon (coverManager.TextureSize, "media-optical", "browser-album-cover");
+			Cairo.ImageSurface surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, coverManager.TextureSize, coverManager.TextureSize);
+			Cairo.Context context = new Cairo.Context(surface);
+			Gdk.CairoHelper.SetSourcePixbuf(context, IconThemeUtils.LoadIcon (coverManager.TextureSize, "media-optical", "browser-album-cover"), 0, 0);
+			context.Paint();
+			//((IDisposable) context.Target).Dispose();
+			((IDisposable) context).Dispose();
+			return  surface;
 		}	
 
 		protected override void HandleTextureSizeChanged (object sender, System.EventArgs e)
