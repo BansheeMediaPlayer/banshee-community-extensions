@@ -52,7 +52,15 @@ namespace Banshee.Mirage
             }
         }
 
-        public void DumpDebug ()
+        public override IEnumerable<object> Parameters {
+            get {
+                yield return Id;
+                yield return AvoidArtistIds;
+            }
+            set {}
+        }
+
+        protected override void DumpDebug ()
         {
             var avoid_ids = String.Join (", ", AvoidArtistIds.Select (id => id.ToString ()).ToArray ());
             Console.WriteLine ("  Avoided artist ids = {0}\n  Seed Distances:", avoid_ids);
@@ -60,6 +68,8 @@ namespace Banshee.Mirage
             debug = true;
             Console.WriteLine ("  Average weighted distance: {0:N1}", Distance (best_scms).Average ());
             debug = false;
+
+            base.DumpDebug ();
         }
 
         public override IEnumerable<float> Distance (Scms from)

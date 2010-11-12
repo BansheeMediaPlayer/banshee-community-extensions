@@ -47,8 +47,6 @@ namespace Banshee.Mirage
         // The RANDOM_CONDITION will exclude the played/skipped items for us, but we need to
         // add the Similarity-based selection[, exclusion], and ordering.
 
-        private string cache_condition;
-
         public RandomBySimilar () : base ("mirage_similar")
         {
             MiragePlugin.Init ();
@@ -57,12 +55,10 @@ namespace Banshee.Mirage
             Adverb = AddinManager.CurrentLocalizer.GetString ("by similar");
             Description = AddinManager.CurrentLocalizer.GetString ("Play songs similar to those already played");
 
-            Condition = "mirage.Status = 0 AND CoreTracks.ArtistID NOT IN (?) AND Distance > 0";
-            From = "LEFT OUTER JOIN MirageTrackAnalysis mirage ON (mirage.TrackID = CoreTracks.TrackID) ";
             Select = ", HYENA_BINARY_FUNCTION ('MIRAGE_DISTANCE', ?, mirage.ScmsData) as Distance";
+            From = "LEFT OUTER JOIN MirageTrackAnalysis mirage ON (mirage.TrackID = CoreTracks.TrackID) ";
+            Condition = "mirage.Status = 0 AND CoreTracks.ArtistID NOT IN (?) AND Distance > 0";
             OrderBy = "Distance ASC, RANDOM ()";
-
-            cache_condition = String.Format ("AND {0} {1} ORDER BY {2}", Condition, RANDOM_CONDITION, OrderBy);
         }
 
         public override bool Next (DateTime after)
@@ -70,29 +66,9 @@ namespace Banshee.Mirage
             return true;
         }
 
-        public override TrackInfo GetPlaybackTrack (DateTime after)
+        protected override RandomBy.QueryContext GetQueryContext (DateTime after)
         {
-            return GetTrack (after, true);
-        }
-
-        public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
-        {
-            return GetTrack (after, false);
-        }
-
-        private DatabaseTrackInfo GetTrack (DateTime after, bool playback)
-        {
-            using (var context = GetSimilarityContext (after, playback)) {
-                var track = playback
-                    ? Cache.GetSingle (Select, From, cache_condition, context.Id, context.AvoidArtistIds, after, after) as DatabaseTrackInfo
-                    : GetTrack (ShufflerQuery, context.Id, context.AvoidArtistIds, after) as DatabaseTrackInfo;
-
-                if (MiragePlugin.Debug) {
-                    Console.WriteLine ("Mirage got {0} as lowest avg distance to the similarity context", track == null ? "(null)" : track.Uri.ToString ());
-                    context.DumpDebug ();
-                }
-                return track;
-            }
+            return GetSimilarityContext (after, Shuffler == Shuffler.Playback);
         }
 
         private SimilarityContext GetSimilarityContext (DateTime after, bool playback)

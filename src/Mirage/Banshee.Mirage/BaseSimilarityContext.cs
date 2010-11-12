@@ -6,7 +6,7 @@ using Mirage;
 
 namespace Banshee.Mirage
 {
-    public abstract class BaseSimilarityContext : IDisposable
+    public abstract class BaseSimilarityContext : Banshee.Collection.Database.RandomBy.QueryContext
     {
         private int seed_id;
         protected ScmsConfiguration Config = new ScmsConfiguration (Analyzer.MFCC_COEFFICIENTS);
@@ -32,15 +32,22 @@ namespace Banshee.Mirage
 
         public abstract IEnumerable<float> Distance (Scms from);
 
-        public void Dispose ()
+        public override void Dispose ()
         {
             DistanceCalculator.RemoveSeed (seed_id);
 
             if (MiragePlugin.Debug) {
-                Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} ms - spent reading: {1} ms; total calls: {2}",
-                                   DistanceCalculator.total_ms, DistanceCalculator.total_read_ms, DistanceCalculator.total_count);
-                Console.WriteLine (">>>>>>>>>>>>>> Distance [min, max] = [{0}, {1}]", min_distance, max_distance);
+                DumpDebug ();
             }
+
+            base.Dispose ();
+        }
+
+        protected virtual void DumpDebug ()
+        {
+            Console.WriteLine (">>>>>>>>>>>>>> Total ms spent in Distance func: {0} ms - spent reading: {1} ms; total calls: {2}",
+                               DistanceCalculator.total_ms, DistanceCalculator.total_read_ms, DistanceCalculator.total_count);
+            Console.WriteLine (">>>>>>>>>>>>>> Distance [min, max] = [{0}, {1}]", min_distance, max_distance);
         }
     }
 }
