@@ -57,7 +57,6 @@ namespace Banshee.Mirage
             Adverb = AddinManager.CurrentLocalizer.GetString ("by similar");
             Description = AddinManager.CurrentLocalizer.GetString ("Play songs similar to those already played");
 
-            // TODO Mirage's PlaylistGeneratorSource ensures no more than 50% of tracks are by same artist
             Condition = "mirage.Status = 0 AND CoreTracks.ArtistID NOT IN (?) AND Distance > 0";
             From = "LEFT OUTER JOIN MirageTrackAnalysis mirage ON (mirage.TrackID = CoreTracks.TrackID) ";
             Select = ", HYENA_BINARY_FUNCTION ('MIRAGE_DISTANCE', ?, mirage.ScmsData) as Distance";
@@ -101,14 +100,14 @@ namespace Banshee.Mirage
             var context = new SimilarityContext ();
 
             if (!playback) {
-                // Manually added songs are the strongest postiive signal for what we want
+                // Manually added songs are the strongest postive signal for what we want
                 context.AddSeeds (GetSeeds (
                     "d.ModificationType = 1 AND d.LastModifiedAt IS NOT NULL AND d.LastModifiedAt > ? ORDER BY d.LastModifiedAt DESC",
                     after, 4, SimilarityContext.SelectedWeight
                 ));
             }
 
-            // Played songs are the next strongest postiive signal for what we want
+            // Played songs are the next strongest postive signal for what we want
             context.AddSeeds (GetSeeds (
                 "t.LastPlayedStamp IS NOT NULL AND t.LastPlayedStamp > MAX (?, coalesce(d.LastModifiedAt, 0), coalesce(t.LastSkippedStamp, 0)) ORDER BY t.LastPlayedStamp DESC",
                 after, playback ? 4 : 2, SimilarityContext.PlayedWeight
