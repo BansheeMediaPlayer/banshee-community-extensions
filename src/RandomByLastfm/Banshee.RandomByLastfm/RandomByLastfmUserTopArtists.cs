@@ -49,8 +49,6 @@ namespace Banshee.RandomByLastfm
 
         private const string ARTIST_QUERY = @"SELECT ArtistID, NameLowered FROM CoreArtists GROUP BY NameLowered HAVING NameLowered in (?) OR MusicBrainzID in (?)";
 
-        private static string track_condition = String.Format ("AND CoreArtists.ArtistID = ? {0} ORDER BY RANDOM()", RANDOM_CONDITION);
-
         private static bool initiated = false;
         private static object initiated_lock = new object ();
         private static short instanceCount = 0;
@@ -105,21 +103,15 @@ namespace Banshee.RandomByLastfm
             });
         }
 
-        public override TrackInfo GetPlaybackTrack (DateTime after)
+        protected override IEnumerable<object> GetConditionParameters (DateTime after)
         {
-            return Cache.GetSingleWhere (track_condition, weightedRandom.GetInvertedRandom (), after, after);
+			yield return weightedRandom.GetInvertedRandom ();
         }
 
         public override bool Next (DateTime after)
         {
             return true;
         }
-
-        public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
-        {
-            return GetTrack (ShufflerQuery, weightedRandom.GetInvertedRandom (), after);
-        }
-
 
         /// <summary>
         /// Query Lastfm for UserTopArtists

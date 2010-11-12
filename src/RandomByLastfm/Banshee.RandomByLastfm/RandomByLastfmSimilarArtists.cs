@@ -49,8 +49,6 @@ namespace Banshee.RandomByLastfm
         private const int MAX_ARTISTS = 200;
         private const string ARTIST_QUERY = @"SELECT ArtistID, NameLowered FROM CoreArtists GROUP BY NameLowered HAVING NameLowered in (?)";
 
-        private static string track_condition = String.Format ("AND CoreArtists.ArtistID = ? {0} ORDER BY RANDOM()", RANDOM_CONDITION);
-
         private static bool initiated = false;
         private static object initiated_lock = new object ();
         private static short instanceCount = 0;
@@ -102,21 +100,14 @@ namespace Banshee.RandomByLastfm
             });
         }
 
-        public override TrackInfo GetPlaybackTrack (DateTime after)
+        protected override IEnumerable<object> GetConditionParameters (DateTime after)
         {
-            int randomId = weightedRandom.GetRandom ();
-            return Cache.GetSingleWhere (track_condition, randomId, after, after);
+			yield return weightedRandom.GetRandom ();
         }
 
         public override bool Next (DateTime after)
         {
             return true;
-        }
-
-        public override DatabaseTrackInfo GetShufflerTrack (DateTime after)
-        {
-            int randomId = weightedRandom.GetRandom ();
-            return GetTrack (ShufflerQuery, randomId, after);
         }
 
         /// <summary>
