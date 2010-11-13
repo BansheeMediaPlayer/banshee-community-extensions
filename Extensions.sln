@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ampache", "src\Ampache\Ampache.csproj", "{5521665C-C822-4A1A-BB0A-6FD2422093C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ampache", "src\Ampache\Ampache.csproj", "{AB92D9F2-74A4-4D6A-9882-9D180A544CED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomByLastfm", "src\RandomByLastfm\RandomByLastfm.csproj", "{04568A95-2430-41EB-82D6-939F5E7E8403}"
 EndProject
@@ -90,6 +90,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LastfmFingerprint", "src\La
 EndProject
 Project("{2857B73E-F847-4B02-9238-064979017E93}") = "liblastfmfpbridge", "src\LastfmFingerprint\liblastfmfpbridge\liblastfmfpbridge.cproj", "{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jamendo", "src\Jamendo\Jamendo.csproj", "{BB615036-6BD1-4911-8C99-5C307E29B0A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -97,10 +99,6 @@ Global
 		Windows|Any CPU = Windows|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5521665C-C822-4A1A-BB0A-6FD2422093C3}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5521665C-C822-4A1A-BB0A-6FD2422093C3}.Debug|x86.Build.0 = Debug|Any CPU
-		{5521665C-C822-4A1A-BB0A-6FD2422093C3}.Release|x86.ActiveCfg = Release|Any CPU
-		{5521665C-C822-4A1A-BB0A-6FD2422093C3}.Release|x86.Build.0 = Release|Any CPU
 		{04568A95-2430-41EB-82D6-939F5E7E8403}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{04568A95-2430-41EB-82D6-939F5E7E8403}.Debug|x86.Build.0 = Debug|Any CPU
 		{04568A95-2430-41EB-82D6-939F5E7E8403}.Release|x86.ActiveCfg = Release|Any CPU
@@ -183,6 +181,10 @@ Global
 		{A8659C27-52A7-4DC5-8F86-43D59F5D6E30}.Debug|x86.Build.0 = Debug|Any CPU
 		{A8659C27-52A7-4DC5-8F86-43D59F5D6E30}.Release|x86.ActiveCfg = Release|Any CPU
 		{A8659C27-52A7-4DC5-8F86-43D59F5D6E30}.Release|x86.Build.0 = Release|Any CPU
+		{AB92D9F2-74A4-4D6A-9882-9D180A544CED}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AB92D9F2-74A4-4D6A-9882-9D180A544CED}.Debug|x86.Build.0 = Debug|Any CPU
+		{AB92D9F2-74A4-4D6A-9882-9D180A544CED}.Release|x86.ActiveCfg = Release|Any CPU
+		{AB92D9F2-74A4-4D6A-9882-9D180A544CED}.Release|x86.Build.0 = Release|Any CPU
 		{B03D0959-A746-46E0-9D70-400CAD5ABA23}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{B03D0959-A746-46E0-9D70-400CAD5ABA23}.Debug|x86.Build.0 = Debug|Any CPU
 		{B03D0959-A746-46E0-9D70-400CAD5ABA23}.Release|x86.ActiveCfg = Release|Any CPU
@@ -191,6 +193,12 @@ Global
 		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Debug|x86.Build.0 = Debug|Any CPU
 		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Release|x86.ActiveCfg = Release|Any CPU
 		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Release|x86.Build.0 = Release|Any CPU
+		{BB615036-6BD1-4911-8C99-5C307E29B0A7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BB615036-6BD1-4911-8C99-5C307E29B0A7}.Debug|x86.Build.0 = Debug|Any CPU
+		{BB615036-6BD1-4911-8C99-5C307E29B0A7}.Release|x86.ActiveCfg = Debug|Any CPU
+		{BB615036-6BD1-4911-8C99-5C307E29B0A7}.Release|x86.Build.0 = Debug|Any CPU
+		{BB615036-6BD1-4911-8C99-5C307E29B0A7}.Windows|Any CPU.ActiveCfg = Windows|Any CPU
+		{BB615036-6BD1-4911-8C99-5C307E29B0A7}.Windows|Any CPU.Build.0 = Windows|Any CPU
 		{C00E6610-4E5D-40D2-9C38-54EADBFDC88A}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{C00E6610-4E5D-40D2-9C38-54EADBFDC88A}.Debug|x86.Build.0 = Debug|Any CPU
 		{C00E6610-4E5D-40D2-9C38-54EADBFDC88A}.Release|x86.ActiveCfg = Debug|Any CPU

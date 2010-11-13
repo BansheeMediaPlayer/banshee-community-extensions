@@ -82,6 +82,7 @@ BCE_APPINDICATOR
 BCE_AWN
 BCE_CLUTTERFLOW
 BCE_COVERWALLPAPER
+BCE_JAMENDO
 BCE_LASTFMFINGERPRINT
 BCE_LCD
 BCE_LIRC
@@ -140,6 +141,7 @@ src/ClutterFlow/Makefile
 src/ClutterFlow/Banshee.ClutterFlow/Makefile
 src/ClutterFlow/ClutterFlow/Makefile
 src/CoverWallpaper/Makefile
+src/Jamendo/Makefile
 src/LastfmFingerprint/Makefile
 src/LastfmFingerprint/Banshee.LastfmFingerprint/Makefile
 src/LastfmFingerprint/liblastfmfpbridge/Makefile
@@ -201,6 +203,7 @@ ${PACKAGE}-${VERSION}
     Awn:                 ${enable_Awn}
     ClutterFlow:         ${enable_ClutterFlow}
     CoverWallpaper:      ${enable_CoverWallpaper}
+    Jamendo:             ${enable_Jamendo}
     LastfmFingerprint:   ${enable_LastfmFingerprint}
     LCD:                 ${enable_LCD}
     Lirc:                ${enable_Lirc}

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin
+    id="Banshee.Jamendo"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="Copyright © 2010 Janez Troha. Licensed under the MIT X11 license."
+    name="Jamendo"
+    category="Community Extensions"
+    description="Download and listen to over 20,000 albums. Play or download directly to discover and share new artists. All content is Creative Commons or Art Libre licensed."
+    author="Janez Troha"
+    url="http://banshee-project.org/"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/SourceManager/Source">
+    <Source class="Banshee.Jamendo.JamendoSource"/>
+  </Extension>
+
+</Addin>

@@ -5,6 +5,7 @@ SUBDIRS = \
 	Awn \
 	ClutterFlow \
 	CoverWallpaper \
+	Jamendo \
 	LastfmFingerprint \
 	LCD \
 	Lirc \

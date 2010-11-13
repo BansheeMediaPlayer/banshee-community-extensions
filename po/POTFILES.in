@@ -13,6 +13,7 @@ src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs
 src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs
 src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs
 src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs
+src/Jamendo/Banshee.Jamendo/JamendoWebBrowserShell.cs
 src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs
 src/LCD/Banshee.LCD/ConfigurationDialog.cs
 src/LCD/Banshee.LCD/LCDService.cs
