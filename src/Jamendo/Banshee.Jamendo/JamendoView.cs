@@ -3,8 +3,10 @@
 //
 // Authors:
 //   Janez Troha <janez.troha@gmail.com>
+//   Bertrand Lorentz <bertrand.lorentz@gmail.com>
 //
-// Copyright (C) 2010 Janez Troha
+// Copyright 2010 Janez Troha
+// Copyright 2010 Bertrand Lorentz
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -27,16 +29,11 @@
 //
 
 using System;
-using System.Text.RegularExpressions;
-using System.Threading;
-using Banshee.Collection;
-using Banshee.MediaEngine;
-using Banshee.ServiceStack;
-using Banshee.Streaming;
+
+using Hyena;
+
 using Banshee.WebBrowser;
 using Banshee.WebSource;
-using Hyena;
-using Hyena.Json;
 
 namespace Banshee.Jamendo
 {
@@ -45,25 +42,65 @@ namespace Banshee.Jamendo
         public JamendoView ()
         {
             CanSearch = true;
+            FixupJavascriptUrl = "http://integrated-services.banshee.fm/jamendo/jamendo-fixup.js";
+
             FullReload ();
         }
+
+        private static bool IsPlaylistContentType (string contentType)
+        {
+            switch (contentType) {
+                case "audio/x-mpegurl":
+                case "application/xspf+xml":
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool IsDownloadContentType (string contentType)
+        {
+            switch (contentType) {
+                // For single tracks
+                case "application/octet-stream":
+                // For album downloads
+                case "application/zip":
+                    return true;
+            }
+
+            return false;
+        }
+
         protected override OssiferNavigationResponse OnNavigationPolicyDecisionRequested (string uri)
         {
             return base.OnNavigationPolicyDecisionRequested (uri);
         }
-        protected override string OnResourceRequestStarting (string old_uri)
+
+        protected override OssiferNavigationResponse OnMimeTypePolicyDecisionRequested (string mimetype)
         {
-            if (old_uri.Contains ("http://8tracks.com/javascripts/player_packaged.js")) {
-                return "about:blank";
-            } else if (old_uri.Contains ("http://8tracks.com/stylesheets/universal_packaged.css")){
-                return "http://dl.dropbox.com/u/302704/8tracks/universal_packaged.css";
-            } else if (old_uri.Contains ("facebook.com") || old_uri.Contains ("twitter.com")){
-                return "about:blank";
-            }
-            else {
-                return base.OnResourceRequestStarting (old_uri);
+            // We only explicitly accept (render) text/html types, and only
+            // download what we can import or stream.
+            if (IsPlaylistContentType (mimetype) || IsDownloadContentType (mimetype)) {
+                return OssiferNavigationResponse.Download;
             }
 
+            return base.OnMimeTypePolicyDecisionRequested (mimetype);
+        }
+
+        protected override string OnDownloadRequested (string mimetype, string uri, string suggestedFilename)
+        {
+            if (IsPlaylistContentType (mimetype)) {
+                Log.DebugFormat ("Streaming from Jamendo playlist : {0} ({1})", uri, mimetype);
+                // FIXME: Works only for single track and only once
+                Banshee.Streaming.RadioTrackInfo.OpenPlay (uri);
+                Banshee.ServiceStack.ServiceManager.PlaybackController.StopWhenFinished = true;
+                return null;
+            } else if (IsDownloadContentType (mimetype)) {
+                JamendoDownloadManager.Download (uri, mimetype);
+                return null;
+            }
+
+            return null;
         }
 
         public override void GoHome ()
@@ -73,15 +110,13 @@ namespace Banshee.Jamendo
 
         public override void GoSearch (string query)
         {
-            LoadUri (new Uri (GetActionUrl ("en/search/all/" + new SafeUri(query))).AbsoluteUri);
+            LoadUri (new Uri (GetActionUrl ("en/search/all/" + query)).AbsoluteUri);
         }
 
         public string GetActionUrl (string action)
         {
             return "http://jamendo.com/" + action;
         }
-
-
     }
 }
 

@@ -15,7 +15,7 @@
     <WarningLevel>4</WarningLevel>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <AssemblyOriginatorKeyFile>.</AssemblyOriginatorKeyFile>
-    <RootNamespace>Jamendo</RootNamespace>
+    <RootNamespace>Banshee.Jamendo</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -82,6 +82,10 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="Banshee.WebBrowser, Version=1.9.0.0, Culture=neutral">
+      <Package>banshee-1-webbrowser</Package>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Jamendo.addin.xml">
@@ -95,6 +99,7 @@
     <Compile Include="Banshee.Jamendo\JamendoSource.cs" />
     <Compile Include="Banshee.Jamendo\JamendoView.cs" />
     <Compile Include="Banshee.Jamendo\JamendoWebBrowserShell.cs" />
+    <Compile Include="Banshee.Jamendo\JamendoDownloadManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

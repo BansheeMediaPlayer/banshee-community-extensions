@@ -28,8 +28,6 @@
 
 using System;
 using Mono.Addins;
-using Mono.Unix;
-
 
 namespace Banshee.Jamendo
 {

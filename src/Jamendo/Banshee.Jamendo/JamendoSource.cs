@@ -26,15 +26,15 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using Banshee.Sources;
+using Banshee.WebSource;
 
 namespace Banshee.Jamendo
 {
-
     public class JamendoSource : Banshee.WebSource.WebSource
     {
         public JamendoWebBrowserShell Shell { get; private set; }
         private JamendoView view;
+
         public JamendoSource () : base("Jamendo", 190, "Jamendo")
         {
             Properties.SetString ("Icon.Name", "jamendo");
@@ -45,7 +45,7 @@ namespace Banshee.Jamendo
             get { return 0; }
         }
 
-        protected override WebSource.WebBrowserShell GetWidget ()
+        protected override WebBrowserShell GetWidget ()
         {
             view = new JamendoView ();
             return (Shell = new JamendoWebBrowserShell(view));
