@@ -18,9 +18,24 @@ ASSEMBLY_FILE = $(top_builddir)/bin/$(ASSEMBLY).$(ASSEMBLY_EXTENSION)
 INSTALL_DIR_RESOLVED = $(firstword $(subst , $(DEFAULT_INSTALL_DIR), $(INSTALL_DIR)))
 
 if ENABLE_TESTS
-    LINK += " $(NUNIT_LIBS) $(MONO_NUNIT_LIBS)"
-    ENABLE_TESTS_FLAG = "-define:ENABLE_TESTS"
+LINK += " $(NUNIT_LIBS) $(MONO_NUNIT_LIBS)"
+ENABLE_TESTS_FLAG = "-define:ENABLE_TESTS"
+
+test: $(ASSEMBLY_FILE)
+	if test "x$(TEST_ASSEMBLY)" = "xyes"; then \
+		LD_LIBRARY_PATH="$(BANSHEE_LIBDIR):$(BANSHEE_EXTDIR):$(EXTENSION_DIR)/..:$(EXTENSION_DIR)${LD_LIBRARY_PATH+:$LD_LIBRARY_PATH}" \
+		MONO_PATH="$(BANSHEE_LIBDIR):$(BANSHEE_EXTDIR):$(EXTENSION_DIR)/..:$(EXTENSION_DIR)${MONO_PATH+:$MONO_PATH}" \
+		$(NUNIT_CONSOLE) -nologo -noshadow $(ASSEMBLY_FILE); \
+	fi
+
+else
+
+test:
+
 endif
+
+check: test
+
 
 FILTERED_LINK = $(shell echo "$(LINK)" | $(UNIQUE_FILTER_PIPE))
 DEP_LINK = $(shell echo "$(LINK)" | $(UNIQUE_FILTER_PIPE) | sed s,-r:,,g | grep '$(top_builddir)/bin/')

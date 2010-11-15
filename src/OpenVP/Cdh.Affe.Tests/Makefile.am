@@ -1,6 +1,6 @@
 ASSEMBLY = Cdh.Affe.Tests
-TARGET = exe
 LINK =  -r:System -r:$(DIR_BIN)/Cdh.Affe.dll
+TEST_ASSEMBLY = yes
 
 SOURCES =  \
 	Main.cs \

@@ -12,7 +12,10 @@ AC_DEFUN([SHAMROCK_CHECK_UNIT_TESTS],
 		PKG_CHECK_MODULES(NUNIT, nunit >= $NUNIT_REQUIRED,
 			do_tests="yes", do_tests="no")
 
-		AC_SUBST(NUNIT_LIBS)
+		AC_PATH_PROG([NUNIT_CONSOLE], [nunit-console2], [nunit-console])
+
+		AC_SUBST([NUNIT_CONSOLE])
+		AC_SUBST([NUNIT_LIBS])
 		AM_CONDITIONAL(ENABLE_TESTS, test "x$do_tests" = "xyes")
 
 		if test "x$do_tests" = "xno"; then

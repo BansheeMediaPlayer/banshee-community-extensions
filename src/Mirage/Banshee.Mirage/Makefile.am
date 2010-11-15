@@ -1,5 +1,6 @@
 ASSEMBLY = Banshee.Mirage
 LINK = $(BANSHEE_LIBS) -r:$(DIR_BIN)/Mirage.dll
+TEST_ASSEMBLY = yes
 
 SOURCES =  \
 	AnalyzeLibraryJob.cs \

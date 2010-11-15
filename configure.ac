@@ -12,7 +12,7 @@ AC_PROG_LIBTOOL
 AC_PROG_INSTALL
 
 dnl How to configure for distcheck
-DISTCHECK_CONFIGURE_FLAGS="--enable-release"
+DISTCHECK_CONFIGURE_FLAGS="--enable-release --enable-tests"
 AC_SUBST(DISTCHECK_CONFIGURE_FLAGS)
 
 dnl Expansions
@@ -38,6 +38,7 @@ BCE_FIND_BANSHEE
 dnl For native/glue libraries
 AC_ISC_POSIX
 AC_PROG_CC
+AC_PROG_CXX
 AC_HEADER_STDC
 
 dnl GNOME (optional)

@@ -1,6 +1,5 @@
 ASSEMBLY = Banshee.RandomByLastfm
 LINK = $(BANSHEE_LIBS) $(BANSHEE_LASTFM_LIBS)
-TARGET = library
 SOURCES =  \
 	Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs \
 	Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs \

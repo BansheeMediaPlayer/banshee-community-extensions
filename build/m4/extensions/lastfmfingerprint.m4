@@ -1,8 +1,7 @@
 AC_DEFUN([BCE_LASTFMFINGERPRINT],
 [
+	AC_REQUIRE([AC_PROG_CXX])
 	BCE_ARG_DISABLE([LastfmFingerprint], [try])
-
-	AC_PROG_CXX
 
 	BCE_CHECK_EXTENSION_DEP([LastfmFingerprint], [GLIB],
 		[glib-2.0],
