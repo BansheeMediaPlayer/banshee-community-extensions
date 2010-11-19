@@ -1,8 +1,8 @@
 ASSEMBLY = Banshee.ZeitgeistDataprovider
-LINK = $(BANSHEE_LIBS)
+LINK = $(BANSHEE_LIBS) $(ZEITGEIST_SHARP_LIBS)
 TARGET = library
 
-SOURCES = Banshee.ZeitgeistDataprovider/ZeitgeistDataproviderSource.cs
+SOURCES = Banshee.ZeitgeistDataprovider/ZeitgeistDataprovider.cs
 
 RESOURCES = ZeitgeistDataprovider.addin.xml
 

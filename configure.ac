@@ -195,7 +195,7 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
-    ZeitgeistDataprovider: no
+    ZeitgeistDataprovider: ${enable_ZeitgeistDp}
     Alarm Clock:         ${enable_AlarmClock}
     AppIndicator:        ${enable_AppIndicator}
     Awn:                 ${enable_Awn}

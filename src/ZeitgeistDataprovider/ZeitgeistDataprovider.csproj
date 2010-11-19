@@ -74,6 +74,9 @@
     <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <Package>mono-addins</Package>
     </Reference>
+    <Reference Include="zeitgeist-sharp, Version=0.1.0.1, Culture=neutral, PublicKeyToken=e3e10a585a87d40c">
+      <Package>zeitgeist-sharp</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ZeitgeistDataprovider.addin.xml">
@@ -81,7 +84,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Banshee.ZeitgeistDataprovider\ZeitgeistDataproviderSource.cs" />
+    <Compile Include="Banshee.ZeitgeistDataprovider\ZeitgeistDataprovider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
