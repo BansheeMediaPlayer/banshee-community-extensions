@@ -9,7 +9,7 @@
     description="This extension pushes your Banshee activities into Zeitgeist"
     author="Manish Sinha"
     url="http://zeitgeist-project.org/"
-    defaultEnabled="true">
+    defaultEnabled="false">
 
   <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
 
@@ -77,8 +77,8 @@
 
   <!-- Define a Source extension.  This will instantiate a new Source object,
        listed in the left-most Source TreeView. -->
-  <Extension path="/Banshee/SourceManager/Source">
-    <Source class="Banshee.Zeitgeist.ZeitgeistDataproviderSource"/>
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.Zeitgeist.ZeitgeistDataprovider"/>
   </Extension>
 
 </Addin>

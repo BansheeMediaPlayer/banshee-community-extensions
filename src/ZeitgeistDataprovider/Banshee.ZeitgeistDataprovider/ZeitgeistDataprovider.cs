@@ -41,11 +41,12 @@ using Banshee.Collection;
 using Banshee.PlaybackController;
 
 using Zeitgeist;
+using Hyena;
 using Zeitgeist.Datamodel;
 
 namespace Banshee.Zeitgeist
 {
-    public class ZeitgeistDataprovider : Banshee.ServiceStack.IExtensionService, IDisposable
+    public class ZeitgeistDataprovider : IExtensionService, IDisposable
     {
         string IService.ServiceName {
             get { return "ZeitgeistService"; }
@@ -56,6 +57,8 @@ namespace Banshee.Zeitgeist
         
         void IExtensionService.Initialize()
         {
+            Log.Debug("Initializing Zeitgeist Dataprovider Plugin");
+
             try
             {
                 client = new LogClient();
@@ -70,23 +73,37 @@ namespace Banshee.Zeitgeist
             }
         }
 
-        void HandleServiceManagerPlaybackControllerStopped (object sender, EventArgs e)
+        void HandleServiceManagerPlaybackControllerTrackStarted (object sender, EventArgs e)
         {
             try
             {
-                Event ev = CreateZgEvent(ServiceManager.PlaybackController.PriorTrack, Interpretation.Instance.EventInterpretation.LeaveEvent);
+                if(current_track != null)
+                {
+                    StopTrack(current_track);
+                }
+
+                Event ev = CreateZgEvent(ServiceManager.PlaybackController.CurrentTrack, Interpretation.Instance.EventInterpretation.AccessEvent);
                 client.InsertEvents(new List<Event>() {ev});
+
+                current_track = ServiceManager.PlaybackController.CurrentTrack;
             }
             catch(Exception)
             {}
         }
 
-        void HandleServiceManagerPlaybackControllerTrackStarted (object sender, EventArgs e)
+        void HandleServiceManagerPlaybackControllerStopped (object sender, EventArgs e)
+        {
+            StopTrack(ServiceManager.PlaybackController.PriorTrack);
+        }
+
+        void StopTrack(TrackInfo track)
         {
             try
             {
-                Event ev = CreateZgEvent(ServiceManager.PlaybackController.CurrentTrack, Interpretation.Instance.EventInterpretation.AccessEvent);
+                Event ev = CreateZgEvent(track, Interpretation.Instance.EventInterpretation.LeaveEvent);
                 client.InsertEvents(new List<Event>() {ev});
+
+                current_track = null;
             }
             catch(Exception)
             {}
@@ -102,7 +119,7 @@ namespace Banshee.Zeitgeist
 
             Event ev = new Event();
 
-            ev.Actor = "application://banshee.desktop";
+            ev.Actor = "application://banshee-1.desktop";
             ev.Timestamp = DateTime.Now;
             ev.Manifestation = Manifestation.Instance.EventManifestation.UserActivity;
             ev.Interpretation = event_type;
@@ -121,9 +138,13 @@ namespace Banshee.Zeitgeist
 
         void IDisposable.Dispose()
         {
+            Log.Debug ("Disposing Zeitgeist Dataprovider Plugin");
+
             client = null;
         }
 
         LogClient client;
+
+        TrackInfo current_track;
     }
 }
