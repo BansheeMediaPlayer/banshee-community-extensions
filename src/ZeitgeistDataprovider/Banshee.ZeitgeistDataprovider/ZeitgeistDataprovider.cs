@@ -31,11 +31,13 @@
 using System;
 using Mono.Addins;
 using Gtk;
+using System.Collections.Generic;
 
 using Banshee.Base;
 using Banshee.ServiceStack;
 using Banshee.Preferences;
-using Banshee.MediaEngine;	
+using Banshee.MediaEngine;
+using Banshee.Collection;
 using Banshee.PlaybackController;
 
 using Zeitgeist;
@@ -57,22 +59,64 @@ namespace Banshee.Zeitgeist
             try
             {
                 client = new LogClient();
-                ServiceManager.PlaybackController.TrackStarted += HandleServiceManagerPlaybackControllerTrackStarted;
-                ServiceManager.PlaybackController.Stopped += HandleServiceManagerPlaybackControllerStopped;
+                if(client != null)
+                {
+                    ServiceManager.PlaybackController.TrackStarted += HandleServiceManagerPlaybackControllerTrackStarted;
+                    ServiceManager.PlaybackController.Stopped += HandleServiceManagerPlaybackControllerStopped;
+                }
             }
-            catch(Exception e)
+            catch(Exception)
             {
             }
         }
 
         void HandleServiceManagerPlaybackControllerStopped (object sender, EventArgs e)
         {
-            string uri = ServiceManager.PlaybackController.CurrentTrack.Uri.ToString();
+            try
+            {
+                Event ev = CreateZgEvent(ServiceManager.PlaybackController.PriorTrack, Interpretation.Instance.EventInterpretation.LeaveEvent);
+                client.InsertEvents(new List<Event>() {ev});
+            }
+            catch(Exception)
+            {}
         }
 
         void HandleServiceManagerPlaybackControllerTrackStarted (object sender, EventArgs e)
         {
-            string uri = ServiceManager.PlaybackController.CurrentTrack.Uri.ToString();
+            try
+            {
+                Event ev = CreateZgEvent(ServiceManager.PlaybackController.CurrentTrack, Interpretation.Instance.EventInterpretation.AccessEvent);
+                client.InsertEvents(new List<Event>() {ev});
+            }
+            catch(Exception)
+            {}
+        }
+
+        private Event CreateZgEvent(TrackInfo track, NameUri event_type)
+        {
+            string uri = track.Uri.ToString();
+            string trackname = track.TrackTitle.ToString ();
+            string mimetype = track.MimeType.ToString();
+            string album = track.AlbumTitle.ToString();
+            string artist = track.ArtistName.ToString();
+
+            Event ev = new Event();
+
+            ev.Actor = "application://banshee.desktop";
+            ev.Timestamp = DateTime.Now;
+            ev.Manifestation = Manifestation.Instance.EventManifestation.UserActivity;
+            ev.Interpretation = event_type;
+
+            Subject sub = new Subject();
+            sub.Uri = uri;
+            sub.Interpretation = Interpretation.Instance.Media.Audio;
+            sub.Manifestation = Manifestation.Instance.FileDataObject.FileDataObject;
+            sub.MimeType = mimetype;
+            sub.Text = string.Format("{0} - {1} - {2}", trackname, artist,album);
+
+            ev.Subjects.Add(sub);
+
+            return ev;
         }
 
         void IDisposable.Dispose()
