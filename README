@@ -74,6 +74,9 @@ Telepathy
 UbuntuOneMusicStore
   ubuntuone-sharp-1.0
 
+ZeitgeistDataprovider
+  zeitgeist-sharp
+
 =======================
 Create a New Extension
 =======================
