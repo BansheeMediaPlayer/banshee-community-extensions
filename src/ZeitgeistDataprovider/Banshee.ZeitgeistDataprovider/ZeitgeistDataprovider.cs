@@ -29,19 +29,13 @@
 //
 
 using System;
-using Mono.Addins;
-using Gtk;
 using System.Collections.Generic;
 
-using Banshee.Base;
 using Banshee.ServiceStack;
-using Banshee.Preferences;
-using Banshee.MediaEngine;
 using Banshee.Collection;
-using Banshee.PlaybackController;
 
-using Zeitgeist;
 using Hyena;
+using Zeitgeist;
 using Zeitgeist.Datamodel;
 
 namespace Banshee.Zeitgeist
@@ -59,77 +53,68 @@ namespace Banshee.Zeitgeist
         {
             Log.Debug("Initializing Zeitgeist Dataprovider Plugin");
 
-            try
-            {
-                client = new LogClient();
-                if(client != null)
-                {
+            try {
+                client = new LogClient ();
+                if (client != null) {
                     ServiceManager.PlaybackController.TrackStarted += HandleServiceManagerPlaybackControllerTrackStarted;
                     ServiceManager.PlaybackController.Stopped += HandleServiceManagerPlaybackControllerStopped;
                 }
-            }
-            catch(Exception)
-            {
+            } catch(Exception) {
             }
         }
 
         void HandleServiceManagerPlaybackControllerTrackStarted (object sender, EventArgs e)
         {
-            try
-            {
-                if(current_track != null)
-                {
-                    StopTrack(current_track);
+            try {
+                if (current_track != null) {
+                    StopTrack (current_track);
                 }
 
-                Event ev = CreateZgEvent(ServiceManager.PlaybackController.CurrentTrack, Interpretation.Instance.EventInterpretation.AccessEvent);
-                client.InsertEvents(new List<Event>() {ev});
+                Event ev = CreateZgEvent (ServiceManager.PlaybackController.CurrentTrack, Interpretation.Instance.EventInterpretation.AccessEvent);
+                client.InsertEvents (new List<Event> () {ev});
 
                 current_track = ServiceManager.PlaybackController.CurrentTrack;
+            } catch(Exception) {
             }
-            catch(Exception)
-            {}
         }
 
         void HandleServiceManagerPlaybackControllerStopped (object sender, EventArgs e)
         {
-            StopTrack(ServiceManager.PlaybackController.PriorTrack);
+            StopTrack (ServiceManager.PlaybackController.PriorTrack);
         }
 
-        void StopTrack(TrackInfo track)
+        void StopTrack (TrackInfo track)
         {
-            try
-            {
-                Event ev = CreateZgEvent(track, Interpretation.Instance.EventInterpretation.LeaveEvent);
-                client.InsertEvents(new List<Event>() {ev});
+            try {
+                Event ev = CreateZgEvent (track, Interpretation.Instance.EventInterpretation.LeaveEvent);
+                client.InsertEvents (new List<Event> () {ev});
 
                 current_track = null;
+            } catch(Exception) {
             }
-            catch(Exception)
-            {}
         }
 
         private Event CreateZgEvent(TrackInfo track, NameUri event_type)
         {
-            string uri = track.Uri.ToString();
-            string trackname = track.TrackTitle.ToString ();
-            string mimetype = track.MimeType.ToString();
-            string album = track.AlbumTitle.ToString();
-            string artist = track.ArtistName.ToString();
+            string uri = track.Uri.AbsoluteUri;
+            string trackname = track.TrackTitle;
+            string mimetype = track.MimeType;
+            string album = track.AlbumTitle;
+            string artist = track.ArtistName;
 
-            Event ev = new Event();
+            Event ev = new Event ();
 
             ev.Actor = "application://banshee-1.desktop";
             ev.Timestamp = DateTime.Now;
             ev.Manifestation = Manifestation.Instance.EventManifestation.UserActivity;
             ev.Interpretation = event_type;
 
-            Subject sub = new Subject();
+            Subject sub = new Subject ();
             sub.Uri = uri;
             sub.Interpretation = Interpretation.Instance.Media.Audio;
             sub.Manifestation = Manifestation.Instance.FileDataObject.FileDataObject;
             sub.MimeType = mimetype;
-            sub.Text = string.Format("{0} - {1} - {2}", trackname, artist,album);
+            sub.Text = String.Format ("{0} - {1} - {2}", trackname, artist,album);
 
             ev.Subjects.Add(sub);
 
