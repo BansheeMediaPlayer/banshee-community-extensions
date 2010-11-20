@@ -6,4 +6,8 @@ SOURCES = Banshee.ZeitgeistDataprovider/ZeitgeistDataprovider.cs
 
 RESOURCES = ZeitgeistDataprovider.addin.xml
 
+if ENABLE_ZEITGEISTDATAPROVIDER
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif
