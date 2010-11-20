@@ -19,7 +19,8 @@ SUBDIRS = \
 	SoundMenu \
 	StreamRecorder \
 	Telepathy \
-	UbuntuOneMusicStore
+	UbuntuOneMusicStore \
+	ZeitgeistDataprovider
 
 EXTRA_DIST = AssemblyInfo.cs.in
 

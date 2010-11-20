@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ampache", "src\Ampache\Ampache.csproj", "{AB92D9F2-74A4-4D6A-9882-9D180A544CED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZeitgeistDataprovider", "src\ZeitgeistDataprovider\ZeitgeistDataprovider.csproj", "{BA8AD16F-358B-4F48-90EC-341091300B82}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomByLastfm", "src\RandomByLastfm\RandomByLastfm.csproj", "{04568A95-2430-41EB-82D6-939F5E7E8403}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundMenu", "src\SoundMenu\SoundMenu.csproj", "{EE91126B-5500-4719-9FAA-36CBAC95DEE3}"
@@ -193,6 +195,10 @@ Global
 		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Debug|x86.Build.0 = Debug|Any CPU
 		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Release|x86.ActiveCfg = Release|Any CPU
 		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Release|x86.Build.0 = Release|Any CPU
+		{BA8AD16F-358B-4F48-90EC-341091300B82}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BA8AD16F-358B-4F48-90EC-341091300B82}.Debug|x86.Build.0 = Debug|Any CPU
+		{BA8AD16F-358B-4F48-90EC-341091300B82}.Release|x86.ActiveCfg = Release|Any CPU
+		{BA8AD16F-358B-4F48-90EC-341091300B82}.Release|x86.Build.0 = Release|Any CPU
 		{BB615036-6BD1-4911-8C99-5C307E29B0A7}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{BB615036-6BD1-4911-8C99-5C307E29B0A7}.Debug|x86.Build.0 = Debug|Any CPU
 		{BB615036-6BD1-4911-8C99-5C307E29B0A7}.Release|x86.ActiveCfg = Debug|Any CPU

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.ZeitgeistDataprovider"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="Copyright © 2010 Manish Sinha. Licensed under the MIT X11 license."
+    name="Zeitgeist Dataprovider"
+    category="Community Extensions"
+    description="Publish your Banshee activities into Zeitgeist"
+    author="Manish Sinha"
+    url="http://zeitgeist-project.org/"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.Zeitgeist.ZeitgeistDataprovider"/>
+  </Extension>
+
+</Addin>

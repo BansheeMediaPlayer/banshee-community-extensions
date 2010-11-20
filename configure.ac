@@ -98,6 +98,7 @@ BCE_SOUNDMENU
 BCE_STREAMRECORDER
 BCE_TELEPATHY
 BCE_U1MS
+BCE_ZEITGEISTDP
 
 AC_ARG_WITH(vendor-build-id,
 	AC_HELP_STRING([--with-vendor-build-id=<vendor-build-id>],
@@ -175,6 +176,7 @@ src/StreamRecorder/Makefile
 src/Telepathy/Makefile
 src/Telepathy/Banshee.Telepathy/Makefile
 src/UbuntuOneMusicStore/Makefile
+src/ZeitgeistDataprovider/Makefile
 ])
 
 cat <<EOF
@@ -198,26 +200,27 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
-    Alarm Clock:         ${enable_AlarmClock}
-    Ampache:             ${enable_Ampache}
-    AppIndicator:        ${enable_AppIndicator}
-    Awn:                 ${enable_Awn}
-    ClutterFlow:         ${enable_ClutterFlow}
-    CoverWallpaper:      ${enable_CoverWallpaper}
-    Jamendo:             ${enable_Jamendo}
-    LastfmFingerprint:   ${enable_LastfmFingerprint}
-    LCD:                 ${enable_LCD}
-    Lirc:                ${enable_Lirc}
-    LiveRadio:           ${enable_LiveRadio}
-    Lyrics:              ${enable_Lyrics}
-    Magnatune:           ${enable_Magnatune}
-    Mirage:              ${enable_Mirage}
-    OpenVP:              ${enable_OpenVP}
-    RadioStationFetcher: ${enable_RadioStationFetcher}
-    RandomByLastfm:      ${enable_RandomByLastfm}
-    SoundMenu:           ${enable_SoundMenu}
-    StreamRecorder:      ${enable_StreamRecorder}
-    Telepathy:           ${enable_Telepathy}
-    UbuntuOneMusicStore: ${enable_UbuntuOneMusicStore}
+    Alarm Clock:           ${enable_AlarmClock}
+    Ampache:               ${enable_Ampache}
+    AppIndicator:          ${enable_AppIndicator}
+    Awn:                   ${enable_Awn}
+    ClutterFlow:           ${enable_ClutterFlow}
+    CoverWallpaper:        ${enable_CoverWallpaper}
+    Jamendo:               ${enable_Jamendo}
+    LastfmFingerprint:     ${enable_LastfmFingerprint}
+    LCD:                   ${enable_LCD}
+    Lirc:                  ${enable_Lirc}
+    LiveRadio:             ${enable_LiveRadio}
+    Lyrics:                ${enable_Lyrics}
+    Magnatune:             ${enable_Magnatune}
+    Mirage:                ${enable_Mirage}
+    OpenVP:                ${enable_OpenVP}
+    RadioStationFetcher:   ${enable_RadioStationFetcher}
+    RandomByLastfm:        ${enable_RandomByLastfm}
+    SoundMenu:             ${enable_SoundMenu}
+    StreamRecorder:        ${enable_StreamRecorder}
+    Telepathy:             ${enable_Telepathy}
+    UbuntuOneMusicStore:   ${enable_UbuntuOneMusicStore}
+    ZeitgeistDataprovider: ${enable_ZeitgeistDataprovider}
 
 EOF
