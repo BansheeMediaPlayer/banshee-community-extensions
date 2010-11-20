@@ -127,7 +127,8 @@ namespace Banshee.Zeitgeist
 
         void IDisposable.Dispose()
         {
-            Log.Debug ("Disposing Zeitgeist Dataprovider Plugin");
+            ServiceManager.PlaybackController.TrackStarted -= HandleServiceManagerPlaybackControllerTrackStarted;
+            ServiceManager.PlaybackController.Stopped -= HandleServiceManagerPlaybackControllerStopped;
 
             client = null;
         }
