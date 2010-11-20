@@ -42,6 +42,9 @@ namespace Banshee.Zeitgeist
 {
     public class ZeitgeistDataprovider : IExtensionService, IDisposable
     {
+        private LogClient client;
+        private TrackInfo current_track;
+
         string IService.ServiceName {
             get { return "ZeitgeistService"; }
         }
@@ -58,11 +61,19 @@ namespace Banshee.Zeitgeist
                     ServiceManager.PlaybackController.TrackStarted += HandleServiceManagerPlaybackControllerTrackStarted;
                     ServiceManager.PlaybackController.Stopped += HandleServiceManagerPlaybackControllerStopped;
                 } else {
-                    Log.Warning ("Could not create Zeitgeist client. Please make sure that zeitgeist-daemon is running.");
+                    Log.Warning ("Could not create Zeitgeist client");
                 }
             } catch (Exception e) {
                 Log.Exception (e);
             }
+        }
+
+        void IDisposable.Dispose()
+        {
+            ServiceManager.PlaybackController.TrackStarted -= HandleServiceManagerPlaybackControllerTrackStarted;
+            ServiceManager.PlaybackController.Stopped -= HandleServiceManagerPlaybackControllerStopped;
+
+            client = null;
         }
 
         void HandleServiceManagerPlaybackControllerTrackStarted (object sender, EventArgs e)
@@ -124,17 +135,5 @@ namespace Banshee.Zeitgeist
 
             return ev;
         }
-
-        void IDisposable.Dispose()
-        {
-            ServiceManager.PlaybackController.TrackStarted -= HandleServiceManagerPlaybackControllerTrackStarted;
-            ServiceManager.PlaybackController.Stopped -= HandleServiceManagerPlaybackControllerStopped;
-
-            client = null;
-        }
-
-        LogClient client;
-
-        TrackInfo current_track;
     }
 }
