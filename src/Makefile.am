@@ -1,5 +1,4 @@
 SUBDIRS = \
-    ZeitgeistDataprovider \
 	AlarmClock \
 	AppIndicator \
 	Awn \
@@ -18,7 +17,8 @@ SUBDIRS = \
 	SoundMenu \
 	StreamRecorder \
 	Telepathy \
-	UbuntuOneMusicStore
+	UbuntuOneMusicStore \
+	ZeitgeistDataprovider
 
 EXTRA_DIST = AssemblyInfo.cs.in
 

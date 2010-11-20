@@ -1,20 +1,20 @@
 AC_DEFUN([BCE_ZEITGEISTDP],
 [
-	BCE_ARG_DISABLE([ZeitgeistDp], [try])
+	BCE_ARG_DISABLE([ZeitgeistDataprovider], [try])
 
-	BCE_CHECK_EXTENSION_DEP([ZeitgeistDp], [ZEITGEIST_SHARP],
+	BCE_CHECK_EXTENSION_DEP([ZeitgeistDataprovider], [ZEITGEIST_SHARP],
 		[zeitgeist-sharp],
-		[zeitgeist-sharp was not found. Please install it or disable the ZeitgeistDp extension by passing --disable-zeitgeistdp])
+		[zeitgeist-sharp was not found. Please install it or disable the ZeitgeistDp extension by passing --disable-zeitgeistdataprovider])
 
-	if test "x$enable_ZeitgeistDp" = "xtry" \
+	if test "x$enable_ZeitgeistDataprovider" = "xtry" \
 		&& test "x$have_ZEITGEIST_SHARP" = "xyes"; then
-		enable_ZeitgeistDp=yes
+		enable_ZeitgeistDataprovider=yes
 	fi
 
-	if test "x$enable_ZeitgeistDp" = "xyes"; then
-		AM_CONDITIONAL(ENABLE_ZEITGEISTDP, true)
+	if test "x$enable_ZeitgeistDataprovider" = "xyes"; then
+		AM_CONDITIONAL(ENABLE_ZEITGEISTDATAPROVIDER, true)
 	else
-		AM_CONDITIONAL(ENABLE_ZEITGEISTDP, false)
+		AM_CONDITIONAL(ENABLE_ZEITGEISTDATAPROVIDER, false)
 	fi
 ])
 
