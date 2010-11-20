@@ -51,15 +51,17 @@ namespace Banshee.Zeitgeist
         
         void IExtensionService.Initialize()
         {
-            Log.Debug("Initializing Zeitgeist Dataprovider Plugin");
-
             try {
                 client = new LogClient ();
                 if (client != null) {
+                    Log.Debug("Zeitgeist client created");
                     ServiceManager.PlaybackController.TrackStarted += HandleServiceManagerPlaybackControllerTrackStarted;
                     ServiceManager.PlaybackController.Stopped += HandleServiceManagerPlaybackControllerStopped;
+                } else {
+                    Log.Warning ("Could not create Zeitgeist client. Please make sure that zeitgeist-daemon is running.");
                 }
-            } catch(Exception) {
+            } catch (Exception e) {
+                Log.Exception (e);
             }
         }
 
@@ -74,7 +76,8 @@ namespace Banshee.Zeitgeist
                 client.InsertEvents (new List<Event> () {ev});
 
                 current_track = ServiceManager.PlaybackController.CurrentTrack;
-            } catch(Exception) {
+            } catch (Exception ex) {
+                Log.Exception (ex);
             }
         }
 
@@ -90,7 +93,8 @@ namespace Banshee.Zeitgeist
                 client.InsertEvents (new List<Event> () {ev});
 
                 current_track = null;
-            } catch(Exception) {
+            } catch (Exception ex) {
+                Log.Exception (ex);
             }
         }
 
