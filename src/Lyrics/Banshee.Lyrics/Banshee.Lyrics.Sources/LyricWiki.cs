@@ -36,7 +36,7 @@ namespace Banshee.Lyrics.Sources
         public LyricWiki ()
         {
             base.regexLyric =
-                new Regex ("&lt;lyrics&gt;(.*)&lt;/lyrics&gt;",
+                new Regex ("&lt;lyrics&gt;(.*?)&lt;/lyrics&gt;",
                            RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
         public override string Name {
