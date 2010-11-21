@@ -139,7 +139,7 @@ namespace Banshee.Lyrics
 
             //check if the network is up
             if (!ServiceManager.Get<Banshee.Networking.Network> ().Connected) {
-                throw new Exception ("You don't seem to be connected to internet.<br>Check your network connection.");
+                throw new NetworkUnavailableException ("You don't seem to be connected to internet. Check your network connection.");
             }
 
             //download the lyrics
