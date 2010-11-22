@@ -58,3 +58,4 @@ src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs
 src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyNotification.cs
 src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TransferManagerUi.cs
 src/UbuntuOneMusicStore/Banshee.UbuntuOneMusicStore/UbuntuOneMusicStoreSource.cs
+src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs
