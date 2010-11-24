@@ -48,7 +48,6 @@
                     <property name="Type">TextOnly</property>
                     <property name="Label" translatable="yes">Connect</property>
                     <property name="UseUnderline">True</property>
-                    <signal name="Clicked" handler="btnConnect_OnClicked" />
                   </widget>
                   <packing>
                     <property name="Position">0</property>

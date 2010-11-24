@@ -7,6 +7,7 @@ SOURCES =  \
 	Banshee.Ampache/AmpacheSourceContents.cs \
 	Banshee.Ampache/Entities/AmpacheAlbum.cs \
 	Banshee.Ampache/Entities/AmpacheArtist.cs \
+	Banshee.Ampache/Entities/AmpachePlaylist.cs \
 	Banshee.Ampache/Entities/AmpacheSong.cs \
 	Banshee.Ampache/Entities/Handshake.cs \
 	Banshee.Ampache/Entities/IEntity.cs \
@@ -38,7 +39,6 @@ SOURCES =  \
 	Banshee.Ampache/Logic/AmpacheAlbumExtensions.cs \
 	Banshee.Ampache/Logic/AmpacheSongExtensions.cs \
 	Banshee.Ampache/Logic/PlayQueue.cs \
-	gtk-gui/Banshee.Ampache.AmpacheView.cs \
 	gtk-gui/Banshee.Ampache.PreferenceView.cs \
 	gtk-gui/generated.cs
 

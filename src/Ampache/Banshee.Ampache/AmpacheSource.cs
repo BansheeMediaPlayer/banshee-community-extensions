@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Threading;
 
 using Banshee.Configuration;
 using Banshee.Collection;
@@ -56,8 +57,6 @@ namespace Banshee.Ampache
             Properties.Set<Pixbuf> ("Icon.Pixbuf_22", icon.ScaleSimple (22, 22, InterpType.Bilinear));
             ServiceManager.SourceManager.AddSource(this);
             preferences = new AmpachePreferences(this);
-            //InterfaceActionService svc = Get<InterfaceActionService>("InterfaceActionService");
-            //svc.PlaybackActions.ShuffleActions
         }
 
         public override int Count { get { return 0; } }
@@ -107,10 +106,6 @@ namespace Banshee.Ampache
         {
             Next(true, true);
         }
-        public override void Deactivate ()
-        {
-            base.Deactivate ();
-        }
 
         #region IBasicPlaybackController implementation
         public bool First ()
@@ -146,19 +141,7 @@ namespace Banshee.Ampache
 
         #region ITrackModelSource implementation
         public void Reload ()
-        {
-            //throw new NotImplementedException ();
-        }
-
-        public void RemoveTracks (Hyena.Collections.Selection selection)
-        {
-            //throw new NotImplementedException ();
-        }
-
-        public void DeleteTracks (Hyena.Collections.Selection selection)
-        {
-            //throw new NotImplementedException ();
-        }
+        {}
 
         public TrackListModel TrackModel { get { return _trackModel; } }
 
@@ -179,6 +162,16 @@ namespace Banshee.Ampache
         public bool ShowBrowser { get { return false; } }
 
         public bool Indexable { get { return false; } }
+        
+        public void RemoveTracks (Hyena.Collections.Selection selection)
+        {
+            throw new NotImplementedException ();
+        }
+
+        public void DeleteTracks (Hyena.Collections.Selection selection)
+        {
+            throw new NotImplementedException ();
+        }
         #endregion
 
         #region Schema Entries
@@ -201,6 +194,7 @@ namespace Banshee.Ampache
         #region IDisposable implementation
         public void Dispose ()
         {
+            AmpacheSelectionFactory.TearDown();
             this.preferences.Dispose();
         }
         #endregion

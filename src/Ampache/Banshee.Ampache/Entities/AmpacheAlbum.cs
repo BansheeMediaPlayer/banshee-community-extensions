@@ -36,6 +36,7 @@ namespace Banshee.Ampache
         public int Year { get; set; }
         public string ArtUrl { get; set; }
         public override DateTime ReleaseDate { get { return new DateTime(Year, 1,1); } set { base.ReleaseDate = value; } }
+        public string DisplayName { get { return this.DisplayTitle; } }
 
         #region IRatable implementation
 

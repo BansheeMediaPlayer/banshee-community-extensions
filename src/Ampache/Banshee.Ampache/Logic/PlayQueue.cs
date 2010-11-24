@@ -35,45 +35,45 @@ namespace Banshee.Ampache
 {
     internal class PlayQueue
     {
-        private IList<TrackInfo> _playList;
-        private readonly IList<TrackInfo> _original;
+        private IList<AmpacheSong> _playList;
+        private readonly IList<AmpacheSong> _original;
         private int _playing;
 
-        private readonly TrackInfo _first;
+        private readonly AmpacheSong _first;
 
         public PlayQueue (IEnumerable<AmpacheSong> songs) : this (songs, Enumerable.Empty<AmpacheSong>())
         {}
 
         public PlayQueue (IEnumerable<AmpacheSong> nexts, IEnumerable<AmpacheSong> prevs)
         {
-            var tmp = prevs.Cast<TrackInfo>().ToList();
+            var tmp = prevs.ToList();
             _playing = tmp.Count;
-            tmp.AddRange(nexts.Cast<TrackInfo>());
+            tmp.AddRange(nexts);
             _playList = tmp;
             _first = _playList[SafePlaying];
-            _original = new List<TrackInfo>(tmp).AsReadOnly();
+            _original = tmp.AsReadOnly();
         }
 
-        public TrackInfo Current { get { return _playList[SafePlaying]; } }
+        public AmpacheSong Current { get { return _playList[SafePlaying]; } }
         private int SafePlaying { get { return _playing % _playList.Count; } }
-        public TrackInfo First { get { return _first; } }
-        public TrackInfo PeekNext()
+        public AmpacheSong First { get { return _first; } }
+        public AmpacheSong PeekNext()
         {
             return _playList[(_playing + 1) % _playList.Count];
         }
-        public TrackInfo Next()
+        public AmpacheSong Next()
         {
             _playing ++;
             return _playList[SafePlaying];
         }
-        public TrackInfo PeekPrevious()
+        public AmpacheSong PeekPrevious()
         {
             if (_playing != 0) {
                 return _playList[SafePlaying - 1];
             }
             return _playList.Last();
         }
-        public TrackInfo Previous()
+        public AmpacheSong Previous()
         {
             if (_playing == 0) {
                 _playing = _playList.Count;
@@ -86,7 +86,7 @@ namespace Banshee.Ampache
             var tmp = Current;
             var old = _playList;
             old.Remove(tmp);
-            _playList = new List<TrackInfo>();
+            _playList = new List<AmpacheSong>();
             _playList.Add(tmp);
             Random rand = new Random();
             while (old.Count != 0) {

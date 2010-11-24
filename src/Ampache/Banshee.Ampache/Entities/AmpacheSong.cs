@@ -36,6 +36,7 @@ namespace Banshee.Ampache
         public int ArtistId { get; set; }
         public int AlbumId { get; set; }
         public string ArtUrl { get; set; }
+        public string DisplayName {get { return this.TrackTitle; } }
 
         #region IRatable implementation
 
@@ -44,18 +45,6 @@ namespace Banshee.Ampache
         public ICollection<Tag> Tags { get; set; }
 
         #endregion
-
-        #region IEntity implementation
-
-        public int Id { get; set; }
-
-        #endregion
-    }
-    public class AmpachePlaylist : IEntity
-    {
-        public string Name { get; set; }
-
-        public IList<AmpacheSong> Songs { get; set; }
 
         #region IEntity implementation
 

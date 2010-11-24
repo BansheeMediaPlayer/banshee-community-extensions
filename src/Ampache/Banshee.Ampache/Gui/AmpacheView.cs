@@ -38,187 +38,203 @@ using Banshee.MediaEngine;
 using Banshee.Collection;
 using Banshee.ServiceStack;
 using Banshee.PlaybackController;
+using Hyena.Data.Gui;
+using Hyena.Data;
 
 namespace Banshee.Ampache
 {
-    [System.ComponentModel.ToolboxItem(true)]
-    public partial class AmpacheView : Gtk.Bin
+    public class AmpacheView : Gtk.VBox
     {
-        bool _connected;
-        private readonly NodeStore _artistStore;
-        private readonly NodeStore _albumStore;
-        private readonly NodeStore _songStore;
-        private readonly NodeStore _playlistStore;
-        private Dictionary<int, AmpacheArtist> _artists = new Dictionary<int, AmpacheArtist>();
-        private Dictionary<int, AmpacheAlbum> _albums = new Dictionary<int, AmpacheAlbum>();
-        private Dictionary<int, AmpacheSong> _songs = new Dictionary<int, AmpacheSong>();
-        private Dictionary<int, AmpachePlaylist> _playlists = new Dictionary<int, AmpachePlaylist>();
+        private readonly ScrolledWindow trackWindow = new ScrolledWindow();
+        private readonly ListView<AmpacheSong> lvTracks = new ListView<AmpacheSong>();
+        private readonly ScrolledWindow artistsWindow = new ScrolledWindow();
+        private readonly ListView<AmpacheArtist> lvArtists = new ListView<AmpacheArtist>();
+        private readonly ScrolledWindow albumWindow = new ScrolledWindow();
+        private readonly ListView<AmpacheAlbum> lvAlbums = new ListView<AmpacheAlbum>();
+        private readonly ScrolledWindow playlistWindow = new ScrolledWindow();
+        private readonly ListView<AmpachePlaylist> lvPlaylists = new ListView<AmpachePlaylist>();
+        private readonly HBox filterBox = new HBox();
+        private readonly Button btnConnect = new Button();
+        private readonly MemoryListModel<AmpacheSong> trackModel = new MemoryListModel<AmpacheSong>();
+        private readonly MemoryListModel<AmpacheArtist> artistModel = new MemoryListModel<AmpacheArtist>();
+        private readonly MemoryListModel<AmpacheAlbum> albumModel = new MemoryListModel<AmpacheAlbum>();
+        private readonly MemoryListModel<AmpachePlaylist> playlistModel = new MemoryListModel<AmpachePlaylist>();
+
+        private bool connected = false;
+        private Dictionary<int, AmpacheArtist> artists = new Dictionary<int, AmpacheArtist>();
+        private Dictionary<int, AmpacheAlbum> albums = new Dictionary<int, AmpacheAlbum>();
+        private Dictionary<int, AmpacheSong> songs = new Dictionary<int, AmpacheSong>();
+        private Dictionary<int, AmpachePlaylist> playlists = new Dictionary<int, AmpachePlaylist>();
+
         internal event EventHandler<Hyena.EventArgs<PlayQueue>> NewPlayList;
 
-        // Short alias for the translations
         private static string _(string s)
         {
             return Mono.Addins.AddinManager.CurrentLocalizer.GetString (s);
         }
-
         public AmpacheView ()
         {
-            this.Build ();
-            _artistStore = new NodeStore(typeof(ArtistLabel));
-            ndvArtists.NodeStore = _artistStore;
-            ndvArtists.AppendColumn(_("Name"), new CellRendererText(), "text", 0);
-            ndvArtists.NodeSelection.Changed += HandleNdvArtistsNodeSelectionChanged;
-            _albumStore = new NodeStore(typeof(AlbumLabel));
-            ndvAlbums.NodeStore = _albumStore;
-            ndvAlbums.AppendColumn(_("Name"), new CellRendererText(), "text", 0);
-            ndvAlbums.NodeSelection.Changed += HandleNdvAlbumsNodeSelectionChanged;
-            _songStore = new NodeStore(typeof(SongLabel));
-            ndvSongs.NodeStore = _songStore;
-            ndvSongs.AppendColumn(_("Name"), new CellRendererText(), "text", 0);
-            ndvSongs.AppendColumn(_("Artist"), new CellRendererText(), "text", 1);
-            ndvSongs.AppendColumn(_("Album"), new CellRendererText(), "text", 2);
-            ndvSongs.NodeSelection.Changed += HandleNdvSongsNodeSelectionChanged;
-            _playlistStore = new NodeStore(typeof(PlaylistLabel));
-            ndvPlaylists.AppendColumn(_("Name "), new CellRendererText(), "text", 0);
-            ndvPlaylists.NodeStore = _playlistStore;
-            ndvPlaylists.NodeSelection.Changed += HandleNdvPlaylistsNodeSelectionChanged;
+            btnConnect.Label = _("Connect");
+            PackStart(btnConnect, false, false, 1);
+            artistsWindow.Add(lvArtists);
+            filterBox.PackStart(artistsWindow, true, true, 1);
+            albumWindow.Add(lvAlbums);
+            filterBox.PackStart(albumWindow, true, true, 1);
+            playlistWindow.Add(lvPlaylists);
+            filterBox.PackStart(playlistWindow, true, true, 1);
+            PackStart(filterBox, true, true, 1);
+            trackWindow.Add(lvTracks);
+            PackStart(trackWindow, true, true, 1);
+
+            lvArtists.ColumnController = BuildDisplayColumnController(_("Artist"));
+            lvArtists.SetModel(artistModel);
+            lvAlbums.ColumnController = BuildDisplayColumnController(_("Album"));
+            lvAlbums.SetModel(albumModel);
+            lvPlaylists.ColumnController = BuildDisplayColumnController(_("Playlist"));
+            lvPlaylists.SetModel(playlistModel);
+            lvTracks.ColumnController = BuildDisplayColumnController(_("Title"));
+            lvTracks.ColumnController.Add(new Column(new ColumnDescription("DisplayArtistName", _("Artist"), 100)));
+            lvTracks.ColumnController.Add(new Column(new ColumnDescription("DisplayAlbumTitle", _("Album"), 100)));
+            lvTracks.SetModel(trackModel);
+            ShowAll();
+
+            lvArtists.Model.Selection.Changed += HandleLvArtistsModelSelectionChanged;
+            lvAlbums.Model.Selection.Changed += HandleLvAlbumsModelSelectionChanged;
+            lvPlaylists.Model.Selection.Changed += HandleLvPlaylistsModelSelectionChanged;
+            lvTracks.Model.Selection.Changed += HandleLvTracksModelSelectionChanged;
+
             if (!string.IsNullOrEmpty(AmpacheSource.UserName.Get())) {
-                lblConfigure.Hide();
-                System.Threading.ThreadPool.QueueUserWorkItem(LoadAmpache);
-                _artistStore.AddNode(new ArtistLabel{Name = _("Loading...")});
-                _albumStore.AddNode(new AlbumLabel{Name = _("Loading...")});
-                _playlistStore.AddNode(new PlaylistLabel{Name = _("Loading...")});
                 btnConnect.Hide();
+                System.Threading.ThreadPool.QueueUserWorkItem(LoadAmpache);
             }
         }
 
-        void HandleNdvPlaylistsNodeSelectionChanged(object sender, EventArgs e)
+        internal void SelectPlayingSong(AmpacheSong song)
         {
-            var sel = sender as Gtk.NodeSelection;
-            if (sel == null || sel.SelectedNode == null) {
-                return;
+            var index = trackModel.IndexOf(song);
+            if(index > 0) {
+                trackModel.Selection.Clear(false);
+                trackModel.Selection.ToggleSelect(index);
             }
-            var ply = (PlaylistLabel)sel.SelectedNode;
-            ndvAlbums.NodeSelection.UnselectAll();
-            ndvArtists.NodeSelection.UnselectAll();
-            _songStore.Clear();
-            _playlists[ply.AmpacheId].Songs.ToList().ForEach(s=>_songStore.AddNode(new SongLabel(s)));
         }
 
-        private void HandleNdvAlbumsNodeSelectionChanged (object sender, EventArgs e)
+        void HandleLvTracksModelSelectionChanged (object sender, EventArgs e)
         {
-            var sel = sender as Gtk.NodeSelection;
-            if (sel == null || sel.SelectedNode == null) {
+            var sngs = trackModel.AsEnumerable().ToList();
+            if (sngs.Count == 0 || ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing) {
                 return;
             }
-            var alb = (AlbumLabel)sel.SelectedNode;
-            _songStore.Clear();
-            _songs.Values.Where(a=>a.AlbumId == alb.AmpacheId).ToList().ForEach(s=>_songStore.AddNode(new SongLabel(s)));
-            ndvPlaylists.NodeSelection.UnselectAll();
-        }
-
-        private void HandleNdvSongsNodeSelectionChanged (object sender, EventArgs e)
-        {
-            var sel = sender as Gtk.NodeSelection;
-            if (sel == null || sel.SelectedNode == null || ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing) {
-                return;
-            }
-            var lbls = _songStore.Cast<SongLabel>().ToList();
-            var songs = lbls.Select(l => _songs[l.AmpacheId]).ToList();
-            var skip = lbls.IndexOf((SongLabel)sel.SelectedNode);
-            var tmp = new PlayQueue(songs.Skip(skip), songs.Take(skip));
+            var skip = trackModel.Selection.FirstIndex;
+            var tmp = new PlayQueue(sngs.Skip(skip), sngs.Take(skip));
             if (NewPlayList != null) {
                 NewPlayList(this, new Hyena.EventArgs<PlayQueue>(tmp));
             }
         }
 
-        //todo: change to event
-        internal void SelectPlayingSong(TrackInfo song)
+        void HandleLvPlaylistsModelSelectionChanged (object sender, EventArgs e)
         {
-            var tmp = _songStore.Cast<SongLabel>().FirstOrDefault(s=>s.Url == song.Uri.AbsoluteUri);
-            if(tmp != null) {
-                ndvSongs.NodeSelection.Changed -= HandleNdvSongsNodeSelectionChanged;
-                ndvSongs.NodeSelection.SelectNode(tmp);
-                ndvSongs.NodeSelection.Changed += HandleNdvSongsNodeSelectionChanged;
-            }
-        }
-
-        private void HandleNdvArtistsNodeSelectionChanged (object sender, EventArgs e)
-        {
-            var sel = sender as Gtk.NodeSelection;
-            if (sel == null || sel.SelectedNode == null) {
+            var plys = playlistModel.SelectedItems.ToList();
+            if (plys.Count == 0) {
                 return;
             }
-            var art = (ArtistLabel)sel.SelectedNode;
-            _albumStore.Clear();
-            _albums.Values.Where(a=>a.ArtistId == art.ArtistId).ToList().ForEach(a=>_albumStore.AddNode(new AlbumLabel{AmpacheId = a.Id, ArtistId = a.ArtistId, Name = a.DisplayTitle}));
-            _songStore.Clear();
-            _songs.Values.Where(a=>a.ArtistId == art.ArtistId).ToList().ForEach(s=>_songStore.AddNode(new SongLabel(s)));
-            ndvPlaylists.NodeSelection.UnselectAll();
+            trackModel.Clear();
+            trackModel.Selection.Clear(false);
+            var sngs = plys.SelectMany(p => p.Songs).ToList();
+            sngs.ForEach(s => trackModel.Add(s));
+            trackModel.Reload();
         }
 
-        protected virtual void btnConnect_OnClicked (object sender, System.EventArgs e)
+        void HandleLvAlbumsModelSelectionChanged (object sender, EventArgs e)
         {
-            if (!_connected) {
-                System.Threading.ThreadPool.QueueUserWorkItem(LoadAmpache);
-                _artistStore.AddNode(new ArtistLabel{Name = _("Loading...")});
-                _albumStore.AddNode(new AlbumLabel{Name = _("Loading...")});
-                _playlistStore.AddNode(new PlaylistLabel{Name = _("Loading...")});
-                btnConnect.Hide();
+            var albIds = albumModel.SelectedItems.Select(a => a.Id).ToList();
+            if (albIds.Count == 0) {
+                //LoadModels();
+                return;
             }
+            trackModel.Clear();
+            trackModel.Selection.Clear(false);
+            songs.Values.Where(s=> albIds.Contains(s.AlbumId)).ToList().ForEach(s=>trackModel.Add(s));
+            trackModel.Reload();
         }
-        // todo: this does not belong in the UI class
+
+        private void HandleLvArtistsModelSelectionChanged (object sender, EventArgs e)
+        {
+            var artIds = artistModel.SelectedItems.Select(a=> a.Id).ToList();
+            if (artIds.Count == 0) {
+                //LoadModels();
+                return;
+            }
+            trackModel.Clear();
+            trackModel.Selection.Clear(false);
+            songs.Values.Where(s=> artIds.Contains(s.ArtistId)).ToList().ForEach(s=>trackModel.Add(s));
+            albumModel.Clear();
+            albumModel.Selection.Clear();
+            playlistModel.Selection.Clear();
+            albums.Values.Where(a => artIds.Contains(a.ArtistId)).ToList().ForEach(a => albumModel.Add(a));
+            trackModel.Reload();
+            albumModel.Reload();
+        }
+        
+        private ColumnController BuildDisplayColumnController(string localizedTitle)
+        {
+            var result = new ColumnController();
+            result.Add(new Column(new ColumnDescription("DisplayName", localizedTitle, 100)));
+            return result;
+        }
+
         private void LoadAmpache(object ob)
         {
-            if(!_connected) {
+            if(!connected) {
                 try {
                     var tmp = new Authenticate(AmpacheSource.AmpacheRootAddress.Get(), AmpacheSource.UserName.Get(), AmpacheSource.UserPassword.Get());
                     AmpacheSelectionFactory.Initialize(tmp);
-                    _artists = AmpacheSelectionFactory.GetSelectorFor<AmpacheArtist>().SelectAll().ToDictionary(k=>k.Id, v=>v);
-                    _albums = AmpacheSelectionFactory.GetSelectorFor<AmpacheAlbum>().SelectAll().ToDictionary(k=>k.Id, v=>v);
-                    _songs = AmpacheSelectionFactory.GetSelectorFor<AmpacheSong>().SelectAll().ToDictionary(k=>k.Id, v=>v);
-                    _playlists = AmpacheSelectionFactory.GetSelectorFor<AmpachePlaylist>().SelectAll().ToDictionary(k=>k.Id, v=>v);
-                    _connected = true;
+                    artists = AmpacheSelectionFactory.GetSelectorFor<AmpacheArtist>().SelectAll().ToDictionary(k=>k.Id, v=>v);
+                    albums = AmpacheSelectionFactory.GetSelectorFor<AmpacheAlbum>().SelectAll().ToDictionary(k=>k.Id, v=>v);
+                    songs = AmpacheSelectionFactory.GetSelectorFor<AmpacheSong>().SelectAll().ToDictionary(k=>k.Id, v=>v);
+                    playlists = AmpacheSelectionFactory.GetSelectorFor<AmpachePlaylist>().SelectAll().ToDictionary(k=>k.Id, v=>v);
+                    connected = true;
                     // hydrate albums and songs
-                    foreach (var alb in _albums.Values) {
-                        if (_artists.ContainsKey(alb.ArtistId)) {
-                            alb.Hydrate(_artists[alb.ArtistId]);
+                    foreach (var alb in albums.Values) {
+                        if (artists.ContainsKey(alb.ArtistId)) {
+                            alb.Hydrate(artists[alb.ArtistId]);
                         }
                     }
-                    foreach (AmpacheSong song in _songs.Values.Union(_playlists.Values.SelectMany(p => p.Songs))) {
-                        if (_albums.ContainsKey(song.AlbumId)) {
-                            song.Hydrate(_albums[song.AlbumId], _artists[song.ArtistId]);
+                    foreach (AmpacheSong song in songs.Values.Union(playlists.Values.SelectMany(p => p.Songs))) {
+                        if (albums.ContainsKey(song.AlbumId)) {
+                            song.Hydrate(albums[song.AlbumId], artists[song.ArtistId]);
                         }
                     }
 
                 }
                 catch (Exception e) {
-                    Hyena.Log.Error(e.Message);
-                    _connected = false;
+                    Hyena.Log.ErrorFormat("{0}: message {1}\n{2}", e.GetType().Name, e.Message, e.StackTrace);
+                    connected = false;
                 }
-                Gtk.Application.Invoke((o,e) => LoadNodeLists());
+                Gtk.Application.Invoke((o,e) => LoadModels());
             }
         }
 
-        private void LoadNodeLists()
+        private void LoadModels()
         {
-            if (_connected)
-            {
-                LoginArea.Hide();
-            }
-            else
-            {
+            if (!connected) {
                 btnConnect.Show();
             }
-
-            _artistStore.Clear();
-            _artists.Values.ToList().ForEach(a => _artistStore.AddNode(new ArtistLabel{ArtistId = a.Id, Name = a.Name}));
-            _albumStore.Clear();
-            _albums.Values.ToList().ForEach(a =>_albumStore.AddNode(new AlbumLabel{AmpacheId = a.Id, ArtistId = a.ArtistId, Name = a.DisplayTitle}));
-            _songStore.Clear();
-            _songs.Values.ToList().ForEach(s =>_songStore.AddNode(new SongLabel(s)));
-            _playlistStore.Clear();
-            _playlists.Values.ToList().ForEach(p => _playlistStore.AddNode(new PlaylistLabel(p)));
+            artists.Values.ToList().ForEach(a=>artistModel.Add(a));
+            artistModel.Reload();
+            albums.Values.ToList().ForEach(a=>albumModel.Add(a));
+            albumModel.Reload();
+            playlists.Values.ToList().ForEach(p=>playlistModel.Add(p));
+            playlistModel.Reload();
+            trackModel.Clear();
+        }
+    }
+    public static class IListModelExtensions
+    {
+        public static IEnumerable<T> AsEnumerable<T>(this IListModel<T> model)
+        {
+            for (int i = 0; i < model.Count; i++) {
+                yield return model[i];
+            }
         }
     }
 }

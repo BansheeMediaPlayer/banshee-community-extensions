@@ -71,6 +71,7 @@
       <Package>banshee-1-hyena-gui</Package>
     </Reference>
     <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <SpecificVersion>False</SpecificVersion>
       <Package>mono-addins</Package>
     </Reference>
   </ItemGroup>
@@ -114,6 +115,7 @@
     <Compile Include="Banshee.Ampache\AmpachePreferences.cs" />
     <Compile Include="Banshee.Ampache\Gui\PreferenceView.cs" />
     <Compile Include="gtk-gui\Banshee.Ampache.PreferenceView.cs" />
+    <Compile Include="Banshee.Ampache\Entities\AmpachePlaylist.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
