@@ -162,15 +162,13 @@ namespace Banshee.Ampache
         public bool ShowBrowser { get { return false; } }
 
         public bool Indexable { get { return false; } }
-        
+
         public void RemoveTracks (Hyena.Collections.Selection selection)
         {
-            throw new NotImplementedException ();
         }
 
         public void DeleteTracks (Hyena.Collections.Selection selection)
         {
-            throw new NotImplementedException ();
         }
         #endregion
 

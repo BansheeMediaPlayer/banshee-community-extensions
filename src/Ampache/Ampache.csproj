@@ -77,7 +77,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="gtk-gui\Banshee.Ampache.AmpacheView.cs" />
     <Compile Include="Banshee.Ampache\Entities\AmpacheAlbum.cs" />
     <Compile Include="Banshee.Ampache\Entities\AmpacheArtist.cs" />
     <Compile Include="Banshee.Ampache\Entities\Handshake.cs" />
