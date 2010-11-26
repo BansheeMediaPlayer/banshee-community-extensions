@@ -73,12 +73,14 @@ namespace Lastfm
                 c = (char)(byte)response_stream.ReadByte ();
                 if (c == ' ')
                     break;
-                bld.Append(c);
+                bld.Append (c);
             }
-            int ret = -1;
-            if (Int32.TryParse(bld.ToString (), out ret))
+            int ret;
+            if (Int32.TryParse (bld.ToString (), out ret)) {
+                return ret;
+            } else {
                 return -2;
-            return ret;
+            }
         }
 
         private string EscapeUri (string str)
