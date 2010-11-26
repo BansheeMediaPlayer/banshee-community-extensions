@@ -88,12 +88,12 @@ namespace Banshee.Lyrics.Sources
 
         protected string CleanArtistName (string artist)
         {
-            return artist.EndsWith (" ") ? artist.Substring (0, artist.Length - 2) : artist;
+            return artist != null ? artist.Trim () : null;
         }
 
         protected string CleanSongTitle (string title)
         {
-            return title.EndsWith (" ") ? title.Substring (0, title.Length - 1) : title;
+            return title != null ? title.Trim () : null;
         }
 
         protected virtual Encoding Encoding {
