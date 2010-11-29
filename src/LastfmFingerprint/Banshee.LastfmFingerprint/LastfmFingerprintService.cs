@@ -143,9 +143,9 @@ namespace Banshee.LastfmFingerprint
 
                         Log.DebugFormat ("Last.fm fingerprint id for {0} is {1}", track.TrackTitle, fpid);
 
-                        if (fpid > 0)
+                        if (fpid > 0) {
                             FetchMetadata (track, fpid);
-                        else {
+                        } else {
                             Log.WarningFormat ("Could not find fingerprint id for the track {0} !", track.TrackTitle);
                         }
     

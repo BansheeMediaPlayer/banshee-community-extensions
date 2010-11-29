@@ -51,11 +51,6 @@ namespace Lastfm
         public FingerprintRequest ()
         {}
 
-        public Stream GetResponseStream ()
-        {
-            return response_stream;
-        }
-
         public void Send (TrackInfo track, byte[] fingerprint)
         {
             response_stream = Post (API_ROOT, BuildPostData (track), fingerprint);
@@ -182,7 +177,7 @@ namespace Lastfm
                     response = (HttpWebResponse)e.Response;
                 }
                 Log.DebugFormat ("get response stream.");
-                return response.GetResponseStream ();
+                return response != null ? response.GetResponseStream () : null;
             }
         }
 
