@@ -113,8 +113,10 @@ namespace Banshee.Ampache
         {
             var index = trackModel.IndexOf(song);
             if(index > 0) {
-                trackModel.Selection.Clear(false);
+                trackModel.Selection.Changed -= HandleLvTracksModelSelectionChanged;
+                trackModel.Selection.Clear();
                 trackModel.Selection.ToggleSelect(index);
+                trackModel.Selection.Changed += HandleLvTracksModelSelectionChanged;
             }
         }
 
@@ -122,8 +124,10 @@ namespace Banshee.Ampache
         {
             var sngs = trackModel.AsEnumerable().ToList();
             if (sngs.Count == 0 || ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing) {
+                SelectPlayingSong(ServiceManager.PlayerEngine.CurrentTrack as AmpacheSong);
                 return;
             }
+            lvTracks.HasFocus = false;
             var skip = trackModel.Selection.FirstIndex;
             var tmp = new PlayQueue(sngs.Skip(skip), sngs.Take(skip));
             if (NewPlayList != null) {
@@ -138,7 +142,7 @@ namespace Banshee.Ampache
                 return;
             }
             trackModel.Clear();
-            trackModel.Selection.Clear(false);
+            trackModel.Selection.Clear();
             var sngs = plys.SelectMany(p => p.Songs).ToList();
             sngs.ForEach(s => trackModel.Add(s));
             trackModel.Reload();
@@ -152,7 +156,7 @@ namespace Banshee.Ampache
                 return;
             }
             trackModel.Clear();
-            trackModel.Selection.Clear(false);
+            trackModel.Selection.Clear();
             songs.Values.Where(s=> albIds.Contains(s.AlbumId)).ToList().ForEach(s=>trackModel.Add(s));
             trackModel.Reload();
         }
@@ -165,7 +169,7 @@ namespace Banshee.Ampache
                 return;
             }
             trackModel.Clear();
-            trackModel.Selection.Clear(false);
+            trackModel.Selection.Clear();
             songs.Values.Where(s=> artIds.Contains(s.ArtistId)).ToList().ForEach(s=>trackModel.Add(s));
             albumModel.Clear();
             albumModel.Selection.Clear();
@@ -204,7 +208,6 @@ namespace Banshee.Ampache
                             song.Hydrate(albums[song.AlbumId], artists[song.ArtistId]);
                         }
                     }
-
                 }
                 catch (Exception e) {
                     Hyena.Log.ErrorFormat("{0}: message {1}\n{2}", e.GetType().Name, e.Message, e.StackTrace);

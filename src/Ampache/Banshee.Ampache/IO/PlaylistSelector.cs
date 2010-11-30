@@ -56,7 +56,7 @@ namespace Banshee.Ampache
 
         #endregion
 
-        public override ICollection<AmpachePlaylist> SelectAll ()
+        public override IEnumerable<AmpachePlaylist> SelectAll ()
         {
             var results = base.SelectAll ();
             foreach (var playlist in results)
@@ -67,11 +67,9 @@ namespace Banshee.Ampache
                 var request = (HttpWebRequest)WebRequest.Create (builder.ToString());
                 var response = request.GetResponse();
                 var raw = XElement.Load(new StreamReader(response.GetResponseStream()));
-                //Console.WriteLine (raw.ToString());
                 playlist.Songs = _songFactory.Construct(raw.Descendants("song").ToList()).ToList();
+                yield return playlist;
             }
-            return results;
         }
-
     }
 }

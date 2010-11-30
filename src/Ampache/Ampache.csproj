@@ -66,9 +66,11 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Hyena, Version=1.8.0.0, Culture=neutral">
       <Package>banshee-1-hyena</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Hyena.Gui, Version=1.8.0.0, Culture=neutral">
       <Package>banshee-1-hyena-gui</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <SpecificVersion>False</SpecificVersion>

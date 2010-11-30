@@ -33,5 +33,8 @@ namespace Banshee.Ampache
         public string Server { get; protected set; }
         public string Passphrase { get; protected set; }
         public string User { get; protected set; }
+        public int SongCount { get; protected set; }
+        public int AlbumCount { get; protected set; }
+        public int ArtistCount { get; protected set; }
     }
 }

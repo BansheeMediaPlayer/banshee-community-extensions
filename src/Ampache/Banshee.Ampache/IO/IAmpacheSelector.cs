@@ -37,7 +37,7 @@ namespace Banshee.Ampache
         /// <returns>
         /// A complete collection of all <see cref="TEntity"/> that are in the Ampache server
         /// </returns>
-        ICollection<TEntity> SelectAll();
+        IEnumerable<TEntity> SelectAll();
 
         /// <summary>
         /// Queries ampache for all <see cref="TEntity"/> that are associated with the provided <see cref="TParameter"/>,
@@ -50,7 +50,7 @@ namespace Banshee.Ampache
         /// A <see cref="ICollection<TEntity>"/> where all elements are associated the the provided <see cref="TParameter"/>
         /// if Ampache cannot be queried with the provided parameter then <see cref="SelectAll"/> will be used.
         /// </returns>
-        ICollection<TEntity> SelectBy<TParameter>(TParameter parameter) where TParameter : IEntity;
+        IEnumerable<TEntity> SelectBy<TParameter>(TParameter parameter) where TParameter : IEntity;
     }
 
 

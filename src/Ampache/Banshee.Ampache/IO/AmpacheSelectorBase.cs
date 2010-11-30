@@ -40,7 +40,7 @@ namespace Banshee.Ampache
         protected const string FILTER_PARAMETER = @"&filter={0}";
         protected const string OFFSET_PARAMETER = @"&offset={0}";
         protected const string LIMIT_PARAMETER = @"&limit={0}";
-
+        private const int LIMIT_AMOUNT = 1000;
         protected readonly Handshake _handshake;
         private readonly IEntityFactory<TEntity> _factory;
         protected abstract string SelectAllMethod { get; }
@@ -55,18 +55,30 @@ namespace Banshee.Ampache
 
         #region IAmpacheSelector[TEntity] implementation
 
-        public virtual ICollection<TEntity> SelectAll ()
+        public virtual IEnumerable<TEntity> SelectAll ()
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendFormat(BASE_URL, _handshake.Server, SelectAllMethod, _handshake.Passphrase);
-            var request = (HttpWebRequest)WebRequest.Create (builder.ToString());
-              var response = request.GetResponse();
-              var result = XElement.Load(new StreamReader(response.GetResponseStream()));
-
-              return _factory.Construct(result.Descendants(XmlNodeName).ToList());
+            builder.AppendFormat(LIMIT_PARAMETER, LIMIT_AMOUNT);
+            var result = Query(builder.ToString());
+            int offset = 0;
+            while (result.Count == LIMIT_AMOUNT) {
+                foreach(var t in result){
+                    yield return t;
+                }
+                offset += LIMIT_AMOUNT;
+                builder = new StringBuilder();
+                builder.AppendFormat(BASE_URL, _handshake.Server, SelectAllMethod, _handshake.Passphrase);
+                builder.AppendFormat(LIMIT_PARAMETER, LIMIT_AMOUNT);
+                builder.AppendFormat(OFFSET_PARAMETER, offset);
+                result = Query(builder.ToString());
+            }
+            foreach(var t in result){
+                yield return t;
+            }
         }
 
-        public virtual ICollection<TEntity> SelectBy<TParameter> (TParameter parameter) where TParameter : IEntity
+        public virtual IEnumerable<TEntity> SelectBy<TParameter> (TParameter parameter) where TParameter : IEntity
         {
             if (!SelectMethodMap.ContainsKey(typeof(TParameter)))
             {
@@ -75,13 +87,17 @@ namespace Banshee.Ampache
             StringBuilder builder = new StringBuilder();
             builder.AppendFormat(BASE_URL, _handshake.Server, SelectAllMethod, _handshake.Passphrase);
             builder.AppendFormat(FILTER_PARAMETER, SelectMethodMap[typeof(TParameter)]);
-            var request = (HttpWebRequest)WebRequest.Create (builder.ToString());
-              var response = request.GetResponse();
-              var result = XElement.Load(new StreamReader(response.GetResponseStream()));
-
-              return _factory.Construct(result.Descendants(XmlNodeName).ToList());
+            return Query(builder.ToString());
         }
 
         #endregion
+
+        private ICollection<TEntity> Query(string url)
+        {
+            var request = (HttpWebRequest)WebRequest.Create (url);
+            var response = request.GetResponse();
+            var result = XElement.Load(new StreamReader(response.GetResponseStream()));
+            return _factory.Construct(result.Descendants(XmlNodeName).ToList());
+        }
     }
 }

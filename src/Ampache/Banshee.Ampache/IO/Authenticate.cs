@@ -77,6 +77,9 @@ namespace Banshee.Ampache
             var result = XElement.Load(new StreamReader(response.GetResponseStream()));
             if(result.Descendants("error").Count() == 0 && result.Descendants("auth").FirstOrDefault() != null) {
                 Passphrase = result.Descendants("auth").First().Value;
+                SongCount = int.Parse(result.Descendants("songs").First().Value);
+                ArtistCount = int.Parse(result.Descendants("artists").First().Value);
+                AlbumCount = int.Parse(result.Descendants("albums").First().Value);
                 return true;
             }
             return false;

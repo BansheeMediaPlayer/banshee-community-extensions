@@ -54,7 +54,7 @@ namespace Banshee.Ampache
             _trackModel = new MemoryTrackListModel();
             Pixbuf icon = new Pixbuf (System.Reflection.Assembly.GetExecutingAssembly ()
                                       .GetManifestResourceStream ("ampache.png"));
-            Properties.Set<Pixbuf> ("Icon.Pixbuf_22", icon.ScaleSimple (22, 22, InterpType.Bilinear));
+            Properties.Set<Pixbuf> ("Icon.Pixbuf_16", icon.ScaleSimple (16, 16, InterpType.Bilinear));
             ServiceManager.SourceManager.AddSource(this);
             preferences = new AmpachePreferences(this);
         }
@@ -83,7 +83,7 @@ namespace Banshee.Ampache
         void Handle_NewPlayList (object sender, Hyena.EventArgs<PlayQueue> e)
         {
             _queue = e.Value;
-            ServiceManager.PlayerEngine.Open(_queue.Current);
+            ServiceManager.PlayerEngine.OpenPlay(_queue.Current);
             if (ServiceManager.PlaybackController.ShuffleMode != "off") {
                 _queue.Shuffle(new object());
             }
@@ -120,7 +120,7 @@ namespace Banshee.Ampache
             }
             var song = _queue.PeekNext();
             if (changeImmediately) {
-                ServiceManager.PlayerEngine.Open(song);
+                ServiceManager.PlayerEngine.OpenPlay(song);
                 _contents.View.SelectPlayingSong(song);
                 _queue.Next();
             }

@@ -5,10 +5,10 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="Banshee.NowPlaying, Version=1.8.0.0, Culture=neutral" />
-    <widget-library name="Banshee.ThickClient, Version=1.8.0.0, Culture=neutral" />
-    <widget-library name="Banshee.Widgets, Version=1.8.0.0, Culture=neutral" />
-    <widget-library name="Hyena.Gui, Version=1.8.0.0, Culture=neutral" />
+    <widget-library name="Banshee.NowPlaying, Version=1.9.0.0, Culture=neutral" />
+    <widget-library name="Banshee.ThickClient, Version=1.9.0.0, Culture=neutral" />
+    <widget-library name="Banshee.Widgets, Version=1.9.0.0, Culture=neutral" />
+    <widget-library name="Hyena.Gui, Version=1.9.0.0, Culture=neutral" />
     <widget-library name="../../../bin/Banshee.Ampache.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="Banshee.Ampache.PreferenceView" design-size="404 300">
@@ -31,7 +31,6 @@
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
                 <property name="Visibility">False</property>
-                <property name="InvisibleChar">●</property>
               </widget>
               <packing>
                 <property name="TopAttach">2</property>
@@ -53,7 +52,6 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
-                <property name="InvisibleChar">●</property>
               </widget>
               <packing>
                 <property name="LeftAttach">1</property>
@@ -73,7 +71,6 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
-                <property name="InvisibleChar">●</property>
               </widget>
               <packing>
                 <property name="TopAttach">1</property>
