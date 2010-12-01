@@ -37,6 +37,7 @@ using Banshee.Collection;
 using Hyena;
 using Zeitgeist;
 using Zeitgeist.Datamodel;
+using Banshee.MediaEngine;
 
 namespace Banshee.Zeitgeist
 {
@@ -60,6 +61,9 @@ namespace Banshee.Zeitgeist
                     Log.Debug("Zeitgeist client created");
                     ServiceManager.PlaybackController.TrackStarted += HandleServiceManagerPlaybackControllerTrackStarted;
                     ServiceManager.PlaybackController.Stopped += HandleServiceManagerPlaybackControllerStopped;
+
+                    ServiceManager.PlayerEngine.ConnectEvent(playerEvent_Handler);
+
                 } else {
                     Log.Warning ("Could not create Zeitgeist client");
                 }
@@ -68,9 +72,30 @@ namespace Banshee.Zeitgeist
             }
         }
 
+        void playerEvent_Handler(PlayerEventArgs e)
+        {
+            if(e.Event == PlayerEvent.StartOfStream)
+            {
+                try {
+                if (current_track != null) {
+                    StopTrack (current_track);
+                }
+
+                Event ev = CreateZgEvent (ServiceManager.PlaybackController.CurrentTrack, Interpretation.Instance.EventInterpretation.AccessEvent);
+                client.InsertEvents (new List<Event> () {ev});
+
+                current_track = ServiceManager.PlaybackController.CurrentTrack;
+            } catch (Exception ex) {
+                Log.Exception (ex);
+            }
+            }
+
+        }
+
         void IDisposable.Dispose()
         {
             ServiceManager.PlaybackController.TrackStarted -= HandleServiceManagerPlaybackControllerTrackStarted;
+
             ServiceManager.PlaybackController.Stopped -= HandleServiceManagerPlaybackControllerStopped;
 
             client = null;
