@@ -59,10 +59,10 @@ namespace Banshee.Zeitgeist
                 client = new LogClient ();
                 if (client != null) {
                     Log.Debug("Zeitgeist client created");
-                    ServiceManager.PlaybackController.TrackStarted += HandleServiceManagerPlaybackControllerTrackStarted;
+
                     ServiceManager.PlaybackController.Stopped += HandleServiceManagerPlaybackControllerStopped;
 
-                    ServiceManager.PlayerEngine.ConnectEvent(playerEvent_Handler);
+                    ServiceManager.PlayerEngine.ConnectEvent(playerEvent_Handler, PlayerEvent.StartOfStream);
 
                 } else {
                     Log.Warning ("Could not create Zeitgeist client");
@@ -74,46 +74,21 @@ namespace Banshee.Zeitgeist
 
         void playerEvent_Handler(PlayerEventArgs e)
         {
-            if(e.Event == PlayerEvent.StartOfStream)
+            if(e.Event == PlayerEvent.StartOfStream && current_track != ServiceManager.PlaybackController.CurrentTrack)
             {
                 try {
-                if (current_track != null) {
-                    StopTrack (current_track);
+                    if (current_track != null) {
+                        StopTrack (current_track);
+                    }
+
+                    Log.Debug("TrackStarted: "+ServiceManager.PlaybackController.CurrentTrack.TrackTitle);
+                    Event ev = CreateZgEvent (ServiceManager.PlaybackController.CurrentTrack, Interpretation.Instance.EventInterpretation.AccessEvent);
+                    client.InsertEvents (new List<Event> () {ev});
+
+                    current_track = ServiceManager.PlaybackController.CurrentTrack;
+                } catch (Exception ex) {
+                    Log.Exception (ex);
                 }
-
-                Event ev = CreateZgEvent (ServiceManager.PlaybackController.CurrentTrack, Interpretation.Instance.EventInterpretation.AccessEvent);
-                client.InsertEvents (new List<Event> () {ev});
-
-                current_track = ServiceManager.PlaybackController.CurrentTrack;
-            } catch (Exception ex) {
-                Log.Exception (ex);
-            }
-            }
-
-        }
-
-        void IDisposable.Dispose()
-        {
-            ServiceManager.PlaybackController.TrackStarted -= HandleServiceManagerPlaybackControllerTrackStarted;
-
-            ServiceManager.PlaybackController.Stopped -= HandleServiceManagerPlaybackControllerStopped;
-
-            client = null;
-        }
-
-        void HandleServiceManagerPlaybackControllerTrackStarted (object sender, EventArgs e)
-        {
-            try {
-                if (current_track != null) {
-                    StopTrack (current_track);
-                }
-
-                Event ev = CreateZgEvent (ServiceManager.PlaybackController.CurrentTrack, Interpretation.Instance.EventInterpretation.AccessEvent);
-                client.InsertEvents (new List<Event> () {ev});
-
-                current_track = ServiceManager.PlaybackController.CurrentTrack;
-            } catch (Exception ex) {
-                Log.Exception (ex);
             }
         }
 
@@ -159,6 +134,14 @@ namespace Banshee.Zeitgeist
             ev.Subjects.Add(sub);
 
             return ev;
+        }
+
+        void IDisposable.Dispose()
+        {
+            ServiceManager.PlaybackController.Stopped -= HandleServiceManagerPlaybackControllerStopped;
+            ServiceManager.PlayerEngine.DisconnectEvent(playerEvent_Handler);
+
+            client = null;
         }
     }
 }
