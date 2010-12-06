@@ -198,14 +198,41 @@ namespace Banshee.LastfmFingerprint
                     track.ArtistName = (string)json_artist["name"];
                     track.ArtistMusicBrainzId = (string)json_artist["mbid"];
                 }
-                // TODO Get cover from URL in json_track["image"] array
-                // Maybe reuse MetadataServiceJob.SaveHttpStreamCover to fetch it
-                // but it's protected...
+
+                GetMoreInfo (track);
 
                 track.Save ();
 
                 if (track == ServiceManager.PlayerEngine.CurrentTrack)
                     ServiceManager.PlayerEngine.TrackInfoUpdated ();
+            }
+        }
+
+        void GetMoreInfo (TrackInfo track)
+        {
+            var request = new LastfmRequest ("track.getInfo");
+            request.AddParameter ("artist", track.ArtistName);
+            request.AddParameter ("track", track.TrackTitle);
+            request.AddParameter ("mbid", track.MusicBrainzId);
+
+            request.Send ();
+
+            var response = request.GetResponseObject ();
+            if (response == null)
+                return;
+
+            var json_track = (JsonObject)response["track"];
+            //track.Duration = TimeSpan.FromMilliseconds (double.Parse ((string)json_track["duration"]));
+            var json_album = (JsonObject)json_track["album"];
+
+            Log.Debug ("track.getInfo: json_track:" + json_track.ToString ());
+            if (json_album != null)
+            {
+                var attr = (JsonObject)json_album["@attr"];
+                track.TrackNumber = int.Parse ((string)attr["position"]);
+                track.AlbumTitle = (string)json_album["title"];
+                track.AlbumMusicBrainzId = (string)json_album["mbid"];
+                track.AlbumArtist = (string)json_album["artist"];
             }
         }
 
