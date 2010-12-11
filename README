@@ -71,9 +71,6 @@ Telepathy
   telepathy-mission-control-5 >= 5.3.1
   see src/Telepathy/README for more details
 
-UbuntuOneMusicStore
-  ubuntuone-sharp-1.0
-
 ZeitgeistDataprovider
   zeitgeist-sharp
 

@@ -18,7 +18,6 @@ SUBDIRS = \
 	RandomByLastfm \
 	StreamRecorder \
 	Telepathy \
-	UbuntuOneMusicStore \
 	ZeitgeistDataprovider
 
 EXTRA_DIST = AssemblyInfo.cs.in

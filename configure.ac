@@ -96,7 +96,6 @@ BCE_RADIOSTATIONFETCHER
 BCE_RANDOMBYLASTFM
 BCE_STREAMRECORDER
 BCE_TELEPATHY
-BCE_U1MS
 BCE_ZEITGEISTDP
 
 AC_ARG_WITH(vendor-build-id,
@@ -173,7 +172,6 @@ src/RandomByLastfm/Makefile
 src/StreamRecorder/Makefile
 src/Telepathy/Makefile
 src/Telepathy/Banshee.Telepathy/Makefile
-src/UbuntuOneMusicStore/Makefile
 src/ZeitgeistDataprovider/Makefile
 ])
 
@@ -217,7 +215,6 @@ ${PACKAGE}-${VERSION}
     RandomByLastfm:        ${enable_RandomByLastfm}
     StreamRecorder:        ${enable_StreamRecorder}
     Telepathy:             ${enable_Telepathy}
-    UbuntuOneMusicStore:   ${enable_UbuntuOneMusicStore}
     ZeitgeistDataprovider: ${enable_ZeitgeistDataprovider}
 
 EOF
