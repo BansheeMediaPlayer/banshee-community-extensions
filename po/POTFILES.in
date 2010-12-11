@@ -7,17 +7,16 @@ src/AlarmClock/Banshee.AlarmClock/AlarmConfigDialog.cs
 src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs
 src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs
 src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs
-src/Ampache/gtk-gui/Banshee.Ampache.AmpacheView.cs
 src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs
 src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs
 src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs
 src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs
 src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs
+src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs
 src/Jamendo/Banshee.Jamendo/JamendoWebBrowserShell.cs
 src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs
 src/LCD/Banshee.LCD/ConfigurationDialog.cs
 src/LCD/Banshee.LCD/LCDService.cs
-src/Lirc/Banshee.Lirc/gtk-gui/Banshee.Lirc.ConfigDialog.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioConfigDialog.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioFilterView.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs
@@ -56,4 +55,3 @@ src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/DownloadManagerUi.cs
 src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs
 src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyNotification.cs
 src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TransferManagerUi.cs
-src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs
