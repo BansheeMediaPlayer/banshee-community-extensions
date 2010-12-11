@@ -94,7 +94,6 @@ BCE_MIRAGE
 BCE_OPENVP
 BCE_RADIOSTATIONFETCHER
 BCE_RANDOMBYLASTFM
-BCE_SOUNDMENU
 BCE_STREAMRECORDER
 BCE_TELEPATHY
 BCE_U1MS
@@ -171,7 +170,6 @@ src/Mirage/Banshee.Mirage/Makefile
 src/Mirage/Test/Makefile
 src/RadioStationFetcher/Makefile
 src/RandomByLastfm/Makefile
-src/SoundMenu/Makefile
 src/StreamRecorder/Makefile
 src/Telepathy/Makefile
 src/Telepathy/Banshee.Telepathy/Makefile
@@ -217,7 +215,6 @@ ${PACKAGE}-${VERSION}
     OpenVP:                ${enable_OpenVP}
     RadioStationFetcher:   ${enable_RadioStationFetcher}
     RandomByLastfm:        ${enable_RandomByLastfm}
-    SoundMenu:             ${enable_SoundMenu}
     StreamRecorder:        ${enable_StreamRecorder}
     Telepathy:             ${enable_Telepathy}
     UbuntuOneMusicStore:   ${enable_UbuntuOneMusicStore}

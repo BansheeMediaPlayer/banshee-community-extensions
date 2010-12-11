@@ -16,7 +16,6 @@ SUBDIRS = \
 	OpenVP \
 	RadioStationFetcher \
 	RandomByLastfm \
-	SoundMenu \
 	StreamRecorder \
 	Telepathy \
 	UbuntuOneMusicStore \

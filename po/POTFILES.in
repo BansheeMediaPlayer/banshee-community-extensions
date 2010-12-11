@@ -44,7 +44,6 @@ src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.c
 src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs
 src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs
 src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs
-src/SoundMenu/Banshee.SoundMenu/SoundMenuService.cs
 src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs
 src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs
 src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactContainerSource.cs
