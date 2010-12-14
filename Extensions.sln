@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomByLastfm", "src\Rando
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppIndicator", "src\AppIndicator\AppIndicator.csproj", "{B3971F35-8FE0-4FED-A3A4-7A082B341D81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UbuntuOneMusicStore", "src\UbuntuOneMusicStore\UbuntuOneMusicStore.csproj", "{3B855EBC-8E55-48DF-816B-B241BE45EBD8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveRadio", "src\LiveRadio\LiveRadio.csproj", "{8DA5F304-F6B6-43EF-A01F-68511ABF53CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCD", "src\LCD\LCD.csproj", "{B03D0959-A746-46E0-9D70-400CAD5ABA23}"
@@ -131,10 +129,6 @@ Global
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Debug|x86.Build.0 = Debug|Any CPU
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Release|x86.ActiveCfg = Release|Any CPU
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Release|x86.Build.0 = Release|Any CPU
-		{3B855EBC-8E55-48DF-816B-B241BE45EBD8}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{3B855EBC-8E55-48DF-816B-B241BE45EBD8}.Debug|x86.Build.0 = Debug|Any CPU
-		{3B855EBC-8E55-48DF-816B-B241BE45EBD8}.Release|x86.ActiveCfg = Release|Any CPU
-		{3B855EBC-8E55-48DF-816B-B241BE45EBD8}.Release|x86.Build.0 = Release|Any CPU
 		{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}.Debug|x86.Build.0 = Debug|Any CPU
 		{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}.Release|x86.ActiveCfg = Release|Any CPU
