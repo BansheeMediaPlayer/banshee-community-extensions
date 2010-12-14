@@ -14,4 +14,6 @@ include $(top_srcdir)/build/build.mk
 else
 EXTRA_DIST = $(SOURCES) $(RESOURCES)
 endif
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
 endif
