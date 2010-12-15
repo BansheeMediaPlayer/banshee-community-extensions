@@ -94,6 +94,7 @@ namespace Banshee.Ampache
                 old.Remove(tmp);
                 _playList.Add(tmp);
             }
+            _playing = 0;
         }
         public void Unshuffle(object o)
         {

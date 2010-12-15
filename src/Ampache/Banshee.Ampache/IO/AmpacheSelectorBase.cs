@@ -85,8 +85,8 @@ namespace Banshee.Ampache
                 return SelectAll();
             }
             StringBuilder builder = new StringBuilder();
-            builder.AppendFormat(BASE_URL, _handshake.Server, SelectAllMethod, _handshake.Passphrase);
-            builder.AppendFormat(FILTER_PARAMETER, SelectMethodMap[typeof(TParameter)]);
+            builder.AppendFormat(BASE_URL, _handshake.Server, SelectMethodMap[typeof(TParameter)], _handshake.Passphrase);
+            builder.AppendFormat(FILTER_PARAMETER, parameter.Id);
             return Query(builder.ToString());
         }
 

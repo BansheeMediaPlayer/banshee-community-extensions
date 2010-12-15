@@ -40,10 +40,12 @@ namespace Banshee.Ampache
     internal class AmpacheSourceContents : ISourceContents
     {
         public AmpacheView View { get; private set; }
+        public AmpacheViewModel ViewModel {get; private set; }
 
         public AmpacheSourceContents ()
         {
-            View =  new AmpacheView();
+            ViewModel = new AmpacheViewModel();
+            View =  new AmpacheView(ViewModel);
         }
 
         public bool SetSource (ISource source) { return true; }

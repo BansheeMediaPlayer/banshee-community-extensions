@@ -26,6 +26,7 @@
 
 using System;
 using System.Threading;
+using System.Linq;
 
 using Banshee.Configuration;
 using Banshee.Collection;
@@ -48,6 +49,7 @@ namespace Banshee.Ampache
         private TrackListModel _trackModel;
         private PlayQueue _queue;
         private AmpachePreferences preferences;
+        private bool ignoreChanges;
 
         public AmpacheSource () : base ("Ampache", "Ampache", 90, "Ampache")
         {
@@ -72,7 +74,7 @@ namespace Banshee.Ampache
             if (_contents == null)
             {
                 Properties.Set<ISourceContents> ("Nereid.SourceContents", _contents = new AmpacheSourceContents ());
-                _contents.View.NewPlayList += Handle_NewPlayList;
+                _contents.ViewModel.PropertyChanged += Handle_contentsViewModelPropertyChanged;
             }
             base.Activate ();
             ServiceManager.PlaybackController.NextSource = this;
@@ -80,12 +82,18 @@ namespace Banshee.Ampache
             ServiceManager.PlaybackController.ShuffleModeChanged += HandleServiceManagerPlaybackControllerShuffleModeChanged;
         }
 
-        void Handle_NewPlayList (object sender, Hyena.EventArgs<PlayQueue> e)
+        private void Handle_contentsViewModelPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            _queue = e.Value;
-            ServiceManager.PlayerEngine.OpenPlay(_queue.Current);
-            if (ServiceManager.PlaybackController.ShuffleMode != "off") {
-                _queue.Shuffle(new object());
+            if (e.PropertyName == "SelectedSong" && !ignoreChanges && ServiceManager.PlayerEngine.CurrentState != PlayerState.Playing) {
+                var sngs = _contents.ViewModel.Songs.ToList();
+                var skip = sngs.IndexOf(_contents.ViewModel.SelectedSong);
+                _queue = new PlayQueue(sngs.Skip(skip), sngs.Take(skip));
+                Console.WriteLine (_queue.Current.DisplayName);
+                if (ServiceManager.PlaybackController.ShuffleMode != "off") {
+                    _queue.Shuffle(null);
+                }
+                Console.WriteLine (_queue.Current.DisplayName);
+                ServiceManager.PlayerEngine.OpenPlay(_queue.Current);
             }
         }
 
@@ -120,9 +128,11 @@ namespace Banshee.Ampache
             }
             var song = _queue.PeekNext();
             if (changeImmediately) {
+                ignoreChanges = true;
                 ServiceManager.PlayerEngine.OpenPlay(song);
-                _contents.View.SelectPlayingSong(song);
                 _queue.Next();
+                _contents.ViewModel.SelectedSong = song;
+                ignoreChanges = true;
             }
             return true;
         }
@@ -132,9 +142,10 @@ namespace Banshee.Ampache
             if (_queue == null) {
                 return false;
             }
+            ignoreChanges = true;
             var song = _queue.Previous();
             ServiceManager.PlayerEngine.Open(song);
-            _contents.View.SelectPlayingSong(song);
+            ignoreChanges = false;
             return true;
         }
         #endregion
@@ -192,7 +203,7 @@ namespace Banshee.Ampache
         #region IDisposable implementation
         public void Dispose ()
         {
-            AmpacheSelectionFactory.TearDown();
+           // AmpacheSelectionFactory.TearDown();
             this.preferences.Dispose();
         }
         #endregion

@@ -36,6 +36,7 @@ namespace Banshee.Ampache
         private const string ALBUM_ACTION = @"album_songs";
         private const string ARTIST_ACTION = @"artist_songs";
         private const string TAG_ACTION = @"tag_songs";
+        private const string PLAYLIST_ACTION = @"playlist_songs";
         private static Dictionary<Type, string> MAP;
 
         static SongSelector ()
@@ -44,6 +45,7 @@ namespace Banshee.Ampache
             MAP.Add(typeof(AmpacheAlbum), ALBUM_ACTION);
             MAP.Add(typeof(AmpacheArtist), ARTIST_ACTION);
             MAP.Add(typeof(Tag), TAG_ACTION);
+            MAP.Add(typeof(AmpachePlaylist), PLAYLIST_ACTION);
         }
 
         public SongSelector (Handshake handshake, IEntityFactory<AmpacheSong> factory) : base (handshake, factory)

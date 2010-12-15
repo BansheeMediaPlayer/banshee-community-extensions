@@ -59,12 +59,8 @@ namespace Banshee.Ampache
         private readonly MemoryListModel<AmpacheArtist> artistModel = new MemoryListModel<AmpacheArtist>();
         private readonly MemoryListModel<AmpacheAlbum> albumModel = new MemoryListModel<AmpacheAlbum>();
         private readonly MemoryListModel<AmpachePlaylist> playlistModel = new MemoryListModel<AmpachePlaylist>();
-
-        private bool connected = false;
-        private Dictionary<int, AmpacheArtist> artists = new Dictionary<int, AmpacheArtist>();
-        private Dictionary<int, AmpacheAlbum> albums = new Dictionary<int, AmpacheAlbum>();
-        private Dictionary<int, AmpacheSong> songs = new Dictionary<int, AmpacheSong>();
-        private Dictionary<int, AmpachePlaylist> playlists = new Dictionary<int, AmpachePlaylist>();
+        private readonly AmpacheViewModel viewModel;
+        private bool ignoreChanges = false;
 
         internal event EventHandler<Hyena.EventArgs<PlayQueue>> NewPlayList;
 
@@ -72,8 +68,10 @@ namespace Banshee.Ampache
         {
             return Mono.Addins.AddinManager.CurrentLocalizer.GetString (s);
         }
-        public AmpacheView ()
+        public AmpacheView (AmpacheViewModel vm)
         {
+            viewModel = vm;
+            vm.PropertyChanged += HandleVmPropertyChanged;
             btnConnect.Label = _("Connect");
             PackStart(btnConnect, false, false, 1);
             artistsWindow.Add(lvArtists);
@@ -105,78 +103,93 @@ namespace Banshee.Ampache
 
             if (!string.IsNullOrEmpty(AmpacheSource.UserName.Get())) {
                 btnConnect.Hide();
-                System.Threading.ThreadPool.QueueUserWorkItem(LoadAmpache);
+                System.Threading.ThreadPool.QueueUserWorkItem((o)=> viewModel.ConnectCommand() );
             }
         }
 
-        internal void SelectPlayingSong(AmpacheSong song)
+        void HandleVmPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            var index = trackModel.IndexOf(song);
-            if(index > 0) {
-                trackModel.Selection.Changed -= HandleLvTracksModelSelectionChanged;
-                trackModel.Selection.Clear();
-                trackModel.Selection.ToggleSelect(index);
-                trackModel.Selection.Changed += HandleLvTracksModelSelectionChanged;
+            if (ignoreChanges) {
+                return;
+            }
+            switch (e.PropertyName) {
+            case "Artists":
+                Gtk.Application.Invoke(RefreshArtists);
+                break;
+            case "Albums":
+                Gtk.Application.Invoke(RefreshAlbums);
+                break;
+            case "Playlists":
+                Gtk.Application.Invoke(RefreshPlaylists);
+                break;
+            case "Songs":
+                Gtk.Application.Invoke(RefreshTracks);
+                break;
+            case "SelectedSong":
+                Gtk.Application.Invoke(SelectPlayingSong);
+                break;
+            case "SelectedArtist":
+                Gtk.Application.Invoke(SelectArtist);
+                break;
+            case "SelectedAlbum":
+                Gtk.Application.Invoke(SelectAlbum);
+                break;
+            default:
+                break;
             }
         }
 
         void HandleLvTracksModelSelectionChanged (object sender, EventArgs e)
         {
-            var sngs = trackModel.AsEnumerable().ToList();
-            if (sngs.Count == 0 || ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing) {
-                SelectPlayingSong(ServiceManager.PlayerEngine.CurrentTrack as AmpacheSong);
-                return;
-            }
-            lvTracks.HasFocus = false;
-            var skip = trackModel.Selection.FirstIndex;
-            var tmp = new PlayQueue(sngs.Skip(skip), sngs.Take(skip));
-            if (NewPlayList != null) {
-                NewPlayList(this, new Hyena.EventArgs<PlayQueue>(tmp));
+            var sng = trackModel.SelectedItems.FirstOrDefault();
+            if (sng != null) {
+                ignoreChanges = true;
+                viewModel.SelectedSong = sng;
+                ignoreChanges = false;
             }
         }
 
         void HandleLvPlaylistsModelSelectionChanged (object sender, EventArgs e)
         {
-            var plys = playlistModel.SelectedItems.ToList();
-            if (plys.Count == 0) {
+            if (playlistModel.SelectedItems.Count != 1) {
+                viewModel.SelectedPlaylist = null;
                 return;
             }
-            trackModel.Clear();
-            trackModel.Selection.Clear();
-            var sngs = plys.SelectMany(p => p.Songs).ToList();
-            sngs.ForEach(s => trackModel.Add(s));
-            trackModel.Reload();
+            ignoreChanges = true;
+            viewModel.SelectedPlaylist = playlistModel.SelectedItems.First();
+            ignoreChanges = false;
+            viewModel.SelectedAlbum = null;
+            viewModel.SelectedArtist = null;
+            System.Threading.ThreadPool.QueueUserWorkItem((o) => viewModel.LoadSongsCommand());
         }
 
         void HandleLvAlbumsModelSelectionChanged (object sender, EventArgs e)
         {
-            var albIds = albumModel.SelectedItems.Select(a => a.Id).ToList();
-            if (albIds.Count == 0) {
-                //LoadModels();
+            if (albumModel.SelectedItems.Count != 1) {
+                viewModel.SelectedAlbum = null;
                 return;
             }
-            trackModel.Clear();
-            trackModel.Selection.Clear();
-            songs.Values.Where(s=> albIds.Contains(s.AlbumId)).ToList().ForEach(s=>trackModel.Add(s));
-            trackModel.Reload();
+            ignoreChanges = true;
+            viewModel.SelectedAlbum = albumModel.SelectedItems.First();
+            ignoreChanges = false;
+            viewModel.SelectedArtist = viewModel.Artists.FirstOrDefault(a => a.Id == viewModel.SelectedAlbum.ArtistId);
+            System.Threading.ThreadPool.QueueUserWorkItem((o) => viewModel.LoadSongsCommand());
         }
 
         private void HandleLvArtistsModelSelectionChanged (object sender, EventArgs e)
         {
-            var artIds = artistModel.SelectedItems.Select(a=> a.Id).ToList();
-            if (artIds.Count == 0) {
-                //LoadModels();
+            if (artistModel.SelectedItems.Count != 1) {
+                viewModel.SelectedArtist = null;
                 return;
             }
-            trackModel.Clear();
-            trackModel.Selection.Clear();
-            songs.Values.Where(s=> artIds.Contains(s.ArtistId)).ToList().ForEach(s=>trackModel.Add(s));
-            albumModel.Clear();
-            albumModel.Selection.Clear();
+            ignoreChanges = true;
             playlistModel.Selection.Clear();
-            albums.Values.Where(a => artIds.Contains(a.ArtistId)).ToList().ForEach(a => albumModel.Add(a));
-            trackModel.Reload();
-            albumModel.Reload();
+            viewModel.SelectedArtist = artistModel.SelectedItems.First();
+            if (viewModel.SelectedAlbum != null && viewModel.SelectedAlbum.ArtistId != viewModel.SelectedArtist.Id){
+                albumModel.Selection.Clear();
+            }
+            ignoreChanges = false;
+            System.Threading.ThreadPool.QueueUserWorkItem((o) => viewModel.LoadSongsCommand());
         }
         
         private ColumnController BuildDisplayColumnController(string localizedTitle)
@@ -186,50 +199,71 @@ namespace Banshee.Ampache
             return result;
         }
 
-        private void LoadAmpache(object ob)
+        #region Populate Methods
+
+        private void RefreshArtists(object sender, EventArgs e)
         {
-            if(!connected) {
-                try {
-                    var tmp = new Authenticate(AmpacheSource.AmpacheRootAddress.Get(), AmpacheSource.UserName.Get(), AmpacheSource.UserPassword.Get());
-                    AmpacheSelectionFactory.Initialize(tmp);
-                    artists = AmpacheSelectionFactory.GetSelectorFor<AmpacheArtist>().SelectAll().ToDictionary(k=>k.Id, v=>v);
-                    albums = AmpacheSelectionFactory.GetSelectorFor<AmpacheAlbum>().SelectAll().ToDictionary(k=>k.Id, v=>v);
-                    songs = AmpacheSelectionFactory.GetSelectorFor<AmpacheSong>().SelectAll().ToDictionary(k=>k.Id, v=>v);
-                    playlists = AmpacheSelectionFactory.GetSelectorFor<AmpachePlaylist>().SelectAll().ToDictionary(k=>k.Id, v=>v);
-                    connected = true;
-                    // hydrate albums and songs
-                    foreach (var alb in albums.Values) {
-                        if (artists.ContainsKey(alb.ArtistId)) {
-                            alb.Hydrate(artists[alb.ArtistId]);
-                        }
-                    }
-                    foreach (AmpacheSong song in songs.Values.Union(playlists.Values.SelectMany(p => p.Songs))) {
-                        if (albums.ContainsKey(song.AlbumId)) {
-                            song.Hydrate(albums[song.AlbumId], artists[song.ArtistId]);
-                        }
-                    }
-                }
-                catch (Exception e) {
-                    Hyena.Log.ErrorFormat("{0}: message {1}\n{2}", e.GetType().Name, e.Message, e.StackTrace);
-                    connected = false;
-                }
-                Gtk.Application.Invoke((o,e) => LoadModels());
+            artistModel.Clear();
+            viewModel.Artists.ToList().ForEach(a=>artistModel.Add(a));
+            artistModel.Reload();
+        }
+
+        private void RefreshAlbums(object sender, EventArgs e)
+        {
+            albumModel.Clear();
+            viewModel.Albums.ToList().ForEach(a=>albumModel.Add(a));
+            albumModel.Reload();
+        }
+
+        private void RefreshPlaylists(object sender, EventArgs e)
+        {
+            playlistModel.Clear();
+            viewModel.Playlists.ToList().ForEach(a=>playlistModel.Add(a));
+            playlistModel.Reload();
+        }
+
+        private void RefreshTracks(object sender, EventArgs e)
+        {
+            trackModel.Clear();
+            viewModel.Songs.ToList().ForEach(a=>trackModel.Add(a));
+            trackModel.Reload();
+        }
+
+        private void SelectPlayingSong(object sender, EventArgs e)
+        {
+            var index = trackModel.IndexOf(viewModel.SelectedSong);
+            if(index > 0) {
+                trackModel.Selection.Changed -= HandleLvTracksModelSelectionChanged;
+                trackModel.Selection.Clear();
+                trackModel.Selection.Select(index);
+                lvTracks.ScrollTo(index);
+                trackModel.Selection.Changed += HandleLvTracksModelSelectionChanged;
             }
         }
 
-        private void LoadModels()
+        private void SelectArtist(object sender, EventArgs e)
         {
-            if (!connected) {
-                btnConnect.Show();
+            var index = artistModel.IndexOf(viewModel.SelectedArtist);
+            artistModel.Selection.Changed -= HandleLvArtistsModelSelectionChanged;
+            artistModel.Selection.Clear();
+            artistModel.Selection.Changed += HandleLvArtistsModelSelectionChanged;
+            if (index > 0) {
+                artistModel.Selection.Select(index);
+                lvArtists.ScrollTo(index);
             }
-            artists.Values.ToList().ForEach(a=>artistModel.Add(a));
-            artistModel.Reload();
-            albums.Values.ToList().ForEach(a=>albumModel.Add(a));
-            albumModel.Reload();
-            playlists.Values.ToList().ForEach(p=>playlistModel.Add(p));
-            playlistModel.Reload();
-            trackModel.Clear();
         }
+
+        private void SelectAlbum(object sender, EventArgs e)
+        {
+            var index = albumModel.IndexOf(viewModel.SelectedAlbum);
+            albumModel.Selection.Clear(false);
+            if (index > 0) {
+                albumModel.Selection.Select(index);
+                lvAlbums.ScrollTo(index);
+            }
+        }
+
+        #endregion
     }
     public static class IListModelExtensions
     {
