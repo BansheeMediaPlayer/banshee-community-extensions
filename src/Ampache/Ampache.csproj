@@ -117,6 +117,7 @@
     <Compile Include="Banshee.Ampache\Gui\PreferenceView.cs" />
     <Compile Include="gtk-gui\Banshee.Ampache.PreferenceView.cs" />
     <Compile Include="Banshee.Ampache\Entities\AmpachePlaylist.cs" />
+    <Compile Include="Banshee.Ampache\Logic\AmpacheViewModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
