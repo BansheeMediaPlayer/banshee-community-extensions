@@ -245,6 +245,10 @@ namespace ClutterFlow
 
         public override void Dispose ()
         {
+            if (reload_timeout > 0) {
+                GLib.Source.Remove (reload_timeout);
+            }
+
             ActorLoader.Dispose ();
             Behaviour.Dispose ();
             timeline.Dispose ();
@@ -282,12 +286,12 @@ namespace ClutterFlow
 			}
 		}
 		
-		private int reload_timeout = -1;
+		private uint reload_timeout = 0;
 		internal void ReloadCovers ()
 		{
-			if (reload_timeout!=-1)
-				GLib.Source.Remove((uint) reload_timeout);
-			reload_timeout = (int) GLib.Timeout.Add (MaxAnimationSpan, new GLib.TimeoutHandler (reload_covers));
+			if (reload_timeout > 0)
+				GLib.Source.Remove(reload_timeout);
+			reload_timeout = GLib.Timeout.Add (MaxAnimationSpan, new GLib.TimeoutHandler (reload_covers));
 		}
 
      	private bool reload_covers ()

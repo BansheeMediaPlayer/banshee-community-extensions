@@ -38,23 +38,9 @@ namespace ClutterFlow.Slider
 	public class ClutterFlowSlider : Group
 	{
 		#region Fields
-		protected CoverManager coverManager;
+		private CoverManager coverManager;
 		public CoverManager CoverManager {
 			get { return coverManager; }
-			set {
-				if (value!=coverManager) {
-					if (coverManager!=null) {
-						coverManager.CoversChanged -= HandleCoversChanged;
-						coverManager.TargetIndexChanged -= HandleTargetIndexChanged;
-					}
-					coverManager = value;
-					if (coverManager!=null) {
-						coverManager.CoversChanged += HandleCoversChanged;
-						coverManager.TargetIndexChanged += HandleTargetIndexChanged;
-						coverManager.LetterLookupChanged += HandleLetterLookupChanged;
-					}
-				}
-			}
 		}
 		
 		protected ClutterSlider slider;
@@ -66,14 +52,33 @@ namespace ClutterFlow.Slider
 		public ClutterFlowSlider (float width, float height, CoverManager coverManager)
 		{
 			this.IsReactive = true;
-			this.CoverManager = coverManager;
-			this.SetSize (width, height);
+			this.coverManager = coverManager;
+            CoverManager.CoversChanged += HandleCoversChanged;
+            CoverManager.TargetIndexChanged += HandleTargetIndexChanged;
+            CoverManager.LetterLookupChanged += HandleLetterLookupChanged;
+
+            this.SetSize (width, height);
 			this.EnterEvent += HandleEnterEvent;
 			this.LeaveEvent += HandleLeaveEvent;
 
 			InitChildren ();
 			Update ();
 		}
+
+        public override void Dispose ()
+        {
+            CoverManager.CoversChanged -= HandleCoversChanged;
+            CoverManager.TargetIndexChanged -= HandleTargetIndexChanged;
+            CoverManager.LetterLookupChanged -= HandleLetterLookupChanged;
+
+            EnterEvent += HandleEnterEvent;
+            LeaveEvent += HandleLeaveEvent;
+
+            slider.Dispose ();
+            alphabet.Dispose ();
+
+            base.Dispose ();
+        }
 		
 		protected virtual void InitChildren ()
 		{

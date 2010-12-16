@@ -224,21 +224,21 @@ namespace Banshee.ClutterFlow
 		}
 		
 		public ClutterFlowAlbum CurrentActor {
-			get { return (ClutterFlowAlbum) coverManager.CurrentCover; }
+			get { return (ClutterFlowAlbum) CoverManager.CurrentCover; }
 		}
 		
         public AlbumInfo CurrentAlbum {
             get {
-                if (coverManager.CurrentCover!=null && coverManager.CurrentCover is ClutterFlowAlbum)
-                    return (coverManager.CurrentCover as ClutterFlowAlbum).Album;
+                if (CoverManager.CurrentCover!=null && CoverManager.CurrentCover is ClutterFlowAlbum)
+                    return (CoverManager.CurrentCover as ClutterFlowAlbum).Album;
                 else
                     return null;
             }
         }
         public int CurrentIndex {
             get {
-                if (coverManager.CurrentCover!=null && coverManager.CurrentCover is ClutterFlowAlbum)
-                    return (coverManager.CurrentCover as ClutterFlowAlbum).Index;
+                if (CoverManager.CurrentCover!=null && CoverManager.CurrentCover is ClutterFlowAlbum)
+                    return (CoverManager.CurrentCover as ClutterFlowAlbum).Index;
                 else
                     return -1;
             }
@@ -251,7 +251,7 @@ namespace Banshee.ClutterFlow
 
         public virtual void ScrollTo (AlbumInfo generator)
         {
-            coverManager.Timeline.Timeout = 500; //give 'm some time to load the song etc.
+            CoverManager.Timeline.Timeout = 500; //give 'm some time to load the song etc.
             ScrollTo (ClutterFlowAlbum.CreateCacheKey (generator));
         }
 		
@@ -260,7 +260,7 @@ namespace Banshee.ClutterFlow
             string key = ClutterFlowAlbum.CreateCacheKey(generator);
             ClutterFlowBaseActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
             if (actor==null) {
-                actor = new ClutterFlowAlbum (generator, coverManager);
+                actor = new ClutterFlowAlbum (generator, CoverManager);
 				actor.Hide ();
                 Cache.Add (key, actor);
             }

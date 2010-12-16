@@ -261,11 +261,10 @@ namespace ClutterFlow
         		return retval;
         	}
         }
-        		
-        protected CoverManager coverManager;
+
+        private CoverManager coverManager;
         public CoverManager CoverManager {
-        	get { return coverManager; }
-        	set { coverManager = value; }
+            get { return coverManager; }
         }
 
         public override uint Target {
@@ -285,19 +284,11 @@ namespace ClutterFlow
                 throw new System.NotImplementedException();
             }
         }
-
-
-
         #endregion
 
         public ClutterFlowTimeline (CoverManager coverManager) : base((uint) coverManager.TotalCovers, 1 / (double) CoverManager.MaxAnimationSpan)
         {
-            this.CoverManager = coverManager;
-        }
-        public override void Dispose ()
-        {
-            CoverManager = null;
-            base.Dispose ();
+            this.coverManager = coverManager;
         }
     }
 }

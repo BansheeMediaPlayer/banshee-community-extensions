@@ -33,7 +33,7 @@ namespace ClutterFlow
 {
 
 	public interface IActorLoader : IDisposable {
-		CoverManager CoverManager { get; set; }
+		CoverManager CoverManager { get; }
 		List<ClutterFlowBaseActor> GetActors (System.Action<ClutterFlowBaseActor> method_call);
 	}
 	
@@ -44,25 +44,17 @@ namespace ClutterFlow
 			get { return cached_covers; }
 		}
 		
-		protected CoverManager coverManager;
+		private CoverManager coverManager;
 		public virtual CoverManager CoverManager {
 			get { return coverManager; }
-			set {
-				if (coverManager!=null) {
-					coverManager.ActorActivated -= HandleActorActivated;
-				}
-				coverManager = value;
-                if (coverManager!=null) {
-					coverManager.ActorActivated += HandleActorActivated;
-				    coverManager.ActorLoader = this;
-				}
-			}
 		}
 		#endregion
 		
 		public ActorLoader (CoverManager coverManager)
 		{
-			this.CoverManager = coverManager;
+			this.coverManager = coverManager;
+            CoverManager.ActorActivated += HandleActorActivated;
+            CoverManager.ActorLoader = this;
 		}
         protected bool disposed = false;
         public virtual void Dispose ()
@@ -70,10 +62,12 @@ namespace ClutterFlow
             if (disposed)
                 return;
             disposed = true;
+            
+            CoverManager.ActorActivated -= HandleActorActivated;
+
             foreach (ClutterFlowBaseActor actor in cached_covers.Values)
                 actor.Dispose ();
             cached_covers.Clear ();
-            coverManager = null;
         }
 
 		protected virtual void RefreshCoverManager ()

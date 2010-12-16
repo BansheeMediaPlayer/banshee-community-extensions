@@ -45,11 +45,6 @@ namespace ClutterFlow.Captions
 				}
 			}
 		}
-
-		public override CoverManager CoverManager {
-			get { return coverManager; }
-			set { coverManager = value;	}
-		}
 		#endregion
 		
 		public TrackCaption (CoverManager coverManager, string font_name, Color color) : base (coverManager, font_name, color)
@@ -77,7 +72,7 @@ namespace ClutterFlow.Captions
 		{
 			if (Stage!=null) {
 				SetAnchorPoint (Width*0.5f, Height*0.5f);
-				SetPosition(coverManager.Behaviour.CenterX, Math.Max(coverManager.Behaviour.CenterY - coverManager.Behaviour.CoverWidth + Height*3, Height*3.6f));
+				SetPosition(CoverManager.Behaviour.CenterX, Math.Max(CoverManager.Behaviour.CenterY - CoverManager.Behaviour.CoverWidth + Height*3, Height*3.6f));
 			}
 		}
 

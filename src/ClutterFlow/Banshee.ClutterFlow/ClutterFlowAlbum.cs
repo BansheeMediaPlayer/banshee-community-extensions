@@ -112,9 +112,9 @@ namespace Banshee.ClutterFlow
 		#region Texture Handling
 		protected override Cairo.ImageSurface GetDefaultSurface ()
 		{
-			Cairo.ImageSurface surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, coverManager.TextureSize, coverManager.TextureSize);
+			Cairo.ImageSurface surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, CoverManager.TextureSize, CoverManager.TextureSize);
 			Cairo.Context context = new Cairo.Context(surface);
-			Gdk.CairoHelper.SetSourcePixbuf(context, IconThemeUtils.LoadIcon (coverManager.TextureSize, "media-optical", "browser-album-cover"), 0, 0);
+			Gdk.CairoHelper.SetSourcePixbuf(context, IconThemeUtils.LoadIcon (CoverManager.TextureSize, "media-optical", "browser-album-cover"), 0, 0);
 			context.Paint();
 			//((IDisposable) context.Target).Dispose();
 			((IDisposable) context).Dispose();

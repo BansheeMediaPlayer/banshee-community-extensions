@@ -39,15 +39,17 @@ namespace ClutterFlow.Captions
 		#region Fields
 		public abstract string DefaultValue { get; set; }
 
-		protected CoverManager coverManager;
-		public abstract CoverManager CoverManager { get; set; }
+		private CoverManager coverManager;
+		public CoverManager CoverManager {
+            get { return coverManager; }
+        }
 		
 		protected Animation aFade = null;
 		#endregion
 		
 		public Caption (CoverManager coverManager, string font_name, Color color) : base (clutter_text_new ())
 		{
-			CoverManager = coverManager;
+			this.coverManager = coverManager;
 			Editable = false;
 			Selectable = false;
 			Activatable = false;

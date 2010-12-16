@@ -42,7 +42,7 @@ namespace ClutterFlow
         public Clutter.CairoTexture Texture {
             get {
                 if (texture==null) {
-                    texture = new Clutter.CairoTexture ((uint) coverManager.Behaviour.CoverWidth, (uint) coverManager.Behaviour.CoverWidth*2);				
+                    texture = new Clutter.CairoTexture ((uint) CoverManager.Behaviour.CoverWidth, (uint) CoverManager.Behaviour.CoverWidth*2);
                     Add (texture);
                     texture.Show ();
                 }

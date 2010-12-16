@@ -48,20 +48,9 @@ namespace ClutterFlow
 	
 	public class TextureHolder : IDisposable {
 		#region Fields
-		protected CoverManager coverManager;
+		private CoverManager coverManager;
 		public CoverManager CoverManager {
 			get { return coverManager; }
-			set {
-				if (value!=coverManager) {
-					if (coverManager!=null) {
-						coverManager.TextureSizeChanged -= HandleTextureSizeChanged;
-					}
-					coverManager = value;
-					if (coverManager!=null) {
-						coverManager.TextureSizeChanged += HandleTextureSizeChanged;
-					}
-				}
-			}
 		}
 		
 		protected Cairo.ImageSurface default_surface;
@@ -94,22 +83,24 @@ namespace ClutterFlow
 		#region Initialisation
 		public TextureHolder (CoverManager coverManager, NeedSurface getDefaultSurface)
 		{
-			this.CoverManager = coverManager;
+			this.coverManager = coverManager;
+            CoverManager.TextureSizeChanged += HandleTextureSizeChanged;
 			this.GetDefaultSurface = getDefaultSurface;
 			ReloadDefaultTextures ();
 		}
-        ~ TextureHolder () {
-            Dispose ();
-        }
+
         protected bool disposed = false;
         public virtual void Dispose ()
         {
             if (disposed)
                 return;
             disposed = true;
-            CoverManager = null;
-            GetDefaultSurface = null;
-            ((IDisposable) default_surface).Dispose ();
+
+            CoverManager.TextureSizeChanged -= HandleTextureSizeChanged;
+
+            if (default_surface != null) {
+                ((IDisposable) default_surface).Dispose ();
+            }
             Cogl.Handle.Unref (defltTexture);
             Cogl.Handle.Unref (shadeTexture);
             defltTexture = IntPtr.Zero;
@@ -194,21 +185,9 @@ namespace ClutterFlow
     public abstract class ClutterFlowBaseActor : Clutter.Group, IIndexable
     {
         #region Fields
-        protected CoverManager coverManager;
+        private CoverManager coverManager;
         public virtual CoverManager CoverManager {
             get { return coverManager; }
-            set {
-                if (value!=coverManager) {
-                    if (coverManager!=null) {
-                        System.GC.SuppressFinalize (this);
-                        coverManager.Remove (this);
-                    }
-                    coverManager = value;
-                    if (coverManager!=null) {
-                        coverManager.Add (this);
-                    }
-                }
-            }
         }
 
         protected string cache_key = "";
@@ -253,13 +232,10 @@ namespace ClutterFlow
 
         public ClutterFlowBaseActor (CoverManager cover_manager) : base ()
         {
-            this.CoverManager = cover_manager;
+            coverManager = cover_manager;
+            coverManager.Add (this);
         }
 
-        ~ ClutterFlowBaseActor ()
-        {
-            Dispose ();
-        }
         protected bool disposed = false;
         public override void Dispose ()
         {
@@ -267,7 +243,9 @@ namespace ClutterFlow
                 return;
             disposed = true;
 
-            CoverManager = null;
+            coverManager.Remove (this);
+
+            base.Dispose ();
         }
 
         #region Texture Handling
@@ -390,17 +368,6 @@ namespace ClutterFlow
         }
 
 
-        public override CoverManager CoverManager {
-            get { return base.CoverManager; }
-            set {
-                if (coverManager!=null)
-                    coverManager.TextureSizeChanged -= HandleTextureSizeChanged;
-                base.CoverManager = value;
-                if (coverManager!=null)
-                    coverManager.TextureSizeChanged += HandleTextureSizeChanged;
-            }
-        }
-
 		private NeedSurface getDefaultSurface;
 		
 		protected bool shifted_outwards;
@@ -415,26 +382,26 @@ namespace ClutterFlow
 			this.LeaveEvent += HandleLeaveEvent;
 			this.ButtonPressEvent += HandleButtonPressEvent;
 			this.ButtonReleaseEvent += HandleButtonReleaseEvent;
-			
+
+            CoverManager.TextureSizeChanged += HandleTextureSizeChanged;
+
 			IsSetup = SetupStatics ();
 			SetupActors ();
 		}
 
-        ~ ClutterFlowActor ()
-        {
-            Dispose ();
-        }
         public sealed override void Dispose ()
         {
-            base.Dispose ();
-
             this.ParentSet -= HandleParentSet;
 			this.LeaveEvent -= HandleLeaveEvent;
             this.ButtonPressEvent -= HandleButtonPressEvent;
             this.ButtonReleaseEvent -= HandleButtonReleaseEvent;
+
+            CoverManager.TextureSizeChanged -= HandleTextureSizeChanged;
             getDefaultSurface = null;
 
             DisposeStatics ();
+
+            base.Dispose ();
         }
 		protected virtual bool SetupStatics ()
 		{
@@ -505,12 +472,12 @@ namespace ClutterFlow
 		protected virtual void SetupCover ()
 		{
 			if (cover==null) {
-				cover = new Clutter.CairoTexture((uint) coverManager.TextureSize, (uint) coverManager.TextureSize*2);				
+				cover = new Clutter.CairoTexture((uint) CoverManager.TextureSize, (uint) CoverManager.TextureSize*2);
 				Add (cover);
 				cover.Show ();
 				cover.Realize ();
 			}
-			cover.SetSize (coverManager.Behaviour.CoverWidth, coverManager.Behaviour.CoverWidth*2);
+			cover.SetSize (CoverManager.Behaviour.CoverWidth, CoverManager.Behaviour.CoverWidth*2);
 			cover.SetPosition (0, 0);
 			cover.Opacity = 255;
 			
@@ -544,7 +511,7 @@ namespace ClutterFlow
 					else
 						delayed_shade_swap = true;
 				}
-				shade.SetSize (coverManager.Behaviour.CoverWidth, coverManager.Behaviour.CoverWidth*2);
+				shade.SetSize (CoverManager.Behaviour.CoverWidth, CoverManager.Behaviour.CoverWidth*2);
 				shade.SetPosition (0, 0);
 				shade.Opacity = 255;
 	
@@ -582,7 +549,7 @@ namespace ClutterFlow
 			if (CoverManager.CurrentCover!=this)
 				CoverManager.NewCurrentCover += HandleNewCurrentCover;
 			else
-				coverManager.Behaviour.CreateClickedCloneAnimation (this);
+				CoverManager.Behaviour.CreateClickedCloneAnimation (this);
 			return this;
 		}
 		
@@ -590,7 +557,7 @@ namespace ClutterFlow
 		{
 			if (CoverManager.CurrentCover==this) {
 				CoverManager.NewCurrentCover -= HandleNewCurrentCover;
-				coverManager.Behaviour.CreateClickedCloneAnimation (this, CoverManager.MaxAnimationSpan);
+				CoverManager.Behaviour.CreateClickedCloneAnimation (this, CoverManager.MaxAnimationSpan);
 			}
 		}
 

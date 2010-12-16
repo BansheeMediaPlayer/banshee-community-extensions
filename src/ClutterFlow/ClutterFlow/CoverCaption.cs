@@ -45,36 +45,29 @@ namespace ClutterFlow.Captions
 				}
 			}
 		}
-
-		public override CoverManager CoverManager {
-			get { return coverManager; }
-			set {
-				if (value!=coverManager) {
-					if (coverManager!=null) {
-						coverManager.NewCurrentCover -= HandleNewCurrentCover;
-						coverManager.TargetIndexChanged -= HandleTargetIndexChanged;
-						coverManager.CoversChanged -= HandleCoversChanged;
-					}
-					coverManager = value;
-					if (coverManager!=null) {
-						coverManager.NewCurrentCover += HandleNewCurrentCover;
-						coverManager.TargetIndexChanged += HandleTargetIndexChanged;
-						coverManager.CoversChanged += HandleCoversChanged;
-					}
-				}
-			}
-		}
 		#endregion
 		
 		public CoverCaption (CoverManager coverManager, string font_name, Color color) : base (coverManager, font_name, color)
 		{
+            CoverManager.NewCurrentCover += HandleNewCurrentCover;
+            CoverManager.TargetIndexChanged += HandleTargetIndexChanged;
+            CoverManager.CoversChanged += HandleCoversChanged;
 		}
+
+        public override void Dispose ()
+        {
+            CoverManager.NewCurrentCover -= HandleNewCurrentCover;
+            CoverManager.TargetIndexChanged -= HandleTargetIndexChanged;
+            CoverManager.CoversChanged -= HandleCoversChanged;
+
+            base.Dispose ();
+        }
 
 		#region Methods
 
 		public override void Update ()
 		{
-			SetTextFromCover (coverManager.CurrentCover);
+			SetTextFromCover (CoverManager.CurrentCover);
 			base.Update ();
 		}
 		
@@ -82,7 +75,7 @@ namespace ClutterFlow.Captions
 		{
 			if (Stage!=null) {
 				SetAnchorPoint (Width*0.5f, Height*0.5f);
-				SetPosition(coverManager.Behaviour.CenterX, Math.Max(coverManager.Behaviour.CenterY - coverManager.Behaviour.CoverWidth, Height*0.6f));
+				SetPosition(CoverManager.Behaviour.CenterX, Math.Max(CoverManager.Behaviour.CenterY - CoverManager.Behaviour.CoverWidth, Height*0.6f));
 			}
 		}
 

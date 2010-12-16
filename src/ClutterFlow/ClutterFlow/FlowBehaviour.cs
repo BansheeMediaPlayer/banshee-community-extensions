@@ -193,35 +193,27 @@ namespace ClutterFlow
 			get { return coverManager.Timeline.Progress; }
 		}
 		
-		protected CoverManager coverManager;
+		private CoverManager coverManager;
 		public CoverManager CoverManager {
 			get { return coverManager; }
-			set {
-				if (value!=coverManager) {
-					if (coverManager!=null) {
-						coverManager.VisibleCoversChanged -= HandleVisibleCoversChanged;
-						coverManager.TargetIndexChanged -= HandleTargetIndexChanged;
-						coverManager.Timeline.NewFrame -= HandleNewFrame;
-					}
-					coverManager = value;
-					if (coverManager!=null) {
-						coverManager.VisibleCoversChanged += HandleVisibleCoversChanged;
-						coverManager.TargetIndexChanged += HandleTargetIndexChanged;
-						coverManager.Timeline.NewFrame += HandleNewFrame;
-					}
-				}
-			}
 		}
 		#endregion
 
         #region Initialisation
 		public FlowBehaviour (CoverManager coverManager)
 		{
-			this.CoverManager = coverManager;
+			this.coverManager = coverManager;
+            CoverManager.VisibleCoversChanged += HandleVisibleCoversChanged;
+            CoverManager.TargetIndexChanged += HandleTargetIndexChanged;
+            CoverManager.Timeline.NewFrame += HandleNewFrame;
 		}
+
         public virtual void Dispose ()
         {
-            CoverManager = null;
+            CoverManager.VisibleCoversChanged -= HandleVisibleCoversChanged;
+            CoverManager.TargetIndexChanged -= HandleTargetIndexChanged;
+            CoverManager.Timeline.NewFrame -= HandleNewFrame;
+
             if (fadeInAnim!=null) {
                 fadeInAnim.CompleteAnimation ();
                 fadeInAnim = null;

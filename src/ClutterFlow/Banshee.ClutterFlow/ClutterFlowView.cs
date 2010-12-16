@@ -83,11 +83,11 @@ namespace Banshee.ClutterFlow
         #endregion
 
         #region General
-		protected AlbumLoader albumLoader;
+		private AlbumLoader albumLoader;
 		public AlbumLoader AlbumLoader {
 			get { return albumLoader; }
 		}
-		protected CoverManager coverManager;
+		private CoverManager coverManager;
 		public CoverManager CoverManager {
 			get { return coverManager; }
 		}
@@ -254,6 +254,7 @@ namespace Banshee.ClutterFlow
             disposed = true;
 
             DetachEvents ();
+            AlbumLoader.Dispose ();
             CoverManager.Dispose ();
 
             //base.Dispose ();

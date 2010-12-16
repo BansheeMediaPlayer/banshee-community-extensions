@@ -60,7 +60,7 @@ namespace Banshee.ClutterFlow
                 Clutter.Threads.Init();
                 if (ClutterHelper.gtk_clutter_init (IntPtr.Zero, IntPtr.Zero) != InitError.Success)
                     throw new System.NotSupportedException ("Unable to initialize GtkClutter");
-               System.AppDomain.CurrentDomain.ProcessExit += HandleProcessExit;
+                System.AppDomain.CurrentDomain.ProcessExit += HandleProcessExit;
                 state = 1;
             }
         }
@@ -75,10 +75,13 @@ namespace Banshee.ClutterFlow
         public static void Quit ()
         {
             if (state == 1) {
-                if (BeforeQuit!=null) BeforeQuit (null, EventArgs.Empty);
+                EventHandler handler = BeforeQuit;
+                if (handler != null) {
+                    handler (null, EventArgs.Empty);
+                }
                 Clutter.Application.Quit ();
                 filter_view.Dispose ();
-                System.GC.Collect();
+                filter_view = null;
                 state = 2;
             }
         }
@@ -108,7 +111,7 @@ namespace Banshee.ClutterFlow
 		private PreferenceService preference_service;
 		private InterfaceActionService action_service;
 
-         private uint ui_manager_id;
+        private uint ui_manager_id;
         private ActionGroup clutterflow_actions;
 		private ToggleAction browser_action;
 		protected ToggleAction BrowserAction {
@@ -147,11 +150,7 @@ namespace Banshee.ClutterFlow
 		{
             ClutterFlowManager.Init ();
 		}
-        ~ ClutterFlowService ()
-        {
-            Dispose ();
-        }
-		
+
 		void IExtensionService.Initialize ()
 		{	
 			preference_service = ServiceManager.Get<PreferenceService> ();

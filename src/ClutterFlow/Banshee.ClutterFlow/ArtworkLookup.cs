@@ -49,18 +49,9 @@ namespace Banshee.ClutterFlow
 		#region Fields
 		private ArtworkManager artwork_manager;
 
-		protected CoverManager coverManager;
+		private CoverManager coverManager;
 		public CoverManager CoverManager {
 			get { return coverManager; }
-			set {
-				if (coverManager!=null) {
-					coverManager.TargetIndexChanged -= HandleTargetIndexChanged;
-				}
-				coverManager = value;
-				if (coverManager!=null) {
-					coverManager.TargetIndexChanged += HandleTargetIndexChanged;
-				}
-			}
 		}
 
 		public object SyncRoot {
@@ -98,7 +89,8 @@ namespace Banshee.ClutterFlow
 		public ArtworkLookup (CoverManager coverManager)
 		{
 			//Log.Debug ("ArtworkLookup ctor ()");
-		 	CoverManager = coverManager;
+		 	this.coverManager = coverManager;
+            CoverManager.TargetIndexChanged += HandleTargetIndexChanged;
 			artwork_manager = ServiceManager.Get<ArtworkManager> ();
 			artwork_manager.AddCachedSize (CoverManager.TextureSize);
 
@@ -138,6 +130,8 @@ namespace Banshee.ClutterFlow
             if (disposed)
                 return;
             disposed = true;
+
+            CoverManager.TargetIndexChanged -= HandleTargetIndexChanged;
             Log.Debug ("ArtworkLookup Dispose ()");
 			Stop ();
             LookupQueue.Dispose ();
