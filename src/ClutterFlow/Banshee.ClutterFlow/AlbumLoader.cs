@@ -265,7 +265,7 @@ namespace Banshee.ClutterFlow
                 Cache.Add (key, actor);
             }
 			actor.SortLabel = Comparer.GetSortLabel(generator);
-            list.Add (generator, actor);
+            list[generator] = actor;
 			actor.Index = list.Count;
             return actor;
         }
