@@ -1,6 +1,34 @@
-===============================
+=================================
+Version 1.9.1 - December 16, 2010
+=================================
+
+Contributors:
+Bertrand Lorentz, Chow Loong Jin, Gabriel Burt, Janez Troha, John Moore,
+Manish Sinha, Mathijs Dumon, Olivier Dufour, Rodney Dawes, Samuel Gyger
+
+New:
+* [Jamendo] Browse the Jamendo catalog, stream and download free music
+* [ZeitgeistDataprovider] Publish your Banshee activities into Zeitgeist
+
+Enhancements:
+* [LastfmFingerprint] Correct more information : album name, track number, etc.
+* [build] Various build/unit test fixes
+
+Bugs Fixed:
+* [Ampache] Improve handling of large libraries (bgo#636069)
+* [Ampache] Reduce the initial load time by loading songs on demand (bgo#636041)
+* [LastfmFingerprint] Fix NRE when fingerprint request times out (bgo#635899)
+* [Lirc] Add a dllmap for lirc_client (bgo#635848)
+* [Lyrics] Properly trim artist name and track title and fix NRE (bgo#635616)
+* [Lyrics] Change regex on LyricWiki to show only original language (bgo#635434)
+* [Lyrics] Throw a NetworkUnavailableException when there is no network (bgo#634787)
+
+The SoundMenu and UbuntuOneMusicStore extensions have been removed, as they are
+now core extensions and part of the main Banshee source tree.
+
+=================================
 Version 1.9.0 - November 10, 2010
-===============================
+=================================
 
 Contributors:
 Bertrand Lorentz, John Moore, Olivier Dufour, Raimo Radczewski
