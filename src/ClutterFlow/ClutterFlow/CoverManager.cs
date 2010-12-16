@@ -119,11 +119,11 @@ namespace ClutterFlow
 		public void UpdateLetterLookup (ClutterFlowBaseActor actor) {
 			string label = actor.SortLabel.ToUpper ();
 			char letter = label.Length>0 ? char.Parse(label.Substring (0,1)) : '?';
-			AlphabetChars key;
+            AlphabetChars key;
 			if (char.IsLetter(letter))
 				key = (AlphabetChars) letter;
 			else
-				key = AlphabetChars.unkown;
+				key = AlphabetChars.unknown;
 			if (letter_lookup[key]==-1)
 				letter_lookup[key] = actor.Index;
 		}

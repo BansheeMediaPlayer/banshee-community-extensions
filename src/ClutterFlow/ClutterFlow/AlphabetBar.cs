@@ -9,7 +9,7 @@ namespace ClutterFlow.Alphabet
 
 	public class AlphabetEventArgs : EventArgs
 	{
-		protected AlphabetChars letter = AlphabetChars.unkown;
+		protected AlphabetChars letter = AlphabetChars.unknown;
 		public AlphabetChars Letter {
 			get { return letter; }
 		}
