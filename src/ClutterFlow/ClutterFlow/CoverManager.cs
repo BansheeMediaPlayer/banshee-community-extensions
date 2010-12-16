@@ -114,17 +114,16 @@ namespace ClutterFlow
 			letter_lookup = new Dictionary<AlphabetChars, int>();
 			foreach (AlphabetChars key in Enum.GetValues(typeof(AlphabetChars)))
 				letter_lookup.Add(key, -1);
-			Console.WriteLine ("ResetLetterLookup called, letter_lookup is " + (letter_lookup == null ? "null" : "not null"));
 		}
 		public void UpdateLetterLookup (ClutterFlowBaseActor actor) {
-			string label = actor.SortLabel.ToUpper ();
+			string label = actor.SortLabel.ToUpper ().Normalize (System.Text.NormalizationForm.FormKD);
 			char letter = label.Length>0 ? char.Parse(label.Substring (0,1)) : '?';
             AlphabetChars key;
 			if (char.IsLetter(letter))
 				key = (AlphabetChars) letter;
 			else
 				key = AlphabetChars.unknown;
-			if (letter_lookup[key]==-1)
+			if (letter_lookup.ContainsKey (key) && letter_lookup[key] == -1)
 				letter_lookup[key] = actor.Index;
 		}
 		
