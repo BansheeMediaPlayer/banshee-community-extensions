@@ -1,5 +1,5 @@
 AC_PREREQ(2.52)
-AC_INIT([banshee-community-extensions], 1.9.0,
+AC_INIT([banshee-community-extensions], 1.9.1,
 	[http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions])
 
 AM_INIT_AUTOMAKE([1.9 dist-bzip2 tar-ustar dist-zip foreign])
@@ -29,7 +29,7 @@ SHAMROCK_FIND_MONO_2_0_COMPILER
 SHAMROCK_FIND_MONO_RUNTIME
 
 dnl Banshee deps
-PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.7.4)
+PKG_CHECK_MODULES(BANSHEE, banshee-1-thickclient >= 1.9.1)
 AC_SUBST(BANSHEE_LIBS)
 
 dnl Banshee Extensions Path
@@ -131,11 +131,11 @@ help/Makefile
 po/Makefile.in
 
 src/Makefile
-src/Ampache/Makefile
-src/AppIndicator/Makefile
 src/AssemblyInfo.cs
 
 src/AlarmClock/Makefile
+src/Ampache/Makefile
+src/AppIndicator/Makefile
 src/Awn/Makefile
 src/ClutterFlow/Makefile
 src/ClutterFlow/Banshee.ClutterFlow/Makefile
