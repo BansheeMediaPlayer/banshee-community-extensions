@@ -197,7 +197,8 @@ namespace Banshee.ClutterFlow
 		#region Setup
 		private bool SetupSourceContents ()
 		{
-			if (music_library==null || preference_service==null || action_service==null)
+			if (music_library==null || preference_service==null || action_service==null
+			    || ServiceManager.SourceManager.ActiveSource == null)
 				return false;		
 
             clutter_flow_contents = new ClutterFlowContents ();
