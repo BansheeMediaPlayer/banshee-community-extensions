@@ -59,6 +59,10 @@ namespace Banshee.AlarmClock
         private bool StartPlaying ()
         {
             service.AlarmResetEvent.Set ();
+
+            if (!service.AlarmEnabled) {
+                return false;
+            }
             if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing) {
                 return false;
             }
