@@ -52,6 +52,15 @@ run:
 
 test: check
 
+all-local: update-pot
+
+update-pot:
+	if [ "x$(top_srcdir)" = "x$(top_builddir)" ]; then \
+		pushd $(top_builddir)/po; \
+		$(MAKE) $(GETTEXT_PACKAGE).pot; \
+		popd; \
+	fi;
+
 # ---------------
 # Release Targets
 # ---------------
