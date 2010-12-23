@@ -14,6 +14,7 @@ AC_DEFUN([BCE_ZEITGEISTDP],
 	if test "x$enable_ZeitgeistDataprovider" = "xyes"; then
 		AM_CONDITIONAL(ENABLE_ZEITGEISTDATAPROVIDER, true)
 	else
+		enable_ZeitgeistDataprovider=no
 		AM_CONDITIONAL(ENABLE_ZEITGEISTDATAPROVIDER, false)
 	fi
 ])
