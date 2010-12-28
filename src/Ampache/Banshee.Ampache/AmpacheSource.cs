@@ -88,11 +88,11 @@ namespace Banshee.Ampache
                 var sngs = _contents.ViewModel.Songs.ToList();
                 var skip = sngs.IndexOf(_contents.ViewModel.SelectedSong);
                 _queue = new PlayQueue(sngs.Skip(skip), sngs.Take(skip));
-                Console.WriteLine (_queue.Current.DisplayName);
+                //Console.WriteLine (_queue.Current.DisplayName);
                 if (ServiceManager.PlaybackController.ShuffleMode != "off") {
                     _queue.Shuffle(null);
                 }
-                Console.WriteLine (_queue.Current.DisplayName);
+                //Console.WriteLine (_queue.Current.DisplayName);
                 ServiceManager.PlayerEngine.OpenPlay(_queue.Current);
             }
         }
@@ -132,7 +132,7 @@ namespace Banshee.Ampache
                 ServiceManager.PlayerEngine.OpenPlay(song);
                 _queue.Next();
                 _contents.ViewModel.SelectedSong = song;
-                ignoreChanges = true;
+                ignoreChanges = false;
             }
             return true;
         }

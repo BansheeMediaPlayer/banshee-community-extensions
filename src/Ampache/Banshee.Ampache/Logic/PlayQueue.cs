@@ -51,14 +51,17 @@ namespace Banshee.Ampache
             tmp.AddRange(nexts);
             _playList = tmp;
             _first = _playList[SafePlaying];
-            _original = tmp.AsReadOnly();
+            _original = new List<AmpacheSong>(tmp).AsReadOnly();
         }
 
         public AmpacheSong Current { get { return _playList[SafePlaying]; } }
-        private int SafePlaying { get { return _playing % _playList.Count; } }
+        private int SafePlaying { get { return  _playing % _playList.Count; } }
         public AmpacheSong First { get { return _first; } }
         public AmpacheSong PeekNext()
         {
+            if(_playList.Count == 0){
+                return null;
+            }
             return _playList[(_playing + 1) % _playList.Count];
         }
         public AmpacheSong Next()
@@ -99,7 +102,7 @@ namespace Banshee.Ampache
         public void Unshuffle(object o)
         {
             var tmp = Current;
-            _playList = _original.ToList();
+            _playList = new List<AmpacheSong>(_original);
             _playing = _playList.IndexOf(tmp);
         }
     }
