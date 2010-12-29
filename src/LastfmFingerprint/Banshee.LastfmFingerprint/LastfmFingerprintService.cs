@@ -110,6 +110,12 @@ namespace Banshee.LastfmFingerprint
             job.CanCancel = true;
             job.CancelRequested += HandleJobCancelRequested;
             job.Register ();
+
+            LastfmAccount account = new LastfmAccount ();
+            LoginDialog dialog = new LoginDialog (account);
+            dialog.Run ();
+            dialog.Dispose ();
+
             //comment the timeout system for TOS because still have issue and not seems to be linked...
             //System.DateTime start = System.DateTime.MinValue;
             ThreadPool.QueueUserWorkItem (delegate {
@@ -135,7 +141,7 @@ namespace Banshee.LastfmFingerprint
                         */
                         byte[] fingerprint = ad.Decode (track.Uri.AbsolutePath);
                         FingerprintRequest request = new FingerprintRequest();
-                        request.Send (track, fingerprint);
+                        request.Send (track, fingerprint, account);
 
                         int fpid = request.GetFpId ();
                         //force GC to dispose

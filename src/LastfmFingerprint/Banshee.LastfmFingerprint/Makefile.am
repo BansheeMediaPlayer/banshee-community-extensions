@@ -4,7 +4,11 @@ LINK = $(BANSHEE_LIBS) $(BANSHEE_LASTFM_LIBS)
 SOURCES =  \
 	AudioDecoder.cs \
 	FingerprintRequest.cs \
-	LastfmFingerprintService.cs
+	LastfmAccount.cs \
+	LastfmFingerprintService.cs \
+	LoginDialog.cs \
+	LoginForm.cs \
+	VerifyUserRequest.cs
 
 RESOURCES =  \
 	LastfmFingerprint.addin.xml \

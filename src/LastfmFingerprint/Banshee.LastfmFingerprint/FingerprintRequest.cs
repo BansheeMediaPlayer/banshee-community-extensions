@@ -44,16 +44,16 @@ namespace Lastfm
 {
     public class FingerprintRequest
     {
-        private const string API_ROOT = "http://ws.audioscrobbler.com/fingerprint/query/";
+        private const string API_ROOT = "http://www.last.fm/fingerprint/query/";
 
         private Stream response_stream;
 
         public FingerprintRequest ()
         {}
 
-        public void Send (TrackInfo track, byte[] fingerprint)
+        public void Send (TrackInfo track, byte[] fingerprint, LastfmAccount account)
         {
-            response_stream = Post (API_ROOT, BuildPostData (track), fingerprint);
+            response_stream = Post (API_ROOT, BuildPostData (track, account), fingerprint);
         }
 
         public int GetFpId ()
@@ -84,7 +84,7 @@ namespace Lastfm
             return Uri.EscapeUriString (str ?? string.Empty).Replace ("-", "%2D").Replace (".", "%2E").Replace("(", "%28").Replace (")", "%29");
         }
 
-        private string BuildPostData (TrackInfo track)
+        private string BuildPostData (TrackInfo track, LastfmAccount account)
         {
             StringBuilder data = new StringBuilder ();
             data.AppendFormat ("artist={0}", EscapeUri (track.ArtistName));
@@ -109,13 +109,46 @@ namespace Lastfm
 
             if (track.Year > 0)
                 data.AppendFormat ("&year={0}", track.Year);
+            // TODO change account here
+            if (String.IsNullOrEmpty (account.UserName)) {
+                // anonymous seems to stuck in 3 requests
+                // TODO add a wait system when anon
+                data.AppendFormat ("&username={0}", EscapeUri ("fp client 1.6"));
+            } else {
+                string time = (DateTime.Now - new DateTime(1970, 1, 1)).TotalSeconds.ToString ();
+                data.AppendFormat ("time={0}", time);//seconds since 1er janvier 1970
+                data.AppendFormat ("&username={0}", account.UserName);
+                data.AppendFormat ("&auth={0}", ConvertToMd5(account.Password + time));
+                data.AppendFormat ("&authlower={0}", ConvertToMd5(account.Password.ToLower() + time));
+            }
 
-            data.AppendFormat ("&username={0}", EscapeUri ("fp client 1.6"));//"banshee client" seems to stuck in 3 requests
             if (!string.IsNullOrEmpty(track.MusicBrainzId))
                 data.AppendFormat ("&mbid={0}", EscapeUri (track.MusicBrainzId));
 
-
             return data.ToString ();
+        }
+
+        string ConvertToMd5 (string input)
+        {
+            MD5 md5Hasher = MD5.Create ();
+            // Convert the input string to a byte array and compute the hash.
+            byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
+
+            // Create a new Stringbuilder to collect the bytes
+            // and create a string.
+            StringBuilder sBuilder = new StringBuilder();
+
+            // Loop through each byte of the hashed data
+            // and format each one as a hexadecimal string.
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+
+            // TODO check if need to fill the end of sbuilder until get a size of 32
+
+            // Return the hexadecimal string.
+            return sBuilder.ToString();
         }
 
         string ToHex (byte[] hash)
