@@ -46,10 +46,15 @@ namespace Banshee.LiveRadio.Plugins
     public class ShoutCastPlugin : LiveRadioBasePlugin
     {
 
-        private const string base_url = "http://www.shoutcast.com";
-        private const string request_url = "/sbin/newxml.phtml";
-        private const string genre_request = "?genre=";
-        private const string freetext_request = "?search=";
+        private const string base_url = "http://api.shoutcast.com";
+        private const string play_url = "http://yp.shoutcast.com";
+        private const string request_url = "/legacy/";
+        private const string genre_list_request = "genrelist";
+        private const string key = "?k=[DevKeyHere]"; //replace with Developer Key for Shoutcast API 2.0
+        private const string genre_url = "genresearch";
+        private const string freetext_url = "stationsearch";
+        private const string genre_request = "&genre=";
+        private const string freetext_request = "&search=";
 
         /// <summary>
         /// Constructor -- sets configuration entries
@@ -69,7 +74,7 @@ namespace Banshee.LiveRadio.Plugins
         /// </summary>
         protected override void RetrieveGenres ()
         {
-            ParseGenres(RetrieveXml(base_url + request_url));
+            ParseGenres(RetrieveXml(base_url + request_url +  genre_list_request + key));
         }
 
         /// <summary>
@@ -85,9 +90,9 @@ namespace Banshee.LiveRadio.Plugins
         {
             string request;
             if (request_type == LiveRadioRequestType.ByGenre) {
-                request = base_url + request_url + genre_request + query;
+                request = base_url + request_url + genre_url + key + genre_request + query;
             } else {
-                request = base_url + request_url + freetext_request + query;
+                request = base_url + request_url + freetext_url + key + freetext_request + query;
             }
             XmlDocument document = RetrieveXml(request);
             if (document != null) ParseXmlResponse(document, request_type, query);
@@ -197,7 +202,7 @@ namespace Banshee.LiveRadio.Plugins
 
                     DatabaseTrackInfo new_station = new DatabaseTrackInfo ();
 
-                    new_station.Uri = new SafeUri (base_url + tunein_url + "?id=" + id);
+                    new_station.Uri = new SafeUri (play_url + tunein_url + "?id=" + id);
                     new_station.ArtistName = "www.shoutcast.com";
                     new_station.Genre = genre;
                     new_station.TrackTitle = name;
