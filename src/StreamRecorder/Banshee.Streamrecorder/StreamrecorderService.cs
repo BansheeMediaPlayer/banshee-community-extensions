@@ -331,6 +331,12 @@ namespace Banshee.Streamrecorder
             if (String.IsNullOrEmpty (output_directory)) {
                 output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory
                                  + Path.DirectorySeparatorChar + "ripped";
+                Hyena.Log.DebugFormat ("[StreamrecorderService] <InitStreamrecorderProcess> output directory not set, using: {0}", output_directory);
+            }
+
+            if (!Directory.Exists (output_directory)) {
+                Hyena.Log.Debug ("[StreamrecorderService] <InitStreamrecorderProcess> output directory does not exist, creating.");
+                Directory.CreateDirectory (output_directory);
             }
 
             if (track_in == null) {
