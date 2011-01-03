@@ -31,6 +31,7 @@ using Mono.Unix;
 using Gtk;
 
 using Lastfm;
+using Hyena;
 
 namespace Lastfm
 {
@@ -41,6 +42,7 @@ namespace Lastfm
         private Entry password_entry;
         private LinkButton signup_button;
         private Button authorize_button;
+        private Label label;
 
         private bool save_on_edit = false;
 
@@ -114,6 +116,9 @@ namespace Lastfm
             authorize_button.Clicked += OnAuthorize;
             authorize_button.Show ();
             Attach (authorize_button, 1, 2, 3, 4, AttachOptions.Shrink, AttachOptions.Shrink, 0, 0);
+            label = new Label (null);
+            label.Show ();
+            Attach (label, 0, 1, 3, 4, AttachOptions.Shrink, AttachOptions.Shrink, 0, 0);
         }
 
         private void OnAuthorize (object o, EventArgs args)
@@ -121,11 +126,14 @@ namespace Lastfm
             //account.password = null;
             VerifyUserRequest request = new VerifyUserRequest();
             if (request.Send (Username, Password)) {
-                //TODO change image to green to show that pass is ok
+                Log.Debug ("Verify account OK");
+                label.Text = "Athorization OK";
+                label.ModifyText (StateType.Normal, new Gdk.Color (0, 1, 0));
             }
             else {
-                // TODO print
-                //request.GetErrorString ();
+                label.Text = request.GetErrorString ();
+                label.ModifyText (StateType.Normal , new Gdk.Color (1, 0, 0));
+                Log.Debug (request.GetErrorString ());
             }
         }
 

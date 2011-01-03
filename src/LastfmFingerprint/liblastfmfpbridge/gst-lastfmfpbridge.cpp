@@ -56,7 +56,6 @@ struct LastfmfpAudio {
     GstElement *pipeline;
     GstElement *audio;
 
-    gint rate;
     gint filerate;
     gint seconds;
     gint nchannels;
@@ -230,14 +229,13 @@ Lastfmfp_cb_have_data(GstElement *element, GstBuffer *buffer, GstPad *pad, Lastf
 }
 
 extern "C"  LastfmfpAudio*
-Lastfmfp_initialize(gint rate, gint seconds)
+Lastfmfp_initialize(gint seconds)
 {
     LastfmfpAudio *ma;
     gint i;
 
     
     ma = g_new0(LastfmfpAudio, 1);
-    ma->rate = rate;
     ma->seconds = seconds;
 	
     // cancel decoding mutex
@@ -354,7 +352,7 @@ Lastfmfp_decode(LastfmfpAudio *ma, const gchar *file, int* size, int* ret)
     Lastfmfp_initgstreamer(ma, file);
     //lastfm setup
     ma->extractor = new fingerprint::FingerprintExtractor();
-    ma->extractor->initForQuery(ma->rate, ma->nchannels, ma->seconds);
+    ma->extractor->initForQuery(ma->filerate, ma->nchannels, ma->seconds);
     
     if (ma->filerate < 0) {
         *size = 0;

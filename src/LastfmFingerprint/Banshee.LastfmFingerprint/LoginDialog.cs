@@ -85,7 +85,8 @@ namespace Lastfm
 
             login_form = new LoginForm (account);
             login_form.AddSignUpButton ();
-            login_form.AddAuthorizeButton ();
+            //login_form.AddAuthorizeButton ();
+            //TODO fix the verify user because always get bad pwd
             login_form.Show ();
 
             vbox.PackStart (login_form, true, true, 0);
@@ -102,14 +103,16 @@ namespace Lastfm
             if (addCloseButton) {
                 AddButton (Stock.Cancel, ResponseType.Cancel);
                 Button button = new Button ();
-                button.Label = Catalog.GetString ("Save and Log In");
+                button.Label = Catalog.GetString ("Log In");
                 button.Image = new Image ("gtk-save", IconSize.Button);
                 button.ShowAll ();
                 button.Activated += delegate {
                     login_form.Save ();
+                    this.Destroy ();
                 };
                 button.Clicked += delegate {
                     login_form.Save ();
+                    this.Destroy ();
                 };
                 AddActionWidget (button, ResponseType.Ok);
             }

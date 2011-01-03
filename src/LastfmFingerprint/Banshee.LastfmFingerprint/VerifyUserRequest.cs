@@ -43,7 +43,7 @@ namespace Lastfm
 {
     public class VerifyUserRequest
     {
-        private const string API_ROOT = "ws.audioscrobbler.com/ass/pwcheck.php";
+        private const string API_ROOT = "http://ws.audioscrobbler.com/ass/pwcheck.php";
         private int error_code;
         private Stream response_stream;
 
@@ -53,9 +53,12 @@ namespace Lastfm
         public bool Send (string user, string pwd)
         {
             response_stream = Get (API_ROOT, BuildPostData (user, pwd));
-            byte[] buf = new byte [response_stream.Length];
-            response_stream.Read (buf, 0, (int)response_stream.Length);
-            string response = System.Text.ASCIIEncoding.ASCII.GetString(buf);
+            if (response_stream == null) {
+                error_code = -4;
+                return false;
+            }
+            StreamReader reader = new StreamReader(response_stream);
+            string response = reader.ReadToEnd ();
 
             if (response.Contains( "OK2" ))
                 error_code = 0;
@@ -82,7 +85,9 @@ namespace Lastfm
                 case -2:
                     return "Bad password, please check your password.";
                 case -3:
-                    return "Error authentification";
+                    return "Error authentification.";
+                case -4:
+                    return "Webservice timeout.";
                 default:
                     return String.Empty;
             }
@@ -102,7 +107,7 @@ namespace Lastfm
             return data.ToString ();
         }
 
-        string ConvertToMd5 (string input)
+        public static string ConvertToMd5 (string input)
         {
             MD5 md5Hasher = MD5.Create ();
             // Convert the input string to a byte array and compute the hash.

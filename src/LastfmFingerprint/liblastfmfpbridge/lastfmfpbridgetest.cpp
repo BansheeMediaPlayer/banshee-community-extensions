@@ -35,7 +35,7 @@ main (gint   argc,
   int ret = 0;
 
 //TODO parse argv for param of initialize
-LastfmfpAudio *ma = Lastfmfp_initialize(44100, 215);
+LastfmfpAudio *ma = Lastfmfp_initialize(215);
   
 const char* fpid = Lastfmfp_decode(ma, argv[0], &size, &ret);
 

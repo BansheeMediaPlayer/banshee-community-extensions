@@ -26,7 +26,7 @@
 typedef struct LastfmfpAudio LastfmfpAudio;
 
 extern "C" LastfmfpAudio*
-Lastfmfp_initialize(gint rate, gint seconds);
+Lastfmfp_initialize(gint seconds);
 
 extern "C" const char*
 Lastfmfp_decode(LastfmfpAudio *ma, const gchar *file, int* size, int* ret);

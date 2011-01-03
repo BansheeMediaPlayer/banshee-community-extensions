@@ -47,6 +47,7 @@ namespace Banshee.LastfmFingerprint
         private uint ui_manager_id;
         private bool active;
         private AudioDecoder ad;
+        private LastfmAccount account;
         //in a perfect word 400ms is enough but still get timeout and banned so increase time between last fm request
         //private TimeSpan lastFmTOSMinTimeout = TimeSpan.FromMilliseconds (1000);
 
@@ -111,8 +112,8 @@ namespace Banshee.LastfmFingerprint
             job.CancelRequested += HandleJobCancelRequested;
             job.Register ();
 
-            LastfmAccount account = new LastfmAccount ();
-            LoginDialog dialog = new LoginDialog (account);
+            account = new LastfmAccount ();
+            LoginDialog dialog = new LoginDialog (account, true);
             dialog.Run ();
             dialog.Dispose ();
 
@@ -128,7 +129,7 @@ namespace Banshee.LastfmFingerprint
                     foreach (TrackInfo track in ((ITrackModelSource)source).TrackModel.SelectedItems) {
                         if (!active)
                             break;
-                        ad = new AudioDecoder(track.SampleRate, (int)track.Duration.TotalSeconds);
+                        ad = new AudioDecoder((int)track.Duration.TotalSeconds);
                         //respect last fm term of service :
                         //You will not make more than 5 requests per originating IP address per second, averaged over a 5 minute period
                         // 2 requests are done on each loop ==> time allowed by loop : 400ms
@@ -216,29 +217,43 @@ namespace Banshee.LastfmFingerprint
 
         void GetMoreInfo (TrackInfo track)
         {
+            string time = (DateTime.Now - new DateTime(1970, 1, 1)).TotalSeconds.ToString ();
+
             var request = new LastfmRequest ("track.getInfo");
             request.AddParameter ("artist", track.ArtistName);
             request.AddParameter ("track", track.TrackTitle);
             request.AddParameter ("mbid", track.MusicBrainzId);
+
+            request.AddParameter ("time", time);
+            request.AddParameter ("username", account.UserName);
+            request.AddParameter ("auth", VerifyUserRequest.ConvertToMd5(account.Password + time));
+            request.AddParameter ("auth2", VerifyUserRequest.ConvertToMd5(account.Password.ToLower () + time));
 
             request.Send ();
 
             var response = request.GetResponseObject ();
             if (response == null)
                 return;
-
-            var json_track = (JsonObject)response["track"];
-            //track.Duration = TimeSpan.FromMilliseconds (double.Parse ((string)json_track["duration"]));
-            var json_album = (JsonObject)json_track["album"];
-
-            Log.Debug ("track.getInfo: json_track:" + json_track.ToString ());
-            if (json_album != null)
+            try
             {
-                var attr = (JsonObject)json_album["@attr"];
-                track.TrackNumber = int.Parse ((string)attr["position"]);
-                track.AlbumTitle = (string)json_album["title"];
-                track.AlbumMusicBrainzId = (string)json_album["mbid"];
-                track.AlbumArtist = (string)json_album["artist"];
+                Log.Debug ("track.getInfo: response:" + response.ToString ());
+                var json_track = (JsonObject)response["track"];
+                //track.Duration = TimeSpan.FromMilliseconds (double.Parse ((string)json_track["duration"]));
+                if (!json_track.ContainsKey("album"))
+                    return;
+
+                var json_album = (JsonObject)json_track["album"];
+                if (json_album != null)
+                {
+                    var attr = (JsonObject)json_album["@attr"];
+                    track.TrackNumber = int.Parse ((string)attr["position"]);
+                    track.AlbumTitle = (string)json_album["title"];
+                    track.AlbumMusicBrainzId = (string)json_album["mbid"];
+                    track.AlbumArtist = (string)json_album["artist"];
+                }
+            } catch (Exception e)
+            {
+                Log.DebugException (e);
             }
         }
 
