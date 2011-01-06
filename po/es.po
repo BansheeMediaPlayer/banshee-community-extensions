@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
 "POT-Creation-Date: 2010-12-17 12:02+0100\n"
-"PO-Revision-Date: 2010-12-17 15:33+0000\n"
-"Last-Translator: rahermosillac <ra.hermosillac@gmail.com>\n"
+"PO-Revision-Date: 2011-01-06 19:23+0000\n"
+"Last-Translator: nemecis1000 <nemecis000@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -233,125 +233,125 @@ msgstr "Inmediatamente aplicar los cambios al modo de reproducción"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:86
 msgid "Starts playing a new song immediately after the playback mode changed (Party Mode or Album Mode)"
-msgstr ""
+msgstr "Comenzar inmediatamente la reproducción de una nueva canción después que el modo de reproducción cambió (Modo Fiesta o Modo Álbum)"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:92
 msgid "Display album _label"
-msgstr ""
+msgstr "Mostrar etiqueta del á_lbum"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:93
 msgid "Wether or not the album label needs to be shown above the artwork"
-msgstr ""
+msgstr "Sea o no la etiqueta álbum tiene que ser demostrado por encima de la obra de arte"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:99
 msgid "Display track _title"
-msgstr ""
+msgstr "Mostrar _título de la pista"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:100
 msgid "Wether or not the album title needs to be shown above the artwork in fullscreen mode"
-msgstr ""
+msgstr "Sea o no el título del álbum tiene que ser demostrado por encima de la obra de arte en el modo de pantalla completa"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:106
 msgid "Texture size in pixels"
-msgstr ""
+msgstr "Texturizar tamaño en píxeles"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:107
 msgid "The in-memory size of the cover textures in pixels"
-msgstr ""
+msgstr "Tamaño en memoria de las texturas de las portadas en píxeles"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:113
 msgid "Minimal cover size in pixels"
-msgstr ""
+msgstr "Tamaño mínimo de las portadas en píxeles"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:114
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:121
 msgid "The on-stage minimal cover size in pixels"
-msgstr ""
+msgstr "Tamaño mínimo de la portada en mostrador en píxeles"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:120
 msgid "Maximal cover size in pixels"
-msgstr ""
+msgstr "Tamaño máximo de la portada en píxeles"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:127
 msgid "Number of visible covers at the side"
-msgstr ""
+msgstr "Número de portadas visibles"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:128
 msgid "The number of covers that need to be displayed on the stage (at one side)"
-msgstr ""
+msgstr "Número de portadas que necesitan ser mostradas en el mostrador (a un lado)"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:134
 msgid "Sort covers by"
-msgstr ""
+msgstr "Ordenar portadas por"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:135
 msgid "Selects on what basis covers should be sorted"
-msgstr ""
+msgstr "Selecciona en qué orden mostrar las portadas"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:231
 msgid "Show ClutterFlow Browser"
-msgstr ""
+msgstr "Mostrar navegador ClutterFlow"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:232
 msgid "Show or hide the ClutterFlow browser"
-msgstr ""
+msgstr "Mostrar u ocultar el navegador ClutterFlow"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:325
 msgid "ClutterFlow"
-msgstr ""
+msgstr "ClutterFlow"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:328
 msgid "General"
-msgstr ""
+msgstr "General"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:337
 msgid "Dimensions"
-msgstr ""
+msgstr "Dimensiones"
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:63
 msgid "Jamendo Downloads"
-msgstr ""
+msgstr "Descargas Jamendo"
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:64
 msgid "Contacting..."
-msgstr ""
+msgstr "Contactando..."
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:95
 msgid "Importing..."
-msgstr ""
+msgstr "Importando..."
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoWebBrowserShell.cs:41
 #, csharp-format
 msgid "Search Jamendo"
-msgstr ""
+msgstr "Buscar en Jamendo"
 
 #: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:75
 msgid "Get Information From Track Fingerprint"
-msgstr ""
+msgstr "Obtener información desde la huella digital de la pista"
 
 #: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:76
 msgid "Get track information from last.fm acoustic fingerprint"
-msgstr ""
+msgstr "Obtener la información de la pista desde la huella digital de last.fm"
 
 #: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:105
 msgid "Getting sound fingerprint"
-msgstr ""
+msgstr "Obteniendo huella digital de sonido"
 
 #: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:108
 msgid "Scanning..."
-msgstr ""
+msgstr "Escaneando..."
 
 #: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:46
 msgid "LCD configuration"
-msgstr ""
+msgstr "Configuración LCD"
 
 #: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:54
 msgid "Hostname:"
-msgstr ""
+msgstr "Nombre de dominio:"
 
 #: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:61
 msgid "Port:"
-msgstr ""
+msgstr "Puerto:"
 
 #: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:67
 msgid "LCDProc Daemon:"
@@ -359,11 +359,11 @@ msgstr ""
 
 #: ../src/LCD/Banshee.LCD/LCDService.cs:67
 msgid "LCD"
-msgstr ""
+msgstr "LCD:"
 
 #: ../src/LCD/Banshee.LCD/LCDService.cs:71
 msgid "Configure the LCD plugin"
-msgstr ""
+msgstr "Configurar el plugin LCD"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioConfigDialog.cs:75
 #, csharp-format
@@ -371,18 +371,20 @@ msgid ""
 "{0}LiveRadio configuration\n"
 "{1}"
 msgstr ""
+"{0}Configuración de LiveRadio\n"
+"{1}"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioConfigDialog.cs:81
 msgid "Please set your preferences for your LiveRadio plugins\n"
-msgstr ""
+msgstr "Por favor, establezca sus preferencias para el complemento LiveRadio\n"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioConfigDialog.cs:91
 msgid "Enable this plugin"
-msgstr ""
+msgstr "Activar este complemento"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioFilterView.cs:87
 msgid "Choose By Genre"
-msgstr ""
+msgstr "Escoger por Género"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioFilterView.cs:91
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:172
@@ -391,169 +393,169 @@ msgstr ""
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:141
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:388
 msgid "Loading..."
-msgstr ""
+msgstr "Cargando..."
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioFilterView.cs:95
 msgid "Choose By Query"
-msgstr ""
+msgstr "Escoger por Consulta"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:558
 msgid "Yes"
-msgstr ""
+msgstr "Sí"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:558
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:74
 msgid "Proxy URL"
-msgstr ""
+msgstr "URL del Proxy:"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:75
 msgid "Enable using a HTTP proxy server"
-msgstr ""
+msgstr "Activar usando un servidor proxy HTTP"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:76
 msgid "Use Site Login"
-msgstr ""
+msgstr "Utilizar inicio de sesión del Sitio"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:77
 #: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:58
 msgid "Username"
-msgstr ""
+msgstr "Usuario"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:78
 #: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:85
 msgid "Password"
-msgstr ""
+msgstr "Contraseña"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:79
 msgid "HTTP timeout in seconds"
-msgstr ""
+msgstr "Tiempo de espera HTTP en segundos"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:129
 msgid "Browser on Left"
-msgstr ""
+msgstr "Navegador a la Izquierda"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:130
 msgid "Show the artist/album browser to the left of the track list"
-msgstr ""
+msgstr "Mostrar el navegador de artista/álbum a la izquierda de la lista de pistas"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:133
 msgid "Browser on Top"
-msgstr ""
+msgstr "Navegador arriba"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:134
 msgid "Show the artist/album browser above the track list"
-msgstr ""
+msgstr "Mostrar el navegador de artista/álbum sobre la lista de pistas"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:139
 msgid "Show Browser"
-msgstr ""
+msgstr "Mostrar Navegador"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:140
 msgid "Show or hide the artist/album browser"
-msgstr ""
+msgstr "Mostrar u ocultar el navegador de artista/álbum"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:203
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:251
 msgid "Error... Please Reload"
-msgstr ""
+msgstr "Error... Por favor, reinicie"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:423
 msgid "Click a genre to load/refresh entries or type a query. Use the refresh button to refresh genres."
-msgstr ""
+msgstr "Haga clic en un género para cargar/actualizar las entradas o ingrese una consulta. Utilice el botón actualizar para actualizar los géneros."
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:68
 msgid "LiveRadioPlugin"
-msgstr ""
+msgstr "LiveRadioPlugin"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:119
 msgid "Station"
-msgstr ""
+msgstr "Estación"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:120
 msgid "Creator"
-msgstr ""
+msgstr "Creador"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:121
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:179
 msgid "Requested Results Returned"
-msgstr ""
+msgstr "Resultados solicitados devueltos"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:180
 msgid "The plugin has returned a list of results for a genre or freetext query"
-msgstr ""
+msgstr "El complemento ha devuelto una lista de resultados para un género o consulta freetext"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:199
 msgid "Genre List Retrieved"
-msgstr ""
+msgstr "Lista de géneros obtenida"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:200
 msgid "The plugin has returned the list of genres"
-msgstr ""
+msgstr "El complemento ha devuelto una lista de géneros"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:266
 msgid "Plugin"
-msgstr ""
+msgstr "Complemento"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:267
 msgid "Version"
-msgstr ""
+msgstr "Versión"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:268
 msgid "Enabled"
-msgstr ""
+msgstr "Activado"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:279
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:280
 msgid "Origin"
-msgstr ""
+msgstr "Origen"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:281
 msgid "Short Info"
-msgstr ""
+msgstr "Información"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:282
 msgid "Long Info"
-msgstr ""
+msgstr "Información completa"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:283
 msgid "Count"
-msgstr ""
+msgstr "Contador"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:284
 msgid "Average"
-msgstr ""
+msgstr "Promedio"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:285
 msgid "Updates"
-msgstr ""
+msgstr "Actualizaciones"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:296
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:297
 msgid "Enable Plugin"
-msgstr ""
+msgstr "Activar Complemento"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:299
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:300
 msgid "Disable Plugin"
-msgstr ""
+msgstr "Desactivar Complemento"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:302
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:303
 msgid "Configure Plugin"
-msgstr ""
+msgstr "Configurar Complemento"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:317
 msgid "Plugin Statistics"
-msgstr ""
+msgstr "Estadísticas del Complemento"
 
 #. / <summary>
 #. / Constructor -- creates a new LiveRadio parent source
@@ -561,125 +563,125 @@ msgstr ""
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:77
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:78
 msgid "LiveRadio"
-msgstr ""
+msgstr "LiveRadio"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:105
 msgid "Live_Radio"
-msgstr ""
+msgstr "Live_Radio"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:107
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:114
 msgid "_Configure"
-msgstr ""
+msgstr "_Configurar"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:108
 msgid "Configure the LiveRadio plugin"
-msgstr ""
+msgstr "Configurar el complemento LiveRadio"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:112
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:113
 msgid "Refresh View"
-msgstr ""
+msgstr "Actualizar vista"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:117
 msgid "Add To Internet Radio"
-msgstr ""
+msgstr "Añadir a Radio de Internet"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:118
 msgid "Add stream as Internet Radio Station"
-msgstr ""
+msgstr "Añadir stream como una Estación de Radio de Internet"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs:45
 msgid "Lyrics"
-msgstr ""
+msgstr "Letras de Canciones"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:66
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:127
 msgid "add"
-msgstr ""
+msgstr "adjuntar"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:116
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:125
 msgid "No lyrics found."
-msgstr ""
+msgstr "Ninguna letra de canción fue encontrada."
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:128
 msgid "Click here to manually add a new lyric"
-msgstr ""
+msgstr "Presione aquí para añadir manualmente la letra"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:132
 msgid "Suggestions:"
-msgstr ""
+msgstr "Sugerencias:"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:97
 msgid "Copy lyrics to clipboard"
-msgstr ""
+msgstr "Copiar letras al Portapapeles"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:144
 msgid "by"
-msgstr ""
+msgstr "por"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:147
 msgid "Unknown Artist"
-msgstr ""
+msgstr "Artista desconocido"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:17
 msgid "Downloading Lyrics"
-msgstr ""
+msgstr "Descargando letras"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:61
 #, csharp-format
 msgid "{0} - {1}"
-msgstr ""
+msgstr "{0} - {1}"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:171
 msgid "L_yrics"
-msgstr ""
+msgstr "L_etras de Canciones"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:172
 msgid "Manage Lyrics"
-msgstr ""
+msgstr "Administrar Letras"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:174
 msgid "_Download Lyrics"
-msgstr ""
+msgstr "_Descargar Letras"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:175
 msgid "Download lyrics for all tracks"
-msgstr ""
+msgstr "Descargar letras para todas las canciones"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:180
 msgid "Show Lyrics"
-msgstr ""
+msgstr "Mostrar Letras"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:181
 msgid "Show Lyrics in a separate window"
-msgstr ""
+msgstr "Mostrar Letras en una ventana separada"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Sources/LyricsWebSource.cs:50
 #, csharp-format
 msgid "Powered by {0} ({1})"
-msgstr ""
+msgstr "Proporcionado por {0} ({1})"
 
 #: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:42
 msgid "Magnatune Configuration"
-msgstr ""
+msgstr "Configuración Magnatune"
 
 #: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:113
 msgid "Membership Type"
-msgstr ""
+msgstr "Tipo de Membresía"
 
 #: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:121
 msgid "None"
-msgstr ""
+msgstr "Ninguna"
 
 #: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:122
 msgid "Streaming"
-msgstr ""
+msgstr "Streaming"
 
 #: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:123
 msgid "Download"
-msgstr ""
+msgstr "Descarga"
 
 #: ../src/Mirage/Banshee.Mirage/AnalyzeLibraryJob.cs:20
 msgid "Analyzing Song Similarity"
@@ -690,46 +692,48 @@ msgid ""
 "Are you sure you want to stop Mirage?\n"
 "Shuffle by Similar will only work for the tracks which are already analyzed. The operation can be resumed at any time from the <i>Tools</i> menu."
 msgstr ""
+"¿Está seguro que desea dejar de Mirage?\n"
+"Shuffle similares sólo funcionará para las pistas que ya están analizados. La operación se puede reanudar en cualquier momento de la <i> Herramientas </ i> del menú."
 
 #: ../src/Mirage/Banshee.Mirage/DistanceCalculator.cs:48
 msgid "The Mirage extension is still analyzing your songs.  Until its finished, shuffle and fill by similar may not perform properly."
-msgstr ""
+msgstr "La extensión Mirage está aún analizando sus canciones. Hasta que esté terminado, mezclar y rellenar por similares no funcionen correctamente."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:158
 msgid "Mirage Duplicates"
-msgstr ""
+msgstr "Mirage duplicados"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:251
 msgid "Mirage Playlist Generator"
-msgstr ""
+msgstr "Mirage generador de lista de reproducción"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:252
 msgid "Manage the Mirage extension"
-msgstr ""
+msgstr "Gestionar la ampliación Mirage"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:255
 msgid "Rescan the Music Library"
-msgstr ""
+msgstr "Volver a examinar la Biblioteca de Música"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:256
 msgid "Rescans the Music Library for new songs"
-msgstr ""
+msgstr "Vuelve a explorar la biblioteca de música para las canciones nuevas"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:260
 msgid "Duplicate Search (Experimental)"
-msgstr ""
+msgstr "Duplicar la búsqueda (Experimental)"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:261
 msgid "Searches your Music Library for possible duplicates"
-msgstr ""
+msgstr "Busca en tu biblioteca de música posibles duplicados"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:265
 msgid "Reset Mirage"
-msgstr ""
+msgstr "Restablecer Mirage"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:266
 msgid "Resets the Mirage Playlist Generation Plugin. All songs have to be analyzed again to use Automatic Playlist Generation."
-msgstr ""
+msgstr "Restablece el generador de lista de reproducción Mirage Plugin. Todas las canciones tienen que ser analizadas de nuevo para el uso automático de generación de lista de reproducción."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:279
 msgid ""
@@ -738,34 +742,38 @@ msgid ""
 "· To do so, your music library needs to be analyzed completely from Mirage.\n"
 "· This process will take a long time depending on the size of your library."
 msgstr ""
+"<b>Mirage puede buscar en tu biblioteca de música para duplicar piezas musicales.</b>\n"
+"\n"
+"·Para ello, la biblioteca de música tiene que ser analizado por completo de Mirage.\n"
+"·este proceso va a tomar mucho tiempo dependiendo del tamaño de tu biblioteca."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:282
 msgid "Scan for Duplicates"
-msgstr ""
+msgstr "Analizar en busca de duplicados"
 
 #: ../src/Mirage/Banshee.Mirage/RandomBySimilar.cs:54
 msgid "Shuffle by Similar"
-msgstr ""
+msgstr "Shuffle similares"
 
 #: ../src/Mirage/Banshee.Mirage/RandomBySimilar.cs:55
 msgid "by similar"
-msgstr ""
+msgstr "por similares"
 
 #: ../src/Mirage/Banshee.Mirage/RandomBySimilar.cs:56
 msgid "Play songs similar to those already played"
-msgstr ""
+msgstr "Escuchar similares a los que ya tocaron canciones"
 
 #: ../src/OpenVP/Banshee.OpenVP/VisualizationDisplayWidget.cs:68
 msgid "No visualizations installed"
-msgstr ""
+msgstr "No hay visualizaciones instaladas"
 
 #: ../src/OpenVP/Banshee.OpenVP/VisualizationDisplayWidget.cs:105
 msgid "Select visualization"
-msgstr ""
+msgstr "Seleccione la visualización"
 
 #: ../src/OpenVP/Banshee.OpenVP/VisualizationDisplayWidget.cs:111
 msgid "Low resolution"
-msgstr ""
+msgstr "Baja resolución"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:105
 #, csharp-format
@@ -773,61 +781,63 @@ msgid ""
 "{0}Radiostation fetcher{1}\n"
 "({2})"
 msgstr ""
+"{0}Buscador de radio estación{1}\n"
+"({2})"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:114
 msgid "Choose a genre or enter a text that you wish to be queried, then press the Get stations button. Found stations will be added to internet-radio source."
-msgstr ""
+msgstr "Elige un género o introducir un texto que quieres que te preguntó, a continuación, pulse el botón Obtener estaciones. Estaciones encontrados se añadirá a la fuente de radio por Internet."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:127
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:128
 msgid "Get stations"
-msgstr ""
+msgstr "Obtener las estaciones"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:147
 msgid "Query by genre:"
-msgstr ""
+msgstr "Consulta por género:"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:151
 msgid "Query by free text:"
-msgstr ""
+msgstr "Consulta por texto libre:"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:203
 #, csharp-format
 msgid "Querying genre \"{0}\""
-msgstr ""
+msgstr "Consulta de género \"{0}\""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:208
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:229
 #, csharp-format
 msgid "Query done. Fetched {0} stations."
-msgstr ""
+msgstr "Consulta realizada. Recuperados {0} estaciones."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:212
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:233
 #, csharp-format
 msgid "ERROR: Internet-radio extension not available."
-msgstr ""
+msgstr "ERROR:extensión de radio en Internet no disponibles."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:215
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:236
 #, csharp-format
 msgid "ERROR: Network error."
-msgstr ""
+msgstr "ERROR: Error de red."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:218
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:239
 #, csharp-format
 msgid "ERROR"
-msgstr ""
+msgstr "ERROR"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:224
 #, csharp-format
 msgid "Querying freetext \"{0}\""
-msgstr ""
+msgstr "Consultar texto libre \"{0}\""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:69
 msgid "_Radiostation fetcher"
-msgstr ""
+msgstr "_Buscador de radio estación"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:72
 msgid "_Shoutcast"
@@ -835,7 +845,7 @@ msgstr ""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:73
 msgid "Fetch stations from shoutcast"
-msgstr ""
+msgstr "Recuperar las estaciones de shoutcast"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:76
 msgid "_Xiph"
@@ -843,12 +853,12 @@ msgstr ""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:77
 msgid "Fetch stations from Xiph"
-msgstr ""
+msgstr "Recuperar las estaciones de Xiph"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs:285
 #, csharp-format
 msgid "www.xiph.org {0} stations available."
-msgstr ""
+msgstr "www.xiph.org {0} las emisoras disponibles."
 
 #: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:66
 msgid "Shuffle by similar Artists (via Lastfm)"
@@ -860,7 +870,7 @@ msgstr ""
 
 #: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:68
 msgid "Play songs similar to those already played (via Lastfm)"
-msgstr ""
+msgstr "Escuchar similares a los ya jugados (a través de Lastfm) canciones"
 
 #: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:60
 msgid "Shuffle by your Top Artists (via Lastfm)"
@@ -868,7 +878,7 @@ msgstr ""
 
 #: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:61
 msgid "by your top artists"
-msgstr ""
+msgstr "por su mejores artistas"
 
 #: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:62
 msgid "Play songs from your Top Artists (via Lastfm)"
@@ -879,7 +889,7 @@ msgstr ""
 msgid ""
 "{0}Streamrecorder configuration\n"
 "{1}"
-msgstr ""
+msgstr "{0} Streamrecorder configuración {1}"
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:93
 msgid ""
@@ -889,31 +899,31 @@ msgstr ""
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:96
 msgid "Output folder:"
-msgstr ""
+msgstr "Carpeta de salida:"
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:97
 msgid "Encoder:"
-msgstr ""
+msgstr "Codificador"
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:99
 msgid "_Browse"
-msgstr ""
+msgstr "_Navegador"
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:102
 msgid "_Cancel"
-msgstr ""
+msgstr "_Cancelar"
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:104
 msgid "_Save"
-msgstr ""
+msgstr "_Guardar"
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:106
 msgid "Import files to media library"
-msgstr ""
+msgstr "Importar archivos a la colección de los medios de comunicación"
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:108
 msgid "Enable automatic files splitting by Metadata"
-msgstr ""
+msgstr "Habilitar dividir ficheros automatizados de Metadatos"
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:112
 msgid "_Streamrecorder"
@@ -929,70 +939,70 @@ msgstr ""
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:119
 msgid "Activate streamrecorder process"
-msgstr ""
+msgstr "Activar el proceso de streamrecorder"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactContainerSource.cs:58
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactSourceContents.cs:101
 msgid "Contacts"
-msgstr ""
+msgstr "Contactos"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:80
 msgid "Contact"
-msgstr ""
+msgstr "Contacto"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:315
 #, csharp-format
 msgid "{0} is requesting to browse your library"
-msgstr ""
+msgstr "{0} está solicitando a navegar por la biblioteca"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:318
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:83
 msgid "Accept"
-msgstr ""
+msgstr "Aceptar"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:323
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:94
 msgid "Reject"
-msgstr ""
+msgstr "Rechazar"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:331
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:340
 msgid "is requesting to browse your Banshee library"
-msgstr ""
+msgstr "está solicitando a navegar por su colección de Banshee"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:380
 msgid "Waiting for response from contact..."
-msgstr ""
+msgstr "Se espera la respuesta del contacto ..."
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:391
 msgid "All tracks downloaded. Loading..."
-msgstr ""
+msgstr "Todas las canciones descargadas. Cargando ..."
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:394
 msgid "Loading playlists..."
-msgstr ""
+msgstr "Listas de reproducción Cargando ..."
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:406
 msgid "A problem occured while downloading this contact's library"
-msgstr ""
+msgstr "Se produjo un problema al descargar la colección de este contacto"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:409
 msgid "An error occurred while loading data"
-msgstr ""
+msgstr "Se produjo un error durante la carga de datos"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:412
 msgid "An error occurred while loading playlists"
-msgstr ""
+msgstr "Se produjo un error durante la carga de listas de reproducción"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:432
 msgid "is no longer sharing their Banshee library with you"
-msgstr ""
+msgstr "ya no está mostrando su colección Banshee con usted"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:457
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:494
 #, csharp-format
 msgid "Loading {0} of {1}"
-msgstr ""
+msgstr "Cargando {0} of {1}"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/TelepathyDownload.cs:106
 #, csharp-format
@@ -1006,7 +1016,7 @@ msgstr ""
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:42
 msgid "Contact Request"
-msgstr ""
+msgstr "Solicitud de Contacto"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:67
 #, csharp-format
@@ -1015,59 +1025,59 @@ msgstr ""
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/DownloadManagerUi.cs:50
 msgid "Download(s) from Contacts"
-msgstr ""
+msgstr "Descarga(s) de la Guía"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/DownloadManagerUi.cs:51
 msgid "Downloads are in progress. Would you like to cancel them?"
-msgstr ""
+msgstr "Las descargas están en curso. ¿Te gustaría que cancelar?"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:63
 msgid "Download Track(s)"
-msgstr ""
+msgstr "Descargar pista(s)"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:64
 msgid "Download selected tracks to your computer"
-msgstr ""
+msgstr "Descargar las pistas seleccionadas al pc"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:70
 msgid "Cancel Download(s)"
-msgstr ""
+msgstr "Cancelar descarga(s)"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:71
 msgid "Cancel download of selected tracks to your computer"
-msgstr ""
+msgstr "Cancelar la descarga de temas seleccionados para el equipo"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:77
 msgid "Cancel Browse Request"
-msgstr ""
+msgstr "Cancelar Consulta Solicitud"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:78
 msgid "Cancel pending request to browse a contact's library"
-msgstr ""
+msgstr "Cancelar solicitud pendiente para buscar en la biblioteca de un contacto"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:84
 msgid "Allow Downloads"
-msgstr ""
+msgstr "Permitir Descargas"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:85
 msgid "Allow file downloads when sharing libraries"
-msgstr ""
+msgstr "Permitir la descarga de archivos cuando las bibliotecas comparten"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:91
 msgid "Allow Streaming"
-msgstr ""
+msgstr "Permitir Streaming"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:92
 msgid "Allow streaming when sharing libraries"
-msgstr ""
+msgstr "Permitir transmisión de bibliotecas que compartan"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:98
 msgid "Share Currently Playing"
-msgstr ""
+msgstr "Actualmente comparte Reproducción"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:99
 msgid "Set Empathy presence message to what you're currently playing"
-msgstr ""
+msgstr "Conjunto de mensajes presencia empatía con lo que se está reproduciendo"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:141
 #, csharp-format
@@ -1076,11 +1086,11 @@ msgstr ""
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TransferManagerUi.cs:50
 msgid "Transfer(s) to Contacts"
-msgstr ""
+msgstr "Transferencia (s) a la Guía"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TransferManagerUi.cs:57
 msgid "File transfers are in progress. Would you like to cancel them?"
-msgstr ""
+msgstr "Las transferencias de archivos están en curso. ¿Te gustaría que cancelar?"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TransferManagerUi.cs:63
 #, csharp-format
@@ -1089,4 +1099,4 @@ msgstr ""
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TransferManagerUi.cs:131
 msgid "Initializing"
-msgstr ""
+msgstr "Inicialización"
