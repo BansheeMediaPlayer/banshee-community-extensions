@@ -35,7 +35,7 @@ namespace Banshee.Lyrics
                         CoreTracks.PrimarySourceID = ? AND
                         CoreTracks.ArtistID = CoreArtists.ArtistID AND
                         CoreTracks.TrackID NOT IN (
-                            SELECT TrackID from LyricsDownloads)",
+                            SELECT TrackID from LyricsDownloads) LIMIT 1",
             ServiceManager.SourceManager.MusicLibrary.DbId);
 
             CountCommand = new HyenaSqliteCommand (@"
