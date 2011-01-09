@@ -66,8 +66,8 @@ namespace Banshee.LiveRadio
                 if (type.GetInterface ("ILiveRadioPlugin") != null && !type.IsAbstract) {
                     ILiveRadioPlugin plugin = (ILiveRadioPlugin)Activator.CreateInstance (type);
                     //shoutcast not working at the moment, don't activate
-                    if (!plugin.Name.Equals ("SHOUTcast.com"))
-                    plugins.Add (plugin);
+                    if (plugin.Active)
+                        plugins.Add (plugin);
                 }
             }
             return plugins;

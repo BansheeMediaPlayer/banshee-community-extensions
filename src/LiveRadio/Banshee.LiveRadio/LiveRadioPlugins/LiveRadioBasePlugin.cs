@@ -563,5 +563,9 @@ namespace Banshee.LiveRadio.Plugins
             get ;
         }
 
+        public virtual bool Active {
+            get { return true; }
+        }
+
     }
 }

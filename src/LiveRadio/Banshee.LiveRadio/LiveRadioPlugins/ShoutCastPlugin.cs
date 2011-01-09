@@ -57,6 +57,13 @@ namespace Banshee.LiveRadio.Plugins
         private const string freetext_request = "&search=";
 
         /// <summary>
+        /// Shoutcast plugin disabled for legal issues, no developer key available
+        /// </summary>
+        public override bool Active {
+            get { return false; }
+        }
+
+        /// <summary>
         /// Constructor -- sets configuration entries
         /// </summary>
         public ShoutCastPlugin () : base ()

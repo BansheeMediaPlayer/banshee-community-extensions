@@ -153,5 +153,10 @@ namespace Banshee.LiveRadio.Plugins
         /// Returns the version information for the plugin
         /// </summary>
         string Version { get; }
+
+        /// <summary>
+        /// Returns, wether the plugin can be added to the LiveRadio plugin list
+        /// </summary>
+        bool Active { get; }
     }
 }
