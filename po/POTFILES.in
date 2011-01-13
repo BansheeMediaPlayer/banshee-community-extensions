@@ -15,6 +15,8 @@ src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs
 src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs
 src/Jamendo/Banshee.Jamendo/JamendoWebBrowserShell.cs
 src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs
+src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs
+src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs
 src/LCD/Banshee.LCD/ConfigurationDialog.cs
 src/LCD/Banshee.LCD/LCDService.cs
 src/LiveRadio/Banshee.LiveRadio/LiveRadioConfigDialog.cs

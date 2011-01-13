@@ -1,4 +1,21 @@
 =================================
+Version 1.9.2 - January 12, 2011
+=================================
+
+Contributors:
+Bertrand Lorentz, David Nielsen, Frank Ziegler, John Moore, Olivier Dufour
+
+Enhancements:
+* [LastfmFingerprint] Add authentication support
+* [Lyrics] Improve performance
+
+Bugs Fixed:
+* [StreamRecorder] Fix write error by creating output directory if needed
+* [AlarmClock] Don't start playing if the alarm is disabled (bgo#637481)
+
+We now are using the Transifex tool for translations for BCE.
+
+=================================
 Version 1.9.1 - December 16, 2010
 =================================
 
