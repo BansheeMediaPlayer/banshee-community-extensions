@@ -159,11 +159,12 @@ namespace Banshee.AlarmClock
 
         public bool onSleepTimerActivate ()
         {
-            if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing) {
+            var player_engine = ServiceManager.PlayerEngine;
+            if (player_engine.CurrentState == PlayerState.Playing) {
+                uint seconds_to_end = (ushort) ((player_engine.Length - player_engine.Position) / 1000);
                 Log.Debug ("Sleep Timer has gone off.  Fading out till end of song.");
-                new VolumeFade (ServiceManager.PlayerEngine.Volume, 0,
-                        (ushort) (ServiceManager.PlayerEngine.Length - ServiceManager.PlayerEngine.Position));
-                GLib.Timeout.Add ((ServiceManager.PlayerEngine.Length - ServiceManager.PlayerEngine.Position) * 1000,
+                new VolumeFade (ServiceManager.PlayerEngine.Volume, 0, seconds_to_end);
+                GLib.Timeout.Add (seconds_to_end * 1000,
                     delegate {
                         Log.Debug ("Sleep Timer: Pausing.");
                         ServiceManager.PlayerEngine.Pause ();

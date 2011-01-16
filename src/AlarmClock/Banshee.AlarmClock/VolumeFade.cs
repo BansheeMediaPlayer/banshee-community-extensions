@@ -43,7 +43,7 @@ namespace Banshee.AlarmClock
         int increment;
         ushort curVolume;
 
-        public VolumeFade (ushort start, ushort end, ushort duration)
+        public VolumeFade (ushort start, ushort end, uint duration)
         {
             sleep = ((float) duration / (float) Math.Abs (end - start)) * 1000;
             increment = start < end ? 1 : -1;
