@@ -41,6 +41,7 @@ namespace Banshee.AlarmClock
 
         SpinButton sleepHour;
         SpinButton sleepMin;
+        Button start_button;
 
         public SleepTimerConfigDialog (AlarmClockService service) : base (AddinManager.CurrentLocalizer.GetString ("Sleep Timer"))
         {
@@ -58,19 +59,18 @@ namespace Banshee.AlarmClock
             sleepHour = new SpinButton (0,23,1);
             sleepMin  = new SpinButton (0,59,1);
 
-            sleepHour.Value = (int) service.GetSleepTimer () / 60 ;
-            sleepMin.Value = service.GetSleepTimer () - (sleepHour.Value * 60);
-
             sleepHour.WidthChars = 2;
             sleepMin.WidthChars  = 2;
 
+            int remainder = 0;
+            sleepHour.Value = Math.DivRem (service.SleepTimerDuration, 60, out remainder);
+            sleepMin.Value = remainder;
+
+            sleepHour.ValueChanged += OnSleepValueChanged;
+            sleepMin.ValueChanged += OnSleepValueChanged;
+
             Label prefix    = new Label (AddinManager.CurrentLocalizer.GetString ("Sleep Timer :"));
             Label separator = new Label (":");
-            Label comment   = new Label (AddinManager.CurrentLocalizer.GetString ("<i>(set to 0:00 to disable)</i>"));
-            comment.UseMarkup = true;
-
-            Button OK = new Button (Gtk.Stock.Ok);
-            OK.Clicked += new EventHandler (OnSleepTimerOK);
 
             HBox topbox     = new HBox (false, 10);
 
@@ -79,17 +79,35 @@ namespace Banshee.AlarmClock
             topbox.PackStart (separator);
             topbox.PackStart (sleepMin);
 
-            AddActionWidget (OK, 0);
+            AddStockButton (Stock.Cancel, ResponseType.Cancel);
+            start_button = AddButton (AddinManager.CurrentLocalizer.GetString ("Start Timer"), ResponseType.Ok, true);
 
             VBox.PackStart (topbox);
-            VBox.PackStart (comment);
+
+            Update ();
         }
 
-        public void OnSleepTimerOK (object o, EventArgs a)
+        void OnSleepValueChanged (object sender, EventArgs e)
         {
-            int timervalue = (int)sleepHour.Value * 60 + (int)sleepMin.Value;
-            service.SetSleepTimer (timervalue);
-            Destroy ();
+            Update ();
+        }
+
+        protected override void OnResponse (ResponseType response)
+        {
+            if (response == ResponseType.Ok) {
+                int timervalue = sleepHour.ValueAsInt * 60 + sleepMin.ValueAsInt;
+                service.SleepTimerDuration = timervalue;
+                service.SetSleepTimer (timervalue);
+            }
+        }
+
+        private void Update ()
+        {
+            if (sleepHour.ValueAsInt == 0 && sleepMin.ValueAsInt == 0) {
+                start_button.Sensitive = false;
+            } else {
+                start_button.Sensitive = true;
+            }
         }
     }
 }

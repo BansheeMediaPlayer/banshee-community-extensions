@@ -47,7 +47,6 @@ namespace Banshee.AlarmClock
         InterfaceActionService action_service;
         uint ui_manager_id;
         uint sleep_timer_id;
-        int sleep_timer_value;
 
         public AlarmClockService ()
         {}
@@ -140,21 +139,17 @@ namespace Banshee.AlarmClock
                 GLib.Source.Remove(sleep_timer_id);
                 Log.Debug("Disabling old sleep timer");
             }
-            new SleepTimerConfigDialog(this);
-        }
-
-        public int GetSleepTimer()
-        {
-            return this.sleep_timer_value;
+            var dialog = new SleepTimerConfigDialog (this);
+            dialog.Run ();
+            dialog.Destroy ();
         }
 
         public void SetSleepTimer(int timervalue)
         {
-            if (timervalue != 0) {
+            if (timervalue > 0) {
                 Log.DebugFormat ("Sleep Timer set to {0}", timervalue);
                 sleep_timer_id = GLib.Timeout.Add ((uint) timervalue * 60 * 1000, onSleepTimerActivate);
             }
-            this.sleep_timer_value = timervalue;
         }
 
         public bool onSleepTimerActivate ()
@@ -207,6 +202,12 @@ namespace Banshee.AlarmClock
         {
             get { return ConfigurationSchema.AlarmCommand.Get (); }
             set { ConfigurationSchema.AlarmCommand.Set (value); }
+        }
+
+        internal int SleepTimerDuration
+        {
+            get { return ConfigurationSchema.SleepTimerDuration.Get (); }
+            set { ConfigurationSchema.SleepTimerDuration.Set (value); }
         }
 
         internal ushort FadeStartVolume

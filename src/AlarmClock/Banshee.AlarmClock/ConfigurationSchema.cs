@@ -65,6 +65,13 @@ namespace Banshee.AlarmClock
                 ""
             );
 
+        public static readonly SchemaEntry<int> SleepTimerDuration
+            = new SchemaEntry<int> (
+                conf_namespace, "sleep_timer_duration",
+                0, "The duration of the sleep timer, in minutes",
+                ""
+            );
+
         public static readonly SchemaEntry<int> FadeStartVolume
             = new SchemaEntry<int> (
                 conf_namespace, "fade_start_volume",
