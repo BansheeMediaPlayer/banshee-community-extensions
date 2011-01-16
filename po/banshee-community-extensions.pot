@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-17 12:02+0100\n"
+"POT-Creation-Date: 2011-01-16 22:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,32 +17,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:70
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:69
 msgid "Alarm Clock"
 msgstr ""
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:74
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:73
 msgid "Sleep Timer..."
 msgstr ""
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:75
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:74
 msgid "Set the sleep timer value"
 msgstr ""
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:78
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:77
 msgid "Alarm..."
 msgstr ""
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:79
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:78
 msgid "Set the alarm time"
 msgstr ""
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:82
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:81
 #: ../src/LCD/Banshee.LCD/LCDService.cs:70
 msgid "_Configure..."
 msgstr ""
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:83
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:82
 msgid "Configure the Alarm Clock plugin"
 msgstr ""
 
@@ -94,16 +94,16 @@ msgstr ""
 msgid "Command To Execute:"
 msgstr ""
 
-#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:45
+#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:46
 msgid "Sleep Timer"
 msgstr ""
 
-#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:67
+#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:72
 msgid "Sleep Timer :"
 msgstr ""
 
-#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:69
-msgid "<i>(set to 0:00 to disable)</i>"
+#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:83
+msgid "Start Timer"
 msgstr ""
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:75
@@ -129,6 +129,7 @@ msgid "Title"
 msgstr ""
 
 #: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:86
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:64
 msgid "Password:"
 msgstr ""
 
@@ -334,20 +335,48 @@ msgstr ""
 msgid "Search Jamendo"
 msgstr ""
 
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:75
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:76
 msgid "Get Information From Track Fingerprint"
 msgstr ""
 
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:76
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:77
 msgid "Get track information from last.fm acoustic fingerprint"
 msgstr ""
 
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:105
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:106
 msgid "Getting sound fingerprint"
 msgstr ""
 
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:108
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:109
 msgid "Scanning..."
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:49
+msgid "Log in to Last.fm"
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:76
+msgid "Last.fm Account Login"
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:79
+msgid "Please enter your Last.fm account credentials."
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:106
+msgid "Log In"
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:57
+msgid "Username:"
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:103
+msgid "Sign up for Last.fm"
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:115
+msgid "Authorize for Last.fm"
 msgstr ""
 
 #: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:46
