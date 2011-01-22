@@ -72,7 +72,7 @@ namespace Banshee.Awn
         void IExtensionService.Initialize ()
         {
             try {
-                Log.Debug ("BansheeAwn. Starting..." + Banshee.ServiceStack.Application.ActiveClient.ClientId);
+                Log.DebugFormat ("BansheeAwn. Starting {0}", Application.ActiveClient.ClientId);
 
                 awn = NDesk.DBus.Bus.Session.GetObject<IAvantWindowNavigator> ("com.google.code.Awn",
                         new NDesk.DBus.ObjectPath ("/com/google/code/Awn"));
@@ -101,7 +101,7 @@ namespace Banshee.Awn
 
         private void OnEventChanged (PlayerEventArgs args)
         {
-            Log.Debug ("BansheeAwn - " + args.Event.ToString ());
+            Log.DebugFormat ("BansheeAwn - {0}", args.Event.ToString ());
             switch (args.Event) {
                 //case PlayerEvent.EndOfStream:
                 //    UnsetIcon ();
@@ -135,7 +135,7 @@ namespace Banshee.Awn
                 if (service == null || service.CurrentTrack == null)
                     return "Banshee Media Player";
                 else
-                    return string.Format ("{0} by {1}", service.CurrentTrack.TrackTitle, service.CurrentTrack.ArtistName);
+                    return String.Format ("{0} by {1}", service.CurrentTrack.TrackTitle, service.CurrentTrack.ArtistName);
             }
         }
 
@@ -148,7 +148,7 @@ namespace Banshee.Awn
                         for (int i = 0; i < taskName.Length; i++)
                             awn.SetTaskIconByName (taskName[i], fileName);
                         awn.SetTaskIconByName (PossibleTitle, fileName);
-                        Log.Debug ("BansheeAwn - Setting cover: " + fileName);
+                        Log.DebugFormat ("BansheeAwn - Setting cover: {0}", fileName);
                     } else {
                         UnsetIcon ();
                         Log.Debug ("BansheeAwn - No Cover");
