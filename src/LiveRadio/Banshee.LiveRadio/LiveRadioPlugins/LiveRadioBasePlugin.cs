@@ -482,8 +482,27 @@ namespace Banshee.LiveRadio.Plugins
 
         void OnDoRetrieveWebIconFinished (object sender, RunWorkerCompletedEventArgs e)
         {
-            Gdk.Pixbuf icon = e.Result as Gdk.Pixbuf;
-            source.SetIcon (icon);
+            // First, handle the case where an exception was thrown.
+            if (e.Error != null)
+            {
+                Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"] <OnDoRetrieveWebIconFinished> Error: {1} END", Name, e.Error.Message);
+            }
+            else if (e.Cancelled)
+            {
+                // Next, handle the case where the user canceled
+                // the operation.
+                Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"] <OnDoRetrieveWebIconFinished> Cancelled. END", Name);
+            }
+            else
+            {
+                // Finally, handle the case where the operation
+                // succeeded.
+                Gdk.Pixbuf icon = e.Result as Gdk.Pixbuf;
+                if (icon != null)
+                {
+                    source.SetIcon (icon);
+                }
+            }
         }
 
         void DoRetrieveWebIcon (object sender, DoWorkEventArgs e)
