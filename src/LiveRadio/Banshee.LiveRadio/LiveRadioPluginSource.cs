@@ -139,7 +139,7 @@ namespace Banshee.LiveRadio
 
         public void SetIcon (Gdk.Pixbuf icon)
         {
-            Properties.Set<Gdk.Pixbuf> ("Icon.Pixbuf_22", icon.ScaleSimple (22, 22, Gdk.InterpType.Bilinear));
+            Properties.Set<Gdk.Pixbuf> ("Icon.Pixbuf_16", icon.ScaleSimple (16, 16, Gdk.InterpType.Bilinear));
         }
 
 
