@@ -85,7 +85,7 @@ namespace Banshee.Magnatune
         {
             Pixbuf icon = new Pixbuf (System.Reflection.Assembly.GetExecutingAssembly ()
                                       .GetManifestResourceStream ("simple_icon.png"));
-            Properties.Set<Pixbuf> ("Icon.Pixbuf_22", icon.ScaleSimple (22, 22, InterpType.Bilinear));
+            Properties.Set<Pixbuf> ("Icon.Pixbuf_16", icon.ScaleSimple (16, 16, InterpType.Bilinear));
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new RadioSourceContents ());
             Properties.Set<bool> ("Nereid.SourceContents.HeaderVisible", false);
 
