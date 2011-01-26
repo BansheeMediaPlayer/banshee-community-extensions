@@ -112,6 +112,7 @@
     <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\LiveRadioPluginListModel.cs" />
     <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\LiveRadioPluginError.cs" />
     <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\MagnatunePlugin.cs" />
+    <Compile Include="Banshee.LiveRadio\LiveRadioPlugins\SingleSelection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
