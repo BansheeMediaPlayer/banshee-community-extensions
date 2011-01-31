@@ -112,6 +112,8 @@ namespace Banshee.LiveRadio.Plugins
         /// </returns>
         SafeUri CleanUpUrl (SafeUri url);
 
+        SafeUri RetrieveUrl (string baseurl);
+
         /// <summary>
         /// Actual method that does the work of saving the configuration for this plugin. For examples see derived
         /// classes. There are no predefined SchemaEntry objects, the derived class needs to take care of those.

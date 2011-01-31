@@ -56,6 +56,7 @@ namespace Banshee.LiveRadio
         const int sort_order = 191;
         private LiveRadioPluginSourceContents source_contents;
         private bool add_track_job_cancelled = false;
+        private ILiveRadioPlugin plugin;
 
         /// <summary>
         /// Constructor -- creates a new temporary LiveRadio Plugin source and sets itself as the plugin's source
@@ -78,6 +79,7 @@ namespace Banshee.LiveRadio
             SetIcon (icon);
 
             plugin.SetLiveRadioPluginSource (this);
+            this.plugin = plugin;
 
             AfterInitialized ();
 
@@ -251,6 +253,15 @@ namespace Banshee.LiveRadio
         private void AddStation (DatabaseTrackInfo track)
         {
             DatabaseTrackInfo station = track ?? new DatabaseTrackInfo ();
+            if (track.Copyright != null)
+            {
+                SafeUri url = plugin.RetrieveUrl (track.Copyright);
+                if (url != null)
+                {
+                    track.Uri = url;
+                }
+                track.Copyright = null;
+            }
             station.IsLive = true;
             station.PrimarySource = this;
             if (!String.IsNullOrEmpty (station.TrackTitle) && station.Uri != null && station.Uri is SafeUri) {

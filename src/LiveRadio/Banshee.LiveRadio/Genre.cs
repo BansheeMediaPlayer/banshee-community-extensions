@@ -37,6 +37,7 @@ namespace Banshee.LiveRadio
     {
 
         string name;
+        string link;
 
         /// <summary>
         /// Constructor
@@ -55,6 +56,12 @@ namespace Banshee.LiveRadio
         public Genre (string genre)
         {
             name = genre;
+        }
+
+        public string Hyperlink
+        {
+            get { return link; }
+            set { link = value; }
         }
 
         public string Name

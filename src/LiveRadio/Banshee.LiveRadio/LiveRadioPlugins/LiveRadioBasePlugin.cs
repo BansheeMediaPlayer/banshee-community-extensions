@@ -540,6 +540,11 @@ namespace Banshee.LiveRadio.Plugins
             return url;
         }
 
+        public virtual SafeUri RetrieveUrl (string baseurl)
+        {
+            return new SafeUri (baseurl);
+        }
+
         public bool UseProxy {
             get { return use_proxy; }
             set { use_proxy = value; }
