@@ -112,10 +112,12 @@ namespace Banshee.LastfmFingerprint
             job.CancelRequested += HandleJobCancelRequested;
             job.Register ();
 
-            account = new LastfmAccount ();
-            LoginDialog dialog = new LoginDialog (account, true);
-            dialog.Run ();
-            dialog.Dispose ();
+            if (account == null) {
+                account = new LastfmAccount ();
+                LoginDialog dialog = new LoginDialog (account, true);
+                dialog.Run ();
+                dialog.Destroy ();
+            }
 
             //comment the timeout system for TOS because still have issue and not seems to be linked...
             //System.DateTime start = System.DateTime.MinValue;
@@ -160,6 +162,7 @@ namespace Banshee.LastfmFingerprint
                     }
 
                 } catch (Exception e) {
+                    account = null;
                     Log.Exception (e);
                 } finally {
                     job.Finish ();
@@ -187,8 +190,6 @@ namespace Banshee.LastfmFingerprint
             var json_tracks = (JsonObject)response["tracks"];
             var obj_track = json_tracks["track"];
             JsonObject json_track = null;
-
-            Log.Debug ("obj_track:" + obj_track.ToString ());
 
             if (obj_track is JsonArray)
                 json_track = (JsonObject) (((JsonArray)obj_track)[0]);
@@ -236,7 +237,6 @@ namespace Banshee.LastfmFingerprint
                 return;
             try
             {
-                Log.Debug ("track.getInfo: response:" + response.ToString ());
                 var json_track = (JsonObject)response["track"];
                 //track.Duration = TimeSpan.FromMilliseconds (double.Parse ((string)json_track["duration"]));
                 if (!json_track.ContainsKey("album"))

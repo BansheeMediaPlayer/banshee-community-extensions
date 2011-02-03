@@ -110,7 +110,7 @@ namespace Lastfm
             if (track.Year > 0)
                 data.AppendFormat ("&year={0}", track.Year);
             // TODO change account here
-            if (String.IsNullOrEmpty (account.UserName)) {
+            if (account == null || String.IsNullOrEmpty (account.UserName)) {
                 // anonymous seems to stuck in 3 requests
                 // TODO add a wait system when anon
                 data.AppendFormat ("&username={0}", EscapeUri ("fp client 1.6"));
