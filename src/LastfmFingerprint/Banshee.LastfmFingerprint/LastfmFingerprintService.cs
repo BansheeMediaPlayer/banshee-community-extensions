@@ -208,7 +208,7 @@ namespace Banshee.LastfmFingerprint
 
                 GetMoreInfo (track);
 
-                track.Save ();
+                track.Update ();
 
                 if (track == ServiceManager.PlayerEngine.CurrentTrack)
                     ServiceManager.PlayerEngine.TrackInfoUpdated ();
