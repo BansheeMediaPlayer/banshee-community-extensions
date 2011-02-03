@@ -56,19 +56,15 @@ namespace Lastfm
 
             Label username_label = new Label (Catalog.GetString ("Username:"));
             username_label.Xalign = 1.0f;
-            username_label.Show ();
 
             username_entry = new Entry ();
-            username_entry.Show ();
 
             Label password_label = new Label (Catalog.GetString ("Password:"));
             password_label.Xalign = 1.0f;
-            password_label.Show ();
 
             password_entry = new Entry ();
             password_entry.Visibility = false;
-            password_entry.Show ();
-            
+
             Attach (username_label, 0, 1, 0, 1, AttachOptions.Fill,
                 AttachOptions.Shrink, 0, 0);
 
@@ -82,6 +78,8 @@ namespace Lastfm
                 AttachOptions.Shrink, 0, 0);
                 
             username_entry.Text = account.UserName ?? String.Empty;
+
+            ShowAll ();
         }
 
         protected override void OnDestroyed ()

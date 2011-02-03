@@ -31,12 +31,12 @@ using Mono.Unix;
 using Gtk;
 
 using Lastfm;
+using Banshee.Gui.Dialogs;
 
 namespace Lastfm
 {
-    public class LoginDialog : Gtk.Dialog
+    public class LoginDialog : BansheeDialog
     {
-        private AccelGroup accel_group;
         private LoginForm login_form;
         private Label message;
 
@@ -48,25 +48,18 @@ namespace Lastfm
         {
             Title = Catalog.GetString ("Log in to Last.fm");
             HasSeparator = false;
-            BorderWidth = 5;
 
             IconName = "gtk-dialog-authentication";
-
-            accel_group = new AccelGroup ();
-            AddAccelGroup (accel_group);
 
             HBox hbox = new HBox (false, 12);
             VBox vbox = new VBox (false, 0);
             hbox.BorderWidth = 5;
             vbox.Spacing = 5;
-            hbox.Show ();
-            vbox.Show ();
 
             Image image = new Image ();
             image.Yalign = 0.0f;
             image.IconName = "gtk-dialog-authentication";
             image.IconSize = (int)IconSize.Dialog;
-            image.Show ();
 
             hbox.PackStart (image, false, false, 0);
             hbox.PackStart (vbox, true, true, 0);
@@ -74,11 +67,9 @@ namespace Lastfm
             Label header = new Label ();
             header.Xalign = 0.0f;
             header.Markup = String.Format ("<big><b>{0}</b></big>", Catalog.GetString ("Last.fm Account Login"));
-            header.Show ();
 
             message = new Label (Catalog.GetString ("Please enter your Last.fm account credentials."));
             message.Xalign = 0.0f;
-            message.Show ();
 
             vbox.PackStart (header, false, false, 0);
             vbox.PackStart (message, false, false, 0);
@@ -87,56 +78,36 @@ namespace Lastfm
             login_form.AddSignUpButton ();
             //login_form.AddAuthorizeButton ();
             //TODO fix the verify user because always get bad pwd
-            login_form.Show ();
 
             vbox.PackStart (login_form, true, true, 0);
 
             VBox.PackStart (hbox, true, true, 0);
-            VBox.Remove (ActionArea);
             VBox.Spacing = 10;
 
-            HBox bottom_box = new HBox ();
-            bottom_box.PackStart (ActionArea, false, false, 0);
-            bottom_box.ShowAll ();
-            VBox.PackEnd (bottom_box, false, false, 0);
+            VBox.ShowAll ();
 
             if (addCloseButton) {
-                AddButton (Stock.Cancel, ResponseType.Cancel);
-                Button button = new Button ();
+                AddStockButton (Stock.Cancel, ResponseType.Cancel);
+                var button = AddStockButton (Stock.Ok, ResponseType.Ok, true);
                 button.Label = Catalog.GetString ("Log In");
-                button.Image = new Image ("gtk-save", IconSize.Button);
-                button.ShowAll ();
-                button.Activated += delegate {
-                    login_form.Save ();
-                    this.Destroy ();
-                };
-                button.Clicked += delegate {
-                    login_form.Save ();
-                    this.Destroy ();
-                };
-                AddActionWidget (button, ResponseType.Ok);
             }
         }
 
-        public void AddButton (string message, ResponseType response, bool isDefault)
-        {
-            Button button = (Button)AddButton (message, response);
-
-            if (isDefault) {
-                DefaultResponse = response;
-                button.AddAccelerator ("activate", accel_group, (uint)Gdk.Key.Return,
-                    0, Gtk.AccelFlags.Visible);
-            }
-        }
-
-        public void AddSignUpButton ()
+        private void AddSignUpButton ()
         {
             login_form.AddSignUpButton ();
         }
 
-        public void AddAuthorizeButton ()
+        private void AddAuthorizeButton ()
         {
             login_form.AddAuthorizeButton ();
+        }
+
+        protected override void OnResponse (ResponseType response)
+        {
+            if (response == ResponseType.Ok) {
+                login_form.Save ();
+            }
         }
 
         public string Message {
