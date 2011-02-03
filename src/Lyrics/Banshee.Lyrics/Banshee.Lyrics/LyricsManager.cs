@@ -77,7 +77,9 @@ namespace Banshee.Lyrics
             sources.Add (new SourceData (new LeosLyrics ()));
             sources.Add (new SourceData (new Lyriki ()));
             sources.Add (new SourceData (new AutoLyrics ()));
-            sources.Add (new SourceData (new LyricsPlugin ()));
+            // Disabled as lyrics search doesn't work anymore
+            // see https://bugzilla.gnome.org/show_bug.cgi?id=640570
+            //sources.Add (new SourceData (new LyricsPlugin ()));
         }
 
         internal static LyricsManager Instance {
