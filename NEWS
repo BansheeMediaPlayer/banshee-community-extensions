@@ -1,4 +1,24 @@
 =================================
+Version 1.9.3 - February 3, 2011
+=================================
+
+Contributors:
+Bertrand Lorentz, Frank Ziegler
+
+Enhancements:
+* AlarmClock: Improve the sleep timer configuration
+* LastfmFingerprint: Only show the authentication dialog once per run
+* LiveRadio: Add a module to fetch radio stations from RealRadios.com
+
+Bugs Fixed:
+* AlarmClock: Fix sleep timer fade out duration (bgo#634200)
+* LastfmFingerprint: Update display when saving track (bgo#639721)
+* LiveRadio: Fix crash when retrieving source icon (bgo#640152)
+* LiveRadio: Fix display of the source icon
+* Lyrics: Don't use lyricsplugin.com anymore (bgo#640570)
+* Magnatune: Fix display of the source icon
+
+=================================
 Version 1.9.2 - January 12, 2011
 =================================
 
