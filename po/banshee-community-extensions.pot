@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-31 10:29+0700\n"
+"POT-Creation-Date: 2011-02-03 21:56+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -129,7 +129,7 @@ msgid "Title"
 msgstr ""
 
 #: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:86
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:64
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:62
 msgid "Password:"
 msgstr ""
 
@@ -355,15 +355,15 @@ msgstr ""
 msgid "Log in to Last.fm"
 msgstr ""
 
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:76
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:69
 msgid "Last.fm Account Login"
 msgstr ""
 
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:79
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:71
 msgid "Please enter your Last.fm account credentials."
 msgstr ""
 
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:106
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:92
 msgid "Log In"
 msgstr ""
 
@@ -371,11 +371,11 @@ msgstr ""
 msgid "Username:"
 msgstr ""
 
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:103
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:101
 msgid "Sign up for Last.fm"
 msgstr ""
 
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:115
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:113
 msgid "Authorize for Last.fm"
 msgstr ""
 
