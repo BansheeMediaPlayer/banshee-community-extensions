@@ -76,7 +76,7 @@ namespace Lastfm
 
             login_form = new LoginForm (account);
             login_form.AddSignUpButton ();
-            //login_form.AddAuthorizeButton ();
+            login_form.AddAuthorizeButton ();
             //TODO fix the verify user because always get bad pwd
 
             vbox.PackStart (login_form, true, true, 0);

@@ -121,18 +121,9 @@ namespace Lastfm
 
         private void OnAuthorize (object o, EventArgs args)
         {
-            //account.password = null;
-            VerifyUserRequest request = new VerifyUserRequest();
-            if (request.Send (Username, Password)) {
-                Log.Debug ("Verify account OK");
-                label.Text = "Athorization OK";
-                label.ModifyText (StateType.Normal, new Gdk.Color (0, 1, 0));
-            }
-            else {
-                label.Text = request.GetErrorString ();
-                label.ModifyText (StateType.Normal , new Gdk.Color (1, 0, 0));
-                Log.Debug (request.GetErrorString ());
-            }
+            LastfmCore.Account.SessionKey = null;
+            LastfmCore.Account.UserName = username_entry.Text.Trim ();
+            LastfmCore.Account.RequestAuthorization ();
         }
 
         public void Save ()

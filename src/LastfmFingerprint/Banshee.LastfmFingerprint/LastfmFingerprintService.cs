@@ -218,17 +218,10 @@ namespace Banshee.LastfmFingerprint
 
         void GetMoreInfo (TrackInfo track)
         {
-            string time = (DateTime.Now - new DateTime(1970, 1, 1)).TotalSeconds.ToString ();
-
             var request = new LastfmRequest ("track.getInfo");
             request.AddParameter ("artist", track.ArtistName);
             request.AddParameter ("track", track.TrackTitle);
             request.AddParameter ("mbid", track.MusicBrainzId);
-
-            request.AddParameter ("time", time);
-            request.AddParameter ("username", account.UserName);
-            request.AddParameter ("auth", VerifyUserRequest.ConvertToMd5(account.Password + time));
-            request.AddParameter ("auth2", VerifyUserRequest.ConvertToMd5(account.Password.ToLower () + time));
 
             request.Send ();
 
@@ -246,7 +239,10 @@ namespace Banshee.LastfmFingerprint
                 if (json_album != null)
                 {
                     var attr = (JsonObject)json_album["@attr"];
-                    track.TrackNumber = int.Parse ((string)attr["position"]);
+                    int pos = 0;
+                    if (int.TryParse ((string)attr["position"], out pos)) {
+                        track.TrackNumber = pos;
+                    }
                     track.AlbumTitle = (string)json_album["title"];
                     track.AlbumMusicBrainzId = (string)json_album["mbid"];
                     track.AlbumArtist = (string)json_album["artist"];
@@ -254,6 +250,7 @@ namespace Banshee.LastfmFingerprint
             } catch (Exception e)
             {
                 Log.DebugException (e);
+                response.Dump ();
             }
         }
 
