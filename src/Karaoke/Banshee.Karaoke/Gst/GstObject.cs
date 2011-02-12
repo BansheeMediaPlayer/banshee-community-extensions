@@ -29,7 +29,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Banshee.Streamrecorder.Gst
+namespace Banshee.Karaoke.Gst
 {
 
     public class GstObject

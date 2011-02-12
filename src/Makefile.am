@@ -1,4 +1,5 @@
 SUBDIRS = \
+    Karaoke \
 	AlarmClock \
 	Ampache \
 	AppIndicator \
