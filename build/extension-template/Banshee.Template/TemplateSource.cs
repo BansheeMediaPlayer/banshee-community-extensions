@@ -4,7 +4,7 @@
 // Authors:
 //   Cool Extension Author <cool.extension@author.com>
 //
-// Copyright (C) 2010 Cool Extension Author
+// Copyright (C) 2011 Cool Extension Author
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -53,7 +53,9 @@ namespace Banshee.EXTENSION-NAME
         const int sort_order = 190;
 
         public EXTENSION-NAMESource () : base (AddinManager.CurrentLocalizer.GetString ("EXTENSION-NAME"),
-                                               AddinManager.CurrentLocalizer.GetString ("EXTENSION-NAME"), sort_order)
+                                               AddinManager.CurrentLocalizer.GetString ("EXTENSION-NAME"),
+		                                       sort_order,
+		                                       "extension-unique-id")
         {
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
 

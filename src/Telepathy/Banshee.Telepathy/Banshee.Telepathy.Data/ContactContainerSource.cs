@@ -55,7 +55,7 @@ namespace Banshee.Telepathy.Data
         public static event EventHandler<SchemaChangedEventArgs> DownloadingAllowedChanged;
         public static event EventHandler<SchemaChangedEventArgs> StreamingAllowedChanged;
 
-        public ContactContainerSource (TelepathyService service) : base (AddinManager.CurrentLocalizer.GetString ("Contacts"), "Contacts", 1000)
+        public ContactContainerSource (TelepathyService service) : base (AddinManager.CurrentLocalizer.GetString ("Contacts"), "Contacts", 1000, "telepathy-container")
         {
             TelepathyService = service;
             TypeUniqueId = "telepathy-container";

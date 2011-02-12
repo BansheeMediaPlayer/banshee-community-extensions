@@ -81,7 +81,7 @@ namespace Banshee.Magnatune
         private uint ui_manager_id;
         private InterfaceActionService action_service;
 
-        public RadioSource () : base("Magnatune", "Magnatune", 200)
+        public RadioSource () : base("Magnatune", "Magnatune", 200, "magnatune")
         {
             Pixbuf icon = new Pixbuf (System.Reflection.Assembly.GetExecutingAssembly ()
                                       .GetManifestResourceStream ("simple_icon.png"));
