@@ -86,11 +86,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.Karaoke\KaraokeService.cs" />
-    <Compile Include="Banshee.Karaoke\Gst\Bin.cs" />
-    <Compile Include="Banshee.Karaoke\Gst\Element.cs" />
-    <Compile Include="Banshee.Karaoke\Gst\Marshaller.cs" />
-    <Compile Include="Banshee.Karaoke\Gst\GstObject.cs" />
-    <Compile Include="Banshee.Karaoke\Gst\ElementFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -109,6 +104,9 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
-    <Folder Include="Banshee.Karaoke\Gst\" />
+    <ProjectReference Include="..\StreamRecorder\Streamrecorder.csproj">
+      <Project>{176AB141-4CC8-4E64-87FF-69C5D32A1A99}</Project>
+      <Name>Streamrecorder</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

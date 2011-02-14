@@ -49,5 +49,14 @@ namespace Banshee.Streamrecorder.Gst
             GLib.Marshaller.Free (native_name);
         }
 
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe private static extern bool gst_ghost_pad_set_target (IntPtr element, IntPtr target);
+
+        public bool SetTarget (Pad target)
+        {
+            bool ret = gst_ghost_pad_set_target (raw, target.ToIntPtr ());
+            return ret;
+        }
+
     }
 }

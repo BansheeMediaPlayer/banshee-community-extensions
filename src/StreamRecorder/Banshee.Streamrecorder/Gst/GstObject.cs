@@ -109,6 +109,15 @@ namespace Banshee.Streamrecorder.Gst
             GLib.Marshaller.Free (native_name);
         }
 
+        public void SetFloatProperty (string name, float value)
+        {
+            GLib.Value val = new GLib.Value (GLib.GType.Float);
+            val.Val = value;
+            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+            g_object_set_property (raw, native_name, ref val);
+            GLib.Marshaller.Free (native_name);
+        }
+
         public IntPtr ToIntPtr ()
         {
             return raw;

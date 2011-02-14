@@ -13,6 +13,7 @@ SOURCES =  \
 	Banshee.Streamrecorder/Gst/Format.cs \
 	Banshee.Streamrecorder/Gst/GhostPad.cs \
 	Banshee.Streamrecorder/Gst/GstObject.cs \
+	Banshee.Streamrecorder/Gst/Iterator.cs \
 	Banshee.Streamrecorder/Gst/Marshaller.cs \
 	Banshee.Streamrecorder/Gst/Pad.cs \
 	Banshee.Streamrecorder/Gst/PadBlockCallback.cs \

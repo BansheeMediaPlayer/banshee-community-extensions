@@ -120,6 +120,7 @@
     <Compile Include="Banshee.Streamrecorder\Gst\PadBlockCallback.cs" />
     <Compile Include="Banshee.Streamrecorder\Gst\BusFunc.cs" />
     <Compile Include="Banshee.Streamrecorder\Gst\ElementFactory.cs" />
+    <Compile Include="Banshee.Streamrecorder\Gst\Iterator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

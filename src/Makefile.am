@@ -1,5 +1,4 @@
 SUBDIRS = \
-    Karaoke \
 	AlarmClock \
 	Ampache \
 	AppIndicator \
@@ -18,6 +17,7 @@ SUBDIRS = \
 	RadioStationFetcher \
 	RandomByLastfm \
 	StreamRecorder \
+        Karaoke \
 	Telepathy \
 	ZeitgeistDataprovider
 

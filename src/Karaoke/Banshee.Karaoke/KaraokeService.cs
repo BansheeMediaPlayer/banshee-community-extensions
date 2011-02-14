@@ -39,18 +39,20 @@ using Banshee.ServiceStack;
 using Banshee.Preferences;
 using Banshee.MediaEngine;
 using Banshee.PlaybackController;
-using Banshee.Karaoke.Gst;
+using Banshee.Streamrecorder.Gst;
 
 namespace Banshee.Karaoke
 {
 
-    public class KaraokeService : IExtensionService, IDisposable
+    public class KaraokeService : IExtensionService, IDelayedInitializeService, IDisposable
     {
 
         Bin audiobin;
-        //Bin playbin;
+        Bin playbin;
         Bin audiotee;
         Element audiokaraoke;
+
+        bool has_karaoke = false;
 
         public KaraokeService ()
         {
@@ -61,42 +63,67 @@ namespace Banshee.Karaoke
         void IExtensionService.Initialize ()
         {
 
-            bool has_karaoke = Marshaller.CheckGstPlugin ("audiokaraoke");
+            has_karaoke = Marshaller.CheckGstPlugin ("audiokaraoke");
             Hyena.Log.Debug ("[Karaoke] GstPlugin audiokaraoke" + (has_karaoke ? "" : " not") + " found");
             if (!has_karaoke) {
                 Hyena.Log.Warning ("[Karaoke] audiokaraoke is not available, please install gstreamer-good-plugins");
                 return;
             }
+        }
 
-            //playbin = new Bin (ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements ()[0]);
+        void IDelayedInitializeService.DelayedInitialize ()
+        {
+            if (!has_karaoke) return;
+
+            //ServiceManager.PlayerEngine.ActiveEngine.IsInitialized;
+
+            playbin = new Bin (ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements ()[0]);
             audiobin = new Bin (ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements ()[1]);
             audiotee = new Bin (ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements ()[2]);
 
-            audiokaraoke = ElementFactory.Make ("audiokaraoke");
+            if (playbin.IsNull ())
+                Hyena.Log.Debug ("[Karaoke] Playbin is not yet initialized, cannot start Karaoke Mode");
 
-            Hyena.Log.Debug ("[Karaoke] add audiokaraoke to audiobin");
-            audiobin.Add (audiokaraoke);
+            audiokaraoke = audiobin.GetByName ("karaoke");
 
-            Hyena.Log.Debug ("[Karaoke] unlink audiotee sink and audiobin sink");
-            audiobin.Unlink (audiotee);
+            if (audiokaraoke.IsNull ())
+            {
+                //make a fakesink and set it as playbin audio-sink target
+                Element fakesink = ElementFactory.Make ("fakesink");
+                playbin.SetProperty ("audio-sink", fakesink);
 
-            Hyena.Log.Debug ("[Karaoke] link audiokaraoke sink and audiobin sink");
-            //audiobin.Link (audiokaraoke);
-//    teepad = gst_element_get_pad (player->audiotee, "sink");
-//    gst_element_add_pad (player->audiobin, gst_ghost_pad_new ("sink", teepad));
-//    gst_object_unref (teepad);
+                audiokaraoke = ElementFactory.Make ("audiokaraoke","karaoke");
 
-            Hyena.Log.Debug ("[Karaoke] link audiokaraoke sink and audiotee sink");
-            //audiokaraoke.Link (audiotee);
+                //add audiokaraoke to audiobin
+                audiobin.Add (audiokaraoke);
 
-            Hyena.Log.InformationFormat ("Testing! Karaoke service has been initialized! {0}", audiokaraoke.GetPathString ());
+                //setting new audiobin sink to audiokaraoke sink
+                GhostPad teepad = new GhostPad (audiobin.GetStaticPad ("sink").ToIntPtr ());
+                Pad audiokaraokepad = audiokaraoke.GetStaticPad ("sink");
+                teepad.SetTarget (audiokaraokepad);
+
+                //link audiokaraoke sink and audiotee sink
+                audiokaraoke.Link (audiotee);
+
+                //reset audio-sink property to modified audiobin
+                playbin.SetProperty ("audio-sink", audiobin);
+            }
+
+            audiokaraoke.SetFloatProperty ("level", 1);
+            audiokaraoke.SetFloatProperty ("mono-level", 1);
+
+            //Hyena.Log.DebugFormat ("Karaoke service has been initialized! {0}", audiobin.ToString ());
         }
         #endregion
 
         #region IDisposable implementation
         void IDisposable.Dispose ()
         {
-            Hyena.Log.Information ("Testing! Karaoke service has been disposed!");
+            if (!playbin.IsNull ())
+            {
+                audiokaraoke.SetFloatProperty ("level", 0);
+                audiokaraoke.SetFloatProperty ("mono-level", 0);
+            }
         }
         #endregion
 
@@ -106,5 +133,6 @@ namespace Banshee.Karaoke
         string IService.ServiceName {
             get { return "KaraokeService"; }
         }
+
     }
 }
