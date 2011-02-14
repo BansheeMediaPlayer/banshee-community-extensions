@@ -131,6 +131,7 @@ help/Makefile
 po/Makefile.in
 
 src/Makefile
+src/Karaoke/Makefile
 src/AssemblyInfo.cs
 
 src/AlarmClock/Makefile
@@ -196,6 +197,7 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
+    Karaoke:             yes
     Alarm Clock:           ${enable_AlarmClock}
     Ampache:               ${enable_Ampache}
     AppIndicator:          ${enable_AppIndicator}

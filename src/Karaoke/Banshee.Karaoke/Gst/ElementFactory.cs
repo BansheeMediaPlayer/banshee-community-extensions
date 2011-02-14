@@ -1,5 +1,5 @@
 //
-// GhostPad.cs
+// ElementFactory.cs
 //
 // Author:
 //   Frank Ziegler
@@ -29,33 +29,47 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Banshee.Streamrecorder.Gst
+namespace Banshee.Karaoke.Gst
 {
 
-    public class GhostPad : Pad
+
+    public class ElementFactory : GstObject
     {
 
-        public GhostPad (IntPtr ghostpad) : base(ghostpad)
+        public ElementFactory (IntPtr elementfactory) : base(elementfactory)
         {
         }
 
         [DllImport("libgstreamer-0.10.so.0")]
-        unsafe private static extern IntPtr gst_ghost_pad_new (IntPtr name, IntPtr target);
+        unsafe private static extern IntPtr gst_element_factory_make (IntPtr factoryname, IntPtr name);
 
-        public GhostPad (string name, Pad target) : base(IntPtr.Zero)
+        public static Element Make (string factoryname)
+        {
+            IntPtr native_factoryname = GLib.Marshaller.StringToPtrGStrdup (factoryname);
+            IntPtr raw_ret = gst_element_factory_make (native_factoryname, IntPtr.Zero);
+            GLib.Marshaller.Free (native_factoryname);
+            return new Element (raw_ret);
+        }
+
+        public static Element Make (string factoryname, string name)
+        {
+            IntPtr native_factoryname = GLib.Marshaller.StringToPtrGStrdup (factoryname);
+            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+            IntPtr raw_ret = gst_element_factory_make (native_factoryname, native_name);
+            GLib.Marshaller.Free (native_factoryname);
+            GLib.Marshaller.Free (native_name);
+            return new Element (raw_ret);
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe private static extern IntPtr gst_element_factory_find (IntPtr name);
+
+        public static ElementFactory Find (string name)
         {
             IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-            this.raw = gst_ghost_pad_new (native_name, target.ToIntPtr ());
+            ElementFactory element_factory = new ElementFactory (gst_element_factory_find (native_name));
             GLib.Marshaller.Free (native_name);
-        }
-
-        [DllImport("libgstreamer-0.10.so.0")]
-        unsafe private static extern bool gst_ghost_pad_set_target (IntPtr element, IntPtr target);
-
-        public bool SetTarget (Pad target)
-        {
-            bool ret = gst_ghost_pad_set_target (raw, target.ToIntPtr ());
-            return ret;
+            return element_factory;
         }
 
     }

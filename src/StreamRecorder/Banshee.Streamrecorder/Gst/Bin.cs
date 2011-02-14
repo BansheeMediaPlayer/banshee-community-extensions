@@ -28,6 +28,8 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Collections;
+using System.Text;
 
 namespace Banshee.Streamrecorder.Gst
 {
@@ -43,6 +45,32 @@ namespace Banshee.Streamrecorder.Gst
 
         public Bin (IntPtr bin) : base(bin)
         {
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        private static extern IntPtr gst_bin_iterate_sorted (IntPtr bin);
+
+        public override string ToString ()
+        {
+            IntPtr raw_ret = gst_bin_iterate_sorted (raw);
+            Iterator ret = raw_ret == IntPtr.Zero ? null : (Iterator) GLib.Opaque.GetOpaque (raw_ret, typeof (Iterator), false);
+            IEnumerator e = ret.GetEnumerator ();
+            if (e == null) return "null";
+            StringBuilder res = new StringBuilder ();
+            while (e.MoveNext())
+            {
+                if (e.Current != null)
+                {
+                    GstObject o = new GstObject ((IntPtr)(e.Current));
+                    if (o != null)
+                    {
+                        res.Append (o.GetPathString ());
+                        res.Append ("!");
+                    }
+                }
+            }
+            return res.ToString ().Trim ('!').Replace ("!", " ! ");
+
         }
 
         [DllImport("libgstreamer-0.10.so.0")]

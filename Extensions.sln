@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Karaoke", "src\Karaoke\Karaoke.csproj", "{2940FD14-8A3F-4E13-B904-4A3641DE6E78}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ampache", "src\Ampache\Ampache.csproj", "{AB92D9F2-74A4-4D6A-9882-9D180A544CED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZeitgeistDataprovider", "src\ZeitgeistDataprovider\ZeitgeistDataprovider.csproj", "{BA8AD16F-358B-4F48-90EC-341091300B82}"
@@ -110,6 +112,10 @@ Global
 		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Debug|x86.Build.0 = Debug|Any CPU
 		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Release|x86.ActiveCfg = Release|Any CPU
 		{1FD50427-9F74-412E-89EB-0F33B889C6A4}.Release|x86.Build.0 = Release|Any CPU
+		{2940FD14-8A3F-4E13-B904-4A3641DE6E78}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2940FD14-8A3F-4E13-B904-4A3641DE6E78}.Debug|x86.Build.0 = Debug|Any CPU
+		{2940FD14-8A3F-4E13-B904-4A3641DE6E78}.Release|x86.ActiveCfg = Release|Any CPU
+		{2940FD14-8A3F-4E13-B904-4A3641DE6E78}.Release|x86.Build.0 = Release|Any CPU
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Debug|x86.Build.0 = Debug|Any CPU
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Release|x86.ActiveCfg = Release|Any CPU

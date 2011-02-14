@@ -17,6 +17,7 @@ SUBDIRS = \
 	RadioStationFetcher \
 	RandomByLastfm \
 	StreamRecorder \
+        Karaoke \
 	Telepathy \
 	ZeitgeistDataprovider
 

@@ -40,6 +40,15 @@ namespace Banshee.Streamrecorder.Gst
         }
 
         [DllImport("libgstreamer-0.10.so.0")]
+        static extern bool gst_element_remove_pad (IntPtr element, IntPtr pad);
+
+        public bool RemovePad (Pad pad)
+        {
+            bool ret = gst_element_remove_pad (raw, pad.ToIntPtr ());
+            return ret;
+        }
+
+        [DllImport("libgstreamer-0.10.so.0")]
         static extern IntPtr gst_element_get_static_pad (IntPtr element, IntPtr name);
 
         public Pad GetStaticPad (string name)
@@ -75,6 +84,14 @@ namespace Banshee.Streamrecorder.Gst
             for (int i = 0; i < elements.Length - 1; i++) {
                 elements[i].Link (elements[i + 1]);
             }
+        }
+
+        [DllImport("libgstreamer-0.10.so.0", CallingConvention = CallingConvention.Cdecl)]
+        static extern void gst_element_unlink (IntPtr src, IntPtr dest);
+
+        public void Unlink (Element dest)
+        {
+            gst_element_unlink (raw, dest.ToIntPtr ());
         }
 
         [DllImport("libgstreamer-0.10.so.0")]

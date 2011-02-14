@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.Karaoke"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="Copyright © 2011 Frank Ziegler. Licensed under the MIT X11 license."
+    name="Karaoke"
+    category="Community Extensions"
+    description="Filter the singers voice out of songs"
+    author="Frank Ziegler"
+    url="http://banshee-project.org/"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <!-- Define a Service extension.  This will instantiate the specified class on startup,
+       letting us do whatever we want. -->
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.Karaoke.KaraokeService"/>
+  </Extension>
+
+  <!-- Define a Source extension.  This will instantiate a new Source object,
+       listed in the left-most Source TreeView. 
+  <Extension path="/Banshee/SourceManager/Source">
+    <Source class="Banshee.Karaoke.KaraokeSource"/>
+  </Extension>-->
+
+</Addin>
