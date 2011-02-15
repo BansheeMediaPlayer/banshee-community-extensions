@@ -30,15 +30,7 @@ using System;
 
 using Mono.Addins;
 
-using Banshee.Base;
-using Banshee.Sources;
-using Banshee.Sources.Gui;
-
-// Other namespaces you might want:
 using Banshee.ServiceStack;
-using Banshee.Preferences;
-using Banshee.MediaEngine;
-using Banshee.PlaybackController;
 using Banshee.Streamrecorder.Gst;
 
 namespace Banshee.Karaoke
@@ -56,7 +48,6 @@ namespace Banshee.Karaoke
 
         public KaraokeService ()
         {
-            Hyena.Log.Information ("Testing! Karaoke service has been instantiated!");
         }
 
         #region IExtensionService implementation
@@ -74,8 +65,6 @@ namespace Banshee.Karaoke
         void IDelayedInitializeService.DelayedInitialize ()
         {
             if (!has_karaoke) return;
-
-            //ServiceManager.PlayerEngine.ActiveEngine.IsInitialized;
 
             playbin = new Bin (ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements ()[0]);
             audiobin = new Bin (ServiceManager.PlayerEngine.ActiveEngine.GetBaseElements ()[1]);
