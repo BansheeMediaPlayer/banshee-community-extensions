@@ -126,15 +126,16 @@ namespace Banshee.Karaoke
             action_container.PackStart (header_label, true, true, 0);
             action_container.PackStart (description_label, true, true, 0);
             VBox choosing_labels = new VBox ();
-            choosing_labels.PackStart (choose_level_label, true, true, 5);
-            choosing_labels.PackStart (choose_band_label, true, true, 5);
-            choosing_labels.PackStart (choose_width_label, true, true, 5);
+            choosing_labels.PackStart (choose_level_label, false, false, 5);
+            choosing_labels.PackStart (choose_band_label, false, false, 5);
+            choosing_labels.PackStart (choose_width_label, false, false, 5);
             VBox box_choosing = new VBox ();
             box_choosing.PackStart (level_scale, true, true, 0);
             box_choosing.PackStart (band_scale, true, true, 0);
             box_choosing.PackStart (width_scale, true, true, 0);
             HBox all_choosing = new HBox ();
-            all_choosing.PackStart (choosing_labels, true, true, 0);
+            all_choosing.Spacing = 10;
+            all_choosing.PackStart (choosing_labels, false, false, 0);
             all_choosing.PackStart (box_choosing, true, true, 0);
 
             action_container.PackStart (all_choosing, true, true, 5);
