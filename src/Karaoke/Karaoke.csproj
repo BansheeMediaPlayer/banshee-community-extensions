@@ -83,9 +83,19 @@
     <EmbeddedResource Include="Karaoke.addin.xml">
       <LogicalName>Karaoke.addin.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\KaraokeMenu.xml">
+      <LogicalName>KaraokeMenu.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\KaraokeButton.xml">
+      <LogicalName>KaraokeButton.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\microphone.png">
+      <LogicalName>microphone.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.Karaoke\KaraokeService.cs" />
+    <Compile Include="Banshee.Karaoke\KaraokeConfigDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

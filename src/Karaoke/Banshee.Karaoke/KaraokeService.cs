@@ -32,6 +32,8 @@ using Mono.Addins;
 
 using Banshee.ServiceStack;
 using Banshee.Streamrecorder.Gst;
+using Banshee.Gui;
+using Banshee.Configuration;
 
 namespace Banshee.Karaoke
 {
@@ -46,8 +48,24 @@ namespace Banshee.Karaoke
 
         bool has_karaoke = false;
 
+        private Gtk.ActionGroup actions;
+        private InterfaceActionService action_service;
+        private uint ui_menu_id;
+        private uint ui_button_id;
+
+        private bool karaoke_enabled = true;
+
+        private float effect_level = 1.0f;
+        private float filter_band = 220.0f;
+        private float filter_width = 100.0f;
+
         public KaraokeService ()
         {
+            karaoke_enabled = IsKaraokeEnabledEntry.Get ().Equals ("True") ? true : false;
+            effect_level = (float)EffectLevelEntry.Get ();
+            effect_level = effect_level / 100;
+            filter_band = (float)FilterBandEntry.Get ();
+            filter_width = (float)FilterWidthEntry.Get ();
         }
 
         #region IExtensionService implementation
@@ -60,6 +78,71 @@ namespace Banshee.Karaoke
                 Hyena.Log.Warning ("[Karaoke] audiokaraoke is not available, please install gstreamer-good-plugins");
                 return;
             }
+
+            action_service = ServiceManager.Get<InterfaceActionService> ();
+            actions = new Gtk.ActionGroup ("Karaoke");
+
+            actions.Add (new Gtk.ActionEntry[] { new Gtk.ActionEntry ("KaraokeAction", null,
+                             AddinManager.CurrentLocalizer.GetString ("_Karaoke"), null, null, null),
+                             new Gtk.ActionEntry ("KaraokeConfigureAction", Gtk.Stock.Properties,
+                                 AddinManager.CurrentLocalizer.GetString ("_Configure"), null,
+                                 AddinManager.CurrentLocalizer.GetString ("Configure the Karaoke extension"), OnConfigure) });
+
+            Gdk.Pixbuf icon = new Gdk.Pixbuf (System.Reflection.Assembly.GetExecutingAssembly ()
+                                              .GetManifestResourceStream ("microphone.png"));
+
+            Gtk.IconSet iconset = new Gtk.IconSet (icon);
+            Gtk.IconFactory iconfactory = new Gtk.IconFactory ();
+            iconfactory.Add ("microphone", iconset);
+            iconfactory.AddDefault ();
+
+            actions.Add (new Gtk.ToggleActionEntry[] { new Gtk.ToggleActionEntry ("KaraokeEnableAction", "microphone",
+                             AddinManager.CurrentLocalizer.GetString ("_Activate Karaoke mode"), null,
+                             AddinManager.CurrentLocalizer.GetString ("Activate Karaoke mode"),
+                             OnActivateKaraoke, karaoke_enabled) });
+
+            action_service.UIManager.InsertActionGroup (actions, 0);
+            ui_menu_id = action_service.UIManager.AddUiFromResource ("KaraokeMenu.xml");
+            ui_button_id = action_service.UIManager.AddUiFromResource ("KaraokeButton.xml");
+
+        }
+
+        /// <summary>
+        /// Activates or deactivates Karaoke mode
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="ea">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
+        public void OnActivateKaraoke (object o, EventArgs ea)
+        {
+            karaoke_enabled = !karaoke_enabled;
+            IsKaraokeEnabledEntry.Set (karaoke_enabled.ToString ());
+
+            if (!karaoke_enabled) {
+                audiokaraoke.SetFloatProperty ("level", 0);
+                audiokaraoke.SetFloatProperty ("mono-level", 0);
+            } else {
+                audiokaraoke.SetFloatProperty ("level", effect_level);
+                audiokaraoke.SetFloatProperty ("mono-level", effect_level);
+            }
+
+        }
+
+        /// <summary>
+        /// Triggers configuration, shows the configuration dialog
+        /// </summary>
+        /// <param name="o">
+        /// A <see cref="System.Object"/> -- not used
+        /// </param>
+        /// <param name="ea">
+        /// A <see cref="EventArgs"/> -- not used
+        /// </param>
+        public void OnConfigure (object o, EventArgs ea)
+        {
+            new KaraokeConfigDialog (this, EffectLevel, FilterBand, FilterWidth);
         }
 
         void IDelayedInitializeService.DelayedInitialize ()
@@ -98,8 +181,13 @@ namespace Banshee.Karaoke
                 playbin.SetProperty ("audio-sink", audiobin);
             }
 
-            audiokaraoke.SetFloatProperty ("level", 1);
-            audiokaraoke.SetFloatProperty ("mono-level", 1);
+            if (!karaoke_enabled) {
+                audiokaraoke.SetFloatProperty ("level", 0);
+                audiokaraoke.SetFloatProperty ("mono-level", 0);
+            } else {
+                audiokaraoke.SetFloatProperty ("level", effect_level);
+                audiokaraoke.SetFloatProperty ("mono-level", effect_level);
+            }
 
             //Hyena.Log.DebugFormat ("Karaoke service has been initialized! {0}", audiobin.ToString ());
         }
@@ -113,6 +201,10 @@ namespace Banshee.Karaoke
                 audiokaraoke.SetFloatProperty ("level", 0);
                 audiokaraoke.SetFloatProperty ("mono-level", 0);
             }
+            action_service.UIManager.RemoveUi (ui_menu_id);
+            action_service.UIManager.RemoveUi (ui_button_id);
+            action_service.UIManager.RemoveActionGroup (actions);
+            actions = null;
         }
         #endregion
 
@@ -122,6 +214,70 @@ namespace Banshee.Karaoke
         string IService.ServiceName {
             get { return "KaraokeService"; }
         }
+
+        public bool IsKaraokeEnabled
+        {
+            get { return karaoke_enabled; }
+        }
+
+        public void ApplyKaraokeEffectLevel (float new_level)
+        {
+            if (!karaoke_enabled) return;
+            audiokaraoke.SetFloatProperty ("level", new_level);
+            audiokaraoke.SetFloatProperty ("mono-level", new_level);
+        }
+
+        public float EffectLevel
+        {
+            get { return effect_level; }
+            set
+            {
+                effect_level = value;
+                ApplyKaraokeEffectLevel (effect_level);
+            }
+        }
+
+        public void ApplyKaraokeFilterBand (float new_band)
+        {
+            audiokaraoke.SetFloatProperty ("filter-band", new_band);
+        }
+
+        public float FilterBand
+        {
+            get { return filter_band; }
+            set
+            {
+                filter_band = value;
+                ApplyKaraokeFilterBand (filter_band);
+            }
+        }
+
+        public void ApplyKaraokeFilterWidth (float new_width)
+        {
+            audiokaraoke.SetFloatProperty ("filter-width", new_width);
+        }
+
+        public float FilterWidth
+        {
+            get { return filter_width; }
+            set
+            {
+                filter_width = value;
+                ApplyKaraokeFilterWidth (filter_width);
+            }
+        }
+
+        public static readonly SchemaEntry<string> IsKaraokeEnabledEntry = new SchemaEntry<string> (
+               "plugins.karaoke", "karaoke_enabled", "", "Is Karaoke mode enabled", "Is Karaoke mode enabled");
+
+        public static readonly SchemaEntry<int> EffectLevelEntry = new SchemaEntry<int> (
+               "plugins.karaoke", "effect_level", 100, "Effect Level", "Effect Level");
+
+        public static readonly SchemaEntry<int> FilterBandEntry = new SchemaEntry<int> (
+               "plugins.karaoke", "filter_band", 220, "Filter Band", "Filter Band");
+
+        public static readonly SchemaEntry<int> FilterWidthEntry = new SchemaEntry<int> (
+               "plugins.karaoke", "filter_width", 100, "Filter Width", "Filter Width");
 
     }
 }

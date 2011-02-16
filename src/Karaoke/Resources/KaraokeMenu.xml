@@ -1,0 +1,11 @@
+<ui>
+    <menubar name="MainMenu">
+        <menu name="ToolsMenu" action="ToolsMenuAction">
+            <menu name="Karaoke" action="KaraokeAction">
+                <menuitem name="KaraokeEnable" action="KaraokeEnableAction" />
+                <separator />
+                <menuitem name="KaraokeConfigure" action="KaraokeConfigureAction" />
+            </menu>
+        </menu>
+    </menubar>
+</ui>

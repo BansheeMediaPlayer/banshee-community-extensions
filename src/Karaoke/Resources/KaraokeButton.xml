@@ -1,0 +1,7 @@
+<ui>
+    <toolbar name="HeaderToolbar">
+		<placeholder name="SourceActions">
+		<toolitem name="KaraokeEnable" action="KaraokeEnableAction" />
+		</placeholder>
+	</toolbar>
+</ui>
