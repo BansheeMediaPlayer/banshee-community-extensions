@@ -46,14 +46,15 @@ char *lirc_glue_next_valid_command ()
         } else {
             lirc_glue_set_error (1);  // means we don't have a code.  totally normal for other unrelated button presses
         }
+
+        free (code);
+
         if (lirc_glue_get_error () < 1 ) {
-            free (code);
-            if (command != NULL)
-                return (command);
-            free (command);
-            return (NULL);
+            return (command);
         }
     }
+
+    return (NULL); // daemon shut down so no next code
 }
 
 struct lirc_config *lirc_glue_getconfig ()
