@@ -47,7 +47,7 @@ namespace Banshee.Ampache
 			this.entPassword.Name = "entPassword";
 			this.entPassword.IsEditable = true;
 			this.entPassword.Visibility = false;
-			this.entPassword.InvisibleChar = '•';
+			this.entPassword.InvisibleChar = '\u2022';
 			this.table1.Add (this.entPassword);
 			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table1[this.entPassword]));
 			w1.TopAttach = ((uint)(2));
@@ -60,7 +60,7 @@ namespace Banshee.Ampache
 			this.entUrl.CanFocus = true;
 			this.entUrl.Name = "entUrl";
 			this.entUrl.IsEditable = true;
-			this.entUrl.InvisibleChar = '•';
+			this.entUrl.InvisibleChar = '\u2022';
 			this.table1.Add (this.entUrl);
 			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1[this.entUrl]));
 			w2.LeftAttach = ((uint)(1));
@@ -71,7 +71,7 @@ namespace Banshee.Ampache
 			this.entUser.CanFocus = true;
 			this.entUser.Name = "entUser";
 			this.entUser.IsEditable = true;
-			this.entUser.InvisibleChar = '•';
+			this.entUser.InvisibleChar = '\u2022';
 			this.table1.Add (this.entUser);
 			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1[this.entUser]));
 			w3.TopAttach = ((uint)(1));
