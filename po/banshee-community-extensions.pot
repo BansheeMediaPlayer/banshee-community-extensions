@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-03 21:56+0100\n"
+"POT-Creation-Date: 2011-02-21 23:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -335,6 +335,80 @@ msgstr ""
 msgid "Search Jamendo"
 msgstr ""
 
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:77
+msgid "Karaoke configuration"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:81
+msgid ""
+"You can alter the parameters of the karaoke effect here and define custom "
+"filter-band, filter-width and effect level."
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:87
+msgid "Effect Level:"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:88
+msgid "Filter Band:"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:89
+msgid "Filter Width:"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:94
+msgid ""
+"The effect level defines to what degree the voice frequencies are reduced."
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:101
+msgid ""
+"The filter band defines position of filter within the frequency spectrum."
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:108
+msgid ""
+"The filter width defines how wide the spectrum of the filtered frequencies "
+"is."
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:114
+msgid "Restore _defaults"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:117
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:102
+msgid "_Cancel"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:119
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:104
+msgid "_Save"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:86
+msgid "_Karaoke"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:88
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:107
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:114
+msgid "_Configure"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:89
+msgid "Configure the Karaoke extension"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:100
+msgid "_Activate Karaoke mode"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:101
+msgid "Activate Karaoke mode"
+msgstr ""
+
 #: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:76
 msgid "Get Information From Track Fingerprint"
 msgstr ""
@@ -605,11 +679,6 @@ msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:105
 msgid "Live_Radio"
-msgstr ""
-
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:107
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:114
-msgid "_Configure"
 msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:108
@@ -944,14 +1013,6 @@ msgstr ""
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:99
 msgid "_Browse"
-msgstr ""
-
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:102
-msgid "_Cancel"
-msgstr ""
-
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:104
-msgid "_Save"
 msgstr ""
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:106
