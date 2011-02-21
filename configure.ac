@@ -95,6 +95,7 @@ BCE_OPENVP
 BCE_RADIOSTATIONFETCHER
 BCE_RANDOMBYLASTFM
 BCE_STREAMRECORDER
+BCE_KARAOKE
 BCE_TELEPATHY
 BCE_ZEITGEISTDP
 
@@ -197,7 +198,6 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
-    Karaoke:             yes
     Alarm Clock:           ${enable_AlarmClock}
     Ampache:               ${enable_Ampache}
     AppIndicator:          ${enable_AppIndicator}
@@ -205,6 +205,7 @@ ${PACKAGE}-${VERSION}
     ClutterFlow:           ${enable_ClutterFlow}
     CoverWallpaper:        ${enable_CoverWallpaper}
     Jamendo:               ${enable_Jamendo}
+    Karaoke:               ${enable_Karaoke}
     LastfmFingerprint:     ${enable_LastfmFingerprint}
     LCD:                   ${enable_LCD}
     Lirc:                  ${enable_Lirc}

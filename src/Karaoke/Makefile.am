@@ -14,4 +14,8 @@ RESOURCES =  \
 	Resources/KaraokeMenu.xml \
 	Resources/microphone.png
 
+if ENABLE_KARAOKE
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif
