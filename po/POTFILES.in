@@ -14,6 +14,8 @@ src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs
 src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs
 src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs
 src/Jamendo/Banshee.Jamendo/JamendoWebBrowserShell.cs
+src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs
+src/Karaoke/Banshee.Karaoke/KaraokeService.cs
 src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs
 src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs
 src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs
