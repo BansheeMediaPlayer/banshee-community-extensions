@@ -18,16 +18,8 @@
     <Addin id="Banshee.ThickClient" version="1.0"/>
   </Dependencies>
 
-  <!-- Define a Service extension.  This will instantiate the specified class on startup,
-       letting us do whatever we want. -->
   <Extension path="/Banshee/ServiceManager/Service">
     <Service class="Banshee.Karaoke.KaraokeService"/>
   </Extension>
-
-  <!-- Define a Source extension.  This will instantiate a new Source object,
-       listed in the left-most Source TreeView. 
-  <Extension path="/Banshee/SourceManager/Source">
-    <Source class="Banshee.Karaoke.KaraokeSource"/>
-  </Extension>-->
 
 </Addin>

@@ -206,9 +206,9 @@ namespace Banshee.Karaoke
         /// </param>
         private void OnCancelButtonClicked (object o, EventArgs a)
         {
-            karaoke_service.ApplyKaraokeEffectLevel ((float)(initial_level));
-            karaoke_service.ApplyKaraokeFilterBand ((float)initial_band);
-            karaoke_service.ApplyKaraokeFilterWidth ((float)initial_width);
+            karaoke_service.ApplyKaraokeEffectLevel (initial_level);
+            karaoke_service.ApplyKaraokeFilterBand (initial_band);
+            karaoke_service.ApplyKaraokeFilterWidth (initial_width);
 
             Destroy ();
         }
