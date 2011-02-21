@@ -77,5 +77,5 @@ if [ $# = 0 ]; then
 	echo "WARNING: I am going to run configure without any arguments."
 fi
 
-run ./configure --enable-maintainer-mode $@
+[ -n "$NOCONFIGURE" ] && run ./configure --enable-maintainer-mode $@
 
