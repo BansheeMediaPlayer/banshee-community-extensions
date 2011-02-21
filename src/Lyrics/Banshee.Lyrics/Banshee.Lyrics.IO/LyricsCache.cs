@@ -37,7 +37,7 @@ namespace Banshee.Lyrics.IO
 
         private string GetLyricsFilename (string artist, string title)
         {
-            if (artist.Contains (Path.DirectorySeparatorChar.ToString ())) {
+            if (!String.IsNullOrEmpty (artist) && artist.Contains (Path.DirectorySeparatorChar.ToString ())) {
                 artist = artist.Replace (Path.DirectorySeparatorChar.ToString (), "_");
             }
             if (title.Contains (Path.DirectorySeparatorChar.ToString())) {
