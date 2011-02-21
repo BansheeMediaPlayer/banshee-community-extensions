@@ -58,11 +58,11 @@ namespace Banshee.Jamendo
         public JamendoDownloadManager (string remote_uri, string mimetype)
         {
             this.mimetype = mimetype;
-            // TODO: Allow the user to cancel the download
             job = new DownloadManagerJob (this) {
                 Title = AddinManager.CurrentLocalizer.GetString ("Jamendo Downloads"),
                 Status = AddinManager.CurrentLocalizer.GetString ("Contacting..."),
-                IconNames = new string [] { "jamendo" }
+                IconNames = new string [] { "jamendo" },
+                CanCancel = true
             };
             job.Finished += delegate { ServiceManager.SourceManager.MusicLibrary.NotifyUser (); };
 
@@ -79,6 +79,7 @@ namespace Banshee.Jamendo
                 TempPathRoot = Path.Combine (Path.GetTempPath (), "banshee-jamendo-downloader"),
                 FileExtension = mimetype == "application/zip" ? "zip" : "mp3"
             };
+            job.CancelRequested += delegate { downloader.Abort (); };
             QueueDownloader (downloader);
         }
 
@@ -91,6 +92,13 @@ namespace Banshee.Jamendo
         protected override void OnDownloaderFinished (HttpDownloader downloader)
         {
             var file_downloader = (HttpFileDownloader)downloader;
+            if (job.IsCancelRequested) {
+                Log.InformationFormat ("Cancelled download {0}", file_downloader.LocalPath);
+                File.Delete (file_downloader.LocalPath);
+                base.OnDownloaderFinished (downloader);
+                return;
+            }
+
             Log.InformationFormat ("Finished downloading {0}", file_downloader.LocalPath);
             job.Status = AddinManager.CurrentLocalizer.GetString ("Importing...");
             job.Progress = 0.0;
