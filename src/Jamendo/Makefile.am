@@ -11,4 +11,8 @@ RESOURCES =  \
 	Jamendo.addin.xml \
 	ThemeIcons/22x22/categories/jamendo.png
 
+if ENABLE_JAMENDO
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif
