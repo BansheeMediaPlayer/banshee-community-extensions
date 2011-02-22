@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the banshee-community-extensions package.
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
-"POT-Creation-Date: 2010-12-17 12:02+0100\n"
-"PO-Revision-Date: 2011-01-06 19:23+0000\n"
+"POT-Creation-Date: 2011-02-21 23:35+0100\n"
+"PO-Revision-Date: 2011-02-22 11:04+0000\n"
 "Last-Translator: G37 <ralphd.periat@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,32 +17,32 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:70
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:69
 msgid "Alarm Clock"
 msgstr "Réveil"
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:74
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:73
 msgid "Sleep Timer..."
 msgstr "Mise en veille"
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:75
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:74
 msgid "Set the sleep timer value"
 msgstr "Délai de mise en veille"
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:78
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:77
 msgid "Alarm..."
 msgstr "Réveil..."
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:79
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:78
 msgid "Set the alarm time"
 msgstr "Régler le réveil"
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:82
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:81
 #: ../src/LCD/Banshee.LCD/LCDService.cs:70
 msgid "_Configure..."
 msgstr "_Configurer..."
 
-#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:83
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:82
 msgid "Configure the Alarm Clock plugin"
 msgstr "Configurer l'extension Réveil"
 
@@ -94,17 +94,17 @@ msgstr "Commande:"
 msgid "Command To Execute:"
 msgstr "Commande à exécuter:"
 
-#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:45
+#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:46
 msgid "Sleep Timer"
 msgstr "Mise en Veille"
 
-#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:67
+#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:72
 msgid "Sleep Timer :"
 msgstr "Mise en Veille:"
 
-#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:69
-msgid "<i>(set to 0:00 to disable)</i>"
-msgstr "<i>(Mettre à 0:00 pour désactiver)</i>"
+#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:83
+msgid "Start Timer"
+msgstr ""
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:75
 msgid "Connect"
@@ -129,6 +129,7 @@ msgid "Title"
 msgstr "Titre"
 
 #: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:86
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:62
 msgid "Password:"
 msgstr "Mot de passe:"
 
@@ -325,21 +326,117 @@ msgstr "En cours d'importation..."
 msgid "Search Jamendo"
 msgstr "Rechercher sur Jamendo"
 
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:75
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:77
+msgid "Karaoke configuration"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:81
+msgid "You can alter the parameters of the karaoke effect here and define custom filter-band, filter-width and effect level."
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:87
+msgid "Effect Level:"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:88
+msgid "Filter Band:"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:89
+msgid "Filter Width:"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:94
+msgid "The effect level defines to what degree the voice frequencies are reduced."
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:101
+msgid "The filter band defines position of filter within the frequency spectrum."
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:108
+msgid "The filter width defines how wide the spectrum of the filtered frequencies is."
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:114
+msgid "Restore _defaults"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:117
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:102
+msgid "_Cancel"
+msgstr "_Annuler"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:119
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:104
+msgid "_Save"
+msgstr "_Enregistrer"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:86
+msgid "_Karaoke"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:88
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:107
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:114
+msgid "_Configure"
+msgstr "_Configurer"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:89
+msgid "Configure the Karaoke extension"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:100
+msgid "_Activate Karaoke mode"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:101
+msgid "Activate Karaoke mode"
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:76
 msgid "Get Information From Track Fingerprint"
 msgstr "Obtenir les informations à partir de l'empreinte digitale"
 
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:76
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:77
 msgid "Get track information from last.fm acoustic fingerprint"
 msgstr "Obtenir les informations de la pistes à partir l'empreinte acoustique Last.fm"
 
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:105
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:106
 msgid "Getting sound fingerprint"
 msgstr "Récupération de l'empreinte digitale accoustique"
 
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:108
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:109
 msgid "Scanning..."
 msgstr "Analyse..."
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:49
+msgid "Log in to Last.fm"
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:69
+msgid "Last.fm Account Login"
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:71
+msgid "Please enter your Last.fm account credentials."
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:92
+msgid "Log In"
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:57
+msgid "Username:"
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:101
+msgid "Sign up for Last.fm"
+msgstr ""
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:113
+msgid "Authorize for Last.fm"
+msgstr ""
 
 #: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:46
 msgid "LCD configuration"
@@ -397,11 +494,11 @@ msgstr "Chargement en cours ..."
 msgid "Choose By Query"
 msgstr "Choisissez par Query"
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:558
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:583
 msgid "Yes"
 msgstr "Oui"
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:558
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:583
 msgid "No"
 msgstr "Non"
 
@@ -464,19 +561,19 @@ msgstr "Erreur ... Recharger S'il vous plaît"
 msgid "Click a genre to load/refresh entries or type a query. Use the refresh button to refresh genres."
 msgstr "Sélectionner un genre pour rafraîchir les entrées / ou tapez une requête. Utilisez le bouton Actualiser pour actualiser genres."
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:68
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:69
 msgid "LiveRadioPlugin"
 msgstr "Extension LiveRadio"
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:119
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:121
 msgid "Station"
 msgstr "Station"
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:120
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:122
 msgid "Creator"
 msgstr "Créateur"
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:121
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:123
 msgid "Description"
 msgstr "Description"
 
@@ -566,11 +663,6 @@ msgstr "LiveRadio"
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:105
 msgid "Live_Radio"
 msgstr "Live_Radio"
-
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:107
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:114
-msgid "_Configure"
-msgstr "_Configurer"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:108
 msgid "Configure the LiveRadio plugin"
@@ -898,14 +990,6 @@ msgstr "Encodeur:"
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:99
 msgid "_Browse"
 msgstr "_Parcourir"
-
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:102
-msgid "_Cancel"
-msgstr "_Annuler"
-
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:104
-msgid "_Save"
-msgstr "_Enregistrer"
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:106
 msgid "Import files to media library"
