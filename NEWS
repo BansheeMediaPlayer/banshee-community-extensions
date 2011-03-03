@@ -1,4 +1,20 @@
 =================================
+Version 1.9.4 - March 3, 2011
+=================================
+
+Contributors:
+Bertrand Lorentz, Frank Ziegler, Olivier Dufour, Chow Loong Jin, 
+
+Enhancements:
+* Karaoke: added a new extension to filter out the singers voice
+
+Bugs Fixed:
+* LastfmFingerprint: Fix some exceptions
+* Fix missing unique IDs in several extension sources
+* Lirc: Fix potential memory issues
+* Lyrics: Fix NullPointerException when artist is unknown
+
+=================================
 Version 1.9.3 - February 3, 2011
 =================================
 
