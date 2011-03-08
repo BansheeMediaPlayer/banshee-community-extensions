@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-21 23:35+0100\n"
+"POT-Creation-Date: 2011-03-08 09:51+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -393,7 +393,7 @@ msgstr ""
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:88
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:107
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:114
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:121
 msgid "_Configure"
 msgstr ""
 
@@ -1023,19 +1023,19 @@ msgstr ""
 msgid "Enable automatic files splitting by Metadata"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:112
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:119
 msgid "_Streamrecorder"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:115
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:122
 msgid "Configure the Streamrecorder plugin"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:118
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:125
 msgid "_Activate streamrecorder"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:119
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:126
 msgid "Activate streamrecorder process"
 msgstr ""
 
