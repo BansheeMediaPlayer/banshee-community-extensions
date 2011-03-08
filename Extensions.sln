@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Social", "src\Social\Social.csproj", "{B7FBA8BE-59EA-4205-9256-153FF21F2583}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Karaoke", "src\Karaoke\Karaoke.csproj", "{2940FD14-8A3F-4E13-B904-4A3641DE6E78}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ampache", "src\Ampache\Ampache.csproj", "{AB92D9F2-74A4-4D6A-9882-9D180A544CED}"
@@ -178,6 +180,10 @@ Global
 		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Debug|x86.Build.0 = Debug|Any CPU
 		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Release|x86.ActiveCfg = Release|Any CPU
 		{B3971F35-8FE0-4FED-A3A4-7A082B341D81}.Release|x86.Build.0 = Release|Any CPU
+		{B7FBA8BE-59EA-4205-9256-153FF21F2583}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B7FBA8BE-59EA-4205-9256-153FF21F2583}.Debug|x86.Build.0 = Debug|Any CPU
+		{B7FBA8BE-59EA-4205-9256-153FF21F2583}.Release|x86.ActiveCfg = Release|Any CPU
+		{B7FBA8BE-59EA-4205-9256-153FF21F2583}.Release|x86.Build.0 = Release|Any CPU
 		{BA8AD16F-358B-4F48-90EC-341091300B82}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{BA8AD16F-358B-4F48-90EC-341091300B82}.Debug|x86.Build.0 = Debug|Any CPU
 		{BA8AD16F-358B-4F48-90EC-341091300B82}.Release|x86.ActiveCfg = Release|Any CPU

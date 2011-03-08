@@ -16,6 +16,7 @@ SUBDIRS = \
 	OpenVP \
 	RadioStationFetcher \
 	RandomByLastfm \
+	Social \
 	StreamRecorder \
         Karaoke \
 	Telepathy \

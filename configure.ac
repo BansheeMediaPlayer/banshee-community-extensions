@@ -94,6 +94,7 @@ BCE_MIRAGE
 BCE_OPENVP
 BCE_RADIOSTATIONFETCHER
 BCE_RANDOMBYLASTFM
+BCE_SOCIAL
 BCE_STREAMRECORDER
 BCE_KARAOKE
 BCE_TELEPATHY
@@ -171,6 +172,7 @@ src/Mirage/Banshee.Mirage/Makefile
 src/Mirage/Test/Makefile
 src/RadioStationFetcher/Makefile
 src/RandomByLastfm/Makefile
+src/Social/Makefile
 src/StreamRecorder/Makefile
 src/Telepathy/Makefile
 src/Telepathy/Banshee.Telepathy/Makefile
@@ -216,6 +218,7 @@ ${PACKAGE}-${VERSION}
     OpenVP:                ${enable_OpenVP}
     RadioStationFetcher:   ${enable_RadioStationFetcher}
     RandomByLastfm:        ${enable_RandomByLastfm}
+    Social:                ${enable_Social}
     StreamRecorder:        ${enable_StreamRecorder}
     Telepathy:             ${enable_Telepathy}
     ZeitgeistDataprovider: ${enable_ZeitgeistDataprovider}
