@@ -160,10 +160,6 @@ namespace Banshee.Karaoke
 
             if (audiokaraoke.IsNull ())
             {
-                //make a fakesink and set it as playbin audio-sink target
-                Element fakesink = ElementFactory.Make ("fakesink");
-                playbin.SetProperty ("audio-sink", fakesink);
-
                 audiokaraoke = ElementFactory.Make ("audiokaraoke","karaoke");
 
                 //add audiokaraoke to audiobin
@@ -176,9 +172,6 @@ namespace Banshee.Karaoke
 
                 //link audiokaraoke sink and audiotee sink
                 audiokaraoke.Link (audiotee);
-
-                //reset audio-sink property to modified audiobin
-                playbin.SetProperty ("audio-sink", audiobin);
             }
 
             if (!karaoke_enabled) {
