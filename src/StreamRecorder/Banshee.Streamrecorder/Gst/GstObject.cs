@@ -47,27 +47,16 @@ namespace Banshee.Streamrecorder.Gst
             return (raw == IntPtr.Zero);
         }
 
-        [DllImport ("libgobject-2.0.so.0")]
-        private static extern void g_object_get_property (IntPtr gobject, IntPtr property_name, ref GLib.Value value);
+        //[DllImport ("libgobject-2.0.so.0")]
+        //private static extern void g_object_get_property (IntPtr gobject, IntPtr property_name, ref GLib.Value value);
 
-        public IntPtr GetProperty (string name)
+        public GLib.Value GetProperty (string name)
         {
             GLib.Value val = new GLib.Value ();
-            val.Init (GLib.GType.Object);
             IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-            g_object_get_property (raw, native_name, ref val);
+            g_object_set_property (raw, native_name, ref val);
             GLib.Marshaller.Free (native_name);
-            return ((GLib.Object)(val.Val)).Handle;
-        }
-
-        public string GetStringProperty (string name)
-        {
-            GLib.Value val = new GLib.Value ();
-            val.Init (GLib.GType.String);
-            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-            g_object_get_property (raw, native_name, ref val);
-            GLib.Marshaller.Free (native_name);
-            return val.Val as string;
+            return val;
         }
 
         [DllImport("libgstreamer-0.10.so.0")]
@@ -82,17 +71,16 @@ namespace Banshee.Streamrecorder.Gst
             GLib.Marshaller.Free (native_value);
         }
 
-        [DllImport("libgobject-2.0.so.0")]
-        private static extern void g_object_set_property (IntPtr gobject, IntPtr property_name, ref GLib.Value value);
-
         public void SetProperty (string name, Element value)
         {
-            GLib.Value val = new GLib.Value (GLib.GType.Object);
-            val.Val = GLib.Object.GetObject (value.ToIntPtr ());
             IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
-            g_object_set_property (raw, native_name, ref val);
+            IntPtr native_value = value.ToIntPtr ();
+            gst_util_set_object_arg (raw, native_name, native_value);
             GLib.Marshaller.Free (native_name);
         }
+
+        [DllImport("libgobject-2.0.so.0")]
+        private static extern void g_object_set_property (IntPtr gobject, IntPtr property_name, ref GLib.Value value);
 
         public void SetStringProperty (string name, string value)
         {

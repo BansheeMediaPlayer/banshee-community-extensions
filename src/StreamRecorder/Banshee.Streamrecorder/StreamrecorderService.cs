@@ -52,7 +52,7 @@ namespace Banshee.Streamrecorder
     /// <summary>
     /// Extension Service class that adds the functionality to Banshee Media Player to record live (non-local) streams to files
     /// </summary>
-    public class StreamrecorderService : IExtensionService, IDisposable, IDelayedInitializeService
+    public class StreamrecorderService : IExtensionService, IDisposable
     {
         private Recorder recorder;
         private ActionGroup actions;
@@ -79,36 +79,29 @@ namespace Banshee.Streamrecorder
             ui_button_id = 0;
         }
 
-        #region IDelayedInitializeService implementation
-        public void DelayedInitialize ()
+        /// <summary>
+        /// Initialize the service, creating the Recorder object, connecting events and adding GUI elements
+        /// </summary>
+        void IExtensionService.Initialize ()
         {
             recorder = new Recorder ();
             active_encoder = recorder.SetActiveEncoder (active_encoder);
 
             ServiceManager.PlaybackController.TrackStarted += delegate {
                 if (recording) {
-                    Hyena.Log.Debug ("[Streamrecorder] recording started due to trackstarted");
                     StartRecording ();
                 }
             };
 
             ServiceManager.PlaybackController.Stopped += delegate {
                 if (recording) {
-                    Hyena.Log.Debug ("[Streamrecorder] recording stopped due to playcontroller.stopped");
                     StopRecording ();
                 }
             };
 
+            ServiceManager.PlayerEngine.ConnectEvent (OnEndOfStream, PlayerEvent.EndOfStream);
             ServiceManager.PlayerEngine.ConnectEvent (OnStateChange, PlayerEvent.StateChange);
             ServiceManager.PlayerEngine.ConnectEvent (OnMetadata, PlayerEvent.TrackInfoUpdated);
-        }
-        #endregion
-
-        /// <summary>
-        /// Initialize the service, creating the Recorder object, connecting events and adding GUI elements
-        /// </summary>
-        void IExtensionService.Initialize ()
-        {
             ServiceManager.SourceManager.ActiveSourceChanged += OnSourceChanged;
 
             action_service = ServiceManager.Get<InterfaceActionService> ();
@@ -168,15 +161,15 @@ namespace Banshee.Streamrecorder
         /// </param>
         public void OnActivateStreamrecorder (object o, EventArgs ea)
         {
-            recording = !recording;
-
-            if (recording) {
+            if (!recording) {
                 StartRecording ();
             } else {
                 StopRecording ();
             }
 
+            recording = !recording;
             IsRecordingEnabledEntry.Set (recording.ToString ());
+
         }
 
         /// <summary>
@@ -199,11 +192,11 @@ namespace Banshee.Streamrecorder
         public void Dispose ()
         {
             StopRecording ();
-            recorder.Dispose ();
             action_service.UIManager.RemoveUi (ui_menu_id);
             if (ui_button_id > 0)
                 action_service.UIManager.RemoveUi (ui_button_id);
             action_service.UIManager.RemoveActionGroup (actions);
+            ServiceManager.PlayerEngine.DisconnectEvent (OnEndOfStream);
             ServiceManager.PlayerEngine.DisconnectEvent (OnStateChange);
             actions = null;
         }
@@ -246,6 +239,19 @@ namespace Banshee.Streamrecorder
         }
 
         /// <summary>
+        /// Handles EndOfStream events and stops recording
+        /// </summary>
+        /// <param name="args">
+        /// A <see cref="PlayerEventArgs"/>
+        /// </param>
+        private void OnEndOfStream (PlayerEventArgs args)
+        {
+            if (recording) {
+                StopRecording ();
+            }
+        }
+
+        /// <summary>
         /// Handles Player state changes and Stops recording if appropriate
         /// </summary>
         /// <param name="args">
@@ -254,7 +260,6 @@ namespace Banshee.Streamrecorder
         private void OnStateChange (PlayerEventArgs args)
         {
             if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Idle && recording) {
-                Hyena.Log.Debug ("[Streamrecorder] recording stopped due to state change");
                 StopRecording ();
             }
         }
@@ -276,7 +281,7 @@ namespace Banshee.Streamrecorder
             track = ServiceManager.PlaybackController.CurrentTrack;
 
             if (InitStreamrecorderProcess (track)) {
-                if (!recorder.IsRecording) recorder.StartRecording ();
+                recorder.StartRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
                 recorder.AddStreamTags (track, false);
 
                 if (is_importing_enabled)
@@ -289,7 +294,7 @@ namespace Banshee.Streamrecorder
         /// </summary>
         private void StopRecording ()
         {
-            if (recorder.IsRecording) recorder.StopRecording ();
+            recorder.StopRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
 
             StopFolderScanner ();
         }
