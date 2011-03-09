@@ -34,7 +34,6 @@ using Banshee.Collection;
 using Banshee.Collection.Database;
 using Banshee.Streamrecorder.Gst;
 using Banshee.ServiceStack;
-using Banshee.MediaEngine;
 
 namespace Banshee.Streamrecorder
 {
@@ -42,23 +41,17 @@ namespace Banshee.Streamrecorder
     /// <summary>
     /// A Recorder object that uses a GStreamerMiniBinding to enable recoding of the player pipeline by attaching to the player audio tee
     /// </summary>
-    public class Recorder : IDisposable
+    public class Recorder
     {
         private string output_directory;
         private string output_file;
         private string file_extension;
-        private bool is_recording;
 
         private PlayerAudioTee audiotee;
         private Bin encoder_bin;
         private TagSetter tagger;
         private FileSink file_sink;
-        private string empty_file = "/tmp/empty.file.streamrecorder";
         private GhostPad ghost_pad;
-
-        private Element outputselector;
-        private Pad selector_fakepad;
-        private Pad selector_filepad;
 
         private List<Encoder> encoders = new List<Encoder> ();
         private bool has_lame;
@@ -104,14 +97,10 @@ namespace Banshee.Streamrecorder
                 Hyena.Log.Debug (e.StackTrace);
             }
 
-            is_recording = false;
-
-            Create ();
         }
 
         /// <summary>
-        /// Creates a new recoding pipeline with the best (by user preference) available encoder and attaches it
-        /// to the audiotee
+        /// Creates a new recoding pipeline with the best (by user preference) available encoder
         /// </summary>
         /// <returns>
         /// A <see cref="System.Boolean"/>, true if the pipeline was successfully created, false otherwise.
@@ -132,23 +121,13 @@ namespace Banshee.Streamrecorder
                 tagger = new TagSetter (encoder_bin.GetByInterface (TagSetter.GetType ()));
                 file_sink = encoder_bin.GetByName ("file_sink").ToFileSink ();
 
-                file_sink.Location = empty_file;
+                file_sink.Location = output_file + file_extension;
+                file_sink.SetBooleanProperty ("sync", true);
+                file_sink.SetBooleanProperty ("async", false);
 
                 GLib.Object.GetObject (file_sink.ToIntPtr ()).AddNotification ("allow-overwrite", OnAllowOverwrite);
 
                 ghost_pad = encoder_bin.GetStaticPad ("sink").ToGhostPad ();
-
-                outputselector = encoder_bin.GetByName ("sel");
-
-                Pad filesinkpad = file_sink.GetStaticPad ("sink");
-                selector_filepad = filesinkpad.GetPeer ();
-
-                Element fake_sink = encoder_bin.GetByName ("fake_sink");
-                Pad fakesinkpad = fake_sink.GetStaticPad ("sink");
-                selector_fakepad = fakesinkpad.GetPeer ();
-
-                audiotee.AddBin (encoder_bin, false);
-                Hyena.Log.Debug ("[Recorder] Recorder attached");
             } catch (Exception e) {
                 Hyena.Log.InformationFormat ("[Streamrecorder] An exception occurred during pipeline construction: {0}", bin_description);
                 Hyena.Log.Debug (e.StackTrace);
@@ -167,8 +146,8 @@ namespace Banshee.Streamrecorder
         private string BuildPipeline ()
         {
             string pipeline = "";
-            string pipeline_start = "queue ! output-selector name=sel sel. ! fakesink name=fake_sink async=false sel. ! audioresample ! audioconvert ";
-            string pipeline_end = "! filesink name=file_sink async=false";
+            string pipeline_start = "audioresample ! audioconvert ";
+            string pipeline_end = "! filesink name=file_sink";
             Encoder encoder = GetFirstAvailableEncoder ();
 
             if (encoder != null) {
@@ -265,43 +244,47 @@ namespace Banshee.Streamrecorder
             return;
         }
 
-        public bool IsRecording {
-            get { return this.is_recording; }
-        }
-
         /// <summary>
-        /// Starts recording of the current stream by switching from fakesink to filesink
+        /// Starts recording of the current stream by creating and attaching a new Recorder pipeline to the player audio tee
         /// </summary>
-        public void StartRecording ()
+        /// <param name="blocked">
+        /// A <see cref="System.Boolean"/> inidicating if pad blocking should be used
+        /// </param>
+        public void StartRecording (bool blocked)
         {
-            if (outputselector != null && !outputselector.IsNull () && encoder_bin != null && !encoder_bin.IsNull ()) {
+            if (audiotee != null && !audiotee.IsNull () && audiotee.IsAttached () && encoder_bin != null && !encoder_bin.IsNull ()) {
                 try {
-                    //switch output-selector: set file location and set active pad to filesink
-                    SetNewTrackLocation (output_file + file_extension);
-                    outputselector.SetProperty ("active-pad", new Element (selector_filepad.ToIntPtr ()));
-                    Hyena.Log.Debug ("[Recorder] <StartRecording> Recording started");
-                    is_recording = true;
+                    audiotee.RemoveBin (encoder_bin, blocked);
                 } catch (Exception e) {
-                    is_recording = false;
                     Hyena.Log.Information ("[Streamrecorder] An exception occurred during gstreamer operation");
                     Hyena.Log.Debug (e.StackTrace);
                 }
             }
+
+            if (Create ()) {
+                try {
+                    audiotee.AddBin (encoder_bin, blocked);
+                } catch (Exception e) {
+                    Hyena.Log.Information ("[Streamrecorder] An exception occurred during gstreamer operation");
+                    Hyena.Log.Debug (e.StackTrace);
+                }
+            }
+
+            Hyena.Log.Debug ("[Recorder] <StartRecording> Recording started");
         }
 
         /// <summary>
-        /// Stops recording of the current stream by switching from filesink to fakesink
+        /// Stops recording of the current stream by removing the Recorder pipeline from the player audio tee
         /// </summary>
-        public void StopRecording ()
+        /// <param name="blocked">
+        /// A <see cref="System.Boolean"/> inidicating if pad blocking should be used
+        /// </param>
+        public void StopRecording (bool blocked)
         {
-            if (encoder_bin != null && !encoder_bin.IsNull () && outputselector != null && !outputselector.IsNull ()) {
+            if (encoder_bin != null && !encoder_bin.IsNull () && audiotee != null && !audiotee.IsNull () && audiotee.IsAttached ()) {
                 try {
-                    //switch output-selector: set file location to /tmp and set active pad to fakesink
-                    SetNewTrackLocation (empty_file);
-                    outputselector.SetProperty ("active-pad", new Element (selector_fakepad.ToIntPtr ()));
-                    //string outputpadparent = new Pad (outputselector.GetProperty ("active-pad")).GetPeer ().GetParent ().GetPathString ();
+                    audiotee.RemoveBin (encoder_bin, blocked);
                     Hyena.Log.Debug ("[Recorder] <StopRecording> Recording stopped");
-                    is_recording = false;
                 } catch (Exception e) {
                     Hyena.Log.Information ("[Streamrecorder] An exception occurred during gstreamer operation");
                     Hyena.Log.Debug (e.StackTrace);
@@ -429,8 +412,7 @@ namespace Banshee.Streamrecorder
         }
 
         /// <summary>
-        /// Changes the location of the file being recorded while recording is in progress,
-        /// splitting the file at the current stream location
+        /// Changes the location of the file being recorded while recording is in progress, splitting the file at the current stream location
         /// </summary>
         /// <param name="new_location">
         /// A <see cref="System.String"/> containing the full new filename and path
@@ -439,35 +421,13 @@ namespace Banshee.Streamrecorder
         {
             try {
                 Pad teepad = ghost_pad.GetPeer ();
-                if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing)
-                {
-                    teepad.SetBlocked (true);
-                    encoder_bin.SendEvent (Marshaller.NewEOSEvent ());
-                    encoder_bin.SetState (State.Null);
-                    file_sink.Location = new_location;
-                    encoder_bin.SetState (State.Ready);
-                    encoder_bin.SetState (State.Playing);
-                    teepad.SetBlocked (false);
-                } else {
-                    encoder_bin.SendEvent (Marshaller.NewEOSEvent ());
-                    encoder_bin.SetState (State.Null);
-                    file_sink.Location = new_location;
-                    encoder_bin.SetState (State.Ready);
-                }
-            } catch (Exception e) {
-                Hyena.Log.Information ("[Streamrecorder] An exception occurred during gstreamer operation");
-                Hyena.Log.Debug (e.StackTrace);
-            }
-        }
-
-        /// <summary>
-        /// Detaches the encoder bin from the audiotee
-        /// </summary>
-        public void Dispose ()
-        {
-            try {
-                audiotee.RemoveBin (encoder_bin, false);
-                Hyena.Log.Debug ("[Recorder] Recorder detached");
+                teepad.SetBlocked (true);
+                encoder_bin.SendEvent (Marshaller.NewEOSEvent ());
+                encoder_bin.SetState (State.Null);
+                file_sink.Location = new_location;
+                encoder_bin.SetState (State.Ready);
+                encoder_bin.SetState (State.Playing);
+                teepad.SetBlocked (false);
             } catch (Exception e) {
                 Hyena.Log.Information ("[Streamrecorder] An exception occurred during gstreamer operation");
                 Hyena.Log.Debug (e.StackTrace);
