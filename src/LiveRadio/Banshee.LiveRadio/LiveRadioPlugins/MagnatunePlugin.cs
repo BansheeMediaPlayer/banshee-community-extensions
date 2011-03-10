@@ -163,8 +163,6 @@ namespace Banshee.LiveRadio.Plugins
 
             new_genres.Sort ();
             genres = new_genres;
-
-            Log.DebugFormat ("[MagnatunePlugin] <ParseGenres> {0} genres found", genres.Count);
         }
 
         /// <summary>
@@ -199,8 +197,6 @@ namespace Banshee.LiveRadio.Plugins
 
             if (!html.StartsWith ("<xml>"))
                 html = "<xml></xml>";
-
-            //Log.DebugFormat ("[MagnatunePlugin]<ParseSearchResult> html: {0}", html);
 
             XmlDocument xml_response = new XmlDocument ();
             try
@@ -258,10 +254,9 @@ namespace Banshee.LiveRadio.Plugins
                         {
                             foreach (XmlNode track_node in album_playlist.GetElementsByTagName ("track"))
                             {
-                                //Log.DebugFormat ("[MagnatunePlugin]<ParseSearchResult> processing track {0} xml: {1}", song_name, track_node.InnerXml);
                                 bool found_track = false;
                                 string location = null;
-                                //string artist_name = null;
+
                                 foreach (XmlNode track_attribute_node in track_node.ChildNodes)
                                 {
                                     if (track_attribute_node.Name.Equals ("annotation")

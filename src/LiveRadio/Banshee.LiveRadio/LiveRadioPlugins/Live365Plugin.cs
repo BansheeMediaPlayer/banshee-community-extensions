@@ -260,10 +260,7 @@ namespace Banshee.LiveRadio.Plugins
         /// </param>
         private void ParseGenres(XmlDocument doc)
         {
-            Log.Debug ("[Live365Plugin] <ParseGenres> START");
-
             XmlNodeList XML_genre_nodes = doc.GetElementsByTagName ("Genre");
-            Log.DebugFormat ("[Live365Plugin] <ParseGenres> {0} nodes found", XML_genre_nodes.Count);
 
             List<Genre> new_genres = new List<Genre> ();
 
@@ -291,8 +288,6 @@ namespace Banshee.LiveRadio.Plugins
 
             new_genres.Sort ();
             genres = new_genres;
-
-            Log.DebugFormat ("[Live365Plugin] <ParseGenres> {0} genres found", genres.Count);
         }
 
         /// <summary>
@@ -309,8 +304,6 @@ namespace Banshee.LiveRadio.Plugins
         /// </param>
         private void ParseXmlResponse (XmlDocument xml_response, LiveRadioRequestType request_type, string query)
         {
-            Log.Debug ("[Live365Plugin] <ParseXmlResponse> Start");
-
             string session = GetSession ();
 
             List<string> pages = new List<string> ();
@@ -343,8 +336,6 @@ namespace Banshee.LiveRadio.Plugins
                 if (!String.IsNullOrEmpty(url) && url_valid)
                         pages.Add(url);
             }
-
-            Log.Debug ("[Live365Plugin] <ParseXmlResponse> analyzing stations");
 
             string key;
             if (request_type == LiveRadioRequestType.ByGenre) {
@@ -462,8 +453,6 @@ namespace Banshee.LiveRadio.Plugins
                     }
                 }
             }
-
-            Log.Debug ("[Live365Plugin] <ParseXmlResponse> End");
         }
 
         /// <summary>

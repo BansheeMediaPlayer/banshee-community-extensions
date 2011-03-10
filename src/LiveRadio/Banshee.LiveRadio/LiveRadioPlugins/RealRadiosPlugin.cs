@@ -183,9 +183,6 @@ namespace Banshee.LiveRadio.Plugins
 
             new_genres.Sort ();
             genres = new_genres;
-
-            Log.DebugFormat ("[RealRadiosPlugin] <ParseGenres> {0} genres found", genres.Count);
-
         }
 
         /// <summary>
@@ -218,8 +215,6 @@ namespace Banshee.LiveRadio.Plugins
                     pages = Int16.Parse (page);
                 }
                 catch {}
-
-                Log.DebugFormat ("[RealRadiosPlugin] Parsing Html with {0} pages", page);
             }
 
             string full_html = null;
@@ -255,7 +250,6 @@ namespace Banshee.LiveRadio.Plugins
 
                 if (p < pages)
                 {
-                    Log.DebugFormat ("[RealRadiosPlugin] retrieving page {0}", pagerequest + (p + 1));
                     html = RetrieveHtml (pagerequest + (p + 1));
                 }
 
@@ -272,7 +266,6 @@ namespace Banshee.LiveRadio.Plugins
             {
                 Log.DebugFormat ("[RealRadiosPlugin]<ParseSearchResult> Parse Error: {0}", e.Message);
                 RaiseErrorReturned ("General Error", e.Message);
-                Log.DebugFormat ("XML: {0}", html);
                 return;
             }
 
@@ -290,33 +283,12 @@ namespace Banshee.LiveRadio.Plugins
 
                 if (snode.Name.Equals ("div") && snode.Attributes != null && snode.Attributes.Count > 0)
                 {
-
-                    //Log.DebugFormat ("[RealRadiosPlugin] found div with class {0}", node.Attributes.GetNamedItem ("class").InnerText);
-
                     try
                     {
-                        /*
-                         <div class="station" rel="station-54437">
-                            <div class="pre">
-                                <span class="index">03</span>
-                            </div>
-                            <div class="station-info">
-                                <div class="fade"></div>
-                                <div class="station-linked favstar medium">
-                                    <a href="http://www.realradios.com/north-america/united-states/1club-fm/1club-fm-90s-decade" title="1Club.fm 90s Decade">1Club.fm 90s Decade</a>
-                                </div>
-                                <div class="meta">
-                                    <span class="frequency"></span>
-                                    <span class="location">United States</span>
-                                </div>
-                            </div>
-                        </div>
-                        */
 
                         string location = null;
                         string frequency = null;
                         string title = null;
-                        //string url = null;
                         string preurl = null;
 
                         if (snode.Attributes.GetNamedItem ("class").InnerText.Equals ("station"))
@@ -328,26 +300,20 @@ namespace Banshee.LiveRadio.Plugins
 
                                 if (node.Attributes.GetNamedItem ("class").InnerText.Equals ("station-info"))
                                 {
-                                    //Log.DebugFormat ("[RealRadiosPlugin] station info found. HasNodes: {0}", node.HasChildNodes);
                                     foreach (XmlNode child in node.SelectNodes ("descendant::*"))
                                     {
-                                        //Log.DebugFormat ("[RealRadiosPlugin] {1} node processing: {0}", child.InnerXml, child.Name);
                                         if (child.Name.Equals ("a"))
                                         {
-                                            //Log.Debug ("[RealRadiosPlugin] found <a>");
-                                            //url = child.Attributes.GetNamedItem ("href").InnerText;
                                             title = child.InnerText;
                                         }
                                         else if (child.Name.Equals ("span"))
                                         {
                                             if (child.Attributes.GetNamedItem ("class").InnerText.Equals ("frequency"))
                                             {
-                                                //Log.Debug ("[RealRadiosPlugin] found <span> with frequency");
                                                 frequency = child.InnerText;
                                             }
                                             else if (child.Attributes.GetNamedItem ("class").InnerText.Equals ("location"))
                                             {
-                                                //Log.Debug ("[RealRadiosPlugin] found <span> with location");
                                                 location = child.InnerText;
                                             }
                                         }
@@ -381,7 +347,6 @@ namespace Banshee.LiveRadio.Plugins
 
         public override SafeUri RetrieveUrl (string baseurl)
         {
-            Log.DebugFormat ("[RealRadiosPlugin] retrieving location: {0}", station_url + baseurl);
             string url = RetrieveHtml (station_url + baseurl);
 
             if (url.Contains ("\"format\": \"wm\""))

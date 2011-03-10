@@ -148,9 +148,6 @@ namespace Banshee.LiveRadio.Plugins
         protected void ParseCatalog (XmlDocument doc)
         {
             XmlNodeList XML_station_nodes = doc.GetElementsByTagName ("entry");
-            Log.DebugFormat ("[XiphOrgPlugin] <ParseCatalog> {0} nodes found", XML_station_nodes.Count);
-
-            //cached_results.Clear ();
 
             List<Genre> new_genres = new List<Genre> ();
 
@@ -212,9 +209,6 @@ namespace Banshee.LiveRadio.Plugins
 
             new_genres.Sort ();
             genres = new_genres;
-
-            Log.DebugFormat ("[XiphOrgPlugin] <ParseCatalog> {0} genres found", genres.Count);
-
         }
 
         /// <summary>
