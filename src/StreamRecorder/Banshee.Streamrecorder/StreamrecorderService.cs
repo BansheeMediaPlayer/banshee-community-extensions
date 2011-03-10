@@ -52,7 +52,7 @@ namespace Banshee.Streamrecorder
     /// <summary>
     /// Extension Service class that adds the functionality to Banshee Media Player to record live (non-local) streams to files
     /// </summary>
-    public class StreamrecorderService : IExtensionService, IDisposable
+    public class StreamrecorderService : IExtensionService, IDisposable, IDelayedInitializeService
     {
         private Recorder recorder;
         private ActionGroup actions;
@@ -79,29 +79,23 @@ namespace Banshee.Streamrecorder
             ui_button_id = 0;
         }
 
+        #region IDelayedInitializeService implementation
+        public void DelayedInitialize ()
+        {
+            recorder = new Recorder ();
+            active_encoder = recorder.SetActiveEncoder (active_encoder);
+            recorder.Create ();
+
+            ServiceManager.PlayerEngine.ConnectEvent (OnStateChange, PlayerEvent.StateChange);
+            ServiceManager.PlayerEngine.ConnectEvent (OnMetadata, PlayerEvent.TrackInfoUpdated);
+        }
+        #endregion
+
         /// <summary>
         /// Initialize the service, creating the Recorder object, connecting events and adding GUI elements
         /// </summary>
         void IExtensionService.Initialize ()
         {
-            recorder = new Recorder ();
-            active_encoder = recorder.SetActiveEncoder (active_encoder);
-
-            ServiceManager.PlaybackController.TrackStarted += delegate {
-                if (recording) {
-                    StartRecording ();
-                }
-            };
-
-            ServiceManager.PlaybackController.Stopped += delegate {
-                if (recording) {
-                    StopRecording ();
-                }
-            };
-
-            ServiceManager.PlayerEngine.ConnectEvent (OnEndOfStream, PlayerEvent.EndOfStream);
-            ServiceManager.PlayerEngine.ConnectEvent (OnStateChange, PlayerEvent.StateChange);
-            ServiceManager.PlayerEngine.ConnectEvent (OnMetadata, PlayerEvent.TrackInfoUpdated);
             ServiceManager.SourceManager.ActiveSourceChanged += OnSourceChanged;
 
             action_service = ServiceManager.Get<InterfaceActionService> ();
@@ -134,10 +128,7 @@ namespace Banshee.Streamrecorder
         {
             PrimarySource primary_source = action_service.GlobalActions.ActivePrimarySource;
 
-            if (primary_source == null)
-            {
-                return;
-            }
+            if (primary_source == null) return;
 
             if (!primary_source.IsLocal && ui_button_id == 0)
             {
@@ -161,15 +152,15 @@ namespace Banshee.Streamrecorder
         /// </param>
         public void OnActivateStreamrecorder (object o, EventArgs ea)
         {
-            if (!recording) {
+            recording = !recording;
+
+            if (recording) {
                 StartRecording ();
             } else {
                 StopRecording ();
             }
 
-            recording = !recording;
             IsRecordingEnabledEntry.Set (recording.ToString ());
-
         }
 
         /// <summary>
@@ -192,11 +183,11 @@ namespace Banshee.Streamrecorder
         public void Dispose ()
         {
             StopRecording ();
+            recorder.Dispose ();
             action_service.UIManager.RemoveUi (ui_menu_id);
             if (ui_button_id > 0)
                 action_service.UIManager.RemoveUi (ui_button_id);
             action_service.UIManager.RemoveActionGroup (actions);
-            ServiceManager.PlayerEngine.DisconnectEvent (OnEndOfStream);
             ServiceManager.PlayerEngine.DisconnectEvent (OnStateChange);
             actions = null;
         }
@@ -239,20 +230,7 @@ namespace Banshee.Streamrecorder
         }
 
         /// <summary>
-        /// Handles EndOfStream events and stops recording
-        /// </summary>
-        /// <param name="args">
-        /// A <see cref="PlayerEventArgs"/>
-        /// </param>
-        private void OnEndOfStream (PlayerEventArgs args)
-        {
-            if (recording) {
-                StopRecording ();
-            }
-        }
-
-        /// <summary>
-        /// Handles Player state changes and Stops recording if appropriate
+        /// Handles Player state changes and Stops or Starts recording if appropriate
         /// </summary>
         /// <param name="args">
         /// A <see cref="PlayerEventArgs"/>
@@ -262,6 +240,9 @@ namespace Banshee.Streamrecorder
             if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Idle && recording) {
                 StopRecording ();
             }
+            if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing && recording) {
+                StartRecording ();
+            }
         }
 
         /// <summary>
@@ -269,11 +250,6 @@ namespace Banshee.Streamrecorder
         /// </summary>
         private void StartRecording ()
         {
-
-            if (recording) {
-                StopRecording ();
-            }
-
             if (!IsCurrentTrackRecordable ()) {
                 return;
             }
@@ -281,7 +257,7 @@ namespace Banshee.Streamrecorder
             track = ServiceManager.PlaybackController.CurrentTrack;
 
             if (InitStreamrecorderProcess (track)) {
-                recorder.StartRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
+                if (!recorder.IsRecording) recorder.StartRecording ();
                 recorder.AddStreamTags (track, false);
 
                 if (is_importing_enabled)
@@ -294,7 +270,7 @@ namespace Banshee.Streamrecorder
         /// </summary>
         private void StopRecording ()
         {
-            recorder.StopRecording ((ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing));
+            if (recorder.IsRecording) recorder.StopRecording ();
 
             StopFolderScanner ();
         }
@@ -326,8 +302,6 @@ namespace Banshee.Streamrecorder
         /// </returns>
         private bool InitStreamrecorderProcess (TrackInfo track_in)
         {
-            active_encoder = recorder.SetActiveEncoder (active_encoder);
-
             if (String.IsNullOrEmpty (output_directory)) {
                 output_directory = Banshee.ServiceStack.ServiceManager.SourceManager.MusicLibrary.BaseDirectory
                                  + Path.DirectorySeparatorChar + "ripped";
@@ -390,7 +364,7 @@ namespace Banshee.Streamrecorder
         public string OutputDirectory {
             get { return output_directory; }
             set {
-                StopRecording ();
+                if (this.output_directory.Equals (value)) return;
                 StopFolderScanner ();
 
                 this.output_directory = value;
@@ -403,9 +377,6 @@ namespace Banshee.Streamrecorder
 
                 if (is_importing_enabled)
                     StartFolderScanner ();
-
-                if (recording)
-                    StartRecording ();
             }
         }
 
@@ -414,7 +385,15 @@ namespace Banshee.Streamrecorder
         /// </summary>
         public string ActiveEncoder {
             get { return active_encoder; }
-            set { active_encoder = value; }
+            set {
+                if (active_encoder.Equals (value)) return;
+                if (ServiceManager.PlayerEngine.IsPlaying ()) ServiceManager.PlayerEngine.TogglePlaying ();
+                active_encoder = value;
+                recorder.Dispose ();
+                recorder = new Recorder ();
+                recorder.SetActiveEncoder (active_encoder);
+                recorder.Create ();
+            }
         }
 
         /// <summary>
