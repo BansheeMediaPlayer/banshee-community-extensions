@@ -219,9 +219,6 @@ namespace Banshee.Streamrecorder
                 StreamrecorderService.OutputDirectoryEntry.Set (output_folder.Text.Trim ());
             }
 
-            streamrecorder_service.OutputDirectory = output_folder.Text.Trim ();
-            StreamrecorderService.OutputDirectoryEntry.Set (output_folder.Text.Trim ());
-
             streamrecorder_service.ActiveEncoder = encoderbox.ActiveText;
             StreamrecorderService.ActiveEncoderEntry.Set (encoderbox.ActiveText);
 

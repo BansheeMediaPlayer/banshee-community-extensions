@@ -40,7 +40,7 @@ namespace Banshee.Streamrecorder.Gst
         }
 
         public string Location {
-            get { return GetProperty ("location").Val as string; }
+            get { return GetStringProperty ("location"); }
             set { SetStringProperty ("location", value); }
         }
     }
