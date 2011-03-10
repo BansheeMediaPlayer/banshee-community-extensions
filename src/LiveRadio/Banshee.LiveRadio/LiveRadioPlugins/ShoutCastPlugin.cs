@@ -136,8 +136,6 @@ namespace Banshee.LiveRadio.Plugins
 
             new_genres.Sort ();
             genres = new_genres;
-
-            Log.DebugFormat ("[ShoutCastPlugin] <ParseGenres> {0} genres found", genres.Count);
         }
 
         /// <summary>

@@ -402,7 +402,6 @@ namespace Banshee.LiveRadio.Plugins
                 }
                 foreach (DatabaseTrackInfo track in result)
                     result[result.IndexOf (track)] = new DatabaseTrackInfo (track);
-                Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> result contains {1} entries for query {2}", Name, result.Count, query);
             } catch (Exception e) {
                 result = null;
                 Hyena.Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"]<RaiseRequestResultRetrieved> error {1}", Name, e.Message);
@@ -482,7 +481,6 @@ namespace Banshee.LiveRadio.Plugins
 
         void OnDoRetrieveWebIconFinished (object sender, RunWorkerCompletedEventArgs e)
         {
-            Log.DebugFormat ("[LiveRadioBasePlugin\"{0}\"] <OnDoRetrieveWebIconFinished> Retrieving Web Icon", Name);
             // First, handle the case where an exception was thrown.
             if (e.Error != null)
             {

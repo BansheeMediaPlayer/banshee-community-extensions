@@ -77,7 +77,6 @@ namespace Banshee.LiveRadio
         public LiveRadioSource () : base(AddinManager.CurrentLocalizer.GetString ("LiveRadio"),
                                          AddinManager.CurrentLocalizer.GetString ("LiveRadio"), "live-radio", sort_order)
         {
-            Log.Debug ("[LiveRadioSource]<Constructor> START");
             Properties.SetString ("Icon.Name", "radio");
             TypeUniqueId = "live-radio";
             IsLocal = false;
@@ -130,7 +129,6 @@ namespace Banshee.LiveRadio
             if (!SetupSourceContents ())
                 ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
 
-            Log.Debug ("[LiveRadioSource]<Constructor> END");
         }
 
         /// <summary>

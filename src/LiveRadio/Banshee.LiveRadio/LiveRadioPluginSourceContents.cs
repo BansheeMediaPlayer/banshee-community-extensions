@@ -457,7 +457,6 @@ namespace Banshee.LiveRadio
         /// </param>
         private void OnViewModeChanged (object o, ChangedArgs args)
         {
-            //Hyena.Log.InformationFormat ("ListBrowser mode toggled, val = {0}", args.Current.Value);
             if (args.Current.Value == 0) {
                 LayoutLeft ();
                 BrowserPosition.Set ("left");
