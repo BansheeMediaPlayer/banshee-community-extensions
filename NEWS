@@ -1,9 +1,19 @@
 =================================
+Version 1.9.5 - March 10, 2011
+=================================
+
+Contributors:
+Frank Ziegler
+
+Bugs Fixed:
+* Karaoke: fixed a potential application crash
+
+=================================
 Version 1.9.4 - March 3, 2011
 =================================
 
 Contributors:
-Bertrand Lorentz, Frank Ziegler, Olivier Dufour, Chow Loong Jin, 
+Bertrand Lorentz, Frank Ziegler, Olivier Dufour, Chow Loong Jin
 
 Enhancements:
 * Karaoke: added a new extension to filter out the singers voice
