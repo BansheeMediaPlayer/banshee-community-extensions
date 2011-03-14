@@ -393,7 +393,8 @@ namespace Banshee.ClutterFlow
 		
 		private void HandleScroll (object o, Clutter.ScrollEventArgs args)
 		{
-			if (args.Event.Direction==Clutter.ScrollDirection.Down)
+			if (args.Event.Direction==Clutter.ScrollDirection.Down
+				|| args.Event.Direction==Clutter.ScrollDirection.Left)
 				Scroll(true);
 			else
 				Scroll(false);
