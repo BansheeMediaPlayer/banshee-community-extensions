@@ -50,28 +50,28 @@
     </Reference>
     <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
-      <Package>banshee-1-core</Package>
+      <Package>banshee-core</Package>
     </Reference>
     <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
-      <Package>banshee-1-services</Package>
+      <Package>banshee-services</Package>
     </Reference>
     <Reference Include="Banshee.ThickClient, Version=1.5.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
-      <Package>banshee-1-thickclient</Package>
+      <Package>banshee-thickclient</Package>
     </Reference>
     <Reference Include="Banshee.Widgets, Version=1.5.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
-      <Package>banshee-1-thickclient</Package>
+      <Package>banshee-thickclient</Package>
     </Reference>
     <Reference Include="Banshee.NowPlaying, Version=1.5.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
-      <Package>banshee-1-nowplaying</Package>
+      <Package>banshee-nowplaying</Package>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
-      <Package>banshee-1-hyena</Package>
+      <Package>banshee-hyena</Package>
     </Reference>
     <Reference Include="Tao.OpenGl, Version=3.0.0.0, Culture=neutral, PublicKeyToken=1ca010269a4501ef">
       <Package>tao-opengl</Package>

@@ -119,7 +119,7 @@ namespace Banshee.Zeitgeist
 
             Event ev = new Event ();
 
-            ev.Actor = "application://banshee-1.desktop";
+            ev.Actor = "application://banshee.desktop";
             ev.Timestamp = DateTime.Now;
             ev.Manifestation = Manifestation.Instance.EventManifestation.UserActivity;
             ev.Interpretation = event_type;

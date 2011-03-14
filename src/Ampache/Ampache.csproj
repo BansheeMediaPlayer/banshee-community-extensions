@@ -32,27 +32,27 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Banshee.Core, Version=1.6.0.0, Culture=neutral">
-      <Package>banshee-1-core</Package>
+      <Package>banshee-core</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.CollectionIndexer, Version=1.6.0.0, Culture=neutral">
-      <Package>banshee-1-collection-indexer</Package>
+      <Package>banshee-collection-indexer</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.NowPlaying, Version=1.6.0.0, Culture=neutral">
-      <Package>banshee-1-nowplaying</Package>
+      <Package>banshee-nowplaying</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.Services, Version=1.6.0.0, Culture=neutral">
-      <Package>banshee-1-services</Package>
+      <Package>banshee-services</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.ThickClient, Version=1.6.0.0, Culture=neutral">
-      <Package>banshee-1-thickclient</Package>
+      <Package>banshee-thickclient</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.Widgets, Version=1.6.0.0, Culture=neutral">
-      <Package>banshee-1-thickclient</Package>
+      <Package>banshee-thickclient</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
@@ -65,11 +65,11 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Hyena, Version=1.8.0.0, Culture=neutral">
-      <Package>banshee-1-hyena</Package>
+      <Package>banshee-hyena</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Hyena.Gui, Version=1.8.0.0, Culture=neutral">
-      <Package>banshee-1-hyena-gui</Package>
+      <Package>banshee-hyena-gui</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">

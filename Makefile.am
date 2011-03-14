@@ -47,7 +47,7 @@ clean-local:
 run:
 	(cd bin; mkdir -p addins; cp *.dll* addins/; \
 		export LD_LIBRARY_PATH=".${LD_LIBRARY_PATH+:$LD_LIBRARY_PATH}"; \
-		banshee-1 --uninstalled --debug $(BANSHEE_DEV_OPTIONS) \
+		banshee --uninstalled --debug $(BANSHEE_DEV_OPTIONS) \
 	)
 
 test: check
