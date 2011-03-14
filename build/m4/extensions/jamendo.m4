@@ -3,8 +3,8 @@ AC_DEFUN([BCE_JAMENDO],
 	BCE_ARG_DISABLE([Jamendo], [yes])
 
 	BCE_CHECK_EXTENSION_DEP([Jamendo], [BANSHEE_WEBBROWSER],
-		[banshee-1-webbrowser],
-		[banshee-1-webbrowser was not found. Please install it or disable the Jamendo extension by passing --disable-jamendo])
+		[banshee-webbrowser],
+		[banshee-webbrowser was not found. Please install it or disable the Jamendo extension by passing --disable-jamendo])
 
 	if test "x$enable_Jamendo" = "xtry" \
 		&& test "x$have_BANSHEE_WEBBROWSER" = "xyes"; then

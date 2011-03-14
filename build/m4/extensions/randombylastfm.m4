@@ -3,8 +3,8 @@ AC_DEFUN([BCE_RANDOMBYLASTFM],
 	BCE_ARG_DISABLE([RandomByLastfm], [yes])
 
 	BCE_CHECK_EXTENSION_DEP([RandomByLastfm], [BANSHEE_LASTFM],
-		[banshee-1-lastfm],
-		[banshee-1-lastfm was not found. Please install it or disable the RandomByLastfm extension by passing --disable-randombylastfm])
+		[banshee-lastfm],
+		[banshee-lastfm was not found. Please install it or disable the RandomByLastfm extension by passing --disable-randombylastfm])
 
 	if test "x$enable_RandomByLastfm" = "xtry" \
 		&& test "x$have_BANSHEE_LASTFM" = "xyes"; then

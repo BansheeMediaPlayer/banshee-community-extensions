@@ -7,7 +7,7 @@ AC_DEFUN([BCE_CLUTTERFLOW],
 		[clutter-sharp was not found. Please install clutter-sharp or disable the ClutterFlow extension by passing --disable-clutterflow])
 
 	BCE_CHECK_EXTENSION_DEP([ClutterFlow], [BANSHEE_NOWPLAYING],
-		[banshee-1-nowplaying],
+		[banshee-nowplaying],
 		[The Banshee NowPlaying extension was not found. Please install it or disable the ClutterFlow extension by passing --disable-clutterflow])
 
 	if test "x$enable_ClutterFlow" = "xtry" \

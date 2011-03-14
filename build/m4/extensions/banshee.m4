@@ -1,6 +1,6 @@
 AC_DEFUN([BCE_FIND_BANSHEE],
 [
-	BANSHEE_LIBDIR=`$PKG_CONFIG banshee-1-core --variable=bansheedir`
+	BANSHEE_LIBDIR=`$PKG_CONFIG banshee-core --variable=bansheedir`
 	BANSHEE_EXTDIR=$BANSHEE_LIBDIR/Extensions
 	REL_EXTENSIONS_DIR=`basename $BANSHEE_EXTDIR`
 	REL_BANSHEE_DIR=`echo "$BANSHEE_EXTDIR" | sed -e "s|\/$REL_EXTENSIONS_DIR||"`

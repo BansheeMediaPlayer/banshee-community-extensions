@@ -58,19 +58,19 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="Banshee.Core, Version=1.8.0.0, Culture=neutral">
-      <Package>banshee-1-core</Package>
+      <Package>banshee-core</Package>
     </Reference>
     <Reference Include="Banshee.Services, Version=1.8.0.0, Culture=neutral">
-      <Package>banshee-1-services</Package>
+      <Package>banshee-services</Package>
     </Reference>
     <Reference Include="Banshee.ThickClient, Version=1.8.0.0, Culture=neutral">
-      <Package>banshee-1-thickclient</Package>
+      <Package>banshee-thickclient</Package>
     </Reference>
     <Reference Include="Hyena, Version=1.8.0.0, Culture=neutral">
-      <Package>banshee-1-hyena</Package>
+      <Package>banshee-hyena</Package>
     </Reference>
     <Reference Include="Lastfm, Version=1.8.0.0, Culture=neutral">
-      <Package>banshee-1-lastfm</Package>
+      <Package>banshee-lastfm</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>

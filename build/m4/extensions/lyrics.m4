@@ -7,8 +7,8 @@ AC_DEFUN([BCE_LYRICS],
 		[gconf-sharp was not found. Please install gconf-sharp or disable the Lyrics extension by passing --disable-lyrics])
 
 	BCE_CHECK_EXTENSION_DEP([Lyrics], [BANSHEE_WEBBROWSER],
-		[banshee-1-webbrowser],
-		[banshee-1-webbrowser was not found. Please install it or disable the Lyrics extension by passing --disable-lyrics])
+		[banshee-webbrowser],
+		[banshee-webbrowser was not found. Please install it or disable the Lyrics extension by passing --disable-lyrics])
 
 	if test "x$enable_Lyrics" = "xtry" \
 		&& test "x$have_GCONF_SHARP_20" = "xyes" \

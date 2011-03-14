@@ -39,11 +39,11 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Banshee.Core, Version=1.5.0.0, Culture=neutral">
-      <Package>banshee-1-core</Package>
+      <Package>banshee-core</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.Services, Version=1.5.0.0, Culture=neutral">
-      <Package>banshee-1-services</Package>
+      <Package>banshee-services</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="NDesk.DBus, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f6716e4f9b2ed099">
@@ -51,7 +51,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">
-      <Package>banshee-1-hyena</Package>
+      <Package>banshee-hyena</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>

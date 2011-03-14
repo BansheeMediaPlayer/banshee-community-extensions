@@ -3,7 +3,7 @@ AC_DEFUN([BCE_OPENVP],
 	BCE_ARG_DISABLE([OpenVP], [try])
 
 	BCE_CHECK_EXTENSION_DEP([ClutterFlow], [BANSHEE_NOWPLAYING],
-		[banshee-1-nowplaying],
+		[banshee-nowplaying],
 		[The Banshee NowPlaying extension was not found. Please install it or disable the OpenVP extension by passing --disable-openvp])
 
 	BCE_CHECK_EXTENSION_DEP([OpenVP], [TAO_OPENGL],
