@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-10 16:00+0700\n"
+"POT-Creation-Date: 2011-03-19 17:39+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -335,77 +335,81 @@ msgstr ""
 msgid "Search Jamendo"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:77
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:84
 msgid "Karaoke configuration"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:81
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:88
 msgid ""
 "You can alter the parameters of the karaoke effect here and define custom "
 "filter-band, filter-width and effect level."
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:87
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:94
 msgid "Effect Level:"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:88
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:95
 msgid "Filter Band:"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:89
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:96
 msgid "Filter Width:"
-msgstr ""
-
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:94
-msgid ""
-"The effect level defines to what degree the voice frequencies are reduced."
 msgstr ""
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:101
 msgid ""
-"The filter band defines position of filter within the frequency spectrum."
+"The effect level defines to what degree the voice frequencies are reduced."
 msgstr ""
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:108
+msgid ""
+"The filter band defines position of filter within the frequency spectrum."
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:115
 msgid ""
 "The filter width defines how wide the spectrum of the filtered frequencies "
 "is."
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:114
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:121
+msgid "Enable lyrics display in Context Pane"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:124
 msgid "Restore _defaults"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:117
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:127
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:102
 msgid "_Cancel"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:119
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:129
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:104
 msgid "_Save"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:86
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:91
 msgid "_Karaoke"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:88
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:107
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:93
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:106
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:108
 msgid "_Configure"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:89
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:94
 msgid "Configure the Karaoke extension"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:100
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:105
 msgid "_Activate Karaoke mode"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:101
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:106
 msgid "Activate Karaoke mode"
 msgstr ""
 
@@ -509,11 +513,11 @@ msgstr ""
 msgid "Choose By Query"
 msgstr ""
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:583
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:581
 msgid "Yes"
 msgstr ""
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:583
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:581
 msgid "No"
 msgstr ""
 
@@ -677,24 +681,24 @@ msgstr ""
 msgid "LiveRadio"
 msgstr ""
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:105
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:104
 msgid "Live_Radio"
 msgstr ""
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:108
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:107
 msgid "Configure the LiveRadio plugin"
 msgstr ""
 
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:111
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:112
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:113
 msgid "Refresh View"
 msgstr ""
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:117
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:116
 msgid "Add To Internet Radio"
 msgstr ""
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:118
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:117
 msgid "Add stream as Internet Radio Station"
 msgstr ""
 
