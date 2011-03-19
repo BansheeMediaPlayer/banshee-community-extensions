@@ -62,8 +62,6 @@ namespace Banshee.Ampache
         private readonly AmpacheViewModel viewModel;
         private bool ignoreChanges = false;
 
-        internal event EventHandler<Hyena.EventArgs<PlayQueue>> NewPlayList;
-
         private static string _(string s)
         {
             return Mono.Addins.AddinManager.CurrentLocalizer.GetString (s);
