@@ -17,6 +17,18 @@
     <Addin id="Banshee.Services" version="1.0"/>
     <Addin id="Banshee.ThickClient" version="1.0"/>
   </Dependencies>
+  
+  <ConditionType id="KaraokeLyrics" type="Banshee.Karaoke.KaraokeLyricsCondition" />
+  
+  <Extension path="/Banshee/ThickClient/GtkBaseClient/PostInitializeGtk">
+     <PostInitializeGtk class="Banshee.Karaoke.KaraokeLyricsConditionConfiguration"/>
+  </Extension>
+  
+  <Extension path="/Banshee/ThickClient/ContextPane">
+  	<Condition id="KaraokeLyrics">
+	    <ContextPage class="Banshee.Karaoke.Gui.ContextPage"/>
+	</Condition>
+  </Extension>
 
   <Extension path="/Banshee/ServiceManager/Service">
     <Service class="Banshee.Karaoke.KaraokeService"/>

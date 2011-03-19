@@ -58,11 +58,17 @@ namespace Banshee.Karaoke
         Gtk.Button cancel_button = new Gtk.Button (Gtk.Stock.Cancel);
         Gtk.Button save_button = new Gtk.Button (Gtk.Stock.Save);
 
+        Gtk.CheckButton enable_lyrics_display = new Gtk.CheckButton ();
+
         float initial_level;
         float initial_band;
         float initial_width;
 
-        public KaraokeConfigDialog (KaraokeService service, float current_level, float current_band, float current_width)
+        public KaraokeConfigDialog (KaraokeService service,
+                                    float current_level,
+                                    float current_band,
+                                    float current_width,
+                                    bool lyrics_enabled)
         {
             karaoke_service = service;
 
@@ -74,7 +80,8 @@ namespace Banshee.Karaoke
             preferences_image.IconName = "gtk-preferences";
             preferences_image.IconSize = (int)IconSize.Dialog;
 
-            header_label.Text = String.Format ("<span weight=\"bold\" size=\"larger\">{0}</span>", AddinManager.CurrentLocalizer.GetString ("Karaoke configuration"));
+            header_label.Text = String.Format ("<span weight=\"bold\" size=\"larger\">{0}</span>",
+                                               AddinManager.CurrentLocalizer.GetString ("Karaoke configuration"));
             header_label.UseMarkup = true;
             header_label.Yalign = 0f;
             header_label.Xalign = 0f;
@@ -111,6 +118,9 @@ namespace Banshee.Karaoke
             width_scale.Value = current_width;
             width_scale.ValueChanged += OnWidthValueChanged;
 
+            enable_lyrics_display.Label = AddinManager.CurrentLocalizer.GetString ("Enable lyrics display in Context Pane");
+            enable_lyrics_display.Active = lyrics_enabled;
+
             default_button.Label = AddinManager.CurrentLocalizer.GetString ("Restore _defaults");
             default_button.Image = new Image ("gtk-home", IconSize.Button);
 
@@ -125,7 +135,7 @@ namespace Banshee.Karaoke
             action_container.PackStart (header_label, true, true, 0);
             action_container.PackStart (description_label, true, true, 0);
 
-            Table table = new Table (3, 2, false);
+            Table table = new Table (4, 2, false);
             table.RowSpacing = 6;
             table.ColumnSpacing = 12;
             table.Attach (choose_level_label, 0, 1, 0, 1,
@@ -139,6 +149,8 @@ namespace Banshee.Karaoke
             table.Attach (choose_width_label, 0, 1, 2, 3,
                           AttachOptions.Fill, AttachOptions.Fill, 0, 0);
             table.Attach (width_scale, 1, 2, 2, 3,
+                          AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Fill, 0, 0);
+            table.Attach (enable_lyrics_display, 0, 2, 3, 4,
                           AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Fill, 0, 0);
 
             action_container.PackStart (table, true, true, 5);
@@ -232,6 +244,9 @@ namespace Banshee.Karaoke
 
             KaraokeService.FilterWidthEntry.Set ((int)width_scale.Value);
             karaoke_service.FilterWidth = (float)width_scale.Value;
+
+            KaraokeService.IsLyricsEnabledEntry.Set (enable_lyrics_display.Active);
+            karaoke_service.IsLyricsEnabled = enable_lyrics_display.Active;
 
             Destroy ();
         }

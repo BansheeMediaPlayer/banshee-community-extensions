@@ -56,28 +56,31 @@
       <SpecificVersion>False</SpecificVersion>
       <Package>mono-addins</Package>
     </Reference>
-    <Reference Include="Banshee.Core, Version=1.7.0.0, Culture=neutral">
+    <Reference Include="System.Core" />
+    <Reference Include="Banshee.WebBrowser, Version=1.9.0.0, Culture=neutral">
+      <Package>banshee-webbrowser</Package>
+    </Reference>
+    <Reference Include="Banshee.Core, Version=1.9.0.0, Culture=neutral">
       <Package>banshee-core</Package>
     </Reference>
-    <Reference Include="Banshee.Services, Version=1.7.0.0, Culture=neutral">
+    <Reference Include="Banshee.Services, Version=1.9.0.0, Culture=neutral">
       <Package>banshee-services</Package>
     </Reference>
-    <Reference Include="Banshee.ThickClient, Version=1.7.0.0, Culture=neutral">
+    <Reference Include="Banshee.ThickClient, Version=1.9.0.0, Culture=neutral">
       <Package>banshee-thickclient</Package>
     </Reference>
-    <Reference Include="Banshee.Widgets, Version=1.7.0.0, Culture=neutral">
+    <Reference Include="Banshee.Widgets, Version=1.9.0.0, Culture=neutral">
       <Package>banshee-thickclient</Package>
     </Reference>
-    <Reference Include="Hyena, Version=1.7.0.0, Culture=neutral">
+    <Reference Include="Hyena, Version=1.9.0.0, Culture=neutral">
       <Package>banshee-hyena</Package>
     </Reference>
-    <Reference Include="Hyena.Data.Sqlite, Version=1.7.0.0, Culture=neutral">
+    <Reference Include="Hyena.Data.Sqlite, Version=1.9.0.0, Culture=neutral">
       <Package>banshee-hyena-data-sqlite</Package>
     </Reference>
-    <Reference Include="Hyena.Gui, Version=1.7.0.0, Culture=neutral">
+    <Reference Include="Hyena.Gui, Version=1.9.0.0, Culture=neutral">
       <Package>banshee-hyena-gui</Package>
     </Reference>
-    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Karaoke.addin.xml">
@@ -96,6 +99,11 @@
   <ItemGroup>
     <Compile Include="Banshee.Karaoke\KaraokeService.cs" />
     <Compile Include="Banshee.Karaoke\KaraokeConfigDialog.cs" />
+    <Compile Include="Banshee.Karaoke\Gui\ContextPage.cs" />
+    <Compile Include="Banshee.Karaoke\Gui\KaraokePane.cs" />
+    <Compile Include="Banshee.Karaoke\Gui\KaraokeView.cs" />
+    <Compile Include="Banshee.Karaoke\KaraokeLyricsCondition.cs" />
+    <Compile Include="Banshee.Karaoke\KaraokeLyricsConditionConfiguration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -118,5 +126,12 @@
       <Project>{176AB141-4CC8-4E64-87FF-69C5D32A1A99}</Project>
       <Name>Streamrecorder</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Banshee.Karaoke\" />
+    <Folder Include="Banshee.Karaoke\Gui\" />
+    <Folder Include="Banshee.Karaoke\" />
+    <Folder Include="Banshee.Karaoke\" />
+    <Folder Include="Banshee.Karaoke\" />
   </ItemGroup>
 </Project>

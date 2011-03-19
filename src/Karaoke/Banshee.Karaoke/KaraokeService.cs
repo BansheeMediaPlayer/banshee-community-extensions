@@ -54,18 +54,23 @@ namespace Banshee.Karaoke
         private uint ui_button_id;
 
         private bool karaoke_enabled = true;
+        private bool lyrics_enabled = false;
 
         private float effect_level = 1.0f;
         private float filter_band = 220.0f;
         private float filter_width = 100.0f;
 
+        public static event EventHandler LyricsEnabledChanged;
+
         public KaraokeService ()
         {
             karaoke_enabled = IsKaraokeEnabledEntry.Get ().Equals ("True") ? true : false;
+            lyrics_enabled = IsLyricsEnabledEntry.Get ();
             effect_level = (float)EffectLevelEntry.Get ();
             effect_level = effect_level / 100;
             filter_band = (float)FilterBandEntry.Get ();
             filter_width = (float)FilterWidthEntry.Get ();
+
         }
 
         #region IExtensionService implementation
@@ -142,7 +147,14 @@ namespace Banshee.Karaoke
         /// </param>
         public void OnConfigure (object o, EventArgs ea)
         {
-            new KaraokeConfigDialog (this, EffectLevel, FilterBand, FilterWidth);
+            new KaraokeConfigDialog (this, EffectLevel, FilterBand, FilterWidth, IsLyricsEnabled);
+        }
+
+        void OnLyricsEnabledChanged ()
+        {
+            EventHandler handler = LyricsEnabledChanged;
+            if (handler != null)
+                handler (this, new EventArgs ());
         }
 
         void IDelayedInitializeService.DelayedInitialize ()
@@ -213,6 +225,14 @@ namespace Banshee.Karaoke
             get { return karaoke_enabled; }
         }
 
+        public bool IsLyricsEnabled {
+            get { return this.lyrics_enabled; }
+            set {
+                lyrics_enabled = value;
+                OnLyricsEnabledChanged ();
+            }
+        }
+
         public void ApplyKaraokeEffectLevel (float new_level)
         {
             if (!karaoke_enabled) return;
@@ -262,6 +282,9 @@ namespace Banshee.Karaoke
 
         public static readonly SchemaEntry<string> IsKaraokeEnabledEntry = new SchemaEntry<string> (
                "plugins.karaoke", "karaoke_enabled", "", "Is Karaoke mode enabled", "Is Karaoke mode enabled");
+
+        public static readonly SchemaEntry<bool> IsLyricsEnabledEntry = new SchemaEntry<bool> (
+               "plugins.karaoke", "karaokelyrics_enabled", false, "Is Karaoke lyrics display enabled", "Is Karaoke lyrics display enabled");
 
         public static readonly SchemaEntry<int> EffectLevelEntry = new SchemaEntry<int> (
                "plugins.karaoke", "effect_level", 100, "Effect Level", "Effect Level");
