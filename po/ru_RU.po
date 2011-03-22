@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
-"POT-Creation-Date: 2011-02-21 23:35+0100\n"
-"PO-Revision-Date: 2011-02-22 11:04+0000\n"
+"POT-Creation-Date: 2011-03-19 17:39+0700\n"
+"PO-Revision-Date: 2011-03-22 15:08+0000\n"
 "Last-Translator: hammer <hammersoft@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru_RU\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:69
 msgid "Alarm Clock"
@@ -171,7 +171,9 @@ msgid "Still Running"
 msgstr "Оставаться запущеным"
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:233
-msgid "Banshee was closed to the notification area. Use the <i>Quit</i> option to end your session."
+msgid ""
+"Banshee was closed to the notification area. Use the <i>Quit</i> option to "
+"end your session."
 msgstr ""
 
 #. Translators: {0} and {1} are Artist Name and
@@ -209,7 +211,9 @@ msgid "Sensitivity for album dragging"
 msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:51
-msgid "Sets the sensitivity with which albums scroll when dragged, higher values mean faster scrolling"
+msgid ""
+"Sets the sensitivity with which albums scroll when dragged, higher values "
+"mean faster scrolling"
 msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:57
@@ -233,7 +237,9 @@ msgid "Immediately apply playback mode changes"
 msgstr "Немедленно применить режим проигрывания"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:86
-msgid "Starts playing a new song immediately after the playback mode changed (Party Mode or Album Mode)"
+msgid ""
+"Starts playing a new song immediately after the playback mode changed (Party"
+" Mode or Album Mode)"
 msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:92
@@ -249,7 +255,9 @@ msgid "Display track _title"
 msgstr "Пказывать _название дорожки"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:100
-msgid "Wether or not the album title needs to be shown above the artwork in fullscreen mode"
+msgid ""
+"Wether or not the album title needs to be shown above the artwork in "
+"fullscreen mode"
 msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:106
@@ -278,7 +286,8 @@ msgid "Number of visible covers at the side"
 msgstr "Количество отображаемых обложек на стороне"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:128
-msgid "The number of covers that need to be displayed on the stage (at one side)"
+msgid ""
+"The number of covers that need to be displayed on the stage (at one side)"
 msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:134
@@ -326,71 +335,81 @@ msgstr "Идет импорт..."
 msgid "Search Jamendo"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:77
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:84
 msgid "Karaoke configuration"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:81
-msgid "You can alter the parameters of the karaoke effect here and define custom filter-band, filter-width and effect level."
-msgstr ""
-
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:87
-msgid "Effect Level:"
-msgstr ""
-
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:88
-msgid "Filter Band:"
-msgstr ""
-
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:89
-msgid "Filter Width:"
+msgid ""
+"You can alter the parameters of the karaoke effect here and define custom "
+"filter-band, filter-width and effect level."
 msgstr ""
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:94
-msgid "The effect level defines to what degree the voice frequencies are reduced."
+msgid "Effect Level:"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:95
+msgid "Filter Band:"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:96
+msgid "Filter Width:"
 msgstr ""
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:101
-msgid "The filter band defines position of filter within the frequency spectrum."
+msgid ""
+"The effect level defines to what degree the voice frequencies are reduced."
 msgstr ""
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:108
-msgid "The filter width defines how wide the spectrum of the filtered frequencies is."
+msgid ""
+"The filter band defines position of filter within the frequency spectrum."
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:114
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:115
+msgid ""
+"The filter width defines how wide the spectrum of the filtered frequencies "
+"is."
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:121
+msgid "Enable lyrics display in Context Pane"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:124
 msgid "Restore _defaults"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:117
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:127
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:102
 msgid "_Cancel"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:119
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:129
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:104
 msgid "_Save"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:86
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:91
 msgid "_Karaoke"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:88
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:107
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:114
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:93
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:106
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:108
 msgid "_Configure"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:89
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:94
 msgid "Configure the Karaoke extension"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:100
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:105
 msgid "_Activate Karaoke mode"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:101
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:106
 msgid "Activate Karaoke mode"
 msgstr ""
 
@@ -494,11 +513,11 @@ msgstr ""
 msgid "Choose By Query"
 msgstr ""
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:583
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:581
 msgid "Yes"
 msgstr "Да"
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:583
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:581
 msgid "No"
 msgstr "Нет"
 
@@ -558,7 +577,9 @@ msgid "Error... Please Reload"
 msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:423
-msgid "Click a genre to load/refresh entries or type a query. Use the refresh button to refresh genres."
+msgid ""
+"Click a genre to load/refresh entries or type a query. Use the refresh "
+"button to refresh genres."
 msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:69
@@ -582,7 +603,8 @@ msgid "Requested Results Returned"
 msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:180
-msgid "The plugin has returned a list of results for a genre or freetext query"
+msgid ""
+"The plugin has returned a list of results for a genre or freetext query"
 msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:199
@@ -660,24 +682,24 @@ msgstr ""
 msgid "LiveRadio"
 msgstr ""
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:105
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:104
 msgid "Live_Radio"
 msgstr ""
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:108
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:107
 msgid "Configure the LiveRadio plugin"
 msgstr ""
 
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:111
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:112
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:113
 msgid "Refresh View"
 msgstr ""
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:117
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:116
 msgid "Add To Internet Radio"
 msgstr ""
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:118
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:117
 msgid "Add stream as Internet Radio Station"
 msgstr ""
 
@@ -784,7 +806,9 @@ msgid ""
 msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/DistanceCalculator.cs:48
-msgid "The Mirage extension is still analyzing your songs.  Until its finished, shuffle and fill by similar may not perform properly."
+msgid ""
+"The Mirage extension is still analyzing your songs.  Until its finished, "
+"shuffle and fill by similar may not perform properly."
 msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:158
@@ -820,7 +844,9 @@ msgid "Reset Mirage"
 msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:266
-msgid "Resets the Mirage Playlist Generation Plugin. All songs have to be analyzed again to use Automatic Playlist Generation."
+msgid ""
+"Resets the Mirage Playlist Generation Plugin. All songs have to be analyzed "
+"again to use Automatic Playlist Generation."
 msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:279
@@ -867,7 +893,9 @@ msgid ""
 msgstr ""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:114
-msgid "Choose a genre or enter a text that you wish to be queried, then press the Get stations button. Found stations will be added to internet-radio source."
+msgid ""
+"Choose a genre or enter a text that you wish to be queried, then press the "
+"Get stations button. Found stations will be added to internet-radio source."
 msgstr ""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:127
@@ -999,19 +1027,19 @@ msgstr ""
 msgid "Enable automatic files splitting by Metadata"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:112
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:106
 msgid "_Streamrecorder"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:115
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:109
 msgid "Configure the Streamrecorder plugin"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:118
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:112
 msgid "_Activate streamrecorder"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:119
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:113
 msgid "Activate streamrecorder process"
 msgstr ""
 
