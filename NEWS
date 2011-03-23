@@ -1,4 +1,20 @@
 =================================
+Version 1.9.6 - March 24, 2011
+=================================
+
+Contributors:
+Alexander Kojevnikov, Bertrand Lorentz, Chow Loong Jin, Frank Ziegler,
+Gabriel Burt
+
+Enhancements:
+* Jamendo: Allow cancelling downloads
+* Karaoke: Use youtubelyric.com for optional scrolling lyrics display
+
+Bugs Fixed:
+* ClutterFlow: Handle horizontal scrolling properly (bgo#644609)
+* Streamrecorder: Fix recording of some streams (bgo#642933)
+
+=================================
 Version 1.9.5 - March 10, 2011
 =================================
 
