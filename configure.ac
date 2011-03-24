@@ -1,5 +1,5 @@
 AC_PREREQ(2.52)
-AC_INIT([banshee-community-extensions], 1.9.5,
+AC_INIT([banshee-community-extensions], 1.9.6,
 	[http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions])
 
 AM_INIT_AUTOMAKE([1.9 dist-bzip2 tar-ustar dist-zip foreign])
@@ -29,7 +29,7 @@ SHAMROCK_FIND_MONO_2_0_COMPILER
 SHAMROCK_FIND_MONO_RUNTIME
 
 dnl Banshee deps
-PKG_CHECK_MODULES(BANSHEE, banshee-thickclient >= 1.9.1)
+PKG_CHECK_MODULES(BANSHEE, banshee-thickclient >= 1.9.6)
 AC_SUBST(BANSHEE_LIBS)
 
 dnl Banshee Extensions Path
