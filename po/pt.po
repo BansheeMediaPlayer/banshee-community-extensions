@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
-"POT-Creation-Date: 2011-03-19 17:39+0700\n"
-"PO-Revision-Date: 2011-03-22 15:08+0000\n"
+"POT-Creation-Date: 2011-03-22 23:13+0100\n"
+"PO-Revision-Date: 2011-03-23 00:09+0000\n"
 "Last-Translator: amrlima <amrlima@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -106,25 +106,25 @@ msgstr "Iniciar Temporizador :"
 msgid "Start Timer"
 msgstr "Iniciar Temporizador"
 
-#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:75
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:73
 msgid "Connect"
 msgstr "Ligar"
 
-#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:87
-#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:94
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:85
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:92
 msgid "Artist"
 msgstr "Artista"
 
-#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:89
-#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:95
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:87
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:93
 msgid "Album"
 msgstr "Álbum"
 
-#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:91
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:89
 msgid "Playlist"
 msgstr "Lista de Reprodução"
 
-#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:93
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:91
 msgid "Title"
 msgstr "Título"
 
@@ -330,15 +330,15 @@ msgstr "Geral"
 msgid "Dimensions"
 msgstr "Dimensões"
 
-#: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:63
+#: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:62
 msgid "Jamendo Downloads"
 msgstr "Transferências do Jamendo"
 
-#: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:64
+#: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:63
 msgid "Contacting..."
 msgstr "A Contactar..."
 
-#: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:95
+#: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:103
 msgid "Importing..."
 msgstr "A Importar..."
 
@@ -346,6 +346,15 @@ msgstr "A Importar..."
 #, csharp-format
 msgid "Search Jamendo"
 msgstr "Procurar no Jamendo"
+
+#: ../src/Karaoke/Banshee.Karaoke/Gui/ContextPage.cs:45
+msgid "Karaoke"
+msgstr ""
+
+#: ../src/Karaoke/Banshee.Karaoke/Gui/KaraokePane.cs:131
+msgid ""
+"You are disconnected from the internet, so karaoke lyrics are not available."
+msgstr ""
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:84
 msgid "Karaoke configuration"
