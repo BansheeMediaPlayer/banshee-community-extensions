@@ -1,5 +1,5 @@
 AC_PREREQ(2.52)
-AC_INIT([banshee-community-extensions], 1.9.6,
+AC_INIT([banshee-community-extensions], 2.0.0,
 	[http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions])
 
 AM_INIT_AUTOMAKE([1.9 dist-bzip2 tar-ustar dist-zip foreign])
