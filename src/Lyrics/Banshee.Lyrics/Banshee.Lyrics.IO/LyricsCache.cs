@@ -85,16 +85,6 @@ namespace Banshee.Lyrics.IO
         {
             string filename = GetLyricsFilename (track.ArtistName, track.TrackTitle);
             try {
-                /*delete the file if it exist */
-                if (File.Exists (filename)) {
-                    File. Delete (filename);
-                }
-
-                //create a new file
-                FileStream stream = File. Create (filename);
-                stream.Close ();
-
-                //write the lyrics
                 File.WriteAllText (filename, lyrics);
             } catch (Exception e) {
                 Hyena.Log.Exception (String.Format ("Can't write lyrics file: {0}", filename), e);
