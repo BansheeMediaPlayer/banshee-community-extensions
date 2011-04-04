@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
 "POT-Creation-Date: 2011-03-22 23:13+0100\n"
-"PO-Revision-Date: 2011-03-23 00:09+0000\n"
+"PO-Revision-Date: 2011-04-03 15:21+0000\n"
 "Last-Translator: Janvitus <gianvito@gmx.it>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -348,12 +348,14 @@ msgstr "Cerca in Jamendo"
 
 #: ../src/Karaoke/Banshee.Karaoke/Gui/ContextPage.cs:45
 msgid "Karaoke"
-msgstr ""
+msgstr "Karaoke"
 
 #: ../src/Karaoke/Banshee.Karaoke/Gui/KaraokePane.cs:131
 msgid ""
 "You are disconnected from the internet, so karaoke lyrics are not available."
 msgstr ""
+"Si è disconnessi da Internet, in questo modo i testi del karaoke non sono "
+"disponibili."
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:84
 msgid "Karaoke configuration"
