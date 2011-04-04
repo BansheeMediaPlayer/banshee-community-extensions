@@ -1,4 +1,45 @@
 =================================
+Version 2.0.0 - April 6, 2011
+=================================
+
+Contributors since 1.8.0:
+Alexander Kojevnikov, Bertrand Lorentz, Chow Loong Jin, David Nielsen,
+Frank Ziegler, Gabriel Burt, Janez Troha, John Moore, Manish Sinha,
+Mathijs Dumon, Olivier Dufour, Raimo Radczewski, Rodney Dawes, Samuel Gyger
+
+New extensions since 1.8.0 :
+* Ampache: Browse and play your remote music with Ampache
+* Jamendo: Browse the Jamendo catalog, stream and download free music
+* Karaoke: Filter out the singers voice
+* LastfmFingerprint: Identify your music automatically, using the Last.fm online service
+* RandomByLastfm: Shuffle your library using information from the Last.fm online service
+* ZeitgeistDataprovider: Publish your Banshee activities into Zeitgeist
+
+Enhancements since 1.8.0:
+* AlarmClock: Improve the sleep timer configuration
+* LiveRadio: Add a module to fetch radio stations from RealRadios.com
+* Lyrics: Improve performance
+
+Notable bugs fixed since 1.8.0:
+* Fix missing unique IDs in several extension sources
+* AlarmClock: Fix sleep timer fade out duration (bgo#634200)
+* AlarmClock: Don't start playing if the alarm is disabled (bgo#637481)
+* ClutterFlow: Handle horizontal scrolling properly (bgo#644609)
+* Lirc: Fix potential memory issues
+* Lirc: Add a dllmap for lirc_client (bgo#635848)
+* LiveRadio: Fix crash when retrieving source icon (bgo#640152)
+* LiveRadio: Fix display of the source icon
+* Lyrics: Fix NullPointerException when artist is unknown
+* Lyrics: Properly trim artist name and track title and fix NRE (bgo#635616)
+* Lyrics: Change regex on LyricWiki to show only original language (bgo#635434)
+* Lyrics: Throw a NetworkUnavailableException when there is no network (bgo#634787)
+* Lyrics: Don't use lyricsplugin.com anymore (bgo#640570)
+* Magnatune: Fix display of the source icon
+* Streamrecorder: Fix recording of some streams (bgo#642933)
+* StreamRecorder: Fix write error by creating output directory if needed
+
+
+=================================
 Version 1.9.6 - March 24, 2011
 =================================
 
