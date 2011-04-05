@@ -45,6 +45,7 @@ namespace Banshee.Zeitgeist
     {
         private LogClient client;
         private TrackInfo current_track;
+        private bool hasTrackFinished = false;
 
         string IService.ServiceName {
             get { return "ZeitgeistService"; }
@@ -63,12 +64,21 @@ namespace Banshee.Zeitgeist
                     ServiceManager.PlaybackController.Stopped += HandleServiceManagerPlaybackControllerStopped;
 
                     ServiceManager.PlayerEngine.ConnectEvent(playerEvent_Handler, PlayerEvent.StartOfStream);
+                    ServiceManager.PlayerEngine.ConnectEvent(playerEvent_EndOfStream_Handler, PlayerEvent.EndOfStream);
 
                 } else {
                     Log.Warning ("Could not create Zeitgeist client");
                 }
             } catch (Exception e) {
                 Log.Exception (e);
+            }
+        }
+
+        void playerEvent_EndOfStream_Handler(PlayerEventArgs e)
+        {
+            if(e.Event == PlayerEvent.EndOfStream)
+            {
+                hasTrackFinished = true;
             }
         }
 
@@ -121,7 +131,18 @@ namespace Banshee.Zeitgeist
 
             ev.Actor = "application://banshee.desktop";
             ev.Timestamp = DateTime.Now;
-            ev.Manifestation = Manifestation.Instance.EventManifestation.UserActivity;
+
+            // If the track has finished then Event Manifestation is ScheduledActivity else UserActivity
+            if(hasTrackFinished)
+            {
+                hasTrackFinished = false;
+                ev.Manifestation = Manifestation.Instance.EventManifestation.ScheduledActivity;
+            }
+            else
+            {
+                ev.Manifestation = Manifestation.Instance.EventManifestation.UserActivity;
+            }
+
             ev.Interpretation = event_type;
 
             Subject sub = new Subject ();
