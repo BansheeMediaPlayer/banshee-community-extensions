@@ -261,7 +261,7 @@ Lastfmfp_initgstreamer(LastfmfpAudio *ma, const gchar *file)
     // Gstreamer decoder setup
     ma->pipeline = gst_pipeline_new("pipeline");
     
-    filename = std::string(g_strdup(file));
+    filename = file;
     
     // decoder
     src = gst_element_factory_make("filesrc", "source");
