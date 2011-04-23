@@ -63,8 +63,7 @@ namespace Banshee.Zeitgeist
 
                     ServiceManager.PlaybackController.Stopped += HandleServiceManagerPlaybackControllerStopped;
 
-                    ServiceManager.PlayerEngine.ConnectEvent(playerEvent_Handler, PlayerEvent.StartOfStream);
-                    ServiceManager.PlayerEngine.ConnectEvent(playerEvent_EndOfStream_Handler, PlayerEvent.EndOfStream);
+                    ServiceManager.PlayerEngine.ConnectEvent(playerEvent_Handler, PlayerEvent.StartOfStream | PlayerEvent.EndOfStream);
 
                 } else {
                     Log.Warning ("Could not create Zeitgeist client");
@@ -74,18 +73,14 @@ namespace Banshee.Zeitgeist
             }
         }
 
-        void playerEvent_EndOfStream_Handler(PlayerEventArgs e)
-        {
-            if(e.Event == PlayerEvent.EndOfStream)
-            {
-                hasTrackFinished = true;
-            }
-        }
-
         void playerEvent_Handler(PlayerEventArgs e)
         {
-            if(e.Event == PlayerEvent.StartOfStream && current_track != ServiceManager.PlaybackController.CurrentTrack)
-            {
+            if(e.Event == PlayerEvent.EndOfStream) {
+                Log.Debug("EndOfStream for : "+ServiceManager.PlaybackController.CurrentTrack.TrackTitle);
+                hasTrackFinished = true;
+            }
+
+            if(e.Event == PlayerEvent.StartOfStream && current_track != ServiceManager.PlaybackController.CurrentTrack) {
                 try {
                     if (current_track != null) {
                         StopTrack (current_track);
