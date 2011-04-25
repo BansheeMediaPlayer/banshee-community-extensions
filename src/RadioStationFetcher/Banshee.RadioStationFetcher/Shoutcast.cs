@@ -184,7 +184,7 @@ namespace Banshee.RadioStationFetcher
             Log.Debug ("[Shoutcast] <FetchStationsByGenre> Start");
 
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.
-                Create ("http://207.200.98.25/sbin/newxml.phtml?genre="+genre);
+                Create ("http://207.200.98.1/sbin/newxml.phtml?genre="+genre);
             request.Method = "GET";
             request.ContentType = "HTTP/1.0";
             request.Timeout = 10 * 1000; // 10 seconds
@@ -213,7 +213,7 @@ namespace Banshee.RadioStationFetcher
             Log.Debug ("[Shoutcast] <FetchStationsByFreetext> Start");
 
             HttpWebRequest request = (HttpWebRequest) HttpWebRequest.
-                Create ("http://207.200.98.25/sbin/newxml.phtml?search="+text);
+                Create ("http://207.200.98.1/sbin/newxml.phtml?search="+text);
             request.Method = "GET";
             request.ContentType = "HTTP/1.0";
             request.Timeout = 10 * 1000; // 10 seconds
@@ -269,7 +269,7 @@ namespace Banshee.RadioStationFetcher
 
                     DatabaseTrackInfo new_station = new DatabaseTrackInfo ();
 
-                    new_station.Uri = new SafeUri ("http://207.200.98.25/sbin/tunein-station.pls?id="+id);
+                    new_station.Uri = new SafeUri ("http://207.200.98.1/sbin/tunein-station.pls?id="+id);
                     new_station.ArtistName = "www.shoutcast.com";
                     new_station.Genre = genre;
                     new_station.TrackTitle = name;
