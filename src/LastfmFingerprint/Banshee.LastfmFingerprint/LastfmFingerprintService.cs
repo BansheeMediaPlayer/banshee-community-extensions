@@ -131,6 +131,8 @@ namespace Banshee.LastfmFingerprint
                     foreach (TrackInfo track in ((ITrackModelSource)source).TrackModel.SelectedItems) {
                         if (!active)
                             break;
+                        if (String.IsNullOrEmpty (track.Uri.AbsolutePath))
+                            continue;
                         ad = new AudioDecoder((int)track.Duration.TotalSeconds);
                         //respect last fm term of service :
                         //You will not make more than 5 requests per originating IP address per second, averaged over a 5 minute period
