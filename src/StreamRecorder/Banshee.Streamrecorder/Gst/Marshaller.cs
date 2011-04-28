@@ -45,6 +45,7 @@ namespace Banshee.Streamrecorder.Gst
          */
         public static bool Initialize ()
         {
+            Init ();
             try {
                 gst_version = VersionString ();
                 DebugSetActive (false);
@@ -91,6 +92,11 @@ namespace Banshee.Streamrecorder.Gst
             return gst_event_new_eos ();
         }
 
+        public static void Init ()
+        {
+            gst_init (IntPtr.Zero, IntPtr.Zero);
+        }
+
         /* Helper Imports*/
         [DllImport("libgstreamer-0.10.so.0")]
         private static extern string gst_version_string ();
@@ -112,6 +118,9 @@ namespace Banshee.Streamrecorder.Gst
 
         [DllImport("libgstreamer-0.10.so.0")]
         unsafe public static extern IntPtr gst_event_new_eos ();
+
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe public static extern void gst_init (IntPtr argc, IntPtr argv);
 
     }
 

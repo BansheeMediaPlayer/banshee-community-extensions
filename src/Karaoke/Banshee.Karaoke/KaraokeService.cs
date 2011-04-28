@@ -76,7 +76,7 @@ namespace Banshee.Karaoke
         #region IExtensionService implementation
         void IExtensionService.Initialize ()
         {
-
+            Marshaller.Init ();
             has_karaoke = Marshaller.CheckGstPlugin ("audiokaraoke");
             Hyena.Log.Debug ("[Karaoke] GstPlugin audiokaraoke" + (has_karaoke ? "" : " not") + " found");
             if (!has_karaoke) {
