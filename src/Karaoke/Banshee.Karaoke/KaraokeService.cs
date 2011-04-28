@@ -50,8 +50,8 @@ namespace Banshee.Karaoke
 
         private Gtk.ActionGroup actions;
         private InterfaceActionService action_service;
-        private uint ui_menu_id;
-        private uint ui_button_id;
+        private uint ui_menu_id = 0;
+        private uint ui_button_id = 0;
 
         private bool karaoke_enabled = true;
         private bool lyrics_enabled = false;
@@ -201,14 +201,20 @@ namespace Banshee.Karaoke
         #region IDisposable implementation
         void IDisposable.Dispose ()
         {
-            if (!playbin.IsNull ())
+            if (has_karaoke && !playbin.IsNull () && !audiokaraoke.IsNull ())
             {
                 audiokaraoke.SetFloatProperty ("level", 0);
                 audiokaraoke.SetFloatProperty ("mono-level", 0);
             }
-            action_service.UIManager.RemoveUi (ui_menu_id);
-            action_service.UIManager.RemoveUi (ui_button_id);
-            action_service.UIManager.RemoveActionGroup (actions);
+
+            if (ui_menu_id > 0)
+                action_service.UIManager.RemoveUi (ui_menu_id);
+
+            if (ui_button_id > 0)
+                action_service.UIManager.RemoveUi (ui_button_id);
+
+            if (actions != null)
+                action_service.UIManager.RemoveActionGroup (actions);
             actions = null;
         }
         #endregion
