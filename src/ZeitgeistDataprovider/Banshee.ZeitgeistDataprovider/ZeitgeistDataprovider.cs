@@ -166,6 +166,10 @@ namespace Banshee.Zeitgeist
                     client.InsertEvents (new List<Event> () {ev});
 
                     current_track = ServiceManager.PlaybackController.CurrentTrack;
+
+                    // Set this as false only after the previous track finished and new track start event has been logged
+                    hasTrackFinished = false;
+
                 } catch (Exception ex) {
                     Log.Exception (ex);
                 }
@@ -205,7 +209,6 @@ namespace Banshee.Zeitgeist
             // If the track has finished then Event Manifestation is ScheduledActivity else UserActivity
             if(hasTrackFinished)
             {
-                hasTrackFinished = false;
                 ev.Manifestation = Manifestation.Instance.EventManifestation.ScheduledActivity;
             }
             else
