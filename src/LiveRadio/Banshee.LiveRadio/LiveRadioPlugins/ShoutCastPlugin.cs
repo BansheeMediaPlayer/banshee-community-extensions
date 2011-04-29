@@ -46,13 +46,10 @@ namespace Banshee.LiveRadio.Plugins
     public class ShoutCastPlugin : LiveRadioBasePlugin
     {
 
-        private const string base_url = "http://api.shoutcast.com";
-        private const string play_url = "http://yp.shoutcast.com";
-        private const string request_url = "/legacy/";
+        private const string base_url = "http://207.200.98.1";
+        private const string play_url = "http://207.200.98.1";
+        private const string request_url = "/sbin/newxml.phtml?";
         private const string genre_list_request = "genrelist";
-        private const string key = "?k=[DevKeyHere]"; //replace with Developer Key for Shoutcast API 2.0
-        private const string genre_url = "genresearch";
-        private const string freetext_url = "stationsearch";
         private const string genre_request = "&genre=";
         private const string freetext_request = "&search=";
 
@@ -60,7 +57,7 @@ namespace Banshee.LiveRadio.Plugins
         /// Shoutcast plugin disabled for legal issues, no developer key available
         /// </summary>
         public override bool Active {
-            get { return false; }
+            get { return true; }
         }
 
         /// <summary>
@@ -81,7 +78,7 @@ namespace Banshee.LiveRadio.Plugins
         /// </summary>
         protected override void RetrieveGenres ()
         {
-            ParseGenres(RetrieveXml(base_url + request_url +  genre_list_request + key));
+            ParseGenres(RetrieveXml(base_url + request_url + genre_list_request));
         }
 
         /// <summary>
@@ -97,9 +94,9 @@ namespace Banshee.LiveRadio.Plugins
         {
             string request;
             if (request_type == LiveRadioRequestType.ByGenre) {
-                request = base_url + request_url + genre_url + key + genre_request + query;
+                request = base_url + request_url + genre_request + query;
             } else {
-                request = base_url + request_url + freetext_url + key + freetext_request + query;
+                request = base_url + request_url + freetext_request + query;
             }
             XmlDocument document = RetrieveXml(request);
             if (document != null) ParseXmlResponse(document, request_type, query);
