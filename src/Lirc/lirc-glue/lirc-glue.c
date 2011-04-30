@@ -66,3 +66,13 @@ void lirc_glue_freeconfig ()
 {
     lirc_freeconfig (config);
 }
+
+/* lirc_client direct wrappers */
+int lirc_glue_init (char *prog, int verbose)
+{ return lirc_init (prog, verbose); }
+
+int lirc_glue_deinit (void)
+{ return lirc_deinit (); }
+
+int lirc_glue_nextcode (char **code)
+{ return lirc_nextcode (code); }
