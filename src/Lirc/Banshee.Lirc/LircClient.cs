@@ -150,23 +150,23 @@ namespace Lirc
 
     /* .......................lirc_client bindings.................................................*/
 
-    [DllImport("lirc_client")]
-    private extern static int lirc_init(string prog, int verbose);
+    [DllImport("liblircglue")]
+    private extern static int lirc_glue_init(string prog, int verbose);
 
-    [DllImport("lirc_client")]
-    private extern static int lirc_deinit();
+    [DllImport("liblircglue")]
+    private extern static int lirc_glue_deinit();
 
-    [DllImport("lirc_client")]
-    private extern static int lirc_nextcode(out string code);
+    [DllImport("liblircglue")]
+    private extern static int lirc_glue_nextcode(out string code);
 
-    /*[DllImport("lirc_client")]
-    private extern static int lirc_readconfig(string file, out Config config, string check);
+    /*[DllImport("liblircglue")]
+    private extern static int lirc_glue_readconfig(string file, out Config config, string check);
 
-    [DllImport("lirc_client")]
-    private extern static int lirc_freeconfig(out Config config);
+    [DllImport("liblircglue")]
+    private extern static int lirc_glue_freeconfig(out Config config);
 
-    [DllImport("lirc_client")]
-    private extern static int lirc_code2char(out Config config, string code, out string str);*/
+    [DllImport("liblircglue")]
+    private extern static int lirc_glue_code2char(out Config config, string code, out string str);*/
 
 
     /* someone write bindings for client daemon functions?  check out lirc_client.h */
