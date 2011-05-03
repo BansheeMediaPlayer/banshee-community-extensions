@@ -1,4 +1,25 @@
 =================================
+Version 2.0.1 - May 3, 2011
+=================================
+
+Contributors since 2.0.0:
+Bertrand Lorentz, Chow Loong Jin, Frank Ziegler, Kriss, Manish Sinha,
+Olivier Dufour
+
+Notable bugs fixed since 2.0.0:
+* ClutterFlow: Fix NRE crash (bgo#647134)
+* Karaoke: add an gst_init() call to make sure gstreamer is working
+* Karaoke: fix NRE on dispose if audiokaraoke was not found
+* LastfmFingerprint: Don't strdup strings
+* LastfmFingerprint: Fix empty name exception (bgo#648168)
+* Lirc: Drop liblirc_client.so moduleref (lp#773686)
+* LiveRadio: Re-enable ShoutCast with request structure from RadioStationFetcher
+* Lyrics: Always update pane title when track changes (bgo#647108)
+* RadioStationFetcher: Updated the shoutcast plugin to fix the IP address
+* ZeitgeistDataprovider: Register dataprovider in DataSource Registry (lp#691842)
+* ZeitgeistDataprovider: Differenciate between ScheduledActivity and UserActivity (lp#748120)
+
+=================================
 Version 2.0.0 - April 6, 2011
 =================================
 
