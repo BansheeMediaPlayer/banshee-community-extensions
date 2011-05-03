@@ -2,20 +2,20 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-03 22:04+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Project-Id-Version: Banshee Community Extensions\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
+"POT-Creation-Date: 2011-03-22 23:13+0100\n"
+"PO-Revision-Date: 2011-05-01 11:13+0000\n"
+"Last-Translator: pavolzetor <pavol@klacansky.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: sk\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:69
 msgid "Alarm Clock"
@@ -40,7 +40,7 @@ msgstr ""
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:81
 #: ../src/LCD/Banshee.LCD/LCDService.cs:70
 msgid "_Configure..."
-msgstr ""
+msgstr "Nas_taviť..."
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:82
 msgid "Configure the Alarm Clock plugin"
@@ -76,7 +76,7 @@ msgstr ""
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:78
 msgid "Duration:"
-msgstr ""
+msgstr "Dĺžka:"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:79
 msgid " <i>(seconds)</i>"
@@ -88,11 +88,11 @@ msgstr ""
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:93
 msgid "Command:"
-msgstr ""
+msgstr "Príkaz:"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:97
 msgid "Command To Execute:"
-msgstr ""
+msgstr "Príkaz, ktorý vykonať:"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:46
 msgid "Sleep Timer"
@@ -108,30 +108,30 @@ msgstr ""
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:73
 msgid "Connect"
-msgstr ""
+msgstr "Pripojiť"
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:85
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:92
 msgid "Artist"
-msgstr ""
+msgstr "Interpret"
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:87
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:93
 msgid "Album"
-msgstr ""
+msgstr "Album"
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:89
 msgid "Playlist"
-msgstr ""
+msgstr "Zoznam skladieb"
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:91
 msgid "Title"
-msgstr ""
+msgstr "Názov"
 
 #: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:86
 #: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:62
 msgid "Password:"
-msgstr ""
+msgstr "Heslo:"
 
 #: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:99
 msgid "Ampache Server Name:"
@@ -139,42 +139,44 @@ msgstr ""
 
 #: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:110
 msgid "User Name:"
-msgstr ""
+msgstr "Používateľské meno:"
 
 #: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:131
 msgid "Save"
-msgstr ""
+msgstr "Uložiť"
 
 #: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:142
 msgid "Clear"
-msgstr ""
+msgstr "Vymazať"
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:132
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:169
 msgid "_Close"
-msgstr ""
+msgstr "Za_vrieť"
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:133
 msgid "Close"
-msgstr ""
+msgstr "Zavrieť"
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:139
 msgid "_Show Banshee"
-msgstr ""
+msgstr "_Zobraziť Banshee"
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:140
 msgid "Show the Banshee main window"
-msgstr ""
+msgstr "Zobraziť hlavné okno programu Banshee"
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:231
 msgid "Still Running"
-msgstr ""
+msgstr "Stále beží"
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:233
 msgid ""
 "Banshee was closed to the notification area. Use the <i>Quit</i> option to "
 "end your session."
 msgstr ""
+"Banshee bol zatvorený do oblasti upozornení. Ak chcete ukončiť vašu reláciu "
+"použite <i>Ukončiť</i>."
 
 #. Translators: {0} and {1} are Artist Name and
 #. Album Title, respectively;
@@ -182,29 +184,29 @@ msgstr ""
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:308
 #, csharp-format
 msgid "by '{0}' from '{1}'"
-msgstr ""
+msgstr "od '{0}' z '{1}'"
 
 #. Translators: {0} is for Album Title;
 #. e.g. 'from Killing with a Smile'
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:313
 #, csharp-format
 msgid "from '{0}'"
-msgstr ""
+msgstr "z '{0}'"
 
 #. Translators: {0} is for Artist Name;
 #. e.g. 'by Parkway Drive'
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:318
 #, csharp-format
 msgid "by '{0}'"
-msgstr ""
+msgstr "od '{0}'"
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:397
 msgid "Skip this item"
-msgstr ""
+msgstr "Preskočiť túto položku"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs:263
 msgid "Track list"
-msgstr ""
+msgstr "Zoznam skladieb"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:50
 msgid "Sensitivity for album dragging"
@@ -238,8 +240,8 @@ msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:86
 msgid ""
-"Starts playing a new song immediately after the playback mode changed (Party "
-"Mode or Album Mode)"
+"Starts playing a new song immediately after the playback mode changed (Party"
+" Mode or Album Mode)"
 msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:92
@@ -312,11 +314,11 @@ msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:328
 msgid "General"
-msgstr ""
+msgstr "Všeobecné"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:337
 msgid "Dimensions"
-msgstr ""
+msgstr "Rozmery"
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:62
 msgid "Jamendo Downloads"
@@ -328,16 +330,16 @@ msgstr ""
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:103
 msgid "Importing..."
-msgstr ""
+msgstr "Importuje sa..."
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoWebBrowserShell.cs:41
 #, csharp-format
 msgid "Search Jamendo"
-msgstr ""
+msgstr "Hľadať v Jamendo"
 
 #: ../src/Karaoke/Banshee.Karaoke/Gui/ContextPage.cs:45
 msgid "Karaoke"
-msgstr ""
+msgstr "Karaoke"
 
 #: ../src/Karaoke/Banshee.Karaoke/Gui/KaraokePane.cs:131
 msgid ""
@@ -393,12 +395,12 @@ msgstr ""
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:127
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:102
 msgid "_Cancel"
-msgstr ""
+msgstr "_Zrušiť"
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:129
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:104
 msgid "_Save"
-msgstr ""
+msgstr "_Uložiť"
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:91
 msgid "_Karaoke"
@@ -408,7 +410,7 @@ msgstr ""
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:106
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:108
 msgid "_Configure"
-msgstr ""
+msgstr "Nas_taviť"
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:94
 msgid "Configure the Karaoke extension"
@@ -436,11 +438,11 @@ msgstr ""
 
 #: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:109
 msgid "Scanning..."
-msgstr ""
+msgstr "Prehľadáva sa..."
 
 #: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:49
 msgid "Log in to Last.fm"
-msgstr ""
+msgstr "Prihlásiť sa do Last.fm"
 
 #: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:69
 msgid "Last.fm Account Login"
@@ -456,7 +458,7 @@ msgstr ""
 
 #: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:57
 msgid "Username:"
-msgstr ""
+msgstr "Používateľské meno:"
 
 #: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:101
 msgid "Sign up for Last.fm"
@@ -472,11 +474,11 @@ msgstr ""
 
 #: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:54
 msgid "Hostname:"
-msgstr ""
+msgstr "Názov hostiteľa:"
 
 #: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:61
 msgid "Port:"
-msgstr ""
+msgstr "Port:"
 
 #: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:67
 msgid "LCDProc Daemon:"
@@ -503,7 +505,7 @@ msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioConfigDialog.cs:91
 msgid "Enable this plugin"
-msgstr ""
+msgstr "Povoliť tento zásuvný modul"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioFilterView.cs:87
 msgid "Choose By Genre"
@@ -516,7 +518,7 @@ msgstr ""
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:141
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:388
 msgid "Loading..."
-msgstr ""
+msgstr "Načítava sa..."
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioFilterView.cs:95
 msgid "Choose By Query"
@@ -524,11 +526,11 @@ msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:581
 msgid "Yes"
-msgstr ""
+msgstr "Áno"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:581
 msgid "No"
-msgstr ""
+msgstr "Nie"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:74
 msgid "Proxy URL"
@@ -545,12 +547,12 @@ msgstr ""
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:77
 #: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:58
 msgid "Username"
-msgstr ""
+msgstr "Používateľské meno"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:78
 #: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:85
 msgid "Password"
-msgstr ""
+msgstr "Heslo"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:79
 msgid "HTTP timeout in seconds"
@@ -558,7 +560,7 @@ msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:129
 msgid "Browser on Left"
-msgstr ""
+msgstr "Prehliadač vľavo"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:130
 msgid "Show the artist/album browser to the left of the track list"
@@ -566,7 +568,7 @@ msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:133
 msgid "Browser on Top"
-msgstr ""
+msgstr "Prehliadač navrchu"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:134
 msgid "Show the artist/album browser above the track list"
@@ -574,7 +576,7 @@ msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:139
 msgid "Show Browser"
-msgstr ""
+msgstr "Zobraziť prehliadač"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:140
 msgid "Show or hide the artist/album browser"
@@ -583,7 +585,7 @@ msgstr ""
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:203
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:251
 msgid "Error... Please Reload"
-msgstr ""
+msgstr "Chyba... Prosím, obnovte"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:423
 msgid ""
@@ -597,7 +599,7 @@ msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:121
 msgid "Station"
-msgstr ""
+msgstr "Stanica"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:122
 msgid "Creator"
@@ -605,14 +607,15 @@ msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:123
 msgid "Description"
-msgstr ""
+msgstr "Popis"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:179
 msgid "Requested Results Returned"
 msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:180
-msgid "The plugin has returned a list of results for a genre or freetext query"
+msgid ""
+"The plugin has returned a list of results for a genre or freetext query"
 msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:199
@@ -625,11 +628,11 @@ msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:266
 msgid "Plugin"
-msgstr ""
+msgstr "Zásuvný modul"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:267
 msgid "Version"
-msgstr ""
+msgstr "Verzia"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:268
 msgid "Enabled"
@@ -637,11 +640,11 @@ msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:279
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:280
 msgid "Origin"
-msgstr ""
+msgstr "Pôvod"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:281
 msgid "Short Info"
@@ -661,22 +664,22 @@ msgstr ""
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:285
 msgid "Updates"
-msgstr ""
+msgstr "Aktualizácie"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:296
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:297
 msgid "Enable Plugin"
-msgstr ""
+msgstr "Povoliť zásuvný modul"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:299
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:300
 msgid "Disable Plugin"
-msgstr ""
+msgstr "Zakázať zásuvný modul"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:302
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:303
 msgid "Configure Plugin"
-msgstr ""
+msgstr "Nastaviť zásuvný modul"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:317
 msgid "Plugin Statistics"
@@ -701,7 +704,7 @@ msgstr ""
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:111
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:112
 msgid "Refresh View"
-msgstr ""
+msgstr "Obnoviť pohľad"
 
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:116
 msgid "Add To Internet Radio"
@@ -713,17 +716,17 @@ msgstr ""
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs:45
 msgid "Lyrics"
-msgstr ""
+msgstr "Text piesne"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:66
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:127
 msgid "add"
-msgstr ""
+msgstr "pridať"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:116
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:125
 msgid "No lyrics found."
-msgstr ""
+msgstr "Nenájdený text piesne."
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:128
 msgid "Click here to manually add a new lyric"
@@ -731,11 +734,11 @@ msgstr ""
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:132
 msgid "Suggestions:"
-msgstr ""
+msgstr "Návrhy:"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:97
 msgid "Copy lyrics to clipboard"
-msgstr ""
+msgstr "Kopírovať text piesne do schránky"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:144
 msgid "by"
@@ -743,11 +746,11 @@ msgstr ""
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:147
 msgid "Unknown Artist"
-msgstr ""
+msgstr "Neznámy interpret"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:17
 msgid "Downloading Lyrics"
-msgstr ""
+msgstr "Sťahuje sa text piesne"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:61
 #, csharp-format
@@ -756,27 +759,27 @@ msgstr ""
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:171
 msgid "L_yrics"
-msgstr ""
+msgstr "_Text piesne"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:172
 msgid "Manage Lyrics"
-msgstr ""
+msgstr "Spravovať text piesne"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:174
 msgid "_Download Lyrics"
-msgstr ""
+msgstr "_Stiahnuť text piesne"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:175
 msgid "Download lyrics for all tracks"
-msgstr ""
+msgstr "Stiahnuť text piesne pre všetky skladby"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:180
 msgid "Show Lyrics"
-msgstr ""
+msgstr "Zobraziť text piesne"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:181
 msgid "Show Lyrics in a separate window"
-msgstr ""
+msgstr "Zobraziť text piesne v samostatnom okne"
 
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Sources/LyricsWebSource.cs:50
 #, csharp-format
@@ -785,11 +788,11 @@ msgstr ""
 
 #: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:42
 msgid "Magnatune Configuration"
-msgstr ""
+msgstr "Nastavenie Magnatune"
 
 #: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:113
 msgid "Membership Type"
-msgstr ""
+msgstr "Typ členského"
 
 #: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:121
 msgid "None"
@@ -801,7 +804,7 @@ msgstr ""
 
 #: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:123
 msgid "Download"
-msgstr ""
+msgstr "Stiahnuť"
 
 #: ../src/Mirage/Banshee.Mirage/AnalyzeLibraryJob.cs:20
 msgid "Analyzing Song Similarity"
@@ -810,8 +813,7 @@ msgstr ""
 #: ../src/Mirage/Banshee.Mirage/AnalyzeLibraryJob.cs:47
 msgid ""
 "Are you sure you want to stop Mirage?\n"
-"Shuffle by Similar will only work for the tracks which are already analyzed. "
-"The operation can be resumed at any time from the <i>Tools</i> menu."
+"Shuffle by Similar will only work for the tracks which are already analyzed. The operation can be resumed at any time from the <i>Tools</i> menu."
 msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/DistanceCalculator.cs:48
@@ -910,7 +912,7 @@ msgstr ""
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:127
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:128
 msgid "Get stations"
-msgstr ""
+msgstr "Získať stanice"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:147
 msgid "Query by genre:"
@@ -941,13 +943,13 @@ msgstr ""
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:236
 #, csharp-format
 msgid "ERROR: Network error."
-msgstr ""
+msgstr "CHYBA: Sieťová chyba."
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:218
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:239
 #, csharp-format
 msgid "ERROR"
-msgstr ""
+msgstr "CHYBA"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:224
 #, csharp-format
@@ -968,11 +970,11 @@ msgstr ""
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:76
 msgid "_Xiph"
-msgstr ""
+msgstr "_Xiph"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:77
 msgid "Fetch stations from Xiph"
-msgstr ""
+msgstr "Získať stanice z Xiph"
 
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs:285
 #, csharp-format
@@ -1018,7 +1020,7 @@ msgstr ""
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:96
 msgid "Output folder:"
-msgstr ""
+msgstr "Vystupný priečinok:"
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:97
 msgid "Encoder:"
@@ -1026,7 +1028,7 @@ msgstr ""
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:99
 msgid "_Browse"
-msgstr ""
+msgstr "_Prehliadať"
 
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:106
 msgid "Import files to media library"
@@ -1055,11 +1057,11 @@ msgstr ""
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactContainerSource.cs:58
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactSourceContents.cs:101
 msgid "Contacts"
-msgstr ""
+msgstr "Kontakty"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:80
 msgid "Contact"
-msgstr ""
+msgstr "Kontakt"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:315
 #, csharp-format
@@ -1069,12 +1071,12 @@ msgstr ""
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:318
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:83
 msgid "Accept"
-msgstr ""
+msgstr "Prijať"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:323
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:94
 msgid "Reject"
-msgstr ""
+msgstr "Odmietnuť"
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:331
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:340
@@ -1091,7 +1093,7 @@ msgstr ""
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:394
 msgid "Loading playlists..."
-msgstr ""
+msgstr "Načítavajú sa zoznamy skladieb..."
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:406
 msgid "A problem occured while downloading this contact's library"
