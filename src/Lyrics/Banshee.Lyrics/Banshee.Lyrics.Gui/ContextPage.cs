@@ -53,7 +53,7 @@ namespace Banshee.Lyrics.Gui
 
         public override void SetTrack (Banshee.Collection.TrackInfo track)
         {
-            lyrics_pane.Track = track;
+            lyrics_pane.UpdateLabel (track.DisplayTrackTitle);
         }
 
         public override Widget Widget {

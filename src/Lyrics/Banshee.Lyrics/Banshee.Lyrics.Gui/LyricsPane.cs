@@ -49,8 +49,6 @@ namespace Banshee.Lyrics.Gui
             InitComponents ();
         }
 
-        public TrackInfo Track { get; set; }
-
         public void InitComponents ()
         {
             this.browser = new LyricsBrowser ();
@@ -86,17 +84,13 @@ namespace Banshee.Lyrics.Gui
         {
             this.browser.LoadString (o, args);
 
-            UpdateLabel ();
-
             context_page.SetState (Banshee.ContextPane.ContextState.Loaded);
         }
 
-        private void UpdateLabel ()
+        public void UpdateLabel (string track_title)
         {
-            if (Track != null) {
-                label.Text = String.Format ("<b>{0}</b>", Track.DisplayTrackTitle);
-                label.UseMarkup = true;
-            }
+            label.Markup = String.Format ("<b>{0}</b>", GLib.Markup.EscapeText (track_title));
+            
             this.ShowAll ();
         }
     }
