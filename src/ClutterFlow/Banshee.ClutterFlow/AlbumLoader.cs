@@ -256,7 +256,9 @@ namespace Banshee.ClutterFlow
         }
 		
         protected override ClutterFlowBaseActor AddActorToList (AlbumInfo generator, SortedList<AlbumInfo, ClutterFlowBaseActor> list)
-        {	
+        {
+            if (generator == null)
+                generator = new AlbumInfo (AlbumInfo.UnknownAlbumTitle);
             string key = ClutterFlowAlbum.CreateCacheKey(generator);
             ClutterFlowBaseActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
             if (actor==null) {
