@@ -1,0 +1,1245 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Banshee Community Extensions\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
+"POT-Creation-Date: 2011-03-22 23:13+0100\n"
+"PO-Revision-Date: 2011-04-11 21:47+0000\n"
+"Last-Translator: Sergiy_Gavrylov <sergiovana@bigmir.net>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uk_UA\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:69
+msgid "Alarm Clock"
+msgstr "Будильник"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:73
+msgid "Sleep Timer..."
+msgstr "Таймер..."
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:74
+msgid "Set the sleep timer value"
+msgstr "Встановлює час вмикання"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:77
+msgid "Alarm..."
+msgstr "Сигнал..."
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:78
+msgid "Set the alarm time"
+msgstr "Встановити час сигналу"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:81
+#: ../src/LCD/Banshee.LCD/LCDService.cs:70
+msgid "_Configure..."
+msgstr "_Налаштування..."
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:82
+msgid "Configure the Alarm Clock plugin"
+msgstr "Налаштувати модуль «Будильник»"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmConfigDialog.cs:45
+msgid "Alarm Time"
+msgstr "Час сигналу"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmConfigDialog.cs:63
+msgid "Enable Alarm"
+msgstr "Увімкнути сигнал"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/AlarmConfigDialog.cs:66
+msgid "Set Time: "
+msgstr "Встановити час: "
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:47
+msgid "Alarm Clock configuration"
+msgstr "Налаштування «Будильника»"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:63
+msgid "Start"
+msgstr "Початок"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:67
+msgid "End"
+msgstr "Кінець"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:74
+msgid "<b>Volume</b>"
+msgstr "<b>Гучність</b>"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:78
+msgid "Duration:"
+msgstr "Тривалість:"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:79
+msgid " <i>(seconds)</i>"
+msgstr "<i>(секунд)</i>"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:88
+msgid "Fade-In Adjustment"
+msgstr "Регулювання наростання сигналу"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:93
+msgid "Command:"
+msgstr "Команда:"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:97
+msgid "Command To Execute:"
+msgstr "Команда до виконання:"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:46
+msgid "Sleep Timer"
+msgstr "Таймер"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:72
+msgid "Sleep Timer :"
+msgstr "Час вмикання :"
+
+#: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:83
+msgid "Start Timer"
+msgstr "Запустити таймер"
+
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:73
+msgid "Connect"
+msgstr "З'єднати"
+
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:85
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:92
+msgid "Artist"
+msgstr "Виконавець"
+
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:87
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:93
+msgid "Album"
+msgstr "Альбом"
+
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:89
+msgid "Playlist"
+msgstr "Список відтворення"
+
+#: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:91
+msgid "Title"
+msgstr "Назва"
+
+#: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:86
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:62
+msgid "Password:"
+msgstr "Пароль:"
+
+#: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:99
+msgid "Ampache Server Name:"
+msgstr "Назва сервера Ampache:"
+
+#: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:110
+msgid "User Name:"
+msgstr "Користувач:"
+
+#: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:131
+msgid "Save"
+msgstr "Зберегти"
+
+#: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:142
+msgid "Clear"
+msgstr "Очистити"
+
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:132
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:169
+msgid "_Close"
+msgstr "_Закрити"
+
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:133
+msgid "Close"
+msgstr "Закрити"
+
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:139
+msgid "_Show Banshee"
+msgstr "_Показати Banshee"
+
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:140
+msgid "Show the Banshee main window"
+msgstr "Показати головне вікно Banshee"
+
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:231
+msgid "Still Running"
+msgstr "Досі працює"
+
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:233
+msgid ""
+"Banshee was closed to the notification area. Use the <i>Quit</i> option to "
+"end your session."
+msgstr ""
+"Banshee згорнутий до області сповіщення. Натисніть пункт <i>Вийти</i>, щоб "
+"закрити його."
+
+#. Translators: {0} and {1} are Artist Name and
+#. Album Title, respectively;
+#. e.g. 'by Parkway Drive from Killing with a Smile'
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:308
+#, csharp-format
+msgid "by '{0}' from '{1}'"
+msgstr "виконує '{0}' з альбому '{1}'"
+
+#. Translators: {0} is for Album Title;
+#. e.g. 'from Killing with a Smile'
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:313
+#, csharp-format
+msgid "from '{0}'"
+msgstr "з альбому '{0}'"
+
+#. Translators: {0} is for Artist Name;
+#. e.g. 'by Parkway Drive'
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:318
+#, csharp-format
+msgid "by '{0}'"
+msgstr "виконує '{0}'"
+
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:397
+msgid "Skip this item"
+msgstr "Пропустити цей елемент"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs:263
+msgid "Track list"
+msgstr "Список доріжок"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:50
+msgid "Sensitivity for album dragging"
+msgstr "Чутливість прокручування альбому"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:51
+msgid ""
+"Sets the sensitivity with which albums scroll when dragged, higher values "
+"mean faster scrolling"
+msgstr ""
+"Встановлює чутливість прокручування альбому, більше значення означає швидше "
+"прокручування"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:57
+msgid "Enable threaded loading of artwork"
+msgstr "Увімкнути потокове завантаження обкладинок"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:58
+msgid "If enabled ClutterFlow will use threading to load it's artwork"
+msgstr "Якщо увімкнено, ClutterFlow завантажуватиме обкладинки через потік"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:64
+msgid "Unfolds the track list"
+msgstr "Розкривати список доріжок"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:65
+msgid "If checked it will display the track list when not in fullscreen mode"
+msgstr ""
+"Якщо позначено, список доріжок показуватиметься в режимі не на повний екран"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:85
+msgid "Immediately apply playback mode changes"
+msgstr "Негайно застосувати змінений режим відтворення"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:86
+msgid ""
+"Starts playing a new song immediately after the playback mode changed (Party"
+" Mode or Album Mode)"
+msgstr ""
+"Запускає відтворення нового твору негайно після зміни режиму відтворення "
+"(Режими вечірки або альбому)"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:92
+msgid "Display album _label"
+msgstr "Показувати категорію а_льбому"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:93
+msgid "Wether or not the album label needs to be shown above the artwork"
+msgstr "Чи потрібно показувати категорію альбому вище обкладинки"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:99
+msgid "Display track _title"
+msgstr "Показувати _назву доріжки"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:100
+msgid ""
+"Wether or not the album title needs to be shown above the artwork in "
+"fullscreen mode"
+msgstr ""
+"Чи потрібно показувати назву альбому вище обкладинки у повноекранному режимі"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:106
+msgid "Texture size in pixels"
+msgstr "Розмір текстури в пікселях"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:107
+msgid "The in-memory size of the cover textures in pixels"
+msgstr "Розмір в пам'яті текстури обкладинки в пікселях"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:113
+msgid "Minimal cover size in pixels"
+msgstr "Мінімальний розмір обкладинки в пікселях"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:114
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:121
+msgid "The on-stage minimal cover size in pixels"
+msgstr "Мінімальний розмір обкладинки в пікселях до показу"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:120
+msgid "Maximal cover size in pixels"
+msgstr "Максимальний розмір обкладинки в пікселях"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:127
+msgid "Number of visible covers at the side"
+msgstr "Кількість видимих обкладинок на панелі"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:128
+msgid ""
+"The number of covers that need to be displayed on the stage (at one side)"
+msgstr "Кількість видимих обкладинок, які потрібно показувати на панелі"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:134
+msgid "Sort covers by"
+msgstr "Сортувати обкладинки за"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:135
+msgid "Selects on what basis covers should be sorted"
+msgstr "Вибрати спосіб сортування основних обкладинок"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:231
+msgid "Show ClutterFlow Browser"
+msgstr "Показувати переглядач ClutterFlow"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:232
+msgid "Show or hide the ClutterFlow browser"
+msgstr "Показати чи приховати переглядач ClutterFlow"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:325
+msgid "ClutterFlow"
+msgstr "ClutterFlow"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:328
+msgid "General"
+msgstr "Загальне"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:337
+msgid "Dimensions"
+msgstr "Розміри"
+
+#: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:62
+msgid "Jamendo Downloads"
+msgstr "Завантаження з Jamendo"
+
+#: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:63
+msgid "Contacting..."
+msgstr "З'єднання..."
+
+#: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:103
+msgid "Importing..."
+msgstr "Імпортування..."
+
+#: ../src/Jamendo/Banshee.Jamendo/JamendoWebBrowserShell.cs:41
+#, csharp-format
+msgid "Search Jamendo"
+msgstr "Пошук в Jamendo"
+
+#: ../src/Karaoke/Banshee.Karaoke/Gui/ContextPage.cs:45
+msgid "Karaoke"
+msgstr "Караоке"
+
+#: ../src/Karaoke/Banshee.Karaoke/Gui/KaraokePane.cs:131
+msgid ""
+"You are disconnected from the internet, so karaoke lyrics are not available."
+msgstr "Зв'язок з інтернетом втрачений, тому текст караоке недоступний"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:84
+msgid "Karaoke configuration"
+msgstr "Налаштування «Караоке»"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:88
+msgid ""
+"You can alter the parameters of the karaoke effect here and define custom "
+"filter-band, filter-width and effect level."
+msgstr ""
+"Тут можете змінити параметри ефекту караоке та вказати фільтри смуги і "
+"ширини та рівень ефекту."
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:94
+msgid "Effect Level:"
+msgstr "Рівень ефекту:"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:95
+msgid "Filter Band:"
+msgstr "Фільтр смуги:"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:96
+msgid "Filter Width:"
+msgstr "Фільтр ширини:"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:101
+msgid ""
+"The effect level defines to what degree the voice frequencies are reduced."
+msgstr "Рівень ефекту визначає рівень зменшення частоти голосу."
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:108
+msgid ""
+"The filter band defines position of filter within the frequency spectrum."
+msgstr "Фільтр смуги визначає положення фільтра в частотному спектрі."
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:115
+msgid ""
+"The filter width defines how wide the spectrum of the filtered frequencies "
+"is."
+msgstr "Фільтр ширини визначає, наскільки широкий спектр фільтрування частот."
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:121
+msgid "Enable lyrics display in Context Pane"
+msgstr "Увімкнути показ тексту пісні в контекстній панелі"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:124
+msgid "Restore _defaults"
+msgstr "_Відновити типові параметри"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:127
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:102
+msgid "_Cancel"
+msgstr "_Скасувати"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:129
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:104
+msgid "_Save"
+msgstr "З_берегти"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:91
+msgid "_Karaoke"
+msgstr "_Караоке"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:93
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:106
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:108
+msgid "_Configure"
+msgstr "Н_алаштувати"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:94
+msgid "Configure the Karaoke extension"
+msgstr "Налаштувати розширення «Караоке»"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:105
+msgid "_Activate Karaoke mode"
+msgstr "Ак_тивувати режим «Караоке»"
+
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:106
+msgid "Activate Karaoke mode"
+msgstr "Активувати режим «Караоке»"
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:76
+msgid "Get Information From Track Fingerprint"
+msgstr "Отримати дані з «Track Fingerprint»"
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:77
+msgid "Get track information from last.fm acoustic fingerprint"
+msgstr "Отримати дані з акустичного відбитку last.fm"
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:106
+msgid "Getting sound fingerprint"
+msgstr "Отримання акустичного відбитку"
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LastfmFingerprintService.cs:109
+msgid "Scanning..."
+msgstr "Сканування..."
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:49
+msgid "Log in to Last.fm"
+msgstr "Увійти до Last.fm"
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:69
+msgid "Last.fm Account Login"
+msgstr "Обліковий запис на Last.fm"
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:71
+msgid "Please enter your Last.fm account credentials."
+msgstr "Введіть свої реєстраційні дані на Last.fm."
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginDialog.cs:92
+msgid "Log In"
+msgstr "Увійти"
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:57
+msgid "Username:"
+msgstr "Користувач:"
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:101
+msgid "Sign up for Last.fm"
+msgstr "Зареєструватись на Last.fm"
+
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:113
+msgid "Authorize for Last.fm"
+msgstr "Авторизуватись на Last.fm"
+
+#: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:46
+msgid "LCD configuration"
+msgstr "Налаштування LCD"
+
+#: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:54
+msgid "Hostname:"
+msgstr "Назва вузла:"
+
+#: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:61
+msgid "Port:"
+msgstr "Порт:"
+
+#: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:67
+msgid "LCDProc Daemon:"
+msgstr "Демон LCDProc:"
+
+#: ../src/LCD/Banshee.LCD/LCDService.cs:67
+msgid "LCD"
+msgstr "LCD"
+
+#: ../src/LCD/Banshee.LCD/LCDService.cs:71
+msgid "Configure the LCD plugin"
+msgstr "Налаштування модуля LCD"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioConfigDialog.cs:75
+#, csharp-format
+msgid ""
+"{0}LiveRadio configuration\n"
+"{1}"
+msgstr ""
+"Налаштування {0}LiveRadio\n"
+"{1}"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioConfigDialog.cs:81
+msgid "Please set your preferences for your LiveRadio plugins\n"
+msgstr "Встановіть параметри для модуля LiveRadio\n"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioConfigDialog.cs:91
+msgid "Enable this plugin"
+msgstr "Увімкнути цей модуль"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioFilterView.cs:87
+msgid "Choose By Genre"
+msgstr "Добирати за жанром"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioFilterView.cs:91
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:172
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:372
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:388
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:141
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:388
+msgid "Loading..."
+msgstr "Завантаження..."
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioFilterView.cs:95
+msgid "Choose By Query"
+msgstr "Вибирати за запитом"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:581
+msgid "Yes"
+msgstr "Так"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:581
+msgid "No"
+msgstr "Ні"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:74
+msgid "Proxy URL"
+msgstr "URL проксі"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:75
+msgid "Enable using a HTTP proxy server"
+msgstr "Увімкнути через проксі-сервер HTTP"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:76
+msgid "Use Site Login"
+msgstr "Використовувати дані реєстрації"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:77
+#: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:58
+msgid "Username"
+msgstr "Користувач"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:78
+#: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:85
+msgid "Password"
+msgstr "Пароль"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioPluginConfigurationWidget.cs:79
+msgid "HTTP timeout in seconds"
+msgstr "Затримка HTTP в секундах "
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:129
+msgid "Browser on Left"
+msgstr "Переглядач ліворуч"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:130
+msgid "Show the artist/album browser to the left of the track list"
+msgstr "Показувати переглядач виконавця/альбому ліворуч списку доріжок"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:133
+msgid "Browser on Top"
+msgstr "Переглядач у верху"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:134
+msgid "Show the artist/album browser above the track list"
+msgstr "Показувати переглядач виконавця/альбому вище списку доріжок"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:139
+msgid "Show Browser"
+msgstr "Показати переглядач"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:140
+msgid "Show or hide the artist/album browser"
+msgstr "Показати або приховати переглядач виконавця/альбому"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:203
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:251
+msgid "Error... Please Reload"
+msgstr "Помилка... Перезавантажте"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:423
+msgid ""
+"Click a genre to load/refresh entries or type a query. Use the refresh "
+"button to refresh genres."
+msgstr ""
+"Натисніть жанр для завантаження/оновлення запису або введіть запит. "
+"Використовуйте кнопку оновлення, щоб оновити жанри."
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:69
+msgid "LiveRadioPlugin"
+msgstr "Модуль LiveRadio"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:121
+msgid "Station"
+msgstr "Станція"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:122
+msgid "Creator"
+msgstr "Автор"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSource.cs:123
+msgid "Description"
+msgstr "Опис"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:179
+msgid "Requested Results Returned"
+msgstr "Запитані результати отримано"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:180
+msgid ""
+"The plugin has returned a list of results for a genre or freetext query"
+msgstr "Модуль отримав запитаний список результатів для жанрів"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:199
+msgid "Genre List Retrieved"
+msgstr "Список жанрів отримано"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:200
+msgid "The plugin has returned the list of genres"
+msgstr "Модуль повернув список жанрів"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:266
+msgid "Plugin"
+msgstr "Модуль"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:267
+msgid "Version"
+msgstr "Версія"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:268
+msgid "Enabled"
+msgstr "Увімкнено"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:279
+msgid "Type"
+msgstr "Тип"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:280
+msgid "Origin"
+msgstr "Джерело"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:281
+msgid "Short Info"
+msgstr "Стислі дані"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:282
+msgid "Long Info"
+msgstr "Розширені дані"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:283
+msgid "Count"
+msgstr "Кількість"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:284
+msgid "Average"
+msgstr "Середнє"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:285
+msgid "Updates"
+msgstr "Оновлення"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:296
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:297
+msgid "Enable Plugin"
+msgstr "Увімкнути модуль"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:299
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:300
+msgid "Disable Plugin"
+msgstr "Вимкнути модуль"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:302
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:303
+msgid "Configure Plugin"
+msgstr "Налаштувати модуль"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSourceContents.cs:317
+msgid "Plugin Statistics"
+msgstr "Статистика модуля"
+
+#. / <summary>
+#. / Constructor -- creates a new LiveRadio parent source
+#. / </summary>
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:77
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:78
+msgid "LiveRadio"
+msgstr "LiveRadio"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:104
+msgid "Live_Radio"
+msgstr "Live_Radio"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:107
+msgid "Configure the LiveRadio plugin"
+msgstr "Налаштування модуля LiveRadio"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:111
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:112
+msgid "Refresh View"
+msgstr "Оновити вигляд"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:116
+msgid "Add To Internet Radio"
+msgstr "Додати інтернет-радіостанцію"
+
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:117
+msgid "Add stream as Internet Radio Station"
+msgstr "Додати потік як інтернет-радіостанцію"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs:45
+msgid "Lyrics"
+msgstr "Lyrics"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:66
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:127
+msgid "add"
+msgstr "додати"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:116
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:125
+msgid "No lyrics found."
+msgstr "Текст не знайдено."
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:128
+msgid "Click here to manually add a new lyric"
+msgstr "Натисніть тут, щоб вручну додати текст"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:132
+msgid "Suggestions:"
+msgstr "Варіанти:"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:97
+msgid "Copy lyrics to clipboard"
+msgstr "Копіювати текст до буферу обміну"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:144
+msgid "by"
+msgstr " "
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs:147
+msgid "Unknown Artist"
+msgstr "Невідомий виконавець"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:17
+msgid "Downloading Lyrics"
+msgstr "Завантаження текстів"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:61
+#, csharp-format
+msgid "{0} - {1}"
+msgstr "{0} - {1}"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:171
+msgid "L_yrics"
+msgstr "L_yrics"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:172
+msgid "Manage Lyrics"
+msgstr "Керування текстами"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:174
+msgid "_Download Lyrics"
+msgstr "_Завантаження текстів"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:175
+msgid "Download lyrics for all tracks"
+msgstr "Завантажити тексти для всіх доріжок"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:180
+msgid "Show Lyrics"
+msgstr "Показати текст пісні"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:181
+msgid "Show Lyrics in a separate window"
+msgstr "Показувати текст в окремому вікні"
+
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Sources/LyricsWebSource.cs:50
+#, csharp-format
+msgid "Powered by {0} ({1})"
+msgstr "За підтримкою {0} ({1})"
+
+#: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:42
+msgid "Magnatune Configuration"
+msgstr "Налаштування Magnatune"
+
+#: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:113
+msgid "Membership Type"
+msgstr "Тип членства"
+
+#: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:121
+msgid "None"
+msgstr "Немає"
+
+#: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:122
+msgid "Streaming"
+msgstr "Потокове"
+
+#: ../src/Magnatune/Banshee.Magnatune/gtk-gui/Magnatune.Configuration.cs:123
+msgid "Download"
+msgstr "Завантаження"
+
+#: ../src/Mirage/Banshee.Mirage/AnalyzeLibraryJob.cs:20
+msgid "Analyzing Song Similarity"
+msgstr "Аналіз схожості творів"
+
+#: ../src/Mirage/Banshee.Mirage/AnalyzeLibraryJob.cs:47
+msgid ""
+"Are you sure you want to stop Mirage?\n"
+"Shuffle by Similar will only work for the tracks which are already analyzed. The operation can be resumed at any time from the <i>Tools</i> menu."
+msgstr ""
+"Ви впевнені, що хочете зупинити Mirage?\n"
+"Перемішування за схожими працюватиме лише для вже проаналізованих доріжок. Аналіз можна відновити в будь-який час через меню <i>Інструменти</i>."
+
+#: ../src/Mirage/Banshee.Mirage/DistanceCalculator.cs:48
+msgid ""
+"The Mirage extension is still analyzing your songs.  Until its finished, "
+"shuffle and fill by similar may not perform properly."
+msgstr ""
+"Розширення Mirage все ще виконує аналіз.  До його завершення, перемішування "
+"та наповнення схожими творами може працювати не коректно."
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:158
+msgid "Mirage Duplicates"
+msgstr "Дублікати Mirage"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:251
+msgid "Mirage Playlist Generator"
+msgstr "Генератор списків відтворення Mirage"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:252
+msgid "Manage the Mirage extension"
+msgstr "Керування розширенням Mirage"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:255
+msgid "Rescan the Music Library"
+msgstr "Пересканувати фонотеку"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:256
+msgid "Rescans the Music Library for new songs"
+msgstr "Пересканувати фонотеку на нові твори"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:260
+msgid "Duplicate Search (Experimental)"
+msgstr "Пошук дублікатів (Експерементально)"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:261
+msgid "Searches your Music Library for possible duplicates"
+msgstr "Пошук можливих дублікатів у фонотеці"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:265
+msgid "Reset Mirage"
+msgstr "Перезавантажити Mirage"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:266
+msgid ""
+"Resets the Mirage Playlist Generation Plugin. All songs have to be analyzed "
+"again to use Automatic Playlist Generation."
+msgstr ""
+"Перезапускає модуль Mirage. Всі твори будуть знову проаналізовані через "
+"генератор автоматичних списків відтворення."
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:279
+msgid ""
+"<b>Mirage can search your music library for duplicate music pieces.</b>\n"
+"\n"
+"· To do so, your music library needs to be analyzed completely from Mirage.\n"
+"· This process will take a long time depending on the size of your library."
+msgstr ""
+"<b>Mirage може виконувати пошук дублікатів у фонотеці</b>\n"
+"\n"
+"· Для цього потрібно виконати повний аналіз фонотеки за допомогою Mirage.\n"
+"· Ця дія триватиме деякий час залежно від розміру вашої фонотеки."
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:282
+msgid "Scan for Duplicates"
+msgstr "Пошук дублікатів"
+
+#: ../src/Mirage/Banshee.Mirage/RandomBySimilar.cs:54
+msgid "Shuffle by Similar"
+msgstr "Перемішати за подібними"
+
+#: ../src/Mirage/Banshee.Mirage/RandomBySimilar.cs:55
+msgid "by similar"
+msgstr "за подібними"
+
+#: ../src/Mirage/Banshee.Mirage/RandomBySimilar.cs:56
+msgid "Play songs similar to those already played"
+msgstr "Відтворювати твори подібні до вже відтворених"
+
+#: ../src/OpenVP/Banshee.OpenVP/VisualizationDisplayWidget.cs:68
+msgid "No visualizations installed"
+msgstr "Немає встановлених візуалізацій"
+
+#: ../src/OpenVP/Banshee.OpenVP/VisualizationDisplayWidget.cs:105
+msgid "Select visualization"
+msgstr "Вибрати візуалізацію"
+
+#: ../src/OpenVP/Banshee.OpenVP/VisualizationDisplayWidget.cs:111
+msgid "Low resolution"
+msgstr "Низька роздільна здатність"
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:105
+#, csharp-format
+msgid ""
+"{0}Radiostation fetcher{1}\n"
+"({2})"
+msgstr ""
+"{0}Упорядник радіостанцій{1}\n"
+"({2})"
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:114
+msgid ""
+"Choose a genre or enter a text that you wish to be queried, then press the "
+"Get stations button. Found stations will be added to internet-radio source."
+msgstr ""
+"Виберіть жанр або введіть текстовий запит, потім натисніть кнопку «Отримати "
+"станції». Отримані станції будуть додані до джерела інтернет-радіостанцій."
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:127
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:128
+msgid "Get stations"
+msgstr "Отримати станції"
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:147
+msgid "Query by genre:"
+msgstr "Запит за жанром:"
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:151
+msgid "Query by free text:"
+msgstr "Запит за текстом:"
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:203
+#, csharp-format
+msgid "Querying genre \"{0}\""
+msgstr "Запитаний жанр \"{0}\""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:208
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:229
+#, csharp-format
+msgid "Query done. Fetched {0} stations."
+msgstr "Запит виконано. Знайдено {0} станцію(ій)."
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:212
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:233
+#, csharp-format
+msgid "ERROR: Internet-radio extension not available."
+msgstr "ПОМИЛКА: Розширення «Інтернет-радіо» недоступне."
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:215
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:236
+#, csharp-format
+msgid "ERROR: Network error."
+msgstr "ПОМИЛКА: Помилка мережі."
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:218
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:239
+#, csharp-format
+msgid "ERROR"
+msgstr "ПОМИЛКА"
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:224
+#, csharp-format
+msgid "Querying freetext \"{0}\""
+msgstr "Запитані за текстом \"{0}\""
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:69
+msgid "_Radiostation fetcher"
+msgstr "_Упорядник радіостанцій"
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:72
+msgid "_Shoutcast"
+msgstr "_Shoutcast"
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:73
+msgid "Fetch stations from shoutcast"
+msgstr "Виклик радіостанцій від shoutcast"
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:76
+msgid "_Xiph"
+msgstr "_Xiph"
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/RadioStationFetcherService.cs:77
+msgid "Fetch stations from Xiph"
+msgstr "Виклик радіостанцій від Xiph"
+
+#: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/Xiph.cs:285
+#, csharp-format
+msgid "www.xiph.org {0} stations available."
+msgstr "Доступно {0} www.xiph.org станцій."
+
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:66
+msgid "Shuffle by similar Artists (via Lastfm)"
+msgstr "Перемішати за подібним виконавцем (через Lastfm)"
+
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:67
+msgid "by similar artists"
+msgstr "за подібним виконавцем"
+
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:68
+msgid "Play songs similar to those already played (via Lastfm)"
+msgstr "Відтворювати твори подібні до вже відтворених (через Lastfm)"
+
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:60
+msgid "Shuffle by your Top Artists (via Lastfm)"
+msgstr "Перемішати за вашим рейтингом виконавців (через Lastfm)"
+
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:61
+msgid "by your top artists"
+msgstr "за вашим рейтингом виконавців"
+
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:62
+msgid "Play songs from your Top Artists (via Lastfm)"
+msgstr "Відтворювати твори за вашим рейтингом виконавців (через Lastfm)"
+
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:88
+#, csharp-format
+msgid ""
+"{0}Streamrecorder configuration\n"
+"{1}"
+msgstr ""
+"{0}Налаштування Streamrecorder\n"
+"{1}"
+
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:93
+msgid ""
+"Please select output folder for ripped files and if ripped\n"
+"files should be imported to media library.\n"
+msgstr ""
+"Виберіть вихідну теку для витягнутих файлів, якщо\n"
+"вони будуть імпортовані до медіа-бібліотеки.\n"
+
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:96
+msgid "Output folder:"
+msgstr "Вихідна тека:"
+
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:97
+msgid "Encoder:"
+msgstr "Кодер:"
+
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:99
+msgid "_Browse"
+msgstr "_Огляд..."
+
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:106
+msgid "Import files to media library"
+msgstr "Імпорт файлів до фонотеки"
+
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:108
+msgid "Enable automatic files splitting by Metadata"
+msgstr "Увімкнути автоматичну розбивку файлів за метаданими"
+
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:106
+msgid "_Streamrecorder"
+msgstr "_Streamrecorder"
+
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:109
+msgid "Configure the Streamrecorder plugin"
+msgstr "Налаштування модуля Streamrecorder"
+
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:112
+msgid "_Activate streamrecorder"
+msgstr "_Активувати streamrecorder"
+
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:113
+msgid "Activate streamrecorder process"
+msgstr "Активувати процес streamrecorder"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactContainerSource.cs:58
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactSourceContents.cs:101
+msgid "Contacts"
+msgstr "Контакти"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:80
+msgid "Contact"
+msgstr "Контакт"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:315
+#, csharp-format
+msgid "{0} is requesting to browse your library"
+msgstr "Є {0} звертання на перегляд вашої фонотеки"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:318
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:83
+msgid "Accept"
+msgstr "Прийняти"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:323
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:94
+msgid "Reject"
+msgstr "Відхилити"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:331
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:340
+msgid "is requesting to browse your Banshee library"
+msgstr "є звертання на перегляд вашої фонотеки Banshee"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:380
+msgid "Waiting for response from contact..."
+msgstr "Очікування на відгук від контакту..."
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:391
+msgid "All tracks downloaded. Loading..."
+msgstr "Всі доріжки завантажено. Завантаження..."
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:394
+msgid "Loading playlists..."
+msgstr "Завантаження списків відтворення..."
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:406
+msgid "A problem occured while downloading this contact's library"
+msgstr "Виникла проблема під час завантаження фонотеки від контакту"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:409
+msgid "An error occurred while loading data"
+msgstr "Виникла проблема під час завантаження даних"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:412
+msgid "An error occurred while loading playlists"
+msgstr "Виникла проблема під час завантаження списків відтворення"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:432
+msgid "is no longer sharing their Banshee library with you"
+msgstr "більше не хоче ділитись своєю фонотекою Banshee з вами"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:457
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:494
+#, csharp-format
+msgid "Loading {0} of {1}"
+msgstr "Завантаження {0} з {1}"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/TelepathyDownload.cs:106
+#, csharp-format
+msgid "is sending {0} with Banshee"
+msgstr "надсилається {0} за допомогою Banshee"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/TelepathyUpload.cs:101
+#, csharp-format
+msgid "is downloading {0} with Banshee"
+msgstr "завантажується {0} за допомогою Banshee"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:42
+msgid "Contact Request"
+msgstr "Запит контактів"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:67
+#, csharp-format
+msgid "{0} would like to browse your music library."
+msgstr "{0} хотіли б переглянути вашу фонотеку."
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/DownloadManagerUi.cs:50
+msgid "Download(s) from Contacts"
+msgstr "Завантаження від контактів"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/DownloadManagerUi.cs:51
+msgid "Downloads are in progress. Would you like to cancel them?"
+msgstr "Завантаження виконуються. Хочете скасувати їх?"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:63
+msgid "Download Track(s)"
+msgstr "Завантаження доріжки(ок)"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:64
+msgid "Download selected tracks to your computer"
+msgstr "Завантажити вибрані доріжки на свій комп'ютер"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:70
+msgid "Cancel Download(s)"
+msgstr "Скасувати завантаження"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:71
+msgid "Cancel download of selected tracks to your computer"
+msgstr "Скасувати завантаження вибраних доріжок на ваш комп'ютер"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:77
+msgid "Cancel Browse Request"
+msgstr "Скасувати перегляд запитів"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:78
+msgid "Cancel pending request to browse a contact's library"
+msgstr "Скасувати затримку запиту на перегляд фонотеки від контакту"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:84
+msgid "Allow Downloads"
+msgstr "Дозволити завантаження"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:85
+msgid "Allow file downloads when sharing libraries"
+msgstr "Дозволити завантаження файлів зі спільних фонотек"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:91
+msgid "Allow Streaming"
+msgstr "Дозволити потокову передачу"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:92
+msgid "Allow streaming when sharing libraries"
+msgstr "Дозволити потокову передачу зі спільних фонотек"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:98
+msgid "Share Currently Playing"
+msgstr "Поділитись відтворюваним на цей час"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:99
+msgid "Set Empathy presence message to what you're currently playing"
+msgstr "Показувати в Empathy повідомлення, що на цей час відтворюється"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TelepathyActions.cs:141
+#, csharp-format
+msgid "Currently playing {0} by {1} from {2}"
+msgstr "На цей час відтворюється {0} виконує {1} з фльбому {2}"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TransferManagerUi.cs:50
+msgid "Transfer(s) to Contacts"
+msgstr "Передача(і) до контактів"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TransferManagerUi.cs:57
+msgid "File transfers are in progress. Would you like to cancel them?"
+msgstr "Виконується передача файлів. Хочете скасувати її?"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TransferManagerUi.cs:63
+#, csharp-format
+msgid "Transferring {0} of {1}"
+msgstr "Передача {0} з {1}"
+
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TransferManagerUi.cs:131
+msgid "Initializing"
+msgstr "Ініціалізація"
