@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
 "POT-Creation-Date: 2011-03-22 23:13+0100\n"
-"PO-Revision-Date: 2011-03-23 00:09+0000\n"
+"PO-Revision-Date: 2011-05-06 16:41+0000\n"
 "Last-Translator: bl8 <bertrand.lorentz@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -184,7 +184,7 @@ msgstr ""
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:308
 #, csharp-format
 msgid "by '{0}' from '{1}'"
-msgstr "von '{0}' aus '{1}'S"
+msgstr "von '{0}' aus '{1}'"
 
 #. Translators: {0} is for Album Title;
 #. e.g. 'from Killing with a Smile'
@@ -347,12 +347,14 @@ msgstr "Suche auf Jamendo"
 
 #: ../src/Karaoke/Banshee.Karaoke/Gui/ContextPage.cs:45
 msgid "Karaoke"
-msgstr ""
+msgstr "Karaoke"
 
 #: ../src/Karaoke/Banshee.Karaoke/Gui/KaraokePane.cs:131
 msgid ""
 "You are disconnected from the internet, so karaoke lyrics are not available."
 msgstr ""
+"Karaoke Texte sind derzeit nicht verfügbar, da der Computer nicht mit dem "
+"Internet verbunden ist."
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:84
 msgid "Karaoke configuration"
@@ -401,7 +403,7 @@ msgstr ""
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:121
 msgid "Enable lyrics display in Context Pane"
-msgstr ""
+msgstr "Aktiviere die Anzeige von Karaoke Texten in der Kontext-Leiste"
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:124
 msgid "Restore _defaults"
