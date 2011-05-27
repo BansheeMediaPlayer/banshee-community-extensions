@@ -82,39 +82,7 @@ SOURCES =  \
 	Banshee.Telepathy.DBus/PlaylistProvider.cs \
 	Telepathy/Constants.cs \
 	Telepathy/MissionControl.cs \
-	Telepathy/Telepathy.cs \
-	NDesk.DBus/Address.cs \
-	NDesk.DBus/Authentication.cs \
-	NDesk.DBus/Bus.cs \
-	NDesk.DBus/BusObject.cs \
-	NDesk.DBus/Connection.cs \
-	NDesk.DBus/DBus.cs \
-	NDesk.DBus/DProxy.cs \
-	NDesk.DBus/ExportObject.cs \
-	NDesk.DBus/GLib.cs \
-	NDesk.DBus/GLib.IO.cs \
-	NDesk.DBus/Introspection.cs \
-	NDesk.DBus/IntrospectionSchema.cs \
-	NDesk.DBus/Mapper.cs \
-	NDesk.DBus/MatchRule.cs \
-	NDesk.DBus/Message.cs \
-	NDesk.DBus/MessageFilter.cs \
-	NDesk.DBus/MessageReader.cs \
-	NDesk.DBus/MessageWriter.cs \
-	NDesk.DBus/PendingCall.cs \
-	NDesk.DBus/Protocol.cs \
-	NDesk.DBus/Server.cs \
-	NDesk.DBus/ServerBus.cs \
-	NDesk.DBus/Signature.cs \
-	NDesk.DBus/SocketTransport.cs \
-	NDesk.DBus/Transport.cs \
-	NDesk.DBus/TypeDefiner.cs \
-	NDesk.DBus/TypeImplementer.cs \
-	NDesk.DBus/Unix.cs \
-	NDesk.DBus/UnixMonoTransport.cs \
-	NDesk.DBus/UnixNativeTransport.cs \
-	NDesk.DBus/UnixTransport.cs \
-	NDesk.DBus/Wrapper.cs 
+	Telepathy/Telepathy.cs
 
 RESOURCES = \
 	Resources/ActiveSourceUI.xml \

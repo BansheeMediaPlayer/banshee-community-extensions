@@ -31,7 +31,7 @@ using System.Collections.Generic;
 
 using Banshee.Telepathy.API.DBus;
 
-using NDesk.DBus;
+using DBus;
 
 using Telepathy;
 

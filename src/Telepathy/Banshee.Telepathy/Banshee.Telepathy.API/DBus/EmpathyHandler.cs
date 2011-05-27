@@ -28,7 +28,7 @@
 
 using System;
 
-using NDesk.DBus;
+using DBus;
 
 namespace Banshee.Telepathy.API.DBus
 {

@@ -29,14 +29,14 @@
 using System;
 using System.Collections.Generic;
 
-using NDesk.DBus;
+using DBus;
 
 namespace Banshee.Telepathy.API.DBus
 {
     public sealed class DBusConnection
     {
         private string address;
-        private NDesk.DBus.Connection conn = null;
+        private global::DBus.Connection conn = null;
         private IDictionary <string, object> registered;
 
         private DBusConnection ()
@@ -47,7 +47,7 @@ namespace Banshee.Telepathy.API.DBus
         public DBusConnection (string address) : this ()
         {
             Address = address;
-            conn = NDesk.DBus.Connection.Open (address);
+            conn = global::DBus.Connection.Open (address);
         }
 
         public DBusConnection (string address, bool mainloop) : this (address)
@@ -126,7 +126,7 @@ namespace Banshee.Telepathy.API.DBus
         public void ConnectToMainLoop ()
         {
             if (conn != null) {
-                BusG.Init (conn);
+                global::DBus.BusG.Init (conn);
             }
         }
     }

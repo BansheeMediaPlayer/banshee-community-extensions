@@ -34,7 +34,7 @@ using Hyena;
 
 namespace Banshee.Awn
 {
-    [NDesk.DBus.Interface("com.google.code.Awn")]
+    [DBus.Interface("com.google.code.Awn")]
     public interface IAvantWindowNavigator
     {
         void SetTaskIconByName (string TaskName, string ImageFileLocation);
@@ -74,8 +74,8 @@ namespace Banshee.Awn
             try {
                 Log.DebugFormat ("BansheeAwn. Starting {0}", Application.ActiveClient.ClientId);
 
-                awn = NDesk.DBus.Bus.Session.GetObject<IAvantWindowNavigator> ("com.google.code.Awn",
-                        new NDesk.DBus.ObjectPath ("/com/google/code/Awn"));
+                awn = DBus.Bus.Session.GetObject<IAvantWindowNavigator> ("com.google.code.Awn",
+                        new DBus.ObjectPath ("/com/google/code/Awn"));
 
                 // Dummy call to check that awn is really there
                 awn.UnsetTaskIconByName ("banshee-dummy");

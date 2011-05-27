@@ -150,8 +150,8 @@ namespace Banshee.Telepathy
 
         public void DelayedInitialize ()
         {
-            // require for bundled version of NDesk.DBus
-            NDesk.DBus.BusG.Init ();
+            // require for bundled version of DBus
+            global::DBus.BusG.Init ();
 
             conn_map = new Dictionary <string, Connection> ();
             source_map = new Dictionary <string, IDictionary <Contact, ContactSource>> ();

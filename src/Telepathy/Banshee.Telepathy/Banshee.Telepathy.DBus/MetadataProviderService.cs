@@ -37,7 +37,7 @@ using Banshee.Telepathy.API.Dispatchables;
 
 using Hyena;
 
-using NDesk.DBus;
+using DBus;
 
 namespace Banshee.Telepathy.DBus
 {

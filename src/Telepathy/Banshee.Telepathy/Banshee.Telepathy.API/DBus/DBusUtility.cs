@@ -30,7 +30,7 @@
 using System;
 using System.Collections.Generic;
 
-using NDesk.DBus;
+using DBus;
 using org.freedesktop.DBus;
 
 namespace Banshee.Telepathy.API.DBus
