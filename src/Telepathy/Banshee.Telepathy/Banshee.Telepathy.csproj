@@ -37,9 +37,6 @@
       <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="Mono.Cairo" />
-    <Reference Include="DBus, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f6716e4f9b2ed099">
-      <Package>ndesk-dbus-1.0</Package>
-    </Reference>
     <Reference Include="notify-sharp, Version=0.4.0.0, Culture=neutral, PublicKeyToken=2df29c54e245917a">
       <Package>notify-sharp</Package>
     </Reference>
@@ -70,7 +67,9 @@
       <Package>banshee-thickclient</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Hyena.Data.Sqlite, Version=1.7.0.0, Culture=neutral">
+    <Reference Include="dbus-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5675b0c3093115b5" />
+    <Reference Include="Hyena.Data.Sqlite, Version=2.0.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
       <Package>banshee-hyena-data-sqlite</Package>
     </Reference>
   </ItemGroup>

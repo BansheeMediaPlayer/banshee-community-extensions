@@ -21,12 +21,10 @@ Requirements
 ------------
 * mono >= 2.4.2
 * banshee >= 1.5.1
+* dbus-sharp >= 0.7.0
 * empathy >= 2.27.91
 * telepathy-gabble >= 0.9
 * telepathy-mission-control-5 >= 5.3.1
-
-A development version ie. git-master version of NDesk.DBus is bundled with this
-tarball.
 
 Installation
 ------------

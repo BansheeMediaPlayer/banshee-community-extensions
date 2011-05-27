@@ -46,14 +46,12 @@
       <Package>banshee-services</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="NDesk.DBus, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f6716e4f9b2ed099">
-      <Package>ndesk-dbus-1.0</Package>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-hyena</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="dbus-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5675b0c3093115b5" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

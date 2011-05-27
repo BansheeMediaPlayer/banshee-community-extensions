@@ -340,7 +340,7 @@ namespace Banshee.Telepathy.API
             //FIXME hardcoding use of jabber connections due to Mono bug
             // https://bugzilla.novell.com/show_bug.cgi?id=481687
             // should really being using IRequests.RequestableChannelClasses
-            // property, but the IConvertible object returned by NDesk cannot be unboxed
+            // property, but the IConvertible object returned by dbus-sharp cannot be unboxed
 
             string protocol = conn.GetProtocol ();
             if (protocol != null && protocol.Equals ("jabber")) {
