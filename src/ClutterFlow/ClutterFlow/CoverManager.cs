@@ -205,12 +205,17 @@ namespace ClutterFlow
         public int TargetIndex {
             get { return target_index; }
             set {
-                if (value >= TotalCovers) value = TotalCovers-1;
-                if (value < 0) value = 0;
-                if (value!=target_index) {
+                if (value >= TotalCovers) {
+                    value = TotalCovers - 1;
+                }
+                if (value < 0) {
+                    value = 0;
+                }
+                if (value != target_index) {
                     //Console.WriteLine ("TargetIndex_set to " + value);
                     target_index = value;
-                    current_cover = null; //to prevent clicks to load the old centered cover!
+                    // To prevent clicks to load the old centered cover!
+                    current_cover = null;
                     InvokeTargetIndexChanged();
                 }
             }

@@ -54,7 +54,6 @@ namespace ClutterFlow
         protected string label = "";
         public virtual string Label {
             get { return label; }
-            set { label = value; }
         }
 
         protected string sort_label = "";

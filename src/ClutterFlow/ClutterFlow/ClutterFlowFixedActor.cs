@@ -51,12 +51,7 @@ namespace ClutterFlow
         }
 
         public override string Label {
-            get {
-                return "\nNo Matches Found";
-            }
-            set {
-                throw new System.NotImplementedException ("Label cannot be set in a ClutterFlowDummyActor."); //TODO should use reflection here
-            }
+            get { return "\nNo Matches Found"; }
         }
 
 

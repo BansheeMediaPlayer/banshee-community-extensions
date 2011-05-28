@@ -87,8 +87,9 @@ namespace ClutterFlow
         public virtual void ScrollTo (TKey key)
         {
             ClutterFlowBaseActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
-            if (actor!=null && coverManager.covers.Contains (actor))
-                coverManager.TargetIndex = actor.Index; //coverManager.covers.IndexOf (actor); //replace covers with something faster?
+            if (actor != null && coverManager.covers.Contains (actor)) {
+                coverManager.TargetIndex = actor.Index;
+            }
         }
 
         public abstract void HandleActorActivated (ClutterFlowBaseActor actor, EventArgs args);

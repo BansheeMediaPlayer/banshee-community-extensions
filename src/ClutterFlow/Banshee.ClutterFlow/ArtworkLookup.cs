@@ -193,7 +193,7 @@ namespace Banshee.ClutterFlow
                     float size = cover.CoverManager.TextureSize;
                     string cache_id = cover.PbId;
                     Cairo.ImageSurface surface = artwork_manager.LookupScaleSurface (cache_id, (int) size);
-                    if (surface!=null) {
+                    if (surface != null) {
                         Gtk.Application.Invoke (delegate {
                             SetCoverToSurface (cover, surface);
                         });

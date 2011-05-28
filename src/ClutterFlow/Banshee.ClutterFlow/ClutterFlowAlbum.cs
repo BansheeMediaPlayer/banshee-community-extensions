@@ -40,7 +40,7 @@ namespace Banshee.ClutterFlow
     /// A ClutterFlowAlbum is a subclass of the ClutterFlowActor class, containing
     /// banshee related Album art fetching code.
     /// </summary>
-    public class ClutterFlowAlbum : ClutterFlowActor,  IEquatable<ClutterFlowAlbum>
+    public class ClutterFlowAlbum : ClutterFlowActor, IEquatable<ClutterFlowAlbum>
     {
         #region Fields
         private static ArtworkLookup artwork_lookup;
@@ -63,15 +63,13 @@ namespace Banshee.ClutterFlow
         public override string CacheKey {
             get { return CreateCacheKey (album); }
         }
-        public static string CreateCacheKey (AlbumInfo album) {
-            return album!=null ? album.ArtistName + "\n" + album.Title : "";
+        public static string CreateCacheKey (AlbumInfo album)
+        {
+            return album != null ? album.ArtistName + "\n" + album.Title : "";
         }
 
         public override string Label {
-            get { return album!=null ? album.ArtistName + "\n" + album.Title : ""; }
-            set {
-                throw new System.NotImplementedException ("Label cannot be set directly in a ClutterFlowAlbum, derived from the Album property.");
-            }
+            get { return album != null ? album.ArtistName + "\n" + album.Title : ""; }
         }
 
         object sync = new object();
@@ -127,7 +125,7 @@ namespace Banshee.ClutterFlow
 
         public virtual bool Equals (ClutterFlowAlbum other)
         {
-            return other.CacheKey==this.CacheKey;
+            return other.CacheKey == this.CacheKey;
         }
     }
 }
