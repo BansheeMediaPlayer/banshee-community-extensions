@@ -44,57 +44,65 @@ namespace ClutterFlow
         public event ActorEventHandler<ClutterFlowBaseActor> ActorActivated;
         internal void InvokeActorActivated (ClutterFlowBaseActor cover)
         {
-            if (ActorActivated != null) {
-                ActorActivated (cover, EventArgs.Empty);
+            var handler = ActorActivated;
+            if (handler != null) {
+                handler (cover, EventArgs.Empty);
             }
         }
 
         public event ActorEventHandler<ClutterFlowBaseActor> NewCurrentCover;
         protected void InvokeNewCurrentCover (ClutterFlowBaseActor cover)
         {
-            if (NewCurrentCover != null) {
-                NewCurrentCover (cover, EventArgs.Empty);
+            var handler = NewCurrentCover;
+            if (handler != null) {
+                handler (cover, EventArgs.Empty);
             }
         }
 
         public event EventHandler<EventArgs> CoversChanged;
         protected void InvokeCoversChanged ()
         {
-            if (CoversChanged != null) {
-                CoversChanged (this, EventArgs.Empty);
+            var handler = CoversChanged;
+            if (handler != null) {
+                handler (this, EventArgs.Empty);
             }
         }
 
         public event EventHandler<EventArgs> TargetIndexChanged;
         protected void InvokeTargetIndexChanged ()
         {
-            if (TargetIndexChanged != null) {
-                TargetIndexChanged (this, EventArgs.Empty);
+            var handler = TargetIndexChanged;
+            if (handler != null) {
+                handler (this, EventArgs.Empty);
             }
         }
 
         public event EventHandler TextureSizeChanged;
         protected void InvokeTextureSizeChanged ()
         {
-             //TODO use a timeout here, if the function is called mutliple times shortly after another, we don't get endless recalculation
-            if (TextureSizeChanged != null) {
-                TextureSizeChanged (this, EventArgs.Empty);
+            //TODO use a timeout here, so that if the function is called multiple times
+            // we don't get endless recalculation
+            var handler = TextureSizeChanged;
+            if (handler != null) {
+                handler (this, EventArgs.Empty);
             }
         }
 
         public event EventHandler<EventArgs> VisibleCoversChanged;
         protected void InvokeVisibleCoversChanged ()
         {
-            if (VisibleCoversChanged != null) {
-                VisibleCoversChanged (this, EventArgs.Empty);
+            var handler = VisibleCoversChanged;
+            if (handler != null) {
+                handler (this, EventArgs.Empty);
             }
         }
 
         public event EventHandler<EventArgs> LetterLookupChanged;
         protected void InvokeLetterLookupChanged ()
         {
-            if (LetterLookupChanged != null) {
-                LetterLookupChanged (this, EventArgs.Empty);
+            var handler = LetterLookupChanged;
+            if (handler != null) {
+                handler (this, EventArgs.Empty);
             }
         }
 
@@ -104,7 +112,7 @@ namespace ClutterFlow
         protected ClutterFlowTimeline timeline;
         public ClutterFlowTimeline Timeline {
             get {
-                if (timeline==null) {
+                if (timeline == null) {
                     timeline = new ClutterFlowTimeline(this);
                     timeline.TargetMarkerReached += HandleTargetMarkerReached;
                 }
