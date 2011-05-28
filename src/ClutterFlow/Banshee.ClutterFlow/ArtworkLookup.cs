@@ -59,11 +59,6 @@ namespace Banshee.ClutterFlow
         }
         private FloatingQueue<ClutterFlowAlbum> LookupQueue = new FloatingQueue<ClutterFlowAlbum> ();
 
-        protected bool threaded = false;
-        public bool Threaded {
-            get { return threaded; }
-        }
-
         // Lock covering stopping and stopped
         protected readonly object stopLock = new object ();
         // Whether or not the worker thread has been asked to stop
@@ -92,13 +87,10 @@ namespace Banshee.ClutterFlow
         public ArtworkLookup (CoverManager coverManager)
         {
             //Log.Debug ("ArtworkLookup ctor ()");
-             this.coverManager = coverManager;
+            this.coverManager = coverManager;
             CoverManager.TargetIndexChanged += HandleTargetIndexChanged;
             artwork_manager = ServiceManager.Get<ArtworkManager> ();
             artwork_manager.AddCachedSize (CoverManager.TextureSize);
-
-            threaded = ClutterFlowSchemas.ThreadedArtwork.Get ();
-            //Start ();
         }
 
         #region Queueing and index hinting
@@ -106,7 +98,7 @@ namespace Banshee.ClutterFlow
         {
             if (!cover.Enqueued) {
                 cover.Enqueued = true;
-                if (threaded) {
+                if (ClutterFlowSchemas.ThreadedArtwork.Get ()) {
                     LookupQueue.Enqueue (cover);
                     Start ();
                 } else {
@@ -210,7 +202,6 @@ namespace Banshee.ClutterFlow
                 }
             } finally {
                Log.Debug ("ArtworkLookup stopped");
-               threaded = ClutterFlowSchemas.ThreadedArtwork.Get ();
                artwork_thread = null;
             }
         }
