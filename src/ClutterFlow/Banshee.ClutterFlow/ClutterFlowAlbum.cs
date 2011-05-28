@@ -43,35 +43,27 @@ namespace Banshee.ClutterFlow
     public class ClutterFlowAlbum : ClutterFlowActor,  IEquatable<ClutterFlowAlbum>
     {
         #region Fields
-        protected static ArtworkLookup lookup;
-        public static ArtworkLookup Lookup {
-            get { return lookup; }
-            set { lookup = value; }
-        }
+        private static ArtworkLookup artwork_lookup;
 
-        protected AlbumInfo album;
-        public virtual AlbumInfo Album {
+        private AlbumInfo album;
+        public AlbumInfo Album {
             get { return album; }
             set {
-                if (album!=value) {
+                if (album != value) {
                     album = value;
-                    Lookup.Enqueue (this);
+                    artwork_lookup.Enqueue (this);
                 }
             }
         }
 
         public virtual string PbId {
-            get { return Album!=null ? Album.ArtworkId : "NOT FOUND"; }
+            get { return Album != null ? Album.ArtworkId : "NOT FOUND"; }
         }
 
         public override string CacheKey {
-            get { return CreateCacheKey(album); }
-            set {
-                throw new System.NotImplementedException ("CacheKey cannot be set directly in a ClutterFlowAlbum," +
-                                                          "derived from the Album property."); //TODO should use reflection here
-            }
+            get { return CreateCacheKey (album); }
         }
-        public static string CreateCacheKey(AlbumInfo album) {
+        public static string CreateCacheKey (AlbumInfo album) {
             return album!=null ? album.ArtistName + "\n" + album.Title : "";
         }
 
@@ -94,23 +86,23 @@ namespace Banshee.ClutterFlow
         public ClutterFlowAlbum (AlbumInfo album, CoverManager coverManager) : base (coverManager, null)
         {
             this.album = album;
-            Lookup.Enqueue(this);
+            artwork_lookup.Enqueue(this);
         }
 
         protected override bool SetupStatics ()
         {
-            if (lookup == null) {
-                lookup = new ArtworkLookup (CoverManager);
+            if (artwork_lookup == null) {
+                artwork_lookup = new ArtworkLookup (CoverManager);
             }
             return base.SetupStatics ();
         }
 
         protected override void DisposeStatics ()
         {
-            if (lookup != null) {
-                lookup.Dispose ();
+            if (artwork_lookup != null) {
+                artwork_lookup.Dispose ();
             }
-            lookup = null;
+            artwork_lookup = null;
             base.DisposeStatics ();
         }
         #endregion
@@ -129,7 +121,7 @@ namespace Banshee.ClutterFlow
 
         protected override void HandleTextureSizeChanged (object sender, System.EventArgs e)
         {
-            Lookup.Enqueue(this);
+            artwork_lookup.Enqueue(this);
         }
         #endregion
 

@@ -62,9 +62,6 @@ namespace ClutterFlow
 
         public override string CacheKey {
             get { return "Dummy Actor"; }
-            set {
-                throw new System.NotImplementedException ("CacheKey cannot be set in a ClutterFlowDummyActor."); //TODO should use reflection here
-            }
         }
 
         public override string SortLabel {
