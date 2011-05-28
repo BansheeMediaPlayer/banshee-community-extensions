@@ -41,6 +41,11 @@ po/stamp-it
 src/AssemblyInfo.cs
 stamp-h1
 *.userprefs
+build/m4/shamrock/libtool.m4
+build/m4/shamrock/ltoptions.m4
+build/m4/shamrock/ltsugar.m4
+build/m4/shamrock/ltversion.m4
+build/m4/shamrock/lt~obsolete.m4
 build/m4/shave/shave
 build/m4/shave/shave-libtool
 src/Mirage/libmirageaudio/mirageaudiotest
