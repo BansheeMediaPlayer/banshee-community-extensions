@@ -94,7 +94,7 @@ namespace ClutterFlow
             set {
                 if (value > 1) value = 1;
                 if (value < 0) value = 0;
-				if (double.IsInfinity(value) || double.IsNaN(value)) value = 0;
+                if (double.IsInfinity(value) || double.IsNaN(value)) value = 0;
                 progress = value;
                 delta = (int) Math.Abs(AbsoluteProgress - Target);
                 if (delta==0) InvokeTargetReached ();
@@ -219,7 +219,7 @@ namespace ClutterFlow
                     //Console.Write (" Moving ");
                     if (Target>AbsoluteProgress) {
                         //Console.Write (" Forward - Target is " + Target + " AbsoluteProgress is " + AbsoluteProgress + "\n");
-                        Progress +=	time_delta * Frequency / (double) (IndexCount-1);
+                        Progress +=    time_delta * Frequency / (double) (IndexCount-1);
                         if (Target<=AbsoluteProgress)
                             Progress = RelativeTarget;
                     } else if (Target<AbsoluteProgress) {
@@ -256,10 +256,10 @@ namespace ClutterFlow
         protected int last_delta = 0;
         protected override double Frequency {
             get {
-        		double retval = (double) Math.Max((Delta - (Delta - last_delta)*0.25 ),1) / (double) CoverManager.MaxAnimationSpan;
-        		last_delta = Delta;
-        		return retval;
-        	}
+                double retval = (double) Math.Max((Delta - (Delta - last_delta)*0.25 ),1) / (double) CoverManager.MaxAnimationSpan;
+                last_delta = Delta;
+                return retval;
+            }
         }
 
         private CoverManager coverManager;

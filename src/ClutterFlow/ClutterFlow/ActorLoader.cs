@@ -32,37 +32,37 @@ using Clutter;
 namespace ClutterFlow
 {
 
-	public interface IActorLoader : IDisposable {
-		CoverManager CoverManager { get; }
-		List<ClutterFlowBaseActor> GetActors (System.Action<ClutterFlowBaseActor> method_call);
-	}
-	
-	public abstract class ActorLoader<TKey, TGen> : IActorLoader {
-		#region Fields	
-		protected Dictionary<TKey, ClutterFlowBaseActor> cached_covers = new Dictionary<TKey, ClutterFlowBaseActor> ();
-		public virtual Dictionary<TKey, ClutterFlowBaseActor> Cache {
-			get { return cached_covers; }
-		}
-		
-		private CoverManager coverManager;
-		public virtual CoverManager CoverManager {
-			get { return coverManager; }
-		}
-		#endregion
-		
-		public ActorLoader (CoverManager coverManager)
-		{
-			this.coverManager = coverManager;
+    public interface IActorLoader : IDisposable {
+        CoverManager CoverManager { get; }
+        List<ClutterFlowBaseActor> GetActors (System.Action<ClutterFlowBaseActor> method_call);
+    }
+
+    public abstract class ActorLoader<TKey, TGen> : IActorLoader {
+        #region Fields
+        protected Dictionary<TKey, ClutterFlowBaseActor> cached_covers = new Dictionary<TKey, ClutterFlowBaseActor> ();
+        public virtual Dictionary<TKey, ClutterFlowBaseActor> Cache {
+            get { return cached_covers; }
+        }
+
+        private CoverManager coverManager;
+        public virtual CoverManager CoverManager {
+            get { return coverManager; }
+        }
+        #endregion
+
+        public ActorLoader (CoverManager coverManager)
+        {
+            this.coverManager = coverManager;
             CoverManager.ActorActivated += HandleActorActivated;
             CoverManager.ActorLoader = this;
-		}
+        }
         protected bool disposed = false;
         public virtual void Dispose ()
         {
             if (disposed)
                 return;
             disposed = true;
-            
+
             CoverManager.ActorActivated -= HandleActorActivated;
 
             foreach (ClutterFlowBaseActor actor in cached_covers.Values)
@@ -70,27 +70,27 @@ namespace ClutterFlow
             cached_covers.Clear ();
         }
 
-		protected virtual void RefreshCoverManager ()
-		{
-			CoverManager.ReloadCovers ();
-		}
-		
-		public virtual List<ClutterFlowBaseActor> GetActors (System.Action<ClutterFlowBaseActor> method_call)
-		{
-			throw new System.NotImplementedException();
-		}
-		
-		protected virtual ClutterFlowBaseActor AddActorToList(TGen generator, SortedList<TGen, ClutterFlowBaseActor> list) {
-			throw new System.NotImplementedException();
-		}
+        protected virtual void RefreshCoverManager ()
+        {
+            CoverManager.ReloadCovers ();
+        }
 
-		public virtual void ScrollTo (TKey key)
-		{
-			ClutterFlowBaseActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
-			if (actor!=null && coverManager.covers.Contains (actor))
-				coverManager.TargetIndex = actor.Index; //coverManager.covers.IndexOf (actor); //replace covers with something faster?
-		}
-		
-		public abstract void HandleActorActivated (ClutterFlowBaseActor actor, EventArgs args);
-	}
+        public virtual List<ClutterFlowBaseActor> GetActors (System.Action<ClutterFlowBaseActor> method_call)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected virtual ClutterFlowBaseActor AddActorToList(TGen generator, SortedList<TGen, ClutterFlowBaseActor> list) {
+            throw new System.NotImplementedException();
+        }
+
+        public virtual void ScrollTo (TKey key)
+        {
+            ClutterFlowBaseActor actor = Cache.ContainsKey (key) ? Cache[key] : null;
+            if (actor!=null && coverManager.covers.Contains (actor))
+                coverManager.TargetIndex = actor.Index; //coverManager.covers.IndexOf (actor); //replace covers with something faster?
+        }
+
+        public abstract void HandleActorActivated (ClutterFlowBaseActor actor, EventArgs args);
+    }
 }

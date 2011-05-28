@@ -44,7 +44,6 @@ using ClutterFlow;
 
 namespace Banshee.ClutterFlow
 {
-
     internal static class ClutterFlowManager
     {
         private static int state = 0;
@@ -67,8 +66,9 @@ namespace Banshee.ClutterFlow
 
         static void HandleProcessExit(object sender, EventArgs e)
         {
-            if (state == 1)
+            if (state == 1) {
                 System.AppDomain.CurrentDomain.ProcessExit -= HandleProcessExit;
+            }
             Quit ();
         }
 
@@ -89,139 +89,144 @@ namespace Banshee.ClutterFlow
         private static ClutterFlowView filter_view;
         public static ClutterFlowView FilterView {
             get {
-                if (filter_view==null)
+                if (filter_view == null) {
                     filter_view = new ClutterFlowView ();
-                else if (!filter_view.Attached)
+                } else if (!filter_view.Attached) {
                     filter_view.AttachEvents ();
+                }
                 return filter_view;
             }
         }
     }
-		
-	public class ClutterFlowService : IExtensionService, IDisposable
-	{		
-		#region Fields
-		string IService.ServiceName {
-			get { return "ClutterFlowService"; }
-		}
-		
-		private SourceManager source_manager;
-		private MusicLibrarySource music_library;
 
-		private PreferenceService preference_service;
-		private InterfaceActionService action_service;
+    public class ClutterFlowService : IExtensionService, IDisposable
+    {
+        #region Fields
+        string IService.ServiceName {
+            get { return "ClutterFlowService"; }
+        }
+
+        private SourceManager source_manager;
+        private MusicLibrarySource music_library;
+
+        private PreferenceService preference_service;
+        private InterfaceActionService action_service;
 
         private uint ui_manager_id;
         private ActionGroup clutterflow_actions;
-		private ToggleAction browser_action;
-		protected ToggleAction BrowserAction {
-			get {
-				if (browser_action==null)
-					browser_action = (ToggleAction) action_service.FindAction("BrowserView.BrowserVisibleAction");
-				return browser_action;
-			}
-		}
-		private ToggleAction cfbrows_action;
-		protected ToggleAction CfBrowsAction {
-			get {
-				if (cfbrows_action==null)
-					cfbrows_action = (ToggleAction) action_service.FindAction("ClutterFlowView.ClutterFlowVisibleAction");
-				return cfbrows_action;
-			}
-		}
-		private static string menu_xml = @"
-			<ui>
-				<menubar name=""MainMenu"">
-					<menu name=""ViewMenu"" action=""ViewMenuAction"">
-						<placeholder name=""BrowserViews"">
-							<menuitem name=""ClutterFlow"" action=""ClutterFlowVisibleAction"" />
-						</placeholder>
-					</menu>
-				</menubar>
-			</ui>
-		";
+        private ToggleAction browser_action;
+        protected ToggleAction BrowserAction {
+            get {
+                if (browser_action==null) {
+                    browser_action = (ToggleAction) action_service.FindAction("BrowserView.BrowserVisibleAction");
+                }
+                return browser_action;
+            }
+        }
+        private ToggleAction cfbrows_action;
+        protected ToggleAction CfBrowsAction {
+            get {
+                if (cfbrows_action==null) {
+                    cfbrows_action = (ToggleAction) action_service.FindAction("ClutterFlowView.ClutterFlowVisibleAction");
+                }
+                return cfbrows_action;
+            }
+        }
+        private static string menu_xml = @"
+            <ui>
+                <menubar name=""MainMenu"">
+                    <menu name=""ViewMenu"" action=""ViewMenuAction"">
+                        <placeholder name=""BrowserViews"">
+                            <menuitem name=""ClutterFlow"" action=""ClutterFlowVisibleAction"" />
+                        </placeholder>
+                    </menu>
+                </menubar>
+            </ui>
+        ";
 
-		private ClutterFlowContents clutter_flow_contents;
-		#endregion
-		
-		#region Initialization
+        private ClutterFlowContents clutter_flow_contents;
+        #endregion
 
-		public ClutterFlowService ()
-		{
+        #region Initialization
+
+        public ClutterFlowService ()
+        {
             ClutterFlowManager.Init ();
-		}
+        }
 
-		void IExtensionService.Initialize ()
-		{	
-			preference_service = ServiceManager.Get<PreferenceService> ();
-			action_service = ServiceManager.Get<InterfaceActionService> ();
+        void IExtensionService.Initialize ()
+        {
+            preference_service = ServiceManager.Get<PreferenceService> ();
+            action_service = ServiceManager.Get<InterfaceActionService> ();
 
-			source_manager = ServiceManager.SourceManager;
-			music_library = source_manager.MusicLibrary;
-			
-			if (!SetupPreferences () || !SetupInterfaceActions ())
-				ServiceManager.ServiceStarted += OnServiceStarted;
-			else if (!SetupSourceContents ())
-				source_manager.SourceAdded += OnSourceAdded;
-				
-			
-			//--> TODO Banshee.ServiceStack.Application. register Exit event to close threads etc.
-		}
+            source_manager = ServiceManager.SourceManager;
+            music_library = source_manager.MusicLibrary;
 
-		private void OnServiceStarted (ServiceStartedArgs args)
-		{
-			if (args.Service is Banshee.Preferences.PreferenceService) {
-				preference_service = (PreferenceService)args.Service;
-				SetupPreferences ();
-			} else if (args.Service is Banshee.Gui.InterfaceActionService) {
-				action_service = (InterfaceActionService)args.Service;
-				SetupInterfaceActions ();
-			}
+            if (!SetupPreferences () || !SetupInterfaceActions ())
+                ServiceManager.ServiceStarted += OnServiceStarted;
+            else if (!SetupSourceContents ())
+                source_manager.SourceAdded += OnSourceAdded;
 
-			if (!(preference_service==null || action_service==null)) {
-				ServiceManager.ServiceStarted -= OnServiceStarted;
-				if (!SetupSourceContents ())
-					source_manager.SourceAdded += OnSourceAdded;
-			}
-		}
-		
-		private void OnSourceAdded (SourceAddedArgs args)
-		{
-			if (args.Source is MusicLibrarySource)
-				music_library = args.Source as MusicLibrarySource;
-			SetupSourceContents ();
-		}
-		#endregion
-		
-		#region Setup
-		private bool SetupSourceContents ()
-		{
-			if (music_library==null || preference_service==null || action_service==null
-			    || ServiceManager.SourceManager.ActiveSource == null)
-				return false;		
+
+            //--> TODO Banshee.ServiceStack.Application. register Exit event to close threads etc.
+        }
+
+        private void OnServiceStarted (ServiceStartedArgs args)
+        {
+            if (args.Service is Banshee.Preferences.PreferenceService) {
+                preference_service = (PreferenceService)args.Service;
+                SetupPreferences ();
+            } else if (args.Service is Banshee.Gui.InterfaceActionService) {
+                action_service = (InterfaceActionService)args.Service;
+                SetupInterfaceActions ();
+            }
+
+            if (!(preference_service==null || action_service==null)) {
+                ServiceManager.ServiceStarted -= OnServiceStarted;
+                if (!SetupSourceContents ()) {
+                    source_manager.SourceAdded += OnSourceAdded;
+                }
+            }
+        }
+
+        private void OnSourceAdded (SourceAddedArgs args)
+        {
+            if (args.Source is MusicLibrarySource) {
+                music_library = args.Source as MusicLibrarySource;
+            }
+            SetupSourceContents ();
+        }
+        #endregion
+
+        #region Setup
+        private bool SetupSourceContents ()
+        {
+            if (music_library == null || preference_service == null || action_service == null
+                || ServiceManager.SourceManager.ActiveSource == null)
+                return false;
 
             clutter_flow_contents = new ClutterFlowContents ();
-			clutter_flow_contents.SetSource(music_library);
+            clutter_flow_contents.SetSource (music_library);
 
-			if (ClutterFlowSchemas.ShowClutterFlow.Get ()) {
-				BrowserAction.Active = false;
-				music_library.Properties.Set<ISourceContents> ("Nereid.SourceContents", clutter_flow_contents);
-			}
-			
-			source_manager.SourceAdded -= OnSourceAdded;
-			return true;
-		}
-		
-		private bool SetupPreferences ()
-		{
-			InstallPreferences ();
-			
-			return true;
-		}
-		
-		private bool SetupInterfaceActions ()
-		{
-			
+            if (ClutterFlowSchemas.ShowClutterFlow.Get ()) {
+                BrowserAction.Active = false;
+                music_library.Properties.Set<ISourceContents> ("Nereid.SourceContents", clutter_flow_contents);
+            }
+
+            source_manager.SourceAdded -= OnSourceAdded;
+            return true;
+        }
+
+        private bool SetupPreferences ()
+        {
+            InstallPreferences ();
+
+            return true;
+        }
+
+        private bool SetupInterfaceActions ()
+        {
+
             action_service = ServiceManager.Get<InterfaceActionService> ();
 
             if (action_service.FindActionGroup ("ClutterFlowView") == null) {
@@ -243,48 +248,49 @@ namespace Banshee.ClutterFlow
             CfBrowsAction.Activated += OnToggleClutterFlow;
 
             return true;
-		}
-		#endregion
+        }
+        #endregion
 
-		#region Action Handling
+        #region Action Handling
         private void HandleActiveSourceChanged (SourceEventArgs args)
         {
-            if (args.Source==music_library)
+            if (args.Source==music_library) {
                 clutterflow_actions.Visible = true;
-           else
+            } else {
                 clutterflow_actions.Visible = false;
+            }
         }
 
-		private void OnToggleBrowser (object sender, EventArgs e)
-		{
-			if (BrowserAction.Active) {
+        private void OnToggleBrowser (object sender, EventArgs e)
+        {
+            if (BrowserAction.Active) {
                 ClutterFlowSchemas.OldShowBrowser.Set (true);
-				CfBrowsAction.Active = false;
-				ClutterFlowSchemas.ShowClutterFlow.Set (false);
-			}
-		}
+                CfBrowsAction.Active = false;
+                ClutterFlowSchemas.ShowClutterFlow.Set (false);
+            }
+        }
 
-		
-		private void OnToggleClutterFlow (object sender, EventArgs e)
-		{
-			if (CfBrowsAction.Active) {
-				ClutterFlowSchemas.ShowClutterFlow.Set (true);
+
+        private void OnToggleClutterFlow (object sender, EventArgs e)
+        {
+            if (CfBrowsAction.Active) {
+                ClutterFlowSchemas.ShowClutterFlow.Set (true);
                 ClutterFlowSchemas.OldShowBrowser.Set (BrowserAction.Active);
-				BrowserAction.Active = false;
-				Clutter.Threads.Enter ();
-				music_library.Properties.Set<ISourceContents> ("Nereid.SourceContents", clutter_flow_contents);
-				Clutter.Threads.Leave ();
-			} else {
-				ClutterFlowSchemas.ShowClutterFlow.Set (false);
-				Clutter.Threads.Enter ();
-				music_library.Properties.Remove ("Nereid.SourceContents");
-				Clutter.Threads.Leave ();
-				BrowserAction.Active = ClutterFlowSchemas.OldShowBrowser.Get ();
-			}
-		}
+                BrowserAction.Active = false;
+                Clutter.Threads.Enter ();
+                music_library.Properties.Set<ISourceContents> ("Nereid.SourceContents", clutter_flow_contents);
+                Clutter.Threads.Leave ();
+            } else {
+                ClutterFlowSchemas.ShowClutterFlow.Set (false);
+                Clutter.Threads.Enter ();
+                music_library.Properties.Remove ("Nereid.SourceContents");
+                Clutter.Threads.Leave ();
+                BrowserAction.Active = ClutterFlowSchemas.OldShowBrowser.Get ();
+            }
+        }
 
-		private void RemoveClutterFlow ()
-		{
+        private void RemoveClutterFlow ()
+        {
             Clutter.Threads.Enter ();
             music_library.Properties.Remove ("Nereid.SourceContents");
             Clutter.Threads.Leave ();
@@ -292,9 +298,9 @@ namespace Banshee.ClutterFlow
             clutter_flow_contents = null;
 
             source_manager.ActiveSourceChanged -= HandleActiveSourceChanged;
-			BrowserAction.Activated -= OnToggleBrowser;
+            BrowserAction.Activated -= OnToggleBrowser;
             BrowserAction.Active = ClutterFlowSchemas.OldShowBrowser.Get ();
-			CfBrowsAction.Activated -= OnToggleClutterFlow;
+            CfBrowsAction.Activated -= OnToggleClutterFlow;
             CfBrowsAction.Visible = false;
 
             action_service.RemoveActionGroup ("ClutterFlowView");
@@ -308,124 +314,132 @@ namespace Banshee.ClutterFlow
             action_service = null;
             browser_action = null;
             cfbrows_action = null;
-		}
-		#endregion
+        }
+        #endregion
 
-		#region Preferences
+        #region Preferences
 
-		private bool pref_installed = false;
-		private Page pref_page;
+        private bool pref_installed = false;
+        private Page pref_page;
         private Section general;
-		private Section dimensions;
-		
-		protected void InstallPreferences ()
-		{
-			if (!pref_installed) {
-				pref_page = preference_service.Add(new Page("clutterflow",
+        private Section dimensions;
+
+        protected void InstallPreferences ()
+        {
+            if (!pref_installed) {
+                pref_page = preference_service.Add(new Page("clutterflow",
                                                             AddinManager.CurrentLocalizer.GetString ("ClutterFlow"), 10));
-				
-	            general = pref_page.Add (new Section ("general",
-	                AddinManager.CurrentLocalizer.GetString ("General"), 1));
+
+                general = pref_page.Add (new Section ("general",
+                    AddinManager.CurrentLocalizer.GetString ("General"), 1));
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.InstantPlayback, UpdateLabelVisibility);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DisplayLabel, UpdateLabelVisibility);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DisplayTitle, UpdateTitleVisibility);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.VisibleCovers, UpdateVisibleCovers);
-				ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DragSensitivity, UpdateDragSensitivity);
-				ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.ThreadedArtwork, UpdateThreadedArtwork);
-				
-				dimensions = pref_page.Add (new Section ("dimensions",
-	                AddinManager.CurrentLocalizer.GetString ("Dimensions"), 2));
-				ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MinCoverSize, UpdateMinCoverSize);
-				ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MaxCoverSize, UpdateMinCoverSize);
-				ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.TextureSize, UpdateMinCoverSize);
-	
-				LoadPreferences ();
+                ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DragSensitivity, UpdateDragSensitivity);
+                ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.ThreadedArtwork, UpdateThreadedArtwork);
 
-				pref_installed = true;
-			}
-		}
+                dimensions = pref_page.Add (new Section ("dimensions",
+                    AddinManager.CurrentLocalizer.GetString ("Dimensions"), 2));
+                ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MinCoverSize, UpdateMinCoverSize);
+                ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MaxCoverSize, UpdateMinCoverSize);
+                ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.TextureSize, UpdateMinCoverSize);
 
-		private void LoadPreferences ()
-		{
-			UpdateThreadedArtwork ();
-			UpdateDragSensitivity ();
-			UpdateLabelVisibility ();
-			UpdateTitleVisibility ();
-			UpdateVisibleCovers ();
-			UpdateMinCoverSize ();
-			UpdateMaxCoverSize ();
-			UpdateTextureSize ();
-		}
-		
+                LoadPreferences ();
+
+                pref_installed = true;
+            }
+        }
+
+        private void LoadPreferences ()
+        {
+            UpdateThreadedArtwork ();
+            UpdateDragSensitivity ();
+            UpdateLabelVisibility ();
+            UpdateTitleVisibility ();
+            UpdateVisibleCovers ();
+            UpdateMinCoverSize ();
+            UpdateMaxCoverSize ();
+            UpdateTextureSize ();
+        }
+
         private void UpdateThreadedArtwork ()
         {
 
         }
-		
-		private void UpdateDragSensitivity ()
-		{
-			if (clutter_flow_contents != null)
-				clutter_flow_contents.FilterView.DragSensitivity =
-					(float) ClutterFlowSchemas.DragSensitivity.Get () * 0.1f;
-		}
 
-		private void UpdateLabelVisibility ()
-		{
-			if (clutter_flow_contents != null)
-				clutter_flow_contents.FilterView.LabelCoverIsVisible =
-					ClutterFlowSchemas.DisplayLabel.Get ();
-		}
-		
-		private void UpdateTitleVisibility ()
-		{
-			if (clutter_flow_contents != null)
-				clutter_flow_contents.FilterView.LabelTrackIsVisible =
-					ClutterFlowSchemas.DisplayTitle.Get ();
-		}
-		
-		private void UpdateVisibleCovers ()
-		{
-			if (clutter_flow_contents!=null)
-				clutter_flow_contents.FilterView.CoverManager.VisibleCovers =
-					((ClutterFlowSchemas.VisibleCovers.Get () + 1) * 2 + 1);
-		}
-		
-		private void UpdateMinCoverSize ()
-		{
-			if (clutter_flow_contents != null)
-				clutter_flow_contents.FilterView.CoverManager.Behaviour.MinCoverWidth =
-					ClutterFlowSchemas.MinCoverSize.Get ();
-		}
+        private void UpdateDragSensitivity ()
+        {
+            if (clutter_flow_contents != null) {
+                clutter_flow_contents.FilterView.DragSensitivity =
+                    (float) ClutterFlowSchemas.DragSensitivity.Get () * 0.1f;
+            }
+        }
 
-		private void UpdateMaxCoverSize ()
-		{
-			if (clutter_flow_contents != null)
-				clutter_flow_contents.FilterView.CoverManager.Behaviour.MaxCoverWidth =
-					ClutterFlowSchemas.MaxCoverSize.Get ();
-		}
+        private void UpdateLabelVisibility ()
+        {
+            if (clutter_flow_contents != null) {
+                clutter_flow_contents.FilterView.LabelCoverIsVisible =
+                    ClutterFlowSchemas.DisplayLabel.Get ();
+            }
+        }
 
-		private void UpdateTextureSize ()
-		{
-			if (clutter_flow_contents != null)
-				clutter_flow_contents.FilterView.CoverManager.TextureSize =
-					ClutterFlowSchemas.TextureSize.Get ();
-		}
-		
+        private void UpdateTitleVisibility ()
+        {
+            if (clutter_flow_contents != null) {
+                clutter_flow_contents.FilterView.LabelTrackIsVisible =
+                    ClutterFlowSchemas.DisplayTitle.Get ();
+            }
+        }
+
+        private void UpdateVisibleCovers ()
+        {
+            if (clutter_flow_contents!=null) {
+                clutter_flow_contents.FilterView.CoverManager.VisibleCovers =
+                    ((ClutterFlowSchemas.VisibleCovers.Get () + 1) * 2 + 1);
+            }
+        }
+
+        private void UpdateMinCoverSize ()
+        {
+            if (clutter_flow_contents != null) {
+                clutter_flow_contents.FilterView.CoverManager.Behaviour.MinCoverWidth =
+                    ClutterFlowSchemas.MinCoverSize.Get ();
+            }
+        }
+
+        private void UpdateMaxCoverSize ()
+        {
+            if (clutter_flow_contents != null) {
+                clutter_flow_contents.FilterView.CoverManager.Behaviour.MaxCoverWidth =
+                    ClutterFlowSchemas.MaxCoverSize.Get ();
+            }
+        }
+
+        private void UpdateTextureSize ()
+        {
+            if (clutter_flow_contents != null) {
+                clutter_flow_contents.FilterView.CoverManager.TextureSize =
+                    ClutterFlowSchemas.TextureSize.Get ();
+            }
+        }
+
         private void UninstallPreferences ()
         {
             preference_service.Remove (pref_page);
             pref_page = null;
             general = null;
-			dimensions = null;
-			pref_installed = false;
+            dimensions = null;
+            pref_installed = false;
         }
-		#endregion
+        #endregion
 
         private bool disposed = false;
-		public void Dispose ()
-		{
-            if (disposed)
+        public void Dispose ()
+        {
+            if (disposed) {
                 return;
+            }
             disposed = true;
 
             ServiceManager.ServiceStarted -= OnServiceStarted;
@@ -433,6 +447,6 @@ namespace Banshee.ClutterFlow
 
             UninstallPreferences ();
             RemoveClutterFlow ();
- 		}
-	}
+         }
+    }
 }

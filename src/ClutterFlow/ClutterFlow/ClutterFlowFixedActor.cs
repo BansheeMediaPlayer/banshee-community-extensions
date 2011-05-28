@@ -90,23 +90,23 @@ namespace ClutterFlow
 
         public void SetToPb (Gdk.Pixbuf pb)
         {
-			SetAnchorPoint (0, 0);
-				
+            SetAnchorPoint (0, 0);
+
             if (pb!=null) {
-				Cairo.Context context = Texture.Create();
-				
-				Gdk.CairoHelper.SetSourcePixbuf(context, pb, 0, 0);
-				context.Paint();
-				
-				((IDisposable) context.Target).Dispose ();
-				((IDisposable) context).Dispose ();
+                Cairo.Context context = Texture.Create ();
+
+                Gdk.CairoHelper.SetSourcePixbuf(context, pb, 0, 0);
+                context.Paint();
+
+                ((IDisposable) context.Target).Dispose ();
+                ((IDisposable) context).Dispose ();
             }
 
-			Texture.SetPosition (0, 0);
-			
+            Texture.SetPosition (0, 0);
+
             SetAnchorPoint (this.Width*0.5f, this.Height*0.25f);
-			
-			ShowAll ();
+
+            ShowAll ();
         }
     }
 }

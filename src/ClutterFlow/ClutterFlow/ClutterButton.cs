@@ -31,138 +31,138 @@ using Clutter;
 namespace ClutterFlow.Buttons
 {
 
-	public abstract class ClutterButtonState : Group {
-		
-		#region Fields
-		protected bool bubble = false;
-		public virtual bool BubbleEvents {
-			get { return bubble; }
-			set { bubble = value; }
-		}
-		
-		protected int state = 0;
-		protected abstract int MaxState { get; }
-		//// <value>
-		/// State represents the toggle buttons state, the bits represent:
-		/// 	1: mouse_over
-		/// 	2: mouse_down
-		/// Overriding classes might have more bits,, check MaxBits
-		/// </value>
-		public virtual int State {
-			get { return state; }
-			set {
-				value &= MaxState; //block any other bits
-				if (value!=state) {
-					state = value;
-					Update();
-				}
-			}
-		}
-		#endregion
-		
-		#region Methods
-		protected virtual void Initialise () {
-			IsReactive = true;
-			ButtonPressEvent += HandleButtonPressEvent;
-			ButtonReleaseEvent += HandleButtonReleaseEvent;
-			EnterEvent += HandleEnterEvent;
-			LeaveEvent += HandleLeaveEvent;
-		}
-		
-		public abstract void Update();
-		#endregion
-		
-		#region Event Handling
-		protected virtual void HandleEnterEvent(object o, EnterEventArgs args)
-		{
-			State |= 1;
-			args.RetVal = !BubbleEvents;
-		}
+    public abstract class ClutterButtonState : Group {
 
-		protected virtual void HandleButtonPressEvent(object o, ButtonPressEventArgs args)
-		{
-			State |= 2;
-			args.RetVal = !BubbleEvents;
-		}
+        #region Fields
+        protected bool bubble = false;
+        public virtual bool BubbleEvents {
+            get { return bubble; }
+            set { bubble = value; }
+        }
 
-		protected virtual void HandleButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
-		{
-			State &= ~2;
-			args.RetVal = !BubbleEvents;
-		}
-		
-		protected virtual void HandleLeaveEvent(object o, LeaveEventArgs args)
-		{
-			State &= ~1;
-			args.RetVal = !BubbleEvents;
-		}
-		#endregion
-	}
-	
-	public class ClutterButton : ClutterButtonState
-	{
+        protected int state = 0;
+        protected abstract int MaxState { get; }
+        //// <value>
+        /// State represents the toggle buttons state, the bits represent:
+        ///     1: mouse_over
+        ///     2: mouse_down
+        /// Overriding classes might have more bits,, check MaxBits
+        /// </value>
+        public virtual int State {
+            get { return state; }
+            set {
+                value &= MaxState; //block any other bits
+                if (value!=state) {
+                    state = value;
+                    Update();
+                }
+            }
+        }
+        #endregion
 
-		#region Fields
-		protected override int MaxState {
-			get { return 3; }
-		}
-		
-		protected CairoTexture[] textures;
-		protected virtual int GetTextureIndex(int with_state) {
-			return ((with_state == 3) ? 2 : with_state);
-		}
-		public virtual CairoTexture StateTexture {
-			get { return textures[GetTextureIndex(State)]; }
-		}
-		#endregion
+        #region Methods
+        protected virtual void Initialise () {
+            IsReactive = true;
+            ButtonPressEvent += HandleButtonPressEvent;
+            ButtonReleaseEvent += HandleButtonReleaseEvent;
+            EnterEvent += HandleEnterEvent;
+            LeaveEvent += HandleLeaveEvent;
+        }
 
-		#region Initialization
-		protected ClutterButton (uint width, uint height, int state, bool init) : base ()
-		{
-			this.State = state;
-			this.SetSize (width, height);
-			
-			if (init) Initialise ();
-		}
-		
-		public ClutterButton (uint width, uint height, int state) : this (width, height, state, true)
-		{
-		}
+        public abstract void Update();
+        #endregion
 
-		protected override void Initialise () {
-			CreateTextures ();
-			base.Initialise ();
-		}
+        #region Event Handling
+        protected virtual void HandleEnterEvent(object o, EnterEventArgs args)
+        {
+            State |= 1;
+            args.RetVal = !BubbleEvents;
+        }
 
-		protected virtual void CreateTextures() {
-			if (textures==null||textures.Length==0) InitTextures();
-			for (int i=0; i < textures.Length; i++) {
-				if (textures[i]!=null) {
+        protected virtual void HandleButtonPressEvent(object o, ButtonPressEventArgs args)
+        {
+            State |= 2;
+            args.RetVal = !BubbleEvents;
+        }
+
+        protected virtual void HandleButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
+        {
+            State &= ~2;
+            args.RetVal = !BubbleEvents;
+        }
+
+        protected virtual void HandleLeaveEvent(object o, LeaveEventArgs args)
+        {
+            State &= ~1;
+            args.RetVal = !BubbleEvents;
+        }
+        #endregion
+    }
+
+    public class ClutterButton : ClutterButtonState
+    {
+
+        #region Fields
+        protected override int MaxState {
+            get { return 3; }
+        }
+
+        protected CairoTexture[] textures;
+        protected virtual int GetTextureIndex(int with_state) {
+            return ((with_state == 3) ? 2 : with_state);
+        }
+        public virtual CairoTexture StateTexture {
+            get { return textures[GetTextureIndex(State)]; }
+        }
+        #endregion
+
+        #region Initialization
+        protected ClutterButton (uint width, uint height, int state, bool init) : base ()
+        {
+            this.State = state;
+            this.SetSize (width, height);
+
+            if (init) Initialise ();
+        }
+
+        public ClutterButton (uint width, uint height, int state) : this (width, height, state, true)
+        {
+        }
+
+        protected override void Initialise () {
+            CreateTextures ();
+            base.Initialise ();
+        }
+
+        protected virtual void CreateTextures() {
+            if (textures==null||textures.Length==0) InitTextures();
+            for (int i=0; i < textures.Length; i++) {
+                if (textures[i]!=null) {
                     GC.SuppressFinalize (textures[i]);
-					if (textures[i].Parent!=null) ((Container) textures[i].Parent).Remove(textures[i]);
-				}
-				textures[i] = new Clutter.CairoTexture((uint) Width,(uint) Height);
-				Add(textures[i]);
-				CreateTexture(textures[i], (byte) i);
-			}
-		}
-		
-		protected virtual void InitTextures() {
-			textures = new CairoTexture[3];
-		}
-		#endregion
+                    if (textures[i].Parent!=null) ((Container) textures[i].Parent).Remove(textures[i]);
+                }
+                textures[i] = new Clutter.CairoTexture((uint) Width,(uint) Height);
+                Add(textures[i]);
+                CreateTexture(textures[i], (byte) i);
+            }
+        }
 
-		#region Rendering
-		protected virtual void CreateTexture(CairoTexture texture, int with_state) {
-			throw new System.NotImplementedException ();
-		}
-		#endregion
-		
-		public override void Update() {
-			HideAll();
-			StateTexture.Show();
-			Show();
-		}
-		
-	}
+        protected virtual void InitTextures() {
+            textures = new CairoTexture[3];
+        }
+        #endregion
+
+        #region Rendering
+        protected virtual void CreateTexture(CairoTexture texture, int with_state) {
+            throw new System.NotImplementedException ();
+        }
+        #endregion
+
+        public override void Update() {
+            HideAll();
+            StateTexture.Show();
+            Show();
+        }
+
+    }
 }

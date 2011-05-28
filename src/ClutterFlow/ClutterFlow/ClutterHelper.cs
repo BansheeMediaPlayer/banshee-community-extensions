@@ -32,57 +32,57 @@ using Clutter;
 
 namespace ClutterFlow
 {
-	
-	public static class ClutterHelper
-	{
-		[DllImport ("libclutter-glx-1.0.so.0")]
-    	private static extern void clutter_actor_destroy (System.IntPtr actor);
-		[DllImport ("libclutter-glx-1.0.so.0")]
-		private static extern void clutter_group_remove_all (System.IntPtr group);
-		[DllImport ("libclutter-glx-1.0.so.0")]
-		private static extern void clutter_container_remove (System.IntPtr container, System.IntPtr actor);
-		[DllImport ("libclutter-glx-1.0.so.0")]
-		public static extern IntPtr cogl_texture_new_from_data (uint width, uint height, Cogl.TextureFlags flags, Cogl.PixelFormat format, Cogl.PixelFormat internal_format, uint rowstride, IntPtr data);
-		
-		[DllImport ("libclutter-glx-1.0.so.0")]
-		public static extern void clutter_texture_set_cogl_texture (IntPtr texture, IntPtr cogl_tex);
-		
-		[DllImport("libclutter-glx-1.0.so.0")]
-		private static extern void clutter_actor_get_abs_allocation_vertices(IntPtr raw, IntPtr[] verts);
-		[DllImport ("libclutter-glx-1.0.so.0")]
-		private static extern void clutter_actor_box_from_vertices (ref ActorBox box, IntPtr[] vtx);
-		
-		
-		public unsafe static ActorBox GetAbsAllocationBox (Actor actor)
-		{
-			Vertex[] verts = new Vertex [4];
-			int cnt_verts = verts == null ? 0 : verts.Length;
-			IntPtr[] native_verts = new IntPtr [cnt_verts];
-			for (int i = 0; i < cnt_verts; i++)
-				native_verts [i] = verts[i] == null ? IntPtr.Zero : verts[i].Handle;
-			ActorBox box = ActorBox.Zero;
-			clutter_actor_get_abs_allocation_vertices (actor.Handle, native_verts);
-		    clutter_actor_box_from_vertices (ref box, native_verts);
-			
-		    return box;
-		}
-		
+
+    public static class ClutterHelper
+    {
+        [DllImport ("libclutter-glx-1.0.so.0")]
+        private static extern void clutter_actor_destroy (System.IntPtr actor);
+        [DllImport ("libclutter-glx-1.0.so.0")]
+        private static extern void clutter_group_remove_all (System.IntPtr group);
+        [DllImport ("libclutter-glx-1.0.so.0")]
+        private static extern void clutter_container_remove (System.IntPtr container, System.IntPtr actor);
+        [DllImport ("libclutter-glx-1.0.so.0")]
+        public static extern IntPtr cogl_texture_new_from_data (uint width, uint height, Cogl.TextureFlags flags, Cogl.PixelFormat format, Cogl.PixelFormat internal_format, uint rowstride, IntPtr data);
+
+        [DllImport ("libclutter-glx-1.0.so.0")]
+        public static extern void clutter_texture_set_cogl_texture (IntPtr texture, IntPtr cogl_tex);
+
+        [DllImport("libclutter-glx-1.0.so.0")]
+        private static extern void clutter_actor_get_abs_allocation_vertices(IntPtr raw, IntPtr[] verts);
+        [DllImport ("libclutter-glx-1.0.so.0")]
+        private static extern void clutter_actor_box_from_vertices (ref ActorBox box, IntPtr[] vtx);
+
+
+        public unsafe static ActorBox GetAbsAllocationBox (Actor actor)
+        {
+            Vertex[] verts = new Vertex [4];
+            int cnt_verts = verts == null ? 0 : verts.Length;
+            IntPtr[] native_verts = new IntPtr [cnt_verts];
+            for (int i = 0; i < cnt_verts; i++)
+                native_verts [i] = verts[i] == null ? IntPtr.Zero : verts[i].Handle;
+            ActorBox box = ActorBox.Zero;
+            clutter_actor_get_abs_allocation_vertices (actor.Handle, native_verts);
+            clutter_actor_box_from_vertices (ref box, native_verts);
+
+            return box;
+        }
+
         [DllImport ("libclutter-gtk-0.10.so.0")]
         public static extern Clutter.InitError gtk_clutter_init (IntPtr argc, IntPtr argv);
 
-		public static void DestroyActor(Clutter.Actor actor) {
+        public static void DestroyActor(Clutter.Actor actor) {
             GC.SuppressFinalize (actor);
-			clutter_actor_destroy(actor.Handle);
-		}
-		public static void RemoveAllFromGroup(Clutter.Group group) {
+            clutter_actor_destroy(actor.Handle);
+        }
+        public static void RemoveAllFromGroup(Clutter.Group group) {
             foreach (Actor actor in group)
                 GC.SuppressFinalize (actor);
-			clutter_group_remove_all(group.Handle);
-		}
-		public static void RemoveFromGroup(System.IntPtr group, Clutter.Actor actor) {
+            clutter_group_remove_all(group.Handle);
+        }
+        public static void RemoveFromGroup(System.IntPtr group, Clutter.Actor actor) {
             GC.SuppressFinalize (actor);
-			clutter_container_remove(group, actor.Handle);
-		}
+            clutter_container_remove(group, actor.Handle);
+        }
 
-	}
+    }
 }

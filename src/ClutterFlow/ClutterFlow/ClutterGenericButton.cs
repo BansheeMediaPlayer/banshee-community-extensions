@@ -32,23 +32,23 @@ using Clutter;
 
 namespace ClutterFlow.Buttons
 {
-	public delegate void CreateTextureMethod (CairoTexture texture, int with_state);
-	
-	public class ClutterGenericButton : ClutterButton
-	{
-		CreateTextureMethod createTexture = null;
-		
-		public ClutterGenericButton(uint width, uint height, int state, CreateTextureMethod createTexture) : base (width, height, state, false)
-		{
-			this.createTexture = createTexture;
-			Initialise ();
-		}
+    public delegate void CreateTextureMethod (CairoTexture texture, int with_state);
 
-		protected override void CreateTexture (Clutter.CairoTexture texture, int with_state)
-		{
-			if (createTexture!=null) createTexture(texture, with_state);
-			else base.CreateTexture (texture, with_state);
-		}
+    public class ClutterGenericButton : ClutterButton
+    {
+        CreateTextureMethod createTexture = null;
 
-	}
+        public ClutterGenericButton(uint width, uint height, int state, CreateTextureMethod createTexture) : base (width, height, state, false)
+        {
+            this.createTexture = createTexture;
+            Initialise ();
+        }
+
+        protected override void CreateTexture (Clutter.CairoTexture texture, int with_state)
+        {
+            if (createTexture!=null) createTexture(texture, with_state);
+            else base.CreateTexture (texture, with_state);
+        }
+
+    }
 }

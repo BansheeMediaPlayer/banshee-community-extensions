@@ -31,69 +31,69 @@ using Clutter;
 
 namespace ClutterFlow.Captions
 {
-	
-	
-	public abstract class Caption : Clutter.Text
-	{
-		
-		#region Fields
-		public abstract string DefaultValue { get; set; }
 
-		private CoverManager coverManager;
-		public CoverManager CoverManager {
+
+    public abstract class Caption : Clutter.Text
+    {
+
+        #region Fields
+        public abstract string DefaultValue { get; set; }
+
+        private CoverManager coverManager;
+        public CoverManager CoverManager {
             get { return coverManager; }
         }
-		
-		protected Animation aFade = null;
-		#endregion
-		
-		public Caption (CoverManager coverManager, string font_name, Color color) : base (clutter_text_new ())
-		{
-			this.coverManager = coverManager;
-			Editable = false;
-			Selectable = false;
-			Activatable = false;
-			CursorVisible = false;
-			LineAlignment = Pango.Alignment.Center;
-			FontName = font_name;
-			SetColor (color);
-		 	Value = DefaultValue;
 
-			UpdatePosition ();
-		}
+        protected Animation aFade = null;
+        #endregion
 
-		#region Methods
-		[DllImport("libclutter-glx-1.0.so.0")]
-		static extern IntPtr clutter_text_new ();
-		
-		public virtual void FadeOut ()
-		{
-			EventHandler hFadeOut = delegate (object sender, EventArgs e) {
-				aFade = this.Animatev ((ulong) AnimationMode.Linear.value__, (uint) (CoverManager.MaxAnimationSpan*0.5f), new string[] { "opacity" }, new GLib.Value ((byte) 0));
-			};
-			if (aFade!=null && aFade.Timeline!=null && aFade.Timeline.IsPlaying)
-				aFade.Completed +=  hFadeOut;
-			else
-				hFadeOut (this, EventArgs.Empty);
-		}
+        public Caption (CoverManager coverManager, string font_name, Color color) : base (clutter_text_new ())
+        {
+            this.coverManager = coverManager;
+            Editable = false;
+            Selectable = false;
+            Activatable = false;
+            CursorVisible = false;
+            LineAlignment = Pango.Alignment.Center;
+            FontName = font_name;
+            SetColor (color);
+            Value = DefaultValue;
 
-		public virtual void FadeIn ()
-		{
-			EventHandler hFadeIn = delegate (object sender, EventArgs e) {
-				aFade = this.Animatev ((ulong) AnimationMode.Linear.value__, (uint) (CoverManager.MaxAnimationSpan*0.5f), new string[] { "opacity" }, new GLib.Value ((byte) 255));
-			};
-			if (aFade!=null && aFade.Timeline!=null && aFade.Timeline.IsPlaying)
-				aFade.Completed +=  hFadeIn;
-			else
-				hFadeIn (this, EventArgs.Empty);
-		}
+            UpdatePosition ();
+        }
 
-		public virtual void Update ()
-		{
-			UpdatePosition ();
-		}
-		
-		public abstract void UpdatePosition ();
-		#endregion
-	}
+        #region Methods
+        [DllImport("libclutter-glx-1.0.so.0")]
+        static extern IntPtr clutter_text_new ();
+
+        public virtual void FadeOut ()
+        {
+            EventHandler hFadeOut = delegate (object sender, EventArgs e) {
+                aFade = this.Animatev ((ulong) AnimationMode.Linear.value__, (uint) (CoverManager.MaxAnimationSpan*0.5f), new string[] { "opacity" }, new GLib.Value ((byte) 0));
+            };
+            if (aFade!=null && aFade.Timeline!=null && aFade.Timeline.IsPlaying)
+                aFade.Completed +=  hFadeOut;
+            else
+                hFadeOut (this, EventArgs.Empty);
+        }
+
+        public virtual void FadeIn ()
+        {
+            EventHandler hFadeIn = delegate (object sender, EventArgs e) {
+                aFade = this.Animatev ((ulong) AnimationMode.Linear.value__, (uint) (CoverManager.MaxAnimationSpan*0.5f), new string[] { "opacity" }, new GLib.Value ((byte) 255));
+            };
+            if (aFade!=null && aFade.Timeline!=null && aFade.Timeline.IsPlaying)
+                aFade.Completed +=  hFadeIn;
+            else
+                hFadeIn (this, EventArgs.Empty);
+        }
+
+        public virtual void Update ()
+        {
+            UpdatePosition ();
+        }
+
+        public abstract void UpdatePosition ();
+        #endregion
+    }
 }
