@@ -96,14 +96,20 @@ namespace Banshee.ClutterFlow
             this.album = album;
             Lookup.Enqueue(this);
         }
+
         protected override bool SetupStatics ()
         {
-            if (lookup==null) lookup = new ArtworkLookup (CoverManager);
+            if (lookup == null) {
+                lookup = new ArtworkLookup (CoverManager);
+            }
             return base.SetupStatics ();
         }
+
         protected override void DisposeStatics ()
         {
-            if (lookup!=null) lookup.Dispose ();
+            if (lookup != null) {
+                lookup.Dispose ();
+            }
             lookup = null;
             base.DisposeStatics ();
         }

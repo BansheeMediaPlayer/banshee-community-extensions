@@ -152,7 +152,7 @@ namespace ClutterFlow
         public int TextureSize {
             get { return textureSize; }
             set {
-                if (textureSize!=value) {
+                if (textureSize != value) {
                     textureSize = value;
                     InvokeTextureSizeChanged ();
                 }
@@ -220,22 +220,25 @@ namespace ClutterFlow
         protected ClutterFlowFixedActor empty_actor;
         public ClutterFlowFixedActor EmptyActor {
             get {
-                if (empty_actor==null)
+                if (empty_actor == null)
                     empty_actor = new ClutterFlowFixedActor (this);
                 return empty_actor;
             }
         }
 
-        internal List<ClutterFlowBaseActor> covers;     // list with cover actors
-        public int TotalCovers  {               // number of covers or zero if null
+        // list with cover actors
+        internal List<ClutterFlowBaseActor> covers;
+
+        public int TotalCovers  {
             get { return (covers != null) ? covers.Count : 0; }
         }
 
-        private ClutterFlowBaseActor current_cover = null; // currently centered cover
+        // currently centered cover
+        private ClutterFlowBaseActor current_cover = null;
         public ClutterFlowBaseActor CurrentCover {
             get { return current_cover; }
             set {
-                if (value!=current_cover) {
+                if (value != current_cover) {
                     current_cover = value;
                     InvokeNewCurrentCover (current_cover);
                 }
@@ -382,9 +385,10 @@ namespace ClutterFlow
                 List<ClutterFlowBaseActor> truly_pers = new List<ClutterFlowBaseActor> ();
                 List<ClutterFlowBaseActor> new_covers = new List<ClutterFlowBaseActor>(SafeGetRange(covers, new_target_index - HalfVisCovers - 1, visibleCovers + 2));
                 foreach (ClutterFlowBaseActor actor in persistent_covers) {
-                    if (actor!=null) {
-                        if (actor.Data.ContainsKey ("isOldCover"))
+                    if (actor != null) {
+                        if (actor.Data.ContainsKey ("isOldCover")) {
                             actor.Data.Remove ("isOldCover");
+                        }
                         if (new_covers.Contains (actor)) {
                             truly_pers.Add (actor);
                             new_covers.Remove (actor);
@@ -394,7 +398,7 @@ namespace ClutterFlow
                     }
                 }
                 foreach (ClutterFlowBaseActor actor in old_covers) {
-                    if (actor!=null) {
+                    if (actor != null) {
                         actor.Data.Remove ("isOldCover");
                     }
                 }
@@ -441,15 +445,11 @@ namespace ClutterFlow
             CurrentCover = EmptyActor;
         }
 
-        private IEnumerable<ClutterFlowBaseActor> SafeGetRange(List<ClutterFlowBaseActor> list, int index, int count) {
+        private IEnumerable<ClutterFlowBaseActor> SafeGetRange (List<ClutterFlowBaseActor> list, int index, int count) {
             for (int i = index; i < index + count; i++) {
                 ClutterFlowBaseActor cover;
-                try {
-                    cover = list[i];
-                    if (cover==null) {
-                        throw new NullReferenceException();
-                    }
-                } catch {
+                cover = list[i];
+                if (cover == null) {
                     continue;
                 }
                 yield return cover;
@@ -457,18 +457,9 @@ namespace ClutterFlow
             yield break;
         }
 
-        public void ForSomeCovers(System.Action<ClutterFlowBaseActor> method_call, int lBound, int uBound) {
-            if (covers!=null && lBound <= uBound && lBound >= 0 && uBound < covers.Count) {
+        public void ForSomeCovers (System.Action<ClutterFlowBaseActor> method_call, int lBound, int uBound) {
+            if (covers != null && lBound <= uBound && lBound >= 0 && uBound < covers.Count) {
                 IEnumerator<ClutterFlowBaseActor> enumerator = covers.GetRange(lBound, uBound-lBound + 1).GetEnumerator();
-                while (enumerator.MoveNext()) {
-                    method_call(enumerator.Current);
-                }
-            }
-        }
-
-        public void ForEachCover(System.Action<ClutterFlowBaseActor> method_call) {
-            if (covers!=null) {
-                IEnumerator<ClutterFlowBaseActor> enumerator = covers.GetEnumerator();
                 while (enumerator.MoveNext()) {
                     method_call(enumerator.Current);
                 }

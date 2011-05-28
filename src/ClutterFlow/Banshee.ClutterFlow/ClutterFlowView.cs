@@ -116,12 +116,15 @@ namespace Banshee.ClutterFlow
         public float DragSensitivity {
             get { return drag_sens; }
             set {
-                if (value<0.01f) value = 0.01f;
-                if (value>2.0f) value = 2.0f;
+                if (value < 0.01f) {
+                    value = 0.01f;
+                }
+                if (value > 2.0f) {
+                    value = 2.0f;
+                }
                 drag_sens = value;
             }
         }
-
 
         private ClutterFlowSlider slider;
         public ClutterFlowSlider Slider {
@@ -153,10 +156,21 @@ namespace Banshee.ClutterFlow
         }
 
         public bool LabelCoverIsVisible {
-            set { if (value) caption_cover.ShowAll(); else caption_cover.HideAll(); }
+            set {
+                if (value) {
+                    caption_cover.ShowAll();
+                } else {
+                    caption_cover.HideAll();
+                }
+            }
         }
         public bool LabelTrackIsVisible {
-            set { if (value) caption_track.ShowAll(); else caption_track.HideAll(); }
+            set { if (value) {
+                    caption_track.ShowAll();
+                } else {
+                    caption_track.HideAll();
+                }
+            }
         }
 
 
@@ -168,16 +182,20 @@ namespace Banshee.ClutterFlow
         public float ViewportAngleX {
             get { return viewportAngleX; }
             set {
-                if (value!=viewportAngleX) {
+                if (value != viewportAngleX) {
                     viewportAngleX = value;
-                    if (viewportAngleX < viewportMinAngleX) viewportAngleX = viewportMinAngleX;
-                    if (viewportAngleX > viewportMaxAngleX) viewportAngleX = viewportMaxAngleX;
+                    if (viewportAngleX < viewportMinAngleX) {
+                        viewportAngleX = viewportMinAngleX;
+                    }
+                    if (viewportAngleX > viewportMaxAngleX) {
+                        viewportAngleX = viewportMaxAngleX;
+                    }
 
-                    if (viewportAngleX < -1f && viewportAngleX > -9f)
+                    if (viewportAngleX < -1f && viewportAngleX > -9f) {
                         coverManager.SetRotation(RotateAxis.Y, -5f, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZFar);
-                    else
+                    } else {
                         coverManager.SetRotation(RotateAxis.X, viewportAngleX, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZFar);
-
+                    }
                 }
             }
         }
@@ -185,15 +203,20 @@ namespace Banshee.ClutterFlow
         public float ViewportAngleY {
             get { return viewportAngleY; }
             set {
-                if (value!=viewportAngleY) {
+                if (value != viewportAngleY) {
                     viewportAngleY = value;
-                    if (viewportAngleY < viewportMaxAngleY) viewportAngleY = viewportMaxAngleY;
-                    if (viewportAngleY > -viewportMaxAngleY) viewportAngleY = -viewportMaxAngleY;
+                    if (viewportAngleY < viewportMaxAngleY) {
+                        viewportAngleY = viewportMaxAngleY;
+                    }
+                    if (viewportAngleY > -viewportMaxAngleY) {
+                        viewportAngleY = -viewportMaxAngleY;
+                    }
 
-                    if (viewportAngleY > -4f && viewportAngleY < 4f)
+                    if (viewportAngleY > -4f && viewportAngleY < 4f) {
                         coverManager.SetRotation(RotateAxis.Y, 0, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZFar);
-                    else
+                    } else {
                         coverManager.SetRotation(RotateAxis.Y, viewportAngleY, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZFar);
+                    }
                 }
             }
         }
@@ -206,7 +229,7 @@ namespace Banshee.ClutterFlow
             SetSizeRequest (300, 200);
             Clutter.Global.MotionEventsEnabled = true;
 
-            coverManager = new CoverManager();
+            coverManager = new CoverManager ();
             albumLoader = new AlbumLoader (coverManager);
 
             AttachEvents ();
@@ -267,12 +290,10 @@ namespace Banshee.ClutterFlow
             coverManager.SetRotation (RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
             Stage.Add (coverManager);
 
-
-
-            coverManager.EmptyActor.SetToPb(
+            coverManager.EmptyActor.SetToPb (
                 IconThemeUtils.LoadIcon (coverManager.TextureSize, "gtk-stop", "clutterflow-large.png")
             );
-            CoverManager.DoubleClickTime = (uint) Gtk.Settings.GetForScreen(this.Screen).DoubleClickTime;
+            CoverManager.DoubleClickTime = (uint) Gtk.Settings.GetForScreen (this.Screen).DoubleClickTime;
             coverManager.LowerBottom ();
             coverManager.Show ();
         }
@@ -319,10 +340,12 @@ namespace Banshee.ClutterFlow
         //Update the coverStage position:
         protected void RedrawViewport ()
         {
-            coverManager.UpdateBehaviour();
-            coverManager.SetRotation(RotateAxis.X, viewportAngleX, coverManager.Width*0.5f, coverManager.Height*0.5f,0);
-            if (!coverManager.IsVisible) coverManager.Show();
-            coverManager.LowerBottom();
+            coverManager.UpdateBehaviour ();
+            coverManager.SetRotation (RotateAxis.X, viewportAngleX, coverManager.Width*0.5f, coverManager.Height*0.5f,0);
+            if (!coverManager.IsVisible) {
+                coverManager.Show ();
+            }
+            coverManager.LowerBottom ();
         }
         #endregion
 
@@ -331,13 +354,13 @@ namespace Banshee.ClutterFlow
         protected override void OnSizeAllocated (Gdk.Rectangle allocation)
         {
             base.OnSizeAllocated (allocation);
-            RedrawInterface();
+            RedrawInterface ();
         }
 
 
         private void HandleAllocationChanged (object o, AllocationChangedArgs args)
         {
-            RedrawInterface();
+            RedrawInterface ();
         }
 
 
@@ -346,7 +369,7 @@ namespace Banshee.ClutterFlow
             UpdateAlbum (actor);
         }
 
-        private void HandleButtonPressEvent(object o, Clutter.ButtonPressEventArgs args)
+        private void HandleButtonPressEvent (object o, Clutter.ButtonPressEventArgs args)
         {
             Clutter.EventHelper.GetCoords (args.Event, out drag_x0, out drag_y0);
             args.RetVal = true;
@@ -356,14 +379,16 @@ namespace Banshee.ClutterFlow
         {
             //if (args.Event.Button==1 && !dragging  && coverManager.CurrentCover!=null && ActiveAlbum != CurrentAlbum)
             //    UpdateAlbum ();
-            if (dragging) Clutter.Ungrab.Pointer ();
+            if (dragging) {
+                Clutter.Ungrab.Pointer ();
+            }
             dragging = false;
             args.RetVal = true;
         }
 
         private void HandleMotionEvent (object o, Clutter.MotionEventArgs args)
         {
-            if ((args.Event.ModifierState.value__ & Clutter.ModifierType.Button1Mask.value__)!=0) {
+            if ((args.Event.ModifierState.value__ & Clutter.ModifierType.Button1Mask.value__) != 0) {
                 float drag_x; float drag_y;
                 Clutter.EventHelper.GetCoords (args.Event, out drag_x, out drag_y);
                 if (!dragging) {
@@ -374,7 +399,9 @@ namespace Banshee.ClutterFlow
                     }
                 } else {
                     if ((args.Event.ModifierState.value__ & Clutter.ModifierType.ControlMask.value__)!=0) {
-                        if (!dragging) Clutter.Grab.Pointer (Stage);
+                        if (!dragging) {
+                            Clutter.Grab.Pointer (Stage);
+                        }
                         ViewportAngleY += (float) (mouse_x - args.Event.X)*rotSens;
                         ViewportAngleX += (float) (mouse_y - args.Event.Y)*rotSens;
                     } else {
@@ -382,7 +409,9 @@ namespace Banshee.ClutterFlow
                     }
                 }
             } else {
-                if (dragging) Clutter.Ungrab.Pointer ();
+                if (dragging) {
+                    Clutter.Ungrab.Pointer ();
+                }
                 dragging = false;
             }
             mouse_x = args.Event.X;
@@ -393,17 +422,21 @@ namespace Banshee.ClutterFlow
 
         private void HandleScroll (object o, Clutter.ScrollEventArgs args)
         {
-            if (args.Event.Direction==Clutter.ScrollDirection.Down
-                || args.Event.Direction==Clutter.ScrollDirection.Left)
-                Scroll(true);
-            else
-                Scroll(false);
+            if (args.Event.Direction == Clutter.ScrollDirection.Down
+                || args.Event.Direction == Clutter.ScrollDirection.Left) {
+                Scroll (true);
+            } else {
+                Scroll (false);
+            }
         }
 
         public void Scroll (bool Backward)
         {
-            if (Backward) coverManager.TargetIndex--;
-            else coverManager.TargetIndex++;
+            if (Backward) {
+                coverManager.TargetIndex--;
+            } else {
+                coverManager.TargetIndex++;
+            }
         }
 
         public void UpdateAlbum ()
@@ -415,9 +448,10 @@ namespace Banshee.ClutterFlow
         {
             ActiveAlbum = actor.Album;
             ActiveIndex = actor.Index;
-            if (UpdatedAlbum!=null)    UpdatedAlbum (ActiveAlbum, EventArgs.Empty);
+            if (UpdatedAlbum != null) {
+                UpdatedAlbum (ActiveAlbum, EventArgs.Empty);
+            }
         }
         #endregion
-
     }
 }

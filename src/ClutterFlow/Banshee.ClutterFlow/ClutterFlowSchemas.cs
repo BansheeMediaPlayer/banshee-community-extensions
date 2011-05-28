@@ -79,14 +79,14 @@ namespace Banshee.ClutterFlow
             "If checked displays the ClutterFlow browser instead of the default one"
         );
 
-               internal static readonly SchemaEntry<bool> InstantPlayback = new SchemaEntry<bool>(
+        internal static readonly SchemaEntry<bool> InstantPlayback = new SchemaEntry<bool>(
             "clutterflow", "instant_playback",
             true,
             AddinManager.CurrentLocalizer.GetString ("Immediately apply playback mode changes"),
             AddinManager.CurrentLocalizer.GetString ("Starts playing a new song immediately after the playback mode changed (Party Mode or Album Mode)")
         );
 
-              internal static readonly SchemaEntry<bool> DisplayLabel = new SchemaEntry<bool>(
+        internal static readonly SchemaEntry<bool> DisplayLabel = new SchemaEntry<bool>(
             "clutterflow", "display_album_label",
             true,
             AddinManager.CurrentLocalizer.GetString ("Display album _label"),
@@ -128,7 +128,7 @@ namespace Banshee.ClutterFlow
             AddinManager.CurrentLocalizer.GetString ("The number of covers that need to be displayed on the stage (at one side)")
         );
 
-              internal static readonly SchemaEntry<string> SortBy = new SchemaEntry<string>(
+        internal static readonly SchemaEntry<string> SortBy = new SchemaEntry<string>(
             "clutterflow", "sort_by",
             (string) Enum.GetName (typeof(SortOptions), SortOptions.Artist),
             AddinManager.CurrentLocalizer.GetString ("Sort covers by"),

@@ -510,8 +510,9 @@ namespace Banshee.ClutterFlow
         {
             if (!ClutterFlowSchemas.InstantPlayback.Get ()) {
                 ServiceManager.PlaybackController.NextSource = source;
-                if (!ServiceManager.PlayerEngine.IsPlaying())
+                if (!ServiceManager.PlayerEngine.IsPlaying()) {
                     ServiceManager.PlayerEngine.Play();
+                }
             } else {
                 ServiceManager.PlaybackController.Source = source;
                 if (!ServiceManager.PlayerEngine.IsPlaying()) {

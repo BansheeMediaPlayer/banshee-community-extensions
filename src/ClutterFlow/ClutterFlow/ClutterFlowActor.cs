@@ -405,14 +405,16 @@ namespace ClutterFlow
         }
         protected virtual bool SetupStatics ()
         {
-            if (textureHolder==null)
+            if (textureHolder == null) {
                 textureHolder = new TextureHolder(CoverManager, getDefaultSurface);
+            }
             return true;
         }
         protected virtual void DisposeStatics ()
         {
-            if (textureHolder!=null)
+            if (textureHolder != null) {
                 textureHolder.Dispose ();
+            }
             textureHolder = null;
         }
         protected virtual void SetupActors ()

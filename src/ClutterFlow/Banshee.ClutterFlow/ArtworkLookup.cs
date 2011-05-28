@@ -84,11 +84,11 @@ namespace Banshee.ClutterFlow
         // Returns whether the worker thread has stopped.
         /// </value>
         public bool Stopped {
-            get { return t!=null ? (t.ThreadState == ThreadState.Stopped) : true; }
+            get { return artwork_thread != null ? (artwork_thread.ThreadState == ThreadState.Stopped) : true; }
         }
         #endregion
 
-        Thread t;
+        Thread artwork_thread;
         public ArtworkLookup (CoverManager coverManager)
         {
             //Log.Debug ("ArtworkLookup ctor ()");
@@ -149,22 +149,26 @@ namespace Banshee.ClutterFlow
         {
             Log.Debug ("ArtworkLookup Stop ()");
             Stopping = true;
-            if (SyncRoot!=null) lock (SyncRoot) {
-                Monitor.Pulse (SyncRoot);
+            if (SyncRoot != null) {
+                lock (SyncRoot) {
+                    Monitor.Pulse (SyncRoot);
+                }
             }
-            if (t!=null) t.Join ();
+            if (artwork_thread != null) {
+                artwork_thread.Join ();
+            }
         }
 
         public void Start ()
         {
-            if (t==null) {
-                t = new Thread (new ThreadStart (Run));
-                t.Priority = ThreadPriority.BelowNormal;
+            if (artwork_thread == null) {
+                artwork_thread = new Thread (new ThreadStart (Run));
+                artwork_thread.Priority = ThreadPriority.BelowNormal;
                 stopping = false;
-                t.Start ();
-            } else if (t.ThreadState == ThreadState.Unstarted) {
+                artwork_thread.Start ();
+            } else if (artwork_thread.ThreadState == ThreadState.Unstarted) {
                 stopping = false;
-                t.Start ();
+                artwork_thread.Start ();
             }
         }
         #endregion
@@ -192,7 +196,7 @@ namespace Banshee.ClutterFlow
                         }
                     }
                     if (Stopping) return;
-                    t.IsBackground = false;
+                    artwork_thread.IsBackground = false;
                     ClutterFlowAlbum cover = LookupQueue.Dequeue ();
                     float size = cover.CoverManager.TextureSize;
                     string cache_id = cover.PbId;
@@ -202,12 +206,12 @@ namespace Banshee.ClutterFlow
                             SetCoverToSurface (cover, surface);
                         });
                     }
-                    t.IsBackground = true;
+                    artwork_thread.IsBackground = true;
                 }
             } finally {
                Log.Debug ("ArtworkLookup stopped");
                threaded = ClutterFlowSchemas.ThreadedArtwork.Get ();
-               t = null;
+               artwork_thread = null;
             }
         }
 
