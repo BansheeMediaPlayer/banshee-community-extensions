@@ -332,7 +332,7 @@ namespace Banshee.ClutterFlow
 
                 general = pref_page.Add (new Section ("general",
                     AddinManager.CurrentLocalizer.GetString ("General"), 1));
-                ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.InstantPlayback, UpdateLabelVisibility);
+                ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.InstantPlayback, null);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DisplayLabel, UpdateLabelVisibility);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DisplayTitle, UpdateTitleVisibility);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.VisibleCovers, UpdateVisibleCovers);
@@ -342,8 +342,8 @@ namespace Banshee.ClutterFlow
                 dimensions = pref_page.Add (new Section ("dimensions",
                     AddinManager.CurrentLocalizer.GetString ("Dimensions"), 2));
                 ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MinCoverSize, UpdateMinCoverSize);
-                ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MaxCoverSize, UpdateMinCoverSize);
-                ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.TextureSize, UpdateMinCoverSize);
+                ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MaxCoverSize, UpdateMaxCoverSize);
+                ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.TextureSize, UpdateTextureSize);
 
                 LoadPreferences ();
 
