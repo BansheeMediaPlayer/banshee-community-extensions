@@ -25,13 +25,8 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using Gtk;
 using Mono.Addins;
-
-using Hyena;
-
-using Clutter;
 
 using Banshee.ServiceStack;
 using Banshee.Gui;
@@ -40,65 +35,8 @@ using Banshee.Sources;
 using Banshee.Sources.Gui;
 using Banshee.Preferences;
 
-using ClutterFlow;
-
 namespace Banshee.ClutterFlow
 {
-    internal static class ClutterFlowManager
-    {
-        private static int state = 0;
-        public static event EventHandler BeforeQuit;
-
-        public static void Init ()
-        {
-            if (state < 1) {
-                //TODO provide a static class for initialisation that does not get destroyed when this service is
-                // it should hold reference to the ActorLoader instances, as they hold precious references to texture,
-                // data that apparently remains in memory
-                if (!GLib.Thread.Supported) GLib.Thread.Init();
-                Clutter.Threads.Init();
-                if (ClutterHelper.gtk_clutter_init (IntPtr.Zero, IntPtr.Zero) != InitError.Success)
-                    throw new System.NotSupportedException ("Unable to initialize GtkClutter");
-                System.AppDomain.CurrentDomain.ProcessExit += HandleProcessExit;
-                state = 1;
-            }
-        }
-
-        static void HandleProcessExit(object sender, EventArgs e)
-        {
-            if (state == 1) {
-                System.AppDomain.CurrentDomain.ProcessExit -= HandleProcessExit;
-            }
-            Quit ();
-        }
-
-        public static void Quit ()
-        {
-            if (state == 1) {
-                EventHandler handler = BeforeQuit;
-                if (handler != null) {
-                    handler (null, EventArgs.Empty);
-                }
-                Clutter.Application.Quit ();
-                filter_view.Dispose ();
-                filter_view = null;
-                state = 2;
-            }
-        }
-
-        private static ClutterFlowView filter_view;
-        public static ClutterFlowView FilterView {
-            get {
-                if (filter_view == null) {
-                    filter_view = new ClutterFlowView ();
-                } else if (!filter_view.Attached) {
-                    filter_view.AttachEvents ();
-                }
-                return filter_view;
-            }
-        }
-    }
-
     public class ClutterFlowService : IExtensionService, IDisposable
     {
         #region Fields
@@ -353,7 +291,6 @@ namespace Banshee.ClutterFlow
 
         private void LoadPreferences ()
         {
-            UpdateThreadedArtwork ();
             UpdateDragSensitivity ();
             UpdateLabelVisibility ();
             UpdateTitleVisibility ();

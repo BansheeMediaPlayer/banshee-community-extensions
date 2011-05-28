@@ -10,6 +10,7 @@ SOURCES =  \
 	ClutterArrowButton.cs \
 	ClutterButton.cs \
 	ClutterFlowActor.cs \
+	ClutterFlowBaseActor.cs \
 	ClutterFlowFixedActor.cs \
 	ClutterFlowSlider.cs \
 	ClutterFlowTimeline.cs \
@@ -23,6 +24,7 @@ SOURCES =  \
 	CoverCaption.cs \
 	CoverManager.cs \
 	FlowBehaviour.cs \
+	TextureHolder.cs \
 	TrackCaption.cs
 
 if ENABLE_CLUTTERFLOW

@@ -7,11 +7,13 @@ SOURCES =  \
 	ArtworkLookup.cs \
 	ClutterFlowAlbum.cs \
 	ClutterFlowContents.cs \
+	ClutterFlowManager.cs \
 	ClutterFlowSchemas.cs \
 	ClutterFlowService.cs \
 	ClutterFlowView.cs \
 	FloatingQueue.cs \
 	FullscreenButton.cs \
+	IndexedQueue.cs \
 	PartyModeButton.cs \
 	SortButton.cs
 

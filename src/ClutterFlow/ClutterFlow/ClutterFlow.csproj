@@ -78,6 +78,8 @@
     <Compile Include="ClutterFlowFixedActor.cs" />
     <Compile Include="AlphabetBar.cs" />
     <Compile Include="AlphabetButton.cs" />
+    <Compile Include="ClutterFlowBaseActor.cs" />
+    <Compile Include="TextureHolder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
