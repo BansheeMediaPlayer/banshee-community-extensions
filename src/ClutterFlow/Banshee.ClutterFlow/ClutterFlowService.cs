@@ -337,7 +337,7 @@ namespace Banshee.ClutterFlow
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DisplayTitle, UpdateTitleVisibility);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.VisibleCovers, UpdateVisibleCovers);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DragSensitivity, UpdateDragSensitivity);
-                ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.ThreadedArtwork, UpdateThreadedArtwork);
+                ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.ThreadedArtwork, null);
 
                 dimensions = pref_page.Add (new Section ("dimensions",
                     AddinManager.CurrentLocalizer.GetString ("Dimensions"), 2));
@@ -361,11 +361,6 @@ namespace Banshee.ClutterFlow
             UpdateMinCoverSize ();
             UpdateMaxCoverSize ();
             UpdateTextureSize ();
-        }
-
-        private void UpdateThreadedArtwork ()
-        {
-
         }
 
         private void UpdateDragSensitivity ()
