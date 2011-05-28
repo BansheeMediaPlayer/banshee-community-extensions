@@ -5,7 +5,6 @@ AC_INIT([banshee-community-extensions], 2.0.0,
 AM_INIT_AUTOMAKE([1.9 dist-bzip2 tar-ustar dist-zip foreign])
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER([config.h])
-AC_SUBST([ACLOCAL_AMFLAGS], ["-I build/m4/shamrock -I build/m4/shave -I build/m4/extensions \${ACLOCAL_FLAGS}"])
 
 IT_PROG_INTLTOOL([0.35.0])
 AC_PROG_LIBTOOL

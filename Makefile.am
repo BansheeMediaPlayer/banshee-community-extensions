@@ -1,3 +1,5 @@
+ACLOCAL_AMFLAGS = -I build/m4/shamrock -I build/m4/shave -I build/m4/extensions ${ACLOCAL_FLAGS}
+
 SUBDIRS = \
 	build \
 	help \
