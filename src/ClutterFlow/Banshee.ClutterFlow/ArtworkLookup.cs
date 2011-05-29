@@ -98,12 +98,8 @@ namespace Banshee.ClutterFlow
         {
             if (!cover.Enqueued) {
                 cover.Enqueued = true;
-                if (ClutterFlowSchemas.ThreadedArtwork.Get ()) {
-                    LookupQueue.Enqueue (cover);
-                    Start ();
-                } else {
-                    LoadUnthreaded (cover);
-                }
+                LookupQueue.Enqueue (cover);
+                Start ();
             }
         }
 
@@ -187,8 +183,9 @@ namespace Banshee.ClutterFlow
                             //Log.Debug ("ArtworkLookup Run - pulsed");
                         }
                     }
-                    if (Stopping) return;
-                    artwork_thread.IsBackground = false;
+                    if (Stopping) {
+                        return;
+                    }
                     ClutterFlowAlbum cover = LookupQueue.Dequeue ();
                     float size = cover.CoverManager.TextureSize;
                     string cache_id = cover.PbId;
@@ -198,21 +195,10 @@ namespace Banshee.ClutterFlow
                             SetCoverToSurface (cover, surface);
                         });
                     }
-                    artwork_thread.IsBackground = true;
                 }
             } finally {
                Log.Debug ("ArtworkLookup stopped");
                artwork_thread = null;
-            }
-        }
-
-        private void LoadUnthreaded (ClutterFlowAlbum cover)
-        {
-            float size = cover.CoverManager.TextureSize;
-            string cache_id = cover.PbId;
-            Cairo.ImageSurface surface = artwork_manager.LookupScaleSurface (cache_id, (int) size);
-            if (surface!=null) {
-                SetCoverToSurface (cover, surface);
             }
         }
 

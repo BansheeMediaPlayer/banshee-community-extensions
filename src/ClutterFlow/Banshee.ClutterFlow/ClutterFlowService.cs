@@ -100,11 +100,11 @@ namespace Banshee.ClutterFlow
             source_manager = ServiceManager.SourceManager;
             music_library = source_manager.MusicLibrary;
 
-            if (!SetupPreferences () || !SetupInterfaceActions ())
+            if (!SetupPreferences () || !SetupInterfaceActions ()) {
                 ServiceManager.ServiceStarted += OnServiceStarted;
-            else if (!SetupSourceContents ())
+            } else if (!SetupSourceContents ()) {
                 source_manager.SourceAdded += OnSourceAdded;
-
+            }
 
             //--> TODO Banshee.ServiceStack.Application. register Exit event to close threads etc.
         }
@@ -275,7 +275,6 @@ namespace Banshee.ClutterFlow
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DisplayTitle, UpdateTitleVisibility);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.VisibleCovers, UpdateVisibleCovers);
                 ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.DragSensitivity, UpdateDragSensitivity);
-                ClutterFlowSchemas.AddToSection (general, ClutterFlowSchemas.ThreadedArtwork, null);
 
                 dimensions = pref_page.Add (new Section ("dimensions",
                     AddinManager.CurrentLocalizer.GetString ("Dimensions"), 2));

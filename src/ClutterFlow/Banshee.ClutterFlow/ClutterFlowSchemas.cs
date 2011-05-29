@@ -51,13 +51,6 @@ namespace Banshee.ClutterFlow
             AddinManager.CurrentLocalizer.GetString ("Sets the sensitivity with which albums scroll when dragged, higher values mean faster scrolling")
         );
 
-        internal static readonly SchemaEntry<bool> ThreadedArtwork = new SchemaEntry<bool>(
-            "clutterflow", "threaded_artwork",
-            true,
-            AddinManager.CurrentLocalizer.GetString ("Enable threaded loading of artwork"),
-            AddinManager.CurrentLocalizer.GetString ("If enabled ClutterFlow will use threading to load it's artwork")
-        );
-
         internal static readonly SchemaEntry<bool> ExpandTrackList = new SchemaEntry<bool>(
             "clutterflow", "expand_track_list",
             true,

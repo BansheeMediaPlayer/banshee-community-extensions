@@ -326,18 +326,19 @@ namespace ClutterFlow
 
          private bool reload_covers ()
          {
-            if (Timeline!=null) {
+            if (Timeline != null) {
                 Timeline.Pause ();
             }
-            HideAll (); Show ();
-            if (covers!=null && covers.Count!=0) {
+            HideAll ();
+            Show ();
+            if (covers != null && covers.Count != 0) {
                 Console.WriteLine("Reloading Covers");
 
                 // the old current index
                 int old_target_index = CurrentCover!=null ? covers.IndexOf (CurrentCover) : 0;
                 // the newly calculated index
                 int new_target_index = 0;
-                // wether or not to keep the current cover centered
+                // whether or not to keep the current cover centered
                 bool keep_current = false;
 
                 List<ClutterFlowBaseActor> old_covers = new List<ClutterFlowBaseActor> (
@@ -367,9 +368,9 @@ namespace ClutterFlow
                 }));
                 InvokeLetterLookupChanged ();
 
-                if (covers.Count==0) {
+                if (covers.Count == 0) {
                     InstallEmptyActor ();
-                    if (old_covers.Contains(EmptyActor)) {
+                    if (old_covers.Contains (EmptyActor)) {
                         EmptyActor.Show ();
                         return false;
                     }
