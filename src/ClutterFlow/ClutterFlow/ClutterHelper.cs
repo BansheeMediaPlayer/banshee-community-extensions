@@ -32,7 +32,6 @@ using Clutter;
 
 namespace ClutterFlow
 {
-
     public static class ClutterHelper
     {
         [DllImport ("libclutter-glx-1.0.so.0")]
@@ -68,21 +67,34 @@ namespace ClutterFlow
         }
 
         [DllImport ("libclutter-gtk-0.10.so.0")]
-        public static extern Clutter.InitError gtk_clutter_init (IntPtr argc, IntPtr argv);
-
-        public static void DestroyActor(Clutter.Actor actor) {
-            GC.SuppressFinalize (actor);
-            clutter_actor_destroy(actor.Handle);
+        private static extern Clutter.InitError gtk_clutter_init (IntPtr argc, IntPtr argv);
+        public static void Init ()
+        {
+            Clutter.Threads.Init ();
+            if (ClutterHelper.gtk_clutter_init (IntPtr.Zero, IntPtr.Zero) != InitError.Success) {
+                throw new NotSupportedException ("Unable to initialize GtkClutter");
+            }
         }
-        public static void RemoveAllFromGroup(Clutter.Group group) {
-            foreach (Actor actor in group)
+
+        public static void Quit ()
+        { }
+
+        public static void DestroyActor (Clutter.Actor actor)
+        {
+            GC.SuppressFinalize (actor);
+            clutter_actor_destroy (actor.Handle);
+        }
+        public static void RemoveAllFromGroup (Clutter.Group group)
+        {
+            foreach (Actor actor in group) {
                 GC.SuppressFinalize (actor);
-            clutter_group_remove_all(group.Handle);
+            }
+            clutter_group_remove_all (group.Handle);
         }
-        public static void RemoveFromGroup(System.IntPtr group, Clutter.Actor actor) {
+        public static void RemoveFromGroup (System.IntPtr group, Clutter.Actor actor)
+        {
             GC.SuppressFinalize (actor);
-            clutter_container_remove(group, actor.Handle);
+            clutter_container_remove (group, actor.Handle);
         }
-
     }
 }

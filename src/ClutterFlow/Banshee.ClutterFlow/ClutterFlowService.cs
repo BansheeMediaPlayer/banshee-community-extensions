@@ -35,6 +35,8 @@ using Banshee.Sources;
 using Banshee.Sources.Gui;
 using Banshee.Preferences;
 
+using ClutterFlow;
+
 namespace Banshee.ClutterFlow
 {
     public class ClutterFlowService : IExtensionService, IDisposable
@@ -88,12 +90,12 @@ namespace Banshee.ClutterFlow
         #region Initialization
 
         public ClutterFlowService ()
-        {
-            ClutterFlowManager.Init ();
-        }
+        { }
 
         void IExtensionService.Initialize ()
         {
+            ClutterHelper.Init ();
+
             preference_service = ServiceManager.Get<PreferenceService> ();
             action_service = ServiceManager.Get<InterfaceActionService> ();
 
@@ -140,8 +142,10 @@ namespace Banshee.ClutterFlow
         private bool SetupSourceContents ()
         {
             if (music_library == null || preference_service == null || action_service == null
-                || ServiceManager.SourceManager.ActiveSource == null)
+                || ServiceManager.SourceManager.ActiveSource == null) {
                 return false;
+            }
+            source_manager.SourceAdded -= OnSourceAdded;
 
             clutter_flow_contents = new ClutterFlowContents ();
             clutter_flow_contents.SetSource (music_library);
@@ -151,7 +155,8 @@ namespace Banshee.ClutterFlow
                 music_library.Properties.Set<ISourceContents> ("Nereid.SourceContents", clutter_flow_contents);
             }
 
-            source_manager.SourceAdded -= OnSourceAdded;
+            LoadPreferences ();
+
             return true;
         }
 
@@ -282,8 +287,6 @@ namespace Banshee.ClutterFlow
                 ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MaxCoverSize, UpdateMaxCoverSize);
                 ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.TextureSize, UpdateTextureSize);
 
-                LoadPreferences ();
-
                 pref_installed = true;
             }
         }
@@ -378,6 +381,8 @@ namespace Banshee.ClutterFlow
 
             UninstallPreferences ();
             RemoveClutterFlow ();
+
+            ClutterHelper.Quit ();
          }
     }
 }

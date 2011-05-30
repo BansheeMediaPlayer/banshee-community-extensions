@@ -49,10 +49,7 @@ namespace Banshee.ClutterFlow
         #region Fields
         private ArtworkManager artwork_manager;
 
-        private CoverManager coverManager;
-        public CoverManager CoverManager {
-            get { return coverManager; }
-        }
+        private CoverManager cover_manager;
 
         public object SyncRoot {
             get { return LookupQueue.SyncRoot; }
@@ -84,13 +81,13 @@ namespace Banshee.ClutterFlow
         #endregion
 
         Thread artwork_thread;
-        public ArtworkLookup (CoverManager coverManager)
+        public ArtworkLookup (CoverManager cover_manager)
         {
             //Log.Debug ("ArtworkLookup ctor ()");
-            this.coverManager = coverManager;
-            CoverManager.TargetIndexChanged += HandleTargetIndexChanged;
+            this.cover_manager = cover_manager;
+            this.cover_manager.TargetIndexChanged += HandleTargetIndexChanged;
             artwork_manager = ServiceManager.Get<ArtworkManager> ();
-            artwork_manager.AddCachedSize (CoverManager.TextureSize);
+            artwork_manager.AddCachedSize (cover_manager.TextureSize);
         }
 
         #region Queueing and index hinting
@@ -110,7 +107,7 @@ namespace Banshee.ClutterFlow
             //Log.Debug ("ArtworkLookup HandleTargetIndexChanged locking focusLock");
             lock (focusLock) {
                 //Log.Debug ("ArtworkLookup HandleTargetIndexChanged locked focusLock");
-                new_focus = coverManager.TargetIndex;
+                new_focus = cover_manager.TargetIndex;
             }
         }
         #endregion
@@ -124,8 +121,8 @@ namespace Banshee.ClutterFlow
             }
             disposed = true;
 
-            CoverManager.TargetIndexChanged -= HandleTargetIndexChanged;
-            Log.Debug ("ArtworkLookup Dispose ()");
+            cover_manager.TargetIndexChanged -= HandleTargetIndexChanged;
+
             Stop ();
             LookupQueue.Dispose ();
         }
@@ -164,7 +161,11 @@ namespace Banshee.ClutterFlow
         // Main work loop of the class.
         private void Run ()
         {
-            if (!disposed) try {
+            if (disposed) {
+                return;
+            }
+
+            try {
                 Log.Debug ("ArtworkLookup Run ()");
                 while (!Stopping) {
                     //Log.Debug ("ArtworkLookup Run locking focusLock");
@@ -175,7 +176,7 @@ namespace Banshee.ClutterFlow
                         new_focus = -1;
                     }
 
-                    while (!Stopping && LookupQueue!=null && LookupQueue.Count==0) {
+                    while (!Stopping && LookupQueue != null && LookupQueue.Count == 0) {
                         lock (SyncRoot) {
                             //Log.Debug ("ArtworkLookup Run - waiting for pulse");
                             bool ret = Monitor.Wait (SyncRoot, 5000);
@@ -187,7 +188,7 @@ namespace Banshee.ClutterFlow
                         return;
                     }
                     ClutterFlowAlbum cover = LookupQueue.Dequeue ();
-                    float size = cover.CoverManager.TextureSize;
+                    float size = cover_manager.TextureSize;
                     string cache_id = cover.PbId;
                     Cairo.ImageSurface surface = artwork_manager.LookupScaleSurface (cache_id, (int) size);
                     if (surface != null) {
@@ -197,8 +198,7 @@ namespace Banshee.ClutterFlow
                     }
                 }
             } finally {
-               Log.Debug ("ArtworkLookup stopped");
-               artwork_thread = null;
+               Log.Debug ("ArtworkLookup Run done");
             }
         }
 

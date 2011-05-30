@@ -109,6 +109,11 @@ namespace ClutterFlow
         #endregion
 
         #region Fields
+        private static TextureHolder texture_holder;
+        public static TextureHolder TextureHolder {
+            get { return texture_holder; }
+        }
+
         protected ClutterFlowTimeline timeline;
         public ClutterFlowTimeline Timeline {
             get {
@@ -120,10 +125,9 @@ namespace ClutterFlow
             }
         }
 
-        protected IActorLoader actorLoader;    //Loads the actors (detaches ClutterFlow from Banshee related dependencies)
+        protected IActorLoader actor_loader;    //Loads the actors (detaches ClutterFlow from Banshee related dependencies)
         public IActorLoader ActorLoader {
-            get { return actorLoader; }
-            internal set { actorLoader = value; }
+            get { return actor_loader; }
         }
 
         public Dictionary<AlphabetChars, int> letter_lookup;
@@ -156,12 +160,12 @@ namespace ClutterFlow
 
         #region Cover-related fields
 
-        protected int textureSize = 128;
+        protected int texture_size;
         public int TextureSize {
-            get { return textureSize; }
+            get { return texture_size; }
             set {
-                if (textureSize != value) {
-                    textureSize = value;
+                if (texture_size != value) {
+                    texture_size = value;
                     InvokeTextureSizeChanged ();
                 }
             }
@@ -171,7 +175,7 @@ namespace ClutterFlow
         public int VisibleCovers {
             get { return visibleCovers; }
             set {
-                if (value!=visibleCovers) {
+                if (value != visibleCovers) {
                     visibleCovers = value;
                     InvokeVisibleCoversChanged ();
                 }
@@ -234,13 +238,16 @@ namespace ClutterFlow
         public ClutterFlowFixedActor EmptyActor {
             get {
                 if (empty_actor == null)
-                    empty_actor = new ClutterFlowFixedActor (this);
+                    empty_actor = new ClutterFlowFixedActor ((uint)behaviour.CoverWidth);
                 return empty_actor;
             }
         }
 
         // list with cover actors
-        internal List<ClutterFlowBaseActor> covers;
+        private List<ClutterFlowBaseActor> covers;
+        public List<ClutterFlowBaseActor> Covers {
+            get { return covers; }
+        }
 
         public int TotalCovers  {
             get { return (covers != null) ? covers.Count : 0; }
@@ -266,9 +273,11 @@ namespace ClutterFlow
         }
 
         #region Initialisation
-        public CoverManager () : base ()
+        public CoverManager (IActorLoader actor_loader, GetDefaultSurface get_default_surface) : base ()
         {
+            this.actor_loader = actor_loader;
             behaviour = new FlowBehaviour (this);
+            texture_holder = new TextureHolder (this.texture_size, get_default_surface);
         }
 
         public override void Dispose ()
@@ -277,8 +286,7 @@ namespace ClutterFlow
                 GLib.Source.Remove (reload_timeout);
             }
 
-            ActorLoader.Dispose ();
-            Behaviour.Dispose ();
+            behaviour.Dispose ();
             timeline.Dispose ();
 
             covers.Clear ();
@@ -297,7 +305,7 @@ namespace ClutterFlow
 
         public void UpdateBehaviour ()
         {
-            if (behaviour!=null && Stage!=null) {
+            if (behaviour != null && Stage != null) {
                 behaviour.Height = Stage.Height;
                 behaviour.Width = Stage.Width;
                 //Console.WriteLine ("behaviour.CoverWidth = " + behaviour.CoverWidth + "behaviour.Height = " + behaviour.Height + " behaviour.Width = " + behaviour.Width);
@@ -316,7 +324,7 @@ namespace ClutterFlow
         }
 
         private uint reload_timeout = 0;
-        internal void ReloadCovers ()
+        public void ReloadCovers ()
         {
             if (reload_timeout > 0) {
                 GLib.Source.Remove(reload_timeout);
@@ -332,7 +340,7 @@ namespace ClutterFlow
             HideAll ();
             Show ();
             if (covers != null && covers.Count != 0) {
-                Console.WriteLine("Reloading Covers");
+                Console.WriteLine("ClutterFlow - Reloading Covers");
 
                 // the old current index
                 int old_target_index = CurrentCover!=null ? covers.IndexOf (CurrentCover) : 0;
@@ -356,7 +364,8 @@ namespace ClutterFlow
                 ResetLetterLookup ();
                 List<ClutterFlowBaseActor> persistent_covers = new List<ClutterFlowBaseActor>();
 
-                covers = new List<ClutterFlowBaseActor>(actorLoader.GetActors (delegate (ClutterFlowBaseActor actor) {
+                covers = actor_loader.GetActors (this);
+                covers.ForEach (delegate (ClutterFlowBaseActor actor) {
                     if (actor.Data.ContainsKey ("isOldCover")) {
                         persistent_covers.Add (actor);
                     }
@@ -365,7 +374,7 @@ namespace ClutterFlow
                     }
 
                     UpdateLetterLookup (actor);
-                }));
+                });
                 InvokeLetterLookupChanged ();
 
                 if (covers.Count == 0) {
@@ -434,9 +443,10 @@ namespace ClutterFlow
 
                 Behaviour.FadeCoversInAndOut (old_covers, truly_pers, new_covers, update_target);
             } else {
-                //Console.WriteLine("Loading Covers");
+                Console.WriteLine("ClutterFlow - Loading Covers");
                 ResetLetterLookup ();
-                covers = actorLoader.GetActors (UpdateLetterLookup);
+                covers = actor_loader.GetActors (this);
+                covers.ForEach (UpdateLetterLookup);
                 InvokeLetterLookupChanged ();
                 TargetIndex = 0;
                 Timeline.JumpToTarget ();

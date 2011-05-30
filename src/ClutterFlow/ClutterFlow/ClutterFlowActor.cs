@@ -39,7 +39,7 @@ namespace ClutterFlow
     public class ClutterFlowActor : ClutterFlowBaseActor
     {
         #region Fields
-        protected static TextureHolder textureHolder;
+        protected static TextureHolder texture_holder;
 
         private static bool is_setup = false;
         public static bool IsSetup {
@@ -81,7 +81,7 @@ namespace ClutterFlow
 
         private void SetShadeSwap () {
             if (!has_shader) {
-                shade.CoglTexture = textureHolder.ShadeTexture;
+                shade.CoglTexture = texture_holder.ShadeTexture;
                 delayed_shade_swap = false;
             }
         }
@@ -95,56 +95,31 @@ namespace ClutterFlow
             get { return shade; }
         }
 
-
-        private NeedSurface getDefaultSurface;
-
         protected bool shifted_outwards;
         #endregion
 
         #region Initialization
-        public ClutterFlowActor (CoverManager cover_manager, NeedSurface getDefaultSurface) : base (cover_manager)
+        public ClutterFlowActor (CoverManager cover_manager) : base (cover_manager)
         {
-            this.getDefaultSurface = getDefaultSurface;
-
             this.ParentSet += HandleParentSet;
             this.LeaveEvent += HandleLeaveEvent;
             this.ButtonPressEvent += HandleButtonPressEvent;
             this.ButtonReleaseEvent += HandleButtonReleaseEvent;
 
+            texture_holder = new TextureHolder (CoverManager.TextureSize, null);
             CoverManager.TextureSizeChanged += HandleTextureSizeChanged;
 
-            IsSetup = SetupStatics ();
             SetupActors ();
         }
 
-        public sealed override void Dispose ()
+        public override void Dispose ()
         {
             this.ParentSet -= HandleParentSet;
             this.LeaveEvent -= HandleLeaveEvent;
             this.ButtonPressEvent -= HandleButtonPressEvent;
             this.ButtonReleaseEvent -= HandleButtonReleaseEvent;
-
-            CoverManager.TextureSizeChanged -= HandleTextureSizeChanged;
-            getDefaultSurface = null;
-
-            DisposeStatics ();
-
-            base.Dispose ();
         }
-        protected virtual bool SetupStatics ()
-        {
-            if (textureHolder == null) {
-                textureHolder = new TextureHolder(CoverManager, getDefaultSurface);
-            }
-            return true;
-        }
-        protected virtual void DisposeStatics ()
-        {
-            if (textureHolder != null) {
-                textureHolder.Dispose ();
-            }
-            textureHolder = null;
-        }
+
         protected virtual void SetupActors ()
         {
             SetAnchorPoint (0, 0);
@@ -201,13 +176,13 @@ namespace ClutterFlow
 
         protected virtual void SetupCover ()
         {
-            if (cover==null) {
-                cover = new Clutter.CairoTexture((uint) CoverManager.TextureSize, (uint) CoverManager.TextureSize*2);
+            if (cover == null) {
+                cover = new Clutter.CairoTexture((uint) CoverManager.TextureSize, (uint) CoverManager.TextureSize * 2);
                 Add (cover);
                 cover.Show ();
                 cover.Realize ();
             }
-            cover.SetSize (CoverManager.Behaviour.CoverWidth, CoverManager.Behaviour.CoverWidth*2);
+            cover.SetSize (CoverManager.Behaviour.CoverWidth, CoverManager.Behaviour.CoverWidth * 2);
             cover.SetPosition (0, 0);
             cover.Opacity = 255;
 
@@ -241,21 +216,18 @@ namespace ClutterFlow
                     else
                         delayed_shade_swap = true;
                 }
-                shade.SetSize (CoverManager.Behaviour.CoverWidth, CoverManager.Behaviour.CoverWidth*2);
+                shade.SetSize (CoverManager.Behaviour.CoverWidth, CoverManager.Behaviour.CoverWidth * 2);
                 shade.SetPosition (0, 0);
                 shade.Opacity = 255;
 
-                if (cover!=null) Shade.Raise (cover);
+                if (cover != null) {
+                    Shade.Raise (cover);
+                }
             }
         }
         #endregion
 
         #region Texture Handling
-        protected virtual Cairo.ImageSurface GetDefaultSurface ()
-        {
-            return (getDefaultSurface!=null) ? getDefaultSurface() : null;
-        }
-
         protected virtual void HandleTextureSizeChanged(object sender, EventArgs e)
         {
             SetupActors();
@@ -344,7 +316,8 @@ namespace ClutterFlow
                         CreateClickClone ();
                         CoverManager.InvokeActorActivated (this);
                     } else
-                        GLib.Timeout.Add ((uint) (CoverManager.DoubleClickTime*0.75), new GLib.TimeoutHandler (delegate { CoverManager.TargetIndex = Index; return false; }));
+                        GLib.Timeout.Add ((uint) (CoverManager.DoubleClickTime*0.75), new GLib.TimeoutHandler (
+                            delegate { CoverManager.TargetIndex = Index; return false; }));
                 }
             }
             args.RetVal = true;

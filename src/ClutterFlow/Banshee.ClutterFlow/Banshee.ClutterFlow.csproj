@@ -118,7 +118,7 @@
     <Compile Include="FloatingQueue.cs" />
     <Compile Include="SortButton.cs" />
     <Compile Include="IndexedQueue.cs" />
-    <Compile Include="ClutterFlowManager.cs" />
+    <Compile Include="AlbumComparer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

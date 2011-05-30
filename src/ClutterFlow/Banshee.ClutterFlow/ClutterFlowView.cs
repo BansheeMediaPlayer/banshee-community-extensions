@@ -71,35 +71,69 @@ namespace Banshee.ClutterFlow
                 return ret;
             }
         }
+
         public AlbumInfo CurrentAlbum {
-            get { return albumLoader.CurrentAlbum; }
+            get {
+                var album_actor = cover_manager.CurrentCover as ClutterFlowAlbum;
+                if (album_actor != null) {
+                    return album_actor.Album;
+                } else {
+                    return null;
+                }
+            }
         }
+
         public int CurrentIndex {
-            get { return albumLoader.CurrentIndex; }
+            get {
+                var album_actor = cover_manager.CurrentCover as ClutterFlowAlbum;
+                if (album_actor != null) {
+                    return album_actor.Index;
+                } else {
+                    return -1;
+                }
+            }
         }
+
         public int CurrentModelIndex {
             get { return AlbumLoader.ConvertIndexToModelIndex (CurrentIndex); }
         }
         #endregion
 
         #region General
-        private AlbumLoader albumLoader;
+        private AlbumLoader album_loader;
         public AlbumLoader AlbumLoader {
-            get { return albumLoader; }
+            get { return album_loader; }
         }
-        private CoverManager coverManager;
+        private CoverManager cover_manager;
         public CoverManager CoverManager {
-            get { return coverManager; }
+            get { return cover_manager; }
         }
 
+        private int model_count;
+
         public virtual IListModel<AlbumInfo> Model {
-            get { return albumLoader.Model; }
+            get { return album_loader.Model; }
         }
 
         public void SetModel (FilterListModel<AlbumInfo> value)
         {
-            albumLoader.Model = value;
+            if (value != album_loader.Model) {
+                if (album_loader.Model != null) {
+                    album_loader.Model.Cleared -= OnModelClearedHandler;
+                    album_loader.Model.Reloaded -= OnModelReloadedHandler;
+                }
+
+                album_loader.Model = value;
+
+                if (album_loader.Model != null) {
+                    album_loader.Model.Cleared += OnModelClearedHandler;
+                    album_loader.Model.Reloaded += OnModelReloadedHandler;
+                    model_count = album_loader.Model.Count;
+                }
+                CoverManager.ReloadCovers ();
+            }
         }
+
         protected bool attached = false;
         public bool Attached {
             get { return attached; }
@@ -192,9 +226,9 @@ namespace Banshee.ClutterFlow
                     }
 
                     if (viewportAngleX < -1f && viewportAngleX > -9f) {
-                        coverManager.SetRotation(RotateAxis.Y, -5f, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZFar);
+                        cover_manager.SetRotation(RotateAxis.Y, -5f, cover_manager.Width*0.5f,cover_manager.Height*0.5f,cover_manager.Behaviour.ZFar);
                     } else {
-                        coverManager.SetRotation(RotateAxis.X, viewportAngleX, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZFar);
+                        cover_manager.SetRotation(RotateAxis.X, viewportAngleX, cover_manager.Width*0.5f,cover_manager.Height*0.5f,cover_manager.Behaviour.ZFar);
                     }
                 }
             }
@@ -213,9 +247,9 @@ namespace Banshee.ClutterFlow
                     }
 
                     if (viewportAngleY > -4f && viewportAngleY < 4f) {
-                        coverManager.SetRotation(RotateAxis.Y, 0, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZFar);
+                        cover_manager.SetRotation(RotateAxis.Y, 0, cover_manager.Width*0.5f,cover_manager.Height*0.5f,cover_manager.Behaviour.ZFar);
                     } else {
-                        coverManager.SetRotation(RotateAxis.Y, viewportAngleY, coverManager.Width*0.5f,coverManager.Height*0.5f,coverManager.Behaviour.ZFar);
+                        cover_manager.SetRotation(RotateAxis.Y, viewportAngleY, cover_manager.Width*0.5f,cover_manager.Height*0.5f,cover_manager.Behaviour.ZFar);
                     }
                 }
             }
@@ -229,8 +263,8 @@ namespace Banshee.ClutterFlow
             SetSizeRequest (300, 200);
             Clutter.Global.MotionEventsEnabled = true;
 
-            coverManager = new CoverManager ();
-            albumLoader = new AlbumLoader (coverManager);
+            album_loader = new AlbumLoader ();
+            cover_manager = new CoverManager (album_loader, GetDefaultSurface);
 
             AttachEvents ();
 
@@ -240,10 +274,11 @@ namespace Banshee.ClutterFlow
             SetupWidgetBar ();
         }
 
-        public void AttachEvents ()
+        private void AttachEvents ()
         {
-            if (attached)
+            if (attached) {
                 return;
+            }
             attached = true;
 
             Stage.AllocationChanged += HandleAllocationChanged;
@@ -251,10 +286,10 @@ namespace Banshee.ClutterFlow
             Stage.ButtonReleaseEvent += HandleButtonReleaseEvent;
             Stage.ButtonPressEvent += HandleButtonPressEvent;
             Stage.MotionEvent += HandleMotionEvent;
-            albumLoader.ActorActivated += HandleActorActivated;
+            cover_manager.ActorActivated += HandleActorActivated;
         }
 
-        public void DetachEvents ()
+        private void DetachEvents ()
         {
             if (!attached)
                 return;
@@ -264,7 +299,7 @@ namespace Banshee.ClutterFlow
             Stage.ButtonReleaseEvent -= HandleButtonReleaseEvent;
             Stage.ButtonPressEvent -= HandleButtonPressEvent;
             Stage.MotionEvent -= HandleMotionEvent;
-            albumLoader.ActorActivated -= HandleActorActivated;
+            cover_manager.ActorActivated -= HandleActorActivated;
 
             attached = false;
         }
@@ -272,43 +307,42 @@ namespace Banshee.ClutterFlow
         protected bool disposed = false;
         public override void Dispose ()
         {
-            if (disposed)
+            if (disposed) {
                 return;
+            }
             disposed = true;
 
             DetachEvents ();
             AlbumLoader.Dispose ();
             CoverManager.Dispose ();
-
-            //base.Dispose ();
         }
 
 
         protected void SetupViewport ()
         {
             Stage.Color = new Clutter.Color (0x00, 0x00, 0x00, 0xff);
-            coverManager.SetRotation (RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
-            Stage.Add (coverManager);
+            cover_manager.SetRotation (RotateAxis.X, viewportAngleX, Stage.Width/2, Stage.Height/2,0);
+            Stage.Add (cover_manager);
 
-            coverManager.EmptyActor.SetToPb (
-                IconThemeUtils.LoadIcon (coverManager.TextureSize, "gtk-stop", "clutterflow-large.png")
+            cover_manager.EmptyActor.SetToPb (
+                IconThemeUtils.LoadIcon (cover_manager.TextureSize, "gtk-stop", "clutterflow-large.png")
             );
             CoverManager.DoubleClickTime = (uint) Gtk.Settings.GetForScreen (this.Screen).DoubleClickTime;
-            coverManager.LowerBottom ();
-            coverManager.Show ();
+            cover_manager.LowerBottom ();
+            cover_manager.Show ();
         }
 
         protected void SetupSlider ()
         {
-            slider = new ClutterFlowSlider (400, 40, coverManager);
+            slider = new ClutterFlowSlider (400, 40, cover_manager);
             Stage.Add (slider);
         }
 
         protected void SetupLabels () {
-            caption_cover = new CoverCaption (coverManager, "Sans Bold 10", new Clutter.Color(1.0f,1.0f,1.0f,1.0f));
+            caption_cover = new CoverCaption (cover_manager, "Sans Bold 10", new Clutter.Color(1.0f,1.0f,1.0f,1.0f));
             Stage.Add (caption_cover);
 
-            caption_track = new TrackCaption (coverManager, "Sans Bold 10", new Clutter.Color(1.0f,1.0f,1.0f,1.0f));
+            caption_track = new TrackCaption (cover_manager, "Sans Bold 10", new Clutter.Color(1.0f,1.0f,1.0f,1.0f));
             Stage.Add (caption_track);
         }
 
@@ -340,14 +374,26 @@ namespace Banshee.ClutterFlow
         //Update the coverStage position:
         protected void RedrawViewport ()
         {
-            coverManager.UpdateBehaviour ();
-            coverManager.SetRotation (RotateAxis.X, viewportAngleX, coverManager.Width*0.5f, coverManager.Height*0.5f,0);
-            if (!coverManager.IsVisible) {
-                coverManager.Show ();
+            cover_manager.UpdateBehaviour ();
+            cover_manager.SetRotation (RotateAxis.X, viewportAngleX, cover_manager.Width*0.5f, cover_manager.Height*0.5f,0);
+            if (!cover_manager.IsVisible) {
+                cover_manager.Show ();
             }
-            coverManager.LowerBottom ();
+            cover_manager.LowerBottom ();
         }
         #endregion
+
+        protected Cairo.ImageSurface GetDefaultSurface ()
+        {
+            Cairo.ImageSurface surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, CoverManager.TextureSize, CoverManager.TextureSize);
+            Cairo.Context context = new Cairo.Context(surface);
+            Gdk.CairoHelper.SetSourcePixbuf(context, IconThemeUtils.LoadIcon (CoverManager.TextureSize, "media-optical", "browser-album-cover"), 0, 0);
+            context.Paint();
+            //((IDisposable) context.Target).Dispose();
+            ((IDisposable) context).Dispose();
+            return surface;
+        }
+
 
         #region Event Handling
 
@@ -364,9 +410,12 @@ namespace Banshee.ClutterFlow
         }
 
 
-        private void HandleActorActivated (ClutterFlowAlbum actor, EventArgs e)
+        private void HandleActorActivated (ClutterFlowBaseActor actor, EventArgs e)
         {
-            UpdateAlbum (actor);
+            var album_actor = actor as ClutterFlowAlbum;
+            if (album_actor != null) {
+                UpdateAlbum (album_actor);
+            }
         }
 
         private void HandleButtonPressEvent (object o, Clutter.ButtonPressEventArgs args)
@@ -433,15 +482,31 @@ namespace Banshee.ClutterFlow
         public void Scroll (bool Backward)
         {
             if (Backward) {
-                coverManager.TargetIndex--;
+                cover_manager.TargetIndex--;
             } else {
-                coverManager.TargetIndex++;
+                cover_manager.TargetIndex++;
             }
         }
 
+        private void ScrollTo (string key)
+        {
+            ClutterFlowBaseActor actor = null;
+            album_loader.Cache.TryGetValue (key, out actor);
+            if (actor != null && cover_manager.Covers.Contains (actor)) {
+                cover_manager.TargetIndex = actor.Index;
+            }
+        }
+
+        public void ScrollTo (AlbumInfo album)
+        {
+            cover_manager.Timeline.Timeout = 500; //give 'm some time to load the song etc.
+            ScrollTo (ClutterFlowAlbum.CreateCacheKey (album));
+        }
+
+
         public void UpdateAlbum ()
         {
-            UpdateAlbum (albumLoader.CurrentActor);
+            UpdateAlbum (cover_manager.CurrentCover as ClutterFlowAlbum);
         }
 
         public void UpdateAlbum (ClutterFlowAlbum actor)
@@ -450,6 +515,19 @@ namespace Banshee.ClutterFlow
             ActiveIndex = actor.Index;
             if (UpdatedAlbum != null) {
                 UpdatedAlbum (ActiveAlbum, EventArgs.Empty);
+            }
+        }
+
+        protected void OnModelClearedHandler (object o, EventArgs args)
+        {
+            CoverManager.ReloadCovers ();
+        }
+
+        protected void OnModelReloadedHandler (object o, EventArgs args)
+        {
+            if (model_count != album_loader.Model.Count) {
+                model_count = album_loader.Model.Count;
+                CoverManager.ReloadCovers ();
             }
         }
         #endregion

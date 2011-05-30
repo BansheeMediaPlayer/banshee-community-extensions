@@ -140,16 +140,20 @@ namespace Banshee.ClutterFlow
         protected bool disposed = false;
         public override void Dispose ()
         {
-            if (disposed)
+            if (disposed) {
                 return;
+            }
             disposed = true;
 
             ResetSource ();
 
             video_window.Hidden -= OnFullscreenWindowHidden;
-            FilterView.UpdatedAlbum -= HandleUpdatedAlbum;
-            FilterView.PMButton.Toggled -= HandlePMButtonToggled;
-            FilterView.FSButton.Toggled -= HandleFSButtonToggled;
+            filter_view.UpdatedAlbum -= HandleUpdatedAlbum;
+            filter_view.PMButton.Toggled -= HandlePMButtonToggled;
+            filter_view.FSButton.Toggled -= HandleFSButtonToggled;
+            filter_view.SortButton.Toggled -= HandleSortButtonToggled;
+
+            FilterView.AlbumLoader.SortingChanged -= HandleSortingChanged;
 
             ServiceManager.SourceManager.ActiveSourceChanged -= HandleActiveSourceChanged;
             ServiceManager.PlaybackController.TrackStarted -= OnPlaybackControllerTrackStarted;
@@ -157,8 +161,10 @@ namespace Banshee.ClutterFlow
             ServiceManager.PlayerEngine.DisconnectEvent (OnPlayerEvent);
 
             Reset ();
-            if (filter_view.Parent!=null) frame.Remove (filter_view);
-            filter_view.DetachEvents ();
+            if (filter_view.Parent != null) {
+                frame.Remove (filter_view);
+            }
+            filter_view.Dispose ();
 
             fullscreen_adapter.Dispose ();
             screensaver.Dispose ();
@@ -239,7 +245,7 @@ namespace Banshee.ClutterFlow
 
         protected void SetupFilterView ()
         {
-            filter_view = ClutterFlowManager.FilterView;
+            filter_view = new ClutterFlowView ();
             filter_view.FSButton.IsActive = IsFullscreen;
             filter_view.PMButton.IsActive = InPartyMode;
             filter_view.LabelTrackIsVisible = ClutterFlowSchemas.DisplayTitle.Get () && IsFullscreen;
@@ -406,10 +412,10 @@ namespace Banshee.ClutterFlow
 
         private void SetupPlaybackHandling ()
         {
-            FilterView.UpdatedAlbum += HandleUpdatedAlbum;
-            FilterView.PMButton.Toggled += HandlePMButtonToggled;
-            FilterView.FSButton.Toggled += HandleFSButtonToggled;
-            FilterView.SortButton.Toggled += HandleSortButtonToggled;
+            filter_view.UpdatedAlbum += HandleUpdatedAlbum;
+            filter_view.PMButton.Toggled += HandlePMButtonToggled;
+            filter_view.FSButton.Toggled += HandleFSButtonToggled;
+            filter_view.SortButton.Toggled += HandleSortButtonToggled;
 
             ServiceManager.SourceManager.ActiveSourceChanged += HandleActiveSourceChanged;
             ServiceManager.PlaybackController.TrackStarted += OnPlaybackControllerTrackStarted;
@@ -459,6 +465,8 @@ namespace Banshee.ClutterFlow
 
         private void HandleSortingChanged (object sender, EventArgs e)
         {
+            FilterView.CoverManager.ReloadCovers ();
+
             if (FilterView.AlbumLoader.SortBy.GetType () == typeof(AlbumArtistComparer)) {
                 FilterView.SortButton.IsActive = false;
             } else {
@@ -498,7 +506,7 @@ namespace Banshee.ClutterFlow
                         DatabaseAlbumInfo album = DatabaseAlbumInfo.FindOrCreate (
                                 DatabaseArtistInfo.FindOrCreate (current_track.AlbumArtist, current_track.AlbumArtistSort),
                                 current_track.AlbumTitle, current_track.AlbumTitleSort, current_track.IsCompilation);
-                        FilterView.AlbumLoader.ScrollTo(album);
+                        FilterView.ScrollTo (album);
                     }
                     transitioned_track = ServiceManager.PlayerEngine.CurrentTrack;
                 }

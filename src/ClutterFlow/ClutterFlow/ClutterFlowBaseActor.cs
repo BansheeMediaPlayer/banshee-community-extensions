@@ -41,9 +41,10 @@ namespace ClutterFlow
     public abstract class ClutterFlowBaseActor : Clutter.Group, IIndexable
     {
         #region Fields
-        private CoverManager coverManager;
-        public virtual CoverManager CoverManager {
-            get { return coverManager; }
+        private CoverManager cover_manager;
+        public CoverManager CoverManager {
+            get { return cover_manager; }
+            set { cover_manager = value ; }
         }
 
         protected string cache_key = "";
@@ -87,13 +88,16 @@ namespace ClutterFlow
         }
         #endregion
 
+        public ClutterFlowBaseActor () : base ()
+        { }
+
         public ClutterFlowBaseActor (CoverManager cover_manager) : base ()
         {
-            coverManager = cover_manager;
-            coverManager.Add (this);
+            this.cover_manager = cover_manager;
+            this.cover_manager.Add (this);
         }
 
-        protected bool disposed = false;
+        private bool disposed = false;
         public override void Dispose ()
         {
             if (disposed) {
@@ -101,7 +105,7 @@ namespace ClutterFlow
             }
             disposed = true;
 
-            coverManager.Remove (this);
+            cover_manager.Remove (this);
 
             base.Dispose ();
         }

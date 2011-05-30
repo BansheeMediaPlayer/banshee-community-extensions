@@ -214,11 +214,11 @@ namespace ClutterFlow
             CoverManager.TargetIndexChanged -= HandleTargetIndexChanged;
             CoverManager.Timeline.NewFrame -= HandleNewFrame;
 
-            if (fadeInAnim!=null) {
+            if (fadeInAnim != null) {
                 fadeInAnim.CompleteAnimation ();
                 fadeInAnim = null;
             }
-            if (fadeOutAnim!=null) {
+            if (fadeOutAnim != null) {
                 fadeOutAnim.CompleteAnimation ();
                 fadeOutAnim = null;
             }

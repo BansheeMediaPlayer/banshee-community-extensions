@@ -3,11 +3,11 @@ LINK = $(BANSHEE_LIBS) $(BANSHEE_NOWPLAYING_LIBS) $(CLUTTER_SHARP_LIBS) -r:$(DIR
 ASSEMBLY_GCONF_SCHEMA = banshee-plugin-alarm.schemas.in
 
 SOURCES =  \
+	AlbumComparer.cs \
 	AlbumLoader.cs \
 	ArtworkLookup.cs \
 	ClutterFlowAlbum.cs \
 	ClutterFlowContents.cs \
-	ClutterFlowManager.cs \
 	ClutterFlowSchemas.cs \
 	ClutterFlowService.cs \
 	ClutterFlowView.cs \

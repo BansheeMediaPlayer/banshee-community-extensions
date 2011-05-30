@@ -31,14 +31,11 @@ using Gdk;
 
 namespace ClutterFlow
 {
-    public delegate Cairo.ImageSurface NeedSurface ();
+    public delegate Cairo.ImageSurface GetDefaultSurface ();
 
     public class TextureHolder : IDisposable {
         #region Fields
-        private CoverManager cover_manager;
-        public CoverManager CoverManager {
-            get { return cover_manager; }
-        }
+        private int texture_size;
 
         protected Cairo.ImageSurface default_surface;
         public Cairo.ImageSurface DefaultSurface {
@@ -70,16 +67,14 @@ namespace ClutterFlow
             }
         }
 
-        public NeedSurface GetDefaultSurface;
+        private GetDefaultSurface GetDefaultSurface;
         #endregion
 
         #region Initialisation
-        public TextureHolder (CoverManager coverManager, NeedSurface getDefaultSurface)
+        public TextureHolder (int texture_size, GetDefaultSurface get_default_surface)
         {
-            this.cover_manager = coverManager;
-            CoverManager.TextureSizeChanged += HandleTextureSizeChanged;
-            this.GetDefaultSurface = getDefaultSurface;
-            ReloadDefaultTextures ();
+            this.texture_size = texture_size;
+            this.GetDefaultSurface = get_default_surface;
         }
 
         protected bool disposed = false;
@@ -90,7 +85,6 @@ namespace ClutterFlow
             }
             disposed = true;
 
-            CoverManager.TextureSizeChanged -= HandleTextureSizeChanged;
 
             if (default_surface != null) {
                 ((IDisposable) default_surface).Dispose ();
@@ -101,7 +95,7 @@ namespace ClutterFlow
             shade_texture = IntPtr.Zero;
         }
 
-        public void ReloadDefaultTextures ()
+        private void ReloadDefaultTextures ()
         {
             if (default_surface != null) {
                 ((IDisposable) default_surface).Dispose ();
@@ -112,10 +106,10 @@ namespace ClutterFlow
             SetupShadeTexture ();
         }
 
-        public void SetupDefaultTexture ()
+        private void SetupDefaultTexture ()
         {
-            if (default_texture==IntPtr.Zero) {
-                if (DefaultSurface!=null) {
+            if (default_texture == IntPtr.Zero) {
+                if (DefaultSurface != null) {
                     Cogl.PixelFormat fm;
                     if (DefaultSurface.Format == Cairo.Format.ARGB32) {
                         fm = PixelFormat.Argb8888Pre;
@@ -124,22 +118,21 @@ namespace ClutterFlow
                         fm = PixelFormat.Rgb888;
 
                     unsafe {
-
                         default_texture = ClutterHelper.cogl_texture_new_from_data((uint) DefaultSurface.Width, (uint) DefaultSurface.Height, Cogl.TextureFlags.None,
                                                                  fm, Cogl.PixelFormat.Any, (uint) DefaultSurface.Stride, DefaultSurface.DataPtr);
                     }
                 } else {
-                    default_texture = Cogl.Texture.NewWithSize ((uint) cover_manager.TextureSize, (uint) cover_manager.TextureSize,
+                    default_texture = Cogl.Texture.NewWithSize ((uint) texture_size, (uint) texture_size,
                                                              Cogl.TextureFlags.None, Cogl.PixelFormat.Any);
                 }
             }
         }
 
-        public void SetupShadeTexture ()
+        private void SetupShadeTexture ()
         {
             if (shade_texture==IntPtr.Zero) {
 
-                Gdk.Pixbuf finalPb = new Gdk.Pixbuf (Colorspace.Rgb, true, 8, cover_manager.TextureSize, cover_manager.TextureSize*2);
+                Gdk.Pixbuf finalPb = new Gdk.Pixbuf (Colorspace.Rgb, true, 8, texture_size, texture_size);
 
                 unsafe {
                     int dst_rowstride = finalPb.Rowstride;

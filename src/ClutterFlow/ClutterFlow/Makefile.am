@@ -3,7 +3,6 @@ LINK = $(CLUTTER_SHARP_LIBS) -r:Mono.Cairo -pkg:gtk-sharp-2.0
 GMCS_FLAGS = -unsafe
 
 SOURCES =  \
-	ActorLoader.cs \
 	AlphabetBar.cs \
 	AlphabetButton.cs \
 	Caption.cs \
@@ -24,6 +23,7 @@ SOURCES =  \
 	CoverCaption.cs \
 	CoverManager.cs \
 	FlowBehaviour.cs \
+	IActorLoader.cs \
 	TextureHolder.cs \
 	TrackCaption.cs
 

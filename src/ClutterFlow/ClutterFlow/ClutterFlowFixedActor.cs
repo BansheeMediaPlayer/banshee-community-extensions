@@ -32,17 +32,16 @@ using ClutterFlow;
 
 namespace ClutterFlow
 {
-
-
     public class ClutterFlowFixedActor : ClutterFlowBaseActor
     {
-
         #region Fields
-        protected Clutter.CairoTexture texture;
+        private uint cover_width;
+
+        private Clutter.CairoTexture texture;
         public Clutter.CairoTexture Texture {
             get {
                 if (texture==null) {
-                    texture = new Clutter.CairoTexture ((uint) CoverManager.Behaviour.CoverWidth, (uint) CoverManager.Behaviour.CoverWidth*2);
+                    texture = new Clutter.CairoTexture (cover_width, cover_width * 2);
                     Add (texture);
                     texture.Show ();
                 }
@@ -74,11 +73,11 @@ namespace ClutterFlow
         }
         #endregion
 
-        public ClutterFlowFixedActor (CoverManager cover_manager) : base (cover_manager)
+        public ClutterFlowFixedActor (uint cover_width) : base ()
         {
+            this.cover_width = cover_width;
             IsReactive = false;
         }
-
 
         public void SetToPb (Gdk.Pixbuf pb)
         {

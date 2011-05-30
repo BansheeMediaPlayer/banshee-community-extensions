@@ -81,42 +81,26 @@ namespace Banshee.ClutterFlow
         #endregion
 
         #region Initialization
-        public ClutterFlowAlbum (AlbumInfo album, CoverManager coverManager) : base (coverManager, null)
+        public ClutterFlowAlbum (AlbumInfo album, CoverManager coverManager) : base (coverManager)
         {
             this.album = album;
-            artwork_lookup.Enqueue(this);
-        }
-
-        protected override bool SetupStatics ()
-        {
             if (artwork_lookup == null) {
                 artwork_lookup = new ArtworkLookup (CoverManager);
             }
-            return base.SetupStatics ();
+            artwork_lookup.Enqueue(this);
         }
 
-        protected override void DisposeStatics ()
+        public override void Dispose ()
         {
             if (artwork_lookup != null) {
                 artwork_lookup.Dispose ();
             }
             artwork_lookup = null;
-            base.DisposeStatics ();
+            base.Dispose ();
         }
         #endregion
 
         #region Texture Handling
-        protected override Cairo.ImageSurface GetDefaultSurface ()
-        {
-            Cairo.ImageSurface surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, CoverManager.TextureSize, CoverManager.TextureSize);
-            Cairo.Context context = new Cairo.Context(surface);
-            Gdk.CairoHelper.SetSourcePixbuf(context, IconThemeUtils.LoadIcon (CoverManager.TextureSize, "media-optical", "browser-album-cover"), 0, 0);
-            context.Paint();
-            //((IDisposable) context.Target).Dispose();
-            ((IDisposable) context).Dispose();
-            return  surface;
-        }
-
         protected override void HandleTextureSizeChanged (object sender, System.EventArgs e)
         {
             artwork_lookup.Enqueue(this);
