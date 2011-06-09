@@ -257,11 +257,12 @@ namespace ClutterFlow
         }
 
         #region Initialisation
-        public CoverManager (IActorLoader actor_loader, GetDefaultSurface get_default_surface) : base ()
+        public CoverManager (IActorLoader actor_loader, GetDefaultSurface get_default_surface, int texture_size) : base ()
         {
             this.actor_loader = actor_loader;
+            this.texture_size = texture_size;
             behaviour = new FlowBehaviour (this);
-            texture_holder = new TextureHolder (this.texture_size, get_default_surface);
+            texture_holder = new TextureHolder (texture_size, get_default_surface);
         }
 
         public override void Dispose ()

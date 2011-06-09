@@ -264,7 +264,7 @@ namespace Banshee.ClutterFlow
             Clutter.Global.MotionEventsEnabled = true;
 
             album_loader = new AlbumLoader ();
-            cover_manager = new CoverManager (album_loader, GetDefaultSurface);
+            cover_manager = new CoverManager (album_loader, GetDefaultSurface, ClutterFlowSchemas.TextureSize.Get ());
 
             AttachEvents ();
 

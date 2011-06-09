@@ -39,8 +39,6 @@ namespace ClutterFlow
     public class ClutterFlowActor : ClutterFlowBaseActor
     {
         #region Fields
-        protected static TextureHolder texture_holder;
-
         private static bool is_setup = false;
         public static bool IsSetup {
             get { return is_setup; }
@@ -81,7 +79,7 @@ namespace ClutterFlow
 
         private void SetShadeSwap () {
             if (!has_shader) {
-                shade.CoglTexture = texture_holder.ShadeTexture;
+                shade.CoglTexture = CoverManager.TextureHolder.ShadeTexture;
                 delayed_shade_swap = false;
             }
         }
@@ -105,8 +103,6 @@ namespace ClutterFlow
             this.LeaveEvent += HandleLeaveEvent;
             this.ButtonPressEvent += HandleButtonPressEvent;
             this.ButtonReleaseEvent += HandleButtonReleaseEvent;
-
-            texture_holder = new TextureHolder (CoverManager.TextureSize, null);
 
             SetupActors ();
         }
