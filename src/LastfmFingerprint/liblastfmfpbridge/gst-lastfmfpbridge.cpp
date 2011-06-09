@@ -188,12 +188,6 @@ Lastfmfp_getVersion (LastfmfpAudio *ma)
 static void
 Lastfmfp_cb_have_data(GstElement *element, GstBuffer *buffer, GstPad *pad, LastfmfpAudio *ma)
 {
-    gint buffersamples;
-    gint bufferpos;
-    gint i;
-    gint j;
-    gint fill;
-
     // if data continues to flow/EOS is not yet processed
     if (ma->quit)
         return;
@@ -232,8 +226,6 @@ extern "C"  LastfmfpAudio*
 Lastfmfp_initialize(gint seconds)
 {
     LastfmfpAudio *ma;
-    gint i;
-
     
     ma = g_new0(LastfmfpAudio, 1);
     ma->seconds = seconds;
