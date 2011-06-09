@@ -426,7 +426,9 @@ namespace Banshee.ClutterFlow
 
         private void HandleUpdatedAlbum(object sender, EventArgs e)
         {
-            if (!IsActiveSource) ServiceManager.SourceManager.SetActiveSource (source);
+            if (!IsActiveSource) {
+                ServiceManager.SourceManager.SetActiveSource (source);
+            }
             SelectActiveAlbum ();
             UpdatePlayback ();
             FilterView.PMButton.SetSilent (InPartyMode);
@@ -434,7 +436,9 @@ namespace Banshee.ClutterFlow
 
         private void HandlePMButtonToggled(object sender, EventArgs e)
         {
-            if (!IsActiveSource) ServiceManager.SourceManager.SetActiveSource (source);
+            if (!IsActiveSource) {
+                ServiceManager.SourceManager.SetActiveSource (source);
+            }
             if (FilterView.PMButton.IsActive) {
                 SelectAllTracks ();
                 UpdatePlayback ();

@@ -134,34 +134,38 @@ namespace ClutterFlow.Buttons
             base.Initialise ();
         }
 
-        protected virtual void CreateTextures() {
-            if (textures==null||textures.Length==0) InitTextures();
+        protected virtual void CreateTextures () {
+            if (textures == null || textures.Length == 0) {
+                InitTextures ();
+            }
             for (int i=0; i < textures.Length; i++) {
-                if (textures[i]!=null) {
+                if (textures[i] != null) {
                     GC.SuppressFinalize (textures[i]);
-                    if (textures[i].Parent!=null) ((Container) textures[i].Parent).Remove(textures[i]);
+                    if (textures[i].Parent != null) {
+                        ((Container) textures[i].Parent).Remove(textures[i]);
+                    }
                 }
                 textures[i] = new Clutter.CairoTexture((uint) Width,(uint) Height);
-                Add(textures[i]);
-                CreateTexture(textures[i], (byte) i);
+                Add (textures[i]);
+                CreateTexture (textures[i], (byte) i);
             }
         }
 
-        protected virtual void InitTextures() {
+        protected virtual void InitTextures () {
             textures = new CairoTexture[3];
         }
         #endregion
 
         #region Rendering
-        protected virtual void CreateTexture(CairoTexture texture, int with_state) {
+        protected virtual void CreateTexture (CairoTexture texture, int with_state) {
             throw new System.NotImplementedException ();
         }
         #endregion
 
         public override void Update() {
-            HideAll();
-            StateTexture.Show();
-            Show();
+            HideAll ();
+            StateTexture.Show ();
+            Show ();
         }
 
     }

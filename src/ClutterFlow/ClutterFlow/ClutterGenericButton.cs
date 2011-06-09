@@ -38,7 +38,7 @@ namespace ClutterFlow.Buttons
     {
         CreateTextureMethod createTexture = null;
 
-        public ClutterGenericButton(uint width, uint height, int state, CreateTextureMethod createTexture) : base (width, height, state, false)
+        public ClutterGenericButton (uint width, uint height, int state, CreateTextureMethod createTexture) : base (width, height, state, false)
         {
             this.createTexture = createTexture;
             Initialise ();
@@ -46,8 +46,11 @@ namespace ClutterFlow.Buttons
 
         protected override void CreateTexture (Clutter.CairoTexture texture, int with_state)
         {
-            if (createTexture!=null) createTexture(texture, with_state);
-            else base.CreateTexture (texture, with_state);
+            if (createTexture != null) {
+                createTexture (texture, with_state);
+            } else {
+                base.CreateTexture (texture, with_state);
+            }
         }
 
     }
