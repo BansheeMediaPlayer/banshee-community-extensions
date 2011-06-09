@@ -107,7 +107,6 @@ namespace ClutterFlow
             this.ButtonReleaseEvent += HandleButtonReleaseEvent;
 
             texture_holder = new TextureHolder (CoverManager.TextureSize, null);
-            CoverManager.TextureSizeChanged += HandleTextureSizeChanged;
 
             SetupActors ();
         }
@@ -224,13 +223,6 @@ namespace ClutterFlow
                     Shade.Raise (cover);
                 }
             }
-        }
-        #endregion
-
-        #region Texture Handling
-        protected virtual void HandleTextureSizeChanged(object sender, EventArgs e)
-        {
-            SetupActors();
         }
         #endregion
 

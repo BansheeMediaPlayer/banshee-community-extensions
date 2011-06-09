@@ -34,6 +34,7 @@ using Banshee.Library;
 using Banshee.Sources;
 using Banshee.Sources.Gui;
 using Banshee.Preferences;
+using Banshee.Preferences.Gui;
 
 using ClutterFlow;
 
@@ -270,6 +271,8 @@ namespace Banshee.ClutterFlow
         protected void InstallPreferences ()
         {
             if (!pref_installed) {
+                preference_service.InstallWidgetAdapters += OnPreferencesServiceInstallWidgetAdapters;
+
                 pref_page = preference_service.Add(new Page("clutterflow",
                                                             AddinManager.CurrentLocalizer.GetString ("ClutterFlow"), 10));
 
@@ -283,6 +286,7 @@ namespace Banshee.ClutterFlow
 
                 dimensions = pref_page.Add (new Section ("dimensions",
                     AddinManager.CurrentLocalizer.GetString ("Dimensions"), 2));
+                dimensions.Add (new VoidPreference ("dimensions-desc"));
                 ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MinCoverSize, UpdateMinCoverSize);
                 ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.MaxCoverSize, UpdateMaxCoverSize);
                 ClutterFlowSchemas.AddToSection (dimensions, ClutterFlowSchemas.TextureSize, UpdateTextureSize);
@@ -360,12 +364,27 @@ namespace Banshee.ClutterFlow
 
         private void UninstallPreferences ()
         {
+            preference_service.InstallWidgetAdapters -= OnPreferencesServiceInstallWidgetAdapters;
+
             preference_service.Remove (pref_page);
             pref_page = null;
             general = null;
             dimensions = null;
             pref_installed = false;
         }
+
+        private void OnPreferencesServiceInstallWidgetAdapters (object o, EventArgs args)
+        {
+            if (dimensions == null) {
+                return;
+            }
+
+            var description_label = new DescriptionLabel (AddinManager.CurrentLocalizer.GetString (
+                "For changes to these values to take effect, you need to restart Banshee"));
+            dimensions["dimensions-desc"].ShowLabel = false;
+            dimensions["dimensions-desc"].DisplayWidget = description_label;
+        }
+
         #endregion
 
         private bool disposed = false;

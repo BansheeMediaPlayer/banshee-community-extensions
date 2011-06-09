@@ -100,13 +100,6 @@ namespace Banshee.ClutterFlow
         }
         #endregion
 
-        #region Texture Handling
-        protected override void HandleTextureSizeChanged (object sender, System.EventArgs e)
-        {
-            artwork_lookup.Enqueue(this);
-        }
-        #endregion
-
         public virtual bool Equals (ClutterFlowAlbum other)
         {
             return other.CacheKey == this.CacheKey;

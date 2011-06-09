@@ -77,17 +77,6 @@ namespace ClutterFlow
             }
         }
 
-        public event EventHandler TextureSizeChanged;
-        protected void InvokeTextureSizeChanged ()
-        {
-            //TODO use a timeout here, so that if the function is called multiple times
-            // we don't get endless recalculation
-            var handler = TextureSizeChanged;
-            if (handler != null) {
-                handler (this, EventArgs.Empty);
-            }
-        }
-
         public event EventHandler<EventArgs> VisibleCoversChanged;
         protected void InvokeVisibleCoversChanged ()
         {
@@ -163,12 +152,7 @@ namespace ClutterFlow
         protected int texture_size;
         public int TextureSize {
             get { return texture_size; }
-            set {
-                if (texture_size != value) {
-                    texture_size = value;
-                    InvokeTextureSizeChanged ();
-                }
-            }
+            set { texture_size = value; }
         }
 
         protected int visibleCovers = 17;

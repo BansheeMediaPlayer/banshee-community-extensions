@@ -95,17 +95,6 @@ namespace ClutterFlow
             shade_texture = IntPtr.Zero;
         }
 
-        private void ReloadDefaultTextures ()
-        {
-            if (default_surface != null) {
-                ((IDisposable) default_surface).Dispose ();
-            }
-            default_surface = null; //reset this so it gets reloaded
-
-            SetupDefaultTexture ();
-            SetupShadeTexture ();
-        }
-
         private void SetupDefaultTexture ()
         {
             if (default_texture == IntPtr.Zero) {
@@ -161,11 +150,6 @@ namespace ClutterFlow
             }
         }
         #endregion
-
-        protected void HandleTextureSizeChanged (object sender, EventArgs e)
-        {
-            ReloadDefaultTextures ();
-        }
     }
 }
 
