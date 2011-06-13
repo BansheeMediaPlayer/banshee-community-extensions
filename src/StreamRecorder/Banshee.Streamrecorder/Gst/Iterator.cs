@@ -37,10 +37,10 @@ namespace Banshee.Streamrecorder.Gst
         {
         }
 
-        [DllImport("libgstreamer-0.10.dll")]
+        [DllImport("libgstreamer-0.10.so.0")]
         static extern int gst_iterator_next (IntPtr iterator, out IntPtr elem);
 
-        [DllImport("libgstreamer-0.10.dll")]
+        [DllImport("libgstreamer-0.10.so.0")]
         static extern void gst_iterator_resync (IntPtr iterator);
 
         private class Enumerator : IEnumerator
@@ -111,7 +111,7 @@ namespace Banshee.Streamrecorder.Gst
             return this.enumerator;
         }
 
-        [DllImport("libgstreamer-0.10.dll")]
+        [DllImport("libgstreamer-0.10.so.0")]
         static extern void gst_iterator_free (IntPtr iterator);
 
         ~Iterator ()
