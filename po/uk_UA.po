@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
+# Сергій Гаврилов <sergiovana@bigmir.net>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
-"POT-Creation-Date: 2011-03-22 23:13+0100\n"
-"PO-Revision-Date: 2011-04-11 21:47+0000\n"
+"POT-Creation-Date: 2011-06-09 23:14+0200\n"
+"PO-Revision-Date: 2011-06-10 00:24+0000\n"
 "Last-Translator: Sergiy_Gavrylov <sergiovana@bigmir.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -204,7 +204,7 @@ msgstr "виконує '{0}'"
 msgid "Skip this item"
 msgstr "Пропустити цей елемент"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs:263
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs:269
 msgid "Track list"
 msgstr "Список доріжок"
 
@@ -221,27 +221,19 @@ msgstr ""
 "прокручування"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:57
-msgid "Enable threaded loading of artwork"
-msgstr "Увімкнути потокове завантаження обкладинок"
-
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:58
-msgid "If enabled ClutterFlow will use threading to load it's artwork"
-msgstr "Якщо увімкнено, ClutterFlow завантажуватиме обкладинки через потік"
-
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:64
 msgid "Unfolds the track list"
 msgstr "Розкривати список доріжок"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:65
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:58
 msgid "If checked it will display the track list when not in fullscreen mode"
 msgstr ""
 "Якщо позначено, список доріжок показуватиметься в режимі не на повний екран"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:85
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:78
 msgid "Immediately apply playback mode changes"
 msgstr "Негайно застосувати змінений режим відтворення"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:86
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:79
 msgid ""
 "Starts playing a new song immediately after the playback mode changed (Party"
 " Mode or Album Mode)"
@@ -249,82 +241,87 @@ msgstr ""
 "Запускає відтворення нового твору негайно після зміни режиму відтворення "
 "(Режими вечірки або альбому)"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:92
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:85
 msgid "Display album _label"
 msgstr "Показувати категорію а_льбому"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:93
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:86
 msgid "Wether or not the album label needs to be shown above the artwork"
 msgstr "Чи потрібно показувати категорію альбому вище обкладинки"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:99
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:92
 msgid "Display track _title"
 msgstr "Показувати _назву доріжки"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:100
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:93
 msgid ""
 "Wether or not the album title needs to be shown above the artwork in "
 "fullscreen mode"
 msgstr ""
 "Чи потрібно показувати назву альбому вище обкладинки у повноекранному режимі"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:106
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:99
 msgid "Texture size in pixels"
 msgstr "Розмір текстури в пікселях"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:107
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:100
 msgid "The in-memory size of the cover textures in pixels"
 msgstr "Розмір в пам'яті текстури обкладинки в пікселях"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:113
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:106
 msgid "Minimal cover size in pixels"
 msgstr "Мінімальний розмір обкладинки в пікселях"
 
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:107
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:114
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:121
 msgid "The on-stage minimal cover size in pixels"
 msgstr "Мінімальний розмір обкладинки в пікселях до показу"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:120
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:113
 msgid "Maximal cover size in pixels"
 msgstr "Максимальний розмір обкладинки в пікселях"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:127
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:120
 msgid "Number of visible covers at the side"
 msgstr "Кількість видимих обкладинок на панелі"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:128
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:121
 msgid ""
 "The number of covers that need to be displayed on the stage (at one side)"
 msgstr "Кількість видимих обкладинок, які потрібно показувати на панелі"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:134
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:127
 msgid "Sort covers by"
 msgstr "Сортувати обкладинки за"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:135
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:128
 msgid "Selects on what basis covers should be sorted"
 msgstr "Вибрати спосіб сортування основних обкладинок"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:231
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:180
 msgid "Show ClutterFlow Browser"
 msgstr "Показувати переглядач ClutterFlow"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:232
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:181
 msgid "Show or hide the ClutterFlow browser"
 msgstr "Показати чи приховати переглядач ClutterFlow"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:325
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:277
 msgid "ClutterFlow"
 msgstr "ClutterFlow"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:328
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:280
 msgid "General"
 msgstr "Загальне"
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:337
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:288
 msgid "Dimensions"
 msgstr "Розміри"
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:383
+msgid ""
+"For changes to these values to take effect, you need to restart Banshee"
+msgstr ""
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:62
 msgid "Jamendo Downloads"
@@ -1243,3 +1240,5 @@ msgstr "Передача {0} з {1}"
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TransferManagerUi.cs:131
 msgid "Initializing"
 msgstr "Ініціалізація"
+
+

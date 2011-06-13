@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
+# Bertrand Lorentz <bertrand.lorentz@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
-"POT-Creation-Date: 2011-03-22 23:13+0100\n"
-"PO-Revision-Date: 2011-03-23 00:09+0000\n"
+"POT-Creation-Date: 2011-06-09 23:14+0200\n"
+"PO-Revision-Date: 2011-06-10 00:24+0000\n"
 "Last-Translator: bl8 <bertrand.lorentz@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -202,7 +202,7 @@ msgstr ""
 msgid "Skip this item"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs:263
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs:269
 msgid "Track list"
 msgstr ""
 
@@ -217,105 +217,102 @@ msgid ""
 msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:57
-msgid "Enable threaded loading of artwork"
-msgstr ""
-
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:58
-msgid "If enabled ClutterFlow will use threading to load it's artwork"
-msgstr ""
-
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:64
 msgid "Unfolds the track list"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:65
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:58
 msgid "If checked it will display the track list when not in fullscreen mode"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:85
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:78
 msgid "Immediately apply playback mode changes"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:86
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:79
 msgid ""
 "Starts playing a new song immediately after the playback mode changed (Party"
 " Mode or Album Mode)"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:92
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:85
 msgid "Display album _label"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:93
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:86
 msgid "Wether or not the album label needs to be shown above the artwork"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:99
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:92
 msgid "Display track _title"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:100
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:93
 msgid ""
 "Wether or not the album title needs to be shown above the artwork in "
 "fullscreen mode"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:106
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:99
 msgid "Texture size in pixels"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:107
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:100
 msgid "The in-memory size of the cover textures in pixels"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:113
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:106
 msgid "Minimal cover size in pixels"
 msgstr ""
 
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:107
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:114
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:121
 msgid "The on-stage minimal cover size in pixels"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:120
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:113
 msgid "Maximal cover size in pixels"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:127
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:120
 msgid "Number of visible covers at the side"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:128
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:121
 msgid ""
 "The number of covers that need to be displayed on the stage (at one side)"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:134
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:127
 msgid "Sort covers by"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:135
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:128
 msgid "Selects on what basis covers should be sorted"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:231
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:180
 msgid "Show ClutterFlow Browser"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:232
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:181
 msgid "Show or hide the ClutterFlow browser"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:325
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:277
 msgid "ClutterFlow"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:328
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:280
 msgid "General"
 msgstr ""
 
-#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:337
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:288
 msgid "Dimensions"
+msgstr ""
+
+#: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:383
+msgid ""
+"For changes to these values to take effect, you need to restart Banshee"
 msgstr ""
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:62
@@ -1219,3 +1216,5 @@ msgstr ""
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/TransferManagerUi.cs:131
 msgid "Initializing"
 msgstr ""
+
+

@@ -2,24 +2,23 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # 
-# Dimitris Glezos <glezos@indifex.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
 "POT-Creation-Date: 2011-06-09 23:14+0200\n"
-"PO-Revision-Date: 2011-06-10 00:24+0000\n"
-"Last-Translator: glezos <glezos@indifex.com>\n"
+"PO-Revision-Date: 2011-06-13 11:58+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: el\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:69
 msgid "Alarm Clock"
-msgstr "Ξυπνητήρι"
+msgstr ""
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:73
 msgid "Sleep Timer..."
@@ -31,7 +30,7 @@ msgstr ""
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:77
 msgid "Alarm..."
-msgstr "Ξυπνητήρι..."
+msgstr ""
 
 #: ../src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs:78
 msgid "Set the alarm time"
@@ -88,11 +87,11 @@ msgstr ""
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:93
 msgid "Command:"
-msgstr "Εντολή:"
+msgstr ""
 
 #: ../src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs:97
 msgid "Command To Execute:"
-msgstr "Εντολή προς εκτέλεση:"
+msgstr ""
 
 #: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:46
 msgid "Sleep Timer"
@@ -108,30 +107,30 @@ msgstr ""
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:73
 msgid "Connect"
-msgstr "Σύνδεση"
+msgstr ""
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:85
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:92
 msgid "Artist"
-msgstr "Καλλιτέχνης"
+msgstr ""
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:87
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:93
 msgid "Album"
-msgstr "Άλμπουμ"
+msgstr ""
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:89
 msgid "Playlist"
-msgstr "Λίστα αναπαραγωγής"
+msgstr ""
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:91
 msgid "Title"
-msgstr "Τίτλος"
+msgstr ""
 
 #: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:86
 #: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:62
 msgid "Password:"
-msgstr "Συνθηματικό:"
+msgstr ""
 
 #: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:99
 msgid "Ampache Server Name:"
@@ -139,24 +138,24 @@ msgstr ""
 
 #: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:110
 msgid "User Name:"
-msgstr "Όνομα χρήστη:"
+msgstr ""
 
 #: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:131
 msgid "Save"
-msgstr "Αποθήκευση"
+msgstr ""
 
 #: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:142
 msgid "Clear"
-msgstr "Καθαρισμός"
+msgstr ""
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:132
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:169
 msgid "_Close"
-msgstr "_Κλείσιμο"
+msgstr ""
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:133
 msgid "Close"
-msgstr "Κλείσιμο"
+msgstr ""
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:139
 msgid "_Show Banshee"
@@ -164,7 +163,7 @@ msgstr ""
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:140
 msgid "Show the Banshee main window"
-msgstr "Εμφάνιση κυρίως παραθύρου του Banshee"
+msgstr ""
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:231
 msgid "Still Running"
@@ -204,7 +203,7 @@ msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowContents.cs:269
 msgid "Track list"
-msgstr "Λίστα κομματιών"
+msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:50
 msgid "Sensitivity for album dragging"
@@ -262,7 +261,7 @@ msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:106
 msgid "Minimal cover size in pixels"
-msgstr "Ελάχιστο μέγεθος εξωφύλλου σε pixel"
+msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:107
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:114
@@ -271,7 +270,7 @@ msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:113
 msgid "Maximal cover size in pixels"
-msgstr "Μέγιστο μέγεθος εξωφύλλου σε pixel"
+msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:120
 msgid "Number of visible covers at the side"
@@ -304,11 +303,11 @@ msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:280
 msgid "General"
-msgstr "Γενικά"
+msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:288
 msgid "Dimensions"
-msgstr "Διαστάσεις"
+msgstr ""
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:383
 msgid ""
@@ -321,16 +320,16 @@ msgstr ""
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:63
 msgid "Contacting..."
-msgstr "Γίνεται επικοινωνία..."
+msgstr ""
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:103
 msgid "Importing..."
-msgstr "Γίνεται εισαγωγή..."
+msgstr ""
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoWebBrowserShell.cs:41
 #, csharp-format
 msgid "Search Jamendo"
-msgstr "Αναζήτηση στο Jamendo"
+msgstr ""
 
 #: ../src/Karaoke/Banshee.Karaoke/Gui/ContextPage.cs:45
 msgid "Karaoke"
