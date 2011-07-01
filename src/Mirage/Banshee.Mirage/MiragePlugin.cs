@@ -294,11 +294,13 @@ namespace Banshee.Mirage
 
         private void OnMirageRescanMusicHandler(object sender, EventArgs args)
         {
+            Log.Debug("Mirage - Rescan");
+            ScanLibrary();
         }
 
         private void OnMirageResetHandler(object sender, EventArgs args)
         {
-            /*MessageDialog md = new MessageDialog (null, DialogFlags.Modal, MessageType.Question,
+            MessageDialog md = new MessageDialog (null, DialogFlags.Modal, MessageType.Question,
                     ButtonsType.Cancel, AddinManager.CurrentLocalizer.GetString (
                         "Do you really want to reset the Mirage Extension?\n" +
                         "All extracted information will be lost. Your music will have to be re-analyzed to use Mirage again."));
@@ -309,8 +311,8 @@ namespace Banshee.Mirage
             if (result == ResponseType.Yes) {
                 try {
                     Analyzer.CancelAnalyze();
-                    ResetMirageProcessed();
-                    db.Reset();
+
+                    TrackAnalysis.Provider.Delete ("1");
 
                     md = new MessageDialog(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
                             AddinManager.CurrentLocalizer.GetString ("Mirage was reset. Your music will have to be re-analyzed to use Mirage again."));
@@ -319,8 +321,7 @@ namespace Banshee.Mirage
                 } catch (Exception) {
                     Log.Warning("Mirage - Error resetting Mirage.");
                 }
-            }*/
-
+            }
         }
 
         private void OnLibraryTracksAdded (object o, TrackEventArgs args)
