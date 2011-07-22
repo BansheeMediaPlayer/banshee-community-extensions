@@ -39,6 +39,7 @@ using Banshee.ServiceStack;
 using Banshee.MediaEngine;
 using System.Net;
 using System.IO;
+using Banshee.Networking;
 
 namespace Banshee.RandomByLastfm
 {
@@ -155,6 +156,9 @@ namespace Banshee.RandomByLastfm
         /// <remarks>Executed via Kernel Scheduler</remarks>
         public static void QueryLastfm ()
         {
+            if(!ServiceManager.Get<Network>().Connected)
+                return;
+
             DatabaseTrackInfo currentTrack = ServiceManager.PlayerEngine.ActiveEngine.CurrentTrack as DatabaseTrackInfo;
             if (currentTrack == null)
                 return;

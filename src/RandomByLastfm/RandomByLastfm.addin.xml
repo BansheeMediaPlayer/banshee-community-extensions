@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Addin 
     id="Banshee.RandomByLastfm"
-    version="0.3"
-    compatVersion="0.3"
+    version="0.4"
+    compatVersion="0.4"
     copyright="Copyright © 2010 Raimo Radczewski Licensed under the MIT X11 license."
     name="Last.fm Shuffle Modes"
     category="Community Extensions"

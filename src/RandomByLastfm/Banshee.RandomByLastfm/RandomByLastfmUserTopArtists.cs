@@ -35,6 +35,7 @@ using Lastfm.Data;
 using Hyena;
 using Banshee.Collection.Database;
 using Banshee.Collection;
+using Banshee.Networking;
 using Banshee.ServiceStack;
 using Banshee.MediaEngine;
 using System.Net;
@@ -60,7 +61,7 @@ namespace Banshee.RandomByLastfm
             Label = AddinManager.CurrentLocalizer.GetString ("Shuffle by your Top Artists (via Lastfm)");
             Adverb = AddinManager.CurrentLocalizer.GetString ("by your top artists");
             Description = AddinManager.CurrentLocalizer.GetString ("Play songs from your Top Artists (via Lastfm)");
-            
+
             Condition = "CoreArtists.ArtistID = ?";
             OrderBy = "RANDOM()";
             
@@ -121,7 +122,7 @@ namespace Banshee.RandomByLastfm
         {
             Account account = LastfmCore.Account;
             
-            if (account.UserName == null | account.UserName == string.Empty)
+            if(string.IsNullOrEmpty(account.UserName) || !ServiceManager.Get<Network>().Connected)
                 return;
             LastfmUserData userData = new LastfmUserData (account.UserName);
             LastfmData<UserTopArtist> topArtists = userData.GetTopArtists (TopType.Overall);
