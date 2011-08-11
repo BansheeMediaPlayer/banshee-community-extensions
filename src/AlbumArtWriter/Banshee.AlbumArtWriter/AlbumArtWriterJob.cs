@@ -122,7 +122,7 @@ namespace Banshee.AlbumArtWriter
                 if (!File.Exists (WritePath)) {
                     try {
                         File.Copy (ArtWorkPath, WritePath);
-                        Log.Debug ("Coping:"+ArtWorkPath+"\t\tTo:"+WritePath);
+                        Log.DebugFormat ("Copying: {0} \t\t to: {1}", ArtWorkPath, WritePath);
                         ServiceManager.DbConnection.Execute (
                             "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
                             track.AlbumId, 3);
@@ -133,13 +133,13 @@ namespace Banshee.AlbumArtWriter
                         Log.Warning (error.Message);
                     }
                 } else {
-                    Log.Debug ("Album Already Has Artwork in folder " + WritePath);
+                    Log.DebugFormat ("Album already has artwork in folder {0}", WritePath);
                     ServiceManager.DbConnection.Execute (
                         "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
                         track.AlbumId, 2);
                 }
             } else {
-                Log.Debug ("Artwork Does Not Exist for Album " + track.AlbumArtist + " - " + track.AlbumTitle + " " + ArtWorkPath);
+                Log.DebugFormat ("Artwork does not exist for album {0} - {1} - {2}", track.AlbumArtist, track.AlbumTitle, ArtWorkPath);
                 ServiceManager.DbConnection.Execute (
                     "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
                     track.AlbumId, 1);
