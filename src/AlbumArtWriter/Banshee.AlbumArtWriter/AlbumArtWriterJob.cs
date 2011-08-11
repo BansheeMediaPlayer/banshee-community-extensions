@@ -50,9 +50,6 @@ namespace Banshee.AlbumArtWriter
 {
     public class AlbumArtWriterJob : DbIteratorJob
     {
-         private static string root_path = Path.Combine (XdgBaseDirectorySpec.GetUserDirectory (
-            "XDG_CACHE_HOME", ".cache"),  "media-art");
-
         public AlbumArtWriterJob () : base ("Saving Cover Art To Album folders")
         {
 
@@ -119,7 +116,7 @@ namespace Banshee.AlbumArtWriter
 
         private void WriteArt (DatabaseTrackInfo track)
         {
-            string ArtWorkPath = Path.Combine(root_path,track.ArtworkId+".jpg");
+            string ArtWorkPath = CoverArtSpec.GetPath (track.ArtworkId);
             string WritePath = Path.Combine(Path.GetDirectoryName(track.LocalPath),"album.jpg");
             if (File.Exists(ArtWorkPath) ){
                 if (!File.Exists(WritePath) ){
