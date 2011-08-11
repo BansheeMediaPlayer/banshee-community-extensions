@@ -133,12 +133,5 @@ namespace Banshee.AlbumArtWriter
         string IService.ServiceName {
             get { return "AlbumArtWriterService"; }
         }
-
-        public static readonly SchemaEntry<bool> EnabledSchema = new SchemaEntry<bool> (
-            "plugins.Writer_Album_Art", "enabled",
-            true,
-            "Plugin enabled",
-            "Album Art Writer Plugin Enabled"
-        );
     }
 }
