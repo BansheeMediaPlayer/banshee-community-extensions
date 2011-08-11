@@ -6,7 +6,7 @@
     copyright="Copyright © 2011 Kevin Anthony. Licensed under the MIT X11 license."
     name="Album Art Writer"
     category="Community Extensions"
-    description="Writes Album Art from cache to Album Folder."
+    description="Writes Album Art from cache to the folder containing the music files."
     author="Kevin Anthony"
     url="http://banshee-project.org/"
     defaultEnabled="false">
