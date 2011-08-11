@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
+using Mono.Addins;
 using Mono.Unix;
 using Gtk;
 
@@ -50,7 +51,7 @@ namespace Banshee.AlbumArtWriter
 {
     public class AlbumArtWriterJob : DbIteratorJob
     {
-        public AlbumArtWriterJob () : base ("Saving Cover Art To Album folders")
+        public AlbumArtWriterJob () : base (AddinManager.CurrentLocalizer.GetString ("Saving Cover Art To Album folders"))
         {
             CountCommand = new HyenaSqliteCommand (@"
                                     SELECT count(DISTINCT CoreTracks.AlbumID)
