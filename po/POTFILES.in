@@ -6,6 +6,7 @@ src/AlarmClock/Banshee.AlarmClock/AlarmClockService.cs
 src/AlarmClock/Banshee.AlarmClock/AlarmConfigDialog.cs
 src/AlarmClock/Banshee.AlarmClock/ConfigurationDialog.cs
 src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs
+src/AlbumArtWriter/Banshee.AlbumArtWriter/AlbumArtWriterJob.cs
 src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs
 src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs
 src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs

@@ -1,6 +1,6 @@
 SUBDIRS = \
-    AlbumArtWriter \
 	AlarmClock \
+	AlbumArtWriter \
 	Ampache \
 	AppIndicator \
 	Awn \
