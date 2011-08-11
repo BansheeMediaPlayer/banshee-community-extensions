@@ -52,7 +52,6 @@ namespace Banshee.AlbumArtWriter
     {
         public AlbumArtWriterJob () : base ("Saving Cover Art To Album folders")
         {
-
             CountCommand = new HyenaSqliteCommand (@"
                                     SELECT count(DISTINCT CoreTracks.AlbumID)
                                         FROM CoreTracks, CoreAlbums
@@ -111,38 +110,38 @@ namespace Banshee.AlbumArtWriter
 
             Status = String.Format (Catalog.GetString ("{0} - {1}"), track.ArtistName, track.AlbumTitle);
             WriteArt (track);
-
         }
 
         private void WriteArt (DatabaseTrackInfo track)
         {
             string ArtWorkPath = CoverArtSpec.GetPath (track.ArtworkId);
-            string WritePath = Path.Combine(Path.GetDirectoryName(track.LocalPath),"album.jpg");
-            if (File.Exists(ArtWorkPath) ){
-                if (!File.Exists(WritePath) ){
-		   try{
-                    	File.Copy(ArtWorkPath,WritePath);
-                    	Log.Debug("Coping:"+ArtWorkPath+"\t\tTo:"+WritePath);
-		    	ServiceManager.DbConnection.Execute (
-                    	    "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
-                    	    track.AlbumId, 3);	
-		   } catch (IOException error) {
-			ServiceManager.DbConnection.Execute (
-                        "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
-                        track.AlbumId, 1);
-			Log.Warning(error.Message);
-		   }
+            string WritePath = Path.Combine (Path.GetDirectoryName (track.LocalPath), "album.jpg");
+
+            if (File.Exists (ArtWorkPath) ) {
+                if (!File.Exists (WritePath)) {
+                    try {
+                        File.Copy (ArtWorkPath, WritePath);
+                        Log.Debug ("Coping:"+ArtWorkPath+"\t\tTo:"+WritePath);
+                        ServiceManager.DbConnection.Execute (
+                            "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
+                            track.AlbumId, 3);
+                    } catch (IOException error) {
+                        ServiceManager.DbConnection.Execute (
+                            "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
+                            track.AlbumId, 1);
+                        Log.Warning (error.Message);
+                    }
                 } else {
                     Log.Debug ("Album Already Has Artwork in folder " + WritePath);
-		    ServiceManager.DbConnection.Execute (
+                    ServiceManager.DbConnection.Execute (
                         "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
                         track.AlbumId, 2);
                 }
             } else {
-                    Log.Debug ("Artwork Does Not Exist for Album " + track.AlbumArtist + " - " + track.AlbumTitle + " " + ArtWorkPath);
-		    ServiceManager.DbConnection.Execute (
-                        "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
-                        track.AlbumId, 1);
+                Log.Debug ("Artwork Does Not Exist for Album " + track.AlbumArtist + " - " + track.AlbumTitle + " " + ArtWorkPath);
+                ServiceManager.DbConnection.Execute (
+                    "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
+                    track.AlbumId, 1);
             }
         }
 
