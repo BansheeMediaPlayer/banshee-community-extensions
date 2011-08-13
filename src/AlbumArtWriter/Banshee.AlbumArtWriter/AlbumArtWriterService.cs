@@ -47,7 +47,6 @@ using Banshee.Sources;
 
 namespace Banshee.AlbumArtWriter
 {
-    /* TODO: I would like to every 7 days or so, check to make sure the album art is actually still in the folder */
     public class AlbumArtWriterService : IExtensionService
     {
         private bool disposed;
@@ -70,9 +69,13 @@ namespace Banshee.AlbumArtWriter
                         CREATE TABLE AlbumArtWriter (
                             AlbumID     INTEGER UNIQUE,
                             SavedOrTried INTEGER
-                    )");
+                        )"); 
+            DatabaseConfigurationClient.Client.Set<int>("AlbumArtWriter", "Version", 1);
             }
-
+	    if (DatabaseConfigurationClient.Client.Get<int> ("AlbumArtWriter", "Version", 0) < 2) {
+                ServiceManager.DbConnection.Execute (@"ALTER TABLE AlbumArtWriter ADD COLUMN LastUpdated INTEGER");
+                DatabaseConfigurationClient.Client.Set<int>("AlbumArtWriter", "Version", 2);
+            }  
             if (!ServiceStartup ()) {
                 ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
             }
