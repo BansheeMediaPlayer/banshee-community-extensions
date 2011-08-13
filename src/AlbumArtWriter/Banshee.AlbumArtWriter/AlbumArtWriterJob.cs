@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
+using Mono.Addins;
 using Mono.Unix;
 using Gtk;
 
@@ -50,12 +51,8 @@ namespace Banshee.AlbumArtWriter
 {
     public class AlbumArtWriterJob : DbIteratorJob
     {
-         private static string root_path = Path.Combine (XdgBaseDirectorySpec.GetUserDirectory (
-            "XDG_CACHE_HOME", ".cache"),  "media-art");
-
-        public AlbumArtWriterJob () : base ("Saving Cover Art To Album folders")
+        public AlbumArtWriterJob () : base (AddinManager.CurrentLocalizer.GetString ("Saving Cover Art To Album folders"))
         {
-
             CountCommand = new HyenaSqliteCommand (@"
                                     SELECT count(DISTINCT CoreTracks.AlbumID)
                                         FROM CoreTracks, CoreAlbums
@@ -114,38 +111,38 @@ namespace Banshee.AlbumArtWriter
 
             Status = String.Format (Catalog.GetString ("{0} - {1}"), track.ArtistName, track.AlbumTitle);
             WriteArt (track);
-
         }
 
         private void WriteArt (DatabaseTrackInfo track)
         {
-            string ArtWorkPath = Path.Combine(root_path,track.ArtworkId+".jpg");
-            string WritePath = Path.Combine(Path.GetDirectoryName(track.LocalPath),"album.jpg");
-            if (File.Exists(ArtWorkPath) ){
-                if (!File.Exists(WritePath) ){
-		   try{
-                    	File.Copy(ArtWorkPath,WritePath);
-                    	Log.Debug("Coping:"+ArtWorkPath+"\t\tTo:"+WritePath);
-		    	ServiceManager.DbConnection.Execute (
-                    	    "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
-                    	    track.AlbumId, 3);	
-		   } catch (IOException error) {
-			ServiceManager.DbConnection.Execute (
-                        "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
-                        track.AlbumId, 1);
-			Log.Warning(error.Message);
-		   }
+            string ArtWorkPath = CoverArtSpec.GetPath (track.ArtworkId);
+            string WritePath = Path.Combine (Path.GetDirectoryName (track.LocalPath), "album.jpg");
+
+            if (File.Exists (ArtWorkPath) ) {
+                if (!File.Exists (WritePath)) {
+                    try {
+                        File.Copy (ArtWorkPath, WritePath);
+                        Log.DebugFormat ("Copying: {0} \t\t to: {1}", ArtWorkPath, WritePath);
+                        ServiceManager.DbConnection.Execute (
+                            "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
+                            track.AlbumId, 3);
+                    } catch (IOException error) {
+                        ServiceManager.DbConnection.Execute (
+                            "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
+                            track.AlbumId, 1);
+                        Log.Warning (error.Message);
+                    }
                 } else {
-                    Log.Debug ("Album Already Has Artwork in folder " + WritePath);
-		    ServiceManager.DbConnection.Execute (
+                    Log.DebugFormat ("Album already has artwork in folder {0}", WritePath);
+                    ServiceManager.DbConnection.Execute (
                         "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
                         track.AlbumId, 2);
                 }
             } else {
-                    Log.Debug ("Artwork Does Not Exist for Album " + track.AlbumArtist + " - " + track.AlbumTitle + " " + ArtWorkPath);
-		    ServiceManager.DbConnection.Execute (
-                        "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
-                        track.AlbumId, 1);
+                Log.DebugFormat ("Artwork does not exist for album {0} - {1} - {2}", track.AlbumArtist, track.AlbumTitle, ArtWorkPath);
+                ServiceManager.DbConnection.Execute (
+                    "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried) VALUES (?, ?)",
+                    track.AlbumId, 1);
             }
         }
 

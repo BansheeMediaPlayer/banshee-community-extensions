@@ -51,8 +51,7 @@ namespace Banshee.AlbumArtWriter
     public class AlbumArtWriterService : IExtensionService
     {
         private bool disposed;
-        
-	private AlbumArtWriterJob job;
+        private AlbumArtWriterJob job;
 
         public AlbumArtWriterService ()
         {
@@ -60,19 +59,19 @@ namespace Banshee.AlbumArtWriter
 
         void IExtensionService.Initialize ()
         {
-		/*
-		 * if SavedOrTried = 0, try and download the art
-		 * if SavedOrTried = 1, we have tried this session
-		 * if SavedOrTried = 2, are is already in folder
-		 * if SavedOrTired = 3, we where successful in writing art to folder
-		 */
-               if (!ServiceManager.DbConnection.TableExists ("AlbumArtWriter")) {
-                    ServiceManager.DbConnection.Execute (@"
+            /*
+             * if SavedOrTried = 0, try and download the art
+             * if SavedOrTried = 1, we have tried this session
+             * if SavedOrTried = 2, art is already in folder
+             * if SavedOrTired = 3, we were successful in writing art to folder
+             */
+            if (!ServiceManager.DbConnection.TableExists ("AlbumArtWriter")) {
+                ServiceManager.DbConnection.Execute (@"
                         CREATE TABLE AlbumArtWriter (
                             AlbumID     INTEGER UNIQUE,
                             SavedOrTried INTEGER
                     )");
-                }
+            }
 
             if (!ServiceStartup ()) {
                 ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
@@ -110,7 +109,7 @@ namespace Banshee.AlbumArtWriter
             }
 
             ServiceManager.SourceManager.MusicLibrary.TracksAdded -= OnTracksAdded;
-	    /* Setting Saved or Tried to 0 where SavedOrTried = 1 allows album art to be writen next time */
+            /* Setting SavedOrTried to 0 where SavedOrTried = 1 allows album art to be written next time */
             ServiceManager.DbConnection.Execute (@"UPDATE AlbumArtWriter SET SavedOrTried = 0 WHERE SavedOrTried = 1");
             disposed = true;
         }
@@ -134,12 +133,5 @@ namespace Banshee.AlbumArtWriter
         string IService.ServiceName {
             get { return "AlbumArtWriterService"; }
         }
-
-        public static readonly SchemaEntry<bool> EnabledSchema = new SchemaEntry<bool> (
-            "plugins.Writer_Album_Art", "enabled",
-            true,
-            "Plugin enabled",
-            "Album Art Writer Plugin Enabled"
-        );
     }
 }

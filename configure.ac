@@ -77,6 +77,7 @@ SHAMROCK_CHECK_UNIT_TESTS
 
 dnl Extensions
 BCE_ALARMCLOCK
+BCE_ALBUMARTWRITER
 BCE_AMPACHE
 BCE_APPINDICATOR
 BCE_AWN
@@ -131,11 +132,10 @@ help/Makefile
 po/Makefile.in
 
 src/Makefile
-src/AlbumArtWriter/Makefile
-src/Karaoke/Makefile
 src/AssemblyInfo.cs
 
 src/AlarmClock/Makefile
+src/AlbumArtWriter/Makefile
 src/Ampache/Makefile
 src/AppIndicator/Makefile
 src/Awn/Makefile
@@ -144,6 +144,7 @@ src/ClutterFlow/Banshee.ClutterFlow/Makefile
 src/ClutterFlow/ClutterFlow/Makefile
 src/CoverWallpaper/Makefile
 src/Jamendo/Makefile
+src/Karaoke/Makefile
 src/LastfmFingerprint/Makefile
 src/LastfmFingerprint/Banshee.LastfmFingerprint/Makefile
 src/LastfmFingerprint/liblastfmfpbridge/Makefile
@@ -200,6 +201,7 @@ ${PACKAGE}-${VERSION}
   Extensions:
     AlbumArtWriter:      yes
     Alarm Clock:           ${enable_AlarmClock}
+    AlbumArtWriter:        ${enable_AlbumArtWriter}
     Ampache:               ${enable_Ampache}
     AppIndicator:          ${enable_AppIndicator}
     Awn:                   ${enable_Awn}
