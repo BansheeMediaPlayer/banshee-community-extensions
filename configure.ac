@@ -199,7 +199,6 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
-    AlbumArtWriter:      yes
     Alarm Clock:           ${enable_AlarmClock}
     AlbumArtWriter:        ${enable_AlbumArtWriter}
     Ampache:               ${enable_Ampache}

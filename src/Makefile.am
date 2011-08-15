@@ -1,5 +1,4 @@
 SUBDIRS = \
-    AlbumArtWriter \
 	AlarmClock \
 	AlbumArtWriter \
 	Ampache \
