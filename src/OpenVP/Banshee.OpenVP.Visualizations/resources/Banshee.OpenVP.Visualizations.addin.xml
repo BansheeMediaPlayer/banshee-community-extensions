@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Addin 
+<Addin
     id="Banshee.OpenVP.Visualizations"
     version="1.0"
     compatVersion="1.0"
@@ -14,7 +14,7 @@
   <Runtime>
   	<Import assembly="Banshee.OpenVP.Visualizations.dll" />
   </Runtime>
-  
+
   <Dependencies>
     <Addin id="Banshee.OpenVP" version="1.0"/>
   </Dependencies>
@@ -23,6 +23,7 @@
   	<Visualization type="Banshee.OpenVP.Visualizations.SimpleScope" label="Simple scope" />
   	<Visualization type="Banshee.OpenVP.Visualizations.SpectrumAnalyzer" label="Spectrum analyzer" />
   	<Visualization type="Banshee.OpenVP.Visualizations.Voiceprint" label="Voiceprint" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.ScaleVoiceprint" label="Scaled Voiceprint" />
   	<Visualization type="Banshee.OpenVP.Visualizations.MirrorVoiceprint" label="Mirrored Voiceprint" />
   	<Visualization type="Banshee.OpenVP.Visualizations.Grid" label="Grid" />
   	<Visualization type="Banshee.OpenVP.Visualizations.SpinningGrid" label="Spinning Grid" />
