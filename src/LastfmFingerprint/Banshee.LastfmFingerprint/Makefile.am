@@ -15,7 +15,10 @@ RESOURCES =  \
 	LastfmFingerprint.addin.xml \
 	Resources/GlobalUI.xml
 
+if ENABLE_LASTFMFINGERPRINT
 include $(top_srcdir)/build/build.mk
-
 EXTRA_DIST += $(DLLCONFIG)
 module_DATA = $(DLLCONFIG)
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES) $(DLLCONFIG)
+endif
