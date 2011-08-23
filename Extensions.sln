@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuplicateSongDetector", "src\DuplicateSongDetector\DuplicateSongDetector.csproj", "{F79A9A90-C0A2-4B8D-B8A0-7FA04654FD12}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlbumArtWriter", "src\AlbumArtWriter\AlbumArtWriter.csproj", "{5D56E36A-AB9F-4BAA-BC42-D7503AC0A3A5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Karaoke", "src\Karaoke\Karaoke.csproj", "{2940FD14-8A3F-4E13-B904-4A3641DE6E78}"
@@ -84,6 +86,10 @@ Global
 		Windows|Any CPU = Windows|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F79A9A90-C0A2-4B8D-B8A0-7FA04654FD12}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F79A9A90-C0A2-4B8D-B8A0-7FA04654FD12}.Debug|x86.Build.0 = Debug|Any CPU
+		{F79A9A90-C0A2-4B8D-B8A0-7FA04654FD12}.Release|x86.ActiveCfg = Release|Any CPU
+		{F79A9A90-C0A2-4B8D-B8A0-7FA04654FD12}.Release|x86.Build.0 = Release|Any CPU
 		{5D56E36A-AB9F-4BAA-BC42-D7503AC0A3A5}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{5D56E36A-AB9F-4BAA-BC42-D7503AC0A3A5}.Debug|x86.Build.0 = Debug|Any CPU
 		{5D56E36A-AB9F-4BAA-BC42-D7503AC0A3A5}.Release|x86.ActiveCfg = Release|Any CPU
