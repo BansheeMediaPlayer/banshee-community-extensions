@@ -1,0 +1,7 @@
+<ui>
+    <menubar name="MainMenu">
+        <menu name="ToolsMenu" action="ToolsMenuAction">
+            <menuitem name="DuplicateDetect" action="DuplicateSongAction" />
+        </menu>
+	</menubar>
+</ui>

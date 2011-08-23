@@ -4,7 +4,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
-    <ProjectGuid>{F79A9A90-C0A2-4B8D-B8A0-7FA04654FD12}</ProjectGuid>
+    <ProjectGuid>{1725FB8A-DF47-4CAF-A322-59EE97AAB5DE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
     <AssemblyName>Banshee.DuplicateSongDetector</AssemblyName>
@@ -14,8 +14,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <RootNamespace>Foo</RootNamespace>
+    <RootNamespace>Banshee.DuplicateSongDetector</RootNamespace>
     <AssemblyOriginatorKeyFile>.</AssemblyOriginatorKeyFile>
+    <newfilesearch>OnLoad</newfilesearch>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -80,9 +81,14 @@
     <EmbeddedResource Include="DuplicateSongDetector.addin.xml">
       <LogicalName>DuplicateSongDetector.addin.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\GlobalUI.xml">
+      <LogicalName>GlobalUI.xml</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.DuplicateSongDetector\DuplicateSongDetectorSource.cs" />
+    <Compile Include="Banshee.DuplicateSongDetector\SongDuplicateView.cs" />
+    <Compile Include="Banshee.DuplicateSongDetector\DuplicateSongDetectorSearchAction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -100,4 +106,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
 </Project>
