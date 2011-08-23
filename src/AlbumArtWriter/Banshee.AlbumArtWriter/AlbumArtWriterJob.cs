@@ -2,7 +2,7 @@
 // AlbumArtWriterJob.cs
 //
 // Authors:
-//   Kevin@NosideRacing.com
+//   Kevin Anthony <Kevin@NosideRacing.com>
 //
 // Copyright (C) 2011 Kevin Anthony
 //
@@ -27,24 +27,16 @@
 //
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 
 using Mono.Addins;
-using Mono.Unix;
-using Gtk;
 
 using Hyena;
 using Hyena.Jobs;
 using Hyena.Data.Sqlite;
 
 using Banshee.Base;
-using Banshee.Collection;
 using Banshee.Collection.Database;
-using Banshee.Collection.Gui;
-using Banshee.Kernel;
-using Banshee.Metadata;
 using Banshee.ServiceStack;
 
 namespace Banshee.AlbumArtWriter
@@ -96,9 +88,9 @@ namespace Banshee.AlbumArtWriter
             Register ();
         }
 
-        private class CoverartTrackInfo : DatabaseTrackInfo
         {
             public int DbId {
+                private class CoverartTrackInfo : DatabaseTrackInfo
                 set { TrackId = value; }
             }
         }
@@ -114,7 +106,7 @@ namespace Banshee.AlbumArtWriter
                 AlbumId = reader.Get<int> (0)
             };
 
-            Status = String.Format (Catalog.GetString ("{0} - {1}"), track.ArtistName, track.AlbumTitle);
+            Status = String.Format (AddinManager.CurrentLocalizer.GetString ("{0} - {1}"), track.ArtistName, track.AlbumTitle);
             WriteArt (track);
         }
 

@@ -2,7 +2,7 @@
 // AlbumArtWriterService.cs
 //
 // Authors:
-//   Kevin@NosideRacing.com
+//   Kevin Anthony <Kevin@NosideRacing.com>
 //
 // Copyright (C) 2011 Kevin Anthony
 //
@@ -28,21 +28,10 @@
 
 using System;
 
-using Gtk;
-using Mono.Unix;
+using Mono.Addins;
 
-using Hyena;
-
-using Banshee.Base;
-using Banshee.Collection;
-using Banshee.Collection.Database;
 using Banshee.ServiceStack;
 using Banshee.Configuration;
-using Banshee.Gui;
-using Banshee.Collection.Gui;
-using Banshee.Library;
-using Banshee.Metadata;
-using Banshee.Networking;
 using Banshee.Sources;
 
 namespace Banshee.AlbumArtWriter
