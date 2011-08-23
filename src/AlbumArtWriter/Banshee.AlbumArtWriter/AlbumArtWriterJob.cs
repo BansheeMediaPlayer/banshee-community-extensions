@@ -44,11 +44,11 @@ namespace Banshee.AlbumArtWriter
     public class AlbumArtWriterJob : DbIteratorJob
     {
         private DateTime CurrentTime;
-	private DateTime TimeOffset;
-        public AlbumArtWriterJob () : base (AddinManager.CurrentLocalizer.GetString ("Saving Cover Art To Album folders"))
+        private DateTime TimeOffset;
+        public AlbumArtWriterJob () : base(AddinManager.CurrentLocalizer.GetString ("Saving Cover Art To Album folders"))
         {
             CurrentTime = DateTime.Now;
-            TimeOffset = CurrentTime-TimeSpan.FromDays(7);
+            TimeOffset = CurrentTime - TimeSpan.FromDays (7);
             CountCommand = new HyenaSqliteCommand (@"
                                     SELECT count(DISTINCT CoreTracks.AlbumID)
                                         FROM CoreTracks, CoreAlbums
@@ -58,9 +58,8 @@ namespace Banshee.AlbumArtWriter
                                         CoreTracks.AlbumID NOT IN (
                                             SELECT AlbumID from AlbumArtWriter WHERE
                                             SavedOrTried > 0 AND LastUpdated >= ?)
-					",ServiceManager.SourceManager.MusicLibrary.DbId,TimeOffset
-            );
-
+                    ", ServiceManager.SourceManager.MusicLibrary.DbId, TimeOffset);
+            
             SelectCommand = new HyenaSqliteCommand (@"
                 SELECT DISTINCT CoreAlbums.AlbumID, CoreAlbums.Title, CoreArtists.Name, CoreTracks.Uri, CoreTracks.TrackID
                     FROM CoreTracks, CoreArtists, CoreAlbums
@@ -71,13 +70,11 @@ namespace Banshee.AlbumArtWriter
                         CoreTracks.AlbumID NOT IN (
                             SELECT AlbumID from AlbumArtWriter WHERE
                             SavedOrTried > 0 AND LastUpdated >= ?)
-                    GROUP BY CoreTracks.AlbumID ORDER BY CoreTracks.DateUpdatedStamp DESC LIMIT ?",
-                ServiceManager.SourceManager.MusicLibrary.DbId, TimeOffset,1
-            );
-
+                    GROUP BY CoreTracks.AlbumID ORDER BY CoreTracks.DateUpdatedStamp DESC LIMIT ?", ServiceManager.SourceManager.MusicLibrary.DbId, TimeOffset, 1);
+            
             SetResources (Resource.Database);
             PriorityHints = PriorityHints.LongRunning;
-
+            
             IsBackground = true;
             CanCancel = true;
             DelayShow = true;
@@ -88,24 +85,17 @@ namespace Banshee.AlbumArtWriter
             Register ();
         }
 
+        private class CoverartTrackInfo : DatabaseTrackInfo
         {
             public int DbId {
-                private class CoverartTrackInfo : DatabaseTrackInfo
                 set { TrackId = value; }
             }
         }
 
         protected override void IterateCore (HyenaDataReader reader)
         {
-            var track = new CoverartTrackInfo () {
-                AlbumTitle = reader.Get<string> (1),
-                ArtistName = reader.Get<string> (2),
-                PrimarySource = ServiceManager.SourceManager.MusicLibrary,
-                Uri = new SafeUri (reader.Get<string> (3)),
-                DbId = reader.Get<int> (4),
-                AlbumId = reader.Get<int> (0)
-            };
-
+            var track = new CoverartTrackInfo { AlbumTitle = reader.Get<string> (1), ArtistName = reader.Get<string> (2), PrimarySource = ServiceManager.SourceManager.MusicLibrary, Uri = new SafeUri (reader.Get<string> (3)), DbId = reader.Get<int> (4), AlbumId = reader.Get<int> (0) };
+            
             Status = String.Format (AddinManager.CurrentLocalizer.GetString ("{0} - {1}"), track.ArtistName, track.AlbumTitle);
             WriteArt (track);
         }
@@ -114,32 +104,24 @@ namespace Banshee.AlbumArtWriter
         {
             string ArtWorkPath = CoverArtSpec.GetPath (track.ArtworkId);
             string WritePath = Path.Combine (Path.GetDirectoryName (track.LocalPath), "album.jpg");
-
-            if (File.Exists (ArtWorkPath) ) {
+            
+            if (File.Exists (ArtWorkPath)) {
                 if (!File.Exists (WritePath)) {
                     try {
                         File.Copy (ArtWorkPath, WritePath);
                         Log.DebugFormat ("Copying: {0} \t\t to: {1}", ArtWorkPath, WritePath);
-                        ServiceManager.DbConnection.Execute (
-                            "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried,LastUpdated) VALUES (?, ?, ?)",
-                            track.AlbumId, 3, CurrentTime);
+                        ServiceManager.DbConnection.Execute ("INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried,LastUpdated) VALUES (?, ?, ?)", track.AlbumId, 3, CurrentTime);
                     } catch (IOException error) {
-                        ServiceManager.DbConnection.Execute (
-                            "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried,LastUpdated) VALUES (?, ?, ?)",
-                            track.AlbumId, 1, CurrentTime);
+                        ServiceManager.DbConnection.Execute ("INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried,LastUpdated) VALUES (?, ?, ?)", track.AlbumId, 1, CurrentTime);
                         Log.Warning (error.Message);
                     }
                 } else {
                     Log.DebugFormat ("Album already has artwork in folder {0}", WritePath);
-                    ServiceManager.DbConnection.Execute (
-                        "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried,LastUpdated) VALUES (?, ?, ?)",
-                        track.AlbumId, 2, CurrentTime);
+                    ServiceManager.DbConnection.Execute ("INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried,LastUpdated) VALUES (?, ?, ?)", track.AlbumId, 2, CurrentTime);
                 }
             } else {
                 Log.DebugFormat ("Artwork does not exist for album {0} - {1} - {2}", track.AlbumArtist, track.AlbumTitle, ArtWorkPath);
-                ServiceManager.DbConnection.Execute (
-                    "INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried,LastUpdated) VALUES (?, ?, ?)",
-                    track.AlbumId, 1, CurrentTime);
+                ServiceManager.DbConnection.Execute ("INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried,LastUpdated) VALUES (?, ?, ?)", track.AlbumId, 1, CurrentTime);
             }
         }
 
