@@ -32,32 +32,20 @@ using Mono.Addins;
 
 using Banshee.Base;
 using Banshee.Sources;
-using Banshee.Sources.Gui;
-
-// Other namespaces you might want:
-using Banshee.ServiceStack;
-using Banshee.Preferences;
-using Banshee.MediaEngine;
-using Banshee.PlaybackController;
 
 namespace Banshee.DuplicateSongDetector
 {
-    // We are inheriting from Source, the top-level, most generic type of Source.
-    // Other types include (inheritance indicated by indentation):
-    //      DatabaseSource - generic, DB-backed Track source; used by PlaylistSource
-    //        PrimarySource - 'owns' tracks, used by DaapSource, DapSource
-    //          LibrarySource - used by Music, Video, Podcasts, and Audiobooks
-    public class DuplicateSongDetectorSource : Source
+    public class DuplicateSongDetectorSource : Source, IUnmapableSource
     {
         // In the sources TreeView, sets the order value for this source, small on top
         const int sort_order = 190;
 
-        public DuplicateSongDetectorSource () : base (AddinManager.CurrentLocalizer.GetString ("DuplicateSongDetector"),
-                                               AddinManager.CurrentLocalizer.GetString ("Duplicate Song Detector"),
-		                                       sort_order,
-		                                       "extension-unique-id")
+        public DuplicateSongDetectorSource () : base(AddinManager.CurrentLocalizer.GetString ("Duplicate Song Detector"), AddinManager.CurrentLocalizer.GetString ("Duplicate Song Detector"), sort_order, "extension-unique-id")
         {
-            Properties.Set<ISourceContents> ("Nereid.SourceContents", new SongDuplicateView());
+            Properties.SetStringList ("Icon.Name", "search", "gtk-search");
+            Properties.Set<Banshee.Sources.Gui.ISourceContents> ("Nereid.SourceContents", new SongDuplicateView ());
+            Properties.SetString ("UnmapSourceActionLabel", AddinManager.CurrentLocalizer.GetString ("Close"));
+            Properties.SetString ("UnmapSourceActionIconName", "gtk-close");
 
         }
 
@@ -66,6 +54,19 @@ namespace Banshee.DuplicateSongDetector
             get { return 0; }
         }
 
+        //This Allows us to close the window when not in use
+        public bool CanUnmap {
+            get { return true; }
+        }
+        public bool ConfirmBeforeUnmap {
+            get { return false; }
+        }
 
+        public bool Unmap ()
+        {
+            Parent.RemoveChildSource (this);
+            Properties.Get<Banshee.Sources.Gui.ISourceContents> ("Nereid.SourceContents").Widget.Destroy ();
+            return true;
+        }
     }
 }

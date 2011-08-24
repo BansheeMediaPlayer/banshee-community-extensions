@@ -2,7 +2,7 @@
 // DuplicateSongDetectorAction.cs
 //
 // Authors:
-//   Kevin Anthony <Kevin@NosideRacing.com>
+//   Kevin Anthony <Kevin@NoSideRacing.com>
 //
 // Copyright (C) 2011 Kevin Anthony
 //
@@ -49,7 +49,10 @@ namespace Banshee.DuplicateSongDetector
 
         public void onStartDetecting (object o, EventArgs args)
         {
-            SongDuplicateView.ClearData();
+            var Source = new DuplicateSongDetectorSource ();
+            ServiceManager.SourceManager.MusicLibrary.AddChildSource (Source);
+            ServiceManager.SourceManager.SetActiveSource (Source);
+
             HyenaDataReader reader = new HyenaDataReader (ServiceManager.DbConnection.Query (@"SELECT
                              CT.TrackID,CT.Title,CA.Title, CA.ArtistName,CT.URI
                              FROM CoreTracks CT,CoreAlbums CA ON Ct.AlbumID = CA.AlbumID

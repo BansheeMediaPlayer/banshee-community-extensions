@@ -18,9 +18,6 @@
     <Addin id="Banshee.ThickClient" version="1.0"/>
   </Dependencies>
 
-  <Extension path="/Banshee/SourceManager/Source">
-    <Source class="Banshee.DuplicateSongDetector.DuplicateSongDetectorSource"/>
-  </Extension>
   <Extension path="/Banshee/ThickClient/ActionGroup">
     <ActionGroup class="Banshee.DuplicateSongDetector.DuplicateSongDetectorAction"/>
   </Extension>

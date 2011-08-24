@@ -45,17 +45,18 @@ using Banshee.Gui;
 
 namespace Banshee.DuplicateSongDetector
 {
-    public class SongDuplicateView : ISourceContents
+    public class SongDuplicateView : RoundedFrame, ISourceContents
     {
         private Gtk.ScrolledWindow Scroll;
         private Gtk.TreeView Tree;
         private static Gtk.ListStore MusicListStore;
-        private Gtk.VBox vbox;
+        //private static Gtk.VBox vbox;
 
         public SongDuplicateView ()
         {
+
             Tree = new Gtk.TreeView ();
-            vbox = new Gtk.VBox (false, 1);
+            Gtk.VBox vbox = new Gtk.VBox (false, 1);
 
             Gtk.Label label = new Gtk.Label ("");
             Gtk.HBox hbox = new Gtk.HBox (false, 1);
@@ -117,7 +118,9 @@ namespace Banshee.DuplicateSongDetector
             if (Scroll != null) {
                 Scroll.AddWithViewport (Tree);
             }
-            vbox.ShowAll ();
+
+            Add(vbox);
+            ShowAll();
             
         }
 
@@ -169,7 +172,6 @@ namespace Banshee.DuplicateSongDetector
         }
         private static bool ConfirmRemove (bool delete)
         {
-            
             bool ret = false;
             string header = null;
             string message = null;
@@ -234,7 +236,9 @@ namespace Banshee.DuplicateSongDetector
                 AddData (ID, Title, Album, Artist, URI);
             }
         }
-
+        public void RefreshWindow(){
+            ReloadWindow();
+        }
         public static void ClearData ()
         {
             Gtk.TreeIter Iter = new Gtk.TreeIter ();
@@ -244,7 +248,8 @@ namespace Banshee.DuplicateSongDetector
                 } while (MusicListStore.IterIsValid (Iter));
             }
         }
-
+        //I would love to replace the database and File.Delete commands with MusicLibrary.RemoveTracks and MusicLibrary.DeleteTracks
+        //But i have to wait until better documentation comes out
         private void RemoveTrack (int id)
         {
             ServiceManager.DbConnection.Execute (@"Delete From CoreTracks where TrackId = ?", id);
@@ -253,19 +258,28 @@ namespace Banshee.DuplicateSongDetector
         {
             File.Delete (uri);
         }
+ #region ISourceContents
+        private MusicLibrarySource source;
         public bool SetSource (ISource source)
         {
-            return true;
+            this.source = source as MusicLibrarySource;
+            return this.source != null;
         }
+
+        public ISource Source {
+            get { return source; }
+        }
+
         public void ResetSource ()
         {
+            source = null;
         }
-        public Gtk.Widget Widget {
-            get { return vbox; }
+
+        public Widget Widget {
+            get { return this; }
         }
-        public ISource Source {
-            get { return null; }
-        }
+
+#endregion
     }
     
 }
