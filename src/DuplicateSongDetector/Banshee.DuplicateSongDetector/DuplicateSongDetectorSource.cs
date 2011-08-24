@@ -2,9 +2,9 @@
 // DuplicateSongDetectorSource.cs
 //
 // Authors:
-//   Cool Extension Author <cool.extension@author.com>
+//   Kevin Anthony <Kevin@NoSideRacing.Com>
 //
-// Copyright (C) 2011 Cool Extension Author
+// Copyright (C) 2011 Kevin Anthony
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -53,13 +53,12 @@ namespace Banshee.DuplicateSongDetector
         const int sort_order = 190;
 
         public DuplicateSongDetectorSource () : base (AddinManager.CurrentLocalizer.GetString ("DuplicateSongDetector"),
-                                               AddinManager.CurrentLocalizer.GetString ("DuplicateSongDetector"),
+                                               AddinManager.CurrentLocalizer.GetString ("Duplicate Song Detector"),
 		                                       sort_order,
 		                                       "extension-unique-id")
         {
-            Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
+            Properties.Set<ISourceContents> ("Nereid.SourceContents", new SongDuplicateView());
 
-            Hyena.Log.Information ("Testing!  DuplicateSongDetector source has been instantiated!");
         }
 
         // A count of 0 will be hidden in the source TreeView
@@ -67,15 +66,6 @@ namespace Banshee.DuplicateSongDetector
             get { return 0; }
         }
 
-        private class CustomView : ISourceContents
-        {
-            Gtk.Label label = new Gtk.Label ("Custom view for DuplicateSongDetector extension is working!");
-
-            public bool SetSource (ISource source) { return true; }
-            public void ResetSource () { }
-            public Gtk.Widget Widget { get { return label; } }
-            public ISource Source { get { return null; } }
-        }
 
     }
 }
