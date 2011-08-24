@@ -58,8 +58,7 @@ namespace Banshee.DuplicateSongDetector
             Tree = new Gtk.TreeView ();
             Gtk.VBox vbox = new Gtk.VBox (false, 1);
 
-            Gtk.Label label = new Gtk.Label ("");
-            Gtk.HBox hbox = new Gtk.HBox (false, 1);
+           Gtk.HBox hbox = new Gtk.HBox (false, 1);
             Gtk.Button removeButton = new Gtk.Button ();
             removeButton.Label = AddinManager.CurrentLocalizer.GetString ("Remove Selected Songs");
             removeButton.Clicked += OnRemoveCommand;
@@ -111,8 +110,7 @@ namespace Banshee.DuplicateSongDetector
             
             hbox.PackStart (removeButton, false, false, 0);
             hbox.PackStart (deleteButton, false, false, 0);
-            hbox.PackStart (label, false, true, 0);
-            vbox.PackStart (hbox, false, false, 0);
+             vbox.PackStart (hbox, false, false, 0);
             vbox.PackStart (Scroll, true, true, 0);
             
             if (Scroll != null) {

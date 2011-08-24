@@ -46,7 +46,6 @@ namespace Banshee.DuplicateSongDetector
             Properties.Set<Banshee.Sources.Gui.ISourceContents> ("Nereid.SourceContents", new SongDuplicateView ());
             Properties.SetString ("UnmapSourceActionLabel", AddinManager.CurrentLocalizer.GetString ("Close"));
             Properties.SetString ("UnmapSourceActionIconName", "gtk-close");
-
         }
 
         // A count of 0 will be hidden in the source TreeView
