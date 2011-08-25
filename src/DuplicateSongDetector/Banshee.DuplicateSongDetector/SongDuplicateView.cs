@@ -194,7 +194,7 @@ namespace Banshee.DuplicateSongDetector
         {
             ClearData ();
             HyenaDataReader reader = new HyenaDataReader (ServiceManager.DbConnection.Query (@"SELECT
-                             CT.TrackID,CT.Title,CA.Title, CA.ArtistName,CT.URI
+                             CT.TrackID, CT.Title, CA.ArtistName, CA.Title, CT.URI
                              FROM CoreTracks CT,CoreAlbums CA ON Ct.AlbumID = CA.AlbumID
                              AND CT.TrackID IN (
                                  SELECT
@@ -210,10 +210,10 @@ namespace Banshee.DuplicateSongDetector
             while (reader.Read ()) {
                 int ID = reader.Get<int> (0);
                 String Title = reader.Get<String> (1);
-                String Album = reader.Get<String> (2);
-                String Artist = reader.Get<String> (3);
+                String Artist = reader.Get<String> (2);
+                String Album = reader.Get<String> (3);
                 String URI = reader.Get<String> (4);
-                AddData (ID, Title, Album, Artist, URI);
+                AddData (ID, Title, Artist, Album, URI);
             }
         }
 
