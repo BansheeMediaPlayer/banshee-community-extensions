@@ -77,7 +77,7 @@ namespace Banshee.DuplicateSongDetector
             MusicListStore = new Gtk.ListStore (typeof(bool), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(int));
             Tree.Model = MusicListStore;
             //Pack the Tree in a scroll window
-            Scroll.AddWithViewport (Tree);
+            Scroll.Add (Tree);
             //Pack the buttons in a hbox
             hbox.PackStart (removeButton, false, false, 0);
             hbox.PackStart (deleteButton, false, false, 0);
