@@ -68,7 +68,6 @@ namespace Banshee.DuplicateSongDetector
             Gtk.CellRendererToggle selectCell = new Gtk.CellRendererToggle ();
             selectCell.Activatable = true;
             selectCell.Toggled += OnSelectToggled;
-            selectColumn.PackStart (selectCell, true);
             Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Select"),selectCell, "active", 0);
             Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Song Title"),new Gtk.CellRendererText (), "text", 1);
             Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Artist"),new Gtk.CellRendererText (), "text", 2);
