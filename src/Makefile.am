@@ -1,5 +1,4 @@
 SUBDIRS = \
-    DuplicateSongDetector \
 	AlarmClock \
 	AlbumArtWriter \
 	Ampache \
@@ -7,6 +6,7 @@ SUBDIRS = \
 	Awn \
 	ClutterFlow \
 	CoverWallpaper \
+	DuplicateSongDetector \
 	Jamendo \
 	LastfmFingerprint \
 	LCD \

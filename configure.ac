@@ -83,6 +83,7 @@ BCE_APPINDICATOR
 BCE_AWN
 BCE_CLUTTERFLOW
 BCE_COVERWALLPAPER
+BCE_DUPLICATESONGDETECTOR
 BCE_JAMENDO
 BCE_LASTFMFINGERPRINT
 BCE_LCD
@@ -132,7 +133,6 @@ help/Makefile
 po/Makefile.in
 
 src/Makefile
-src/DuplicateSongDetector/Makefile
 src/AssemblyInfo.cs
 
 src/AlarmClock/Makefile
@@ -144,6 +144,7 @@ src/ClutterFlow/Makefile
 src/ClutterFlow/Banshee.ClutterFlow/Makefile
 src/ClutterFlow/ClutterFlow/Makefile
 src/CoverWallpaper/Makefile
+src/DuplicateSongDetector/Makefile
 src/Jamendo/Makefile
 src/Karaoke/Makefile
 src/LastfmFingerprint/Makefile
@@ -200,7 +201,6 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
-    DuplicateSongDetector:yes
     Alarm Clock:           ${enable_AlarmClock}
     AlbumArtWriter:        ${enable_AlbumArtWriter}
     Ampache:               ${enable_Ampache}
@@ -208,6 +208,7 @@ ${PACKAGE}-${VERSION}
     Awn:                   ${enable_Awn}
     ClutterFlow:           ${enable_ClutterFlow}
     CoverWallpaper:        ${enable_CoverWallpaper}
+    DuplicateSongDetector: ${enable_DuplicateSongDetector}
     Jamendo:               ${enable_Jamendo}
     Karaoke:               ${enable_Karaoke}
     LastfmFingerprint:     ${enable_LastfmFingerprint}
