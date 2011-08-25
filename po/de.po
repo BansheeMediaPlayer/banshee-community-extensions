@@ -2,15 +2,16 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # 
+# Christoph Bauer <transifex@stargazer.at>, 2011.
 # fixx <funtastix@googlemail.com>, 2011.
 # Bertrand Lorentz <bertrand.lorentz@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
-"POT-Creation-Date: 2011-06-09 23:14+0200\n"
-"PO-Revision-Date: 2011-06-10 00:24+0000\n"
-"Last-Translator: bl8 <bertrand.lorentz@gmail.com>\n"
+"POT-Creation-Date: 2011-08-23 10:13-0400\n"
+"PO-Revision-Date: 2011-08-23 00:10+0000\n"
+"Last-Translator: cb5264 <transifex@stargazer.at>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -106,6 +107,16 @@ msgstr "Einschlaf-Funktion:"
 #: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:83
 msgid "Start Timer"
 msgstr "Starte Timer"
+
+#: ../src/AlbumArtWriter/Banshee.AlbumArtWriter/AlbumArtWriterJob.cs:48
+msgid "Saving Cover Art To Album folders"
+msgstr ""
+
+#: ../src/AlbumArtWriter/Banshee.AlbumArtWriter/AlbumArtWriterJob.cs:109
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:61
+#, csharp-format
+msgid "{0} - {1}"
+msgstr "{0} - {1}"
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:73
 msgid "Connect"
@@ -324,7 +335,7 @@ msgstr "Ausmaße"
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:383
 msgid ""
 "For changes to these values to take effect, you need to restart Banshee"
-msgstr ""
+msgstr "Damit die Änderungen wirksam werden, musst du Banshee neu starten."
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:62
 msgid "Jamendo Downloads"
@@ -771,11 +782,6 @@ msgstr "Unbekannter Künstler"
 msgid "Downloading Lyrics"
 msgstr "Lyrics herunterladen"
 
-#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:61
-#, csharp-format
-msgid "{0} - {1}"
-msgstr "{0} - {1}"
-
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:171
 msgid "L_yrics"
 msgstr "L_yrics"
@@ -875,6 +881,7 @@ msgid "Searches your Music Library for possible duplicates"
 msgstr "Durchsuchte deine Musikbibliothek nach möglichen Duplikaten"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:265
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:307
 msgid "Reset Mirage"
 msgstr "Mirage zurücksetzen"
 
@@ -901,6 +908,18 @@ msgstr ""
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:282
 msgid "Scan for Duplicates"
 msgstr "Scanne nach Duplikaten"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:305
+msgid ""
+"Do you really want to reset the Mirage Extension?\n"
+"All extracted information will be lost. Your music will have to be re-analyzed to use Mirage again."
+msgstr ""
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:318
+msgid ""
+"Mirage was reset. Your music will have to be re-analyzed to use Mirage "
+"again."
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/RandomBySimilar.cs:54
 msgid "Shuffle by Similar"
@@ -1016,27 +1035,27 @@ msgstr "Hole Stationen von Xiph"
 msgid "www.xiph.org {0} stations available."
 msgstr "www.xiph.org {0} Stationen verfügbar."
 
-#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:66
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:67
 msgid "Shuffle by similar Artists (via Lastfm)"
 msgstr "Zufallswiedergabe nach ähnlichen Künstlern (nach last.fm)"
 
-#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:67
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:68
 msgid "by similar artists"
 msgstr "nach ähnlichen Künstlern"
 
-#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:68
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:69
 msgid "Play songs similar to those already played (via Lastfm)"
 msgstr "Spiele Lieder ähnlich denen die schon gespiel wurden (nach last.fm)"
 
-#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:60
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:61
 msgid "Shuffle by your Top Artists (via Lastfm)"
 msgstr "Zufallswiedergabe nach Deinen Top Künstlern (nach last.fm)"
 
-#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:61
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:62
 msgid "by your top artists"
 msgstr "nach Deinen Top Künstlern"
 
-#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:62
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:63
 msgid "Play songs from your Top Artists (via Lastfm)"
 msgstr "Spiele Lieder Deiner Top Künstler (nach last.fm)"
 

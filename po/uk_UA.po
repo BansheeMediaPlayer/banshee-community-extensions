@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
-"POT-Creation-Date: 2011-06-09 23:14+0200\n"
-"PO-Revision-Date: 2011-06-10 00:24+0000\n"
+"POT-Creation-Date: 2011-08-23 10:13-0400\n"
+"PO-Revision-Date: 2011-08-23 00:10+0000\n"
 "Last-Translator: Sergiy_Gavrylov <sergiovana@bigmir.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -105,6 +105,16 @@ msgstr "Час вмикання :"
 #: ../src/AlarmClock/Banshee.AlarmClock/SleepTimerConfigDialog.cs:83
 msgid "Start Timer"
 msgstr "Запустити таймер"
+
+#: ../src/AlbumArtWriter/Banshee.AlbumArtWriter/AlbumArtWriterJob.cs:48
+msgid "Saving Cover Art To Album folders"
+msgstr ""
+
+#: ../src/AlbumArtWriter/Banshee.AlbumArtWriter/AlbumArtWriterJob.cs:109
+#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:61
+#, csharp-format
+msgid "{0} - {1}"
+msgstr "{0} - {1}"
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:73
 msgid "Connect"
@@ -761,11 +771,6 @@ msgstr "Невідомий виконавець"
 msgid "Downloading Lyrics"
 msgstr "Завантаження текстів"
 
-#: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:61
-#, csharp-format
-msgid "{0} - {1}"
-msgstr "{0} - {1}"
-
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsService.cs:171
 msgid "L_yrics"
 msgstr "L_yrics"
@@ -864,6 +869,7 @@ msgid "Searches your Music Library for possible duplicates"
 msgstr "Пошук можливих дублікатів у фонотеці"
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:265
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:307
 msgid "Reset Mirage"
 msgstr "Перезавантажити Mirage"
 
@@ -890,6 +896,18 @@ msgstr ""
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:282
 msgid "Scan for Duplicates"
 msgstr "Пошук дублікатів"
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:305
+msgid ""
+"Do you really want to reset the Mirage Extension?\n"
+"All extracted information will be lost. Your music will have to be re-analyzed to use Mirage again."
+msgstr ""
+
+#: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:318
+msgid ""
+"Mirage was reset. Your music will have to be re-analyzed to use Mirage "
+"again."
+msgstr ""
 
 #: ../src/Mirage/Banshee.Mirage/RandomBySimilar.cs:54
 msgid "Shuffle by Similar"
@@ -1004,27 +1022,27 @@ msgstr "Виклик радіостанцій від Xiph"
 msgid "www.xiph.org {0} stations available."
 msgstr "Доступно {0} www.xiph.org станцій."
 
-#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:66
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:67
 msgid "Shuffle by similar Artists (via Lastfm)"
 msgstr "Перемішати за подібним виконавцем (через Lastfm)"
 
-#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:67
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:68
 msgid "by similar artists"
 msgstr "за подібним виконавцем"
 
-#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:68
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmSimilarArtists.cs:69
 msgid "Play songs similar to those already played (via Lastfm)"
 msgstr "Відтворювати твори подібні до вже відтворених (через Lastfm)"
 
-#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:60
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:61
 msgid "Shuffle by your Top Artists (via Lastfm)"
 msgstr "Перемішати за вашим рейтингом виконавців (через Lastfm)"
 
-#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:61
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:62
 msgid "by your top artists"
 msgstr "за вашим рейтингом виконавців"
 
-#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:62
+#: ../src/RandomByLastfm/Banshee.RandomByLastfm/RandomByLastfmUserTopArtists.cs:63
 msgid "Play songs from your Top Artists (via Lastfm)"
 msgstr "Відтворювати твори за вашим рейтингом виконавців (через Lastfm)"
 
