@@ -147,15 +147,24 @@ namespace Banshee.DuplicateSongDetector
             string header = null;
             string message = null;
             string button_label = null;
+
             if (delete) {
-                header = AddinManager.CurrentLocalizer.GetString ("Deleting Selected Files");
+                header = AddinManager.CurrentLocalizer.GetString (
+                    "Are you sure you want to permanently delete the selected items?");
+                message = AddinManager.CurrentLocalizer.GetString (
+                    "If you delete the selection, it will be permanently lost.");
                 button_label = "gtk-delete";
             } else {
-                message = AddinManager.CurrentLocalizer.GetString ("Are you sure you want to proceed?");
+                header = AddinManager.CurrentLocalizer.GetString (
+                    "Remove selection from Library?");
+                message = AddinManager.CurrentLocalizer.GetString (
+                    "Are you sure you want to remove the selected items from your Library?");
                 button_label = "gtk-remove";
             }
 
-            HigMessageDialog md = new HigMessageDialog (ServiceManager.Get<GtkElementsService> ().PrimaryWindow, DialogFlags.DestroyWithParent, delete ? MessageType.Warning : MessageType.Question, ButtonsType.None, header, message);
+            HigMessageDialog md = new HigMessageDialog (ServiceManager.Get<GtkElementsService> ().PrimaryWindow,
+                DialogFlags.DestroyWithParent, delete ? MessageType.Warning : MessageType.Question,
+                ButtonsType.None, header, message);
             // Delete from Disk defaults to Cancel and the others to OK/Confirm.
             md.AddButton ("gtk-cancel", ResponseType.No, delete);
             md.AddButton (button_label, ResponseType.Yes, !delete);
