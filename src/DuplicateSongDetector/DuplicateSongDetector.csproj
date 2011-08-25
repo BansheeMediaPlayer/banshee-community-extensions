@@ -27,7 +27,6 @@
         <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>
-    <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
@@ -35,7 +34,6 @@
     <DebugType>full</DebugType>
     <OutputPath>..\..\..\bin</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
-    <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
   </PropertyGroup>
   <ItemGroup>
@@ -52,28 +50,34 @@
     </Reference>
     <Reference Include="Mono.Addins">
       <SpecificVersion>False</SpecificVersion>
-      <Package>mono-addins</Package>
     </Reference>
     <Reference Include="Banshee.Core, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-core</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.Services, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-services</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.ThickClient, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-thickclient</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.Widgets, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-thickclient</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Hyena, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-hyena</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Hyena.Data.Sqlite, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-hyena-data-sqlite</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Hyena.Gui, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-hyena-gui</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -88,7 +92,7 @@
   <ItemGroup>
     <Compile Include="Banshee.DuplicateSongDetector\DuplicateSongDetectorSource.cs" />
     <Compile Include="Banshee.DuplicateSongDetector\SongDuplicateView.cs" />
-    <Compile Include="Banshee.DuplicateSongDetector\DuplicateSongDetectorSearchAction.cs" />
+    <Compile Include="Banshee.DuplicateSongDetector\DuplicateSongDetectorAction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

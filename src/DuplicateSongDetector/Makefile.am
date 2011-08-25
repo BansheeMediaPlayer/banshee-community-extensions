@@ -2,7 +2,7 @@ ASSEMBLY = Banshee.DuplicateSongDetector
 LINK = $(BANSHEE_LIBS)
 
 SOURCES =  \
-	Banshee.DuplicateSongDetector/DuplicateSongDetectorSearchAction.cs \
+	Banshee.DuplicateSongDetector/DuplicateSongDetectorAction.cs \
 	Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs \
 	Banshee.DuplicateSongDetector/SongDuplicateView.cs
 
