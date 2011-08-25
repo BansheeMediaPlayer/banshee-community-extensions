@@ -47,83 +47,54 @@ namespace Banshee.DuplicateSongDetector
 {
     public class SongDuplicateView : RoundedFrame, ISourceContents
     {
-        private Gtk.ScrolledWindow Scroll;
-        private Gtk.TreeView Tree;
         private static Gtk.ListStore MusicListStore;
-        //private static Gtk.VBox vbox;
 
         public SongDuplicateView ()
         {
-
-            Tree = new Gtk.TreeView ();
+            Gtk.ScrolledWindow Scroll = new Gtk.ScrolledWindow ();
+            Gtk.TreeView Tree = new Gtk.TreeView ();
             Gtk.VBox vbox = new Gtk.VBox (false, 1);
+            Gtk.HBox hbox = new Gtk.HBox (false, 1);
 
-           Gtk.HBox hbox = new Gtk.HBox (false, 1);
+            //Buttons For Header
             Gtk.Button removeButton = new Gtk.Button ();
             removeButton.Label = AddinManager.CurrentLocalizer.GetString ("Remove Selected Songs");
             removeButton.Clicked += OnRemoveCommand;
             Gtk.Button deleteButton = new Gtk.Button ();
             deleteButton.Label = AddinManager.CurrentLocalizer.GetString ("Delete Selected Songs");
             deleteButton.Clicked += OnDeleteCommand;
-            Gtk.TreeViewColumn selectColumn = new Gtk.TreeViewColumn ();
-            selectColumn.Title = AddinManager.CurrentLocalizer.GetString ("Select");
-            Gtk.TreeViewColumn songColumn = new Gtk.TreeViewColumn ();
-            songColumn.Title = AddinManager.CurrentLocalizer.GetString ("Song Title");
-            Gtk.TreeViewColumn artistColumn = new Gtk.TreeViewColumn ();
-            artistColumn.Title = AddinManager.CurrentLocalizer.GetString ("Artist");
-            Gtk.TreeViewColumn albumColumn = new Gtk.TreeViewColumn ();
-            albumColumn.Title = AddinManager.CurrentLocalizer.GetString ("Album");
-            Gtk.TreeViewColumn uriColumn = new Gtk.TreeViewColumn ();
-            uriColumn.Title = AddinManager.CurrentLocalizer.GetString ("File URI");
-            
-            // Remove From Library, Delete From Drive, Song Name, Artist Name, Album Name, Formated URI, Actual URI, Database Track ID
-            MusicListStore = new Gtk.ListStore (typeof(bool), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(int));
-            Tree.Model = MusicListStore;
-            
+
+            //Create 5 columns, first column is a checkbox, next 4 are text boxes
             Gtk.CellRendererToggle selectCell = new Gtk.CellRendererToggle ();
             selectCell.Activatable = true;
             selectCell.Toggled += OnSelectToggled;
             selectColumn.PackStart (selectCell, true);
-            
-            Gtk.CellRendererText songCell = new Gtk.CellRendererText ();
-            songColumn.PackStart (songCell, true);
-            Gtk.CellRendererText artistCell = new Gtk.CellRendererText ();
-            artistColumn.PackStart (artistCell, true);
-            Gtk.CellRendererText albumCell = new Gtk.CellRendererText ();
-            albumColumn.PackStart (albumCell, true);
-            Gtk.CellRendererText uriCell = new Gtk.CellRendererText ();
-            uriColumn.PackStart (uriCell, true);
-            
-            selectColumn.AddAttribute (selectCell, "active", 0);
-            songColumn.AddAttribute (songCell, "text", 1);
-            artistColumn.AddAttribute (artistCell, "text", 2);
-            albumColumn.AddAttribute (albumCell, "text", 3);
-            uriColumn.AddAttribute (uriCell, "text", 4);
-            
-            Scroll = new Gtk.ScrolledWindow ();
-            
-            Tree.AppendColumn (selectColumn);
-            Tree.AppendColumn (songColumn);
-            Tree.AppendColumn (artistColumn);
-            Tree.AppendColumn (albumColumn);
-            Tree.AppendColumn (uriColumn);
-            
+            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Select"),selectCell, "active", 0);
+            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Song Title"),new Gtk.CellRendererText (), "text", 1);
+            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Artist"),new Gtk.CellRendererText (), "text", 2);
+            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Album"),new Gtk.CellRendererText (), "text", 3);
+            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("File URI"),new Gtk.CellRendererText (), "text", 4);
+            // Remove From Library, Delete From Drive, Song Name, Artist Name, Album Name, Formated URI, Actual URI, Database Track ID
+            MusicListStore = new Gtk.ListStore (typeof(bool), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(int));
+            Tree.Model = MusicListStore;
+            //Pack the Tree in a scroll window
+            Scroll.AddWithViewport (Tree);
+            //Pack the buttons in a hbox
             hbox.PackStart (removeButton, false, false, 0);
             hbox.PackStart (deleteButton, false, false, 0);
-             vbox.PackStart (hbox, false, false, 0);
+            //pack the hbox->buttons and Scroll->Tree in a Vbox, tell the Scroll window to Expand and Fill the vbox
+            vbox.PackStart (hbox, false, false, 0);
             vbox.PackStart (Scroll, true, true, 0);
-            
-            if (Scroll != null) {
-                Scroll.AddWithViewport (Tree);
-            }
-
+            //pack the vbox in the Rounded Frame
             Add(vbox);
+            //Finally, show everything
             ShowAll();
             
         }
 
         void OnSelectToggled (object o, ToggledArgs args)
         {
+            //get the toggled row, pull out the value for the select box, and store the opposite.
             TreeIter Iter;
             if (MusicListStore.GetIter (out Iter, new TreePath (args.Path))) {
                 bool OldValue = (bool)MusicListStore.GetValue (Iter, 0);
@@ -131,15 +102,17 @@ namespace Banshee.DuplicateSongDetector
                 Log.DebugFormat ("Setting Selection Value For Row {0} -> {1}", MusicListStore.GetStringFromIter (Iter), !OldValue);
             }
         }
-
+#region ButtonPushed
         void OnRemoveCommand (object o, EventArgs args)
         {
             OnExecuteCommand (false);
         }
+
         void OnDeleteCommand (object o, EventArgs args)
         {
             OnExecuteCommand (true);
         }
+
         void OnExecuteCommand (bool Delete)
         {
             if (ConfirmRemove (Delete)) {
@@ -168,6 +141,7 @@ namespace Banshee.DuplicateSongDetector
                 ReloadWindow ();
             }
         }
+
         private static bool ConfirmRemove (bool delete)
         {
             bool ret = false;
@@ -181,8 +155,7 @@ namespace Banshee.DuplicateSongDetector
                 message = AddinManager.CurrentLocalizer.GetString ("Are you sure you want to proceed?");
                 button_label = "gtk-remove";
             }
-            
-            
+
             HigMessageDialog md = new HigMessageDialog (ServiceManager.Get<GtkElementsService> ().PrimaryWindow, DialogFlags.DestroyWithParent, delete ? MessageType.Warning : MessageType.Question, ButtonsType.None, header, message);
             // Delete from Disk defaults to Cancel and the others to OK/Confirm.
             md.AddButton ("gtk-cancel", ResponseType.No, delete);
@@ -197,7 +170,8 @@ namespace Banshee.DuplicateSongDetector
             }
             return ret;
         }
-
+#endregion
+#region DataHandlers
         public static void AddData (int ID, String song, String artist, String album, String uri)
         {
             string NewUri = Uri.UnescapeDataString (uri).Replace ("file://", "");
@@ -234,9 +208,11 @@ namespace Banshee.DuplicateSongDetector
                 AddData (ID, Title, Album, Artist, URI);
             }
         }
+
         public void RefreshWindow(){
             ReloadWindow();
         }
+
         public static void ClearData ()
         {
             Gtk.TreeIter Iter = new Gtk.TreeIter ();
@@ -246,6 +222,8 @@ namespace Banshee.DuplicateSongDetector
                 } while (MusicListStore.IterIsValid (Iter));
             }
         }
+#endregion
+#region RemoveWorkhorse
         //I would love to replace the database and File.Delete commands with MusicLibrary.RemoveTracks and MusicLibrary.DeleteTracks
         //But i have to wait until better documentation comes out
         private void RemoveTrack (int id)
@@ -256,7 +234,8 @@ namespace Banshee.DuplicateSongDetector
         {
             File.Delete (uri);
         }
- #region ISourceContents
+#endregion
+#region ISourceContents
         private MusicLibrarySource source;
         public bool SetSource (ISource source)
         {
@@ -276,10 +255,10 @@ namespace Banshee.DuplicateSongDetector
         public Widget Widget {
             get { return this; }
         }
-
 #endregion
-    }
+
+    } //End of Class
     
-}
+} // End of NameSpace
 
 
