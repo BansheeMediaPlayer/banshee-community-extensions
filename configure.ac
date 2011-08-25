@@ -132,6 +132,7 @@ help/Makefile
 po/Makefile.in
 
 src/Makefile
+src/DuplicateSongDetector/Makefile
 src/AssemblyInfo.cs
 
 src/AlarmClock/Makefile
@@ -199,6 +200,7 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
+    DuplicateSongDetector:yes
     Alarm Clock:           ${enable_AlarmClock}
     AlbumArtWriter:        ${enable_AlbumArtWriter}
     Ampache:               ${enable_Ampache}

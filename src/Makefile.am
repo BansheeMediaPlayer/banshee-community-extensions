@@ -1,4 +1,5 @@
 SUBDIRS = \
+    DuplicateSongDetector \
 	AlarmClock \
 	AlbumArtWriter \
 	Ampache \
