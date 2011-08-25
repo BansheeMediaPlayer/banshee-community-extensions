@@ -1,11 +1,13 @@
 Extension Maintainers:
 
             AlarmClock Bertrand Lorentz
+        AlbumArtWriter Kevin Anthony
                Ampache John Moore
           AppIndicator Sense Hofstede
                    Awn Marcos Almeida Jr
            ClutterFlow Mathijs Dumon
         CoverWallpaper David Corrales
+ DuplicateSongDetector Kevin Anthony
                Jamendo Bertrand Lorentz
                        Janez Troha
                Karaoke Frank Ziegler
@@ -38,8 +40,11 @@ Other Contributors:
   Iain Lane
   Jo Shields
   Kriss
+  Nicholas Parker
   Patrick Niklaus
   Patrick van Staveren
+  Philipp Ittershagen
+  Raimo Radczewski
   Rodney Dawes
   Ruben Vermeersch
   Samuel Gyger

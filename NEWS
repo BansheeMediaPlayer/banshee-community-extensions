@@ -1,4 +1,25 @@
 =================================
+Version 2.1.3 - August 25, 2011
+=================================
+
+Contributors since 2.1.1:
+Bertrand Lorentz, Chow Loong Jin, Kevin Anthony, Nicholas Parker,
+Philipp Ittershagen, Raimo Radczewski
+
+New extensions since 2.1.1:
+* AlbumArtWriter: Write album art to the folder containing the music files
+* DuplicateSongDetector: Detect and remove duplicate songs in your library
+
+Enhancements since 2.1.1:
+* Mirage: Re-enable rescan and reset methods (bgo#653826)
+* OpenVP: Add a new "Scaled Voiceprint" visualization
+
+Notable bugs fixed since 2.1.1:
+* RandomByLastfm: Do not query Last.fm when offline (bgo#634785)
+* LastfmFingerprint: Build only if enabled in the build (bgo#657013)
+
+
+=================================
 Version 2.1.1 - June 13, 2011
 =================================
 
