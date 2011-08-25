@@ -6,7 +6,7 @@
     copyright="Copyright © 2011 Kevin Antony. Licensed under the MIT X11 license."
     name="Duplicate Song Detector"
     category="Community Extensions"
-    description="Describe your extension, ideally starting with an action verb.  Keep it brief and avoid tech jargon."
+    description="Detect and remove duplicate songs in your library."
     author="Kevin Anthony"
     url="http://banshee-project.org/"
     defaultEnabled="false">
