@@ -72,7 +72,7 @@ namespace Banshee.DuplicateSongDetector
             Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Song Title"),new Gtk.CellRendererText (), "text", 1);
             Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Artist"),new Gtk.CellRendererText (), "text", 2);
             Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Album"),new Gtk.CellRendererText (), "text", 3);
-            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("File URI"),new Gtk.CellRendererText (), "text", 4);
+            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("File"),new Gtk.CellRendererText (), "text", 4);
             // Remove From Library, Delete From Drive, Song Name, Artist Name, Album Name, Formated URI, Actual URI, Database Track ID
             MusicListStore = new Gtk.ListStore (typeof(bool), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(int));
             Tree.Model = MusicListStore;
