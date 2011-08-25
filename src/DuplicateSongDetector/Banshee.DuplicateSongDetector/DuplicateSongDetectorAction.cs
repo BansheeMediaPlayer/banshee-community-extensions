@@ -41,6 +41,8 @@ namespace Banshee.DuplicateSongDetector
 {
     public class DuplicateSongDetectorAction : BansheeActionGroup
     {
+        private DuplicateSongDetectorSource source;
+
         public DuplicateSongDetectorAction () : base (AddinManager.CurrentLocalizer.GetString ("Detect Duplicate Songs"))
         {
             Add (new Gtk.ActionEntry ("DuplicateSongAction", null,
@@ -50,32 +52,13 @@ namespace Banshee.DuplicateSongDetector
 
         public void onStartDetecting (object o, EventArgs args)
         {
-            var Source = new DuplicateSongDetectorSource ();
-            ServiceManager.SourceManager.MusicLibrary.AddChildSource (Source);
-            ServiceManager.SourceManager.SetActiveSource (Source);
-
-            HyenaDataReader reader = new HyenaDataReader (ServiceManager.DbConnection.Query (@"SELECT
-                             CT.TrackID, CT.Title, CA.ArtistName, CA.Title, CT.URI
-                             FROM CoreTracks CT,CoreAlbums CA ON Ct.AlbumID = CA.AlbumID
-                             AND CT.TrackID IN (
-                                 SELECT
-                                     CT1.TrackID from CoreTracks CT1,CoreTracks CT2 where
-                                     CT1.PrimarySourceID=1
-                                     AND CT1.TrackID <> CT2.TrackID
-                                     AND CT1.TitleLowered = CT2.TitleLowered
-                                     AND CT1.TrackNumber = CT2.TrackNumber
-                                     AND CT1.AlbumID = CT2.AlbumID
-                                     AND CT1.ArtistID = CT2.ArtistID
-                             )
-                             ORDER BY CT.Title"));
-            while (reader.Read ()) {
-                int ID = reader.Get<int> (0);
-                String Title = reader.Get<String> (1);
-                String Artist = reader.Get<String> (2);
-                String Album = reader.Get<String> (3);
-                String URI = reader.Get<String>(4);
-                SongDuplicateView.AddData (ID, Title, Artist, Album, URI);
+            if (source == null) {
+                source = new DuplicateSongDetectorSource ();
+                ServiceManager.SourceManager.MusicLibrary.AddChildSource (source);
             }
+            ServiceManager.SourceManager.SetActiveSource (source);
+
+            SongDuplicateView.ReloadWindow ();
         }
     }
 }

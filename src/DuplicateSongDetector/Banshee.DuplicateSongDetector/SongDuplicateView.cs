@@ -180,7 +180,7 @@ namespace Banshee.DuplicateSongDetector
         }
 #endregion
 #region DataHandlers
-        public static void AddData (int ID, String song, String artist, String album, String uri)
+        private static void AddData (int ID, String song, String artist, String album, String uri)
         {
             string NewUri = Uri.UnescapeDataString (uri).Replace ("file://", "");
             if (File.Exists (NewUri)) {
