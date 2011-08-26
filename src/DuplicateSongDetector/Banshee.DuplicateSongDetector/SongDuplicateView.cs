@@ -55,7 +55,7 @@ namespace Banshee.DuplicateSongDetector
             Gtk.TreeView Tree = new Gtk.TreeView ();
             Gtk.VBox vbox = new Gtk.VBox (false, 1);
             Gtk.HBox hbox = new Gtk.HBox (false, 1);
-
+            Tree.RowActivated += OnRowClicked;
             //Buttons For Header
             Gtk.Button removeButton = new Gtk.Button ();
             removeButton.Label = AddinManager.CurrentLocalizer.GetString ("Remove Selected Songs");
@@ -90,6 +90,16 @@ namespace Banshee.DuplicateSongDetector
             ShowAll();
             
         }
+#region ToggleBoxHandling
+        void OnRowClicked (object o, RowActivatedArgs args)
+        {
+            TreeIter Iter;
+            if ((o as TreeView).Selection.GetSelected(out Iter)){
+                bool OldValue = (bool)MusicListStore.GetValue (Iter, 0);
+                MusicListStore.SetValue (Iter, 0, !OldValue);
+                Log.DebugFormat ("Setting Selection Value For Row {0} -> {1}", MusicListStore.GetStringFromIter (Iter), !OldValue);
+            }
+        }
 
         void OnSelectToggled (object o, ToggledArgs args)
         {
@@ -101,6 +111,7 @@ namespace Banshee.DuplicateSongDetector
                 Log.DebugFormat ("Setting Selection Value For Row {0} -> {1}", MusicListStore.GetStringFromIter (Iter), !OldValue);
             }
         }
+#endregion
 #region ButtonPushed
         void OnRemoveCommand (object o, EventArgs args)
         {
