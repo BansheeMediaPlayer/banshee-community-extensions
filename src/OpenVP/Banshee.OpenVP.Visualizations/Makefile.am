@@ -13,6 +13,7 @@ SOURCES =  \
 	Inferno.cs \
 	SimpleScope.cs \
 	SpectrumAnalyzer.cs \
+	SpectrumScan.cs \
 	SpinningGrid.cs \
 	Voiceprint.cs
 

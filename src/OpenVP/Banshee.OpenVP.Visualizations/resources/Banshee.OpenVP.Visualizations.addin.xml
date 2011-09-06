@@ -20,17 +20,19 @@
   </Dependencies>
 
   <Extension path="/Banshee/OpenVP/Visualization">
-  	<Visualization type="Banshee.OpenVP.Visualizations.SimpleScope" label="Simple scope" />
-  	<Visualization type="Banshee.OpenVP.Visualizations.SpectrumAnalyzer" label="Spectrum analyzer" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.SimpleScope" label="Simple Scope" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.SpectrumAnalyzer" label="Spectrum Analyzer" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.SpectrumScan" label="Spectrum Scan" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.SpectrumRain" label="Spectrum Rain" />
   	<Visualization type="Banshee.OpenVP.Visualizations.Voiceprint" label="Voiceprint" />
   	<Visualization type="Banshee.OpenVP.Visualizations.ScaleVoiceprint" label="Scaled Voiceprint" />
   	<Visualization type="Banshee.OpenVP.Visualizations.MirrorVoiceprint" label="Mirrored Voiceprint" />
   	<Visualization type="Banshee.OpenVP.Visualizations.Grid" label="Grid" />
   	<Visualization type="Banshee.OpenVP.Visualizations.SpinningGrid" label="Spinning Grid" />
   	<Visualization type="Banshee.OpenVP.Visualizations.Inferno" label="Inferno" />
-  	<Visualization type="Banshee.OpenVP.Visualizations.GlassWall" label="Glass wall" />
-  	<Visualization type="Banshee.OpenVP.Visualizations.Core" label="Power core" />
-  	<Visualization type="Banshee.OpenVP.Visualizations.GreenFlower" label="Green flower" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.GlassWall" label="Glass Wall" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.Core" label="Power Core" />
+  	<Visualization type="Banshee.OpenVP.Visualizations.GreenFlower" label="Green Flower" />
   	<Visualization type="Banshee.OpenVP.Visualizations.Conway.GenerationalLifeVis" label="Conway" />
   </Extension>
 </Addin>

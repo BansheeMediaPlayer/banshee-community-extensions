@@ -50,6 +50,7 @@
     <Compile Include="Conway\GenerationalLifeBoard.cs" />
     <Compile Include="Conway\GenerationalLifeSquare.cs" />
     <Compile Include="Conway\GenerationalLifeVis.cs" />
+    <Compile Include="SpectrumScan.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
