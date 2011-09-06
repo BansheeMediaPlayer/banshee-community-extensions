@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-25 21:48+0200\n"
+"POT-Creation-Date: 2011-09-06 20:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -356,19 +356,19 @@ msgstr ""
 msgid "File"
 msgstr ""
 
-#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:153
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:164
 msgid "Are you sure you want to permanently delete the selected items?"
 msgstr ""
 
-#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:155
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:166
 msgid "If you delete the selection, it will be permanently lost."
 msgstr ""
 
-#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:159
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:170
 msgid "Remove selection from Library?"
 msgstr ""
 
-#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:161
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:172
 msgid "Are you sure you want to remove the selected items from your Library?"
 msgstr ""
 
