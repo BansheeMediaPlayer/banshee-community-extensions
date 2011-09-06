@@ -141,11 +141,10 @@ namespace Banshee.OpenVP.Visualizations
 
     public class ScaleVoiceprint : IRenderer, IDisposable
     {
-        //cached mapping: for each index in controller.Height, what index to retrieve from spectrumBuffer
-        private const double scale = 1.25;
-        private int[] spectrumScaling;
-
-        private float[] spectrumBuffer;
+        private const double scale = 0.5;
+        private float[] spectrumBuffer,
+            spectrumScaling;//for each index in spectrumBuffer, how wide (in px) that index should be
+        private int spectrumViewLength = -1;//last value
 
         private TextureHandle buffer;
 
@@ -158,17 +157,46 @@ namespace Banshee.OpenVP.Visualizations
             bool rescale = false;
             if (spectrumBuffer == null || spectrumBuffer.Length != dataLength) {
                 spectrumBuffer = new float[dataLength];
+                spectrumScaling = new float[dataLength];
                 rescale = true;
             }
-            if (spectrumScaling == null || spectrumScaling.Length != viewLength) {
-                spectrumScaling = new int[viewLength];
+            if (viewLength != spectrumViewLength) {
+                spectrumViewLength = viewLength;
                 rescale = true;
             }
             if (rescale) {
-                //formula: dataLength * viewLength^scale / i^scale
-                double multiplier = dataLength / Math.Pow(viewLength, scale);
-                for (int i = 0; i < viewLength; ++i) {
-                    spectrumScaling[i] = (int)(Math.Pow(i, scale) * multiplier);
+                /*
+                  dataLen: size of the spectrum data
+                  viewLen: height of the display
+                  i: range from 0 to dataLen
+                  viewI: view width of data pixel i (what we're calculating)
+                  dataI: data at data pixel i
+
+                  Start off with this formula:
+                  viewI = (dataLen - dataI)^scale / dataLen^scale
+
+                  Get the integral of the above formula from 0 to dataLen to
+                  calculate the sum view widths the above formula would produce:
+
+                  integral(viewI) = (dataI - dataLen) * dataLen^-scale * (dataLen - dataI)^s / (s + 1)
+                  integral(viewI)[0,dataLen] = 0 - (-dataLen / (scale + 1))
+                    = dataLen / (scale + 1) = sum(viewI)
+
+                  Multiply the viewI formula by (viewLen/sum(viewI)) to get
+                  things scaled to the length of the view:
+
+                  viewLenIScaled = viewLenI * viewLen / sum(viewI)
+                    = [(dataLen - dataI)^scale / dataLen^scale] * viewLen / [dataLen / (scale + 1)]
+                    = (dataLen - dataI)^scale * viewLen * (scale + 1) / dataLen^(scale+1)
+
+                  So now we have a formula which calculates, for each value in
+                  the spectrum, how wide that value should appear in the display.
+                  The scaled formula also pre-scales those widths to match
+                  the width of the display.
+                */
+                double multiplier = viewLength * (scale + 1) / Math.Pow(dataLength, scale + 1);
+                for (int i = 0; i < dataLength; ++i) {
+                    spectrumScaling[i] = (float)(Math.Pow(dataLength-i, scale) * multiplier);
                 }
             }
         }
@@ -232,14 +260,19 @@ namespace Banshee.OpenVP.Visualizations
             Gl.glEnd();
             Gl.glDisable(Gl.GL_TEXTURE_2D);
 
-            Gl.glBegin(Gl.GL_POINTS);
-            for (int i = 0; i < controller.Height; i++) {
-                float v = spectrumBuffer[spectrumScaling[i]];
+            Gl.glBegin(Gl.GL_QUADS);
+            float y = 0;
+            for (int i = 0; i < controller.PlayerData.NativeSpectrumLength; ++i) {
+                float v = spectrumBuffer[i];
 
                 Color.FromHSL(120 * (1 - v), 1, Math.Min(0.5f, v)).Use();
                 //Gl.glColor3f(v, v, v);
 
-                Gl.glVertex2i(controller.Width - 1, i);
+                Gl.glVertex2f(controller.Width - 1, y);
+                Gl.glVertex2f(controller.Width, y);
+                y += spectrumScaling[i];
+                Gl.glVertex2f(controller.Width, y);
+                Gl.glVertex2f(controller.Width - 1, y);
             }
             Gl.glEnd();
 
