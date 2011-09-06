@@ -456,8 +456,10 @@ namespace ClutterFlow
 
         private IEnumerable<ClutterFlowBaseActor> SafeGetRange (List<ClutterFlowBaseActor> list, int index, int count) {
             for (int i = index; i < index + count; i++) {
-                ClutterFlowBaseActor cover;
-                cover = list[i];
+                ClutterFlowBaseActor cover = null;
+                if (i >= 0 && i < list.Count) {
+                    cover = list[i];
+                }
                 if (cover == null) {
                     continue;
                 }
