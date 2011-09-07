@@ -1,0 +1,9 @@
+<ui>
+  <toolbar name="HeaderToolbar">
+    <placeholder name="SourceActions">
+        <toolitem action="onStartDetecting" />
+        <toolitem action="UnmapSourceAction" />
+    </placeholder>
+  </toolbar>
+
+</ui>
