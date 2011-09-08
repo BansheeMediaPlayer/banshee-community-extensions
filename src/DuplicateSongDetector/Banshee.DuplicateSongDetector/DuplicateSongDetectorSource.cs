@@ -32,6 +32,8 @@ using Mono.Addins;
 
 using Banshee.Base;
 using Banshee.Sources;
+using Banshee.ServiceStack;
+using Banshee.Gui;
 
 namespace Banshee.DuplicateSongDetector
 {
@@ -44,10 +46,18 @@ namespace Banshee.DuplicateSongDetector
         {
             Properties.SetStringList ("Icon.Name", "search", "gtk-search");
             Properties.Set<Banshee.Sources.Gui.ISourceContents> ("Nereid.SourceContents", new SongDuplicateView ());
+            Properties.SetString ("ActiveSourceUIResource", "ActiveUI.xml");
             Properties.SetString ("UnmapSourceActionLabel", AddinManager.CurrentLocalizer.GetString ("Close"));
             Properties.SetString ("UnmapSourceActionIconName", "gtk-close");
-        }
 
+            var actions = new BansheeActionGroup ("duplicate-source");
+            actions.AddImportant (
+                new Gtk.ActionEntry ("onStartDetecting", Gtk.Stock.Refresh, AddinManager.CurrentLocalizer.GetString ("Refresh"), null, null, (o, a) => {
+                    SongDuplicateView.ReloadWindow ();
+                })
+            );
+            actions.Register ();
+        }
         // A count of 0 will be hidden in the source TreeView
         public override int Count {
             get { return 0; }

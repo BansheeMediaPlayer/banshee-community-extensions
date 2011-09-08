@@ -46,7 +46,7 @@ namespace Banshee.DuplicateSongDetector
         public DuplicateSongDetectorAction () : base (AddinManager.CurrentLocalizer.GetString ("Detect Duplicate Songs"))
         {
             Add (new Gtk.ActionEntry ("DuplicateSongAction", null,
-                AddinManager.CurrentLocalizer.GetString ("Detect Duplicate Songs"), null, null, onStartDetecting));
+            AddinManager.CurrentLocalizer.GetString ("Detect Duplicate Songs"), null, null, onStartDetecting));
             AddUiFromFile ("GlobalUI.xml");
         }
 

@@ -8,6 +8,7 @@ SOURCES =  \
 
 RESOURCES =  \
 	DuplicateSongDetector.addin.xml \
+	Resources/ActiveUI.xml \
 	Resources/GlobalUI.xml
 
 if ENABLE_DUPLICATESONGDETECTOR

@@ -28,6 +28,7 @@
       </CustomCommands>
     </CustomCommands>
     <Optimize>false</Optimize>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,6 +36,7 @@
     <OutputPath>..\..\..\bin</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
     <Optimize>false</Optimize>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -50,6 +52,7 @@
     </Reference>
     <Reference Include="Mono.Addins">
       <SpecificVersion>False</SpecificVersion>
+      <Package>mono-addins</Package>
     </Reference>
     <Reference Include="Banshee.Core, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-core</Package>
@@ -87,6 +90,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\GlobalUI.xml">
       <LogicalName>GlobalUI.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ActiveUI.xml">
+      <LogicalName>ActiveUI.xml</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
