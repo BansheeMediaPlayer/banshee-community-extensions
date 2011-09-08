@@ -330,10 +330,15 @@ namespace Banshee.Streamrecorder
         /// </returns>
         public bool AddStreamTags (TrackInfo track, bool splitfiles)
         {
-            if (track == null || tagger == null)
+            if (track == null)
                 return false;
 
-            if (tagger.IsNull ()) {
+            if (splitfiles && file_sink != null && track.ArtistName != null && track.ArtistName.Length > 0) {
+                SetMetadataFilename (track.TrackTitle, track.ArtistName);
+                SetNewTrackLocation (output_file + file_extension);
+            }
+
+            if (tagger == null || tagger.IsNull ()) {
                 Hyena.Log.Debug ("[Recorder]<AddStreamTags> tagger is null, not tagging!");
                 return false;
             }
@@ -353,11 +358,6 @@ namespace Banshee.Streamrecorder
             } catch (Exception e) {
                 Hyena.Log.Information ("[Streamrecorder] An exception occurred during gstreamer operation");
                 Hyena.Log.Debug (e.StackTrace);
-            }
-
-            if (splitfiles && file_sink != null && track.ArtistName != null && track.ArtistName.Length > 0) {
-                SetMetadataFilename (track.TrackTitle, track.ArtistName);
-                SetNewTrackLocation (output_file + file_extension);
             }
 
             return true;
