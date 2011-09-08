@@ -2,13 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # 
+# Translators:
 # António Lima <amrlima@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
-"POT-Creation-Date: 2011-08-23 10:13-0400\n"
-"PO-Revision-Date: 2011-08-23 00:10+0000\n"
+"POT-Creation-Date: 2011-09-06 20:34+0200\n"
+"PO-Revision-Date: 2011-08-26 00:16+0000\n"
 "Last-Translator: amrlima <amrlima@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -110,7 +111,7 @@ msgstr "Iniciar Temporizador"
 msgid "Saving Cover Art To Album folders"
 msgstr ""
 
-#: ../src/AlbumArtWriter/Banshee.AlbumArtWriter/AlbumArtWriterJob.cs:109
+#: ../src/AlbumArtWriter/Banshee.AlbumArtWriter/AlbumArtWriterJob.cs:99
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:61
 #, csharp-format
 msgid "{0} - {1}"
@@ -122,11 +123,13 @@ msgstr "Ligar"
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:85
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:92
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:73
 msgid "Artist"
 msgstr "Artista"
 
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:87
 #: ../src/Ampache/Banshee.Ampache/Gui/AmpacheView.cs:93
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:74
 msgid "Album"
 msgstr "Álbum"
 
@@ -165,6 +168,7 @@ msgid "_Close"
 msgstr "Fe_char"
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:133
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:47
 msgid "Close"
 msgstr "Fechar"
 
@@ -334,6 +338,51 @@ msgstr "Dimensões"
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs:383
 msgid ""
 "For changes to these values to take effect, you need to restart Banshee"
+msgstr ""
+
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorAction.cs:46
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorAction.cs:49
+msgid "Detect Duplicate Songs"
+msgstr ""
+
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:43
+msgid "Duplicate Song Detector"
+msgstr ""
+
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:61
+msgid "Remove Selected Songs"
+msgstr ""
+
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:64
+msgid "Delete Selected Songs"
+msgstr ""
+
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:71
+msgid "Select"
+msgstr ""
+
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:72
+msgid "Song Title"
+msgstr ""
+
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:75
+msgid "File"
+msgstr ""
+
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:164
+msgid "Are you sure you want to permanently delete the selected items?"
+msgstr ""
+
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:166
+msgid "If you delete the selection, it will be permanently lost."
+msgstr ""
+
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:170
+msgid "Remove selection from Library?"
+msgstr ""
+
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:172
+msgid "Are you sure you want to remove the selected items from your Library?"
 msgstr ""
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:62
