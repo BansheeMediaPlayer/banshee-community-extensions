@@ -45,7 +45,7 @@ namespace Banshee.Karaoke.Gui
         private KaraokeView view;
         private ContextPage context_page;
         private TrackInfo track;
-        private Timer t;
+        private Timer timer;
         private Label disconnected;
 
         public KaraokePane (ContextPage context_page)
@@ -67,13 +67,13 @@ namespace Banshee.Karaoke.Gui
                     } else {
                         view.LoadLyrics (track);
                         view.LoadStatusChanged += OnViewLoadStatusChanged;
-                        t.Change (0, 2000);
+                        timer.Change (0, 2000);
                         this.CurrentPage = this.PageNum (view);
                     }
                     context_page.SetState (Banshee.ContextPane.ContextState.Loaded);
                 } else {
                     context_page.SetState (Banshee.ContextPane.ContextState.NotLoaded);
-                    t.Change (System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+                    timer.Change (System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
                 }
             }
         }
@@ -88,7 +88,9 @@ namespace Banshee.Karaoke.Gui
 
         private void TimerTimedOut (object o)
         {
-            if (this.CurrentPage == this.PageNum (disconnected)) return;
+            if (this.CurrentPage == this.PageNum (disconnected)) {
+                return;
+            }
             ServiceStack.Application.Invoke (delegate {
                 if (track != null && ServiceManager.PlayerEngine.IsPlaying (track) && view.LoadStatus != Banshee.WebBrowser.OssiferLoadStatus.Failed) {
                     SetSongTime ();
@@ -98,38 +100,46 @@ namespace Banshee.Karaoke.Gui
 
         private void PauseScrolling ()
         {
-            if (this.CurrentPage == this.PageNum (disconnected)) return;
+            if (this.CurrentPage == this.PageNum (disconnected)) {
+                return;
+            }
             view.ExecuteScript (String.Format ("window.postMessage('pause','http://youtubelyric.com');", ServiceManager.PlayerEngine.Position / 1000));
         }
 
         private void ResumeScrolling ()
         {
-            if (this.CurrentPage == this.PageNum (disconnected)) return;
+            if (this.CurrentPage == this.PageNum (disconnected)) {
+                return;
+            }
             view.ExecuteScript (String.Format ("window.postMessage('play','http://youtubelyric.com');", ServiceManager.PlayerEngine.Position / 1000));
         }
 
         private void SetSongTime ()
         {
-            if (this.CurrentPage == this.PageNum (disconnected)) return;
+            if (this.CurrentPage == this.PageNum (disconnected)) {
+                return;
+            }
             view.ExecuteScript (String.Format ("window.postMessage({0},'http://youtubelyric.com');", ServiceManager.PlayerEngine.Position / 1000));
         }
 
         private void SetStyle ()
         {
-            if (this.CurrentPage == this.PageNum (disconnected)) return;
+            if (this.CurrentPage == this.PageNum (disconnected)) {
+                return;
+            }
             view.ExecuteScript ("if (document.getElementById ('lyricbox')) { document.getElementById ('lyricbox').style.fontSize='2.5em'; }");
         }
 
-        public void InitComponents ()
+        private void InitComponents ()
         {
             this.view = new KaraokeView ();
             view.Zoom = 1.2f;
-            t = new Timer (TimerTimedOut, null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+            timer = new Timer (TimerTimedOut, null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
             ServiceManager.PlayerEngine.ConnectEvent (OnTrackChange, PlayerEvent.StateChange);
             ServiceManager.PlayerEngine.ConnectEvent (OnSeek, PlayerEvent.Seek);
 
-            this.disconnected = new Label (AddinManager.CurrentLocalizer.GetString ("You are disconnected" +
-                                                " from the internet, so karaoke lyrics are not available."));
+            this.disconnected = new Label (AddinManager.CurrentLocalizer.GetString (
+                "You are disconnected from the internet, so karaoke lyrics are not available."));
             this.Add (disconnected);
             this.Add (view);
 
@@ -154,6 +164,5 @@ namespace Banshee.Karaoke.Gui
         {
             SetSongTime ();
         }
-
     }
 }

@@ -47,7 +47,9 @@ namespace Banshee.Karaoke.Gui
 
         protected override OssiferNavigationResponse OnNavigationPolicyDecisionRequested (string uri)
         {
-            if (uri.StartsWith ("http://youtubelyric.com/lyric")) return OssiferNavigationResponse.Accept;
+            if (uri.StartsWith ("http://youtubelyric.com/lyric")) {
+                return OssiferNavigationResponse.Accept;
+            }
             return OssiferNavigationResponse.Ignore;
         }
 
@@ -65,7 +67,8 @@ namespace Banshee.Karaoke.Gui
 
         public void LoadLyrics (TrackInfo track)
         {
-            LoadUri (String.Format ("http://youtubelyric.com/lyric/showlyric.php?artist={0}&song={1}",track.DisplayArtistName, track.DisplayTrackTitle));
+            LoadUri (String.Format ("http://youtubelyric.com/lyric/showlyric.php?artist={0}&song={1}",
+                track.DisplayArtistName, track.DisplayTrackTitle));
         }
     }
 }
