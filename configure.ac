@@ -3,7 +3,7 @@ AC_INIT([banshee-community-extensions], 2.1.4,
 	[http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions])
 
 AM_INIT_AUTOMAKE([1.9 dist-bzip2 tar-ustar dist-zip foreign])
-AM_MAINTAINER_MODE
+AM_MAINTAINER_MODE([enable])
 AM_CONFIG_HEADER([config.h])
 
 IT_PROG_INTLTOOL([0.35.0])
