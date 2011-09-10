@@ -39,23 +39,21 @@ namespace Banshee.Lyrics.Gui
     {
         private Gtk.Label label;
         private LyricsBrowser browser;
-        private Gtk.ScrolledWindow scrollPane;
 
         private ContextPage context_page;
 
         public LyricsPane (ContextPage context_page)
         {
             this.context_page = context_page;
-            InitComponents ();
-        }
-
-        public void InitComponents ()
-        {
-            this.browser = new LyricsBrowser ();
             LyricsManager.Instance.LoadStarted += this.OnLoadStarted;
             LyricsManager.Instance.LoadFinished += this.OnLoadFinished;
+        }
 
+        private void InitComponents ()
+        {
+            browser = new LyricsBrowser ();
             browser.InsertModeAvailable = false;
+
             label = new Label ();
             label.Xalign = 0;
 
@@ -64,13 +62,13 @@ namespace Banshee.Lyrics.Gui
             label_align.LeftPadding = 10;
             label_align.Add (label);
 
-            this.scrollPane = new Gtk.ScrolledWindow ();
-            this.scrollPane.HscrollbarPolicy = ((Gtk.PolicyType)(2));
-            this.scrollPane.ShadowType = Gtk.ShadowType.None;
-            this.scrollPane.Add (this.browser);
+            Gtk.ScrolledWindow scroll_pane = new Gtk.ScrolledWindow ();
+            scroll_pane.HscrollbarPolicy = PolicyType.Automatic;
+            scroll_pane.ShadowType = Gtk.ShadowType.None;
+            scroll_pane.Add (browser);
 
             PackStart (label_align, false, true, 0);
-            PackStart (this.scrollPane, true, true, 0);
+            PackStart (scroll_pane, true, true, 0);
 
             this.ShowAll ();
         }
@@ -82,13 +80,21 @@ namespace Banshee.Lyrics.Gui
 
         private void OnLoadFinished (object o, LoadFinishedEventArgs args)
         {
-            this.browser.LoadString (o, args);
+            if (browser == null) {
+                InitComponents ();
+            }
+
+            browser.LoadString (o, args);
 
             context_page.SetState (Banshee.ContextPane.ContextState.Loaded);
         }
 
         public void UpdateLabel (string track_title)
         {
+            if (label == null) {
+                InitComponents ();
+            }
+
             label.Markup = String.Format ("<b>{0}</b>", GLib.Markup.EscapeText (track_title));
             
             this.ShowAll ();
