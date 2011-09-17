@@ -1,0 +1,8 @@
+<ui>
+  <toolbar name="HeaderToolbar">
+    <placeholder name="SourceActions">
+        <toolitem action="StopSyncing" />
+		<toolitem action="UnmapSourceAction" />
+    </placeholder>
+  </toolbar>
+</ui>

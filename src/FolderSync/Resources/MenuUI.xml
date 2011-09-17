@@ -1,0 +1,7 @@
+<ui>
+	<menubar name="MainMenu">
+		<menu name="ToolsMenu" action="ToolsMenuAction">
+			<menuitem name="FolderSync" action="FolderSyncAction" />
+		</menu>
+	</menubar>
+</ui>

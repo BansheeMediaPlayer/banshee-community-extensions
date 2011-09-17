@@ -145,6 +145,7 @@ src/ClutterFlow/Banshee.ClutterFlow/Makefile
 src/ClutterFlow/ClutterFlow/Makefile
 src/CoverWallpaper/Makefile
 src/DuplicateSongDetector/Makefile
+src/FolderSync/Makefile
 src/Jamendo/Makefile
 src/Karaoke/Makefile
 src/LastfmFingerprint/Makefile
@@ -209,6 +210,7 @@ ${PACKAGE}-${VERSION}
     ClutterFlow:           ${enable_ClutterFlow}
     CoverWallpaper:        ${enable_CoverWallpaper}
     DuplicateSongDetector: ${enable_DuplicateSongDetector}
+    FolderSync:            ${enable_FolderSync}
     Jamendo:               ${enable_Jamendo}
     Karaoke:               ${enable_Karaoke}
     LastfmFingerprint:     ${enable_LastfmFingerprint}

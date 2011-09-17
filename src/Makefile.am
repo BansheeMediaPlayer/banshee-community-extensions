@@ -7,6 +7,7 @@ SUBDIRS = \
 	ClutterFlow \
 	CoverWallpaper \
 	DuplicateSongDetector \
+	FolderSync \
 	Jamendo \
 	LastfmFingerprint \
 	LCD \

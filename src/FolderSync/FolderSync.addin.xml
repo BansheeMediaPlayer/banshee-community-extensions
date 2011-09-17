@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.FolderSync"
+    version="0.50"
+    compatVersion="1.0"
+    copyright="Copyright © 2011 Timo Dörr. Licensed under the MIT X11 license."
+    name="FolderSync"
+    category="Community Extensions"
+    description="Copies and synchronizes music files from playlists into user specified folders"
+    author="Timo Dörr"
+    url="http://banshee-project.org/"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ThickClient/ActionGroup">
+    <ActionGroup class="Banshee.FolderSync.FolderSyncAction"/>
+  </Extension>
+
+</Addin>

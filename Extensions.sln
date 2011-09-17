@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuplicateSongDetector", "src\DuplicateSongDetector\DuplicateSongDetector.csproj", "{F79A9A90-C0A2-4B8D-B8A0-7FA04654FD12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuplicateSongDetector", "src\DuplicateSongDetector\DuplicateSongDetector.csproj", "{1725FB8A-DF47-4CAF-A322-59EE97AAB5DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlbumArtWriter", "src\AlbumArtWriter\AlbumArtWriter.csproj", "{5D56E36A-AB9F-4BAA-BC42-D7503AC0A3A5}"
 EndProject
@@ -79,6 +79,8 @@ Project("{2857B73E-F847-4B02-9238-064979017E93}") = "liblastfmfpbridge", "src\La
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jamendo", "src\Jamendo\Jamendo.csproj", "{BB615036-6BD1-4911-8C99-5C307E29B0A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FolderSync", "src\FolderSync\FolderSync.csproj", "{3C1B42AE-A071-42B2-9E13-E675F8DD2334}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -86,14 +88,6 @@ Global
 		Windows|Any CPU = Windows|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F79A9A90-C0A2-4B8D-B8A0-7FA04654FD12}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F79A9A90-C0A2-4B8D-B8A0-7FA04654FD12}.Debug|x86.Build.0 = Debug|Any CPU
-		{F79A9A90-C0A2-4B8D-B8A0-7FA04654FD12}.Release|x86.ActiveCfg = Release|Any CPU
-		{F79A9A90-C0A2-4B8D-B8A0-7FA04654FD12}.Release|x86.Build.0 = Release|Any CPU
-		{5D56E36A-AB9F-4BAA-BC42-D7503AC0A3A5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5D56E36A-AB9F-4BAA-BC42-D7503AC0A3A5}.Debug|x86.Build.0 = Debug|Any CPU
-		{5D56E36A-AB9F-4BAA-BC42-D7503AC0A3A5}.Release|x86.ActiveCfg = Release|Any CPU
-		{5D56E36A-AB9F-4BAA-BC42-D7503AC0A3A5}.Release|x86.Build.0 = Release|Any CPU
 		{04568A95-2430-41EB-82D6-939F5E7E8403}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{04568A95-2430-41EB-82D6-939F5E7E8403}.Debug|x86.Build.0 = Debug|Any CPU
 		{04568A95-2430-41EB-82D6-939F5E7E8403}.Release|x86.ActiveCfg = Release|Any CPU
@@ -106,6 +100,10 @@ Global
 		{07680636-F897-4CDB-8B25-85D21113AD1C}.Debug|x86.Build.0 = Debug|Any CPU
 		{07680636-F897-4CDB-8B25-85D21113AD1C}.Release|x86.ActiveCfg = Release|Any CPU
 		{07680636-F897-4CDB-8B25-85D21113AD1C}.Release|x86.Build.0 = Release|Any CPU
+		{1725FB8A-DF47-4CAF-A322-59EE97AAB5DE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1725FB8A-DF47-4CAF-A322-59EE97AAB5DE}.Debug|x86.Build.0 = Debug|Any CPU
+		{1725FB8A-DF47-4CAF-A322-59EE97AAB5DE}.Release|x86.ActiveCfg = Release|Any CPU
+		{1725FB8A-DF47-4CAF-A322-59EE97AAB5DE}.Release|x86.Build.0 = Release|Any CPU
 		{176AB141-4CC8-4E64-87FF-69C5D32A1A99}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{176AB141-4CC8-4E64-87FF-69C5D32A1A99}.Debug|x86.Build.0 = Debug|Any CPU
 		{176AB141-4CC8-4E64-87FF-69C5D32A1A99}.Release|x86.ActiveCfg = Release|Any CPU
@@ -126,6 +124,12 @@ Global
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Debug|x86.Build.0 = Debug|Any CPU
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Release|x86.ActiveCfg = Release|Any CPU
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Release|x86.Build.0 = Release|Any CPU
+		{3C1B42AE-A071-42B2-9E13-E675F8DD2334}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3C1B42AE-A071-42B2-9E13-E675F8DD2334}.Debug|x86.Build.0 = Debug|Any CPU
+		{3C1B42AE-A071-42B2-9E13-E675F8DD2334}.Release|x86.ActiveCfg = Debug|Any CPU
+		{3C1B42AE-A071-42B2-9E13-E675F8DD2334}.Release|x86.Build.0 = Debug|Any CPU
+		{3C1B42AE-A071-42B2-9E13-E675F8DD2334}.Windows|Any CPU.ActiveCfg = Windows|Any CPU
+		{3C1B42AE-A071-42B2-9E13-E675F8DD2334}.Windows|Any CPU.Build.0 = Windows|Any CPU
 		{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}.Debug|x86.Build.0 = Debug|Any CPU
 		{4EB0DA71-99AC-4A9E-AFD0-1530C5C56159}.Release|x86.ActiveCfg = Release|Any CPU
@@ -134,6 +138,10 @@ Global
 		{5CDB25E4-4CB8-413B-BF94-91406867EEEF}.Debug|x86.Build.0 = Debug|x86
 		{5CDB25E4-4CB8-413B-BF94-91406867EEEF}.Release|x86.ActiveCfg = Release|x86
 		{5CDB25E4-4CB8-413B-BF94-91406867EEEF}.Release|x86.Build.0 = Release|x86
+		{5D56E36A-AB9F-4BAA-BC42-D7503AC0A3A5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5D56E36A-AB9F-4BAA-BC42-D7503AC0A3A5}.Debug|x86.Build.0 = Debug|Any CPU
+		{5D56E36A-AB9F-4BAA-BC42-D7503AC0A3A5}.Release|x86.ActiveCfg = Release|Any CPU
+		{5D56E36A-AB9F-4BAA-BC42-D7503AC0A3A5}.Release|x86.Build.0 = Release|Any CPU
 		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Debug|x86.Build.0 = Debug|Any CPU
 		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Release|x86.ActiveCfg = Release|Any CPU
@@ -262,6 +270,6 @@ Global
 		$3.scope = text/x-csharp
 		$0.StandardHeader = $4
 		$4.Text = @\n${FileName}\n\nAuthor:\n  ${AuthorName} <${AuthorEmail}>\n\nCopyright (c) ${Year} ${CopyrightHolder}\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the "Software"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.
-		$4.inheritsSet = Apache2License
+		$4.IncludeInNewFiles = True
 	EndGlobalSection
 EndGlobal
