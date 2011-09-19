@@ -1,4 +1,48 @@
 =================================
+Version 2.2.0 - September 21, 2011
+=================================
+
+Contributors since 2.0.0:
+Bertrand Lorentz, Chow Loong Jin, Frank Ziegler, Kevin Anthony, Kriss,
+Manish Sinha, Nicholas Parker, Olivier Dufour, Philipp Ittershagen,
+Raimo Radczewski
+
+New extensions since 2.0.0:
+* AlbumArtWriter: Write album art to the folder containing the music files
+* DuplicateSongDetector: Detect and remove duplicate songs in your library
+
+Enhancements since 2.0.0:
+* ClutterFlow: Major refactoring and code cleanup, for better readability.
+* DuplicateSongDetector: Add toggling by activating row
+* DuplicateSongDetector: Add a refresh and close button to the toolbar
+* Mirage: Re-enable rescan and reset methods (bgo#653826)
+* OpenVP: Add new "Spectrum Scan" and "Spectrum Rain" visualizations
+* OpenVP: Make "Scaled Voiceprint" visualization look nicer (bgo#658304)
+* OpenVP: Add a new "Scaled Voiceprint" visualization
+* Use dbus-sharp instead of ndesk-dbus. The Telepathy extension does not bundle
+  the ndesk-dbus sources anymore.
+
+Notable bugs fixed since 2.0.0:
+* ClutterFlow: Fix crash when searching (bgo#658334)
+* ClutterFlow: Fix NRE crash (bgo#647134)
+* Karaoke: add an gst_init() call to make sure gstreamer is working
+* Karaoke: fix NRE on dispose if audiokaraoke was not found
+* Karaoke: Fix crash when switching to Now Playing
+* LastfmFingerprint: Build only if enabled in the build (bgo#657013)
+* LastfmFingerprint: Don't strdup strings
+* LastfmFingerprint: Fix empty name exception (bgo#648168)
+* Lirc: Drop liblirc_client.so moduleref (lp#773686)
+* LiveRadio: Re-enable ShoutCast with request structure from RadioStationFetcher
+* Lyrics: Always update pane title when track changes (bgo#647108)
+* Lyrics: Fix crash when switching to Now Playing
+* RadioStationFetcher: Updated the shoutcast plugin to fix the IP address
+* RandomByLastfm: Do not query Last.fm when offline (bgo#634785)
+* StreamRecorder: Fix files not being split by metadata (bgo#656339)
+* ZeitgeistDataprovider: Register dataprovider in DataSource Registry (lp#691842)
+* ZeitgeistDataprovider: Differenciate between ScheduledActivity and UserActivity (lp#748120)
+
+
+=================================
 Version 2.1.4 - September 8, 2011
 =================================
 
