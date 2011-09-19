@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-08 21:22+0200\n"
+"POT-Creation-Date: 2011-09-19 22:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -397,7 +397,7 @@ msgstr ""
 msgid "Karaoke"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/Gui/KaraokePane.cs:131
+#: ../src/Karaoke/Banshee.Karaoke/Gui/KaraokePane.cs:62
 msgid ""
 "You are disconnected from the internet, so karaoke lyrics are not available."
 msgstr ""
@@ -458,25 +458,25 @@ msgstr ""
 msgid "_Save"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:91
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:88
 msgid "_Karaoke"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:93
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:90
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioSource.cs:106
 #: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderService.cs:108
 msgid "_Configure"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:94
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:91
 msgid "Configure the Karaoke extension"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:105
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:102
 msgid "_Activate Karaoke mode"
 msgstr ""
 
-#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:106
+#: ../src/Karaoke/Banshee.Karaoke/KaraokeService.cs:103
 msgid "Activate Karaoke mode"
 msgstr ""
 
