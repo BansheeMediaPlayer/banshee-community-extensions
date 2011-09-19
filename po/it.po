@@ -4,13 +4,13 @@
 # 
 # Translators:
 # Bertrand Lorentz <bertrand.lorentz@gmail.com>, 2011.
-# Gianvito Cavasoli <gianvito@gmx.it>, 2011.
+# Gianvito Cavasoli <gianvito@gmx.it>, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
-"POT-Creation-Date: 2011-09-06 20:34+0200\n"
-"PO-Revision-Date: 2011-08-26 00:16+0000\n"
+"POT-Creation-Date: 2011-09-08 21:22+0200\n"
+"PO-Revision-Date: 2011-09-15 08:26+0000\n"
 "Last-Translator: Janvitus <gianvito@gmx.it>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -110,7 +110,7 @@ msgstr "Avvia sveglia"
 
 #: ../src/AlbumArtWriter/Banshee.AlbumArtWriter/AlbumArtWriterJob.cs:48
 msgid "Saving Cover Art To Album folders"
-msgstr ""
+msgstr "Salvataggio copertina per le cartelle degli album"
 
 #: ../src/AlbumArtWriter/Banshee.AlbumArtWriter/AlbumArtWriterJob.cs:99
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics/LyricsDownloadJob.cs:61
@@ -169,7 +169,7 @@ msgid "_Close"
 msgstr "_Chiudi"
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:133
-#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:47
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:50
 msgid "Close"
 msgstr "Chiude"
 
@@ -242,7 +242,7 @@ msgstr "Spiega l'elenco delle tracce"
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:58
 msgid "If checked it will display the track list when not in fullscreen mode"
 msgstr ""
-"Se impostata verrà mostrato l'elenco delle tracce quando non si è a schermo "
+"Se impostata sarà mostrato l'elenco delle tracce quando non si è a schermo "
 "intero"
 
 #: ../src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowSchemas.cs:78
@@ -340,51 +340,57 @@ msgstr "Dimensioni"
 msgid ""
 "For changes to these values to take effect, you need to restart Banshee"
 msgstr ""
+"Per applicare le modifiche effettuate a questi valori, è necessario "
+"riavviare Banshee"
 
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorAction.cs:46
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorAction.cs:49
 msgid "Detect Duplicate Songs"
-msgstr ""
+msgstr "Rileva brani duplicati"
 
-#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:43
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:45
 msgid "Duplicate Song Detector"
-msgstr ""
+msgstr "Rilevatore brani dup0licati"
+
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:55
+msgid "Refresh"
+msgstr "Ricarica"
 
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:61
 msgid "Remove Selected Songs"
-msgstr ""
+msgstr "Rimuovi brani selezionati"
 
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:64
 msgid "Delete Selected Songs"
-msgstr ""
+msgstr "Elimina brani selezionati"
 
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:71
 msgid "Select"
-msgstr ""
+msgstr "Seleziona"
 
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:72
 msgid "Song Title"
-msgstr ""
+msgstr "Titolo brano"
 
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:75
 msgid "File"
-msgstr ""
+msgstr "File"
 
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:164
 msgid "Are you sure you want to permanently delete the selected items?"
-msgstr ""
+msgstr "Eliminare permanentemente l'elemento selezionato?"
 
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:166
 msgid "If you delete the selection, it will be permanently lost."
-msgstr ""
+msgstr "Se si elimina la selezione, questa sarà persa definitivamente."
 
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:170
 msgid "Remove selection from Library?"
-msgstr ""
+msgstr "Rimuovere la selezione dalla collezione?"
 
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:172
 msgid "Are you sure you want to remove the selected items from your Library?"
-msgstr ""
+msgstr "Rimuovere gli elementi selezionati dalla collezione?"
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:62
 msgid "Jamendo Downloads"
@@ -967,12 +973,16 @@ msgid ""
 "Do you really want to reset the Mirage Extension?\n"
 "All extracted information will be lost. Your music will have to be re-analyzed to use Mirage again."
 msgstr ""
+"Azzerare l'estensione Mirage?\n"
+"Tutte le informazioni estratte saranno perse. La musica dovrà essere rianalizzata per usare di nuovo questa estensione."
 
 #: ../src/Mirage/Banshee.Mirage/MiragePlugin.cs:318
 msgid ""
 "Mirage was reset. Your music will have to be re-analyzed to use Mirage "
 "again."
 msgstr ""
+"Mirage è stata azzerata. La musica dovrà essere rianalizzata per usare di "
+"nuovo questa estensione."
 
 #: ../src/Mirage/Banshee.Mirage/RandomBySimilar.cs:54
 msgid "Shuffle by Similar"

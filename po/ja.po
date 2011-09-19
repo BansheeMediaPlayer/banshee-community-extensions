@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Banshee Community Extensions\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=banshee&component=Community%20Extensions\n"
-"POT-Creation-Date: 2011-09-06 20:34+0200\n"
-"PO-Revision-Date: 2011-09-08 19:29+0000\n"
+"POT-Creation-Date: 2011-09-08 21:22+0200\n"
+"PO-Revision-Date: 2011-09-19 20:58+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -167,7 +167,7 @@ msgid "_Close"
 msgstr ""
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:133
-#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:47
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:50
 msgid "Close"
 msgstr ""
 
@@ -333,8 +333,12 @@ msgstr ""
 msgid "Detect Duplicate Songs"
 msgstr ""
 
-#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:43
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:45
 msgid "Duplicate Song Detector"
+msgstr ""
+
+#: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:55
+msgid "Refresh"
 msgstr ""
 
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:61
