@@ -57,8 +57,13 @@ namespace Banshee.DuplicateSongDetector
                 ServiceManager.SourceManager.MusicLibrary.AddChildSource (source);
             }
             ServiceManager.SourceManager.SetActiveSource (source);
-
             SongDuplicateView.ReloadWindow ();
+
+            source.Parent.ChildSourceRemoved += delegate(Sources.SourceEventArgs source_args) {
+                if (source_args.Source.Equals(source)){
+                    source=null;
+                }
+            };
         }
     }
 }
