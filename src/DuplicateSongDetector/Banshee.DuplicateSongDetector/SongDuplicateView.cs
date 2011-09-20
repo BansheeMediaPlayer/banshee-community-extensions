@@ -69,12 +69,13 @@ namespace Banshee.DuplicateSongDetector
             selectCell.Activatable = true;
             selectCell.Toggled += OnSelectToggled;
             Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Select"),selectCell, "active", 0);
-            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Song Title"),new Gtk.CellRendererText (), "text", 1);
-            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Artist"),new Gtk.CellRendererText (), "text", 2);
-            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Album"),new Gtk.CellRendererText (), "text", 3);
-            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("File"),new Gtk.CellRendererText (), "text", 4);
+            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Track Number"),new Gtk.CellRendererText (), "text", 1);
+            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Song Title"),new Gtk.CellRendererText (), "text", 2);
+            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Artist"),new Gtk.CellRendererText (), "text", 3);
+            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("Album"),new Gtk.CellRendererText (), "text", 4);
+            Tree.AppendColumn(AddinManager.CurrentLocalizer.GetString ("File"),new Gtk.CellRendererText (), "text", 5);
             // Remove From Library, Delete From Drive, Song Name, Artist Name, Album Name, Formated URI, Actual URI, Database Track ID
-            MusicListStore = new Gtk.ListStore (typeof(bool), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(int));
+            MusicListStore = new Gtk.ListStore (typeof(bool),typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(int));
             Tree.Model = MusicListStore;
             //Pack the Tree in a scroll window
             Scroll.Add (Tree);
@@ -191,13 +192,13 @@ namespace Banshee.DuplicateSongDetector
         }
 #endregion
 #region DataHandlers
-        private static void AddData (int ID, String song, String artist, String album, String uri)
+        private static void AddData (int ID, String track_number,String song, String artist, String album, String uri)
         {
             string NewUri = Uri.UnescapeDataString (uri).Replace ("file://", "");
             if (File.Exists (NewUri)) {
-                MusicListStore.AppendValues (false,  song, artist, album, Uri.UnescapeDataString (uri), uri, ID);
+                MusicListStore.AppendValues (false,  track_number,song, artist, album, Uri.UnescapeDataString (uri), uri, ID);
             } else {
-                MusicListStore.AppendValues (true,  song, artist, album, Uri.UnescapeDataString (uri), uri, ID);
+                MusicListStore.AppendValues (true,  track_number,song, artist, album, Uri.UnescapeDataString (uri), uri, ID);
             }
         }
 
@@ -205,7 +206,7 @@ namespace Banshee.DuplicateSongDetector
         {
             ClearData ();
             HyenaDataReader reader = new HyenaDataReader (ServiceManager.DbConnection.Query (@"SELECT
-                             CT.TrackID, CT.Title, CA.ArtistName, CA.Title, CT.URI
+                             CT.TrackID, CT.Title, CA.ArtistName, CA.Title, CT.URI, CT.TrackNumber
                              FROM CoreTracks CT,CoreAlbums CA ON Ct.AlbumID = CA.AlbumID
                              AND CT.TrackID IN (
                                  SELECT
@@ -213,18 +214,20 @@ namespace Banshee.DuplicateSongDetector
                                      CT1.PrimarySourceID=1
                                      AND CT1.TrackID <> CT2.TrackID
                                      AND CT1.TitleLowered = CT2.TitleLowered
-                                     AND CT1.TrackNumber = CT2.TrackNumber
                                      AND CT1.AlbumID = CT2.AlbumID
                                      AND CT1.ArtistID = CT2.ArtistID
+                                     AND CT1.Disc = CT2.Disc
+                                     AND CT1.Duration <> CT2.Duration
                              )
-                             ORDER BY CT.Title"));
+                             ORDER BY CT.Title,CT.ArtistID,CT.TrackNumber"));
             while (reader.Read ()) {
                 int ID = reader.Get<int> (0);
                 String Title = reader.Get<String> (1);
                 String Artist = reader.Get<String> (2);
                 String Album = reader.Get<String> (3);
                 String URI = reader.Get<String> (4);
-                AddData (ID, Title, Artist, Album, URI);
+                String TrackNumber = reader.Get<String> (5);
+                AddData (ID, TrackNumber,Title, Artist, Album, URI);
             }
         }
 
