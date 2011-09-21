@@ -134,12 +134,12 @@ namespace Banshee.DuplicateSongDetector
                         do {
                             if (Delete && (bool)MusicListStore.GetValue (Iter, 0)) {
                                 //delete
-                                string Uri = (string)MusicListStore.GetValue (Iter, 4);
+                                string Uri = (string)MusicListStore.GetValue (Iter, 5);
                                 Uri = Uri.Replace ("file://", "");
-                                RemoveTrack ((int)MusicListStore.GetValue (Iter, 6));
+                                RemoveTrack ((int)MusicListStore.GetValue (Iter, 7));
                                 DeleteTrack (Uri);
                             } else if ((bool)MusicListStore.GetValue (Iter, 0)) {
-                                RemoveTrack ((int)MusicListStore.GetValue (Iter, 6));
+                                RemoveTrack ((int)MusicListStore.GetValue (Iter, 7));
                             }
                         } while (MusicListStore.IterNext (ref Iter));
                         Library.Reload ();
@@ -217,7 +217,7 @@ namespace Banshee.DuplicateSongDetector
                                      AND CT1.AlbumID = CT2.AlbumID
                                      AND CT1.ArtistID = CT2.ArtistID
                                      AND CT1.Disc = CT2.Disc
-                                     AND CT1.Duration <> CT2.Duration
+                                     AND CT1.Duration = CT2.Duration
                              )
                              ORDER BY CT.Title,CT.ArtistID,CT.TrackNumber"));
             while (reader.Read ()) {
