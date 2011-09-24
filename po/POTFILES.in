@@ -16,6 +16,9 @@ src/ClutterFlow/Banshee.ClutterFlow/ClutterFlowService.cs
 src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorAction.cs
 src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs
 src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs
+src/FolderSync/Banshee.FolderSync/FolderSyncController.cs
+src/FolderSync/Banshee.FolderSync/FolderSyncSource.cs
+src/FolderSync/Banshee.FolderSync/FolderSyncView.cs
 src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs
 src/Jamendo/Banshee.Jamendo/JamendoWebBrowserShell.cs
 src/Karaoke/Banshee.Karaoke/Gui/ContextPage.cs

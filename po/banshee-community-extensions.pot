@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-19 22:37+0200\n"
+"POT-Creation-Date: 2011-09-24 17:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -168,6 +168,7 @@ msgstr ""
 
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:133
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:50
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncSource.cs:43
 msgid "Close"
 msgstr ""
 
@@ -374,6 +375,68 @@ msgstr ""
 
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/SongDuplicateView.cs:172
 msgid "Are you sure you want to remove the selected items from your Library?"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncController.cs:43
+msgid "Sync to Folder"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncController.cs:46
+msgid "Synchronise to Folder"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncController.cs:125
+msgid "Preparing sync"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncController.cs:197
+msgid "Copying"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncController.cs:215
+msgid "Done!"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncSource.cs:36
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncSource.cs:37
+msgid "FolderSync"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncSource.cs:47
+msgid "Stop"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncView.cs:83
+msgid "Start sync"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncView.cs:90
+msgid "Choose target sync folder"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncView.cs:93
+msgid "Create M3U Playlist"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncView.cs:95
+msgid "Overwrite existing files"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncView.cs:97
+msgid "Create subfolders"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncView.cs:99
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncView.cs:151
+msgid "Subfolder depth"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncView.cs:112
+msgid "Options"
+msgstr ""
+
+#: ../src/FolderSync/Banshee.FolderSync/FolderSyncView.cs:137
+msgid "Sync to directory"
 msgstr ""
 
 #: ../src/Jamendo/Banshee.Jamendo/JamendoDownloadManager.cs:62
