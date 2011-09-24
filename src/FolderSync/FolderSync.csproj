@@ -52,24 +52,31 @@
     </Reference>
     <Reference Include="Banshee.Core, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-core</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.Services, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-services</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.ThickClient, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-thickclient</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.Widgets, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-thickclient</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Hyena, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-hyena</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Hyena.Data.Sqlite, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-hyena-data-sqlite</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Hyena.Gui, Version=1.7.0.0, Culture=neutral">
       <Package>banshee-hyena-gui</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Core" />
   </ItemGroup>
