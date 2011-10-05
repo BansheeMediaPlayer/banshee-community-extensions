@@ -1,0 +1,11 @@
+<ui>
+    <menubar name="MainMenu">
+        <menu name="ToolsMenu" action="ToolsMenuAction">
+            <menu name="AlbumArtWriter" action="AlbumArtWriterAction">
+            	<menuitem name="AlbumArtWriterForce" action="AlbumArtWriterForceAction" />
+            	<separator />
+            	<menuitem name="AlbumArtWriterConfigure" action="AlbumArtWriterConfigureAction" />
+            </menu>
+        </menu>
+    </menubar>
+</ui>

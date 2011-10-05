@@ -2,7 +2,7 @@
 // AlbumArtWriterJob.cs
 //
 // Authors:
-//   Kevin Anthony <Kevin@NosideRacing.com>
+//   Kevin Anthony <Kevin.S.Anthony@gmail.com>
 //
 // Copyright (C) 2011 Kevin Anthony
 //
@@ -43,35 +43,42 @@ namespace Banshee.AlbumArtWriter
 {
     public class AlbumArtWriterJob : DbIteratorJob
     {
+        private AlbumArtWriterService service;
         private DateTime CurrentTime;
         private DateTime TimeOffset;
-        public AlbumArtWriterJob () : base(AddinManager.CurrentLocalizer.GetString ("Saving Cover Art To Album folders"))
+
+        public AlbumArtWriterJob (AlbumArtWriterService in_service) : base(AddinManager.CurrentLocalizer.GetString ("Saving Cover Art To Album folders"))
         {
+            service = in_service;
             CurrentTime = DateTime.Now;
-            TimeOffset = CurrentTime - TimeSpan.FromDays (7);
+            if ((service != null) && (service.ForceRecopy)){
+                TimeOffset = CurrentTime;
+            } else {
+                TimeOffset = CurrentTime - TimeSpan.FromDays(7);
+            }
             CountCommand = new HyenaSqliteCommand (@"
-                                    SELECT count(DISTINCT CoreTracks.AlbumID)
-                                        FROM CoreTracks, CoreAlbums
-                                    WHERE
-                                        CoreTracks.PrimarySourceID = ? AND
-                                        CoreTracks.AlbumID = CoreAlbums.AlbumID AND
-                                        CoreTracks.AlbumID NOT IN (
-                                            SELECT AlbumID from AlbumArtWriter WHERE
-                                            SavedOrTried > 0 AND LastUpdated >= ?)
-                    ", ServiceManager.SourceManager.MusicLibrary.DbId, TimeOffset);
-            
+                                SELECT count(DISTINCT CoreTracks.AlbumID)
+                                    FROM CoreTracks, CoreAlbums
+                                WHERE
+                                    CoreTracks.PrimarySourceID = ? AND
+                                    CoreTracks.AlbumID = CoreAlbums.AlbumID AND
+                                    CoreTracks.AlbumID NOT IN (
+                                        SELECT AlbumID from AlbumArtWriter WHERE
+                                        SavedOrTried > 0 AND LastUpdated >= ?)"
+                , ServiceManager.SourceManager.MusicLibrary.DbId, TimeOffset);
+
             SelectCommand = new HyenaSqliteCommand (@"
-                SELECT DISTINCT CoreAlbums.AlbumID, CoreAlbums.Title, CoreArtists.Name, CoreTracks.Uri, CoreTracks.TrackID
-                    FROM CoreTracks, CoreArtists, CoreAlbums
-                    WHERE
-                        CoreTracks.PrimarySourceID = ? AND
-                        CoreTracks.AlbumID = CoreAlbums.AlbumID AND
-                        CoreAlbums.ArtistID = CoreArtists.ArtistID AND
-                        CoreTracks.AlbumID NOT IN (
-                            SELECT AlbumID from AlbumArtWriter WHERE
-                            SavedOrTried > 0 AND LastUpdated >= ?)
-                    GROUP BY CoreTracks.AlbumID ORDER BY CoreTracks.DateUpdatedStamp DESC LIMIT ?", ServiceManager.SourceManager.MusicLibrary.DbId, TimeOffset, 1);
-            
+                                SELECT DISTINCT CoreAlbums.AlbumID, CoreAlbums.Title, CoreArtists.Name, CoreTracks.Uri, CoreTracks.TrackID
+                                    FROM CoreTracks, CoreArtists, CoreAlbums
+                                WHERE
+                                    CoreTracks.PrimarySourceID = ? AND
+                                    CoreTracks.AlbumID = CoreAlbums.AlbumID AND
+                                    CoreAlbums.ArtistID = CoreArtists.ArtistID AND
+                                    CoreTracks.AlbumID NOT IN (
+                                        SELECT AlbumID from AlbumArtWriter WHERE
+                                            SavedOrTried > 0 AND LastUpdated >= ?)
+                                GROUP BY CoreTracks.AlbumID ORDER BY CoreTracks.DateUpdatedStamp DESC LIMIT ?",
+                                ServiceManager.SourceManager.MusicLibrary.DbId, TimeOffset, 1);
             SetResources (Resource.Database);
             PriorityHints = PriorityHints.LongRunning;
             
@@ -103,13 +110,28 @@ namespace Banshee.AlbumArtWriter
         private void WriteArt (DatabaseTrackInfo track)
         {
             string ArtWorkPath = CoverArtSpec.GetPath (track.ArtworkId);
-            string WritePath = Path.Combine (Path.GetDirectoryName (track.LocalPath), "album.jpg");
-            
-            if (File.Exists (ArtWorkPath)) {
+            string ext = null;
+            if (service.JPG){
+                ext = ".jpg";
+            } else if (service.PNG){
+                ext = ".png";
+            } else {
+                Log.Warning("Neather JPG or PNG is set, exiting Album Art Writer");
+                AbortThread();
+            }
+            string filename = service.ArtName+ext;
+            string WritePath = Path.Combine (Path.GetDirectoryName (track.LocalPath), filename);
+
+            if ((File.Exists (ArtWorkPath)) || (service.ForceRecopy)) {
                 if (!File.Exists (WritePath)) {
                     try {
-                        File.Copy (ArtWorkPath, WritePath);
-                        Log.DebugFormat ("Copying: {0} \t\t to: {1}", ArtWorkPath, WritePath);
+                        if (!(ArtWorkPath.EndsWith(ext))){
+                            ConvertFileType(ArtWorkPath,WritePath);
+                        } else {
+                            Log.DebugFormat ("Copying: {0} \t\t to: {1}", ArtWorkPath, WritePath);
+                            File.Copy (ArtWorkPath, WritePath,service.ForceRecopy);
+                        }
+
                         ServiceManager.DbConnection.Execute ("INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried,LastUpdated) VALUES (?, ?, ?)", track.AlbumId, 3, CurrentTime);
                     } catch (IOException error) {
                         ServiceManager.DbConnection.Execute ("INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried,LastUpdated) VALUES (?, ?, ?)", track.AlbumId, 1, CurrentTime);
@@ -124,7 +146,18 @@ namespace Banshee.AlbumArtWriter
                 ServiceManager.DbConnection.Execute ("INSERT OR REPLACE INTO AlbumArtWriter (AlbumID, SavedOrTried,LastUpdated) VALUES (?, ?, ?)", track.AlbumId, 1, CurrentTime);
             }
         }
-
+        private void ConvertFileType(string in_path, string out_path){
+            System.Drawing.Image in_image = System.Drawing.Image.FromFile(in_path);
+            if (in_path.EndsWith("jpg")){
+                //convert from jpg -> png
+                Log.DebugFormat("Converting JPG {0} to PNG {1}",in_path,out_path);
+                in_image.Save(out_path,System.Drawing.Imaging.ImageFormat.Png);
+            } else {
+                //convert from png -> jpg
+                Log.DebugFormat("Converting JPG {0} to PNG {1}",in_path,out_path);
+                in_image.Save(out_path,System.Drawing.Imaging.ImageFormat.Jpeg);
+            }
+        }
         protected override void OnCancelled ()
         {
             AbortThread ();
