@@ -243,15 +243,17 @@ namespace Banshee.LiveRadio
         /// </param>
         void OnPluginGenreListLoaded (object sender, List<Genre> genres)
         {
-            if (genres.Count > 0) {
-                filter_box.UpdateGenres (genres);
-                filter_box.Sensitive = true;
-            } else {
-                List<Genre> fakeresult = new List<Genre> ();
-                fakeresult.Add (new Genre(AddinManager.CurrentLocalizer.GetString("Error... Please Reload")));
-                filter_box.UpdateGenres (fakeresult);
-                filter_box.Sensitive = false;
-            }
+            Hyena.ThreadAssist.ProxyToMain (delegate {
+                if (genres.Count > 0) {
+                    filter_box.UpdateGenres (genres);
+                    filter_box.Sensitive = true;
+                } else {
+                    List<Genre> fakeresult = new List<Genre> ();
+                    fakeresult.Add (new Genre(AddinManager.CurrentLocalizer.GetString("Error... Please Reload")));
+                    filter_box.UpdateGenres (fakeresult);
+                    filter_box.Sensitive = false;
+                }
+            });
         }
 
         /// <summary>
