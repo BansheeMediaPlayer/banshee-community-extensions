@@ -57,7 +57,7 @@ namespace Banshee.LiveRadio.Plugins
         /// Shoutcast plugin disabled for legal issues, no developer key available
         /// </summary>
         public override bool Active {
-            get { return true; }
+            get { return false; }
         }
 
         /// <summary>

@@ -69,6 +69,13 @@ namespace Banshee.LiveRadio.Plugins
         }
 
         /// <summary>
+        /// Magnatune plugin disabled for technical issues
+        /// </summary>
+        public override bool Active {
+            get { return false; }
+        }
+
+        /// <summary>
         /// Retrieve and parse genre list
         /// </summary>
         protected override void RetrieveGenres ()

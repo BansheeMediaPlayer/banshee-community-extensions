@@ -57,6 +57,13 @@ namespace Banshee.LiveRadio.Plugins
         private const string freetext_url = "stations/search/";
 
         /// <summary>
+        /// RealRadios plugin disabled for technical issues
+        /// </summary>
+        public override bool Active {
+            get { return false; }
+        }
+
+        /// <summary>
         /// Constructor -- sets configuration entries
         /// </summary>
         public RealRadiosPlugin () : base ()
