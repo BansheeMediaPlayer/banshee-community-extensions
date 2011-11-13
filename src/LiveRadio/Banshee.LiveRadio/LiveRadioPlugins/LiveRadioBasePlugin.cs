@@ -396,9 +396,9 @@ namespace Banshee.LiveRadio.Plugins
             List<DatabaseTrackInfo> result;
             try {
                 if (request_type == LiveRadioRequestType.ByGenre) {
-                    result = cached_results["Genre:" + query];
+                    result = new List<DatabaseTrackInfo> (cached_results["Genre:" + query].ToArray ());
                 } else {
-                    result = cached_results[query];
+                    result = new List<DatabaseTrackInfo> (cached_results[query].ToArray ());
                 }
                 foreach (DatabaseTrackInfo track in result)
                     result[result.IndexOf (track)] = new DatabaseTrackInfo (track);
