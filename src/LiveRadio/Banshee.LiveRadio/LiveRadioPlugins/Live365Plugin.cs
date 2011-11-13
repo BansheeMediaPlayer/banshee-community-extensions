@@ -160,23 +160,31 @@ namespace Banshee.LiveRadio.Plugins
                                     .Replace ("%PASSWORD%", credentials_password);
 
             XmlDocument login_xml = RetrieveXml (login);
-            XmlNodeList session_nodes = login_xml.GetElementsByTagName ("Session_ID");
-            XmlNodeList success_nodes = login_xml.GetElementsByTagName ("Reason");
-            XmlNodeList code_nodes = login_xml.GetElementsByTagName ("Code");
-            string error = null;
 
             bool has_session = true;
+            XmlNodeList session_nodes = null;
+            XmlNodeList success_nodes = null;
+            XmlNodeList code_nodes = null;
+            string error = null;
 
-            foreach (XmlNode code_node in code_nodes)
-            {
-                if (!code_node.InnerText.Equals ("0")) has_session = false;
-            }
-            foreach (XmlNode success_node in success_nodes)
-            {
-                if (!success_node.InnerText.Equals ("Success"))
+            if (login_xml == null) {
+                has_session = false;
+            } else {
+                session_nodes = login_xml.GetElementsByTagName ("Session_ID");
+                success_nodes = login_xml.GetElementsByTagName ("Reason");
+                code_nodes = login_xml.GetElementsByTagName ("Code");
+
+                foreach (XmlNode code_node in code_nodes)
                 {
-                    has_session = false;
-                    error = success_node.InnerText;
+                    if (!code_node.InnerText.Equals ("0")) has_session = false;
+                }
+                foreach (XmlNode success_node in success_nodes)
+                {
+                    if (!success_node.InnerText.Equals ("Success"))
+                    {
+                        has_session = false;
+                        error = success_node.InnerText;
+                    }
                 }
             }
 
