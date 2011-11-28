@@ -40,7 +40,7 @@ namespace Banshee.Karaoke.Gui
     /// <summary>
     /// extra wrapper for Karaoke view so we can put some stuff around it if needed
     /// </summary>
-    public class KaraokePane : Notebook
+    public class KaraokePane : Notebook, Banshee.Gui.IDisableKeybindings
     {
         private KaraokeView view;
         private ContextPage context_page;
