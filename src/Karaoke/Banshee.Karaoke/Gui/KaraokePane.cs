@@ -87,7 +87,6 @@ namespace Banshee.Karaoke.Gui
                         this.CurrentPage = this.PageNum (disconnected);
                     } else {
                         View.LoadLyrics (track);
-                        View.LoadStatusChanged += OnViewLoadStatusChanged;
                         timer.Change (0, 2000);
                         this.CurrentPage = this.PageNum (View);
                     }
@@ -96,14 +95,6 @@ namespace Banshee.Karaoke.Gui
                     context_page.SetState (Banshee.ContextPane.ContextState.NotLoaded);
                     timer.Change (System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
                 }
-            }
-        }
-
-        void OnViewLoadStatusChanged (object sender, EventArgs e)
-        {
-            if (View.LoadStatus == Banshee.WebBrowser.OssiferLoadStatus.FirstVisuallyNonEmptyLayout) {
-                SetStyle ();
-                View.LoadStatusChanged -= OnViewLoadStatusChanged;
             }
         }
 
@@ -141,14 +132,6 @@ namespace Banshee.Karaoke.Gui
                 return;
             }
             View.ExecuteScript (String.Format ("window.postMessage({0},'http://youtubelyric.com');", ServiceManager.PlayerEngine.Position / 1000));
-        }
-
-        private void SetStyle ()
-        {
-            if (this.CurrentPage == this.PageNum (disconnected)) {
-                return;
-            }
-            View.ExecuteScript ("if (document.getElementById ('lyricbox')) { document.getElementById ('lyricbox').style.fontSize='2.5em'; }");
         }
 
         private void OnTrackChange (PlayerEventArgs args)
