@@ -8,7 +8,6 @@ SOURCES =  \
 	Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsWindow.cs \
 	Banshee.Lyrics/Banshee.Lyrics.IO/LyricsCache.cs \
 	Banshee.Lyrics/Banshee.Lyrics.Network/HttpUtils.cs \
-	Banshee.Lyrics/Banshee.Lyrics.Network/ProxyManager.cs \
 	Banshee.Lyrics/Banshee.Lyrics.Sources/AutoLyrics.cs \
 	Banshee.Lyrics/Banshee.Lyrics.Sources/ILyricsSource.cs \
 	Banshee.Lyrics/Banshee.Lyrics.Sources/LeosLyrics.cs \

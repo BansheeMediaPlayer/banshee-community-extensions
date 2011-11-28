@@ -25,7 +25,6 @@
       </CustomCommands>
     </CustomCommands>
     <OutputPath>..\..\bin</OutputPath>
-    <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
@@ -33,7 +32,6 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>..\..\bin</OutputPath>
-    <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
   </PropertyGroup>
   <ItemGroup>
@@ -92,7 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics\LyricsManager.cs" />
-    <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Network\ProxyManager.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Network\HttpUtils.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\Lyrc.cs" />
     <Compile Include="Banshee.Lyrics\Banshee.Lyrics.Sources\AutoLyrics.cs" />

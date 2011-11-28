@@ -48,15 +48,6 @@ namespace Banshee.Lyrics.Network
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create (url);
             request.Timeout = 6000;
 
-            if (ProxyManager.Instance.isHttpProxy ()) {
-                try {
-                    request.Proxy = ProxyManager.Instance.getProxy (url);
-                } catch (Exception e) {
-                    Hyena.Log.Exception ("Cannot get the proxy", e);
-                    return null;
-                }
-            }
-
             using (var response = (HttpWebResponse)request.GetResponse ()) {
                 if (response.ContentLength == 0) {
                     return null;
