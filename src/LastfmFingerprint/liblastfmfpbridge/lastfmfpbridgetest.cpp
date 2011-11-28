@@ -34,12 +34,12 @@ main (gint   argc,
   int size = 0;
   int ret = 0;
 
-//TODO parse argv for param of initialize
-LastfmfpAudio *ma = Lastfmfp_initialize(215);
+  //TODO parse argv for param of initialize
+  LastfmfpAudio *ma = Lastfmfp_initialize(215);
   
-const char* fpid = Lastfmfp_decode(ma, argv[0], &size, &ret);
+  const char* fpid = Lastfmfp_decode(ma, argv[0], &size, &ret);
 
-  //printf("return fpid: %d ret: %d ", fpid, ret);
+  printf("return fpid: %s ret: %d ", fpid, ret);
 
   ma = Lastfmfp_destroy(ma);
 

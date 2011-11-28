@@ -57,6 +57,7 @@
     <Compile Include="Filter.cpp" />
     <Compile Include="FingerprintExtractor.cpp" />
     <Compile Include="OptFFT.cpp" />
+    <Compile Include="lastfmfpbridgetest.cpp" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

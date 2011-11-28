@@ -21,7 +21,6 @@
  * Boston, MA  02110-1301, USA.
  */
 
-//#include <math.h>
 #include <time.h>
 
 #include <glib.h>
@@ -30,22 +29,6 @@
 #include "gst-lastfmfpbridge.h"
 
 #include "FingerprintExtractor.h"
-
-#include <map>
-#include <cstring>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <cctype> // for tolower
-#include <algorithm>
-#include <string>
-
-// hacky!
-#ifdef WIN32
-#define SLASH '\\'
-#else
-#define SLASH '/'
-#endif
 
 struct LastfmfpAudio {
 
@@ -59,14 +42,13 @@ struct LastfmfpAudio {
     gint filerate;
     gint seconds;
     gint nchannels;
-    //gint samples;
     
     fingerprint::FingerprintExtractor *extractor;
-	
+
     //input
     short *data_in;
     size_t num_samples;
-	
+
     //output
     const char* data_out;
     size_t data_out_size;
@@ -76,69 +58,6 @@ struct LastfmfpAudio {
     gboolean quit;
     gboolean invalidate;
 };
-
-std::string filename;
-    
-static const int NUM_FRAMES_CLIENT = 32; // ~= 10 secs.
-const char FP_SERVER_NAME[]       = "ws.audioscrobbler.com/fingerprint/query/";
-const char HTTP_POST_DATA_NAME[]  = "fpdata";
-
-// just turn it into a string. Similar to boost::lexical_cast
-template <typename T>
-std::string toString(const T& val)
-{
-   std::ostringstream oss;
-   oss << val;
-   return oss.str();
-}
-
-bool plain_isspace(char c)
-{
-   if ( c == ' ' || 
-        c == '\t' ||
-        c == '\n' ||
-        c == '\r' )
-   {
-      return true;
-   }
-   else
-   {
-      return false;
-   }
-}
-
-std::string simpleTrim( const std::string& str )
-{
-   if ( str.empty() )
-      return "";
-
-   // left trim
-   std::string::const_iterator lIt = str.begin();
-   for ( ; plain_isspace(*lIt) && lIt != str.end(); ++lIt );
-   if ( lIt == str.end() )
-      return str;
-
-   std::string::const_iterator rIt = str.end();
-   --rIt;
-
-   for ( ; plain_isspace(*rIt) && rIt != str.begin(); --rIt );
-   ++rIt;
-   
-   return std::string(lIt, rIt);
-}
-
-void addEntry ( std::map<std::string, std::string>& urlParams, const std::string& key, const std::string& val )
-{
-   if ( key.empty() || val.empty() )
-      return;
-   if ( urlParams.find(key) != urlParams.end() )
-      return; // do not add something that was already there
-
-    urlParams[key] = simpleTrim(val);
-}
-
-
-#define SRC_BUFFERLENGTH 4096
 
 static void
 Lastfmfp_cb_newpad(GstElement *decodebin, GstPad *pad, gboolean last, LastfmfpAudio *ma)
@@ -241,19 +160,14 @@ Lastfmfp_initgstreamer(LastfmfpAudio *ma, const gchar *file)
 {
     GstPad *audiopad;
     GstCaps *filter_short;
-    GstCaps *filter_resample;
     GstElement *cfilt_short;
-    GstElement *cfilt_resample;
     GstElement *dec;
     GstElement *src;
     GstElement *sink;
-    GstElement *audioresample;
     GstElement *audioconvert;
 
     // Gstreamer decoder setup
     ma->pipeline = gst_pipeline_new("pipeline");
-    
-    filename = file;
     
     // decoder
     src = gst_element_factory_make("filesrc", "source");
@@ -268,7 +182,6 @@ Lastfmfp_initgstreamer(LastfmfpAudio *ma, const gchar *file)
 
     audioconvert = gst_element_factory_make("audioconvert", "conv");
     filter_short = gst_caps_new_simple("audio/x-raw-int",
-//         "channels", G_TYPE_INT, ma->nchannels,
          "width", G_TYPE_INT, 16, 
          "depth", G_TYPE_INT, 16, 
          "endianness", G_TYPE_INT, 1234,//BYTE_ORDER, //1234, 
@@ -278,26 +191,15 @@ Lastfmfp_initgstreamer(LastfmfpAudio *ma, const gchar *file)
     g_object_set(G_OBJECT(cfilt_short), "caps", filter_short, NULL);
     gst_caps_unref(filter_short);
 
-    /*audioresample = gst_element_factory_make("audioresample", "resample");
-
-    filter_resample =  gst_caps_new_simple("audio/x-raw-float",
-          "channels", G_TYPE_INT, 1,
-          NULL);
-    cfilt_resample = gst_element_factory_make("capsfilter", "cfilt_resample");
-    g_object_set(G_OBJECT(cfilt_resample), "caps", filter_resample, NULL);
-    gst_caps_unref(filter_resample);
-*/
     sink = gst_element_factory_make("fakesink", "sink");
     g_object_set(G_OBJECT(sink), "signal-handoffs", TRUE, NULL);
     g_signal_connect(sink, "handoff", G_CALLBACK(Lastfmfp_cb_have_data), ma);
     
 
     gst_bin_add_many(GST_BIN(ma->audio),
-            audioconvert, /*audioresample,
-            cfilt_resample,*/ cfilt_short,
+            audioconvert, cfilt_short,
             sink, NULL);
     gst_element_link_many(audioconvert, cfilt_short,
-           /*audioresample, cfilt_resample,*/
            sink, NULL);
 
     audiopad = gst_element_get_pad(audioconvert, "sink");
@@ -432,12 +334,6 @@ Lastfmfp_destroy(LastfmfpAudio *ma)
     free(ma);
 
     return NULL;
-}
-
-extern "C" void
-Lastfmfp_initgst()
-{
-    gst_init(NULL, NULL);
 }
 
 extern "C" void
