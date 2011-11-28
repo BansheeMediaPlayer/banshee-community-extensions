@@ -44,7 +44,7 @@ namespace Lastfm
 {
     public class FingerprintRequest
     {
-        private const string API_ROOT = "http://www.last.fm/fingerprint/query/";
+        private const string API_ROOT = "http://ws.audioscrobbler.com/fingerprint/query/";
 
         private Stream response_stream;
 
