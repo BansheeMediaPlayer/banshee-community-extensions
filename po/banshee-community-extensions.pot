@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-22 10:56+0800\n"
+"POT-Creation-Date: 2012-04-01 17:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -672,7 +672,7 @@ msgstr ""
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:374
 #: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPluginSourceContents.cs:390
 #: ../src/Lyrics/Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs:141
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:388
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:370
 msgid "Loading..."
 msgstr ""
 
@@ -1223,60 +1223,60 @@ msgstr ""
 msgid "Contacts"
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:80
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:76
 msgid "Contact"
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:315
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:297
 #, csharp-format
 msgid "{0} is requesting to browse your library"
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:318
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:300
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:83
 msgid "Accept"
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:323
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:305
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:94
 msgid "Reject"
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:331
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:340
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:313
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:322
 msgid "is requesting to browse your Banshee library"
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:380
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:362
 msgid "Waiting for response from contact..."
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:391
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:373
 msgid "All tracks downloaded. Loading..."
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:394
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:376
 msgid "Loading playlists..."
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:406
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:388
 msgid "A problem occured while downloading this contact's library"
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:409
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:391
 msgid "An error occurred while loading data"
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:412
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:394
 msgid "An error occurred while loading playlists"
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:432
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:414
 msgid "is no longer sharing their Banshee library with you"
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:457
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:494
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:439
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:476
 #, csharp-format
 msgid "Loading {0} of {1}"
 msgstr ""
