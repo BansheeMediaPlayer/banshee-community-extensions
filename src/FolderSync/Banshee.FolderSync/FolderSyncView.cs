@@ -134,7 +134,7 @@ namespace Banshee.FolderSync
             //hbox_main.PackStart (vbox_folder_and_option, true, true, 0);
             main_hpane.Pack2 (vbox_folder_and_option, true, true);
             hbox_chooser.PackStart (
-                new Gtk.Label (AddinManager.CurrentLocalizer.GetString ("Sync to directory") + ":"),
+                new Gtk.Label (AddinManager.CurrentLocalizer.GetString ("Sync to folder:")),
                 false, false, 1);
             hbox_chooser.PackStart (target_chooser, true, true, 1);
             vbox_folder_and_option.PackStart (hbox_chooser, false, false, 1);

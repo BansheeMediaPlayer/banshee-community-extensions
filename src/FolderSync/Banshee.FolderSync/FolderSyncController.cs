@@ -43,7 +43,7 @@ namespace Banshee.FolderSync
         public FolderSyncAction () : base (AddinManager.CurrentLocalizer.GetString ("Sync to Folder"))
         {
             Add (new Gtk.ActionEntry ("FolderSyncAction", Gtk.Stock.Refresh,
-                AddinManager.CurrentLocalizer.GetString ("Synchronise to Folder"), null, null, onLoadSync));
+                AddinManager.CurrentLocalizer.GetString ("Synchronize to Folder"), null, null, onLoadSync));
             AddUiFromFile ("MenuUI.xml");
         }
 

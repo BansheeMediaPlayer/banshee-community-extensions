@@ -29,12 +29,12 @@ namespace Banshee.FolderSync
 {
     public class FolderSyncSource : Source, IUnmapableSource
     {
-        // In the sources TreeView, sets the order value for this source, small on top
         const int sort_order = 190;
+
         public FolderSyncController Controller = new FolderSyncController ();
 
         public FolderSyncSource () : base (AddinManager.CurrentLocalizer.GetString ("FolderSync"),
-                                           AddinManager.CurrentLocalizer.GetString ("FolderSync"),
+                                           "FolderSync",
                                            sort_order, "extension-unique-id")
         {
             Properties.SetStringList ("Icon.Name", "refresh", "gtk-refresh");
