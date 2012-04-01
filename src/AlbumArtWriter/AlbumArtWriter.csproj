@@ -81,7 +81,9 @@
     <EmbeddedResource Include="AlbumArtWriter.addin.xml">
       <LogicalName>AlbumArtWriter.addin.xml</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\GlobalUI.xml" />
+    <EmbeddedResource Include="Resources\GlobalUI.xml">
+      <LogicalName>GlobalUI.xml</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.AlbumArtWriter\AlbumArtWriterJob.cs" />
