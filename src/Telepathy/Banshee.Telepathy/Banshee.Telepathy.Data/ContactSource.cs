@@ -70,10 +70,6 @@ namespace Banshee.Telepathy.Data
             get { return tmp_download_path; }
         }
 
-        private HyenaSqliteCommand purge_source_command = new HyenaSqliteCommand (@"
-            DELETE FROM CorePrimarySources WHERE PrimarySourceId = ?
-        ");
-
 		private SourceMessage response_message;
 		private bool getting_response = false;
 		
@@ -82,7 +78,7 @@ namespace Banshee.Telepathy.Data
                                                                       contact != null ? contact.Name : String.Empty,
                                                                       contact != null ? contact.Status.ToString () : String.Empty),
                                                        contact !=null ? contact.ToString () : String.Empty,
-                                                       300)
+                                                       300, true)
         {
             Contact = contact;
             Contact.ContactUpdated += OnContactUpdated;
@@ -187,11 +183,6 @@ namespace Banshee.Telepathy.Data
             get { return can_activate; }
         }
 
-        private bool is_temporary = true;
-        public bool IsTemporary {
-            get { return is_temporary; }
-        }
-
         public bool IsDownloadingAllowed {
             get {
 				if (tube_manager != null) {
@@ -206,11 +197,6 @@ namespace Banshee.Telepathy.Data
         {
             base.Initialize ();
             ContactSourceInitialize ();
-        }
-
-        private void PurgeSelf ()
-        {
-            ServiceManager.DbConnection.Execute (purge_source_command, DbId);
         }
 
         public void CleanUpData ()
@@ -237,10 +223,6 @@ namespace Banshee.Telepathy.Data
 
             //UnregisterHandlers ();
             CleanUpData ();
-
-            if (is_temporary) {
-                PurgeSelf ();
-            }
 
             base.Dispose ();
         }
