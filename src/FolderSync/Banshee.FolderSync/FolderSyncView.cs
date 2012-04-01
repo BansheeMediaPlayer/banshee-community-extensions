@@ -129,7 +129,9 @@ namespace Banshee.FolderSync
         {
             vbox_main.PackStart (main_hpane, true, true, 1);
             vbox_main.PackStart (Progress, false, false, 1);
-            main_hpane.Pack1 (playlist_tree, true, true);
+            var frame = new Hyena.Widgets.ScrolledWindow ();
+            frame.AddWithFrame (playlist_tree);
+            main_hpane.Pack1 (frame, true, true);
             // right hand side is folder select and options
             //hbox_main.PackStart (vbox_folder_and_option, true, true, 0);
             main_hpane.Pack2 (vbox_folder_and_option, true, true);
