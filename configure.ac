@@ -11,7 +11,7 @@ AC_PROG_LIBTOOL
 AC_PROG_INSTALL
 
 dnl How to configure for distcheck
-DISTCHECK_CONFIGURE_FLAGS="--enable-release --enable-tests"
+DISTCHECK_CONFIGURE_FLAGS="--enable-release"
 AC_SUBST(DISTCHECK_CONFIGURE_FLAGS)
 
 dnl Expansions
