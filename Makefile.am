@@ -74,7 +74,7 @@ prepare-release: distcheck
 	mkdir release-data
 	cp NEWS release-data/$(PACKAGE)-$(VERSION).news
 	git log > release-data/$(PACKAGE)-$(VERSION).changes
-	find -maxdepth 1 \( -name \*.zip -o -name \*.bz2 -o -name \*.gz \) -exec cp -a {} release-data \;
+	find -maxdepth 1 \( -name \*.zip -o -name \*.bz2 \) -exec cp -a {} release-data \;
 	cd release-data && sha256sum * > $(PACKAGE)-$(VERSION).sha256sum
 
 upload-release:
