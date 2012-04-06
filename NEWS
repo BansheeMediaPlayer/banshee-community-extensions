@@ -1,4 +1,32 @@
 =================================
+Version 2.4.0 - April 6, 2012
+=================================
+
+Contributors since 2.2.0:
+Alexander Kojevnikov, Bertrand Lorentz, Chow Loong Jin, Frank Ziegler,
+Kevin Anthony, Timo Dörr
+
+New extensions since 2.2.0:
+* FolderSync: Copy and synchronize tracks from playlists into specified folders
+
+Enhancements since 2.2.0:
+* AlbumArtWriter: Allow forcing a copy of the album art into the album folders
+* AlbumArtWriter: Add configuration of the name and the type of the image file
+* DuplicateSongDetector: Use a more aggressive algorithm for detecting duplicates
+
+Notable bugs fixed since 2.2.0:
+* DuplicateSongDetector: Fix bug causing the window to be blank
+* Karaoke: Don't change the visual style of the lyrics
+* Karaoke: Disable keybindings in the context pane
+* LiveRadio: Fix crash when updating the genre list
+* LiveRadio: Disable non-functional plugins: shoutcast, magnatune, realradios
+* LiveRadio: Fix crash when live365 session stream cannot be retrieved
+* LiveRadio: Fix crash when clicking multiple genres quickly (bgo#662794)
+* Lyrics: Use HTTP proxy management provided by Banshee (bgo#664710)
+* Telepathy: Fix dllmap for cross-architecture support
+
+
+=================================
 Version 2.2.0 - September 21, 2011
 =================================
 
