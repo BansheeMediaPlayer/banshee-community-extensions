@@ -1,0 +1,1 @@
+SUBDIRS =  libvoicecontrol Banshee.VoiceControl

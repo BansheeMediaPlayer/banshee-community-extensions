@@ -81,6 +81,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jamendo", "src\Jamendo\Jame
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FolderSync", "src\FolderSync\FolderSync.csproj", "{3C1B42AE-A071-42B2-9E13-E675F8DD2334}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VoiceControl", "VoiceControl", "{98181A12-9819-48EA-A5FD-2C8F00010DF2}"
+	ProjectSection(MonoDevelopProperties) = preProject
+		BaseDirectory = src\VoiceControl
+		Policies = $0
+		$0.StandardHeader = $1
+		$1.Text = @\n${FileName}\n \nAuthor:\n      ${AuthorName} <${AuthorEmail}>\n\nCopyright (c) ${Year} ${CopyrightHolder}\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the "Software"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.
+		$1.IncludeInNewFiles = True
+	EndProjectSection
+EndProject
+Project("{2857B73E-F847-4B02-9238-064979017E93}") = "libvoicecontrol", "src\VoiceControl\libVoiceControl\libvoicecontrol.cproj", "{CCBAC7C9-8434-44F6-A872-58C24CF7ED2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banshee.VoiceControl", "src\VoiceControl\Banshee.VoiceControl\Banshee.VoiceControl.csproj", "{6D49C00A-A62C-4EA9-8DB6-CC22332DAEF8}"
+EndProject
+Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Packages", "src\VoiceControl\Packages.mdproj", "{7A666661-AC3A-4005-AD0F-7B402893A0E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -146,12 +161,21 @@ Global
 		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Debug|x86.Build.0 = Debug|Any CPU
 		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Release|x86.ActiveCfg = Release|Any CPU
 		{6D04E4A7-E0A9-400F-93D9-0779E0BDB1C0}.Release|x86.Build.0 = Release|Any CPU
+		{6D49C00A-A62C-4EA9-8DB6-CC22332DAEF8}.Debug|x86.ActiveCfg = Debug|x86
+		{6D49C00A-A62C-4EA9-8DB6-CC22332DAEF8}.Debug|x86.Build.0 = Debug|x86
+		{6D49C00A-A62C-4EA9-8DB6-CC22332DAEF8}.Release|x86.ActiveCfg = Release|x86
+		{6D49C00A-A62C-4EA9-8DB6-CC22332DAEF8}.Release|x86.Build.0 = Release|x86
+		{6D49C00A-A62C-4EA9-8DB6-CC22332DAEF8}.Windows|Any CPU.ActiveCfg = Debug|x86
+		{6D49C00A-A62C-4EA9-8DB6-CC22332DAEF8}.Windows|Any CPU.Build.0 = Debug|x86
 		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}.Debug|x86.Build.0 = Debug|Any CPU
 		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}.Release|x86.ActiveCfg = Release|Any CPU
 		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}.Release|x86.Build.0 = Release|Any CPU
 		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}.Windows|Any CPU.ActiveCfg = Debug|Any CPU
 		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C}.Windows|Any CPU.Build.0 = Debug|Any CPU
+		{7A666661-AC3A-4005-AD0F-7B402893A0E5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7A666661-AC3A-4005-AD0F-7B402893A0E5}.Release|x86.ActiveCfg = Release|Any CPU
+		{7A666661-AC3A-4005-AD0F-7B402893A0E5}.Windows|Any CPU.ActiveCfg = Windows|Any CPU
 		{8684E1F1-96B9-4F74-BFBB-3946C163A6B6}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{8684E1F1-96B9-4F74-BFBB-3946C163A6B6}.Debug|x86.Build.0 = Debug|Any CPU
 		{8684E1F1-96B9-4F74-BFBB-3946C163A6B6}.Release|x86.ActiveCfg = Release|Any CPU
@@ -212,6 +236,12 @@ Global
 		{C6F7D7EA-0245-4A29-AC8E-714E1677F0FC}.Debug|x86.Build.0 = Debug|Any CPU
 		{C6F7D7EA-0245-4A29-AC8E-714E1677F0FC}.Release|x86.ActiveCfg = Debug|Any CPU
 		{C6F7D7EA-0245-4A29-AC8E-714E1677F0FC}.Release|x86.Build.0 = Debug|Any CPU
+		{CCBAC7C9-8434-44F6-A872-58C24CF7ED2D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CCBAC7C9-8434-44F6-A872-58C24CF7ED2D}.Debug|x86.Build.0 = Debug|Any CPU
+		{CCBAC7C9-8434-44F6-A872-58C24CF7ED2D}.Release|x86.ActiveCfg = Release|Any CPU
+		{CCBAC7C9-8434-44F6-A872-58C24CF7ED2D}.Release|x86.Build.0 = Release|Any CPU
+		{CCBAC7C9-8434-44F6-A872-58C24CF7ED2D}.Windows|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCBAC7C9-8434-44F6-A872-58C24CF7ED2D}.Windows|Any CPU.Build.0 = Debug|Any CPU
 		{CF8CDE47-EE9F-42D0-8073-F7F4EAE94165}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{CF8CDE47-EE9F-42D0-8073-F7F4EAE94165}.Debug|x86.Build.0 = Debug|Any CPU
 		{CF8CDE47-EE9F-42D0-8073-F7F4EAE94165}.Release|x86.ActiveCfg = Release|Any CPU
@@ -250,6 +280,9 @@ Global
 		{05E72510-705D-463D-91B8-A2E22C78F3C2} = {673A23F5-67E8-4BE7-A47B-1BEE9B8C33CD}
 		{C00E6610-4E5D-40D2-9C38-54EADBFDC88A} = {32AD215B-5CE4-4D53-88C0-5F8B3CDCEB99}
 		{701B2CAC-935F-47DB-A7F5-29DFDB4CAF8C} = {32AD215B-5CE4-4D53-88C0-5F8B3CDCEB99}
+		{CCBAC7C9-8434-44F6-A872-58C24CF7ED2D} = {98181A12-9819-48EA-A5FD-2C8F00010DF2}
+		{6D49C00A-A62C-4EA9-8DB6-CC22332DAEF8} = {98181A12-9819-48EA-A5FD-2C8F00010DF2}
+		{7A666661-AC3A-4005-AD0F-7B402893A0E5} = {98181A12-9819-48EA-A5FD-2C8F00010DF2}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = src\AlarmClock\AlarmClock.csproj

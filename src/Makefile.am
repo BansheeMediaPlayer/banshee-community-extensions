@@ -22,7 +22,9 @@ SUBDIRS = \
 	StreamRecorder \
         Karaoke \
 	Telepathy \
+	VoiceControl\
 	ZeitgeistDataprovider
+
 
 EXTRA_DIST = AssemblyInfo.cs.in
 

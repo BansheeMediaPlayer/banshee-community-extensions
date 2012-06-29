@@ -99,6 +99,7 @@ BCE_RANDOMBYLASTFM
 BCE_STREAMRECORDER
 BCE_KARAOKE
 BCE_TELEPATHY
+BCE_VOICECONTROL
 BCE_ZEITGEISTDP
 
 AC_ARG_WITH(vendor-build-id,
@@ -179,6 +180,9 @@ src/RandomByLastfm/Makefile
 src/StreamRecorder/Makefile
 src/Telepathy/Makefile
 src/Telepathy/Banshee.Telepathy/Makefile
+src/VoiceControl/Makefile
+src/VoiceControl/libvoicecontrol/Makefile
+src/VoiceControl/Banshee.VoiceControl/Makefile
 src/ZeitgeistDataprovider/Makefile
 ])
 
@@ -226,6 +230,7 @@ ${PACKAGE}-${VERSION}
     RandomByLastfm:        ${enable_RandomByLastfm}
     StreamRecorder:        ${enable_StreamRecorder}
     Telepathy:             ${enable_Telepathy}
+    VoiceControl:          ${enable_VoiceControl}
     ZeitgeistDataprovider: ${enable_ZeitgeistDataprovider}
 
 EOF
