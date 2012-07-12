@@ -1,29 +1,45 @@
-// 
-// gst-voicecontrol.c
-//  
-// Author:
-//       banshee <${AuthorEmail}>
-// 
-// Copyright (c) 2012 banshee
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE
 #include <gst/gst.h>
+#include <glib.h>
 
-int main() {
+typedef void (*AsrResultCallback)(GstElement *sender, char *text, char *uttid);
+
+GstPipeline *voicecontrol_init_pipeline (
+	char *language_model_file,
+	char *dictionary_file,
+	AsrResultCallback partial_result,
+	AsrResultCallback result
+)
+{
+  GstPipeline *pipeline;
+  GstElement *asr;
+  GError *error = NULL;
+  
+  gst_init (NULL, NULL);
+
+ pipeline = (GstPipeline *) gst_parse_launch("gconfaudiosrc ! audioconvert ! audioresample !  vader name=vad auto-threshold=true ! pocketsphinx name=asr !fakesink", &error);
+  if (!pipeline) {
+      if (error)
+        printf ("Error building pipeline: %s", error->message);
+    return NULL;
+  }
+
+  asr = gst_bin_get_by_name ((GstBin *) pipeline, "asr");
+  if (language_model_file) {
+    g_object_set (asr, "lm", language_model_file, NULL);
+  }
+  if (dictionary_file) {
+    g_object_set (asr, "lm", dictionary_file, NULL);
+  }
+  if (partial_result) {
+    g_signal_connect (asr, "partial_result", G_CALLBACK (partial_result), NULL);
+  }
+  g_signal_connect (asr, "result", G_CALLBACK (result), NULL);
+  g_object_set (asr, "configured", TRUE, NULL);
+
+  return pipeline;
+}
+
+void voicecontrol_start_listening (GstPipeline *pipeline)
+{
+  gst_element_set_state ((GstElement *)pipeline, GST_STATE_PLAYING);
 }
