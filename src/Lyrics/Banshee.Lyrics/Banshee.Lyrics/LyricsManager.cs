@@ -144,6 +144,10 @@ namespace Banshee.Lyrics
                 throw new NetworkUnavailableException ("You don't seem to be connected to internet. Check your network connection.");
             }
 
+            if (!track.HasAttribute (TrackMediaAttributes.Music)) {
+                throw new InvalidFileException ("You can only download lyrics for a music track.");
+            }
+
             //download the lyrics
             string lyrics = null;
             foreach (var source in GetSources (SourceData.LyricsSelector)) {
