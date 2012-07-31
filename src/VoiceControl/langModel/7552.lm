@@ -1,0 +1,33 @@
+Language model created by QuickLM on Tue Jul 31 09:11:23 EDT 2012
+Copyright (c) 1996-2000
+Carnegie Mellon University and Alexander I. Rudnicky
+
+This model based on a corpus of 3 sentences and 5 words
+The (fixed) discount mass is 0.5
+
+\data\
+ngram 1=5
+ngram 2=6
+ngram 3=3
+
+\1-grams:
+-0.7782 </s> -0.3010
+-0.7782 <s> -0.2218
+-1.2553 PAUSE -0.2218
+-1.2553 PLAY -0.2218
+-1.2553 STOP -0.2218
+
+\2-grams:
+-0.7782 <s> PAUSE 0.0000
+-0.7782 <s> PLAY 0.0000
+-0.7782 <s> STOP 0.0000
+-0.3010 PAUSE </s> -0.3010
+-0.3010 PLAY </s> -0.3010
+-0.3010 STOP </s> -0.3010
+
+\3-grams:
+-0.3010 <s> PAUSE </s>
+-0.3010 <s> PLAY </s>
+-0.3010 <s> STOP </s>
+
+\end\

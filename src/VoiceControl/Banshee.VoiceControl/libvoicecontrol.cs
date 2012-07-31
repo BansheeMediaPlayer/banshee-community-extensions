@@ -25,30 +25,52 @@
 // THE SOFTWARE.
 using System;
 using System.Runtime.InteropServices;
+using Banshee.ServiceStack;
 
 namespace Banshee.VoiceControl
 {
     delegate void AsrResultCallback (IntPtr sender, string text, string uttid);
     delegate void AsrVoidCallback (IntPtr sender);
 
-    static class libvoicecontrol
+    public class libvoicecontrol : IExtensionService, IDisposable, IDelayedInitializeService
     {
-        static void Main ()
-        {
-            Gtk.Application.Init ();
+             string IService.ServiceName {
+            get { return "VoiceControlService"; }
+        }
+        void IExtensionService.Initialize ()
+        {}
 
-            IntPtr pipeline = voicecontrol_init_pipeline (null, null,
+        public void DelayedInitialize ()
+        {
+            //string path= Environment.CurrentDirectory ;
+
+            IntPtr pipeline = voicecontrol_init_pipeline ("/home/banshee/Sphinx/TAR7552/7552.lm", "/home/banshee/Sphinx/TAR7552/7552.dic",
             (sender, text, uttid) => {
                 Console.WriteLine ("Partial {0}", text);
+                //ProcessCommand(text);
             }, (sender, text, uttid) => {
                 Console.WriteLine ("Full {0}", text);
+                if (text != null)
+                    ProcessCommand(text);
             });
             if (pipeline == IntPtr.Zero) {
                 throw new Exception ("Failed to create pipeline");
             }
             voicecontrol_start_listening (pipeline);
-
-            Gtk.Application.Run ();
+        }
+        public void Dispose ()
+        {
+        }
+        public void ProcessCommand(string commandText){
+            if(commandText.Equals("PLAY")){
+               Banshee.ServiceStack.ServiceManager.PlayerEngine.Play();
+            }
+            else if(commandText.Equals("PAUSE")){
+                Banshee.ServiceStack.ServiceManager.PlayerEngine.Pause();
+            }
+            else if(commandText.Equals("STOP")){
+                Banshee.ServiceStack.ServiceManager.PlayerEngine.Pause();
+            }
         }
 
         [DllImport ("libvoicecontrol")]

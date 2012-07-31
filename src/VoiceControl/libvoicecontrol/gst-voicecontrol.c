@@ -28,7 +28,7 @@ GstPipeline *voicecontrol_init_pipeline (
     g_object_set (asr, "lm", language_model_file, NULL);
   }
   if (dictionary_file) {
-    g_object_set (asr, "lm", dictionary_file, NULL);
+    g_object_set (asr, "dict", dictionary_file, NULL);
   }
   if (partial_result) {
     g_signal_connect (asr, "partial_result", G_CALLBACK (partial_result), NULL);

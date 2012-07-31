@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.VoiceControl"
+    version="0.1"
+    copyright="© udesh"
+    name="Voice Control"
+    category="Community Extensions"
+    description="Voice Control"
+    author="Alex,Udesh"
+    url="http://hop.at/mirage/"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.VoiceControl.libvoicecontrol"/>
+  </Extension>
+  
+</Addin>
