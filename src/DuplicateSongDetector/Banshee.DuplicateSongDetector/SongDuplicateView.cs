@@ -210,8 +210,10 @@ namespace Banshee.DuplicateSongDetector
                              FROM CoreTracks CT,CoreAlbums CA ON Ct.AlbumID = CA.AlbumID
                              AND CT.TrackID IN (
                                  SELECT
-                                     CT1.TrackID from CoreTracks CT1,CoreTracks CT2 where
-                                     CT1.PrimarySourceID=1
+                                     CT1.TrackID from CoreTracks CT1,CoreTracks CT2
+                                 WHERE
+                                     CT1.PrimarySourceID = ?
+                                     AND CT1.PrimarySourceID = CT2.PrimarySourceID
                                      AND CT1.TrackID <> CT2.TrackID
                                      AND CT1.TitleLowered = CT2.TitleLowered
                                      AND CT1.AlbumID = CT2.AlbumID
@@ -219,7 +221,8 @@ namespace Banshee.DuplicateSongDetector
                                      AND CT1.Disc = CT2.Disc
                                      AND CT1.Duration = CT2.Duration
                              )
-                             ORDER BY CT.Title,CT.ArtistID,CT.TrackNumber"));
+                             ORDER BY CT.Title,CT.ArtistID,CT.TrackNumber",
+                             ServiceManager.SourceManager.MusicLibrary.DbId));
             while (reader.Read ()) {
                 int ID = reader.Get<int> (0);
                 String Title = reader.Get<String> (1);
