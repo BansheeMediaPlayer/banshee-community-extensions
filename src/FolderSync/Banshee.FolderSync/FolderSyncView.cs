@@ -39,6 +39,7 @@ namespace Banshee.FolderSync
         public bool CreateM3u;
         public uint SubfolderDepth;
         public string TargetFolder;
+        public bool CreateSymLinks;
         public List<Playlist> SelectedPlaylists;
     }
 
@@ -52,7 +53,8 @@ namespace Banshee.FolderSync
                  OverwriteExisting = overwrite_existing.Active,
                  CreateM3u = create_m3u.Active,
                  SubfolderDepth = 0,
-                 TargetFolder = target_chooser.Uri
+                 TargetFolder = target_chooser.Uri,
+                 CreateSymLinks = create_symlinks.Active
              };
             // if activated, we create subfolder until given depth
             if (create_subfolders.Active)
@@ -93,6 +95,8 @@ namespace Banshee.FolderSync
             new Gtk.CheckButton (AddinManager.CurrentLocalizer.GetString ("Create M3U Playlist"));
         Gtk.CheckButton overwrite_existing =
             new Gtk.CheckButton (AddinManager.CurrentLocalizer.GetString ("Overwrite existing files"));
+        Gtk.CheckButton create_symlinks =
+            new Gtk.CheckButton (AddinManager.CurrentLocalizer.GetString ("Create as symbolic link"));
         Gtk.CheckButton create_subfolders =
             new Gtk.CheckButton (AddinManager.CurrentLocalizer.GetString ("Create subfolders"));
         Gtk.SpinButton subfolder_depth = new Gtk.SpinButton (0f, 10f, 1f) {
@@ -147,6 +151,7 @@ namespace Banshee.FolderSync
             frame_alignment.Add (vbox_checkbox);
             vbox_checkbox.PackStart (create_m3u, true, true, 1);
             vbox_checkbox.PackStart (overwrite_existing, true, true, 1);
+            vbox_checkbox.PackStart (create_symlinks, true, true, 1);
             vbox_checkbox.PackStart (hbox_subfolder, true, true, 1);
             hbox_subfolder.PackStart (create_subfolders, true, true, 1);
             hbox_subfolder.PackStart (

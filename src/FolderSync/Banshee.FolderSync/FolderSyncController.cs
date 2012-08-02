@@ -26,6 +26,7 @@ using System.Text;
 using System.Threading;
 
 using Mono.Addins;
+using Mono.Unix;
 
 using Hyena;
 using Hyena.Data.Sqlite;
@@ -178,13 +179,35 @@ namespace Banshee.FolderSync
 
                         // copy file to selected folder
                         try {
-                            if (options.OverwriteExisting || !Banshee.IO.File.Exists (destUri)) {
-                                Banshee.IO.File.Copy (track.Uri, destUri, true);
+                            var destExists = Banshee.IO.File.Exists (destUri);
+
+                            if (options.OverwriteExisting || !destExists) {
+                                if (options.CreateSymLinks) {
+                                    var trackFilePath = SafeUri.UriToFilename (track.Uri);
+                                    var destFilePath = SafeUri.UriToFilename (destUri);
+
+                                    if (track.Uri.IsLocalPath) {
+                                        var target = new UnixFileInfo (trackFilePath);
+
+                                        // symbolic links need manual deletion,
+                                        // otherwise an exception is thrown in CreateSymbolicLink()
+                                        if (destExists) {
+                                            var dest = new UnixFileInfo (destFilePath);
+                                            dest.Delete ();
+                                        }
+
+                                        target.CreateSymbolicLink (destFilePath);
+                                    } else {
+                                        Hyena.Log.ErrorFormat ("Cannot create symlink to remote path {0} in {1}, skipping", track.Uri, destFilePath);
+                                    }
+                                } else {
+                                    Banshee.IO.File.Copy (track.Uri, destUri, true);
+                                }
                                 Hyena.Log.DebugFormat ("Copying {0} to {1}", track.Uri, destUri);
                             } else
                                 Hyena.Log.Debug ("Not overwriting existing file {0}", destUri);
                         } catch {
-                            Hyena.Log.ErrorFormat ("error copying file {0} to {1}, skipping", track.Uri, destUri);
+                            Hyena.Log.ErrorFormat ("Error copying file {0} to {1}, skipping", track.Uri, destUri);
                         }
 
                         // increment the progressbar
