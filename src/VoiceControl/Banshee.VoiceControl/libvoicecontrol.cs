@@ -34,6 +34,7 @@ namespace Banshee.VoiceControl
 
     public class libvoicecontrol : IExtensionService, IDisposable, IDelayedInitializeService
     {
+        public static int counter=1;
              string IService.ServiceName {
             get { return "VoiceControlService"; }
         }
@@ -42,34 +43,68 @@ namespace Banshee.VoiceControl
 
         public void DelayedInitialize ()
         {
-            //string path= Environment.CurrentDirectory ;
-
-            IntPtr pipeline = voicecontrol_init_pipeline ("/home/banshee/Sphinx/TAR7552/7552.lm", "/home/banshee/Sphinx/TAR7552/7552.dic",
+            string path= Environment.CurrentDirectory ;
+           path= path.Remove(path.Length-3,3);
+           path= string.Concat(path,"src/VoiceControl/langModel/7552.lm");
+            Console.WriteLine(path);
+           // IntPtr pipeline = voicecontrol_init_pipeline ("/home/banshee/Sphinx/TAR7552/7552.lm", "/home/banshee/Sphinx/TAR7552/7552.dic",
+            try {
+            IntPtr pipeline = voicecontrol_init_pipeline (path, null,
             (sender, text, uttid) => {
                 Console.WriteLine ("Partial {0}", text);
-                //ProcessCommand(text);
+                 if (!string.IsNullOrEmpty(text))
+                {
+
+               ProcessCommand(text , counter);
+                   // counter= counter + 1;
+                }
             }, (sender, text, uttid) => {
                 Console.WriteLine ("Full {0}", text);
-                if (text != null)
-                    ProcessCommand(text);
+               if (!string.IsNullOrEmpty(text))
+                    ProcessCommand(text,counter);
             });
             if (pipeline == IntPtr.Zero) {
                 throw new Exception ("Failed to create pipeline");
             }
             voicecontrol_start_listening (pipeline);
+            }
+            catch(Exception e){
+                Console.WriteLine("first "+e.Message);
+            }
         }
         public void Dispose ()
         {
         }
-        public void ProcessCommand(string commandText){
-            if(commandText.Equals("PLAY")){
-               Banshee.ServiceStack.ServiceManager.PlayerEngine.Play();
+        public void ProcessCommand(string commandText, int counter){
+            try{
+            Console.WriteLine ("3 "+counter, counter);
+            if(string.Equals(commandText,@"PLAY")&& counter<2){
+                Console.WriteLine ("1 "+counter, counter);
+               ServiceManager.PlayerEngine.TogglePlaying();
+                counter++;
+                Console.WriteLine ("2 "+counter, counter);
             }
-            else if(commandText.Equals("PAUSE")){
-                Banshee.ServiceStack.ServiceManager.PlayerEngine.Pause();
+            //else{
+             //   Console.WriteLine("NO Change");
+            //}
+            else if(string.Equals(commandText,"STOP")||string.Equals(commandText,"PAUSE")){
+                    Console.WriteLine ("STOP 1 "+counter, counter);
+
+                   if(ServiceManager.PlayerEngine.CanPause)
+                    {
+                        Console.WriteLine ("STOP 2 "+counter, counter);
+                        ServiceManager.PlayerEngine.Pause();
+
+                    }
+                    else
+                        Console.WriteLine("Can't Stop");
+           }
+           // else if(commandText.Equals("STOP")){
+             //   Banshee.ServiceStack.ServiceManager.PlayerEngine.Pause();
+          //  }
             }
-            else if(commandText.Equals("STOP")){
-                Banshee.ServiceStack.ServiceManager.PlayerEngine.Pause();
+            catch(Exception e){
+                Console.WriteLine("Second "+e.Message);
             }
         }
 
