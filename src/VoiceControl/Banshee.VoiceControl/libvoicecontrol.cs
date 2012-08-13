@@ -51,17 +51,28 @@ namespace Banshee.VoiceControl
             try {
             IntPtr pipeline = voicecontrol_init_pipeline (path, null,
             (sender, text, uttid) => {
+                    try {
                 Console.WriteLine ("Partial {0}", text);
                  if (!string.IsNullOrEmpty(text))
                 {
 
                ProcessCommand(text , counter);
                    // counter= counter + 1;
+                        }
+
+                        }
+                 catch(Exception ex){
+                Console.WriteLine ("Error processing Partial command '{0}':\n{1}", text, ex);
                 }
             }, (sender, text, uttid) => {
+                    try {
                 Console.WriteLine ("Full {0}", text);
                if (!string.IsNullOrEmpty(text))
                     ProcessCommand(text,counter);
+                                        }
+                    catch (Exception ex) {
+                    Console.WriteLine ("Error processing Full command '{0}':\n{1}", text, ex);
+                    }
             });
             if (pipeline == IntPtr.Zero) {
                 throw new Exception ("Failed to create pipeline");
@@ -74,6 +85,7 @@ namespace Banshee.VoiceControl
         }
         public void Dispose ()
         {
+            Console.WriteLine("Dispose");
         }
         public void ProcessCommand(string commandText, int counter){
             try{
