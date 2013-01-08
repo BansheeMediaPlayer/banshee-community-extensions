@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <ProjectGuid>{}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
+    <AssemblyName>Banshee.CueSheets</AssemblyName>
+    <SchemaVersion>2.0</SchemaVersion>
+    <Optimize>true</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <RootNamespace>Banshee.CueSheets</RootNamespace>
+    <AssemblyOriginatorKeyFile>.</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OutputPath>..\..\..\bin</OutputPath>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
+      </CustomCommands>
+    </CustomCommands>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OutputPath>..\..\..\bin</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="Mono.Posix" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="Mono.Cairo" />
+    <Reference Include="Mono.Addins">
+      <Package>mono-addins</Package>
+    </Reference>
+    <Reference Include="Hyena, Version=1.7.0.0, Culture=neutral">
+      <Package>banshee-hyena</Package>
+    </Reference>
+    <Reference Include="Hyena.Data.Sqlite, Version=1.7.0.0, Culture=neutral">
+      <Package>banshee-hyena-data-sqlite</Package>
+    </Reference>
+    <Reference Include="Hyena.Gui, Version=1.7.0.0, Culture=neutral">
+      <Package>banshee-hyena-gui</Package>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="Banshee.Services">
+      <HintPath>..\..\..\..\..\..\usr\local\banshee\lib\banshee\Banshee.Services.dll</HintPath>
+    </Reference>
+    <Reference Include="Banshee.CollectionIndexer">
+      <HintPath>..\..\..\..\..\..\usr\local\banshee\lib\banshee\Banshee.CollectionIndexer.dll</HintPath>
+    </Reference>
+    <Reference Include="Banshee.Core">
+      <HintPath>..\..\..\..\..\..\usr\local\banshee\lib\banshee\Banshee.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Banshee.ThickClient">
+      <HintPath>..\..\..\..\..\..\usr\local\banshee\lib\banshee\Banshee.ThickClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Banshee.WebBrowser">
+      <HintPath>..\..\..\..\..\..\usr\local\banshee\lib\banshee\Banshee.WebBrowser.dll</HintPath>
+    </Reference>
+    <Reference Include="Banshee.Widgets">
+      <HintPath>..\..\..\..\..\..\usr\local\banshee\lib\banshee\Banshee.Widgets.dll</HintPath>
+    </Reference>
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>glib-sharp-2.0</Package>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CueSheets.addin.xml">
+      <LogicalName>CueSheets.addin.xml</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Banshee.CueSheets\CueSheetsSource.cs" />
+    <Compile Include="Banshee.CueSheets\CueSheet.cs" />
+    <Compile Include="Banshee.CueSheets\CueSheetEntry.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am">
+          <BuildFilesVar Sync="true" Name="SOURCES" />
+          <DeployFilesVar />
+          <ResourcesVar Sync="true" Name="RESOURCES" />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>
