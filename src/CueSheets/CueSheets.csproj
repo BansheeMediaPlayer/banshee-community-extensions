@@ -89,6 +89,15 @@
     <Compile Include="Banshee.CueSheets\CueSheetsSource.cs" />
     <Compile Include="Banshee.CueSheets\CueSheet.cs" />
     <Compile Include="Banshee.CueSheets\CueSheetEntry.cs" />
+    <Compile Include="Banshee.CueSheets\CS_AlbumInfo.cs" />
+    <Compile Include="Banshee.CueSheets\CS_AlbumModel.cs" />
+    <Compile Include="Banshee.CueSheets\CS_ArtistInfo.cs" />
+    <Compile Include="Banshee.CueSheets\CS_ArtistModel.cs" />
+    <Compile Include="Banshee.CueSheets\CS_GenreModel.cs" />
+    <Compile Include="Banshee.CueSheets\CueSheetsPrefs.cs" />
+    <Compile Include="Banshee.CueSheets\GenreInfo.cs" />
+    <Compile Include="Banshee.CueSheets\GenreListView.cs" />
+    <Compile Include="Banshee.CueSheets\Loosely.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

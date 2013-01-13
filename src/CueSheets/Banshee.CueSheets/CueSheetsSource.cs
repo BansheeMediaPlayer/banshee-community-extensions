@@ -76,7 +76,7 @@ namespace Banshee.CueSheets
 		                                  sort_order,
 										  "hod-cuesheets-2013-01-06")
         {
-			Console.WriteLine ("CueSheetsSouce init");
+			Hyena.Log.Information ("CueSheetsSouce init");
 			_sheet=new CueSheet();
 			_view=new CustomView(this);
             Properties.Set<ISourceContents> ("Nereid.SourceContents", _view);
@@ -112,26 +112,26 @@ namespace Banshee.CueSheets
         #region IBasicPlaybackController implementation
         public bool First ()
         {
-			Console.WriteLine ("First called");
+			Hyena.Log.Information("First called");
             return true;
         }
 
         public bool Next (bool restart, bool changeImmediately)
         {
-			//Console.WriteLine ("next  called");
+			//Hyena.Log.Information ("next  called");
 			return _view.next ();
         }
 
         public bool Previous (bool restart)
         {
-			//Console.WriteLine ("previous:"+restart);
+			//Hyena.Log.Information ("previous:"+restart);
 			return _view.previous ();
         }
 		#endregion
 		
  		#region ITrackModelSource implementation
         public void Reload () {
-			Console.WriteLine ("reloading");
+			Hyena.Log.Information("reloading");
 			_view.reLoad();
         }
 
@@ -172,7 +172,7 @@ namespace Banshee.CueSheets
 		
 		public CS_AlbumModel getAlbumModel() {
 			if (_model==null) { 
-				Console.WriteLine ("AlbumModel init");
+				Hyena.Log.Information("AlbumModel init");
 				_model=new CS_AlbumModel(this); 
 			}
 			return _model;
@@ -184,7 +184,7 @@ namespace Banshee.CueSheets
 		
 		public CS_GenreModel getGenreModel() {
 			if (_genreModel==null) { 
-				Console.WriteLine ("GenreModel init");
+				Hyena.Log.Information("GenreModel init");
 				_genreModel=new CS_GenreModel(this); 
 			}
 			return _genreModel;
@@ -192,7 +192,7 @@ namespace Banshee.CueSheets
 		
 		public CS_ArtistModel getArtistModel() {
 			if (_artistModel==null) { 
-				Console.WriteLine ("ArtistModel init");
+				Hyena.Log.Information ("ArtistModel init");
 				_artistModel=new CS_ArtistModel(this); 
 			}
 			return _artistModel;
@@ -211,57 +211,14 @@ namespace Banshee.CueSheets
 		}
 		
 		public string getCueSheetDir() {
-			string dir=Banshee.Configuration.ConfigurationClient.Get<string>("cuesheets_dir","");
-			//string dir=Properties.Get<string>("cuesheets_dir","");
-			if (dir=="") {
-				dir=System.Environment.GetEnvironmentVariable ("HOME");
-			}
-			Console.WriteLine ("getcuesheetdir="+dir);
+			string dir=Banshee.Configuration.ConfigurationClient.Get<string>("cuesheets_dir",null);
+			Hyena.Log.Information ("cuesheets dir="+dir);
 			return dir;
 		}
 		
 		public void setCueSheetDir(string dir) {
-			//Console.WriteLine ("setcuesheetdir:"+dir);
-			//Properties.SetString ("cuesheets_dir",dir);
 			Banshee.Configuration.ConfigurationClient.Set<string>("cuesheets_dir",dir);
 			_view.fill ();
-			//_view.reLoad ();
-		}
-		
-		private class CueSheetsConfigDialog : Gtk.Dialog {
-			public CueSheetsConfigDialog(CueSheetsSource src) {
-
-				string dir=src.getCueSheetDir();
-				Gtk.Label lbl=new Gtk.Label("CueSheet Music Directory:");
-				Gtk.FileChooserButton btn=new Gtk.FileChooserButton("CueSheet Music Directory:",Gtk.FileChooserAction.SelectFolder);
-				btn.SelectFilename (dir);
-				Gtk.HBox box=new Gtk.HBox();
-				box.Add (lbl);
-				box.Add (btn);
-				box.ShowAll ();
-				
-				/*double d=src.getPbSize ();
-				Gtk.HScale hs=new Gtk.HScale(1.0,5.0,0.25);
-				hs.Value=d;
-				Gtk.Label lbl1=new Gtk.Label("Size of music icons:");
-				Gtk.HBox box1=new Gtk.HBox();
-				box1.Add (lbl1);
-				box1.Add (hs);
-				box1.ShowAll ();*/
-				
-				this.VBox.Add (box);
-				//this.VBox.Add (box1);
-				this.AddButton (Gtk.Stock.Ok,1);
-				this.AddButton (Gtk.Stock.Cancel,2);
-				this.Title="CueSheets Preferences";
-				int result=this.Run ();
-				if (result==1) {
-					dir=btn.Filename;
-					src.setCueSheetDir(dir);
-					//src.setPbSize (hs.Value);
-				}
-				this.Destroy ();
-			}
 		}
 		
         private class CustomView : ISourceContents
@@ -301,7 +258,7 @@ namespace Banshee.CueSheets
 			
 			
 			private void fill(string cwd) {
-				//Console.WriteLine ("fill:"+cwd);
+				//Hyena.Log.Information ("fill:"+cwd);
 				string [] dirs=Directory.GetDirectories(cwd, "*");
 				string [] sheets=Directory.GetFiles (cwd,"*.cue");
 				foreach (string dir in dirs) {
@@ -320,29 +277,30 @@ namespace Banshee.CueSheets
 			public void fill() {
 				getSheets().Clear ();
 				basedir=MySource.getCueSheetDir();
-				fill (basedir);
-				Console.WriteLine ("Filled");
-				try {
-					Console.WriteLine ("Reload albums");
-					MySource.getAlbumModel ().Reload ();
-					Console.WriteLine ("Reload artists");
-					MySource.getArtistModel ().Reload ();
-					Console.WriteLine ("Reload genres");
-					MySource.getGenreModel ().Reload ();
-					Console.WriteLine ("Reload tracks");
-					MySource.getTrackModel ().Reload ();
-					Console.WriteLine ("Reloaded all");
-					Console.WriteLine (MySource.getAlbumModel ().Count);
-					Console.WriteLine (MySource.getArtistModel ().Count);
-					Console.WriteLine (MySource.getGenreModel ().Count);
-				} catch(System.Exception e) {
-					Console.WriteLine (e.ToString());
-				}
-				Console.WriteLine ("Reloaded");
+				if (basedir!=null) {
+					fill (basedir);
+					try {
+						Hyena.Log.Information("Reload albums");
+						MySource.getAlbumModel ().Reload ();
+						Hyena.Log.Information("Reload artists");
+						MySource.getArtistModel ().Reload ();
+						Hyena.Log.Information("Reload genres");
+						MySource.getGenreModel ().Reload ();
+						Hyena.Log.Information("Reload tracks");
+						MySource.getTrackModel ().Reload ();
+						Hyena.Log.Information("Reloaded all");
+						Hyena.Log.Information(MySource.getAlbumModel ().Count.ToString ());
+						Hyena.Log.Information(MySource.getArtistModel ().Count.ToString ());
+						Hyena.Log.Information(MySource.getGenreModel ().Count.ToString ());
+					} catch(System.Exception e) {
+						Hyena.Log.Information (e.ToString());
+					}
+					Hyena.Log.Information("Reloaded");
+				} 
 			}
 			
 			public void seekSong(int i) {
-				Console.WriteLine ("SeekSong called "+i);
+				Hyena.Log.Information("SeekSong called "+i);
 				try {
 					CueSheet sheet=MySource.getSheet ();
 					if (sheet.Count==0) {
@@ -357,7 +315,7 @@ namespace Banshee.CueSheets
 					_set_position=true;
 					mscount=chgcount-(1000/timeout);
 				} catch (SystemException ex) {
-					Console.WriteLine (ex);
+					Hyena.Log.Information(ex.ToString ());
 				}
 			}
 			
@@ -367,7 +325,6 @@ namespace Banshee.CueSheets
 					CueSheet sheet=MySource.getSheet ();
 					ServiceManager.PlayerEngine.SetAccurateSeek(true);
 					CueSheetEntry e=sheet.entry(index);
-				//Console.WriteLine (e.ToString ());
 					ServiceManager.PlayerEngine.Open (e);
 					ServiceManager.PlayerEngine.Play ();
 					if (ServiceManager.PlaybackController.Source!=MySource) {
@@ -378,7 +335,7 @@ namespace Banshee.CueSheets
 					}
 					ServiceManager.PlaybackController.SetSeekMode (true);
 				} catch (SystemException ex) {
-					Console.WriteLine (ex);
+					Hyena.Log.Information(ex.ToString ());
 				}
 				mscount=chgcount-1;
 			}
@@ -405,7 +362,6 @@ namespace Banshee.CueSheets
 					uint pos=ServiceManager.PlayerEngine.Position;
 					double p=((double) pos)/1000.0;
 					int i=sheet.searchIndex(p);
-					//Console.WriteLine ("Position="+p+", i="+i+", index="+index);
 					if (i!=index && i>=0) {
 						// Handle repeat track
 						if (ServiceManager.PlaybackController.RepeatMode==PlaybackRepeatMode.RepeatSingle) {
@@ -513,17 +469,17 @@ namespace Banshee.CueSheets
 				view.RowActivated += new Gtk.RowActivatedHandler(EvtTrackRowActivated);
 				view.Model = store;
 				
-				Console.WriteLine ("New albumlist");
+				Hyena.Log.Information("New albumlist");
 				aview=new MyAlbumListView(this);
 				aaview=new ArtistListView();
 				gview=new GenreListView();
-				Console.WriteLine ("init models");
+				Hyena.Log.Information("init models");
 				aview.SetModel (MySource.getAlbumModel ());
 				aaview.SetModel (MySource.getArtistModel ());
 				gview.SetModel (MySource.getGenreModel ());
 				MySource.getGenreModel();
-				Console.WriteLine ("model albumlist");
-				Console.WriteLine ("albumlist initialized");
+				Hyena.Log.Information("model albumlist");
+				Hyena.Log.Information("albumlist initialized");
 				
 				aview.RowActivated+=new Hyena.Data.Gui.RowActivatedHandler<AlbumInfo>(EvtRowActivated);
 				aview.Selection.Changed += HandleAviewSelectionChanged;
@@ -531,6 +487,12 @@ namespace Banshee.CueSheets
 				aaview.RowActivated+=new Hyena.Data.Gui.RowActivatedHandler<ArtistInfo>(EvtArtistActivated);
 				
 				Gtk.Toolbar bar=new Gtk.Toolbar();
+				if (basedir==null) {
+					Hyena.Log.Information("basedir="+basedir);
+					Gtk.Label lbl=new Gtk.Label();
+					lbl.Markup="<b>You need to configure the CueSheets music directory first, using the right mouse button on the extension</b>";
+					bar.Add (lbl);
+				}
 				
 				fill ();
 				
@@ -575,7 +537,6 @@ namespace Banshee.CueSheets
 				int index=((Selection) sender).FirstIndex;
 				CS_AlbumInfo a=(CS_AlbumInfo) MySource.getAlbumModel ()[index];
 				_selected=a.getSheet ();
-				//Console.WriteLine (_selected);
 			}
 			
 			int hb_prev=-1;
@@ -610,7 +571,7 @@ namespace Banshee.CueSheets
 			
 			public void EvtCursorChanged(object sender,EventArgs a) {
 				mscount=0; // Reset cursor change timer
-				Console.WriteLine ("sender:"+sender+", "+a);
+				Hyena.Log.Information("sender:"+sender+", "+a);
 			}
 			
 			public void PlayAlbum(CS_AlbumInfo a) {
@@ -618,14 +579,14 @@ namespace Banshee.CueSheets
 			}
 
 			public void EvtRowActivated(object sender,RowActivatedArgs<AlbumInfo> args) {
-				//Console.WriteLine ("I'm here! "+sender+", "+args);
+				//Hyena.Log.Information ("I'm here! "+sender+", "+args);
 				CS_AlbumInfo a=(CS_AlbumInfo) args.RowValue;
-				//Console.WriteLine ("sheet: "+a.getSheet ().ToString ());
+				//Hyena.Log.Information ("sheet: "+a.getSheet ().ToString ());
 				PlayAlbum (a);
 			}
 
 			public void EvtGenreActivated(object sender,RowActivatedArgs<GenreInfo> args) {
-				//Console.WriteLine ("I'm here! "+sender+", "+args);
+				//Hyena.Log.Information ("I'm here! "+sender+", "+args);
 				GenreInfo g=args.RowValue;
 				if (MySource.getGenreModel ().isNullGenre (g)) { g=null; }
 				MySource.getAlbumModel ().filterGenre(g);
@@ -633,7 +594,7 @@ namespace Banshee.CueSheets
 			}
 
 			public void EvtArtistActivated(object sender,RowActivatedArgs<ArtistInfo> args) {
-				Console.WriteLine ("I'm here! "+sender+", "+args);
+				Hyena.Log.Information("I'm here! "+sender+", "+args);
 				ArtistInfo a=args.RowValue;
 				if (MySource.getArtistModel ().isNullArtist (a)) { a=null; }
 				MySource.getAlbumModel ().filterArtist(a);
@@ -644,8 +605,8 @@ namespace Banshee.CueSheets
 				Gtk.TreeModel model;
 				Gtk.TreeIter iter;
 				// THE ITER WILL POINT TO THE SELECTED ROW
-				//Console.WriteLine ("source="+ServiceManager.PlaybackController.Source);
-				//Console.WriteLine ("this="+this);
+				//Hyena.Log.Information ("source="+ServiceManager.PlaybackController.Source);
+				//Hyena.Log.Information ("this="+this);
 				if (selection.GetSelected(out model, out iter)) {
 					if (ServiceManager.PlaybackController.Source != MySource) {
 						reLoad ();

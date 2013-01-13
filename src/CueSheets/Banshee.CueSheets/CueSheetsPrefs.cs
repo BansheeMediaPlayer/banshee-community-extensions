@@ -34,7 +34,9 @@ namespace Banshee.CueSheets
 			string dir=source.getCueSheetDir();
 			Gtk.Label lbl=new Gtk.Label("CueSheet Music Directory:");
 			Gtk.FileChooserButton btn=new Gtk.FileChooserButton("CueSheet Music Directory:",Gtk.FileChooserAction.SelectFolder);
-			btn.SelectFilename (dir);
+			if (dir!=null) {
+				btn.SelectFilename (dir);
+			}
 			Gtk.HBox box=new Gtk.HBox();
 			box.Add (lbl);
 			box.Add (btn);
@@ -55,9 +57,17 @@ namespace Banshee.CueSheets
 			hb.PackEnd (about,false,false,0);
 			hb.PackEnd (_about,false,false,5);
 			vb.PackStart (hb,false,false,0);
-			
 			Gtk.HBox hb1=new Gtk.HBox();
-			vb.PackEnd (hb1,true,true,0);
+			Gtk.Label _info=new Gtk.Label("How to use the Cuesheet extension (opens browser)");
+			Gtk.Image icn_info=new Gtk.Image(Gtk.Stock.Info,Gtk.IconSize.Button);
+			Gtk.Button btn_info=new Gtk.Button(icn_info);
+			btn_info.Clicked+=new EventHandler(handleInfo);
+			hb1.PackEnd(btn_info,false,false,0);
+			hb1.PackEnd(_info,false,false,5);
+			vb.PackStart (hb1,false,false,0);
+			
+			Gtk.HBox hbX=new Gtk.HBox();
+			vb.PackEnd (hbX,true,true,0);
 			
 			vb.ShowAll ();
 			
@@ -83,7 +93,6 @@ namespace Banshee.CueSheets
 		
 		public void handleAbout(object sender,EventArgs a) {
 			Gtk.AboutDialog ab=new Gtk.AboutDialog();
-			//ab.Title="About the CueSheets extension";
 			ab.Authors=new string[] {"Hans Oesterholt"};
 			ab.Authors[0]="Hans Oesterholt";
 			ab.Version="0.0.5 (2013-01-12)";
@@ -91,6 +100,10 @@ namespace Banshee.CueSheets
 			ab.Website="http://oesterholt.net?env=data&page=banshee-cuesheets";
 			ab.Run ();
 			ab.Destroy ();
+		}
+		
+		public void handleInfo(object sender,EventArgs a) {
+			System.Diagnostics.Process.Start("http://oesterholt.net?env=data&page=banshee-cuesheets");
 		}
 				
 		
