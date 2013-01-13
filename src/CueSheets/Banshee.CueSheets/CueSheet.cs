@@ -75,6 +75,10 @@ namespace Banshee.CueSheets
 			return _image_file_name;
 		}
 		
+		public string imageFullFileName() {
+			return _img_full_path;
+		}
+		
 		public string cueFile() {
 			return _cuefile;
 		}
@@ -275,6 +279,11 @@ namespace Banshee.CueSheets
 		
 		public CueSheet() {
 			Clear ();
+		}
+		
+		public CueSheet(string filename) {
+			Clear ();
+			load (filename,"","");
 		}
 		
 		public CueSheet (string filename,string directory,string basedir) {

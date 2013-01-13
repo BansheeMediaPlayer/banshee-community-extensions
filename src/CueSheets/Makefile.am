@@ -8,6 +8,7 @@ SOURCES =  \
 	Banshee.CueSheets/CS_ArtistModel.cs \
 	Banshee.CueSheets/CS_GenreModel.cs \
 	Banshee.CueSheets/CueSheet.cs \
+	Banshee.CueSheets/CueSheetEditor.cs \
 	Banshee.CueSheets/CueSheetEntry.cs \
 	Banshee.CueSheets/CueSheetsPrefs.cs \
 	Banshee.CueSheets/CueSheetsSource.cs \

@@ -435,6 +435,11 @@ namespace Banshee.CueSheets
 				loadCueSheet (MySource.getSheets ()[i]);
 			}
 			
+			public void EditSheet(CueSheet s) {
+				CueSheetEditor edt=new CueSheetEditor(s);
+				edt.Do ();
+			}
+			
 			internal class MyAlbumListView : AlbumListView {
 				private CustomView _view;
 				
@@ -448,7 +453,13 @@ namespace Banshee.CueSheets
 					play.Activated+=delegate(object sender,EventArgs a) {
 						_view.PlayAlbum((CS_AlbumInfo) this.Model[Selection.FirstIndex]);
 					};
+					Gtk.ImageMenuItem edit=new Gtk.ImageMenuItem(Gtk.Stock.Edit,null);
+					edit.Activated+=delegate(object sender,EventArgs a) {
+						_view.EditSheet(((CS_AlbumInfo) this.Model[Selection.FirstIndex]).getSheet ());
+					};
 					mnu.Append (play);
+					mnu.Append (new Gtk.SeparatorMenuItem());
+					mnu.Append (edit);
 					mnu.ShowAll ();
 					mnu.Popup();
 					return false;
