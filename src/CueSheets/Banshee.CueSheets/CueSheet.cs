@@ -49,9 +49,7 @@ namespace Banshee.CueSheets
 		public string genre() {
 			int n=_basedir.Length;
 			string d=_directory.Substring (n);
-			d=Regex.Replace (d,"^[/]","");
-			String r=Regex.Replace (d,"[/].*$","");
-			//Console.WriteLine ("n="+n+", d="+d+", r="+r);
+			string r=Tools.firstpart(d);
 			return r;
 		}
 		
@@ -112,6 +110,13 @@ namespace Banshee.CueSheets
 			return k-1;
 		}
 		
+		public void  resetArt() {
+			string aaid=CoverArtSpec.CreateArtistAlbumId (_performer,_title);
+			string path=CoverArtSpec.GetPathForNewFile(aaid,_img_full_path);
+			File.Delete (path);
+			File.Copy (_img_full_path,path);
+		}
+		
 		public string getArtId() {
 			string aaid=CoverArtSpec.CreateArtistAlbumId (_performer,_title);
 			if (!CoverArtSpec.CoverExists (aaid)) {
@@ -120,11 +125,8 @@ namespace Banshee.CueSheets
 					if (!File.Exists (path)) {
 						File.Copy (_img_full_path,path);
 					}
-					//Console.WriteLine ("coverartpath="+path);
 				}
 			}
-			//string path1=CoverArtSpec.GetPath (aaid);
-			//Console.WriteLine ("coverartpath1="+path1);
 			return aaid;
 		}
 		
@@ -141,6 +143,78 @@ namespace Banshee.CueSheets
 		
 		public override string ToString() {
 			return "Performer: "+this.performer ()+", Title: "+this.title ()+"\ncuefile: "+this.cueFile()+"\nwave: "+this.musicFileName();
+		}
+		
+		public void SetPerformer(string p) {
+			_performer=p;
+		}
+		
+		public void SetTitle(string t) {
+			_title=t;
+		}
+		
+		public void SetImagePath(string path) {
+			string fn=Tools.basename(path); 
+			string fnp=Tools.makefile(_directory,fn);
+			if (!File.Exists (fnp)) {
+				File.Copy (path,fnp);
+			}
+			_image_file_name=fn;
+			_img_full_path=fnp;
+		}
+		
+		public void ClearTracks() {
+			base.Clear ();
+			_tracks=null;
+		}
+		
+		public void AddTrack(string e_title,string e_perf,double e_offset) {
+			int nr=0;
+			if (_tracks!=null) {
+				nr=_tracks.Length;
+			}
+			string aaid=getArtId ();
+			CueSheetEntry e=new CueSheetEntry(_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
+			append (e);
+			int i,N;
+			for(i=0,N=nEntries ();i<N;i++) {
+				_tracks[i].setNrOfTracks(N);
+			}
+		}
+		
+		public void Save() {
+			//System.IO.StreamWriter wrt=new System.IO.StreamWriter();
+			if (!File.Exists (_cuefile+".bck")) {
+				File.Copy (_cuefile,_cuefile+".bck");
+			}
+			resetArt ();
+			System.IO.StreamWriter wrt=new System.IO.StreamWriter(_cuefile);
+			wrt.WriteLine ("REM Banshee CueSheets Extension "+CS_Info.Version());
+			wrt.WriteLine ("REM Banshee AAID : "+getArtId ());
+			wrt.WriteLine ("REM IMAGE \""+_image_file_name+"\"");
+			wrt.WriteLine ("PERFORMER \""+_performer+"\"");
+			wrt.WriteLine ("TITLE \""+_title+"\"");
+			string mfn=Tools.basename(_music_file_name);
+			wrt.WriteLine ("FILE \""+mfn+"\" WAVE");
+			
+			int i,N;
+			for(i=0,N=nEntries ();i<N;i++) {
+				CueSheetEntry e=_tracks[i];
+				wrt.WriteLine ("  TRACK "+String.Format ("{0:00}",i+1)+" AUDIO");
+				wrt.WriteLine ("    TITLE \""+e.title ()+"\"");
+				wrt.WriteLine ("    PERFORMER \""+e.performer ()+"\"");
+				int t=(int) (e.offset ()*100.0);
+				int m=t/(100*60);
+				int s=(t/100)%60;
+				int hs=t%100; 
+				wrt.WriteLine ("    INDEX 01 "+	String.Format("{0:00}",m)+":"+
+				                   					String.Format ("{0:00}",s)+":"+
+				                   					String.Format ("{0:00}",hs)
+				                   );
+			}
+			
+			wrt.Close ();
+			
 		}
 		
 		public void iLoad() {
@@ -174,7 +248,7 @@ namespace Banshee.CueSheets
 								_music_file_name=m.ToString ();
 								//Console.WriteLine ("result="+_music_file_name);
 								_music_file_name=Regex.Replace (_music_file_name,"[\"]","").Trim ();
-								_music_file_name=directory+"/"+_music_file_name;
+								_music_file_name=Tools.makefile(directory,_music_file_name);
 								//Console.WriteLine ("music file="+_music_file_name);
 							} else if (line.Substring(0,5).ToLower ()=="track") {
 								_in_tracks=true;
@@ -183,7 +257,7 @@ namespace Banshee.CueSheets
 								if (eq(line,"image")) { 
 									_image_file_name=line.Substring (5).Trim ();
 									_image_file_name=Regex.Replace (_image_file_name,"[\"]","").Trim ();
-									_img_full_path=directory+"/"+_image_file_name;
+									_img_full_path=Tools.makefile(directory,_image_file_name);
 								}
 							}
 						} 

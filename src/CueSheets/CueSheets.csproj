@@ -99,6 +99,8 @@
     <Compile Include="Banshee.CueSheets\GenreListView.cs" />
     <Compile Include="Banshee.CueSheets\Loosely.cs" />
     <Compile Include="Banshee.CueSheets\CueSheetEditor.cs" />
+    <Compile Include="Banshee.CueSheets\CS_Info.cs" />
+    <Compile Include="Banshee.CueSheets\Tools.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

@@ -242,13 +242,8 @@ namespace Banshee.CueSheets
 			private String  		basedir=null;
 			private CueSheet 		_selected=null;
 			
-			public string basename(string f) {
-				string bn=Regex.Replace (f,"^([^/]*[/])+","");
-				return bn;
-			}
-			
 			public string cuename(string f) {
-				string cn=Regex.Replace(basename (f),"[.]cue$","");
+				string cn=Regex.Replace(Tools.basename(f),"[.]cue$","");
 				return cn;
 			}
 			
@@ -438,6 +433,8 @@ namespace Banshee.CueSheets
 			public void EditSheet(CueSheet s) {
 				CueSheetEditor edt=new CueSheetEditor(s);
 				edt.Do ();
+				MySource.getAlbumModel ().Reload ();
+				MySource.getArtistModel ().Reload ();
 			}
 			
 			internal class MyAlbumListView : AlbumListView {

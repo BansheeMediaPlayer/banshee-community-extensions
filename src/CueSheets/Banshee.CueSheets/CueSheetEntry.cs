@@ -97,7 +97,6 @@ namespace Banshee.CueSheets
 			this.CanPlay=true;
 			this.CanSaveToDatabase=false;
 			this.Duration=new System.TimeSpan(0,0,10,0);
-			//Console.WriteLine ("file="+_file);
 			this.Uri=new Hyena.SafeUri(_file,false);
 		}
 	}

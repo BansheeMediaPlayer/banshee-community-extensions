@@ -93,11 +93,10 @@ namespace Banshee.CueSheets
 		
 		public void handleAbout(object sender,EventArgs a) {
 			Gtk.AboutDialog ab=new Gtk.AboutDialog();
-			ab.Authors=new string[] {"Hans Oesterholt"};
-			ab.Authors[0]="Hans Oesterholt";
-			ab.Version="0.0.5 (2013-01-12)";
-			ab.Comments="CueSheets is an extension that allows you to play music from cuesheets in banshee";
-			ab.Website="http://oesterholt.net?env=data&page=banshee-cuesheets";
+			ab.Authors=CS_Info.Authors ();
+			ab.Version=CS_Info.Version(); 
+			ab.Comments=CS_Info.Info ();
+			ab.Website=CS_Info.Website();
 			ab.Run ();
 			ab.Destroy ();
 		}
