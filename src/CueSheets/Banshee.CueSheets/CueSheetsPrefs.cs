@@ -28,10 +28,13 @@ namespace Banshee.CueSheets
 			
 			_source=source;
 			source_page = new SourcePage(source);
+		}
+		
+		public void createGui() {
 			basedir_section=new Section("cuesheets-basedir","CueSheet Music Directory:",20);
 			source_page.Add (basedir_section);
 			
-			string dir=source.getCueSheetDir();
+			string dir=_source.getCueSheetDir();
 			Gtk.Label lbl=new Gtk.Label("CueSheet Music Directory:");
 			Gtk.FileChooserButton btn=new Gtk.FileChooserButton("CueSheet Music Directory:",Gtk.FileChooserAction.SelectFolder);
 			if (dir!=null) {

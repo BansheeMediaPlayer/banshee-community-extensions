@@ -45,6 +45,10 @@ namespace Banshee.CueSheets
       		get { return _art; }
 		}
 		
+		public void setArtWorkId(string aaid) {
+			_art=aaid;
+		}
+		
 		public string file() {
 			return _file;
 		}

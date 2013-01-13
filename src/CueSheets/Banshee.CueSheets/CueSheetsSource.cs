@@ -68,8 +68,6 @@ namespace Banshee.CueSheets
 		List<CueSheet> _sheets=new List<CueSheet>();
 		CueSheet	   _sheet=null;
         private CueSheetsPrefs preferences;
-
-
 				
         public CueSheetsSource () : base (AddinManager.CurrentLocalizer.GetString ("CueSheets"),
                                           AddinManager.CurrentLocalizer.GetString ("CueSheets"),
@@ -87,7 +85,8 @@ namespace Banshee.CueSheets
 		
         public override string PreferencesPageId {
             get {
-				preferences=new CueSheetsPrefs(this);
+				if (preferences==null) { preferences=new CueSheetsPrefs(this); }
+				preferences.createGui();
                 return preferences.PageId;
             }
         }
@@ -210,6 +209,14 @@ namespace Banshee.CueSheets
 			vp=Banshee.Configuration.ConfigurationClient.Get<int>("cuesheets_vp",200);
 		}
 		
+		public bool getGridLayout() {
+			return Banshee.Configuration.ConfigurationClient.Get<bool>("cuesheets_grid",true);
+		}
+		
+		public void setGridLayout(bool g) {
+			Banshee.Configuration.ConfigurationClient.Set<bool>("cuesheets_grid",g);
+		}
+		
 		public string getCueSheetDir() {
 			string dir=Banshee.Configuration.ConfigurationClient.Get<string>("cuesheets_dir",null);
 			Hyena.Log.Information ("cuesheets dir="+dir);
@@ -229,7 +236,7 @@ namespace Banshee.CueSheets
 			Gtk.ScrolledWindow 		ascroll,tscroll,aascroll,gscroll;
 			int               		index=-1;
 			private CueSheetsSource MySource=null;
-			AlbumListView 			aview;
+			MyAlbumListView 		aview;
 			Gtk.TreeView			view;
 			ArtistListView 			aaview;
 			GenreListView   		gview;
@@ -442,6 +449,15 @@ namespace Banshee.CueSheets
 				
 				public MyAlbumListView(CustomView view) : base() {
 					_view=view;
+					
+				}
+				
+				public void DisableGrid() {
+					base.DisabledAlbumGrid=true;
+				}
+				
+				public void EnableGrid() {
+					base.DisabledAlbumGrid=false;
 				}
 				
 				protected override bool OnPopupMenu () {
@@ -479,6 +495,9 @@ namespace Banshee.CueSheets
 				
 				Hyena.Log.Information("New albumlist");
 				aview=new MyAlbumListView(this);
+				if (!MySource.getGridLayout ()) { aview.DisableGrid (); }
+				else { aview.EnableGrid (); }
+				
 				aaview=new ArtistListView();
 				gview=new GenreListView();
 				Hyena.Log.Information("init models");

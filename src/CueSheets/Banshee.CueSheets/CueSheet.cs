@@ -115,6 +115,10 @@ namespace Banshee.CueSheets
 			string path=CoverArtSpec.GetPathForNewFile(aaid,_img_full_path);
 			File.Delete (path);
 			File.Copy (_img_full_path,path);
+			int i,N;
+			for(i=0,N=nEntries ();i<N;i++) {
+				entry (i).setArtWorkId(aaid);
+			}
 		}
 		
 		public string getArtId() {

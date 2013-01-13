@@ -42,6 +42,8 @@ namespace Banshee.CueSheets
 				return r;
 			}
 		}
+		
+		
 	}
 }
 
