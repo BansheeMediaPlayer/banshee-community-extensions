@@ -50,6 +50,8 @@ using Hyena.Collections;
 using System.Collections.Generic;
 using Banshee.Collection.Database;
 using Hyena.Data.Gui;
+using Banshee.Gui;
+using Banshee.I18n;
 
 namespace Banshee.CueSheets
 {
@@ -68,6 +70,8 @@ namespace Banshee.CueSheets
 		List<CueSheet> _sheets=new List<CueSheet>();
 		CueSheet	   _sheet=null;
         private CueSheetsPrefs preferences;
+		private Gtk.CheckMenuItem menuItem;
+		private Gtk.SeparatorMenuItem sep;
 				
         public CueSheetsSource () : base (AddinManager.CurrentLocalizer.GetString ("CueSheets"),
                                           AddinManager.CurrentLocalizer.GetString ("CueSheets"),
@@ -80,7 +84,29 @@ namespace Banshee.CueSheets
             Properties.Set<ISourceContents> ("Nereid.SourceContents", _view);
 			Properties.SetString ("Icon.Name", "cueplay");
             Hyena.Log.Information ("CueSheets source has been instantiated.");
+			
+            InterfaceActionService action_service = ServiceManager.Get<InterfaceActionService> ();
+            Gtk.Menu viewMenu = (action_service.UIManager.GetWidget ("/MainMenu/ViewMenu") as Gtk.MenuItem).Submenu as Gtk.Menu;
+            menuItem = new Gtk.CheckMenuItem (Catalog.GetString ("_Albums as list"));
+            menuItem.Activated += delegate {
+				_view.ToggleGrid();
+            };
+            viewMenu.Insert (menuItem, 2);
+			sep=new Gtk.SeparatorMenuItem();
+			viewMenu.Insert (sep,3);
+			//menuItem.Active=!getGridLayout ();
         }
+		
+		public override void Activate ()
+		{
+            menuItem.Show ();
+			sep.Show ();
+		}
+		
+	    public override void Deactivate()  {
+            menuItem.Hide ();
+			sep.Hide ();
+		}
 		
 		
         public override string PreferencesPageId {
@@ -209,12 +235,16 @@ namespace Banshee.CueSheets
 			vp=Banshee.Configuration.ConfigurationClient.Get<int>("cuesheets_vp",200);
 		}
 		
+		private bool grid_layout=true;
+		
 		public bool getGridLayout() {
-			return Banshee.Configuration.ConfigurationClient.Get<bool>("cuesheets_grid",true);
+			return grid_layout;
+			//return Banshee.Configuration.ConfigurationClient.Get<bool>("cuesheets_grid",true);
 		}
 		
 		public void setGridLayout(bool g) {
-			Banshee.Configuration.ConfigurationClient.Set<bool>("cuesheets_grid",g);
+			//Banshee.Configuration.ConfigurationClient.Set<bool>("cuesheets_grid",g);
+			grid_layout=g;
 		}
 		
 		public string getCueSheetDir() {
@@ -269,9 +299,12 @@ namespace Banshee.CueSheets
 					}
 				}
 				foreach (string sheet in sheets) {
-					if (sheet.Substring (0,1)!=".") {
-						CueSheet cs=new CueSheet(sheet,cwd,basedir);
-						getSheets().Add (cs);
+					string bn=Tools.basename (sheet);
+					if (bn!="") {
+						if (bn.Substring (0,1)!=".") {
+							CueSheet cs=new CueSheet(sheet,cwd,basedir);
+							getSheets().Add (cs);
+						}
 					}
 				}
 			}
@@ -438,10 +471,21 @@ namespace Banshee.CueSheets
 			}
 			
 			public void EditSheet(CueSheet s) {
+				Hyena.Log.Information (s.cueFile ());
 				CueSheetEditor edt=new CueSheetEditor(s);
 				edt.Do ();
 				MySource.getAlbumModel ().Reload ();
 				MySource.getArtistModel ().Reload ();
+			}
+			
+			public void ToggleGrid() {
+				bool grid=!MySource.getGridLayout ();
+				if (grid) {
+					aview.EnableGrid ();
+				} else {
+					aview.DisableGrid ();
+				}
+				MySource.setGridLayout (grid);
 			}
 			
 			internal class MyAlbumListView : AlbumListView {
@@ -449,7 +493,6 @@ namespace Banshee.CueSheets
 				
 				public MyAlbumListView(CustomView view) : base() {
 					_view=view;
-					
 				}
 				
 				public void DisableGrid() {
@@ -478,7 +521,22 @@ namespace Banshee.CueSheets
 					return false;
 				}
 			}
-
+			
+			internal class MyArtistListView : ArtistListView {
+				public MyArtistListView() : base() {
+				}
+				protected override bool OnPopupMenu() {
+					return false;
+				}
+			}
+			
+			internal class MyGenreListView : GenreListView {
+				public MyGenreListView() : base () {
+				}
+				protected override bool OnPopupMenu() {
+					return false;
+				}
+			}
 
 			public CustomView(CueSheetsSource ms) {
 				MySource=ms;
@@ -495,11 +553,14 @@ namespace Banshee.CueSheets
 				
 				Hyena.Log.Information("New albumlist");
 				aview=new MyAlbumListView(this);
-				if (!MySource.getGridLayout ()) { aview.DisableGrid (); }
-				else { aview.EnableGrid (); }
+				if (!MySource.getGridLayout ()) { 
+					aview.DisableGrid (); 
+				} else { 
+					aview.EnableGrid (); 
+				}
 				
-				aaview=new ArtistListView();
-				gview=new GenreListView();
+				aaview=new MyArtistListView();
+				gview=new MyGenreListView();
 				Hyena.Log.Information("init models");
 				aview.SetModel (MySource.getAlbumModel ());
 				aaview.SetModel (MySource.getArtistModel ());
