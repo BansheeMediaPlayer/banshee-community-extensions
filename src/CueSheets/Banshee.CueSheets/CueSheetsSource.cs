@@ -2,7 +2,7 @@
 // CueSheetsSource.cs
 //
 // Authors:
-//   Cool Extension Author <hans@oesterholt.net>
+//   Hans Oesterholt <hans@oesterholt.net>
 //
 // Copyright (C) 2013 Hans Oesterholt
 //
@@ -25,7 +25,6 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-
 using System;
 
 using Mono.Addins;
@@ -45,6 +44,12 @@ using Banshee.CueSheets;
 using System.Text.RegularExpressions;
 using Banshee.Collection;
 using Banshee.Library;
+using Banshee.Collection.Gui;
+using Hyena.Data;
+using Hyena.Collections;
+using System.Collections.Generic;
+using Banshee.Collection.Database;
+using Hyena.Data.Gui;
 
 namespace Banshee.CueSheets
 {
@@ -58,34 +63,50 @@ namespace Banshee.CueSheets
         // In the sources TreeView, sets the order value for this source, small on top
         const int sort_order = 50;
 		CustomView  _view;
-		TrackListModel _nullModel;
-		double			  pbsize=-1.0;
+		//TrackListModel _nullModel;
+		//double			  pbsize=-1.0;
+		List<CueSheet> _sheets=new List<CueSheet>();
+		CueSheet	   _sheet=null;
+        private CueSheetsPrefs preferences;
+
 
 				
         public CueSheetsSource () : base (AddinManager.CurrentLocalizer.GetString ("CueSheets"),
-                                               AddinManager.CurrentLocalizer.GetString ("CueSheets"),
-		                                       sort_order,
-		                                       "hod-cuesheets-2013-01-06")
+                                          AddinManager.CurrentLocalizer.GetString ("CueSheets"),
+		                                  sort_order,
+										  "hod-cuesheets-2013-01-06")
         {
+			Console.WriteLine ("CueSheetsSouce init");
+			_sheet=new CueSheet();
 			_view=new CustomView(this);
-			_nullModel=new MemoryTrackListModel();
             Properties.Set<ISourceContents> ("Nereid.SourceContents", _view);
 			Properties.SetString ("Icon.Name", "cueplay");
-
             Hyena.Log.Information ("CueSheets source has been instantiated.");
+        }
+		
+		
+        public override string PreferencesPageId {
+            get {
+				preferences=new CueSheetsPrefs(this);
+                return preferences.PageId;
+            }
         }
 
         // A count of 0 will be hidden in the source TreeView
         public override int Count {
             get { 
-				CueSheet s=_view.getSheet ();
+				CueSheet s=getSheet ();
 				if (s==null) { return 0; }
 				else { return s.nEntries (); }
 			}
         }
 		
 		public CueSheet getSheet() {
-			return _view.getSheet();
+			return _sheet;
+		}
+		
+		public List<CueSheet> getSheets() {
+			return _sheets;
 		}
 		
         #region IBasicPlaybackController implementation
@@ -116,12 +137,7 @@ namespace Banshee.CueSheets
 
         public TrackListModel TrackModel { 
 			get { 
-				CueSheet s=_view.getSheet ();
-				if (s==null) {
-					return _nullModel; 
-				} else {
-					return s;
-				}
+				return _sheet;				
 			} 
 		}
 
@@ -139,7 +155,7 @@ namespace Banshee.CueSheets
 
         public bool CanShuffle { get { return true; } }
 
-        public bool ShowBrowser { get { return false; } }
+        public bool ShowBrowser { get { return true; } }
 
         public bool Indexable { get { return true; } }
 
@@ -149,22 +165,49 @@ namespace Banshee.CueSheets
         public void DeleteTracks (Hyena.Collections.Selection selection) {
         }
         #endregion
+
+		private CS_AlbumModel _model=null;
+		private CS_ArtistModel _artistModel=null;
+		private CS_GenreModel  _genreModel=null;
 		
-		public void OnConfigure (object o, EventArgs ea) {
-			new CueSheetsConfigDialog (this);
-            return;
-        }
-		
-		public double getPbSize() {
-			if (pbsize<0.0) {
-				pbsize=Banshee.Configuration.ConfigurationClient.Get<double>("cuesheets_zoom",1.0);
+		public CS_AlbumModel getAlbumModel() {
+			if (_model==null) { 
+				Console.WriteLine ("AlbumModel init");
+				_model=new CS_AlbumModel(this); 
 			}
-			return pbsize;
+			return _model;
 		}
 		
-		public void setPbSize(double s) {
-			pbsize=s;
-			Banshee.Configuration.ConfigurationClient.Set<double>("cuesheets_zoom",s);
+		public TrackListModel getTrackModel() {
+			return this.TrackModel;
+		}
+		
+		public CS_GenreModel getGenreModel() {
+			if (_genreModel==null) { 
+				Console.WriteLine ("GenreModel init");
+				_genreModel=new CS_GenreModel(this); 
+			}
+			return _genreModel;
+		}
+		
+		public CS_ArtistModel getArtistModel() {
+			if (_artistModel==null) { 
+				Console.WriteLine ("ArtistModel init");
+				_artistModel=new CS_ArtistModel(this); 
+			}
+			return _artistModel;
+		}
+		
+		public void setPositions(int hb,int hb1,int vp) {
+			Banshee.Configuration.ConfigurationClient.Set<int>("cuesheets_hb",hb);
+			Banshee.Configuration.ConfigurationClient.Set<int>("cuesheets_hb1",hb1);
+			Banshee.Configuration.ConfigurationClient.Set<int>("cuesheets_vp",vp);
+		}
+		
+		public void getPositions(out int hb,out int hb1, out int vp) {
+			hb=Banshee.Configuration.ConfigurationClient.Get<int>("cuesheets_hb",100);
+			hb1=Banshee.Configuration.ConfigurationClient.Get<int>("cuesheets_hb1",200);
+			vp=Banshee.Configuration.ConfigurationClient.Get<int>("cuesheets_vp",200);
 		}
 		
 		public string getCueSheetDir() {
@@ -181,6 +224,8 @@ namespace Banshee.CueSheets
 			//Console.WriteLine ("setcuesheetdir:"+dir);
 			//Properties.SetString ("cuesheets_dir",dir);
 			Banshee.Configuration.ConfigurationClient.Set<string>("cuesheets_dir",dir);
+			_view.fill ();
+			//_view.reLoad ();
 		}
 		
 		private class CueSheetsConfigDialog : Gtk.Dialog {
@@ -195,17 +240,17 @@ namespace Banshee.CueSheets
 				box.Add (btn);
 				box.ShowAll ();
 				
-				double d=src.getPbSize ();
-				Gtk.HScale hs=new Gtk.HScale(1.0,3.0,0.25);
+				/*double d=src.getPbSize ();
+				Gtk.HScale hs=new Gtk.HScale(1.0,5.0,0.25);
 				hs.Value=d;
 				Gtk.Label lbl1=new Gtk.Label("Size of music icons:");
 				Gtk.HBox box1=new Gtk.HBox();
 				box1.Add (lbl1);
 				box1.Add (hs);
-				box1.ShowAll ();
+				box1.ShowAll ();*/
 				
 				this.VBox.Add (box);
-				this.VBox.Add (box1);
+				//this.VBox.Add (box1);
 				this.AddButton (Gtk.Stock.Ok,1);
 				this.AddButton (Gtk.Stock.Cancel,2);
 				this.Title="CueSheets Preferences";
@@ -213,7 +258,7 @@ namespace Banshee.CueSheets
 				if (result==1) {
 					dir=btn.Filename;
 					src.setCueSheetDir(dir);
-					src.setPbSize (hs.Value);
+					//src.setPbSize (hs.Value);
 				}
 				this.Destroy ();
 			}
@@ -221,53 +266,24 @@ namespace Banshee.CueSheets
 		
         private class CustomView : ISourceContents
         {
-			//Gtk.Button 		up;
-			Gtk.ListStore     store;
-			Gtk.TreeView      view;
-			//Gtk.Image		  img;
-			Gtk.VBox		  box;
-			string			  type="directory";
-			CueSheet		  sheet;
-			//Gtk.Table		  table;
-			Gtk.ScrolledWindow scroll;
-			int               index=-1;
+			Gtk.ListStore     		store;
+			Gtk.VBox		  		box;
+			string			  		type="directory";
+			Gtk.ScrolledWindow 		ascroll,tscroll,aascroll,gscroll;
+			int               		index=-1;
 			private CueSheetsSource MySource=null;
+			AlbumListView 			aview;
+			Gtk.TreeView			view;
+			ArtistListView 			aaview;
+			GenreListView   		gview;
+			Gtk.HPaned				hb;
+			Gtk.HPaned				hb1;
+			Gtk.VPaned				vp;
 			
-			uint _position=0;
-			bool _set_position=false;
-			
-			const int IMG_NOIMAGE=0;
-			const int IMG_NOIMAGE_DIR=1;
-			const int IMG_DIRECTORY=2;
-			
-			Gdk.Pixbuf _img_dir=null;
-			Gdk.Pixbuf _img_playlist=null;
-			Gdk.Pixbuf _pb_size=null;
-			
-
-			private Gdk.Pixbuf GetDefaultPixBuf(int type) {
-				Gdk.Pixbuf img=_img_playlist;
-				if (type==1000) { img=_pb_size; }
-				if (type==IMG_DIRECTORY) {
-					img=_img_dir;
-				}
-				return img;
-			}
-
-			private int getPixbufWidth() {
-				return (int) (_pb_size.Width*MySource.getPbSize());
-			}
-
-			private int getPixbufHeight() {
-				return (int) (_pb_size.Height*MySource.getPbSize());
-			}
-			
-			public CueSheet getSheet() {
-				return sheet;
-			}
-
-			private String  basedir=null;
-			private String  cwdir=null;
+			uint 					_position=0;
+			bool					_set_position=false;
+			private String  		basedir=null;
+			private CueSheet 		_selected=null;
 			
 			public string basename(string f) {
 				string bn=Regex.Replace (f,"^([^/]*[/])+","");
@@ -279,70 +295,91 @@ namespace Banshee.CueSheets
 				return cn;
 			}
 			
-			public void fill(Gtk.ListStore store) {
-				type="directory";
-				store.Clear ();
-				if (basedir==null) { 
-					basedir=MySource.getCueSheetDir (); 
-				}
-				if (cwdir==null) { cwdir=basedir; }
-				string [] dirs=Directory.GetDirectories(cwdir, "*");
-				string [] sheets=Directory.GetFiles (cwdir,"*.cue");
-				int i=0;
-				foreach (string file in sheets) {
-					i=i+1;
-					string name=cuename(file);
-					CueSheet s=new CueSheet(file,cwdir);
-					Gdk.Pixbuf pb;
-					if (s.imageFileName ()!="") {
-						string imgf=cwdir+"/"+s.imageFileName ();
-						pb=new Gdk.Pixbuf(imgf,getPixbufWidth(),getPixbufHeight());
-					} else {
-						pb=GetDefaultPixBuf(IMG_NOIMAGE_DIR);
-					}					
-					store.AppendValues(i,pb,name);
-				}
+			public List<CueSheet> getSheets() {
+				return MySource.getSheets ();
+			}
+			
+			
+			private void fill(string cwd) {
+				//Console.WriteLine ("fill:"+cwd);
+				string [] dirs=Directory.GetDirectories(cwd, "*");
+				string [] sheets=Directory.GetFiles (cwd,"*.cue");
 				foreach (string dir in dirs) {
-					string name=basename (dir);
-					if (name.Substring (0,1)!=".") {
-						i=i+1;
-						Gdk.Pixbuf pb=GetDefaultPixBuf(IMG_DIRECTORY);
-						store.AppendValues(i,pb,name);
+					if (dir.Substring (0,1)!=".") {
+						fill (dir);
+					}
+				}
+				foreach (string sheet in sheets) {
+					if (sheet.Substring (0,1)!=".") {
+						CueSheet cs=new CueSheet(sheet,cwd,basedir);
+						getSheets().Add (cs);
 					}
 				}
 			}
 			
+			public void fill() {
+				getSheets().Clear ();
+				basedir=MySource.getCueSheetDir();
+				fill (basedir);
+				Console.WriteLine ("Filled");
+				try {
+					Console.WriteLine ("Reload albums");
+					MySource.getAlbumModel ().Reload ();
+					Console.WriteLine ("Reload artists");
+					MySource.getArtistModel ().Reload ();
+					Console.WriteLine ("Reload genres");
+					MySource.getGenreModel ().Reload ();
+					Console.WriteLine ("Reload tracks");
+					MySource.getTrackModel ().Reload ();
+					Console.WriteLine ("Reloaded all");
+					Console.WriteLine (MySource.getAlbumModel ().Count);
+					Console.WriteLine (MySource.getArtistModel ().Count);
+					Console.WriteLine (MySource.getGenreModel ().Count);
+				} catch(System.Exception e) {
+					Console.WriteLine (e.ToString());
+				}
+				Console.WriteLine ("Reloaded");
+			}
+			
 			public void seekSong(int i) {
-				CueSheetEntry e=sheet.entry (i);
-				double offset=e.offset ();
-				//Console.WriteLine ("Offset="+offset+", current="+ServiceManager.PlayerEngine.Position+
-				//                   ", msecs="+offset*1000.0
-				//                   );
-				//ServiceManager.PlayerEngine.SetNextTrack (e);
-				//ServiceManager.PlayerEngine.Open(e);
-				ServiceManager.PlayerEngine.SetCurrentTrack(e);
-				_position=(uint) (offset*1000.0);
-				_set_position=true;
-				mscount=chgcount-(1000/timeout);
-				//ServiceManager.PlayerEngine.PlayAt((uint) (offset*1000.0));
-				//ServiceManager.PlayerEngine.Position=_position;
-				
+				Console.WriteLine ("SeekSong called "+i);
+				try {
+					CueSheet sheet=MySource.getSheet ();
+					if (sheet.Count==0) {
+						if (_selected!=null) {
+							loadCueSheet (_selected);
+						}
+					}
+					CueSheetEntry e=sheet.entry (i);
+					double offset=e.offset ();
+					ServiceManager.PlayerEngine.SetCurrentTrack(e);
+					_position=(uint) (offset*1000.0);
+					_set_position=true;
+					mscount=chgcount-(1000/timeout);
+				} catch (SystemException ex) {
+					Console.WriteLine (ex);
+				}
 			}
 			
 			public void reLoad() {
 				index=0;
-				ServiceManager.PlayerEngine.SetAccurateSeek(true);
-				CueSheetEntry e=sheet.entry(index);
-				ServiceManager.PlayerEngine.Open (e);
-				ServiceManager.PlayerEngine.Play ();
-				//ServiceManager.PlayerEngine.PlayAt ((uint) (e.offset ()*1000.0));
-				if (ServiceManager.PlaybackController.Source!=MySource) {
-					ServiceManager.PlaybackController.Source=MySource; 
-				} 
-				if (ServiceManager.PlaybackController.NextSource!=MySource) {
-					ServiceManager.PlaybackController.NextSource=MySource; 
+				try {
+					CueSheet sheet=MySource.getSheet ();
+					ServiceManager.PlayerEngine.SetAccurateSeek(true);
+					CueSheetEntry e=sheet.entry(index);
+				//Console.WriteLine (e.ToString ());
+					ServiceManager.PlayerEngine.Open (e);
+					ServiceManager.PlayerEngine.Play ();
+					if (ServiceManager.PlaybackController.Source!=MySource) {
+						ServiceManager.PlaybackController.Source=MySource; 
+					} 
+					if (ServiceManager.PlaybackController.NextSource!=MySource) {
+						ServiceManager.PlaybackController.NextSource=MySource; 
+					}
+					ServiceManager.PlaybackController.SetSeekMode (true);
+				} catch (SystemException ex) {
+					Console.WriteLine (ex);
 				}
-				ServiceManager.PlaybackController.SetSeekMode (true);
 				mscount=chgcount-1;
 			}
 			
@@ -352,6 +389,7 @@ namespace Banshee.CueSheets
 			private int chgcount=3000/100; // every 3 seconds
 			
 			public bool PositionDisplay() {
+				CueSheet sheet=MySource.getSheet ();
 				if (ServiceManager.PlaybackController.Source==MySource) {
 				if (sheet!=null) {
 					mscount+=1;
@@ -401,6 +439,7 @@ namespace Banshee.CueSheets
 			}
 			
 			public Boolean next() {
+				CueSheet sheet=MySource.getSheet ();
 				if (sheet==null) { return false; }
 				if (index<sheet.nEntries ()-1) {
 					index+=1;
@@ -412,6 +451,7 @@ namespace Banshee.CueSheets
 			}
 			
 			public Boolean previous() {
+				CueSheet sheet=MySource.getSheet ();
 				if (sheet==null) { return false; }
 				if (index>0) {
 					index-=1;
@@ -422,155 +462,201 @@ namespace Banshee.CueSheets
 				return true;
 			}
 			
-			public void loadCueSheet(string file,Gtk.ListStore store) {
+			public void loadCueSheet(CueSheet s) { //,Gtk.ListStore store) {
+				CueSheet sheet=MySource.getSheet ();
 				type="cuesheet";
-				//Console.WriteLine ("loadCueSheet:"+file);
+				sheet.Clear ();
+				sheet.load (s);
 				store.Clear ();
-				sheet=new CueSheet(file,cwdir);
-				Gdk.Pixbuf pb;
-				/*if (sheet.imageFileName ()!="") {
-					string imgf=cwdir+"/"+sheet.imageFileName ();
-					pb=new Gdk.Pixbuf(imgf,getPixbufWidth(),getPixbufHeight());
-				} else {*/
-					pb=GetDefaultPixBuf(IMG_NOIMAGE);
-				/*}*/
 				int i=0;
 				for(i=0;i<sheet.nEntries ();i++) {
-					store.AppendValues (i+1,pb,sheet.entry (i).title ());
+					store.AppendValues (i+1,sheet.entry (i).title ());
 				}
-				//Console.WriteLine (type+", image="+sheet.imageFileName ());
-				
-				/*if (File.Exists (imgf)) {
-					Gdk.Rectangle a=img.Allocation;
-					Gdk.Pixbuf pb=new Gdk.Pixbuf(imgf,a.Width,a.Height);
-					img.Pixbuf=pb;
-				}*/
 				reLoad ();
 			}
+			
+			public void loadCueSheet(int i) {
+				loadCueSheet (MySource.getSheets ()[i]);
+			}
+			
+			internal class MyAlbumListView : AlbumListView {
+				private CustomView _view;
+				
+				public MyAlbumListView(CustomView view) : base() {
+					_view=view;
+				}
+				
+				protected override bool OnPopupMenu () {
+					Gtk.Menu mnu=new Gtk.Menu();
+					Gtk.ImageMenuItem play=new Gtk.ImageMenuItem(Gtk.Stock.MediaPlay,null);
+					play.Activated+=delegate(object sender,EventArgs a) {
+						_view.PlayAlbum((CS_AlbumInfo) this.Model[Selection.FirstIndex]);
+					};
+					mnu.Append (play);
+					mnu.ShowAll ();
+					mnu.Popup();
+					return false;
+				}
+			}
+
 
 			public CustomView(CueSheetsSource ms) {
 				MySource=ms;
-				{
-					Gtk.Label w=new Gtk.Label();
-					_pb_size=w.RenderIcon (Gtk.Stock.Index.ToString (),Gtk.IconSize.Button,null);
-					_img_dir=w.RenderIcon (Gtk.Stock.Directory.ToString (),Gtk.IconSize.Button,null);
-					_img_playlist=w.RenderIcon(Gtk.Stock.Index.ToString (),Gtk.IconSize.Button,null);
-				}
-					
 				
-				store = new Gtk.ListStore(typeof(int),typeof(Gdk.Pixbuf),typeof(string));
+				basedir=MySource.getCueSheetDir (); 
+					
+				store = new Gtk.ListStore(typeof(int),typeof(string));
 				view  = new Gtk.TreeView();
-				Gtk.CellRendererPixbuf cpb=new Gtk.CellRendererPixbuf();
 				view.AppendColumn ("Nr.", new Gtk.CellRendererText (), "text", 0);
-				view.AppendColumn ("Icon.",cpb,"pixbuf",1);
-				view.AppendColumn ("Track/Album", new Gtk.CellRendererText (), "text", 2);	
+				view.AppendColumn ("Track", new Gtk.CellRendererText (), "text", 1);	
 				view.CursorChanged += new EventHandler(EvtCursorChanged);
-				view.RowActivated += new Gtk.RowActivatedHandler(EvtRowActivated);
+				view.RowActivated += new Gtk.RowActivatedHandler(EvtTrackRowActivated);
 				view.Model = store;
-				scroll=new Gtk.ScrolledWindow();
-				scroll.Add (view);
+				
+				Console.WriteLine ("New albumlist");
+				aview=new MyAlbumListView(this);
+				aaview=new ArtistListView();
+				gview=new GenreListView();
+				Console.WriteLine ("init models");
+				aview.SetModel (MySource.getAlbumModel ());
+				aaview.SetModel (MySource.getArtistModel ());
+				gview.SetModel (MySource.getGenreModel ());
+				MySource.getGenreModel();
+				Console.WriteLine ("model albumlist");
+				Console.WriteLine ("albumlist initialized");
+				
+				aview.RowActivated+=new Hyena.Data.Gui.RowActivatedHandler<AlbumInfo>(EvtRowActivated);
+				aview.Selection.Changed += HandleAviewSelectionChanged;
+				gview.RowActivated+=new Hyena.Data.Gui.RowActivatedHandler<GenreInfo>(EvtGenreActivated);
+				aaview.RowActivated+=new Hyena.Data.Gui.RowActivatedHandler<ArtistInfo>(EvtArtistActivated);
 				
 				Gtk.Toolbar bar=new Gtk.Toolbar();
 				
-				Gtk.Image icn_up=new Gtk.Image(Gtk.Stock.GoUp,Gtk.IconSize.Button);
-				Gtk.Button up=new Gtk.Button(icn_up);
-				up.Clicked+=new EventHandler(handleUp);
-				bar.Add (up);
+				fill ();
 				
-				Gtk.Image icn_set=new Gtk.Image(Gtk.Stock.Preferences,Gtk.IconSize.Button);
-				Gtk.Button prefs=new Gtk.Button(icn_set);
-				prefs.Clicked+=new EventHandler(handleSet);
-				bar.Add (prefs);
+				ascroll=new Gtk.ScrolledWindow();
+				ascroll.Add (aview);
+				aascroll=new Gtk.ScrolledWindow();
+				aascroll.Add (aaview);
+				tscroll=new Gtk.ScrolledWindow();
+				tscroll.Add (view);
+				gscroll=new Gtk.ScrolledWindow();
+				gscroll.Add (gview);
 				
-				Gtk.Image icn_about=new Gtk.Image(Gtk.Stock.About,Gtk.IconSize.Button);
-				Gtk.Button about=new Gtk.Button(icn_about);
-				about.Clicked+=new EventHandler(handleAbout);
-				bar.Add (about);
+				hb=new Gtk.HPaned();
+				hb.Add(gscroll);
+				hb.Add (aascroll);
+				hb1=new Gtk.HPaned();
+				hb1.Add (hb);
+				hb1.Add (ascroll);
+				
+				vp=new Gtk.VPaned();
+				vp.Add (hb1);
+				vp.Add (tscroll);
 
-				fill(store);
+				{
+					int hb_p,hb1_p,vp_p;
+					MySource.getPositions (out hb_p,out hb1_p,out vp_p);
+					hb.Position=hb_p;
+					hb1.Position=hb1_p;
+					vp.Position=vp_p;
+				}
+
 				box   = new Gtk.VBox();
 				box.PackStart (bar,false,true,0);
-				box.PackStart(scroll);
+				box.PackStart (vp);
 				box.ShowAll();
 				
+				GLib.Timeout.Add ((uint) 1000,(GLib.TimeoutHandler) GardDividers);
 				GLib.Timeout.Add ((uint) timeout,(GLib.TimeoutHandler) PositionDisplay);
 			}
-			
-			public void handleUp(object sender,EventArgs a) {
-				if (cwdir==basedir) {
-					// do nothing
-				} else {
-					if (type!="cuesheet") {
-						cwdir=Regex.Replace (cwdir,"[/][^/]*$","");
-					}
-					fill (store);
-				}
-			}
-			
-			public void handleSet(object sender,EventArgs a) {
-				MySource.OnConfigure (sender,a);
-				string d=MySource.getCueSheetDir (); 
-				if (basedir!=d) {
-					basedir=d;
-					cwdir=d;
-					fill (store);
-				}
-			}
-			
-			public void handleAbout(object sender,EventArgs a) {
-				Gtk.AboutDialog ab=new Gtk.AboutDialog();
-				ab.Title="About the CueSheets extension";
-				ab.Authors=new string[] {"Hans Oesterholt"};
-				ab.Authors[0]="Hans Oesterholt";
-				ab.Version="0.0.1";
-				ab.Comments="CueSheets is an extension that allows you to play music from cuesheets in banshee";
-				ab.Website="http://oesterholt.net?env=data&page=banshee-cuesheets";
-				ab.Run ();
-				ab.Destroy ();
-			}
 
+			void HandleAviewSelectionChanged (object sender, EventArgs e) {
+				int index=((Selection) sender).FirstIndex;
+				CS_AlbumInfo a=(CS_AlbumInfo) MySource.getAlbumModel ()[index];
+				_selected=a.getSheet ();
+				//Console.WriteLine (_selected);
+			}
+			
+			int hb_prev=-1;
+			int hb1_prev=-1;
+			int vp_prev=-1;
+			
+			public bool GardDividers() {
+				if (hb_prev==-1) {
+					hb_prev=hb.Position;
+					hb1_prev=hb1.Position;
+					vp_prev=vp.Position;
+				}
+				bool changed=false;
+				if (hb_prev!=hb.Position) {
+					hb_prev=hb.Position;
+					changed=true;
+				}
+				if (hb1_prev!=hb1.Position) {
+					hb1_prev=hb1.Position;
+					changed=true;
+				}
+				if (vp_prev!=vp.Position) {
+					vp_prev=vp.Position;
+					changed=true;
+				}
+				if (changed) {
+					MySource.setPositions(hb_prev,hb1_prev,vp_prev);
+				}
+				return true;
+			}
+			
+			
 			public void EvtCursorChanged(object sender,EventArgs a) {
 				mscount=0; // Reset cursor change timer
+				Console.WriteLine ("sender:"+sender+", "+a);
+			}
+			
+			public void PlayAlbum(CS_AlbumInfo a) {
+				loadCueSheet (a.getSheet ());
 			}
 
-			public void EvtRowActivated(object sender, Gtk.RowActivatedArgs a) {
+			public void EvtRowActivated(object sender,RowActivatedArgs<AlbumInfo> args) {
+				//Console.WriteLine ("I'm here! "+sender+", "+args);
+				CS_AlbumInfo a=(CS_AlbumInfo) args.RowValue;
+				//Console.WriteLine ("sheet: "+a.getSheet ().ToString ());
+				PlayAlbum (a);
+			}
+
+			public void EvtGenreActivated(object sender,RowActivatedArgs<GenreInfo> args) {
+				//Console.WriteLine ("I'm here! "+sender+", "+args);
+				GenreInfo g=args.RowValue;
+				if (MySource.getGenreModel ().isNullGenre (g)) { g=null; }
+				MySource.getAlbumModel ().filterGenre(g);
+				MySource.getArtistModel ().filterGenre(g);
+			}
+
+			public void EvtArtistActivated(object sender,RowActivatedArgs<ArtistInfo> args) {
+				Console.WriteLine ("I'm here! "+sender+", "+args);
+				ArtistInfo a=args.RowValue;
+				if (MySource.getArtistModel ().isNullArtist (a)) { a=null; }
+				MySource.getAlbumModel ().filterArtist(a);
+			}
+
+			public void EvtTrackRowActivated(object sender,Gtk.RowActivatedArgs args) {
 				Gtk.TreeSelection selection = (sender as Gtk.TreeView).Selection;
 				Gtk.TreeModel model;
 				Gtk.TreeIter iter;
 				// THE ITER WILL POINT TO THE SELECTED ROW
-				Console.WriteLine ("source="+ServiceManager.PlaybackController.Source);
-				Console.WriteLine ("this="+this);
+				//Console.WriteLine ("source="+ServiceManager.PlaybackController.Source);
+				//Console.WriteLine ("this="+this);
 				if (selection.GetSelected(out model, out iter)) {
-					if (this.type=="cuesheet") {
-						if (ServiceManager.PlaybackController.Source != MySource) {
-							reLoad ();
-							//this.type="";
-							//EvtRowActivated (sender,a);
-						} 
-						int track=(int) model.GetValue (iter,0);
-						int i=track-1;
-						seekSong (i);
-						index=i;
-					} else {
-						string name=model.GetValue (iter,2).ToString ();
-						string file=cwdir+"/"+name;
-						string cuef=file+".cue";
-						Console.WriteLine ("File="+file);
-						Console.WriteLine ("CueF="+cuef);
-						if (Directory.Exists (file)) {
-							Console.WriteLine ("Directory");
-							cwdir=file;
-							fill (store);
-						} else {
-							if (File.Exists (cuef)) {
-								Console.WriteLine ("CueSheet");
-								loadCueSheet(cuef,store);
-							}
-						}
-					}
+					if (ServiceManager.PlaybackController.Source != MySource) {
+						reLoad ();
+					} 
+					int track=(int) model.GetValue (iter,0);
+					int i=track-1;
+					seekSong (i);
+					index=i;
 				}
 			}
-
+				
 
             public bool SetSource (ISource source) { return true; }
             public void ResetSource () { }

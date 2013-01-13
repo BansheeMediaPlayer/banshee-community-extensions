@@ -1,3 +1,8 @@
+/src/Ampache/Ampache.sln
+/src/CueSheets/CueSheets.sln
+/src/FolderSync/FolderSync.sln
+/src/LiveRadio/LiveRadio.sln
+/src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.sln
 *.swp
 *.gmo
 *.pc

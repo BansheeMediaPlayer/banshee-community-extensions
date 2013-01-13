@@ -2,7 +2,7 @@
 // CueSheetEntry.cs
 //
 // Authors:
-//   Cool Extension Author <hans@oesterholt.net>
+//   Hans Oesterholt <hans@oesterholt.net>
 //
 // Copyright (C) 2013 Hans Oesterholt
 //
@@ -75,6 +75,10 @@ namespace Banshee.CueSheets
 			this.Duration=new TimeSpan(ticks_100nanosecs);
 		}
 		
+		public override string ToString() {
+			return "nr: "+this.TrackNumber+", title: "+this.title ()+", file: "+this.file ();
+		}
+		
 		public CueSheetEntry (string file,String artId,int nr,int cnt,string title,string performer,string album,double offset) {
 			_file=file;
 			_title=title;
@@ -93,7 +97,7 @@ namespace Banshee.CueSheets
 			this.CanPlay=true;
 			this.CanSaveToDatabase=false;
 			this.Duration=new System.TimeSpan(0,0,10,0);
-			Console.WriteLine ("file="+_file);
+			//Console.WriteLine ("file="+_file);
 			this.Uri=new Hyena.SafeUri(_file,false);
 		}
 	}

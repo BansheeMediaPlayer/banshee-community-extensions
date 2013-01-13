@@ -2,7 +2,7 @@
 // CueSheet.cs
 //
 // Authors:
-//   Cool Extension Author <hans@oesterholt.net>
+//   Hans Oesterholt <hans@oesterholt.net>
 //
 // Copyright (C) 2013 Hans Oesterholt
 //
@@ -43,6 +43,17 @@ namespace Banshee.CueSheets
 		private string 				_performer;
 		private CueSheetEntry [] 	_tracks;
 		private string				_cuefile;
+		private string				_directory;
+		private string				_basedir;
+		
+		public string genre() {
+			int n=_basedir.Length;
+			string d=_directory.Substring (n);
+			d=Regex.Replace (d,"^[/]","");
+			String r=Regex.Replace (d,"[/].*$","");
+			//Console.WriteLine ("n="+n+", d="+d+", r="+r);
+			return r;
+		}
 		
 		private void append(CueSheetEntry e) {
 			if (_tracks==null) { 
@@ -97,35 +108,47 @@ namespace Banshee.CueSheets
 			return k-1;
 		}
 		
-		private string getArtId() {
+		public string getArtId() {
 			string aaid=CoverArtSpec.CreateArtistAlbumId (_performer,_title);
 			if (!CoverArtSpec.CoverExists (aaid)) {
 				if (File.Exists (_img_full_path)) {
 					string path=CoverArtSpec.GetPathForNewFile (aaid,_img_full_path);
-					File.Copy (_img_full_path,path);
-					Console.WriteLine ("coverartpath="+path);
+					if (!File.Exists (path)) {
+						File.Copy (_img_full_path,path);
+					}
+					//Console.WriteLine ("coverartpath="+path);
 				}
 			}
-			string path1=CoverArtSpec.GetPath (aaid);
-			Console.WriteLine ("coverartpath1="+path1);
+			//string path1=CoverArtSpec.GetPath (aaid);
+			//Console.WriteLine ("coverartpath1="+path1);
 			return aaid;
 		}
 		
-		public CueSheet (string filename,string directory) {
-			_cuefile=filename;
+		public bool eq(string s,string begin) {
+			if (begin.Length>s.Length) { return false; }
+			else {
+				if (s.Substring(0,begin.Length).ToLower ()==begin.ToLower ()) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+		
+		public override string ToString() {
+			return "Performer: "+this.performer ()+", Title: "+this.title ()+"\ncuefile: "+this.cueFile()+"\nwave: "+this.musicFileName();
+		}
+		
+		public void iLoad() {
 			Boolean _in_tracks=false;
-			_image_file_name="";
-			_img_full_path="";
-			_music_file_name="";
-			_title="";
-			_performer="";
-			_tracks=null;
-			
 			string e_perf="";
 			string e_title="";
 			double e_offset=-1.0;
 			string aaid="";
 			int nr=0;
+			
+			string filename=_cuefile;
+			string directory=_directory;
 			
 			using (System.IO.StreamReader sr = System.IO.File.OpenText(filename)) {
 	            string line = "";
@@ -134,26 +157,26 @@ namespace Banshee.CueSheets
 					if (line!="") {
 						//Console.WriteLine ("it="+_in_tracks+", "+line);
 						if (!_in_tracks) {
-							if (line.Substring (0,9).ToLower()=="performer") {
+							if (eq(line,"performer")) { 
 								string p=line.Substring (9).Trim ();
 								p=Regex.Replace (p,"[\"]","");
 								_performer=p;
-							} else if (line.Substring (0,5).ToLower ()=="title") {
+							} else if (eq(line,"title")) {
 								_title=Regex.Replace (line.Substring (5).Trim (),"[\"]","");
-							} else if (line.Substring (0,4).ToLower ()=="file") {
+							} else if (eq(line,"file")) { 
 								_music_file_name=line.Substring (4).Trim ();
 								Match m=Regex.Match (_music_file_name,"([\"][^\"]+[\"])");
-								Console.WriteLine ("match="+m);
+								//Console.WriteLine ("match="+m);
 								_music_file_name=m.ToString ();
-								Console.WriteLine ("result="+_music_file_name);
+								//Console.WriteLine ("result="+_music_file_name);
 								_music_file_name=Regex.Replace (_music_file_name,"[\"]","").Trim ();
 								_music_file_name=directory+"/"+_music_file_name;
-								Console.WriteLine ("music file="+_music_file_name);
+								//Console.WriteLine ("music file="+_music_file_name);
 							} else if (line.Substring(0,5).ToLower ()=="track") {
 								_in_tracks=true;
-							} else if (line.Substring (0,3).ToLower ()=="rem") {
+							} else if (eq(line,"rem")) {
 								line=line.Substring (3).Trim ();
-								if (line.Substring (0,5).ToLower ()=="image") {
+								if (eq(line,"image")) { 
 									_image_file_name=line.Substring (5).Trim ();
 									_image_file_name=Regex.Replace (_image_file_name,"[\"]","").Trim ();
 									_img_full_path=directory+"/"+_image_file_name;
@@ -165,8 +188,8 @@ namespace Banshee.CueSheets
 						if (_in_tracks) {
 							if (aaid=="") { aaid=getArtId (); }
 	
-							Console.WriteLine ("line="+line);
-							if (line.Substring (0,5).ToLower ()=="track") {
+							//Console.WriteLine ("line="+line);
+							if (eq(line,"track")) { 
 								if (e_offset>=0) {
 									nr+=1;
 									CueSheetEntry e=new CueSheetEntry(_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
@@ -180,24 +203,24 @@ namespace Banshee.CueSheets
 								e_perf=_performer;
 								e_title="";
 								e_offset=-1.0;
-							} else if (line.Substring (0,5).ToLower ()=="title") {
+							} else if (eq(line,"title")) {
 								e_title=Regex.Replace (line.Substring (5).Trim (),"[\"]","");
-							} else if (line.Substring (0,9).ToLower ()=="performer") {
+							} else if (eq(line,"performer")) { 
 								e_perf=Regex.Replace (line.Substring (9).Trim (),"[\"]","");
-							} else if (line.Substring (0,5).ToLower ()=="index") {
+							} else if (eq(line,"index")) { 
 								string s=line.Substring (5).Trim ();
 								s=Regex.Replace (s,"^\\s*[0-9]+\\s*","");
 								string []parts=Regex.Split(s,"[:]");
-								Console.WriteLine ("parts="+parts[0]+","+parts[1]+","+parts[2]);
+								//Console.WriteLine ("parts="+parts[0]+","+parts[1]+","+parts[2]);
 								int min=Convert.ToInt32(parts[0]);
 								int secs=Convert.ToInt32(parts[1]);
 								int hsecs=Convert.ToInt32(parts[2]);
 								e_offset=min*60+secs+(hsecs/100.0);
-								
 							}
 						}
 					}
     	        }
+				//Console.WriteLine ("Last entry adding");
 				if (e_offset>=0) {
 					nr+=1;
 					CueSheetEntry e=new CueSheetEntry(_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
@@ -208,14 +231,55 @@ namespace Banshee.CueSheets
 						ePrev.setLength(e.offset ()-ePrev.offset());
 					}
 				}
+				//Console.WriteLine ("Last entry added");
 				
 				{
 					int i;
 					for(i=0;i<nEntries();i++) {
 						entry (i).setNrOfTracks(nr);
 					}
+					//Console.WriteLine ("Ready");
 				}
-        	}
+			}
+		}		
+		
+		public void load(CueSheet s) {
+			load (s._cuefile,s._directory,s._basedir);
+		}
+		
+		public void load(string filename,string directory,string basedir) {
+			Clear ();
+			_cuefile=filename;
+			_basedir=basedir;
+			_directory=directory;
+			try {
+				iLoad();
+			} catch(System.Exception e) {
+				Console.WriteLine ("CueSheet: Cannot load "+filename);
+				Console.WriteLine (e.ToString ());
+			}
+		}
+		
+		public override void Clear() {
+			base.Clear ();
+			_cuefile="";
+			_image_file_name="";
+			_img_full_path="";
+			_music_file_name="";
+			_title="";
+			_performer="";
+			_tracks=null;
+			_basedir="";
+			_directory="";
+		}
+		
+		public CueSheet() {
+			Clear ();
+		}
+		
+		public CueSheet (string filename,string directory,string basedir) {
+			Clear ();
+			load (filename,directory,basedir);
 		}
 	}
 }
