@@ -4,7 +4,7 @@ AC_INIT([banshee-community-extensions], 2.4.0,
 
 AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-bzip2 tar-ustar dist-zip foreign])
 AM_MAINTAINER_MODE([enable])
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 
 IT_PROG_INTLTOOL([0.35.0])
 AC_PROG_LIBTOOL
