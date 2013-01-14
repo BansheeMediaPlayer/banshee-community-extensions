@@ -72,6 +72,7 @@ namespace Banshee.CueSheets
 					}
 				
 				}
+				_filteredList.Sort (new CS_AlbumInfo.Comparer());
 				base.RaiseReloaded ();
 	        }
 		
@@ -94,9 +95,17 @@ namespace Banshee.CueSheets
 				}
 			}
 		
+			public GenreInfo filterGenre() {
+				return _genre;
+			}
+		
 			public void filterArtist(ArtistInfo a) {
 				_artist=a;
 				Reload();
+			}
+		
+			public ArtistInfo filterArtist() {
+				return _artist;
 			}
 			
 	        public override int Count {

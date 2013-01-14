@@ -36,6 +36,8 @@ namespace Banshee.CueSheets
 	{
 		double 	_offset;
 		string 	_performer;
+		string  _composer="";
+		string  _piece="";
 		string 	_title;
 		string  _file;
 		double  _length;
@@ -71,6 +73,22 @@ namespace Banshee.CueSheets
 		
 		public double length() {
 			return _length;
+		}
+		
+		public void setComposer(string c) {
+			_composer=c;
+		}
+		
+		public void setPiece(string p) {
+			_piece=p;
+		}
+		
+		public string getPiece() {
+			return _piece;
+		}
+		
+		public string getComposer() {
+			return _composer;
 		}
 		
 		public void setLength(double l) {

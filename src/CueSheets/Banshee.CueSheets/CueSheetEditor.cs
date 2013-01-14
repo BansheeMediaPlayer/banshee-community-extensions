@@ -11,6 +11,9 @@ namespace Banshee.CueSheets
 		private Gtk.FileChooserButton 	_imagefile;
 		private Gtk.Entry 				_performer;
 		private Gtk.Entry 				_title;
+		private Gtk.Entry				_composer;
+		private Gtk.Entry				_subtitle;
+		private Gtk.Entry				_year;
 		private Gtk.TreeView			_tracks;
 		private Gtk.ListStore			_store;
 		private Gtk.Button				_reload;
@@ -33,6 +36,9 @@ namespace Banshee.CueSheets
 		public void Reload() {
 			_title.Text=_sheet.title ();
 			_performer.Text=_sheet.performer ();
+			_composer.Text=_sheet.composer ();
+			_year.Text=_sheet.year ();
+			_subtitle.Text=_sheet.subtitle ();
 			
 			try {
 				_imagefile.SelectFilename (_sheet.imageFullFileName());
@@ -53,8 +59,15 @@ namespace Banshee.CueSheets
 				String offset=String.Format ("{0:00}",m)+":"+
 							  String.Format ("{0:00}",s)+"."+
 							  String.Format ("{0:00}",hs);
-				_store.AppendValues (i+1,_sheet.entry (i).title (),offset);
+				_store.AppendValues (i+1,_sheet.entry (i).title (),_sheet.entry (i).getComposer (),_sheet.entry (i).getPiece (),offset);
 			}
+		}
+		
+		private void setCell(int column,string nt,Gtk.TreePath path) {
+			Gtk.TreeIter iter;
+			_store.GetIter(out iter,path);
+			_store.SetValue (iter,column,nt);
+			Hyena.Log.Information ("Cuesheet editing - data="+nt+", path="+path.Indices[0]);
 		}
 		
 		public void CreateGui() {
@@ -67,6 +80,13 @@ namespace Banshee.CueSheets
 			_title=new Gtk.Entry(200);
 			_title.WidthChars=60;
 			_performer.WidthChars=60;
+			_subtitle=new Gtk.Entry(300);
+			_subtitle.WidthChars=60;
+			_composer=new Gtk.Entry(200);
+			_composer.WidthChars=60;
+			_year=new Gtk.Entry(20);
+			_year.WidthChars=20;
+			
 			_image=new Gtk.Image();
 			_image.SetSizeRequest (100,100);
 			_imagefile=new Gtk.FileChooserButton("Choose image file",Gtk.FileChooserAction.Open);
@@ -84,20 +104,55 @@ namespace Banshee.CueSheets
 			_save=new Gtk.Button(icn_save);
 			_save.Clicked+=OnSave;
 			
-			_store=new Gtk.ListStore(typeof(int),typeof(string),typeof(string));
+			_store=new Gtk.ListStore(typeof(int),typeof(string),typeof(string),typeof(string),typeof(string));
 			_tracks=new Gtk.TreeView();
-			_tracks.AppendColumn ("Nr.", new Gtk.CellRendererText (), "text", 0);
-			_tracks.AppendColumn ("Title", new Gtk.CellRendererText (), "text", 1);	
-			_tracks.AppendColumn ("Offset", new Gtk.CellRendererText (), "text", 2);	
+			{
+				Gtk.CellRendererText cr0=new Gtk.CellRendererText();
+				cr0.Scale=0.8;
+				_tracks.AppendColumn ("Nr.", cr0, "text", 0);
+				
+				Gtk.CellRendererText cr_title=new Gtk.CellRendererText();
+				cr_title.Scale=0.8;
+				cr_title.Editable=true;
+				cr_title.Edited+=new Gtk.EditedHandler(delegate(object sender,Gtk.EditedArgs args) {
+					setCell(1,args.NewText,new Gtk.TreePath(args.Path));
+				});
+				_tracks.AppendColumn ("Title", cr_title, "text", 1);	
+				
+				Gtk.CellRendererText cr_composer=new Gtk.CellRendererText();
+				cr_composer.Editable=true;
+				cr_composer.Scale=0.8;
+				cr_composer.Edited+=new Gtk.EditedHandler(delegate(object sender,Gtk.EditedArgs args) {
+					setCell(2,args.NewText,new Gtk.TreePath(args.Path));
+				});
+				_tracks.AppendColumn ("Composer", cr_composer, "text", 2);	
+				
+				Gtk.CellRendererText cr_piece=new Gtk.CellRendererText();
+				cr_piece.Editable=true;
+				cr_piece.Scale=0.8;
+				cr_piece.Edited+=new Gtk.EditedHandler(delegate(object sender,Gtk.EditedArgs args) {
+					setCell(3,args.NewText,new Gtk.TreePath(args.Path));
+				});
+				_tracks.AppendColumn ("Piece", cr_piece, "text", 3);	
+				
+				_tracks.AppendColumn ("Offset", cr0, "text", 4);	
+			}
+			
 			//_tracks.CursorChanged += new EventHandler(EvtCursorChanged);
 			//_tracks.RowActivated += new Gtk.RowActivatedHandler(EvtTrackRowActivated);
 			_tracks.Model = _store;
 			
-			Gtk.Table tbl=new Gtk.Table(2,2,false);
+			Gtk.Table tbl=new Gtk.Table(2,5,false);
 			tbl.Attach (new Gtk.Label("Album:"),0,1,0,1);
 			tbl.Attach (_title,1,2,0,1);
 			tbl.Attach (new Gtk.Label("Artist:"),0,1,1,2);
 			tbl.Attach (_performer,1,2,1,2);
+			tbl.Attach (new Gtk.Label("Composer:"),0,1,2,3);
+			tbl.Attach (_composer,1,2,2,3);
+			tbl.Attach (new Gtk.Label("Subtitle:"),0,1,3,4);
+			tbl.Attach (_subtitle,1,2,3,4);
+			tbl.Attach (new Gtk.Label("year:"),0,1,4,5);
+			tbl.Attach (_year,1,2,4,5);
 			
 			Gtk.Frame frm=new Gtk.Frame();
 			frm.Add (tbl);
@@ -153,22 +208,37 @@ namespace Banshee.CueSheets
 		public void OnSave(object sender,EventArgs args) {
 			string nPerformer=_performer.Text.Trim ();
 			string nTitle=_title.Text.Trim ();
+			string nComposer=_composer.Text.Trim();
+			string nYear=_year.Text.Trim();
+			string nSubtitle=_subtitle.Text.Trim();
+			
 			_sheet.SetPerformer(nPerformer);
 			_sheet.SetTitle(nTitle);
+			_sheet.SetComposer(nComposer);
+			_sheet.SetYear(nYear);
+			_sheet.SetSubtitle(nSubtitle);
 			_sheet.SetImagePath(_imagefile.Filename);
+			
 			_sheet.ClearTracks();
+			
 			Gtk.TreeIter iter;
 			if (_store.GetIterFirst(out iter)) {
 				do {
 					string title=(string) _store.GetValue (iter,1);
-					string offset=(string) _store.GetValue (iter,2);
+					string composer=(string) _store.GetValue (iter,2);
+					if (composer.Trim ()=="") { composer=nComposer; }
+					string piece=(string) _store.GetValue (iter,3);
+					piece=piece.Trim ();
+					string offset=(string) _store.GetValue (iter,4);
 					string []parts=Regex.Split(offset,"[.:]");
 					double e_offset;
 					int min=Convert.ToInt32(parts[0]);
 					int secs=Convert.ToInt32(parts[1]);
 					int hsecs=Convert.ToInt32(parts[2]);
 					e_offset=min*60+secs+(hsecs/100.0);
-					_sheet.AddTrack(title,nPerformer,e_offset);
+					CueSheetEntry e=_sheet.AddTrack(title,nPerformer,e_offset);
+					e.setComposer (composer);
+					e.setPiece (piece);
 				} while(_store.IterNext (ref iter));
 			}
 			_sheet.Save();

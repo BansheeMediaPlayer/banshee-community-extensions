@@ -27,6 +27,8 @@
 //
 using System;
 using Banshee.Collection;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Banshee.CueSheets
 {
@@ -35,12 +37,19 @@ namespace Banshee.CueSheets
 		
 		private CueSheet _sheet;
 		
+		public class Comparer : IComparer<CS_ArtistInfo> {
+			private CaseInsensitiveComparer cmp=new CaseInsensitiveComparer();
+		    public int Compare( CS_ArtistInfo a1,CS_ArtistInfo  a2 )  {
+				return cmp.Compare (a1.Name,a2.Name);
+		    }
+		}
+		
 		public CS_ArtistInfo (CueSheet s) {
 			_sheet=s;
 			if (s!=null) {
 				base.Name=s.performer ();
 			} else {
-				base.Name="All Artists";
+				base.Name="<All Artists>";
 			}
 		}
 		

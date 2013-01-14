@@ -27,12 +27,22 @@
 //
 using System;
 using Banshee.Collection;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Banshee.CueSheets
 {
 	public class CS_AlbumInfo : AlbumInfo
 	{
 		private CueSheet _sheet;
+		
+		public class Comparer : IComparer<CS_AlbumInfo> {
+			private CaseInsensitiveComparer cmp=new CaseInsensitiveComparer();
+		    public int Compare( CS_AlbumInfo a1,CS_AlbumInfo a2 )  {
+				return cmp.Compare (a1.Title+a1.ArtistName,
+				                    a2.Title+a2.ArtistName);
+		    }
+		}
 		
 		public CS_AlbumInfo (CueSheet s) {
 			_sheet=s;

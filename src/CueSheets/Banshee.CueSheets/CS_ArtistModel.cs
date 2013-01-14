@@ -33,15 +33,15 @@ namespace Banshee.CueSheets
 {
 	public class CS_ArtistModel : BansheeListModel<ArtistInfo>
 	{
-			private CueSheetsSource MySource;
-			private List<ArtistInfo> _artists;
-			private ArtistInfo       _nullArtist;
-			private GenreInfo		 _genre;
+			private CueSheetsSource 		MySource;
+			private List<CS_ArtistInfo> 	_artists;
+			private CS_ArtistInfo       	_nullArtist;
+			private GenreInfo		 		_genre;
 	
 	        public CS_ArtistModel (CueSheetsSource s) {
 				MySource=s;
 				_nullArtist=new CS_ArtistInfo (null);
-				_artists=new List<ArtistInfo>();
+				_artists=new List<CS_ArtistInfo>();
 				Selection=new Hyena.Collections.Selection();
 	        }
 	
@@ -68,12 +68,13 @@ namespace Banshee.CueSheets
 							if (s[i].genre ()!=_genre.Genre) { do_add=false; }
 						}
 						if (do_add) {
-							ArtistInfo a=new CS_ArtistInfo (s[i]);
+							CS_ArtistInfo a=new CS_ArtistInfo (s[i]);
 							_artists.Add (a);
 							added.Add (perf);
 						}
 					}
 				}
+				_artists.Sort (new CS_ArtistInfo.Comparer());
 				base.RaiseReloaded ();
 	        }
 		

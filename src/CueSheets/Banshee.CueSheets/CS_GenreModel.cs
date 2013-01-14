@@ -40,13 +40,13 @@ namespace Banshee.CueSheets
 	
 	        public CS_GenreModel (CueSheetsSource s) {
 				MySource=s;
-				_nullGenre=new GenreInfo("All Genres");
+				_nullGenre=new GenreInfo("<All Genres>");
 				_genres=new List<GenreInfo>();
 				Selection=new Hyena.Collections.Selection();
 	        }
 	
 	        public override void Clear () {
-				Console.WriteLine ("clear");
+				Hyena.Log.Information ("clear");
 	        }
 		
 			private bool exists(string s) {
@@ -58,19 +58,16 @@ namespace Banshee.CueSheets
 	        public override void Reload () {
 				HashSet<string> added=new HashSet<string>();
 				List<CueSheet> s=MySource.getSheets ();
-				//Console.WriteLine ("count="+s.Count);
 				_genres.Clear ();
 				_genres.Add (_nullGenre);
 				for(int i=0;i<s.Count;i++) {
-					//Console.Write(" "+i);
 					string gen=Loosely.prepare (s[i].genre ());
 					if (!added.Contains (gen)) {
-						//Console.WriteLine ("genre:"+s[i].genre ());
 						_genres.Add (new GenreInfo(s[i].genre ()));
 						added.Add (gen);
 					}
 				}
-				//Console.WriteLine ();
+				_genres.Sort(new GenreInfo.Comparer());
 				base.RaiseReloaded ();
 	        }
 		

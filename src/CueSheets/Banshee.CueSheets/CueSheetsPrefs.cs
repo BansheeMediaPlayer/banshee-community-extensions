@@ -17,7 +17,6 @@ namespace Banshee.CueSheets
 		private SourcePage 				source_page;
 		private Section		    		basedir_section;
 		private CueSheetsSource 		_source;
-		private Gtk.FileChooserButton   _btn;
 		
 		public CueSheetsPrefs (CueSheetsSource source) {
 			var service = ServiceManager.Get<PreferenceService>();
@@ -44,8 +43,15 @@ namespace Banshee.CueSheets
 			box.Add (lbl);
 			box.Add (btn);
 			box.ShowAll ();
-			btn.FileSet+=new EventHandler(EvtDirSet);
-			_btn=btn;
+			btn.CurrentFolderChanged+=delegate(object sender,EventArgs args) {
+				string dir1=btn.Filename;
+				Hyena.Log.Information ("Folder changed to = "+dir1);
+			};
+			btn.FileSet+=delegate(object sender,EventArgs args) {
+				string dir1=btn.Filename;
+				Hyena.Log.Information ("Base directory changed to = "+dir1);
+				_source.setCueSheetDir(dir1);			
+			};
 			
 			Console.WriteLine (_source);
 			
@@ -76,11 +82,6 @@ namespace Banshee.CueSheets
 			
 			source_page.DisplayWidget = vb;
 			
-		}
-		
-		public void EvtDirSet(object sender,EventArgs a) {
-			string dir=_btn.Filename;
-			_source.setCueSheetDir(dir);			
 		}
 		
 		public string PageId {

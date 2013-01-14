@@ -25,12 +25,21 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // 
 using System;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace Banshee.CueSheets
 {
 	public class GenreInfo
 	{
 		private string _genre;
+		
+		public class Comparer : IComparer<GenreInfo>  {
+			private CaseInsensitiveComparer cmp=new CaseInsensitiveComparer();
+		    public int Compare( GenreInfo g1,GenreInfo g2 )  {
+				return cmp.Compare (g1._genre,g2._genre);
+		    }
+		}
 		
 		public GenreInfo ()
 		{
