@@ -59,7 +59,8 @@ namespace Banshee.CueSheets
 				String offset=String.Format ("{0:00}",m)+":"+
 							  String.Format ("{0:00}",s)+"."+
 							  String.Format ("{0:00}",hs);
-				_store.AppendValues (i+1,_sheet.entry (i).title (),_sheet.entry (i).getComposer (),_sheet.entry (i).getPiece (),offset);
+				_store.AppendValues (i+1,_sheet.entry (i).title (),_sheet.entry (i).performer (),
+				                     _sheet.entry (i).getComposer (),_sheet.entry (i).getPiece (),offset);
 			}
 		}
 		
@@ -104,7 +105,7 @@ namespace Banshee.CueSheets
 			_save=new Gtk.Button(icn_save);
 			_save.Clicked+=OnSave;
 			
-			_store=new Gtk.ListStore(typeof(int),typeof(string),typeof(string),typeof(string),typeof(string));
+			_store=new Gtk.ListStore(typeof(int),typeof(string),typeof(string),typeof(string),typeof(string),typeof(string));
 			_tracks=new Gtk.TreeView();
 			{
 				Gtk.CellRendererText cr0=new Gtk.CellRendererText();
@@ -118,24 +119,32 @@ namespace Banshee.CueSheets
 					setCell(1,args.NewText,new Gtk.TreePath(args.Path));
 				});
 				_tracks.AppendColumn ("Title", cr_title, "text", 1);	
-				
+
+				Gtk.CellRendererText cr_artist=new Gtk.CellRendererText();
+				cr_artist.Editable=true;
+				cr_artist.Scale=0.8;
+				cr_artist.Edited+=new Gtk.EditedHandler(delegate(object sender,Gtk.EditedArgs args) {
+					setCell(2,args.NewText,new Gtk.TreePath(args.Path));
+				});
+				_tracks.AppendColumn ("Artist", cr_artist, "text", 2);	
+
 				Gtk.CellRendererText cr_composer=new Gtk.CellRendererText();
 				cr_composer.Editable=true;
 				cr_composer.Scale=0.8;
 				cr_composer.Edited+=new Gtk.EditedHandler(delegate(object sender,Gtk.EditedArgs args) {
-					setCell(2,args.NewText,new Gtk.TreePath(args.Path));
+					setCell(3,args.NewText,new Gtk.TreePath(args.Path));
 				});
-				_tracks.AppendColumn ("Composer", cr_composer, "text", 2);	
+				_tracks.AppendColumn ("Composer", cr_composer, "text", 3);	
 				
 				Gtk.CellRendererText cr_piece=new Gtk.CellRendererText();
 				cr_piece.Editable=true;
 				cr_piece.Scale=0.8;
 				cr_piece.Edited+=new Gtk.EditedHandler(delegate(object sender,Gtk.EditedArgs args) {
-					setCell(3,args.NewText,new Gtk.TreePath(args.Path));
+					setCell(4,args.NewText,new Gtk.TreePath(args.Path));
 				});
-				_tracks.AppendColumn ("Piece", cr_piece, "text", 3);	
+				_tracks.AppendColumn ("Piece", cr_piece, "text", 4);	
 				
-				_tracks.AppendColumn ("Offset", cr0, "text", 4);	
+				_tracks.AppendColumn ("Offset", cr0, "text", 5);	
 			}
 			
 			//_tracks.CursorChanged += new EventHandler(EvtCursorChanged);
@@ -225,18 +234,20 @@ namespace Banshee.CueSheets
 			if (_store.GetIterFirst(out iter)) {
 				do {
 					string title=(string) _store.GetValue (iter,1);
-					string composer=(string) _store.GetValue (iter,2);
+					string perf=(string) _store.GetValue (iter,2);
+					string composer=(string) _store.GetValue (iter,3);
 					if (composer.Trim ()=="") { composer=nComposer; }
-					string piece=(string) _store.GetValue (iter,3);
+					string piece=(string) _store.GetValue (iter,4);
 					piece=piece.Trim ();
-					string offset=(string) _store.GetValue (iter,4);
+					string offset=(string) _store.GetValue (iter,5);
 					string []parts=Regex.Split(offset,"[.:]");
 					double e_offset;
 					int min=Convert.ToInt32(parts[0]);
 					int secs=Convert.ToInt32(parts[1]);
 					int hsecs=Convert.ToInt32(parts[2]);
 					e_offset=min*60+secs+(hsecs/100.0);
-					CueSheetEntry e=_sheet.AddTrack(title,nPerformer,e_offset);
+					if (perf.Trim ()=="") { perf=nPerformer; }
+					CueSheetEntry e=_sheet.AddTrack(title,perf,e_offset);
 					e.setComposer (composer);
 					e.setPiece (piece);
 				} while(_store.IterNext (ref iter));
