@@ -204,7 +204,6 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
-    CueSheets:           yes
     Alarm Clock:           ${enable_AlarmClock}
     AlbumArtWriter:        ${enable_AlbumArtWriter}
     Ampache:               ${enable_Ampache}
@@ -212,6 +211,7 @@ ${PACKAGE}-${VERSION}
     Awn:                   ${enable_Awn}
     ClutterFlow:           ${enable_ClutterFlow}
     CoverWallpaper:        ${enable_CoverWallpaper}
+    CueSheets:             yes
     DuplicateSongDetector: ${enable_DuplicateSongDetector}
     FolderSync:            ${enable_FolderSync}
     Jamendo:               ${enable_Jamendo}
