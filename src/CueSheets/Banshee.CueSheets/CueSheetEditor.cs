@@ -184,7 +184,7 @@ namespace Banshee.CueSheets
 			
 			Gtk.ScrolledWindow scroll=new Gtk.ScrolledWindow();
 			scroll.Add (_tracks);
-			scroll.SetSizeRequest (-1,300);
+			scroll.SetSizeRequest (800,300);
 			
 			base.VBox.PackStart(hb,false,false,4);
 			base.VBox.PackStart (_imagefile,false,false,4);
