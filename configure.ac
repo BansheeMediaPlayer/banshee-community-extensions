@@ -4,7 +4,7 @@ AC_INIT([banshee-community-extensions], 2.4.0,
 
 AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-bzip2 tar-ustar dist-zip foreign])
 AM_MAINTAINER_MODE([enable])
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 
 IT_PROG_INTLTOOL([0.35.0])
 AC_PROG_LIBTOOL
@@ -204,7 +204,6 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
-    CueSheets:           yes
     Alarm Clock:           ${enable_AlarmClock}
     AlbumArtWriter:        ${enable_AlbumArtWriter}
     Ampache:               ${enable_Ampache}
@@ -212,6 +211,7 @@ ${PACKAGE}-${VERSION}
     Awn:                   ${enable_Awn}
     ClutterFlow:           ${enable_ClutterFlow}
     CoverWallpaper:        ${enable_CoverWallpaper}
+    CueSheets:             yes
     DuplicateSongDetector: ${enable_DuplicateSongDetector}
     FolderSync:            ${enable_FolderSync}
     Jamendo:               ${enable_Jamendo}
