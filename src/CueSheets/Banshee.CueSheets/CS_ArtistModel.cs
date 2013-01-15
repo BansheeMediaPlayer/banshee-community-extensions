@@ -37,6 +37,7 @@ namespace Banshee.CueSheets
 			private List<CS_ArtistInfo> 	_artists;
 			private CS_ArtistInfo       	_nullArtist;
 			private GenreInfo		 		_genre;
+			private CS_ComposerInfo			_composer;
 	
 	        public CS_ArtistModel (CueSheetsSource s) {
 				MySource=s;
@@ -46,7 +47,7 @@ namespace Banshee.CueSheets
 	        }
 	
 	        public override void Clear () {
-				Console.WriteLine ("clear");
+				// does nothing 
 	        }
 	
 			private bool exists(string artist) {
@@ -60,6 +61,8 @@ namespace Banshee.CueSheets
 				_artists.Clear ();
 				List<CueSheet> s=MySource.getSheets ();
 				_artists.Add(_nullArtist);
+				string composer="";
+				if (_composer!=null) { composer=Loosely.prepare (_composer.Name); }
 				for(int i=0;i<s.Count;i++) {
 					string perf=Loosely.prepare (s[i].performer ());
 					if (!added.Contains (perf)) {
@@ -67,6 +70,9 @@ namespace Banshee.CueSheets
 						if (_genre!=null) {
 							if (s[i].genre ()!=_genre.Genre) { do_add=false; }
 						}
+						if (_composer!=null) {
+							if (!Loosely.eqp(composer,s[i].composer())) { do_add=false; }
+						}						
 						if (do_add) {
 							CS_ArtistInfo a=new CS_ArtistInfo (s[i]);
 							_artists.Add (a);
@@ -93,7 +99,12 @@ namespace Banshee.CueSheets
 				_genre=g;
 				Reload ();
 			}
-	
+
+			public void filterComposer(CS_ComposerInfo g) {
+				_composer=g;
+				Reload ();
+			}
+		
 			public override ArtistInfo this[int index] {
 				get {
 					return _artists[index];

@@ -2,12 +2,16 @@ ASSEMBLY = Banshee.CueSheets
 LINK = $(BANSHEE_LIBS)
 
 SOURCES =  \
+	Banshee.CueSheets/ComposerListView.cs \
 	Banshee.CueSheets/CS_AlbumInfo.cs \
 	Banshee.CueSheets/CS_AlbumModel.cs \
 	Banshee.CueSheets/CS_ArtistInfo.cs \
 	Banshee.CueSheets/CS_ArtistModel.cs \
+	Banshee.CueSheets/CS_ComposerInfo.cs \
+	Banshee.CueSheets/CS_ComposerModel.cs \
 	Banshee.CueSheets/CS_GenreModel.cs \
 	Banshee.CueSheets/CS_Info.cs \
+	Banshee.CueSheets/CS_TrackInfoDb.cs \
 	Banshee.CueSheets/CueSheet.cs \
 	Banshee.CueSheets/CueSheetEditor.cs \
 	Banshee.CueSheets/CueSheetEntry.cs \

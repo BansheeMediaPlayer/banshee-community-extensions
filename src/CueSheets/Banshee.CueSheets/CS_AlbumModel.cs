@@ -38,6 +38,7 @@ namespace Banshee.CueSheets
 			private List<CS_AlbumInfo> _filteredList;
 			private GenreInfo _genre;
 			private ArtistInfo _artist;
+			private CS_ComposerInfo _composer;
 	
 	        public CS_AlbumModel (CueSheetsSource s) {
 				MySource=s;
@@ -48,7 +49,7 @@ namespace Banshee.CueSheets
 	        }
 	
 	        public override void Clear () {
-				Console.WriteLine ("clear");
+				// does nothing 
 	        }
 	
 	        public override void Reload () {
@@ -59,6 +60,10 @@ namespace Banshee.CueSheets
 				if (_artist!=null) {
 					artist=Loosely.prepare(_artist.Name);
 				}
+				string composer="";
+				if (_composer!=null) {
+					composer=Loosely.prepare (_composer.Name);
+				}	
 				for(i=0,N=s.Count;i<N;i++) {
 					bool do_add=true;
 					if (_genre!=null) {
@@ -66,6 +71,9 @@ namespace Banshee.CueSheets
 					}
 					if (_artist!=null) {
 						if (!Loosely.eqp (artist,s[i].performer ())) { do_add=false; }
+					}
+					if (_composer!=null) {
+						if (!Loosely.eqp (composer,s[i].composer ())) { do_add=false; }
 					}
 					if (do_add) {
 						_filteredList.Add (new CS_AlbumInfo(s[i]));
@@ -83,6 +91,7 @@ namespace Banshee.CueSheets
 				} else if (_genre==null) {
 					_genre=g;
 					_artist=null;
+					_composer=null;
 					Reload ();
 				} else {
 					if (_genre.Genre==g.Genre) {
@@ -90,6 +99,7 @@ namespace Banshee.CueSheets
 					}  else {
 						_genre=g;
 						_artist=null;
+						_composer=null;
 						Reload ();
 					}
 				}
@@ -107,6 +117,15 @@ namespace Banshee.CueSheets
 			public ArtistInfo filterArtist() {
 				return _artist;
 			}
+		
+			public CS_ComposerInfo filterComposer() {
+				return _composer;
+			}
+		
+			public void filterComposer(CS_ComposerInfo c) {
+				_composer=c;
+				Reload ();
+			}
 			
 	        public override int Count {
 	            get { 
@@ -118,6 +137,7 @@ namespace Banshee.CueSheets
 			public override AlbumInfo this[int index] {
 				get {
 					if (index>=Count) { return new CS_AlbumInfo(null); }
+					if (index<0) { return new CS_AlbumInfo(null); }
 					return _filteredList[index];
 				} 	
 			}

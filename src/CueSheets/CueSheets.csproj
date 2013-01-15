@@ -105,6 +105,10 @@
     <Compile Include="Banshee.CueSheets\CueSheetEditor.cs" />
     <Compile Include="Banshee.CueSheets\CS_Info.cs" />
     <Compile Include="Banshee.CueSheets\Tools.cs" />
+    <Compile Include="Banshee.CueSheets\CS_TrackInfoDb.cs" />
+    <Compile Include="Banshee.CueSheets\CS_ComposerInfo.cs" />
+    <Compile Include="Banshee.CueSheets\CS_ComposerModel.cs" />
+    <Compile Include="Banshee.CueSheets\ComposerListView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

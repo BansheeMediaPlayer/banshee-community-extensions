@@ -46,7 +46,7 @@ namespace Banshee.CueSheets
 	        }
 	
 	        public override void Clear () {
-				Hyena.Log.Information ("clear");
+				// does nothing 
 	        }
 		
 			private bool exists(string s) {
