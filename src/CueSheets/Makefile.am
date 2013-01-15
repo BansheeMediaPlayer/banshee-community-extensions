@@ -2,25 +2,25 @@ ASSEMBLY = Banshee.CueSheets
 LINK = $(BANSHEE_LIBS)
 
 SOURCES =  \
-	Banshee.CueSheets/ComposerListView.cs \
-	Banshee.CueSheets/CS_AlbumInfo.cs \
-	Banshee.CueSheets/CS_AlbumModel.cs \
-	Banshee.CueSheets/CS_ArtistInfo.cs \
-	Banshee.CueSheets/CS_ArtistModel.cs \
-	Banshee.CueSheets/CS_ComposerInfo.cs \
-	Banshee.CueSheets/CS_ComposerModel.cs \
-	Banshee.CueSheets/CS_GenreModel.cs \
-	Banshee.CueSheets/CS_Info.cs \
-	Banshee.CueSheets/CS_TrackInfoDb.cs \
-	Banshee.CueSheets/CueSheet.cs \
-	Banshee.CueSheets/CueSheetEditor.cs \
-	Banshee.CueSheets/CueSheetEntry.cs \
-	Banshee.CueSheets/CueSheetsPrefs.cs \
+	Banshee.CueSheets/CueSheet/CueSheet.cs \
+	Banshee.CueSheets/CueSheet/CueSheetEntry.cs \
 	Banshee.CueSheets/CueSheetsSource.cs \
-	Banshee.CueSheets/GenreInfo.cs \
-	Banshee.CueSheets/GenreListView.cs \
-	Banshee.CueSheets/Loosely.cs \
-	Banshee.CueSheets/Tools.cs
+	Banshee.CueSheets/Data/CS_AlbumInfo.cs \
+	Banshee.CueSheets/Data/CS_ArtistInfo.cs \
+	Banshee.CueSheets/Data/CS_ComposerInfo.cs \
+	Banshee.CueSheets/Data/CS_TrackInfoDb.cs \
+	Banshee.CueSheets/Data/GenreInfo.cs \
+	Banshee.CueSheets/Gui/ComposerListView.cs \
+	Banshee.CueSheets/Gui/CueSheetEditor.cs \
+	Banshee.CueSheets/Gui/CueSheetsPrefs.cs \
+	Banshee.CueSheets/Gui/GenreListView.cs \
+	Banshee.CueSheets/Model/CS_AlbumModel.cs \
+	Banshee.CueSheets/Model/CS_ArtistModel.cs \
+	Banshee.CueSheets/Model/CS_ComposerModel.cs \
+	Banshee.CueSheets/Model/CS_GenreModel.cs \
+	Banshee.CueSheets/Tools/Loosely.cs \
+	Banshee.CueSheets/Tools/Tools.cs \
+	Banshee.CueSheets/Version/CS_Info.cs
 
 RESOURCES = CueSheets.addin.xml
 

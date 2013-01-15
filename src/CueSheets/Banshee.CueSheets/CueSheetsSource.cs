@@ -947,9 +947,6 @@ namespace Banshee.CueSheets
 				Gtk.TreeSelection selection = (sender as Gtk.TreeView).Selection;
 				Gtk.TreeModel model;
 				Gtk.TreeIter iter;
-				// THE ITER WILL POINT TO THE SELECTED ROW
-				//Hyena.Log.Information ("source="+ServiceManager.PlaybackController.Source);
-				//Hyena.Log.Information ("this="+this);
 				if (selection.GetSelected(out model, out iter)) {
 					if (ServiceManager.PlaybackController.Source != MySource) {
 						reLoad ();

@@ -31,6 +31,9 @@ using System.Text.RegularExpressions;
 using Banshee.CueSheets;
 using Banshee.Collection;
 using Banshee.Base;
+using Banshee.Playlists.Formats;
+using System.Collections.Generic;
+using Hyena;
 
 namespace Banshee.CueSheets
 {
@@ -50,7 +53,7 @@ namespace Banshee.CueSheets
 		private string				_composer;
 		private string				_subtitle;
 		private string 				_cddbId;
-		
+
 		public string id() {
 			return "title="+_title+";performer="+_performer+
 				   ";year="+_year+";composer="+_composer;
@@ -280,10 +283,10 @@ namespace Banshee.CueSheets
 			if (!File.Exists (_cuefile+".bck")) {
 				File.Copy (_cuefile,_cuefile+".bck");
 			}
-			resetArt ();
 			System.IO.StreamWriter wrt=new System.IO.StreamWriter(_cuefile);
+			resetArt ();
 			indent="";
-			wrtl(wrt,"creator","Banshee CueSheets Extension",true);
+			wrtl (wrt,"creator","Banshee CueSheets Extension",true);
 			wrtl (wrt,"creator-version",CS_Info.Version (),true);
 			wrtl (wrt,"banshee-aaid",getArtId (),true);
 			wrtl (wrt,"image",_image_file_name,true);
@@ -299,18 +302,21 @@ namespace Banshee.CueSheets
 			int i,N;
 			for(i=0,N=nEntries ();i<N;i++) {
 				CueSheetEntry e=_tracks[i];
-				indent="  ";
-				wrtl_track(wrt,i+1);
-				indent="    ";
-				wrtl (wrt,"title",e.title ());
-				wrtl (wrt,"performer",e.performer ());
-				wrtl (wrt,"piece",e.getPiece (),true);
-				wrtl (wrt,"composer",e.getComposer (),true);
-				wrtl_index(wrt,1,e.offset ());
+				writeEntry(wrt,e,i);
 			}
 			
 			wrt.Close ();
-			
+		}
+		
+		void writeEntry(StreamWriter wrt,CueSheetEntry e,int i) {
+			indent="  ";
+			wrtl_track(wrt,i+1);
+			indent="    ";
+			wrtl (wrt,"title",e.title ());
+			wrtl (wrt,"performer",e.performer ());
+			wrtl (wrt,"piece",e.getPiece (),true);
+			wrtl (wrt,"composer",e.getComposer (),true);
+			wrtl_index(wrt,1,e.offset ());
 		}
 		
 		static private Regex unq1=new Regex("^[\"]");
@@ -321,12 +327,18 @@ namespace Banshee.CueSheets
 		}
 		
 		public void iLoad() {
+			string filename=_cuefile;
+			using (System.IO.StreamReader sr = System.IO.File.OpenText(filename)) {
+				iLoad (sr);
+			}
+		}
+		
+		public void iLoad(StreamReader sr) {
 		
 			_composer="";
 			_year="";
 			_subtitle="";
 			_cddbId="";
-			
 			
 			Boolean _in_tracks=false;
 			string e_perf="";
@@ -337,114 +349,112 @@ namespace Banshee.CueSheets
 			string aaid="";
 			int nr=0;
 			
-			string filename=_cuefile;
+			//string filename=_cuefile;
 			string directory=_directory;
 			
-			using (System.IO.StreamReader sr = System.IO.File.OpenText(filename)) {
-	            string line = "";
-            	while ((line = sr.ReadLine()) != null) {
-					line=line.Trim ();
-					if (line!="") {
-						//Console.WriteLine ("it="+_in_tracks+", "+line);
-						if (!_in_tracks) {
-							if (eq(line,"performer")) { 
-								_performer=unquote(line.Substring (9).Trim ());
-							} else if (eq(line,"title")) {
-								_title=unquote(line.Substring (5).Trim ());
-							} else if (eq(line,"file")) { 
-								_music_file_name=line.Substring (4).Trim ();
-								Match m=Regex.Match (_music_file_name,"([\"][^\"]+[\"])");
-								_music_file_name=m.ToString ();
-								_music_file_name=unquote(_music_file_name).Trim ();
-								_music_file_name=Tools.makefile(directory,_music_file_name);
-							} else if (line.Substring(0,5).ToLower ()=="track") {
-								_in_tracks=true;
-							} else if (eq(line,"rem")) {
-								//Hyena.Log.Information (line);
-								line=line.Substring (3).Trim ();
-								if (eq(line,"image")) { 
-									_image_file_name=line.Substring (5).Trim ();
-									_image_file_name=unquote(_image_file_name).Trim ();
-									_img_full_path=Tools.makefile(directory,_image_file_name);
-								} else if (eq (line,"composer")) {
-									_composer=unquote(line.Substring (8).Trim ());
-								} else if (eq (line,"subtitle")) {
-									_subtitle=unquote(line.Substring (8).Trim ());
-								} else if (eq (line,"year")) {
-									_year=unquote(line.Substring (4).Trim ());
-								} else if (eq (line,"cddbid")) {
-									_cddbId=unquote(line.Substring (6).Trim ());
-								}
-							}
-						} 
-						
-						
-						if (_in_tracks) {
-							if (aaid=="") { aaid=getArtId (); }
-	
-							//Console.WriteLine ("line="+line);
-							if (eq(line,"track")) { 
-								if (e_offset>=0) {
-									nr+=1;
-									CueSheetEntry e=new CueSheetEntry(_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
-									e.setComposer (e_composer);
-									e.setPiece (e_piece);
-									append (e);
-									if (nr>1) {
-										CueSheetEntry ePrev;
-										ePrev=this.entry (nr-2);
-										ePrev.setLength(e.offset ()-ePrev.offset());
-									}
-								}
-								e_perf=_performer;
-								e_title="";
-								e_composer=_composer;
-								e_offset=-1.0;
-							} else if (eq(line,"title")) {
-								e_title=unquote(line.Substring (5).Trim ());
-							} else if (eq(line,"performer")) { 
-								e_perf=unquote(line.Substring (9).Trim ());
-							} else if (eq(line,"rem")) {
-								line=line.Substring (3).Trim ();
-								if (eq (line,"composer")) {
-									e_composer=unquote(line.Substring (8).Trim ());
-								} else if (eq(line,"piece")) {
-									e_piece=unquote(line.Substring (5).Trim ());
-								} 
-							} else if (eq(line,"index")) { 
-								string s=line.Substring (5).Trim ();
-								s=Regex.Replace (s,"^\\s*[0-9]+\\s*","");
-								string []parts=Regex.Split(s,"[:]");
-								int min=Convert.ToInt32(parts[0]);
-								int secs=Convert.ToInt32(parts[1]);
-								int hsecs=Convert.ToInt32(parts[2]);
-								e_offset=min*60+secs+(hsecs/100.0);
+            string line = "";
+        	while ((line = sr.ReadLine()) != null) {
+				line=line.Trim ();
+				if (line!="") {
+					//Console.WriteLine ("it="+_in_tracks+", "+line);
+					if (!_in_tracks) {
+						if (eq(line,"performer")) { 
+							_performer=unquote(line.Substring (9).Trim ());
+						} else if (eq(line,"title")) {
+							_title=unquote(line.Substring (5).Trim ());
+						} else if (eq(line,"file")) { 
+							_music_file_name=line.Substring (4).Trim ();
+							Match m=Regex.Match (_music_file_name,"([\"][^\"]+[\"])");
+							_music_file_name=m.ToString ();
+							_music_file_name=unquote(_music_file_name).Trim ();
+							_music_file_name=Tools.makefile(directory,_music_file_name);
+						} else if (line.Substring(0,5).ToLower ()=="track") {
+							_in_tracks=true;
+						} else if (eq(line,"rem")) {
+							//Hyena.Log.Information (line);
+							line=line.Substring (3).Trim ();
+							if (eq(line,"image")) { 
+								_image_file_name=line.Substring (5).Trim ();
+								_image_file_name=unquote(_image_file_name).Trim ();
+								_img_full_path=Tools.makefile(directory,_image_file_name);
+							} else if (eq (line,"composer")) {
+								_composer=unquote(line.Substring (8).Trim ());
+							} else if (eq (line,"subtitle")) {
+								_subtitle=unquote(line.Substring (8).Trim ());
+							} else if (eq (line,"year")) {
+								_year=unquote(line.Substring (4).Trim ());
+							} else if (eq (line,"cddbid")) {
+								_cddbId=unquote(line.Substring (6).Trim ());
 							}
 						}
-					}
-    	        }
-				//Console.WriteLine ("Last entry adding");
-				if (e_offset>=0) {
-					nr+=1;
-					CueSheetEntry e=new CueSheetEntry(_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
-					e.setComposer (e_composer);
-					e.setPiece (e_piece);
-					append (e);
-					if (nr>1) {
-						CueSheetEntry ePrev;
-						ePrev=this.entry (nr-2);
-						ePrev.setLength(e.offset ()-ePrev.offset());
+					} 
+					
+					
+					if (_in_tracks) {
+						if (aaid=="") { aaid=getArtId (); }
+
+						//Console.WriteLine ("line="+line);
+						if (eq(line,"track")) { 
+							if (e_offset>=0) {
+								nr+=1;
+								CueSheetEntry e=new CueSheetEntry(_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
+								e.setComposer (e_composer);
+								e.setPiece (e_piece);
+								append (e);
+								if (nr>1) {
+									CueSheetEntry ePrev;
+									ePrev=this.entry (nr-2);
+									ePrev.setLength(e.offset ()-ePrev.offset());
+								}
+							}
+							e_perf=_performer;
+							e_title="";
+							e_composer=_composer;
+							e_offset=-1.0;
+						} else if (eq(line,"title")) {
+							e_title=unquote(line.Substring (5).Trim ());
+						} else if (eq(line,"performer")) { 
+							e_perf=unquote(line.Substring (9).Trim ());
+						} else if (eq(line,"rem")) {
+							line=line.Substring (3).Trim ();
+							if (eq (line,"composer")) {
+								e_composer=unquote(line.Substring (8).Trim ());
+							} else if (eq(line,"piece")) {
+								e_piece=unquote(line.Substring (5).Trim ());
+							} 
+						} else if (eq(line,"index")) { 
+							string s=line.Substring (5).Trim ();
+							s=Regex.Replace (s,"^\\s*[0-9]+\\s*","");
+							string []parts=Regex.Split(s,"[:]");
+							int min=Convert.ToInt32(parts[0]);
+							int secs=Convert.ToInt32(parts[1]);
+							int hsecs=Convert.ToInt32(parts[2]);
+							e_offset=min*60+secs+(hsecs/100.0);
+						}
 					}
 				}
-				//Console.WriteLine ("Last entry added");
-				
-				{
-					int i;
-					for(i=0;i<nEntries();i++) {
-						entry (i).setNrOfTracks(nr);
-					}
-					//Console.WriteLine ("Ready");
+	        }
+			//Console.WriteLine ("Last entry adding");
+			if (e_offset>=0) {
+				nr+=1;
+				CueSheetEntry e=new CueSheetEntry(_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
+				e.setComposer (e_composer);
+				e.setPiece (e_piece);
+				append (e);
+				if (nr>1) {
+					CueSheetEntry ePrev;
+					ePrev=this.entry (nr-2);
+					ePrev.setLength(e.offset ()-ePrev.offset());
 				}
+			}
+			//Console.WriteLine ("Last entry added");
+			
+			{
+				int i;
+				for(i=0;i<nEntries();i++) {
+					entry (i).setNrOfTracks(nr);
+				}
+				//Console.WriteLine ("Ready");
 			}
 		}		
 		

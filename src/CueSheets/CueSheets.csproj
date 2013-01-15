@@ -91,24 +91,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.CueSheets\CueSheetsSource.cs" />
-    <Compile Include="Banshee.CueSheets\CueSheet.cs" />
-    <Compile Include="Banshee.CueSheets\CueSheetEntry.cs" />
-    <Compile Include="Banshee.CueSheets\CS_AlbumInfo.cs" />
-    <Compile Include="Banshee.CueSheets\CS_AlbumModel.cs" />
-    <Compile Include="Banshee.CueSheets\CS_ArtistInfo.cs" />
-    <Compile Include="Banshee.CueSheets\CS_ArtistModel.cs" />
-    <Compile Include="Banshee.CueSheets\CS_GenreModel.cs" />
-    <Compile Include="Banshee.CueSheets\CueSheetsPrefs.cs" />
-    <Compile Include="Banshee.CueSheets\GenreInfo.cs" />
-    <Compile Include="Banshee.CueSheets\GenreListView.cs" />
-    <Compile Include="Banshee.CueSheets\Loosely.cs" />
-    <Compile Include="Banshee.CueSheets\CueSheetEditor.cs" />
-    <Compile Include="Banshee.CueSheets\CS_Info.cs" />
-    <Compile Include="Banshee.CueSheets\Tools.cs" />
-    <Compile Include="Banshee.CueSheets\CS_TrackInfoDb.cs" />
-    <Compile Include="Banshee.CueSheets\CS_ComposerInfo.cs" />
-    <Compile Include="Banshee.CueSheets\CS_ComposerModel.cs" />
-    <Compile Include="Banshee.CueSheets\ComposerListView.cs" />
+    <Compile Include="Banshee.CueSheets\CueSheet\CueSheet.cs" />
+    <Compile Include="Banshee.CueSheets\CueSheet\CueSheetEntry.cs" />
+    <Compile Include="Banshee.CueSheets\Data\CS_AlbumInfo.cs" />
+    <Compile Include="Banshee.CueSheets\Data\CS_ArtistInfo.cs" />
+    <Compile Include="Banshee.CueSheets\Data\CS_ComposerInfo.cs" />
+    <Compile Include="Banshee.CueSheets\Model\CS_AlbumModel.cs" />
+    <Compile Include="Banshee.CueSheets\Model\CS_ArtistModel.cs" />
+    <Compile Include="Banshee.CueSheets\Model\CS_ComposerModel.cs" />
+    <Compile Include="Banshee.CueSheets\Model\CS_GenreModel.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\ComposerListView.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CueSheetsPrefs.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CueSheetEditor.cs" />
+    <Compile Include="Banshee.CueSheets\Data\GenreInfo.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\GenreListView.cs" />
+    <Compile Include="Banshee.CueSheets\Tools\Loosely.cs" />
+    <Compile Include="Banshee.CueSheets\Tools\Tools.cs" />
+    <Compile Include="Banshee.CueSheets\Data\CS_TrackInfoDb.cs" />
+    <Compile Include="Banshee.CueSheets\Version\CS_Info.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -126,4 +126,12 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="Banshee.CueSheets\CueSheet\" />
+    <Folder Include="Banshee.CueSheets\Gui\" />
+    <Folder Include="Banshee.CueSheets\Data\" />
+    <Folder Include="Banshee.CueSheets\Model\" />
+    <Folder Include="Banshee.CueSheets\Tools\" />
+    <Folder Include="Banshee.CueSheets\Version\" />
+  </ItemGroup>
 </Project>

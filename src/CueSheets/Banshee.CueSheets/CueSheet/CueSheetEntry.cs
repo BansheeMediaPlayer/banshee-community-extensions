@@ -29,19 +29,22 @@ using System;
 
 using Banshee.Collection;
 using Banshee.Base;
+using Hyena;
+using Banshee.IO.SystemIO;
+using Banshee.Playlists.Formats;
 
 namespace Banshee.CueSheets
 {
 	public class CueSheetEntry : TrackInfo
 	{
-		double 	_offset;
 		string 	_performer;
 		string  _composer="";
 		string  _piece="";
-		string 	_title;
 		string  _file;
-		double  _length;
+		TimeSpan _length;
 		string  _art="";
+		double	_offset;
+		string  _title;
 		
 		public override string ArtworkId {
       		get { return _art; }
@@ -71,9 +74,6 @@ namespace Banshee.CueSheets
 			this.TrackCount=n;
 		}
 		
-		public double length() {
-			return _length;
-		}
 		
 		public void setComposer(string c) {
 			_composer=c;
@@ -91,35 +91,49 @@ namespace Banshee.CueSheets
 			return _composer;
 		}
 		
+		public override TimeSpan Duration {
+			get {
+				return _length;
+			}
+			set {
+				_length=value;
+			}
+		}
+
+		public double length() {
+			return _length.TotalMilliseconds/1000.0;
+			//return _length;
+		}
+
 		public void setLength(double l) {
-			_length=l;
+			//_length=l;
 			System.Int64 ticks_100nanosecs=(System.Int64) (l*10000000); // 10 miljoen
-			this.Duration=new TimeSpan(ticks_100nanosecs);
+			_length=new TimeSpan(ticks_100nanosecs);
 		}
 		
 		public override string ToString() {
 			return "nr: "+this.TrackNumber+", title: "+this.title ()+", file: "+this.file ();
 		}
-		
-		public CueSheetEntry (string file,String artId,int nr,int cnt,string title,string performer,string album,double offset) {
+
+		public CueSheetEntry (string file,String artId,int nr,int cnt,string title,string performer,string album,double offset) : base() {
 			_file=file;
 			_title=title;
 			_performer=performer;
 			_offset=offset;
-			_length=-1.0;
+			_length=new TimeSpan(0);
 			
 			_art=artId;
-			this.AlbumArtist=performer;
-			this.TrackTitle=title;
-			this.AlbumTitle=album;
-			this.ArtistName=performer;
-			this.TrackNumber=nr;
-			this.TrackCount=cnt;
-			this.DiscNumber=1;
-			this.CanPlay=true;
-			this.CanSaveToDatabase=false;
-			this.Duration=new System.TimeSpan(0,0,10,0);
-			this.Uri=new Hyena.SafeUri(_file,false);
+			base.AlbumArtist=performer;
+			base.TrackTitle=title;
+			base.AlbumTitle=album;
+			base.ArtistName=performer;
+			base.TrackNumber=nr;
+			base.TrackCount=cnt;
+			base.DiscNumber=1;
+			base.CanPlay=true;
+			base.CanSaveToDatabase=false;
+			base.Duration=new System.TimeSpan(0,0,10,0);
+			base.Uri=new Hyena.SafeUri(_file,false);
 		}
 	}
 }

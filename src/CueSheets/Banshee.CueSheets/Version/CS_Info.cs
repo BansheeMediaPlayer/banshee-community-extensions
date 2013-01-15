@@ -9,7 +9,7 @@ namespace Banshee.CueSheets
 		}
 		
 		public static string Version() {
-			return "0.0.6";
+			return "0.0.7";
 		}
 		
 		public static string [] Authors() {
