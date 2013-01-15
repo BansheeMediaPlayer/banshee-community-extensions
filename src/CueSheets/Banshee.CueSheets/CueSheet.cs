@@ -141,7 +141,7 @@ namespace Banshee.CueSheets
 				if (File.Exists (_img_full_path)) {
 					string aaid=CoverArtSpec.CreateArtistAlbumId (_performer,_title);
 					string path=CoverArtSpec.GetPathForNewFile(aaid,_img_full_path);
-					File.Delete (path);
+					if (File.Exists (path)) { File.Delete (path); }
 					File.Copy (_img_full_path,path);
 					int i,N;
 					for(i=0,N=nEntries ();i<N;i++) {
@@ -156,6 +156,14 @@ namespace Banshee.CueSheets
 			if (!CoverArtSpec.CoverExists (aaid)) {
 				if (File.Exists (_img_full_path)) {
 					string path=CoverArtSpec.GetPathForNewFile (aaid,_img_full_path);
+					if (!File.Exists (path)) {
+						File.Copy (_img_full_path,path);
+					}
+				}
+			} else {
+				if (File.Exists (_img_full_path)) {
+					string path=CoverArtSpec.GetPathForNewFile (aaid,_img_full_path);
+					if (File.Exists (path)) { File.Delete (path); }
 					if (!File.Exists (path)) {
 						File.Copy (_img_full_path,path);
 					}

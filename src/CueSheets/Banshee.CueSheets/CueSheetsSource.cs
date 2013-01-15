@@ -285,7 +285,7 @@ namespace Banshee.CueSheets
         {
 			private Gtk.ListStore     		store;
 			private Gtk.VBox		  		box;
-			private string			  		type="directory";
+			//private string			  		type="directory";
 			private Gtk.ScrolledWindow 		ascroll,tscroll,aascroll,gscroll;
 			private int             		index=-1;
 			private CueSheetsSource 		MySource=null;
@@ -302,6 +302,7 @@ namespace Banshee.CueSheets
 			
 			private uint 					_position=0;
 			private bool					_set_position=false;
+			private bool					_positioning=false;
 			private String  				basedir=null;
 			private CueSheet 				_selected=null;
 			
@@ -481,18 +482,25 @@ namespace Banshee.CueSheets
 					// Position if necessary
 					if (_set_position) {
 						_set_position=false;
+						_positioning=true;
 						ServiceManager.PlayerEngine.Position=_position;
 					}
-					
-					// Track number
+						
+					// Do nothing while seeking
 					uint pos=ServiceManager.PlayerEngine.Position;
 					double p=((double) pos)/1000.0;
-					int i=sheet.searchIndex(p);
-					if (i!=index && i>=0) {
-						// Handle repeat track
-						if (ServiceManager.PlaybackController.RepeatMode==PlaybackRepeatMode.RepeatSingle) {
-							seekSong (index);
-						} else {
+					if (_positioning && pos<=_position) {
+							Hyena.Log.Information ("seek="+_position+", pos="+pos);
+							// do nothing
+					} else {
+						_positioning=false;
+						// Track number
+						int i=sheet.searchIndex(p);
+						if (i!=index && i>=0) {
+							// Handle repeat track
+							if (ServiceManager.PlaybackController.RepeatMode==PlaybackRepeatMode.RepeatSingle) {
+								seekSong (index);
+							} 
 							// Every 2 seconds
 							if (mscount==0) {
 								index=i;
@@ -500,21 +508,22 @@ namespace Banshee.CueSheets
 								ServiceManager.PlayerEngine.SetCurrentTrack (e);
 							}
 						}
-					}
-					
-					if (type=="cuesheet" && mscount==0) {
-						int [] idx=new int[1];
-						idx[0]=index;
 						
-						Gtk.TreePath path=new Gtk.TreePath(idx);
-						Gtk.TreeViewColumn c=new Gtk.TreeViewColumn();
-						Gtk.TreePath pp;
-						view.GetCursor (out pp,out c);
-						if (pp==null || pp.Indices[0]!=index) {
-							view.SetCursor (path,null,false);
+						if (mscount==0) {
+							int [] idx=new int[1];
+							idx[0]=index;
+							
+							Gtk.TreePath path=new Gtk.TreePath(idx);
+							Hyena.Log.Information ("Setting cursor: "+index+", path=");
+							Gtk.TreeViewColumn c=new Gtk.TreeViewColumn();
+							Gtk.TreePath pp;
+							view.GetCursor (out pp,out c);
+							if (pp==null || pp.Indices[0]!=index) {
+								view.SetCursor (path,null,false);
+							}
 						}
 					}
-					
+						
 				}
 				}
 				return true;
@@ -554,7 +563,7 @@ namespace Banshee.CueSheets
 			public void loadCueSheet(CueSheet s) { //,Gtk.ListStore store) {
 				setColumnSizes (s);
 				CueSheet sheet=MySource.getSheet ();
-				type="cuesheet";
+				//type="cuesheet";
 				sheet.Clear ();
 				sheet.load (s);
 				store.Clear ();
@@ -880,6 +889,7 @@ namespace Banshee.CueSheets
 			}
 
 			public void EvtTrackRowActivated(object sender,Gtk.RowActivatedArgs args) {
+				Hyena.Log.Information ("Row activated, seeking");
 				Gtk.TreeSelection selection = (sender as Gtk.TreeView).Selection;
 				Gtk.TreeModel model;
 				Gtk.TreeIter iter;
