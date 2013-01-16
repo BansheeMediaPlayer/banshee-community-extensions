@@ -77,6 +77,7 @@ namespace Banshee.CueSheets
 		private int 	_progress_current_track;
 		private float 	_progress_of_current_track;
 		private bool	_finished;
+		private bool	_cancelled;
 		private string  _file_format;
 		
 		private bool	_convert_to_latin1;
@@ -150,7 +151,11 @@ namespace Banshee.CueSheets
     		[MethodImpl(MethodImplOptions.Synchronized)]
     		set { _finished = value; }
 		}
-
+		
+		public bool Cancelled {
+			get { return _cancelled; }
+			set { _cancelled=value; }
+		}
 		
 		public void Progress(IntPtr progr,IntPtr data) {
 			splt_progres pr=(splt_progres) Marshal.PtrToStructure (progr,typeof(splt_progres));
@@ -168,19 +173,25 @@ namespace Banshee.CueSheets
 				}
 			}
 			SplitFinished=true;
-			Hyena.Log.Information ("splitresult="+result);
+			LogResult ("Splitter",result);
+		}
+		
+		public void CancelSplit() {
+			int err=0;
+			mp3splt_stop_split (_mp3_state,out err);
+			LogResult ("CancelSplit",err);
+			Cancelled=true;
 		}
 		
 		public void SplitToDir(string directory,bool convert_to_latin1) {
 			mp3splt_set_path_of_split(_mp3_state,directory);
 			mp3splt_set_progress_function (_mp3_state,new ProgressCallBack(Progress),IntPtr.Zero);
 			SplitFinished=false;
+			Cancelled=false;
 			_convert_to_latin1=convert_to_latin1;
 			_directory=directory;
 			Thread split_thread=new Thread(new ThreadStart(Splitter));
 			split_thread.Start ();
-			Hyena.Log.Information ("thread:"+split_thread);
-			//Hyena.Log.Information ("split-to-dir: result="+result);
 		}
 		
 		public void convertToLatin1() {
@@ -190,7 +201,7 @@ namespace Banshee.CueSheets
 		private void setLatinTags(CueSheet s) {
 			int i,N;
 			for(i=0,N=s.nEntries ();i<N;i++) {
-				ProgressCurrentTrack=i;
+				ProgressCurrentTrack=i+1;
 				setLatinTag (i,s,s.entry (i));
 			}
 		}
@@ -240,12 +251,16 @@ namespace Banshee.CueSheets
 			}
 		}
 		
-		private void LogResult(int res) {
+		private void LogResult(string s,int res) {
 			if (res<0) {
-				Hyena.Log.Error ("mp3splt: error="+res+", "+mp3splt_get_strerror(_mp3_state,res));
+				Hyena.Log.Error ("mp3splt: "+s+" error="+res+", "+mp3splt_get_strerror(_mp3_state,res));
 			} else {
-				Hyena.Log.Information ("mp3splt: result="+res+", "+mp3splt_get_strerror(_mp3_state,res));
+				Hyena.Log.Information ("mp3splt: "+s+" result="+res+", "+mp3splt_get_strerror(_mp3_state,res));
 			}
+		}
+		
+		private void LogResult(int res) {
+			LogResult ("",res);
 		}
 		
 		private static int _dll_present=0;
@@ -321,7 +336,7 @@ namespace Banshee.CueSheets
 		private static extern int mp3splt_split(IntPtr state);
 
 		[DllImport ("libmp3splt.dll")]
-		private static extern int mp3splt_stop_split(IntPtr state);
+		private static extern void mp3splt_stop_split(IntPtr state,out int error);
 		
 		[DllImport ("libmp3splt.dll")]
 		private static extern int mp3splt_find_plugins(IntPtr state);
