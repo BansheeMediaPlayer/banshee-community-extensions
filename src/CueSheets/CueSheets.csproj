@@ -109,6 +109,10 @@
     <Compile Include="Banshee.CueSheets\Tools\Tools.cs" />
     <Compile Include="Banshee.CueSheets\Data\CS_TrackInfoDb.cs" />
     <Compile Include="Banshee.CueSheets\Version\CS_Info.cs" />
+    <Compile Include="Banshee.CueSheets\mp3splt\Mp3Split.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\MusicToDevice.cs" />
+    <Compile Include="Banshee.CueSheets\mp3splt\Mp3SplitTrack.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\Actions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -133,5 +137,10 @@
     <Folder Include="Banshee.CueSheets\Model\" />
     <Folder Include="Banshee.CueSheets\Tools\" />
     <Folder Include="Banshee.CueSheets\Version\" />
+    <Folder Include="Banshee.CueSheets\mp3splt\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GlobalUI.xml" />
   </ItemGroup>
 </Project>

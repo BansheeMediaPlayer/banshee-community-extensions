@@ -1,0 +1,6 @@
+<ui>
+  <popup action="CueSheetsPopup">
+    <menuitem action="Synchronize" />
+    <menuitem name="SourcePreferences" action="SourcePreferencesAction"/>
+  </popup>	
+</ui>

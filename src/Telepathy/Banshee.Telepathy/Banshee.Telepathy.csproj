@@ -11,7 +11,6 @@
     <ProjectGuid>{C6F7D7EA-0245-4A29-AC8E-714E1677F0FC}</ProjectGuid>
     <RootNamespace>Banshee.Telepathy</RootNamespace>
     <AssemblyOriginatorKeyFile>.</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -67,7 +66,9 @@
       <Package>banshee-thickclient</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="dbus-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5675b0c3093115b5" />
+    <Reference Include="dbus-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5675b0c3093115b5">
+      <Package>dbus-sharp-1.0</Package>
+    </Reference>
     <Reference Include="Hyena.Data.Sqlite, Version=2.0.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
       <Package>banshee-hyena-data-sqlite</Package>

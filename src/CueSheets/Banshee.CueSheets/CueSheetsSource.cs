@@ -56,6 +56,9 @@ using Banshee.Configuration;
 
 namespace Banshee.CueSheets
 {
+
+		
+
     // We are inheriting from Source, the top-level, most generic type of Source.
     // Other types include (inheritance indicated by indentation):
     //      DatabaseSource - generic, DB-backed Track source; used by PlaylistSource
@@ -73,9 +76,10 @@ namespace Banshee.CueSheets
 		private List<CueSheet> 			_sheets=new List<CueSheet>();
 		private CueSheet	   			_sheet=null;
         private CueSheetsPrefs 			_preferences;
+		private Actions					_actions;
 		
 		private CS_TrackInfoDb			_track_info_db;
-		
+			
         public CueSheetsSource () : base (AddinManager.CurrentLocalizer.GetString ("CueSheets"),
                                           AddinManager.CurrentLocalizer.GetString ("CueSheets"),
 		                                  sort_order,
@@ -92,6 +96,15 @@ namespace Banshee.CueSheets
 			Properties.Set<ISourceContents> ("Nereid.SourceContents", _view);
 			Properties.SetString ("Icon.Name", "cueplay");
             Hyena.Log.Information ("CueSheets source has been instantiated.");
+			
+			try {
+				Properties.SetString("GtkActionPath","/CueSheetsPopup");
+				_actions = new Actions (this);
+				Hyena.Log.Information(_actions.ToString());
+			} catch (System.Exception ex) {
+				Hyena.Log.Information(ex.ToString ());
+			}
+			
 			
             InterfaceActionService action_service = ServiceManager.Get<InterfaceActionService> ();
 			
@@ -231,7 +244,7 @@ namespace Banshee.CueSheets
 			}
 			return _artistModel;
 		}
-
+		
 		public CS_ComposerModel getComposerModel() {
 			if (_composerModel==null) { 
 				Hyena.Log.Information ("ComposerModel init");
@@ -281,6 +294,11 @@ namespace Banshee.CueSheets
 		public void setCueSheetDir(string dir) {
 			Hyena.Log.Information ("Setting cuesheets dir to "+dir);
 			Banshee.Configuration.ConfigurationClient.Set<string>("cuesheets_dir",dir);
+			_view.fill ();
+		}
+		
+		public void RefreshCueSheets() {
+			Hyena.Log.Information("refreshing");
 			_view.fill ();
 		}
 		
@@ -599,6 +617,10 @@ namespace Banshee.CueSheets
 				MySource.getArtistModel ().Reload ();
 			}
 			
+			public void MusicFileToDevice(CueSheet s) {
+				MusicToDevice mtd=new MusicToDevice(s);
+				mtd.Do ();
+			}
 				
 			public void ToggleGrid(string forId) {
 				Hyena.Log.Information ("ToggleGrid for id "+forId);
@@ -673,9 +695,20 @@ namespace Banshee.CueSheets
 					edit.Activated+=delegate(object sender,EventArgs a) {
 						_view.EditSheet(((CS_AlbumInfo) this.Model[Selection.FirstIndex]).getSheet ());
 					};
+					
 					mnu.Append (play);
 					mnu.Append (new Gtk.SeparatorMenuItem());
 					mnu.Append (edit);
+					CueSheet s=((CS_AlbumInfo) this.Model[Selection.FirstIndex]).getSheet ();
+					if (Mp3Split.DllPresent()) {
+						if (Mp3Split.IsSupported(s.musicFileName ())) {
+							Gtk.ImageMenuItem split=new Gtk.ImageMenuItem(Gtk.Stock.Convert,null);
+							split.Activated+=delegate(object sender,EventArgs a) {
+								_view.MusicFileToDevice(((CS_AlbumInfo) this.Model[Selection.FirstIndex]).getSheet ());
+							};
+							mnu.Append (split);
+						}
+					}
 					mnu.ShowAll ();
 					mnu.Popup();
 					return false;
