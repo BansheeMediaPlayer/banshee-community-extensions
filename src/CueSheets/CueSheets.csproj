@@ -83,6 +83,10 @@
       <Private>False</Private>
       <Package>gtk-sharp-2.0</Package>
     </Reference>
+    <Reference Include="taglib-sharp, Version=2.0.4.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0">
+      <Private>False</Private>
+      <Package>taglib-sharp</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CueSheets.addin.xml">

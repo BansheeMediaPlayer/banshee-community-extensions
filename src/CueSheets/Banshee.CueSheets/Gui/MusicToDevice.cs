@@ -12,6 +12,13 @@ namespace Banshee.CueSheets
 		}
 		
 		private void CreateGui() {
+			Gtk.FileChooserButton fc=new Gtk.FileChooserButton("Choose directory to put your splitted files",Gtk.FileChooserAction.SelectFolder);
+			string fn=Banshee.Configuration.ConfigurationClient.Get<string>("cuesheets_todevice","");
+			if (fn!="") { fc.SelectFilename(fn); }
+			fc.FileSet+=new EventHandler(delegate(Object sender,EventArgs args) {
+				fn=fc.Filename;
+				Banshee.Configuration.ConfigurationClient.Set<string>("cuesheets_todevice",fn);
+			});
 			Gtk.Button btn=new Gtk.Button("Split!");
 			Gtk.ProgressBar bar=new Gtk.ProgressBar();
 			Gtk.ProgressBar nr=new Gtk.ProgressBar();
@@ -19,7 +26,8 @@ namespace Banshee.CueSheets
 			btn.Clicked+=delegate(object sender,EventArgs args) {
 				ok.Sensitive=false;				
 				_splt.SplitWithPaths ();
-				_splt.SplitToDir ("/tmp");
+				//_splt.convertToLatin1 ();
+				_splt.SplitToDir (fn,true);
 				GLib.Timeout.Add(10,delegate () {
 					bar.Fraction=_splt.ProgressOfCurrentTrack;
 					int n=_splt.ProgressNTracks;
@@ -30,6 +38,7 @@ namespace Banshee.CueSheets
 					return !_splt.SplitFinished;
 				});
 			};
+			base.VBox.Add (fc);
 			base.VBox.Add (nr);
 			base.VBox.Add (bar);
 			base.VBox.Add (btn);

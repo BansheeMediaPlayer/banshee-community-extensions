@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using System.IO;
 
 namespace Banshee.CueSheets 
 {
@@ -76,11 +77,18 @@ namespace Banshee.CueSheets
 		private int 	_progress_current_track;
 		private float 	_progress_of_current_track;
 		private bool	_finished;
+		private string  _file_format;
+		
+		private bool	_convert_to_latin1;
+		private string  _directory;
+		
+		private CueSheet _sheet;
 		
 		public delegate void ProgressCallBack(IntPtr progres,IntPtr data);
 		
 		public Mp3Split (CueSheet s) {
 			int error=0;
+			_sheet=s;
 			
 			_mp3_state=mp3splt_new_state (out error);
 			error=mp3splt_find_plugins (_mp3_state);
@@ -89,6 +97,7 @@ namespace Banshee.CueSheets
 			mp3splt_set_int_option(_mp3_state,Mp3SpltOptions.SPLT_OPT_SET_FILE_FROM_CUE_IF_FILE_TAG_FOUND,1);
 			mp3splt_set_int_option(_mp3_state,Mp3SpltOptions.SPLT_OPT_OUTPUT_FILENAMES,(int) SpltOutputFileNamesOptions.SPLT_OUTPUT_FORMAT);
 			mp3splt_set_oformat(_mp3_state,"@A - @b - @n - @t",out error);
+			_file_format="@A - @b - @n - @t";
 			mp3splt_put_cue_splitpoints_from_file(_mp3_state,s.cueFile (),out error);
 			mp3splt_set_default_genre_tag(_mp3_state,s.genre ());
 
@@ -111,6 +120,7 @@ namespace Banshee.CueSheets
 			int error=0;
 			mp3splt_set_int_option(_mp3_state,Mp3SpltOptions.SPLT_OPT_CREATE_DIRS_FROM_FILENAMES,1);
 			mp3splt_set_oformat(_mp3_state,"@A/@b/@n @t",out error);
+			_file_format="@A/@b/@n @t";
 		}
 		
 		public int ProgressCurrentTrack  {
@@ -151,19 +161,65 @@ namespace Banshee.CueSheets
 		
 		private void Splitter() {
 			int result=mp3splt_split (_mp3_state);
+			if (result>=0) {
+				Hyena.Log.Information ("convert to latin1="+_convert_to_latin1);
+				if (_convert_to_latin1) {
+					convertToLatin1 ();
+				}
+			}
 			SplitFinished=true;
 			Hyena.Log.Information ("splitresult="+result);
 		}
 		
-		public void SplitToDir(string directory) {
-			
+		public void SplitToDir(string directory,bool convert_to_latin1) {
 			mp3splt_set_path_of_split(_mp3_state,directory);
 			mp3splt_set_progress_function (_mp3_state,new ProgressCallBack(Progress),IntPtr.Zero);
 			SplitFinished=false;
+			_convert_to_latin1=convert_to_latin1;
+			_directory=directory;
 			Thread split_thread=new Thread(new ThreadStart(Splitter));
 			split_thread.Start ();
 			Hyena.Log.Information ("thread:"+split_thread);
 			//Hyena.Log.Information ("split-to-dir: result="+result);
+		}
+		
+		public void convertToLatin1() {
+			setLatinTags (_sheet);
+		}
+		
+		private void setLatinTags(CueSheet s) {
+			int i,N;
+			for(i=0,N=s.nEntries ();i<N;i++) {
+				ProgressCurrentTrack=i;
+				setLatinTag (i,s,s.entry (i));
+			}
+		}
+		
+		private void setLatinTag(int track,CueSheet s,CueSheetEntry e) {
+			string fn=_file_format;
+			fn=fn.Replace ("@A",s.performer());
+			fn=fn.Replace ("@b",s.title ());
+			fn=fn.Replace ("@n",(track+1).ToString ());
+			fn=fn.Replace ("@t",e.title ());
+			fn=_directory+"/"+fn+".mp3";
+			Hyena.Log.Information ("file to convert:"+fn);
+			if (File.Exists(fn)) {
+				TagLib.File file=TagLib.File.Create(fn);
+				if (file==null) { 
+					Hyena.Log.Error ("Cannot create taglib file for "+fn);
+					return;
+				} else {
+					Hyena.Log.Information("Setting tags for "+fn);
+					file.Tag.Album=s.title ();
+					file.Tag.AlbumArtists=new string[]{s.performer ()};
+					file.Tag.Composers=new string[]{s.composer ()};
+					file.Tag.Genres=new string[]{s.genre ()};
+					file.Tag.Title=e.title ();
+					file.Tag.Track=(uint) track+1;
+					file.Tag.Performers=new string[]{e.performer ()};
+					file.Save ();
+				}
+			}
 		}
 		
 		#region IDisposable implementation
@@ -269,6 +325,17 @@ namespace Banshee.CueSheets
 		
 		[DllImport ("libmp3splt.dll")]
 		private static extern int mp3splt_find_plugins(IntPtr state);
+		
+		[DllImport ("libmp3splt.dll")]
+		private static extern int mp3splt_append_tags(IntPtr state,
+		                                              string title, 
+		                                              string artist,
+		                                              string album,  
+		                                              string performer,
+		                                              string year,
+		                                              string comment,
+		                                              int track,
+		                                              string genre);
 
 	}
 	
