@@ -1,5 +1,4 @@
 SUBDIRS = \
-    CueSheets \
 	AlarmClock \
 	AlbumArtWriter \
 	Ampache \
