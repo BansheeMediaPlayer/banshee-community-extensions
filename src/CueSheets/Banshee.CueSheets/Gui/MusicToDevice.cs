@@ -46,7 +46,7 @@ namespace Banshee.CueSheets
 				
 				_splt.SplitWithPaths ();
 				
-				bool convert_to_latin1=true;
+				bool convert_to_latin1=true; 
 				_splt.SplitToDir (fn,convert_to_latin1);
 				
 				GLib.Timeout.Add(50,delegate () {

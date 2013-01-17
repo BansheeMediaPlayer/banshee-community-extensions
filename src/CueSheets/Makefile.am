@@ -26,6 +26,6 @@ SOURCES =  \
 	Banshee.CueSheets/Tools/Tools.cs \
 	Banshee.CueSheets/Version/CS_Info.cs
 
-RESOURCES = CueSheets.addin.xml
+RESOURCES = CueSheets.addin.xml Resources/GlobalUI.xml
 
 include $(top_srcdir)/build/build.mk
