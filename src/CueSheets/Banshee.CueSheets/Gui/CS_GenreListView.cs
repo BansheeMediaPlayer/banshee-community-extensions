@@ -30,15 +30,19 @@ using Hyena.Data.Gui;
 
 namespace Banshee.CueSheets
 {
-	public class GenreListView : TrackFilterListView<GenreInfo>
+	public class CS_GenreListView : TrackFilterListView<GenreInfo>
     {
-        protected GenreListView (IntPtr ptr) : base () {}
+        protected CS_GenreListView (IntPtr ptr) : base () {}
 
-        public GenreListView () : base ()
+        public CS_GenreListView () : base ()
         {
             column_controller.Add (new Column ("Genre", new ColumnCellText ("Genre", true), 1.0));
             ColumnController = column_controller;
         }
+		
+		protected override bool OnPopupMenu() {
+			return false;
+		}
     }
 }
 

@@ -22,7 +22,6 @@ namespace Banshee.CueSheets
 		private Gtk.Button				_save;
 		
 		public CueSheetEditor (CueSheet s) {
-			//_sheet=new CueSheet(s.cueFile());
 			_sheet=s;
 		}
 		
@@ -144,11 +143,15 @@ namespace Banshee.CueSheets
 				});
 				_tracks.AppendColumn ("Piece", cr_piece, "text", 4);	
 				
-				_tracks.AppendColumn ("Offset", cr0, "text", 5);	
+				Gtk.CellRendererText cr_time=new Gtk.CellRendererText();
+				cr_time.Editable=true;
+				cr_time.Scale=0.8;
+				cr_time.Edited+=new Gtk.EditedHandler(delegate(object sender,Gtk.EditedArgs args) {
+					setCell (5,args.NewText,new Gtk.TreePath(args.Path));
+				});
+				_tracks.AppendColumn ("Offset", cr_time, "text", 5);	
 			}
 			
-			//_tracks.CursorChanged += new EventHandler(EvtCursorChanged);
-			//_tracks.RowActivated += new Gtk.RowActivatedHandler(EvtTrackRowActivated);
 			_tracks.Model = _store;
 			
 			Gtk.Table tbl=new Gtk.Table(2,5,false);
@@ -180,14 +183,21 @@ namespace Banshee.CueSheets
 			
 			Gtk.Frame frm2=new Gtk.Frame();
 			frm2.Add (_image);
-			hb.PackEnd (frm2,false,false,2);
+			Gtk.VBox vbi=new Gtk.VBox();
+			Gtk.HBox bb=new Gtk.HBox();
+			bb.PackStart(new Gtk.VBox(),true,true,0);
+			bb.PackStart(frm2,false,false,0);
+			bb.PackEnd (new Gtk.VBox(),true,true,0);
+			
+			vbi.PackStart (bb,true,true,2);
+			vbi.PackEnd (_imagefile,false,false,2);
+			hb.PackEnd (vbi,true,true,2);
 			
 			Gtk.ScrolledWindow scroll=new Gtk.ScrolledWindow();
 			scroll.Add (_tracks);
 			scroll.SetSizeRequest (800,300);
 			
 			base.VBox.PackStart(hb,false,false,4);
-			base.VBox.PackStart (_imagefile,false,false,4);
 			base.VBox.PackStart(scroll,true,true,0);
 			base.VBox.ShowAll ();
 			
@@ -199,9 +209,36 @@ namespace Banshee.CueSheets
 		}
 		
 		public void OnAddTrack(object sender,EventArgs args) {
+			Gtk.TreeSelection selection = _tracks.Selection;
+			Gtk.TreeIter iter;
+			if (selection.GetSelected(out iter)) {
+				iter=_store.InsertBefore (iter);
+				_store.SetValues (iter,0,"-","-","-","-","00:00:00");
+			} else {
+				_store.AppendValues (_store.IterNChildren()+1,"-","-","-","-","00:00:00");
+			}
+			Renumber ();
+		}
+		
+		public void Renumber() {
+			Gtk.TreeIter iter;
+			if (_store.GetIterFirst (out iter)) {
+				int i=1;
+				_store.SetValue (iter,0,i);
+				while (_store.IterNext (ref iter)) {
+					i+=1;
+					_store.SetValue (iter,0,i);
+				}
+			}
 		}
 		
 		public void OnDelTrack(object sender,EventArgs args) {
+			Gtk.TreeSelection selection = _tracks.Selection;
+			Gtk.TreeIter iter;
+			if (selection.GetSelected(out iter)) {
+				_store.Remove (ref iter);
+				Renumber ();
+			}
 		}
 		
 		public void EvtImageSet(object sender,EventArgs args) {

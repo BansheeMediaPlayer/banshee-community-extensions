@@ -4,13 +4,16 @@ using Hyena.Data.Gui;
 
 namespace Banshee.CueSheets
 {
-	 
-	public class ComposerListView : TrackFilterListView<CS_ComposerInfo>
+	public class CS_ComposerListView : TrackFilterListView<CS_ComposerInfo>
 	{
-		public ComposerListView ()  : base ()
+		public CS_ComposerListView ()  : base ()
         {
             column_controller.Add (new Column ("Composer", new ColumnCellText ("DisplayName", true), 1.0));
             ColumnController = column_controller;
+		}
+		
+		protected override bool OnPopupMenu() {
+			return false;
 		}
 	}
 }

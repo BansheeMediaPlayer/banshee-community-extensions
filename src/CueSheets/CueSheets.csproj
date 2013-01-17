@@ -92,6 +92,9 @@
     <EmbeddedResource Include="CueSheets.addin.xml">
       <LogicalName>CueSheets.addin.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\GlobalUI.xml">
+      <LogicalName>GlobalUI.xml</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.CueSheets\CueSheetsSource.cs" />
@@ -104,11 +107,9 @@
     <Compile Include="Banshee.CueSheets\Model\CS_ArtistModel.cs" />
     <Compile Include="Banshee.CueSheets\Model\CS_ComposerModel.cs" />
     <Compile Include="Banshee.CueSheets\Model\CS_GenreModel.cs" />
-    <Compile Include="Banshee.CueSheets\Gui\ComposerListView.cs" />
     <Compile Include="Banshee.CueSheets\Gui\CueSheetsPrefs.cs" />
     <Compile Include="Banshee.CueSheets\Gui\CueSheetEditor.cs" />
     <Compile Include="Banshee.CueSheets\Data\GenreInfo.cs" />
-    <Compile Include="Banshee.CueSheets\Gui\GenreListView.cs" />
     <Compile Include="Banshee.CueSheets\Tools\Loosely.cs" />
     <Compile Include="Banshee.CueSheets\Tools\Tools.cs" />
     <Compile Include="Banshee.CueSheets\Data\CS_TrackInfoDb.cs" />
@@ -117,6 +118,12 @@
     <Compile Include="Banshee.CueSheets\Gui\MusicToDevice.cs" />
     <Compile Include="Banshee.CueSheets\mp3splt\Mp3SplitTrack.cs" />
     <Compile Include="Banshee.CueSheets\Gui\Actions.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CS_AlbumListView.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CueSheetsView.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CS_GenreListView.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CS_ArtistListView.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CS_ComposerListView.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CS_CollectionSearchEntry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -143,8 +150,5 @@
     <Folder Include="Banshee.CueSheets\Version\" />
     <Folder Include="Banshee.CueSheets\mp3splt\" />
     <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\GlobalUI.xml" />
   </ItemGroup>
 </Project>
