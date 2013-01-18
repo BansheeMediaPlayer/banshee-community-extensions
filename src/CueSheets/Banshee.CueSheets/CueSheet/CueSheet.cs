@@ -133,10 +133,29 @@ namespace Banshee.CueSheets
 			}
 		}
 		
-		public int searchIndex(double offset) {
+		public int searchIndex(string _current_entry_id,double _offset) {
 			int k,N;
-			for(k=0,N=nEntries ();k<N && offset>_tracks[k].offset ();k++);
-			return k-1;
+			if (_current_entry_id==null) {
+				for(k=0,N=nEntries ();k<N && _offset>_tracks[k].offset ();k++);
+				return k-1;
+			} else {
+				for(k=0,N=nEntries ();k<N && _current_entry_id!=entry (k).id ();k++);
+				if (k==N) {
+					return N-1;
+				} else {
+					CueSheetEntry e=entry (k);
+					//Hyena.Log.Information ("offset="+e.offset()+", endoffset="+e.end_offset()+" offset="+_offset);
+					if (_offset<e.offset ()) {
+						return k-1;
+					} else if (e.end_offset ()<=0.0) {  // end track, we don't know
+						return k;
+					} else if (_offset>=e.end_offset ()) {
+						return k+1;
+					} else {
+						return k;
+					}
+				}
+			}
 		}
 		
 		public void  resetArt() {
@@ -231,13 +250,17 @@ namespace Banshee.CueSheets
 			_tracks=null;
 		}
 		
+		public void AddEntry(CueSheetEntry e) {
+			append (e);
+		}
+		
 		public CueSheetEntry AddTrack(string e_title,string e_perf,double e_offset) {
 			int nr=0;
 			if (_tracks!=null) {
 				nr=_tracks.Length;
 			}
 			string aaid=getArtId ();
-			CueSheetEntry e=new CueSheetEntry(_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
+			CueSheetEntry e=new CueSheetEntry(this,_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
 			append (e);
 			int i,N;
 			for(i=0,N=nEntries ();i<N;i++) {
@@ -397,7 +420,7 @@ namespace Banshee.CueSheets
 						if (eq(line,"track")) { 
 							if (e_offset>=0) {
 								nr+=1;
-								CueSheetEntry e=new CueSheetEntry(_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
+								CueSheetEntry e=new CueSheetEntry(this,_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
 								e.setComposer (e_composer);
 								e.setPiece (e_piece);
 								append (e);
@@ -437,7 +460,7 @@ namespace Banshee.CueSheets
 			//Console.WriteLine ("Last entry adding");
 			if (e_offset>=0) {
 				nr+=1;
-				CueSheetEntry e=new CueSheetEntry(_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
+				CueSheetEntry e=new CueSheetEntry(this,_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
 				e.setComposer (e_composer);
 				e.setPiece (e_piece);
 				append (e);

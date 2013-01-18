@@ -32,16 +32,16 @@ using Banshee.Collection.Database;
 
 namespace Banshee.CueSheets
 {
-	public class CS_GenreModel : BansheeListModel<GenreInfo>
+	public class CS_GenreModel : BansheeListModel<CS_GenreInfo>
 	{
-			private CueSheetsSource 	MySource;
-			private List<GenreInfo>   	_genres;
-			private GenreInfo 			_nullGenre;
+			private CueSheetsSource 		MySource;
+			private List<CS_GenreInfo>   	_genres;
+			private CS_GenreInfo 			_nullGenre;
 	
 	        public CS_GenreModel (CueSheetsSource s) {
 				MySource=s;
-				_nullGenre=new GenreInfo("<All Genres>");
-				_genres=new List<GenreInfo>();
+				_nullGenre=new CS_GenreInfo("<All Genres>");
+				_genres=new List<CS_GenreInfo>();
 				Selection=new Hyena.Collections.Selection();
 	        }
 	
@@ -63,15 +63,15 @@ namespace Banshee.CueSheets
 				for(int i=0;i<s.Count;i++) {
 					string gen=Loosely.prepare (s[i].genre ());
 					if (!added.Contains (gen)) {
-						_genres.Add (new GenreInfo(s[i].genre ()));
+						_genres.Add (new CS_GenreInfo(s[i].genre ()));
 						added.Add (gen);
 					}
 				}
-				_genres.Sort(new GenreInfo.Comparer());
+				_genres.Sort(new CS_GenreInfo.Comparer());
 				base.RaiseReloaded ();
 	        }
 		
-			public bool isNullGenre(GenreInfo g) {
+			public bool isNullGenre(CS_GenreInfo g) {
 				return g==_nullGenre;
 			}
 			
@@ -81,7 +81,7 @@ namespace Banshee.CueSheets
 				}
 	        }
 		
-			public override GenreInfo this[int index] {
+			public override CS_GenreInfo this[int index] {
 				get {
 					return _genres[index];
 				} 	

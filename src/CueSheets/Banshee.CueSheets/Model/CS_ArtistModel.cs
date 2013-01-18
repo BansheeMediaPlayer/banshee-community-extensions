@@ -36,7 +36,7 @@ namespace Banshee.CueSheets
 			private CueSheetsSource 		MySource;
 			private List<CS_ArtistInfo> 	_artists;
 			private CS_ArtistInfo       	_nullArtist;
-			private GenreInfo		 		_genre;
+			private CS_GenreInfo		 		_genre;
 			private CS_ComposerInfo			_composer;
 	
 	        public CS_ArtistModel (CueSheetsSource s) {
@@ -95,7 +95,7 @@ namespace Banshee.CueSheets
 				}
 	        }
 		
-			public void filterGenre(GenreInfo g) {
+			public void filterGenre(CS_GenreInfo g) {
 				_genre=g;
 				Reload ();
 			}

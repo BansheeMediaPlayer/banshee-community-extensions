@@ -109,13 +109,11 @@
     <Compile Include="Banshee.CueSheets\Model\CS_GenreModel.cs" />
     <Compile Include="Banshee.CueSheets\Gui\CueSheetsPrefs.cs" />
     <Compile Include="Banshee.CueSheets\Gui\CueSheetEditor.cs" />
-    <Compile Include="Banshee.CueSheets\Data\GenreInfo.cs" />
     <Compile Include="Banshee.CueSheets\Tools\Loosely.cs" />
     <Compile Include="Banshee.CueSheets\Tools\Tools.cs" />
     <Compile Include="Banshee.CueSheets\Data\CS_TrackInfoDb.cs" />
     <Compile Include="Banshee.CueSheets\Version\CS_Info.cs" />
     <Compile Include="Banshee.CueSheets\mp3splt\Mp3Split.cs" />
-    <Compile Include="Banshee.CueSheets\Gui\MusicToDevice.cs" />
     <Compile Include="Banshee.CueSheets\mp3splt\Mp3SplitTrack.cs" />
     <Compile Include="Banshee.CueSheets\Gui\Actions.cs" />
     <Compile Include="Banshee.CueSheets\Gui\CS_AlbumListView.cs" />
@@ -124,6 +122,20 @@
     <Compile Include="Banshee.CueSheets\Gui\CS_ArtistListView.cs" />
     <Compile Include="Banshee.CueSheets\Gui\CS_ComposerListView.cs" />
     <Compile Include="Banshee.CueSheets\Gui\CS_CollectionSearchEntry.cs" />
+    <Compile Include="Banshee.CueSheets\CueSheet\CueSheetCollection.cs" />
+    <Compile Include="Banshee.CueSheets\Data\CS_GenreInfo.cs" />
+    <Compile Include="Banshee.CueSheets\Playlists\CS_PlayList.cs" />
+    <Compile Include="Banshee.CueSheets\Playlists\CS_PlayListCollection.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CS_MusicToDevice.cs" />
+    <Compile Include="Banshee.CueSheets\Playlists\CS_PlayListEntry.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CS_PlayListAdmin.cs" />
+    <Compile Include="Banshee.CueSheets\Model\CS_PlayListsModel.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CS_PlayListsView.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CS_PlayListView.cs" />
+    <Compile Include="Banshee.CueSheets\Model\CS_PlayListModel.cs" />
+    <Compile Include="Banshee.CueSheets\Model\CS_TrackListModel.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CS_TrackListView.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CS_Column.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -150,5 +162,6 @@
     <Folder Include="Banshee.CueSheets\Version\" />
     <Folder Include="Banshee.CueSheets\mp3splt\" />
     <Folder Include="Resources\" />
+    <Folder Include="Banshee.CueSheets\Playlists\" />
   </ItemGroup>
 </Project>

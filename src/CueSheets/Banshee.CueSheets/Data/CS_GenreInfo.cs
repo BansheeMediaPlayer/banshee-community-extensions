@@ -30,23 +30,23 @@ using System.Collections;
 
 namespace Banshee.CueSheets
 {
-	public class GenreInfo
+	public class CS_GenreInfo
 	{
 		private string _genre;
 		
-		public class Comparer : IComparer<GenreInfo>  {
+		public class Comparer : IComparer<CS_GenreInfo>  {
 			private CaseInsensitiveComparer cmp=new CaseInsensitiveComparer();
-		    public int Compare( GenreInfo g1,GenreInfo g2 )  {
+		    public int Compare( CS_GenreInfo g1,CS_GenreInfo g2 )  {
 				return cmp.Compare (g1._genre,g2._genre);
 		    }
 		}
 		
-		public GenreInfo ()
+		public CS_GenreInfo ()
 		{
 			_genre="";
 		}
 		
-		public GenreInfo(string s) {
+		public CS_GenreInfo(string s) {
 			_genre=s;
 		}
 		

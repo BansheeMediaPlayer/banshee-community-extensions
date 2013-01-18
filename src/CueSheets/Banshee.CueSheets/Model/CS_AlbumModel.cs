@@ -36,7 +36,7 @@ namespace Banshee.CueSheets
 	{
 		private CueSheetsSource MySource;
 		private List<CS_AlbumInfo> 	_filteredList;
-		private GenreInfo 			_genre;
+		private CS_GenreInfo 			_genre;
 		private ArtistInfo 			_artist;
 		private CS_ComposerInfo 	_composer;
 		private string				_album_search;
@@ -109,7 +109,7 @@ namespace Banshee.CueSheets
 			base.RaiseReloaded ();
         }
 	
-		public void filterGenre(GenreInfo g) {
+		public void filterGenre(CS_GenreInfo g) {
 			if (g==null) {
 				_genre=null;
 				Reload ();
@@ -130,7 +130,7 @@ namespace Banshee.CueSheets
 			}
 		}
 	
-		public GenreInfo filterGenre() {
+		public CS_GenreInfo filterGenre() {
 			return _genre;
 		}
 	

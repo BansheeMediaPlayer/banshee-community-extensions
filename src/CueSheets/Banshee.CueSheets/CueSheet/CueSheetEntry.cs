@@ -37,14 +37,24 @@ namespace Banshee.CueSheets
 {
 	public class CueSheetEntry : TrackInfo
 	{
-		string 	_performer;
-		string  _composer="";
-		string  _piece="";
-		string  _file;
-		TimeSpan _length;
-		string  _art="";
-		double	_offset;
-		string  _title;
+		private string 		_performer;
+		private string  	_composer="";
+		private string  	_piece="";
+		private string  	_file;
+		private TimeSpan 	_length;
+		private string  	_art="";
+		private double		_offset;
+		private double      _e_offset=-1.0;
+		private string  	_title;
+		private CueSheet 	_parent;
+		
+		public string EntryName {
+			get { return _title; }
+		}
+		
+		public CueSheet getCueSheet() {
+			return _parent;
+		}
 		
 		public override string ArtworkId {
       		get { return _art; }
@@ -56,6 +66,10 @@ namespace Banshee.CueSheets
 		
 		public string file() {
 			return _file;
+		}
+		
+		public string id() {
+			return "title="+_title+";offset="+offset()+";length="+length ();
 		}
 		
 		public string title() {
@@ -70,14 +84,14 @@ namespace Banshee.CueSheets
 			return _offset;
 		}
 		
+		public double end_offset() {
+			return _e_offset;
+		}
+		
 		public void setNrOfTracks(int n) {
 			this.TrackCount=n;
 		}
 		
-		
-		public void setComposer(string c) {
-			_composer=c;
-		}
 		
 		public void setPiece(string p) {
 			_piece=p;
@@ -87,8 +101,33 @@ namespace Banshee.CueSheets
 			return _piece;
 		}
 		
+		public string Piece {
+			get { return _piece; }
+			set { _piece=value; }
+		}
+		
+		public override string Composer {
+			get { return _composer; }
+			set { _composer=value; }
+		}
+		
+		public void setComposer(string c) {
+			_composer=c;
+		}
+		
 		public string getComposer() {
 			return _composer;
+		}
+		
+		public string Length {
+			get { 
+				double l=length ();
+				int t=(int) (l*100.0);
+				int m=t/(60*100);
+				int secs=(t/100)%60;
+				string ln=String.Format ("{0:00}:{0:00}",m,secs);
+				return ln;
+			}
 		}
 		
 		public override TimeSpan Duration {
@@ -107,6 +146,7 @@ namespace Banshee.CueSheets
 
 		public void setLength(double l) {
 			//_length=l;
+			_e_offset=_offset+l;
 			System.Int64 ticks_100nanosecs=(System.Int64) (l*10000000); // 10 miljoen
 			_length=new TimeSpan(ticks_100nanosecs);
 		}
@@ -115,12 +155,14 @@ namespace Banshee.CueSheets
 			return "nr: "+this.TrackNumber+", title: "+this.title ()+", file: "+this.file ();
 		}
 
-		public CueSheetEntry (string file,String artId,int nr,int cnt,string title,string performer,string album,double offset) : base() {
+		public CueSheetEntry (CueSheet s,string file,String artId,int nr,int cnt,string title,string performer,string album,double offset) : base() {
 			_file=file;
 			_title=title;
 			_performer=performer;
 			_offset=offset;
 			_length=new TimeSpan(0);
+			
+			_parent=s;
 			
 			_art=artId;
 			base.AlbumArtist=performer;

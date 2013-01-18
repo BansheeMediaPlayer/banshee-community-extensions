@@ -1,5 +1,5 @@
 //
-// GenreListView.cs
+// CS_PlayListModel.cs
 //
 // Authors:
 //   Hans Oesterholt <hans@oesterholt.net>
@@ -23,26 +23,52 @@
 // NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// 
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
 using System;
-using Banshee.Collection.Gui;
-using Hyena.Data.Gui;
+using Banshee.Collection;
 
 namespace Banshee.CueSheets
 {
-	public class CS_GenreListView : TrackFilterListView<CS_GenreInfo>
-    {
-        protected CS_GenreListView (IntPtr ptr) : base () {}
+	public class CS_PlayListModel : BansheeListModel<CueSheetEntry>
+	{
+		private CS_PlayList				_pls;
 
-        public CS_GenreListView () : base ()
-        {
-            column_controller.Add (new Column ("Genre", new ColumnCellText ("Genre", true), 1.0));
-            ColumnController = column_controller;
+        public CS_PlayListModel () {
+			_pls=null;
+			Selection=new Hyena.Collections.Selection();
+        }
+
+        public override void Clear () {
+			// does nothing 
+        }
+	
+        public override void Reload () {
+			base.RaiseReloaded ();
         }
 		
-		protected override bool OnPopupMenu() {
-			return false;
+		public void SetPlayList(CS_PlayList pls) {
+			_pls=pls;
+			Reload ();
 		}
-    }
+		
+		public CS_PlayList PlayList {
+			get { return _pls; }
+			set { SetPlayList (value); }
+		}
+	
+        public override int Count {
+            get { 
+				if (_pls==null) { return 0; }
+				else { return _pls.Count; }
+			}
+        }
+	
+		public override CueSheetEntry this[int index] {
+			get {
+				return _pls[index];
+			} 	
+		}
+	}
 }
 

@@ -2,12 +2,12 @@ using System;
 
 namespace Banshee.CueSheets
 {
-	public class MusicToDevice : Gtk.Dialog
+	public class CS_MusicToDevice : Gtk.Dialog
 	{
 		private CueSheet _sheet;
 		private Mp3Split _splt;
 		
-		public MusicToDevice (CueSheet s) {
+		public CS_MusicToDevice (CueSheet s) {
 			_sheet=s;
 		}
 		

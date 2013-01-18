@@ -1,6 +1,7 @@
 using System;
 using Banshee.Database;
 using Hyena.Data.Sqlite;
+using System.Collections.Generic;
 
 namespace Banshee.CueSheets
 {
@@ -12,7 +13,7 @@ namespace Banshee.CueSheets
 		private readonly HyenaSqliteCommand _sql_get;
 		private readonly HyenaSqliteCommand _sql_insert;
 		private readonly HyenaSqliteCommand _sql_update;
-		
+		private readonly HyenaSqliteCommand _sql_key_begin;
 		
 		public CS_TrackInfoDb (BansheeDbConnection con) {
 			_con=con;
@@ -20,6 +21,7 @@ namespace Banshee.CueSheets
 			_sql_get=new HyenaSqliteCommand("SELECT type,value FROM cuesheet_info WHERE key=?");
 			_sql_insert=new HyenaSqliteCommand("INSERT INTO cuesheet_info VALUES(?,?,?)");
 			_sql_update=new HyenaSqliteCommand("UPDATE cuesheet_info SET type=?, value=? WHERE key=?");
+			_sql_key_begin=new HyenaSqliteCommand("SELECT key FROM cuesheet_info WHERE key LIKE ?");
 			try {
 				if (!_con.TableExists ("cuesheet_info")) {
 					_con.Query ("CREATE TABLE cuesheet_info(key varchar,type varchar,value varchar)");
@@ -81,6 +83,24 @@ namespace Banshee.CueSheets
 				val=_default;
 			}
 		}
+
+		public void Set(string key,double val) {
+			iSet (key,"double",val.ToString ());
+		}
+		
+		public void Get(string key,out double val,double _default) {
+			string t,v;
+			if (iGet (key,out t,out v)) {
+				if (t=="double") { 
+					val=Convert.ToDouble (v);
+				} else {
+					val=_default;
+				}
+			} else {
+				val=_default;
+			}
+		}
+		
 		
 		public void Set(string key,bool val) {
 			iSet (key,"bool",val.ToString ());
@@ -97,6 +117,34 @@ namespace Banshee.CueSheets
 			} else {
 				val=_default;
 			}
+		}
+		
+		public void Set(string key,string val) {
+			iSet (key,"string",val);
+		}
+		
+		public void Get(string key,out string val,string _default) {
+			string t,v;
+			if (iGet (key,out t,out v)) {
+				if (t=="string") {
+					val=v;
+				} else {
+					val=_default;
+				}
+			} else {
+				val=_default;
+			}
+		}
+		
+		public List<string> getKeysStartingWith(string start) {
+			List<string> lst=new List<string>();
+			IDataReader rdr=_con.Query(_sql_key_begin,start+"%");
+			while (rdr.Read ()) {
+				string key=rdr.Get<string>("key");
+				Hyena.Log.Information ("key="+key);
+				lst.Add (key);
+			}
+			return lst;
 		}
 			
 	}

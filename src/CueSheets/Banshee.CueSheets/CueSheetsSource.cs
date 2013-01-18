@@ -74,7 +74,7 @@ namespace Banshee.CueSheets
 		private Gtk.SeparatorMenuItem 	_sep;
 		private Gtk.CheckButton			_track_search;
 		
-		private List<CueSheet> 			_sheets=new List<CueSheet>();
+		private CueSheetCollection 		_sheets=new CueSheetCollection();
 		private CueSheet	   			_sheet=null;
         private CueSheetsPrefs 			_preferences;
 		private Actions					_actions;
@@ -181,7 +181,11 @@ namespace Banshee.CueSheets
 			return _sheet;
 		}
 		
-		public List<CueSheet> getSheets() {
+		public void setSheet(CueSheet s) {
+			_sheet=s;
+		}
+		
+		public CueSheetCollection getSheets() {
 			return _sheets;
 		}
 		
@@ -262,6 +266,7 @@ namespace Banshee.CueSheets
 		private CS_ArtistModel _artistModel=null;
 		private CS_GenreModel  _genreModel=null;
 		private CS_ComposerModel _composerModel=null;
+		private CS_PlayListsModel _playlistsModel=null;
 		
 		public CS_AlbumModel getAlbumModel() {
 			if (_model==null) { 
@@ -269,6 +274,19 @@ namespace Banshee.CueSheets
 				_model=new CS_AlbumModel(this); 
 			}
 			return _model;
+		}
+		
+		public CS_PlayListsModel getPlayListsModel() {
+			if (_playlistsModel==null) {
+				Hyena.Log.Information ("Playlist model init");
+				CS_PlayListCollection col=new CS_PlayListCollection(this._track_info_db,this.getSheets ());
+				_playlistsModel=new CS_PlayListsModel(col);
+			}
+			return _playlistsModel;
+		}
+		
+		public CS_PlayListCollection getPlayListCollection() {
+			return _playlistsModel.Collection;
 		}
 		
 		public TrackListModel getTrackModel() {
@@ -299,16 +317,21 @@ namespace Banshee.CueSheets
 			return _composerModel;
 		}
 		
-		public void setPositions(int hb,int hb1,int vp) {
+		public void setPositions(int hbpls,int hb,int hb1,int vp) {
+			Banshee.Configuration.ConfigurationClient.Set<int>("cuesheets_hbpls",hbpls);
 			Banshee.Configuration.ConfigurationClient.Set<int>("cuesheets_hb",hb);
 			Banshee.Configuration.ConfigurationClient.Set<int>("cuesheets_hb1",hb1);
 			Banshee.Configuration.ConfigurationClient.Set<int>("cuesheets_vp",vp);
 		}
 		
-		public void getPositions(out int hb,out int hb1, out int vp) {
+		public void getPositions(out int hbpls,out int hb,out int hb1, out int vp) {
+			hbpls=Banshee.Configuration.ConfigurationClient.Get<int>("cuesheets_hbpls",500);
 			hb=Banshee.Configuration.ConfigurationClient.Get<int>("cuesheets_hb",100);
 			hb1=Banshee.Configuration.ConfigurationClient.Get<int>("cuesheets_hb1",200);
 			vp=Banshee.Configuration.ConfigurationClient.Get<int>("cuesheets_vp",200);
+			if (hb1>=hbpls) { hb1=hbpls-100;}
+			if (hb>=hb1) { hb=hb1-100; }
+			if (hb<=0) { hb=100;hb1=200;hbpls=500; }
 		}
 		
 		public bool getGridLayout(string id) {
@@ -321,13 +344,17 @@ namespace Banshee.CueSheets
 			_track_info_db.Set ("grid-"+id,g);
 		}
 		
-		public void setColumnWidth(string type,string albumid,int w) {
-			_track_info_db.Set ("col-"+type+"-"+albumid,w);
+		public void setColumnWidth(string type,string albumid,double w) {
+			string key="col-"+type+"-"+albumid;
+			_track_info_db.Set (key,w);
+			//Hyena.Log.Information ("set width("+key+")="+w);
 		}
 		
-		public int getColumnWidth(string type,string albumid) {
-			int w=150;
-			_track_info_db.Get ("col-"+type+"-"+albumid,out w,150);
+		public double getColumnWidth(string type,string albumid) {
+			double w=1.0;
+			string key="col-"+type+"-"+albumid;
+			_track_info_db.Get (key,out w,1.0);
+			//Hyena.Log.Information ("get width("+key+")="+w);
 			return w;
 		}
 		
