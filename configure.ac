@@ -211,7 +211,7 @@ ${PACKAGE}-${VERSION}
     Awn:                   ${enable_Awn}
     ClutterFlow:           ${enable_ClutterFlow}
     CoverWallpaper:        ${enable_CoverWallpaper}
-    CueSheets:             yes
+    CueSheets:             no
     DuplicateSongDetector: ${enable_DuplicateSongDetector}
     FolderSync:            ${enable_FolderSync}
     Jamendo:               ${enable_Jamendo}
