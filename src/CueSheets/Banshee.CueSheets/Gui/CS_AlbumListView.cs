@@ -10,22 +10,24 @@ namespace Banshee.CueSheets
 		
 		public CS_AlbumListView(CueSheetsView view) : base() {
 			_view=view;
-			_gridEnabled=base.GetAlbumGrid();
-			Hyena.Log.Information ("grid enabled="+_gridEnabled);
+			//_gridEnabled=base.GetAlbumGrid();
+			//Hyena.Log.Information ("grid enabled="+_gridEnabled);
 			EnableGrid ();
 		}
 		
 		public void DisableGrid() {
 			if (_gridEnabled) {
 				_gridEnabled=false;
-				base.SetAlbumGrid (true);
+				base.SwitchToAlbumList();
+				//base.SetAlbumGrid (true);
 			}
 		}
 		
 		public void EnableGrid() {
 			if (!_gridEnabled) {	
 				_gridEnabled=true;
-				base.SetAlbumGrid (false);
+				base.SwitchToAlbumGrid();
+				//base.SetAlbumGrid (false);
 			}
 		}
 		

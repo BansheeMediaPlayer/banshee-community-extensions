@@ -115,7 +115,6 @@
     <Compile Include="Banshee.CueSheets\Version\CS_Info.cs" />
     <Compile Include="Banshee.CueSheets\mp3splt\Mp3Split.cs" />
     <Compile Include="Banshee.CueSheets\mp3splt\Mp3SplitTrack.cs" />
-    <Compile Include="Banshee.CueSheets\Gui\Actions.cs" />
     <Compile Include="Banshee.CueSheets\Gui\CS_AlbumListView.cs" />
     <Compile Include="Banshee.CueSheets\Gui\CueSheetsView.cs" />
     <Compile Include="Banshee.CueSheets\Gui\CS_GenreListView.cs" />
@@ -136,6 +135,7 @@
     <Compile Include="Banshee.CueSheets\Model\CS_TrackListModel.cs" />
     <Compile Include="Banshee.CueSheets\Gui\CS_TrackListView.cs" />
     <Compile Include="Banshee.CueSheets\Gui\CS_Column.cs" />
+    <Compile Include="Banshee.CueSheets\Gui\CS_Actions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

@@ -34,6 +34,10 @@ using Banshee.Base;
 using Banshee.Playlists.Formats;
 using System.Collections.Generic;
 using Hyena;
+using Banshee.Collection.Database;
+using Hyena.Data.Sqlite;
+using Hyena.Collections;
+using Banshee.Database;
 
 namespace Banshee.CueSheets
 {
@@ -44,7 +48,7 @@ namespace Banshee.CueSheets
 		private string				_music_file_name;
 		private string 				_title;
 		private string 				_performer;
-		private CueSheetEntry [] 	_tracks;
+		private List<CueSheetEntry> _tracks=new List<CueSheetEntry>();
 		private string				_cuefile;
 		private string				_directory;
 		private string				_basedir;
@@ -53,6 +57,18 @@ namespace Banshee.CueSheets
 		private string				_composer;
 		private string				_subtitle;
 		private string 				_cddbId;
+		
+		private Kind				_kind=Kind.CueSheet;
+		
+		public enum Kind {
+			CueSheet,
+			PlayList
+		}
+		
+		public Kind SheetKind {
+			get { return _kind; }
+			set { _kind=value; }
+		}
 
 		public string id() {
 			return "title="+_title+";performer="+_performer+
@@ -65,21 +81,10 @@ namespace Banshee.CueSheets
 			string r=Tools.firstpart(d);
 			return r;
 		}
-		
+
+
 		private void append(CueSheetEntry e) {
-			if (_tracks==null) { 
-				_tracks=new CueSheetEntry[1];
-				_tracks[0]=e;
-			} else {
-				CueSheetEntry [] es=new CueSheetEntry[_tracks.Length+1];
-				int i=0;
-				for(i=0;i<_tracks.Length;i++) {
-					es[i]=_tracks[i];
-				}
-				es[i]=e;
-				_tracks=es;
-			}
-			this.Add (e);
+			_tracks.Add(e);
 		}
 		
 		public string imageFileName() {
@@ -127,13 +132,11 @@ namespace Banshee.CueSheets
 		}
 		
 		public int nEntries() {
-			if (_tracks==null) { return 0; }
-			else {
-				return _tracks.Length;
-			}
+			return _tracks.Count;
 		}
 		
 		public int searchIndex(string _current_entry_id,double _offset) {
+			Hyena.Log.Information ("id="+_current_entry_id+", offset="+_offset);
 			int k,N;
 			if (_current_entry_id==null) {
 				for(k=0,N=nEntries ();k<N && _offset>_tracks[k].offset ();k++);
@@ -144,7 +147,7 @@ namespace Banshee.CueSheets
 					return N-1;
 				} else {
 					CueSheetEntry e=entry (k);
-					//Hyena.Log.Information ("offset="+e.offset()+", endoffset="+e.end_offset()+" offset="+_offset);
+					Hyena.Log.Information ("offset="+e.offset()+", endoffset="+e.end_offset()+" offset="+_offset);
 					if (_offset<e.offset ()) {
 						return k-1;
 					} else if (e.end_offset ()<=0.0) {  // end track, we don't know
@@ -206,7 +209,7 @@ namespace Banshee.CueSheets
 		}
 		
 		public override string ToString() {
-			return "Performer: "+this.performer ()+", Title: "+this.title ()+"\ncuefile: "+this.cueFile()+"\nwave: "+this.musicFileName();
+			return "cuefile: "+this.cueFile();
 		}
 		
 		public void SetPerformer(string p) {
@@ -246,8 +249,7 @@ namespace Banshee.CueSheets
 		}
 		
 		public void ClearTracks() {
-			base.Clear ();
-			_tracks=null;
+			_tracks.Clear();
 		}
 		
 		public void AddEntry(CueSheetEntry e) {
@@ -255,10 +257,7 @@ namespace Banshee.CueSheets
 		}
 		
 		public CueSheetEntry AddTrack(string e_title,string e_perf,double e_offset) {
-			int nr=0;
-			if (_tracks!=null) {
-				nr=_tracks.Length;
-			}
+			int nr=_tracks.Count;
 			string aaid=getArtId ();
 			CueSheetEntry e=new CueSheetEntry(this,_music_file_name,aaid,nr,-1,e_title,e_perf,_title,e_offset);
 			append (e);
@@ -479,6 +478,8 @@ namespace Banshee.CueSheets
 				}
 				//Console.WriteLine ("Ready");
 			}
+			
+			base.Selection.MaxIndex=nEntries ();
 		}		
 		
 		public void load(CueSheet s) {
@@ -498,15 +499,30 @@ namespace Banshee.CueSheets
 			}
 		}
 		
+		private class CacheableDatabaseModel : ICacheableDatabaseModel
+        {
+            public static CacheableDatabaseModel Instance = new CacheableDatabaseModel ();
+            public int FetchCount { get { return 200; } }
+            public string ReloadFragment { get { return null; } }
+            public string SelectAggregates { get { return null; } }
+            public string JoinTable { get { return null; } }
+            public string JoinFragment { get { return null; } }
+            public string JoinPrimaryKey { get { return null; } }
+            public string JoinColumn { get { return null; } }
+            public bool CachesJoinTableEntries { get { return false; } }
+            public bool CachesValues { get { return false; } }
+            public Selection Selection { get { return null; } }
+        }
+		
 		public override void Clear() {
-			base.Clear ();
+			base.Selection.Clear ();
+			_tracks.Clear();
 			_cuefile="";
 			_image_file_name="";
 			_img_full_path="";
 			_music_file_name="";
 			_title="";
 			_performer="";
-			_tracks=null;
 			_basedir="";
 			_directory="";
 		}
@@ -524,6 +540,32 @@ namespace Banshee.CueSheets
 			Clear ();
 			load (filename,directory,basedir);
 		}
+
+		#region implemented abstract members of MemoryTrackListModel
+		public override TrackInfo this [int index] {
+			get { Hyena.Log.Information ("get: index="+index); return _tracks[index];  }
+		}
+		
+		public override int Count {
+			get { return _tracks.Count; }
+		}
+
+		public override void Reload () {
+			this.iLoad ();
+		}
+		
+		public override TrackInfo GetRandom (DateTime since) {
+			return _tracks[0];			
+		}
+
+		public override int IndexOf (TrackInfo track) {
+			int i,N;
+			for(i=0,N=_tracks.Count;i<N && CueSheetEntry.MakeId(track)!=_tracks[i].id ();i++);
+			if (i==N) { return -1; }
+			else { return i; }
+		}
+
+		#endregion
 	}
 }
 

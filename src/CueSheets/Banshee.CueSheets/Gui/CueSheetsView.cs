@@ -25,6 +25,8 @@ using Hyena.Data.Gui;
 using Banshee.Gui;
 using Banshee.I18n;
 using Banshee.Configuration;
+using Mono.Unix;
+using System.Threading;
 
 namespace Banshee.CueSheets
 {
@@ -69,7 +71,119 @@ namespace Banshee.CueSheets
 		private Stack<string> _fill_cues=new Stack<string>();
 		private int  _fill_count=0;
 		private int  _fill_dir_count=0;
-		private bool _fill_canceled=false;			
+		private bool _fill_canceled=false;	
+		
+		private LibraryImportManager import_manager=null;
+		
+		//private Stack<DatabaseTrackInfo> stk=new Stack<DatabaseTrackInfo>();
+		
+		public void ImportSheet(CueSheet s) {
+			if (import_manager==null) {
+				try {
+					import_manager = new LibraryImportManager (false);
+					/*import_manager.ImportResult+=delegate(object sender,DatabaseImportResultArgs args) {
+						DatabaseTrackInfo trk=args.Track;
+						stk.Push (trk);
+					};*/
+				} catch (Exception ex) {
+					Hyena.Log.Error (ex.ToString ());
+				}
+			}
+			
+			Hyena.Log.Debug ("Importsheet: Starting transaction");
+			int i,N;
+			for(i=0,N=s.nEntries ();i<N;i++) {
+				try {
+					CueSheetEntry e=s.entry (i);
+					string file=e.file ();
+					string uuid=Regex.Replace(e.id (),"\\s","_");
+					string ext=".mp3";
+					
+					string uid=Guid.NewGuid ().ToString ();
+					string u1=uid.Substring (0,1);
+					string u2=uid.Substring (0,2);
+					string dir=basedir+"/.banshee/"+u1;
+					if (!Directory.Exists (dir))  {
+						Directory.CreateDirectory(dir);
+					}
+					dir+="/"+u2;
+					if (!Directory.Exists(dir)) {
+						Directory.CreateDirectory(dir);
+					}
+					uuid=dir+"/"+uuid+ext;
+					
+					UnixFileInfo f=new UnixFileInfo(file);	
+					if (File.Exists (uuid)) { File.Delete(uuid); }
+					//f.CreateLink (uuid);
+					f.CreateSymbolicLink(uuid);
+					
+					DatabaseTrackInfo trk=import_manager.ImportTrack(uuid);
+					//File.Delete (uuid);
+					/*if (trk==null) {
+						Hyena.Log.Warning ("track = null (file="+e.file ()+")");
+						if (stk.Count>0) { trk=stk.Pop (); }
+					}*/ 
+					
+					if (trk==null) {
+						Hyena.Log.Error ("track = null (file="+e.file ()+")");
+					} else {
+						Hyena.Log.Information ("track!=null (file="+e.file ()+")");
+						//MySource.DbConnection.BeginTransaction();
+						trk.PartOfCue=1;
+						trk.CueAudioFile=e.file ();
+						trk.AlbumTitle=s.title ();
+						//trk.Album=s.title ();
+						trk.AlbumArtist=s.performer ();
+						trk.Composer=(e.Composer=="") ? s.composer () : e.Composer;
+						//trk.ArtworkId=s.getArtId ();
+						//trk.Artist=
+						trk.ArtistName=(e.performer ()=="") ? s.performer () : e.performer ();
+						trk.TrackTitle=e.title ();
+						trk.TrackNumber=i+1;
+						trk.Genre=s.genre ();
+						trk.BeginOffset=e.BeginOffset;
+						trk.EndOffset=e.EndOffset;
+						//trk.Uri=trk.CueAudioUri;
+  						//trk.MediaAttributes = TrackMediaAttributes.ExternalResource;
+                    	//trk.PrimarySource = ServiceManager.SourceManager.MusicLibrary;
+						
+						trk.Save ();
+						//MySource.DbConnection.CommitTransaction();
+					}
+				} catch (Exception ex) {
+					Hyena.Log.Error (ex.ToString ());
+				}
+			}
+			import_manager.NotifyAllSources ();
+		}
+		
+		
+		
+		private void FillLibrary(string cwd) {
+			string [] dirs=Directory.GetDirectories(cwd, "*");
+			string [] sheets=Directory.GetFiles (cwd,"*.cue");
+			string ddir=basedir+"/.banshee";
+			if (!Directory.Exists(ddir)) {
+				Directory.CreateDirectory(ddir);
+			}
+			foreach (string sheet in sheets) {
+				CueSheet cs=new CueSheet(sheet,cwd,basedir);
+				ImportSheet(cs);
+				Thread.Sleep (500);
+			}
+			foreach (string dir in dirs) {
+				FillLibrary (dir);
+			}
+		}
+		
+		private void FillLibrary() {
+			basedir=MySource.getCueSheetDir();
+			Hyena.Log.Information ("Base directory="+basedir);
+			Thread thrd=new Thread(delegate() {
+				FillLibrary (basedir);
+			});
+			thrd.Start ();
+		}
 		
 		private void fill(string cwd) {
 			Hyena.Log.Information ("Scanning directory "+cwd);
@@ -87,8 +201,8 @@ namespace Banshee.CueSheets
 					return false;
 				}
 				
-				int i;
-				while(i<50 && _fill_cues.Count>0) {
+				int i=0;
+				while(i<1 && _fill_cues.Count>0) {
 					string sheet=_fill_cues.Pop ();
 					string bn=Tools.basename (sheet);
 					if (bn!="") {
@@ -167,6 +281,7 @@ namespace Banshee.CueSheets
 						bar.Remove (sep);
 						bar.Remove (cancel);
 						bar.Hide ();
+						FillLibrary ();
 						return false;
 					} else {
 						return true;
@@ -195,7 +310,7 @@ namespace Banshee.CueSheets
 					_song_file=e.file ();
 				}
 				double offset=e.offset ();
-				ServiceManager.PlayerEngine.SetCurrentTrack(e);
+				//ServiceManager.PlayerEngine.SetCurrentTrack(e);
 				_position=(uint) (offset*1000.0);
 				_set_position=true;
 				mscount=chgcount-(1000/timeout);
@@ -208,8 +323,9 @@ namespace Banshee.CueSheets
 			index=0;
 			try {
 				CueSheet sheet=MySource.getSheet ();
-				ServiceManager.PlayerEngine.SetAccurateSeek(true);
+				//ServiceManager.PlayerEngine.SetAccurateSeek(true);
 				CueSheetEntry e=sheet.entry(index);
+				_song_id=e.id ();
 				ServiceManager.PlayerEngine.Open (e);
 				ServiceManager.PlayerEngine.Play ();
 				if (ServiceManager.PlaybackController.Source!=MySource) {
@@ -218,7 +334,7 @@ namespace Banshee.CueSheets
 				if (ServiceManager.PlaybackController.NextSource!=MySource) {
 					ServiceManager.PlaybackController.NextSource=MySource; 
 				}
-				ServiceManager.PlaybackController.SetSeekMode (true);
+				//ServiceManager.PlaybackController.SetSeekMode (true);
 			} catch (SystemException ex) {
 				Hyena.Log.Information(ex.ToString ());
 			}
@@ -259,19 +375,23 @@ namespace Banshee.CueSheets
 							// Handle repeat track
 							if (ServiceManager.PlaybackController.RepeatMode==PlaybackRepeatMode.RepeatSingle) {
 								seekSong (index);
-							} 
+							} else if (sheet.SheetKind==CueSheet.Kind.PlayList) {
+								index=i;
+								seekSong (i);
+							}
 							// Every 2 seconds
 							if (mscount==0) {
 								Hyena.Log.Information("Found index i="+i+", songid="+_song_id);
 								index=i;
 								CueSheetEntry e=sheet.entry(index);
-								ServiceManager.PlayerEngine.SetCurrentTrack (e);
+								Hyena.Log.Information ("current entry: "+e);
+								//ServiceManager.PlayerEngine.SetCurrentTrack (e);
 							}
 						}
 						
 						if (mscount==0 && index>=0) {
 							Hyena.Log.Information ("mscount="+mscount+", index="+index);
-							view.ScrollTo(index);
+							//view.ScrollTo(index);
 							view.Selection.QuietUnselect (view.Selection.FirstIndex);
 							view.Selection.Select(index);
 						}

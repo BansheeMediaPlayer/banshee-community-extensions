@@ -2,5 +2,7 @@
   <popup action="CueSheetsPopup">
     <menuitem action="Synchronize" />
     <menuitem name="SourcePreferences" action="SourcePreferencesAction"/>
+	<separator />
+    <menuitem name="NewPlaylist" action="NewPlaylistAction"/>
   </popup>	
 </ui>

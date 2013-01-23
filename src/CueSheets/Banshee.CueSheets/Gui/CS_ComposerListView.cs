@@ -4,7 +4,8 @@ using Hyena.Data.Gui;
 
 namespace Banshee.CueSheets
 {
-	public class CS_ComposerListView : TrackFilterListView<CS_ComposerInfo>
+	public class CS_ComposerListView
+		: TrackFilterListView<CS_ComposerInfo>
 	{
 		public CS_ComposerListView ()  : base ()
         {

@@ -32,10 +32,11 @@ using Banshee.Base;
 using Hyena;
 using Banshee.IO.SystemIO;
 using Banshee.Playlists.Formats;
+using Banshee.Collection.Database;
 
 namespace Banshee.CueSheets
 {
-	public class CueSheetEntry : TrackInfo
+	public class CueSheetEntry : DatabaseTrackInfo
 	{
 		private string 		_performer;
 		private string  	_composer="";
@@ -69,7 +70,11 @@ namespace Banshee.CueSheets
 		}
 		
 		public string id() {
-			return "title="+_title+";offset="+offset()+";length="+length ();
+			return MakeId (this);
+		}
+		
+		public static string MakeId(TrackInfo trk) {
+			return "title="+trk.TrackTitle+";offset="+trk.BeginOffset+";end_offset="+trk.EndOffset;
 		}
 		
 		public string title() {
@@ -121,11 +126,13 @@ namespace Banshee.CueSheets
 		
 		public string Length {
 			get { 
-				double l=length ();
+				double l=_e_offset-_offset;
+				//Hyena.Log.Information ("Tracklengt="+l);
 				int t=(int) (l*100.0);
 				int m=t/(60*100);
 				int secs=(t/100)%60;
-				string ln=String.Format ("{0:00}:{0:00}",m,secs);
+				string ln=String.Format ("{0:00}",m)+":"+String.Format ("{0:00}",secs);
+				//Hyena.Log.Information ("Tracklengt="+l+" sec="+secs+" ln="+ln);
 				return ln;
 			}
 		}
@@ -147,6 +154,7 @@ namespace Banshee.CueSheets
 		public void setLength(double l) {
 			//_length=l;
 			_e_offset=_offset+l;
+			EndOffset=(int) (_e_offset*1000.0);	// millisecs
 			System.Int64 ticks_100nanosecs=(System.Int64) (l*10000000); // 10 miljoen
 			_length=new TimeSpan(ticks_100nanosecs);
 		}
@@ -154,12 +162,37 @@ namespace Banshee.CueSheets
 		public override string ToString() {
 			return "nr: "+this.TrackNumber+", title: "+this.title ()+", file: "+this.file ();
 		}
+		
+		public CueSheetEntry () {
+			_file="";
+			_title="";
+			_performer="";
+			_offset=0.0;
+			BeginOffset=0;
+			EndOffset=-1;
+			_length=new TimeSpan(0);
+			_parent=null;
+			_art="";
+			base.AlbumArtist="";
+			base.TrackTitle="";
+			base.AlbumTitle="";
+			base.ArtistName="";
+			base.TrackNumber=0;
+			base.TrackCount=0;
+			base.DiscNumber=0;
+			base.CanPlay=true;
+			base.CanSaveToDatabase=false;
+			base.Duration=new System.TimeSpan(0,0,10,0);
+			base.Uri=new Hyena.SafeUri("",false);
+		}
 
 		public CueSheetEntry (CueSheet s,string file,String artId,int nr,int cnt,string title,string performer,string album,double offset) : base() {
 			_file=file;
 			_title=title;
 			_performer=performer;
 			_offset=offset;
+			BeginOffset=(int) (offset*1000.0); // milliseconds
+			EndOffset=-1;
 			_length=new TimeSpan(0);
 			
 			_parent=s;

@@ -57,6 +57,7 @@ namespace Banshee.CueSheets
 		public CueSheet GetCueSheet() {
 			CueSheet s=new CueSheet();
 			s.SetTitle (_name);
+			s.SheetKind=CueSheet.Kind.PlayList;
 			foreach (CS_PlayListEntry ple in _playlist) {
 				s.AddEntry(ple.GetCueSheetEntry ());
 			}

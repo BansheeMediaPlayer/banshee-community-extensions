@@ -11,7 +11,7 @@ SOURCES =  \
 	Banshee.CueSheets/Data/CS_ComposerInfo.cs \
 	Banshee.CueSheets/Data/CS_GenreInfo.cs \
 	Banshee.CueSheets/Data/CS_TrackInfoDb.cs \
-	Banshee.CueSheets/Gui/Actions.cs \
+	Banshee.CueSheets/Gui/CS_Actions.cs \
 	Banshee.CueSheets/Gui/CS_AlbumListView.cs \
 	Banshee.CueSheets/Gui/CS_ArtistListView.cs \
 	Banshee.CueSheets/Gui/CS_CollectionSearchEntry.cs \

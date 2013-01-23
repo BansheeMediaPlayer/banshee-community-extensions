@@ -56,15 +56,13 @@ using Banshee.Configuration;
 
 namespace Banshee.CueSheets
 {
-
-		
-
     // We are inheriting from Source, the top-level, most generic type of Source.
     // Other types include (inheritance indicated by indentation):
     //      DatabaseSource - generic, DB-backed Track source; used by PlaylistSource
     //        PrimarySource - 'owns' tracks, used by DaapSource, DapSource
     //          LibrarySource - used by Music, Video, Podcasts, and Audiobooks
-    public class CueSheetsSource : Source, IBasicPlaybackController, ITrackModelSource
+    public class CueSheetsSource : Source, IBasicPlaybackController, 
+										ITrackModelSource
     {
         // In the sources TreeView, sets the order value for this source, small on top
         const int sort_order = 50;
@@ -74,23 +72,28 @@ namespace Banshee.CueSheets
 		private Gtk.SeparatorMenuItem 	_sep;
 		private Gtk.CheckButton			_track_search;
 		
-		private CueSheetCollection 		_sheets=new CueSheetCollection();
+		private CueSheetCollection 		_sheets=null; 
 		private CueSheet	   			_sheet=null;
         private CueSheetsPrefs 			_preferences;
-		private Actions					_actions;
+		private CS_Actions				_actions;
 		
 		private CS_TrackInfoDb			_track_info_db;
 			
         public CueSheetsSource () : base (AddinManager.CurrentLocalizer.GetString ("CueSheets"),
                                           AddinManager.CurrentLocalizer.GetString ("CueSheets"),
-		                                  sort_order,
-										  "hod-cuesheets-2013-01-06")
+		                                  //"cuesheets",
+		                                  sort_order) //,
+										  //"hod-cuesheets-2013-01-06")
         {
 			Hyena.Log.Information ("CueSheetsSouce init");
 			
-			_track_info_db=new CS_TrackInfoDb(ServiceManager.DbConnection);
+			DbConnection=ServiceManager.DbConnection;
+			TM_Provider=DatabaseTrackInfo.Provider;
+			
+			_track_info_db=new CS_TrackInfoDb(DbConnection);
 
 			_sheet=new CueSheet();
+			_sheets=new CueSheetCollection();
 			
 			_view=new CueSheetsView(this);
             
@@ -102,7 +105,7 @@ namespace Banshee.CueSheets
 			
 			try {
 				Properties.SetString("GtkActionPath","/CueSheetsPopup");
-				_actions = new Actions (this);
+				_actions = new CS_Actions (this);
 				Hyena.Log.Information(_actions.ToString());
 			} catch (System.Exception ex) {
 				Hyena.Log.Information(ex.ToString ());
@@ -159,6 +162,9 @@ namespace Banshee.CueSheets
 			_track_search.Hide();
 		}
 		
+		public Banshee.Database.BansheeDbConnection DbConnection {
+			get; set; 
+		}
 		
         public override string PreferencesPageId {
             get {
@@ -233,13 +239,14 @@ namespace Banshee.CueSheets
 
         public TrackListModel TrackModel { 
 			get { 
+				Hyena.Log.Information ("Trackmodel: "+_sheet);
 				return _sheet;				
 			} 
 		}
 
         public bool HasDependencies { get { return false; } }
 
-        public bool CanAddTracks { get { return false; } }
+        public bool CanAddTracks { get { return true; } }
 
         public bool CanRemoveTracks { get { return false; } }
 
@@ -261,7 +268,10 @@ namespace Banshee.CueSheets
         public void DeleteTracks (Hyena.Collections.Selection selection) {
         }
         #endregion
-
+		
+		//public override void Save() {
+		//}
+		
 		private CS_AlbumModel _model=null;
 		private CS_ArtistModel _artistModel=null;
 		private CS_GenreModel  _genreModel=null;
@@ -364,6 +374,10 @@ namespace Banshee.CueSheets
 			return dir;
 		}
 		
+		public string DefaultBaseDirectory {
+			get { return getCueSheetDir (); }
+		}
+		
 		public void setCueSheetDir(string dir) {
 			Hyena.Log.Information ("Setting cuesheets dir to "+dir);
 			Banshee.Configuration.ConfigurationClient.Set<string>("cuesheets_dir",dir);
@@ -373,6 +387,14 @@ namespace Banshee.CueSheets
 		public void RefreshCueSheets() {
 			Hyena.Log.Information("refreshing");
 			_view.fill ();
+		}
+		
+		public void HandlePlayList() {
+			Hyena.Log.Information("playlists");
+		}
+		
+		public IDatabaseTrackModelProvider TM_Provider {
+			get; set; 
 		}
 		
     }
