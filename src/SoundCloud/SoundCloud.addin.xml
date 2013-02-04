@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.SoundCloud"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="Copyright © 2012 Paul Mackin. Licensed under the Apache license."
+    name="SoundCloud"
+    category="Community Extensions"
+    description="Play songs from SoundCloud"
+    author="Paul Mackin"
+    url="http://banshee-project.org/"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Services" version="1.0"/>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <!--  Extensions are loaded by Banshee via Mono.Addins by extending a
+        particular ExtensionPoint. 
+
+        There is a very general ExtensionPoint called
+        /Banshee/ServiceManager/Service, and there are several much more
+        specific ones.  A Service extension will be instantiated when Banshee
+        starts, and can do whatever it wants with the Banshee API.  Where an
+        ImportSource extension will be loaded when the user opens the Import
+        Dialog.
+
+        Here is an example of how to define an extension point:
+
+        <Extension path="ExtensionPointPath">
+            <ExtensionPointType class="Banshee.SoundCloud.SoundCloudExtensionPointType"/>
+        </Extension>
+
+        An extension must have one or more such definitions.
+
+        Here are the ExtensionPoints in Banshee:
+        
+            Path: /Banshee/ServiceManager/Service
+            Type: Service
+            Desc: General purpose, run any code, instantiated at startup
+
+            Path: /Banshee/SourceManager/Source
+            Type: Source
+            Desc: Create a Source in the source list
+
+            Path: /Banshee/Library/ImportSource
+            Type: ImportSource
+            Desc: Add an entry to the Import Dialog dropdown.
+
+            Path: /Banshee/Gui/TrackEditor/NotebookPage
+            Type: TrackEditorPage
+            Desc: Add a tab("page") to the Edit Track Information or Properties
+                  dialogs.
+
+            Path: /Banshee/Gui/TrackEditor/Modifier
+            Type: Modifier
+            Desc: Defines an extension for the track editor that can modify it in
+                  some way.
+
+            Path: /Banshee/ThickClient/ContextPane
+            Type: ContextPage
+            Desc: Defines a new GTK+ context page, for showing contextual
+                  information beneath the main track source view.
+
+        There are quite a few other ExtensionPoints, but they are mostly related to
+        providing platform-specific backends for hardware integration and the like.
+  -->
+
+  <!-- Define a Source extension.  This will instantiate a new Source object,
+       listed in the left-most Source TreeView. -->
+  <Extension path="/Banshee/SourceManager/Source">
+    <Source class="Banshee.SoundCloud.SoundCloudSource"/>
+  </Extension>
+
+</Addin>

@@ -1,0 +1,9 @@
+<ui>
+    <popup name="SoundCloudContextMenu">
+        <menuitem action="AddSoundCloudArtistAction"></menuitem>
+		<separator/>
+        <menuitem name="NewPlaylist" action="NewPlaylistAction"/>
+        <menuitem name="NewSmartPlaylist" action="NewSmartPlaylistAction"/>
+		<menu name="SortChildren" action="SortChildrenAction" />
+    </popup>
+</ui>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <ProjectGuid>{9B6CC053-4C1A-49BF-B816-F639DAD42920}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
+    <AssemblyName>Banshee.SoundCloud</AssemblyName>
+    <SchemaVersion>2.0</SchemaVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <Optimize>true</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <RootNamespace>Foo</RootNamespace>
+    <AssemblyOriginatorKeyFile>.</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OutputPath>..\..\..\bin</OutputPath>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
+      </CustomCommands>
+    </CustomCommands>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OutputPath>..\..\..\bin</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="Mono.Posix" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="Mono.Cairo" />
+    <Reference Include="Mono.Addins">
+      <Package>mono-addins</Package>
+    </Reference>
+    <Reference Include="Banshee.Core, Version=1.7.0.0, Culture=neutral">
+      <Package>banshee-core</Package>
+    </Reference>
+    <Reference Include="Banshee.Services, Version=1.7.0.0, Culture=neutral">
+      <Package>banshee-services</Package>
+    </Reference>
+    <Reference Include="Banshee.ThickClient, Version=1.7.0.0, Culture=neutral">
+      <Package>banshee-thickclient</Package>
+    </Reference>
+    <Reference Include="Banshee.Widgets, Version=1.7.0.0, Culture=neutral">
+      <Package>banshee-thickclient</Package>
+    </Reference>
+    <Reference Include="Hyena, Version=1.7.0.0, Culture=neutral">
+      <Package>banshee-hyena</Package>
+    </Reference>
+    <Reference Include="Hyena.Data.Sqlite, Version=1.7.0.0, Culture=neutral">
+      <Package>banshee-hyena-data-sqlite</Package>
+    </Reference>
+    <Reference Include="Hyena.Gui, Version=1.7.0.0, Culture=neutral">
+      <Package>banshee-hyena-gui</Package>
+    </Reference>
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am">
+          <BuildFilesVar Sync="true" Name="SOURCES" />
+          <DeployFilesVar />
+          <ResourcesVar Sync="true" Name="RESOURCES" />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="Banshee.SoundCloud\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Banshee.SoundCloud\ArtistAdder.cs" />
+    <Compile Include="Banshee.SoundCloud\SoundCloudSource.cs" />
+    <Compile Include="Banshee.SoundCloud\SoundCloudSourceContents.cs" />
+    <Compile Include="Banshee.SoundCloud\SoundCloudIO.cs" />
+    <Compile Include="Banshee.SoundCloud\SC.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SoundCloud.addin.xml" />
+    <EmbeddedResource Include="Resources\ActiveSourceUI.xml" />
+    <EmbeddedResource Include="Resources\GlobalUI.xml" />
+    <EmbeddedResource Include="ThemeIcons\16x16\categories\soundcloud.png" />
+    <EmbeddedResource Include="ThemeIcons\scalable\soundcloudd.svg" />
+  </ItemGroup>
+</Project>

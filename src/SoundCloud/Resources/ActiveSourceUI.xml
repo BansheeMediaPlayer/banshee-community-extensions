@@ -1,0 +1,15 @@
+<ui>
+  <menubar name="MainMenu" action="MainMenuAction">
+    <menu name="MediaMenu" action="MediaMenuAction">
+      <placeholder name="BelowOpenLocation">
+        <menuitem action="AddSoundCloudArtistAction" />
+      </placeholder>
+    </menu>
+  </menubar>
+
+  <toolbar name="HeaderToolbar">
+      <placeholder name="SourceActions">
+          <toolitem action="AddSoundCloudArtistAction" />
+      </placeholder>
+  </toolbar>
+</ui>
