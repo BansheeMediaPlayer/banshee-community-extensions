@@ -2,6 +2,7 @@ SUBDIRS = \
 	AlarmClock \
 	AlbumArtWriter \
 	Ampache \
+	AndroidRemote \
 	AppIndicator \
 	Awn \
 	ClutterFlow \

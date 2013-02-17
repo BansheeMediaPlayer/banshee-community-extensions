@@ -79,6 +79,7 @@ dnl Extensions
 BCE_ALARMCLOCK
 BCE_ALBUMARTWRITER
 BCE_AMPACHE
+BCE_ANDROIDREMOTE
 BCE_APPINDICATOR
 BCE_AWN
 BCE_CLUTTERFLOW
@@ -140,6 +141,7 @@ src/AssemblyInfo.cs
 src/AlarmClock/Makefile
 src/AlbumArtWriter/Makefile
 src/Ampache/Makefile
+src/AndroidRemote/Makefile
 src/AppIndicator/Makefile
 src/Awn/Makefile
 src/ClutterFlow/Makefile
@@ -207,6 +209,7 @@ ${PACKAGE}-${VERSION}
     Alarm Clock:           ${enable_AlarmClock}
     AlbumArtWriter:        ${enable_AlbumArtWriter}
     Ampache:               ${enable_Ampache}
+    AndroidRemote:         ${enable_AndroidRemote}
     AppIndicator:          ${enable_AppIndicator}
     Awn:                   ${enable_Awn}
     ClutterFlow:           ${enable_ClutterFlow}
