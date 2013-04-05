@@ -27,8 +27,8 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.nstamato.bansheeremote"
-    android:versionCode="14"
-    android:versionName="4.2">
+    android:versionCode="16"
+    android:versionName="4.4">
     <uses-sdk android:minSdkVersion="4" />
     <application android:icon="@drawable/banshee" android:label="Banshee Remote">
         <activity android:name=".BansheeRemote" android:label="Banshee Remote" >

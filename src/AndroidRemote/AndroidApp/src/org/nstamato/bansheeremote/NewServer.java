@@ -30,7 +30,6 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.InetAddress;
 import java.net.Socket;
 import android.app.Activity;
 import android.content.Context;
@@ -126,34 +125,20 @@ public class NewServer extends Activity {
 				OutputStream os;
 				String command = "test/";
 				boolean canConnect = false;
-				boolean isReachable = false;
 				int port=0;
-				
-				try{
-					port=Integer.parseInt(porttext.getText().toString());
-	    			InetAddress address = InetAddress.getByName(ip);
-	            	isReachable = address.isReachable(3000);
-	    			if(isReachable){
-	    				try {
-	    					s = new Socket(ip,port); 
-	    					os = s.getOutputStream();
-	    					os.write(command.getBytes(), 0, command.length());
-	    					s.close();
-	    					os.close();
-	    					canConnect = true;
-	    				} catch(Exception e) {
-	    					canConnect = false;
-	    					Toast.makeText(NewServer.this,"Can't connect to Server. Check your settings.",Toast.LENGTH_SHORT).show();
-	    				}
-	    			}
-	    			else{
-						Toast.makeText(NewServer.this,"Unreachable host.",Toast.LENGTH_SHORT).show();
-
-	    			}
-	    		}catch(Exception e){
-					Toast.makeText(NewServer.this,"Can't connect to Server. Check your settings.",Toast.LENGTH_SHORT).show();
-
-	    		}
+	
+	    			try {
+	    				port=Integer.parseInt(porttext.getText().toString());
+	    				s = new Socket(ip,port); 
+	    				os = s.getOutputStream();
+	    				os.write(command.getBytes(), 0, command.length());
+	   					s.close();
+	   					os.close();
+	   					canConnect = true;
+	   				} catch(Exception e) {
+	    				canConnect = false;
+	    				Toast.makeText(NewServer.this,"Can't connect to Server. Check your settings.",Toast.LENGTH_SHORT).show();
+	   				}
 				
 				if(canConnect){
 					Intent response = new Intent(NewServer.this,main.class);
