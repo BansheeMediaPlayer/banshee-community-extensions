@@ -47,9 +47,9 @@ LastfmFingerprint
   glib-2.0
   fftw3f
   samplerate
-  gstreamer-0.10 >= 0.10.15
-  gstreamer-base-0.10 >= 0.10.15
-  gstreamer-plugins-base-0.10 >= 0.10.15
+  gstreamer-1.0 >= 1.0
+  gstreamer-base-1.0 >= 1.0
+  gstreamer-plugins-base-1.0 >= 1.0
 
 LCD
   LCDProc
@@ -61,9 +61,9 @@ Mirage:
   glib-2.0
   fftw3f
   samplerate
-  gstreamer-0.10 >= 0.10.15
-  gstreamer-base-0.10 >= 0.10.15
-  gstreamer-plugins-base-0.10 >= 0.10.15
+  gstreamer-1.0 >= 1.0
+  gstreamer-base-1.0 >= 1.0
+  gstreamer-plugins-base-1.0 >= 1.0
 
 Telepathy
   empathy >= 2.27.91

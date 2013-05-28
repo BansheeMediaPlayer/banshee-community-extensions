@@ -14,11 +14,11 @@ AC_DEFUN([BCE_MIRAGE],
 		[samplerate],
 		[The samplerate library was not found. Please install it or disable the Mirage extension by passing --disable-mirage])
 
-	GSTREAMER_REQUIRED_VERSION=0.10.15
+	GSTREAMER_REQUIRED_VERSION=1.0
 	BCE_CHECK_EXTENSION_DEP([Mirage], [GSTREAMER],
-		[gstreamer-0.10 >= $GSTREAMER_REQUIRED_VERSION
-		 gstreamer-base-0.10 >= $GSTREAMER_REQUIRED_VERSION
-		 gstreamer-plugins-base-0.10 >= $GSTREAMER_REQUIRED_VERSION],
+		[gstreamer-1.0 >= $GSTREAMER_REQUIRED_VERSION
+		 gstreamer-base-1.0 >= $GSTREAMER_REQUIRED_VERSION
+		 gstreamer-plugins-base-1.0 >= $GSTREAMER_REQUIRED_VERSION],
 		[GStreamer >= $GSTREAMER_REQUIRED_VERSION not found. Please install it or disable the Mirage extension by passing --disable-mirage])
 
 	if test "x$enable_Mirage" = "xtry" \
