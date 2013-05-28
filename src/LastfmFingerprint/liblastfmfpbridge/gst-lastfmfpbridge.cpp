@@ -25,6 +25,9 @@
 
 #include <glib.h>
 #include <gst/gst.h>
+#include <gst/audio/audio.h>
+
+#include <stdlib.h>
 
 #include "gst-lastfmfpbridge.h"
 
@@ -60,21 +63,21 @@ struct LastfmfpAudio {
 };
 
 static void
-Lastfmfp_cb_newpad(GstElement *decodebin, GstPad *pad, gboolean last, LastfmfpAudio *ma)
+Lastfmfp_cb_newpad(GstElement *decodebin, GstPad *pad, LastfmfpAudio *ma)
 {
     GstCaps *caps;
     GstStructure *str;
     GstPad *audiopad;
 
     // only link once
-    audiopad = gst_element_get_pad(ma->audio, "sink");
+    audiopad = gst_element_get_static_pad(ma->audio, "sink");
     if (GST_PAD_IS_LINKED(audiopad)) {
         g_object_unref(audiopad);
         return;
     }
 
     // check media type
-    caps = gst_pad_get_caps(pad);
+    caps = gst_pad_get_current_caps(pad);
     str = gst_caps_get_structure(caps, 0);
 
     if (!g_strrstr(gst_structure_get_name(str), "audio")) {
@@ -107,17 +110,22 @@ Lastfmfp_getVersion (LastfmfpAudio *ma)
 static void
 Lastfmfp_cb_have_data(GstElement *element, GstBuffer *buffer, GstPad *pad, LastfmfpAudio *ma)
 {
+    GstMapInfo map;
+
     // if data continues to flow/EOS is not yet processed
     if (ma->quit)
         return;
 
     // exit on empty buffer
-    if (buffer->size <= 0)
+    if (gst_buffer_get_size(buffer) <= 0)
         return;
 
-    ma->data_in = (short*)GST_BUFFER_DATA(buffer);
+    if (!gst_buffer_map (buffer, &map, GST_MAP_READ))
+        return;
+
+    ma->data_in = (short*)map.data;
     //ma->num_samples = (size_t)(GST_BUFFER_OFFSET_END (buffer) - GST_BUFFER_OFFSET (buffer));
-    ma->num_samples = (size_t)(GST_BUFFER_SIZE (buffer) / sizeof(guint16));
+    ma->num_samples = (size_t)(map.size / sizeof(guint16));
     
 	//printf("caps: %s\n", gst_caps_to_string(GST_BUFFER_CAPS(buffer)));
 	//printf(" offset : %llu size: %llu \n", (unsigned long long)GST_BUFFER_OFFSET (buffer), (unsigned long long)GST_BUFFER_OFFSET_END (buffer));
@@ -133,10 +141,9 @@ Lastfmfp_cb_have_data(GstElement *element, GstBuffer *buffer, GstPad *pad, Lastf
         g_print("libLastfmfp: EOS Message sent\n");
         gst_object_unref(bus);
         ma->quit = TRUE;
-        return;
-
     }
-    
+
+    gst_buffer_unmap (buffer, &map);    
     
     return;
 }
@@ -173,7 +180,7 @@ Lastfmfp_initgstreamer(LastfmfpAudio *ma, const gchar *file)
     src = gst_element_factory_make("filesrc", "source");
     g_object_set(G_OBJECT(src), "location", file, NULL);
     dec = gst_element_factory_make("decodebin", "decoder");
-    g_signal_connect(dec, "new-decoded-pad", G_CALLBACK(Lastfmfp_cb_newpad), ma);
+    g_signal_connect(dec, "pad-added", G_CALLBACK(Lastfmfp_cb_newpad), ma);
     gst_bin_add_many(GST_BIN(ma->pipeline), src, dec, NULL);
     gst_element_link(src, dec);
 
@@ -181,11 +188,8 @@ Lastfmfp_initgstreamer(LastfmfpAudio *ma, const gchar *file)
     ma->audio = gst_bin_new("audio");
 
     audioconvert = gst_element_factory_make("audioconvert", "conv");
-    filter_short = gst_caps_new_simple("audio/x-raw-int",
-         "width", G_TYPE_INT, 16, 
-         "depth", G_TYPE_INT, 16, 
-         "endianness", G_TYPE_INT, 1234,//BYTE_ORDER, //1234, 
-         "signed", G_TYPE_BOOLEAN, TRUE, 
+    filter_short = gst_caps_new_simple("audio/x-raw",
+         "format", G_TYPE_STRING, GST_AUDIO_NE(S16),
          NULL);
     cfilt_short = gst_element_factory_make("capsfilter", "cfilt_short");
     g_object_set(G_OBJECT(cfilt_short), "caps", filter_short, NULL);
@@ -202,7 +206,7 @@ Lastfmfp_initgstreamer(LastfmfpAudio *ma, const gchar *file)
     gst_element_link_many(audioconvert, cfilt_short,
            sink, NULL);
 
-    audiopad = gst_element_get_pad(audioconvert, "sink");
+    audiopad = gst_element_get_static_pad(audioconvert, "sink");
     gst_element_add_pad(ma->audio,
             gst_ghost_pad_new("sink", audiopad));
     gst_object_unref(audiopad);
@@ -218,8 +222,8 @@ Lastfmfp_initgstreamer(LastfmfpAudio *ma, const gchar *file)
         gst_element_get_state(ma->pipeline, NULL, NULL, max_wait);
     }
 
-    GstPad *pad = gst_element_get_pad(sink, "sink");
-    GstCaps *caps = gst_pad_get_negotiated_caps(pad);
+    GstPad *pad = gst_element_get_static_pad(sink, "sink");
+    GstCaps *caps = gst_pad_get_current_caps(pad);
     if (GST_IS_CAPS(caps)) {
         GstStructure *str = gst_caps_get_structure(caps, 0);
         gst_structure_get_int(str, "rate", &ma->filerate);

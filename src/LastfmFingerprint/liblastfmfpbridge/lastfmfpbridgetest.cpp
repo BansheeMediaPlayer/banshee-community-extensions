@@ -21,6 +21,7 @@
  */
 
 #include <gst/gst.h>
+#include <stdio.h>
 
 #include "gst-lastfmfpbridge.h"
 
