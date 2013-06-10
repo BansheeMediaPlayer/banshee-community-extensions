@@ -91,9 +91,8 @@ void toc()
 }
 
 static void
-mirageaudio_cb_newpad(GstElement *decodebin, GstPad *pad, MirageAudio *ma)
+mirageaudio_link_audio_pad(GstPad *pad, GstCaps *caps, MirageAudio *ma)
 {
-    GstCaps *caps;
     GstStructure *str;
     GstPad *audiopad;
 
@@ -105,19 +104,44 @@ mirageaudio_cb_newpad(GstElement *decodebin, GstPad *pad, MirageAudio *ma)
     }
 
     // check media type
-    caps = gst_pad_get_current_caps(pad);
     str = gst_caps_get_structure(caps, 0);
-
-    if (!g_strrstr(gst_structure_get_name(str), "audio")) {
-        gst_caps_unref(caps);
+    if (!g_strrstr(gst_structure_get_name(str), "audio/")) {
         gst_object_unref(audiopad);
         return;
     }
-    gst_caps_unref(caps);
+
+    if (!gst_structure_get_int(str, "rate", &ma->filerate))
+        ma->filerate = -1;
 
     // link
     gst_pad_link(pad, audiopad);
     gst_object_unref(audiopad);
+}
+
+static void
+mirageaudio_cb_caps_notify(GstPad *pad, GParamSpec *unused, MirageAudio *ma)
+{
+    GstCaps *caps;
+
+    caps = gst_pad_get_current_caps(pad);
+    mirageaudio_link_audio_pad(pad, caps, ma);
+    gst_caps_unref (caps);
+}
+
+static void
+mirageaudio_cb_newpad(GstElement *decodebin, GstPad *pad, MirageAudio *ma)
+{
+    GstCaps *caps;
+
+    caps = gst_pad_get_current_caps(pad);
+    /* If we have no caps yet, wait until we have them */
+    if (!caps) {
+      g_signal_connect(pad, "notify::caps", G_CALLBACK(mirageaudio_cb_caps_notify), ma);
+      return;
+    }
+
+    mirageaudio_link_audio_pad(pad, caps, ma);
+    gst_caps_unref (caps);
 }
 
 static void
@@ -342,18 +366,6 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
     if (gst_element_set_state(ma->pipeline, GST_STATE_PAUSED) == GST_STATE_CHANGE_ASYNC) {
         gst_element_get_state(ma->pipeline, NULL, NULL, max_wait);
     }
-
-    GstPad *pad = gst_element_get_static_pad(sink, "sink");
-    GstCaps *caps = gst_pad_get_current_caps(pad);
-    if (GST_IS_CAPS(caps)) {
-        GstStructure *str = gst_caps_get_structure(caps, 0);
-        gst_structure_get_int(str, "rate", &ma->filerate);
-
-    } else {
-        ma->filerate = -1;
-    }
-    gst_caps_unref(caps);
-    gst_object_unref(pad);
 }
 
 float*
