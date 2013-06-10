@@ -63,9 +63,8 @@ struct LastfmfpAudio {
 };
 
 static void
-Lastfmfp_cb_newpad(GstElement *decodebin, GstPad *pad, LastfmfpAudio *ma)
+Lastfmfp_link_audio_pad(GstPad *pad, GstCaps *caps, LastfmfpAudio *ma)
 {
-    GstCaps *caps;
     GstStructure *str;
     GstPad *audiopad;
 
@@ -77,19 +76,44 @@ Lastfmfp_cb_newpad(GstElement *decodebin, GstPad *pad, LastfmfpAudio *ma)
     }
 
     // check media type
-    caps = gst_pad_get_current_caps(pad);
     str = gst_caps_get_structure(caps, 0);
-
-    if (!g_strrstr(gst_structure_get_name(str), "audio")) {
-        gst_caps_unref(caps);
+    if (!g_strrstr(gst_structure_get_name(str), "audio/")) {
         gst_object_unref(audiopad);
         return;
     }
-    gst_caps_unref(caps);
+
+    if (!gst_structure_get_int(str, "rate", &ma->filerate))
+        ma->filerate = -1;
+    if (!gst_structure_get_int(str, "channels", &ma->nchannels))
+        ma->nchannels = -1;
 
     // link
     gst_pad_link(pad, audiopad);
     gst_object_unref(audiopad);
+}
+
+static void
+Lastfmfp_cb_caps_notify(GstPad *pad, GParamSpec *unused, LastfmfpAudio *ma)
+{
+    GstCaps *caps;
+
+    caps = gst_pad_get_current_caps(pad);
+    Lastfmfp_link_audio_pad(pad, caps, ma);
+    gst_caps_unref (caps);
+}
+
+static void
+Lastfmfp_cb_newpad(GstElement *decodebin, GstPad *pad, LastfmfpAudio *ma)
+{
+    GstCaps *caps;
+
+    caps = gst_pad_get_current_caps(pad);
+    /* If we have no caps yet, wait until we have them */
+    if (!caps) {
+      g_signal_connect(pad, "notify::caps", G_CALLBACK(Lastfmfp_cb_caps_notify), ma);
+      return;
+    }
+    gst_caps_unref(caps);
 }
 
 static void FingerprintFound(LastfmfpAudio *ma)
@@ -221,18 +245,6 @@ Lastfmfp_initgstreamer(LastfmfpAudio *ma, const gchar *file)
     if (gst_element_set_state(ma->pipeline, GST_STATE_PAUSED) == GST_STATE_CHANGE_ASYNC) {
         gst_element_get_state(ma->pipeline, NULL, NULL, max_wait);
     }
-
-    GstPad *pad = gst_element_get_static_pad(sink, "sink");
-    GstCaps *caps = gst_pad_get_current_caps(pad);
-    if (GST_IS_CAPS(caps)) {
-        GstStructure *str = gst_caps_get_structure(caps, 0);
-        gst_structure_get_int(str, "rate", &ma->filerate);
-        gst_structure_get_int(str, "channels", &ma->nchannels);
-    } else {
-        ma->filerate = -1;
-    }
-    gst_caps_unref(caps);
-    gst_object_unref(pad);
 }
 
 extern "C" const char*
@@ -248,11 +260,8 @@ Lastfmfp_decode(LastfmfpAudio *ma, const gchar *file, int* size, int* ret)
 
     // Gstreamer setup
     Lastfmfp_initgstreamer(ma, file);
-    //lastfm setup
-    ma->extractor = new fingerprint::FingerprintExtractor();
-    ma->extractor->initForQuery(ma->filerate, ma->nchannels, ma->seconds);
     
-    if (ma->filerate < 0) {
+    if (ma->filerate < 0 || ma->nchannels < 0) {
         *size = 0;
         *ret = -1;
 
@@ -262,6 +271,10 @@ Lastfmfp_decode(LastfmfpAudio *ma, const gchar *file, int* size, int* ret)
 
         return NULL;
     }
+
+    //lastfm setup
+    ma->extractor = new fingerprint::FingerprintExtractor();
+    ma->extractor->initForQuery(ma->filerate, ma->nchannels, ma->seconds);
 
     // decode...
     gst_element_set_state(ma->pipeline, GST_STATE_PLAYING);
