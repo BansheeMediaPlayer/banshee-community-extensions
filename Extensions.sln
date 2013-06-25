@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongKick", "src\SongKick\SongKick.csproj", "{460378DF-B87B-4E9A-8B3D-4C5F84D0B733}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidRemote", "src\AndroidRemote\AndroidRemote.csproj", "{ED1C6ABE-4BA3-4771-9419-CAA77D1BBFEF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CueSheets", "src\CueSheets\CueSheets.csproj", "{}"
@@ -92,6 +94,10 @@ Global
 		Windows|Any CPU = Windows|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{460378DF-B87B-4E9A-8B3D-4C5F84D0B733}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{460378DF-B87B-4E9A-8B3D-4C5F84D0B733}.Debug|x86.Build.0 = Debug|Any CPU
+		{460378DF-B87B-4E9A-8B3D-4C5F84D0B733}.Release|x86.ActiveCfg = Release|Any CPU
+		{460378DF-B87B-4E9A-8B3D-4C5F84D0B733}.Release|x86.Build.0 = Release|Any CPU
 		{ED1C6ABE-4BA3-4771-9419-CAA77D1BBFEF}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{ED1C6ABE-4BA3-4771-9419-CAA77D1BBFEF}.Debug|x86.Build.0 = Debug|Any CPU
 		{ED1C6ABE-4BA3-4771-9419-CAA77D1BBFEF}.Release|x86.ActiveCfg = Release|Any CPU
