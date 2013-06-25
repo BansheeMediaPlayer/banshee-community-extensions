@@ -26,7 +26,6 @@
         <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>
-    <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
@@ -34,7 +33,6 @@
     <DebugType>full</DebugType>
     <OutputPath>..\..\..\bin</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
-    <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
   </PropertyGroup>
   <ItemGroup>
@@ -46,34 +44,17 @@
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>gtk-sharp-2.0</Package>
     </Reference>
-    <Reference Include="Mono.Cairo">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+    <Reference Include="Mono.Cairo" />
     <Reference Include="Mono.Addins">
-      <SpecificVersion>False</SpecificVersion>
       <Package>mono-addins</Package>
     </Reference>
-    <Reference Include="Banshee.Core, Version=1.7.0.0, Culture=neutral">
-      <Package>banshee-core</Package>
-    </Reference>
-    <Reference Include="Banshee.Services, Version=1.7.0.0, Culture=neutral">
-      <Package>banshee-services</Package>
-    </Reference>
-    <Reference Include="Banshee.ThickClient, Version=1.7.0.0, Culture=neutral">
-      <Package>banshee-thickclient</Package>
-    </Reference>
-    <Reference Include="Banshee.Widgets, Version=1.7.0.0, Culture=neutral">
-      <Package>banshee-thickclient</Package>
-    </Reference>
-    <Reference Include="Hyena, Version=1.7.0.0, Culture=neutral">
-      <Package>banshee-hyena</Package>
-    </Reference>
-    <Reference Include="Hyena.Data.Sqlite, Version=1.7.0.0, Culture=neutral">
-      <Package>banshee-hyena-data-sqlite</Package>
-    </Reference>
-    <Reference Include="Hyena.Gui, Version=1.7.0.0, Culture=neutral">
-      <Package>banshee-hyena-gui</Package>
-    </Reference>
+    <Reference Include="Banshee.Core, Version=1.7.0.0, Culture=neutral" />
+    <Reference Include="Banshee.Services, Version=1.7.0.0, Culture=neutral" />
+    <Reference Include="Banshee.ThickClient, Version=1.7.0.0, Culture=neutral" />
+    <Reference Include="Banshee.Widgets, Version=1.7.0.0, Culture=neutral" />
+    <Reference Include="Hyena, Version=1.7.0.0, Culture=neutral" />
+    <Reference Include="Hyena.Data.Sqlite, Version=1.7.0.0, Culture=neutral" />
+    <Reference Include="Hyena.Gui, Version=1.7.0.0, Culture=neutral" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
