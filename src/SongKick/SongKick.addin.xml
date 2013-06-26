@@ -3,11 +3,11 @@
     id="Banshee.SongKick"
     version="1.0"
     compatVersion="1.0"
-    copyright="Copyright © 2010 Cool Extension Author. Licensed under the MIT X11 license."
-    name="Concise Title for SongKick"
+    copyright="Copyright © 2013 Tomasz Maczyński. Licensed under the MIT X11 license."
+    name="SongKick"
     category="Community Extensions"
-    description="Describe your extension, ideally starting with an action verb.  Keep it brief and avoid tech jargon."
-    author="Cool Extension Author"
+    description="Provides personalized concert recommendations."
+    author="Tomasz Maczyński"
     url="http://banshee-project.org/"
     defaultEnabled="false">
 
