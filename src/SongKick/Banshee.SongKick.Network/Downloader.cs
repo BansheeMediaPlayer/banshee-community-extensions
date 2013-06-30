@@ -24,13 +24,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Net;
 
 namespace Banshee.SongKick.Network
 {
-    public class Downloader
+    public static class Downloader
     {
-        public Downloader ()
+        /**
+         * method for synchronic download of data
+         */
+        public static string download(string uri)
         {
+            if (String.IsNullOrEmpty(uri))
+            {
+                throw new ArgumentException("Specify uri of resource you want to download");
+            }
+
+            WebClient client = new WebClient ();
+            return client.DownloadString(uri);
         }
     }
 }
