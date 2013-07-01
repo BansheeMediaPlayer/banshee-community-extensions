@@ -39,6 +39,8 @@ using Banshee.ServiceStack;
 using Banshee.Preferences;
 using Banshee.MediaEngine;
 using Banshee.PlaybackController;
+using Banshee.SongKick.Recommendations;
+using Hyena.Jobs;
 
 namespace Banshee.SongKick
 {
@@ -47,10 +49,13 @@ namespace Banshee.SongKick
     //      DatabaseSource - generic, DB-backed Track source; used by PlaylistSource
     //        PrimarySource - 'owns' tracks, used by DaapSource, DapSource
     //          LibrarySource - used by Music, Video, Podcasts, and Audiobooks
+
     public class SongKickSource : Source
     {
         // In the sources TreeView, sets the order value for this source, small on top
         const int sort_order = 190;
+
+        Scheduler scheduler = new Scheduler ();
 
         public SongKickSource () : base (AddinManager.CurrentLocalizer.GetString ("SongKick"),
                                                AddinManager.CurrentLocalizer.GetString ("SongKick"),
@@ -58,6 +63,12 @@ namespace Banshee.SongKick
 		                                       "extension-unique-id")
         {
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
+
+            //for testing only:
+            //var downloadJob = new DownloadRecommendationsJob(@"http://textfiles.serverrack.net/computers/1003v-mm");
+
+            var downloadJob = new DownloadRecommendationsJob(@"http://api.songkick.com/api/3.0/users/tmtimon/calendar.json?reason=tracked_artist&apikey=Qjqhc2hkfU3BaTx6");
+            scheduler.Add(downloadJob);
 
             Hyena.Log.Information ("Testing!  SongKick source has been instantiated!");
         }
@@ -70,6 +81,8 @@ namespace Banshee.SongKick
         private class CustomView : ISourceContents
         {
             Gtk.Label label = new Gtk.Label ("Custom view for SongKick extension is working!");
+
+
 
             public bool SetSource (ISource source) { return true; }
             public void ResetSource () { }
