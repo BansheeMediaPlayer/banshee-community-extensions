@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Banshee.SongKick\SongKickSource.cs" />
     <Compile Include="Banshee.SongKick.Network\Downloader.cs" />
+    <Compile Include="Banshee.SongKick.Recommendations\MusicEvent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -115,5 +116,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banshee.SongKick.Network\" />
+    <Folder Include="Banshee.SongKick.Recommendations\" />
   </ItemGroup>
 </Project>
