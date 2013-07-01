@@ -25,6 +25,8 @@
 // THE SOFTWARE.
 using System;
 using System.Net;
+using System.IO;
+using System.Text;
 
 namespace Banshee.SongKick.Network
 {
@@ -35,13 +37,27 @@ namespace Banshee.SongKick.Network
          */
         public static string download(string uri)
         {
+            /*
+            // This implementation causes
+            // System.Net.WebException: Error: NameResolutionFailure
+            // for some servers with no apparent reason
+
             if (String.IsNullOrEmpty(uri))
             {
                 throw new ArgumentException("Specify uri of resource you want to download");
             }
 
-            WebClient client = new WebClient ();
-            return client.DownloadString(uri);
+            string response;
+            using (WebClient client = new WebClient ())
+            {
+                response = client.DownloadString(uri);
+            }
+            return response;
+            */
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            WebResponse response = request.GetResponse();
+            return new StreamReader(response.GetResponseStream(), Encoding.UTF8).ReadToEnd();
         }
     }
 }
