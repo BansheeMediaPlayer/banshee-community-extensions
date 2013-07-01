@@ -29,8 +29,16 @@ namespace Banshee.SongKick.Recommendations
 {
     public class MusicEvent
     {
+        public string DisplayName { get; private set; }
+        public string Type { get; private set; }
+        public long IDisposable { get; private set; }
+        public DateTime date { get; private set; }
+        public double popularity { get; private set; }
+
         public MusicEvent ()
         {
+
+
         }
     }
 }
