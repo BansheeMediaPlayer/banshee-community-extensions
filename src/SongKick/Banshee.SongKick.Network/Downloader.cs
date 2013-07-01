@@ -55,9 +55,34 @@ namespace Banshee.SongKick.Network
             return response;
             */
 
+
+            /*
+            // Version that sometimes fails:
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             WebResponse response = request.GetResponse();
             return new StreamReader(response.GetResponseStream(), Encoding.UTF8).ReadToEnd();
+            */
+
+            HttpWebResponse response = null;
+            
+            try {
+                var request = (HttpWebRequest) WebRequest.Create (uri);                
+                response = (HttpWebResponse) request.GetResponse ();
+                
+                if (response.StatusCode != HttpStatusCode.OK) {
+                    return null;
+                }
+                
+                using (Stream stream = response.GetResponseStream ()) {
+                    using (StreamReader reader = new StreamReader (stream)) {
+                        return reader.ReadToEnd ();
+                    }
+                }
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                Hyena.Log.WarningFormat(String.Format("SongKick: Could not download: {0}", (uri == null ? "NULL_STRING" : uri)));
+            }
         }
     }
 }
