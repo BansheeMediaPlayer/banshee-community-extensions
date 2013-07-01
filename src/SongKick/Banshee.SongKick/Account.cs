@@ -29,10 +29,6 @@ namespace Banshee.SongKick
 {
     public class Account
     {
-        public string APIKey {
-            get { return "Qjqhc2hkfU3BaTx6"; }
-        }
-
         public Account ()
         {
         }

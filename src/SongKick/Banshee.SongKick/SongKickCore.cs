@@ -27,7 +27,7 @@ using System;
 
 namespace Banshee.SongKick
 {
-    public class SongKickCore
+    public static class SongKickCore
     {
         private static Account account;
         public static Account Account {
@@ -40,8 +40,8 @@ namespace Banshee.SongKick
             }
         }
 
-        public SongKickCore ()
-        {
+        public static string APIKey {
+            get { return "Qjqhc2hkfU3BaTx6"; }
         }
     }
 }
