@@ -43,7 +43,7 @@ namespace Banshee.SongKick.Recommendations
         {
             string serverReply = Downloader.download(uri);
             Log.Debug("SongKick: Recieved server's reply: " 
-                      + serverReply.Substring(0, Math.Min(serverReply.Length, 30) + "..."));
+                      + serverReply.Substring(0, Math.Min(serverReply.Length, 30)) + "...");
         }
     }
 }
