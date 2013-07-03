@@ -80,8 +80,6 @@ namespace Banshee.SongKick.Network
                 }
             } catch (Exception e) {
                 throw e;
-            } finally {
-                Hyena.Log.WarningFormat(String.Format("SongKick: Could not download: {0}", (uri == null ? "NULL_STRING" : uri)));
             }
         }
     }
