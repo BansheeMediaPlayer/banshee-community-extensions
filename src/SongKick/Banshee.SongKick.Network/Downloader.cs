@@ -37,10 +37,9 @@ namespace Banshee.SongKick.Network
          */
         public static string download(string uri)
         {
-            /*
-            // This implementation causes
             // System.Net.WebException: Error: NameResolutionFailure
-            // for some servers with no apparent reason
+            // is rised in some cases with no apparent reason
+
 
             if (String.IsNullOrEmpty(uri))
             {
@@ -52,35 +51,33 @@ namespace Banshee.SongKick.Network
             {
                 response = client.DownloadString(uri);
             }
+
             return response;
-            */
 
-
+            // Another version:
             /*
-            // Version that sometimes fails:
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             WebResponse response = request.GetResponse();
             return new StreamReader(response.GetResponseStream(), Encoding.UTF8).ReadToEnd();
             */
 
+            // Another version:
+            /*
             HttpWebResponse response = null;
+
+            var request = (HttpWebRequest) WebRequest.Create (uri);                
+            response = (HttpWebResponse) request.GetResponse ();
             
-            try {
-                var request = (HttpWebRequest) WebRequest.Create (uri);                
-                response = (HttpWebResponse) request.GetResponse ();
-                
-                if (response.StatusCode != HttpStatusCode.OK) {
-                    return null;
-                }
-                
-                using (Stream stream = response.GetResponseStream ()) {
-                    using (StreamReader reader = new StreamReader (stream)) {
-                        return reader.ReadToEnd ();
-                    }
-                }
-            } catch (Exception e) {
-                throw e;
+            if (response.StatusCode != HttpStatusCode.OK) {
+                return null;
             }
+            
+            using (Stream stream = response.GetResponseStream ()) {
+                using (StreamReader reader = new StreamReader (stream)) {
+                    return reader.ReadToEnd ();
+                }
+            }
+            */
         }
     }
 }
