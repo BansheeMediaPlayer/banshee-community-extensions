@@ -1,5 +1,5 @@
 //
-// DownloadRecommendationsJob.cs
+// ServerAnswer.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -24,30 +24,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Hyena.Jobs;
-using Banshee.SongKick.Network;
-using Hyena;
+using Hyena.Json;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class DownloadRecommendationsJob : SimpleAsyncJob
+    public class ServerAnswer
     {
-        private string uri;
+        public bool IsStatusOk { get; private set; }
 
-        public DownloadRecommendationsJob (string uri)
+        public ServerAnswer (string answer)
         {
-            this.uri = uri;
-        }
+            IsStatusOk = false;
 
-        protected override void Run ()
-        {
-            string replyString = Downloader.download(uri);
+            var jsonObject = JsonObject.FromString(answer);
 
-            var reply = new ServerAnswer(replyString);
+            var resultPage = jsonObject["resultsPage"];
+            Hyena.Log.Debug(resultPage.ToString());
 
-            Log.Debug(reply.ToString());
-            Log.Debug("SongKick: Recieved server's reply: " 
-                      + replyString.Substring(0, Math.Min(replyString.Length, 30)) + "...");
         }
     }
 }

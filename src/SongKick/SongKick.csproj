@@ -71,15 +71,16 @@
     <Compile Include="Banshee.SongKick\SongKickCore.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Recommendations.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\DownloadRecommendationsJob.cs" />
+    <Compile Include="Banshee.SongKick.Recommendations\ServerAnswer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
-        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="True" RelativeMakefileName="Makefile.am">
-          <BuildFilesVar Sync="True" Name="SOURCES" />
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am">
+          <BuildFilesVar Sync="true" Name="SOURCES" />
           <DeployFilesVar />
-          <ResourcesVar Sync="True" Name="RESOURCES" />
+          <ResourcesVar Sync="true" Name="RESOURCES" />
           <OthersVar />
           <GacRefVar />
           <AsmRefVar />
