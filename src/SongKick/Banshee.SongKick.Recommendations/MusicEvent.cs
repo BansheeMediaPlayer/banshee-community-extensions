@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Hyena.Json;
 
 namespace Banshee.SongKick.Recommendations
 {
@@ -35,10 +36,11 @@ namespace Banshee.SongKick.Recommendations
         public DateTime date { get; private set; }
         public double popularity { get; private set; }
 
-        public MusicEvent ()
+        public MusicEvent (string jsonString)
         {
+            JsonObject.FromString(jsonString);
 
-
+            Console.WriteLine();
         }
     }
 }
