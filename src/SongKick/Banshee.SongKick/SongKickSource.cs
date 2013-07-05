@@ -66,7 +66,7 @@ namespace Banshee.SongKick
 
             //for testing only:
             //var downloadJob = new DownloadRecommendationsJob(@"http://textfiles.serverrack.net/computers/1003v-mm");
-
+            //string eventsInLondon = @"http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx6"
             var downloadJob = new DownloadRecommendationsJob(@"http://api.songkick.com/api/3.0/users/tmtimon/calendar.json?reason=tracked_artist&apikey=Qjqhc2hkfU3BaTx6");
             scheduler.Add(downloadJob);
 
