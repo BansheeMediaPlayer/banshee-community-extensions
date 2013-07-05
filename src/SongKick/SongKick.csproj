@@ -74,6 +74,7 @@
     <Compile Include="Banshee.SongKick.Recommendations\ResultsPage.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Results.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\ResultsError.cs" />
+    <Compile Include="Banshee.SongKick.Recommendations\Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
