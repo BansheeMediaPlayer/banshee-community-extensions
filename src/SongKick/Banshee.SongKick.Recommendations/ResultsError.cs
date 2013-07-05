@@ -30,11 +30,11 @@ namespace Banshee.SongKick.Recommendations
 {
     public class ResultsError
     {
-
+        public string Message { get; private set; }
 
         public ResultsError (JsonObject jsonObject)
         {
-
+            this.Message = jsonObject["message"] as String;
         }
     }
 }
