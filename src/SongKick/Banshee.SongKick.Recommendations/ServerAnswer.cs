@@ -25,22 +25,39 @@
 // THE SOFTWARE.
 using System;
 using Hyena.Json;
+using System.Collections.Generic;
 
 namespace Banshee.SongKick.Recommendations
 {
     public class ServerAnswer
     {
+        public bool IsWellFormed { get; private set; }
         public bool IsStatusOk { get; private set; }
+        public string status { get; private set; }
 
         public ServerAnswer (string answer)
         {
-            IsStatusOk = false;
+            this.IsWellFormed = false;
+            this.IsStatusOk = false;
 
-            var jsonObject = JsonObject.FromString(answer);
+            try {
+                var jsonObject = JsonObject.FromString (answer);
 
-            var resultPage = jsonObject["resultsPage"];
-            Hyena.Log.Debug(resultPage.ToString());
+                JsonObject resultsPage = null;
+                try {
+                    resultsPage = jsonObject ["resultsPage"] as JsonObject;
+                    this.status = resultsPage ["status"] as String;
+                    this.IsStatusOk = status == "ok";
+                } catch (KeyNotFoundException e) {
+                    Hyena.Log.DebugException (e);
+                }
 
+                this.IsWellFormed = true;
+
+                Hyena.Log.Debug(resultsPage.ToString());
+            } catch (ApplicationException e) {
+                Hyena.Log.DebugException(e);
+            }
         }
     }
 }
