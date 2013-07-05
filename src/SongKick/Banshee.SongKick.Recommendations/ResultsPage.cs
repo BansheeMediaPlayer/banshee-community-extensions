@@ -1,5 +1,5 @@
 //
-// ServerAnswer.cs
+// ResultsPage.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -29,13 +29,13 @@ using System.Collections.Generic;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class ServerAnswer
+    public class ResultsPage
     {
         public bool IsWellFormed { get; private set; }
         public bool IsStatusOk { get; private set; }
         public string status { get; private set; }
 
-        public ServerAnswer (string answer)
+        public ResultsPage (string answer)
         {
             this.IsWellFormed = false;
             this.IsStatusOk = false;
