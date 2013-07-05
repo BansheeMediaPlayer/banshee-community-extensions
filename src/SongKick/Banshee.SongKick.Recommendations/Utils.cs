@@ -41,6 +41,18 @@ namespace Banshee.SongKick.Recommendations
 
             return succeded;               
         }
+
+        public static V GetValueAndLogOnfFailure<K, V> (this IDictionary<K, V> dict, K key, string logMsg)
+        {
+            try {
+                V value = dict[key];
+                return value;
+            }
+            catch (KeyNotFoundException) {
+                Hyena.Log.Warning(String.Format("GetValueAndLogOnFailure failed to get value. Message: {0}", logMsg));
+                return default(V);
+            }                  
+        }
     }
 }
 
