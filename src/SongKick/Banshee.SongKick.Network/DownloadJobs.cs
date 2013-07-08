@@ -1,5 +1,5 @@
 //
-// DownloadRecommendationsJob.cs
+// DownloadJobs.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -27,8 +27,9 @@ using System;
 using Hyena.Jobs;
 using Banshee.SongKick.Network;
 using Hyena;
+using Banshee.SongKick.Recommendations;
 
-namespace Banshee.SongKick.Recommendations
+namespace Banshee.SongKick.Network
 {
     public class DownloadRecommendationsJob : SimpleAsyncJob
     {
@@ -46,11 +47,11 @@ namespace Banshee.SongKick.Recommendations
             string replyString = Downloader.download(uri);
 
             //var reply = new ResultsPage(replyString, (Object o) => {return null;});
-            var reply = new ResultsPage(replyString, getResultsDelegate);
+            var resultsPage = new ResultsPage(replyString, getResultsDelegate);
 
-            Log.Debug(reply.ToString());
             Log.Debug("SongKick: Recieved server's reply: " 
                       + replyString.Substring(0, Math.Min(replyString.Length, 30)) + "...");
+            Log.Debug("SongKick: Parsed results page:" + resultsPage.ToString());
         }
     }
 }

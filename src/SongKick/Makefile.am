@@ -3,8 +3,8 @@ LINK = $(BANSHEE_LIBS)
 
 SOURCES =  \
 	Banshee.SongKick.Network/Downloader.cs \
+	Banshee.SongKick.Network/DownloadJobs.cs \
 	Banshee.SongKick.Network/SongKickService.cs \
-	Banshee.SongKick.Recommendations/DownloadRecommendationsJob.cs \
 	Banshee.SongKick.Recommendations/Event.cs \
 	Banshee.SongKick.Recommendations/Events.cs \
 	Banshee.SongKick.Recommendations/Results.cs \
