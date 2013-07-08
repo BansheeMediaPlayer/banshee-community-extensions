@@ -41,6 +41,7 @@ using Banshee.MediaEngine;
 using Banshee.PlaybackController;
 using Banshee.SongKick.Recommendations;
 using Hyena.Jobs;
+using Banshee.SongKick.Network;
 
 namespace Banshee.SongKick
 {
@@ -55,7 +56,6 @@ namespace Banshee.SongKick
         // In the sources TreeView, sets the order value for this source, small on top
         const int sort_order = 190;
 
-        Scheduler scheduler = new Scheduler ();
 
         public SongKickSource () : base (AddinManager.CurrentLocalizer.GetString ("SongKick"),
                                                AddinManager.CurrentLocalizer.GetString ("SongKick"),
@@ -64,23 +64,8 @@ namespace Banshee.SongKick
         {
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
 
-            //for testing only:
-
-            //text file:
-            //string uri = @"http://textfiles.serverrack.net/computers/1003v-mm";
-
-            //events in London:
-            string uri = @"http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx6";
-
-            //events recomended for tmtimon user
-            //string uri =  @"http://api.songkick.com/api/3.0/users/tmtimon/calendar.json?reason=tracked_artist&apikey=Qjqhc2hkfU3BaTx6"
-
-            //invalid API key:
-            //string uri = @"http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=invalidKey";
-
-
-            var downloadJob = new DownloadRecommendationsJob(uri, Events.GetMusicEventListResultsDelegate);
-            scheduler.Add(downloadJob);
+            ServiceManager.RegisterService<SongKickService> ();
+            ServiceManager.Get<SongKickService> ().Initialize ();
 
             Hyena.Log.Information ("Testing!  SongKick source has been instantiated!");
         }
@@ -93,8 +78,6 @@ namespace Banshee.SongKick
         private class CustomView : ISourceContents
         {
             Gtk.Label label = new Gtk.Label ("Custom view for SongKick extension is working!");
-
-
 
             public bool SetSource (ISource source) { return true; }
             public void ResetSource () { }
