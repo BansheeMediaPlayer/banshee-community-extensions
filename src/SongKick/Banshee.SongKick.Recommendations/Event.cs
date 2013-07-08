@@ -38,7 +38,7 @@ namespace Banshee.SongKick.Recommendations
 
         public Event (JsonObject jsonObject)
         {
-            Id = jsonObject.Get <long> ("id"); // TODO: check if it's int or long
+            Id = jsonObject.Get <int> ("id"); // TODO: check if it's int or long
             DisplayName = jsonObject.Get <String> ("displayName");
             Type = jsonObject.Get <String> ("type");
             Popularity = jsonObject.Get <Double> ("popularity");
