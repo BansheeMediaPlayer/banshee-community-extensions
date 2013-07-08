@@ -54,11 +54,16 @@ namespace Banshee.SongKick.Recommendations
             }                  
         }
 
-        // based on InternetArchive.JsonExtensions:
         public static T Get<T> (this IDictionary<string, object> item, string key)
         {
+            return item.Get <T> (key, default(T));
+        }
+
+        // based on InternetArchive.JsonExtensions:
+        public static T Get<T> (this IDictionary<string, object> item, string key, T defaultValue)
+        {
             if (item == null)
-                return default (T);
+                return defaultValue;
 
             object result;
             if (item.TryGetValue (key, out result)) {
@@ -90,7 +95,7 @@ namespace Banshee.SongKick.Recommendations
                             result = new TimeSpan (h, m, s);
                         }
                     } else {
-                        result = default (T);
+                        result = defaultValue;
                     }
 
                     return (T)result;
@@ -99,7 +104,7 @@ namespace Banshee.SongKick.Recommendations
                 }
             }
 
-            return default (T);
+            return defaultValue;
         }
     }
 }
