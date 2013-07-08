@@ -1,5 +1,5 @@
 //
-// DownloadRecommendationsJob.cs
+// MusicEventListResults.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -24,33 +24,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Hyena.Jobs;
-using Banshee.SongKick.Network;
-using Hyena;
+using Hyena.Json;
+using System.Collections.Generic;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class DownloadRecommendationsJob : SimpleAsyncJob
-    {
-        private string uri;
-        private ResultsPage.GetResultsDelegate getResultsDelegate;
 
-        public DownloadRecommendationsJob (string uri, ResultsPage.GetResultsDelegate getResultsDelegate)
+
+    public class MusicEventListResults : Results
+    {
+        public IList<Object> elements { get; set; }
+
+        public MusicEventListResults (JsonArray jsonArray)
         {
-            this.uri = uri;
-            this.getResultsDelegate = getResultsDelegate;
+            this.elements = jsonArray;
         }
 
-        protected override void Run ()
+        public static ResultsPage.GetResultsDelegate GetMusicEventListResultsDelegate = 
+            new ResultsPage.GetResultsDelegate(GetMusicEventListResults);
+
+        public static MusicEventListResults GetMusicEventListResults(Object jsonArray)
         {
-            string replyString = Downloader.download(uri);
-
-            //var reply = new ResultsPage(replyString, (Object o) => {return null;});
-            var reply = new ResultsPage(replyString, getResultsDelegate);
-
-            Log.Debug(reply.ToString());
-            Log.Debug("SongKick: Recieved server's reply: " 
-                      + replyString.Substring(0, Math.Min(replyString.Length, 30)) + "...");
+            return new MusicEventListResults (jsonArray as JsonArray);
         }
     }
 }

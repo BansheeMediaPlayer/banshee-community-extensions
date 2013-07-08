@@ -39,7 +39,9 @@ namespace Banshee.SongKick.Recommendations
         public Results results { get; private set; }
         public ResultsError error { get; private set; }
 
-        public ResultsPage (string answer)
+        public delegate Results GetResultsDelegate(Object o);
+
+        public ResultsPage (string answer, GetResultsDelegate getResultsDelegate)
         {
             this.IsWellFormed = false;
 
@@ -52,9 +54,9 @@ namespace Banshee.SongKick.Recommendations
                     this.status = resultsPage.Get <String> ("status");
                     if (IsStatusOk) {
                         // TODO: refactor
-                        dynamic resultsJson = resultsPage.Get <object> ("results");
+                        var resultsJson = resultsPage.Get <object> ("results");
                         if (resultsJson != null)  {
-                            this.GetResults(resultsJson);
+                            this.results = getResultsDelegate(resultsJson);
                         }
                         else {
                             Hyena.Log.Error ("SongKick: Server returned 'ok' status without 'results'");
@@ -77,7 +79,7 @@ namespace Banshee.SongKick.Recommendations
                 Hyena.Log.DebugException(e);
             }
         }
-
+        /*
         protected virtual Results GetResults(JsonObject json)
         {
             return null;
@@ -87,6 +89,7 @@ namespace Banshee.SongKick.Recommendations
         {
             return null;
         }
+        */
     }
 }
 

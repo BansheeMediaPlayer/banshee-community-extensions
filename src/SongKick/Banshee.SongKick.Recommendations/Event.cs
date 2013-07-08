@@ -1,5 +1,5 @@
 //
-// DownloadRecommendationsJob.cs
+// Event.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -24,33 +24,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Hyena.Jobs;
-using Banshee.SongKick.Network;
-using Hyena;
+using Hyena.Json;
+using System.Collections.Generic;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class DownloadRecommendationsJob : SimpleAsyncJob
+    public class Event
     {
-        private string uri;
-        private ResultsPage.GetResultsDelegate getResultsDelegate;
 
-        public DownloadRecommendationsJob (string uri, ResultsPage.GetResultsDelegate getResultsDelegate)
+        public static ResultsPage.GetResultsDelegate GetEventListResultsDelegate = 
+            new ResultsPage.GetResultsDelegate(GetEventListResults);
+
+        public static Event GetEventListResults(Object jsonArray)
         {
-            this.uri = uri;
-            this.getResultsDelegate = getResultsDelegate;
-        }
-
-        protected override void Run ()
-        {
-            string replyString = Downloader.download(uri);
-
-            //var reply = new ResultsPage(replyString, (Object o) => {return null;});
-            var reply = new ResultsPage(replyString, getResultsDelegate);
-
-            Log.Debug(reply.ToString());
-            Log.Debug("SongKick: Recieved server's reply: " 
-                      + replyString.Substring(0, Math.Min(replyString.Length, 30)) + "...");
+            return new Event (jsonArray as JsonArray);
         }
     }
 }
