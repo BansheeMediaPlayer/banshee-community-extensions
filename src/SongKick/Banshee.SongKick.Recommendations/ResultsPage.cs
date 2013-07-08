@@ -32,32 +32,60 @@ namespace Banshee.SongKick.Recommendations
     public class ResultsPage
     {
         public bool IsWellFormed { get; private set; }
-        public bool IsStatusOk { get; private set; }
+        public bool IsStatusOk { 
+            get { return (status == "ok"); }
+        }
         public string status { get; private set; }
+        public Results results { get; private set; }
+        public ResultsError error { get; private set; }
 
         public ResultsPage (string answer)
         {
             this.IsWellFormed = false;
-            this.IsStatusOk = false;
 
             try {
                 var jsonObject = JsonObject.FromString (answer);
 
                 JsonObject resultsPage = null;
                 try {
-                    resultsPage = jsonObject ["resultsPage"] as JsonObject;
-                    this.status = resultsPage ["status"] as String;
-                    this.IsStatusOk = status == "ok";
-                } catch (KeyNotFoundException e) {
+                    resultsPage = jsonObject.Get <JsonObject> ("resultsPage");
+                    this.status = resultsPage.Get <String> ("status");
+                    if (IsStatusOk) {
+                        // TODO: refactor
+                        dynamic resultsJson = resultsPage.Get <object> ("results");
+                        if (resultsJson != null)  {
+                            this.GetResults(resultsJson);
+                        }
+                        else {
+                            Hyena.Log.Error ("SongKick: Server returned 'ok' status without 'results'");
+                        }
+                    }
+                    var errorJson = resultsPage.Get <JsonObject> ("error");
+                    if (errorJson != null)
+                    {
+                        this.error = new ResultsError(errorJson);
+                    }
+
+                    this.IsWellFormed = true;
+                } catch (ArgumentNullException e) {
                     Hyena.Log.DebugException (e);
                 }
 
-                this.IsWellFormed = true;
-
                 Hyena.Log.Debug(resultsPage.ToString());
+
             } catch (ApplicationException e) {
                 Hyena.Log.DebugException(e);
             }
+        }
+
+        protected virtual Results GetResults(JsonObject json)
+        {
+            return null;
+        }
+
+        protected virtual Results GetResults(JsonArray json)
+        {
+            return null;
         }
     }
 }

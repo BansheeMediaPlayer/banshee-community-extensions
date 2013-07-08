@@ -34,7 +34,7 @@ namespace Banshee.SongKick.Recommendations
 
         public ResultsError (JsonObject jsonObject)
         {
-            this.Message = jsonObject["message"] as String;
+            this.Message = jsonObject.Get <string> ("error", "SongKick: Server returned an error without an error message");
         }
     }
 }
