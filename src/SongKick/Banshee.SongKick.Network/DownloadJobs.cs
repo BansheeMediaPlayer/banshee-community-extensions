@@ -28,30 +28,55 @@ using Hyena.Jobs;
 using Banshee.SongKick.Network;
 using Hyena;
 using Banshee.SongKick.Recommendations;
+using System.Text;
 
 namespace Banshee.SongKick.Network
 {
-    public class DownloadRecommendationsJob : SimpleAsyncJob
+    public class DownloadJob : SimpleAsyncJob
     {
-        private string uri;
-        private ResultsPage.GetResultsDelegate getResultsDelegate;
+        protected string Uri { get; set; }
+        protected ResultsPage.GetResultsDelegate GetResultsDelegate { get; set; }
+        public string DefaultServiceUri {
+            get { return @"http://api.songkick.com/api/3.0/"; }
+        }
 
-        public DownloadRecommendationsJob (string uri, ResultsPage.GetResultsDelegate getResultsDelegate)
+        protected DownloadJob ()
         {
-            this.uri = uri;
-            this.getResultsDelegate = getResultsDelegate;
+        }
+
+        public DownloadJob (string uri, ResultsPage.GetResultsDelegate getResultsDelegate)
+        {
+            this.Uri = uri;
+            this.GetResultsDelegate = getResultsDelegate;
         }
 
         protected override void Run ()
         {
-            string replyString = Downloader.download(uri);
+            string replyString = Downloader.download(Uri);
 
             //var reply = new ResultsPage(replyString, (Object o) => {return null;});
-            var resultsPage = new ResultsPage(replyString, getResultsDelegate);
+            var resultsPage = new ResultsPage(replyString, GetResultsDelegate);
 
             Log.Debug("SongKick: Recieved server's reply: " 
                       + replyString.Substring(0, Math.Min(replyString.Length, 30)) + "...");
             Log.Debug("SongKick: Parsed results page:" + resultsPage.ToString());
+        }
+    }
+
+    public class MetroareaByIdDownloadJob : DownloadJob
+    {
+        public MetroareaByIdDownloadJob(long id, string apiKey, ResultsPage.GetResultsDelegate getResultsDelegate)
+        {
+            // example string for events in London:
+            // http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx6
+            var uriSB = new StringBuilder (DefaultServiceUri);
+            uriSB.Append (@"metro_areas/");
+            uriSB.Append (id.ToString());
+            uriSB.Append (@"/calendar.json?apikey=");
+            uriSB.Append (apiKey);
+
+            this.Uri = uriSB.ToString ();
+            this.GetResultsDelegate = getResultsDelegate;
         }
     }
 }

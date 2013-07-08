@@ -51,7 +51,7 @@ namespace Banshee.SongKick.Network
             //string uri = @"http://textfiles.serverrack.net/computers/1003v-mm";
 
             //events in London:
-            string uri = @"http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx6";
+            //string uri = @"http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx6";
 
             //events recomended for tmtimon user
             //string uri =  @"http://api.songkick.com/api/3.0/users/tmtimon/calendar.json?reason=tracked_artist&apikey=Qjqhc2hkfU3BaTx6"
@@ -60,7 +60,9 @@ namespace Banshee.SongKick.Network
             //string uri = @"http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=invalidKey";
 
 
-            var downloadJob = new DownloadRecommendationsJob(uri, Events.GetMusicEventListResultsDelegate);
+            //var downloadJob = new DownloadJob(uri, Events.GetMusicEventListResultsDelegate);  // test for DownloadJob
+            var downloadJob = new MetroareaByIdDownloadJob (24426, SongKickCore.APIKey, Events.GetMusicEventListResultsDelegate);
+            
             scheduler.Add(downloadJob);
         }
 
