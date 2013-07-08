@@ -53,6 +53,54 @@ namespace Banshee.SongKick.Recommendations
                 return default(V);
             }                  
         }
+
+        // based on InternetArchive.JsonExtensions:
+        public static T Get<T> (this IDictionary<string, object> item, string key)
+        {
+            if (item == null)
+                return default (T);
+
+            object result;
+            if (item.TryGetValue (key, out result)) {
+                try {
+                    if (result is T) {
+                        result = (T)result;
+                    } else if (result is string) {
+                        var type = typeof(T);
+                        string i = result as string;
+                        if (type == typeof(Int32)) {
+                            result = Int32.Parse (i);
+                        } else if (type == typeof(Int64)) {
+                            result = Int64.Parse (i);
+                        } else if (type == typeof(double)) {
+                            result = Double.Parse (i);
+                        } else if (type == typeof(TimeSpan)) {
+                            int h = 0, m = 0, s = 0;
+                            var bits = i.Split (':');
+
+                            if (bits.Length > 0)
+                                s = Int32.Parse (bits[bits.Length - 1]);
+
+                            if (bits.Length > 1)
+                                m = Int32.Parse (bits[bits.Length - 2]);
+
+                            if (bits.Length > 2)
+                                h = Int32.Parse (bits[bits.Length - 3]);
+
+                            result = new TimeSpan (h, m, s);
+                        }
+                    } else {
+                        result = default (T);
+                    }
+
+                    return (T)result;
+                } catch {
+                    Hyena.Log.Warning (String.Format("SongKick: Couldn't cast {0} ({1}) as {2} for key {3}", result, result.GetType (), typeof(T), key));
+                }
+            }
+
+            return default (T);
+        }
     }
 }
 
