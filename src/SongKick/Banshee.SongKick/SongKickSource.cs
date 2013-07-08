@@ -65,9 +65,21 @@ namespace Banshee.SongKick
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
 
             //for testing only:
-            //var downloadJob = new DownloadRecommendationsJob(@"http://textfiles.serverrack.net/computers/1003v-mm");
-            //string eventsInLondon = @"http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx6"
-            var downloadJob = new DownloadRecommendationsJob(@"http://api.songkick.com/api/3.0/users/tmtimon/calendar.json?reason=tracked_artist&apikey=Qjqhc2hkfU3BaTx6");
+
+            //text file:
+            //string uri = @"http://textfiles.serverrack.net/computers/1003v-mm";
+
+            //events in London:
+            string uri = @"http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx6";
+
+            //events recomended for tmtimon user
+            //string uri =  @"http://api.songkick.com/api/3.0/users/tmtimon/calendar.json?reason=tracked_artist&apikey=Qjqhc2hkfU3BaTx6"
+
+            //invalid API key:
+            //string uri = @"http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=invalidKey";
+
+
+            var downloadJob = new DownloadRecommendationsJob(uri);
             scheduler.Add(downloadJob);
 
             Hyena.Log.Information ("Testing!  SongKick source has been instantiated!");
