@@ -39,7 +39,7 @@ namespace Banshee.SongKick.Recommendations
         public Results results { get; private set; }
         public ResultsError error { get; private set; }
 
-        public delegate Results GetResultsDelegate(Object o);
+        public delegate Results GetResultsDelegate(JsonObject o);
 
         public ResultsPage (string answer, GetResultsDelegate getResultsDelegate)
         {
@@ -54,7 +54,7 @@ namespace Banshee.SongKick.Recommendations
                     this.status = resultsPage.Get <String> ("status");
                     if (IsStatusOk) {
                         // TODO: refactor
-                        var resultsJson = resultsPage.Get <object> ("results");
+                        JsonObject resultsJson = resultsPage.Get <JsonObject> ("results");
                         if (resultsJson != null)  {
                             this.results = getResultsDelegate(resultsJson);
                         }

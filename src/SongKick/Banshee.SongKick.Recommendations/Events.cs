@@ -1,5 +1,5 @@
 //
-// MusicEvent.cs
+// MusicEventListResults.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -25,22 +25,31 @@
 // THE SOFTWARE.
 using System;
 using Hyena.Json;
+using System.Collections.Generic;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class MusicEvent
+    public class Events : Results
     {
-        public string DisplayName { get; private set; }
-        public string Type { get; private set; }
-        public long IDisposable { get; private set; }
-        public DateTime date { get; private set; }
-        public double popularity { get; private set; }
+        public IList<Event> elements { get; set; }
 
-        public MusicEvent (string jsonString)
+        public Events (JsonObject jsonObject)
         {
-            JsonObject.FromString(jsonString);
+            this.elements = new List<Event> ();
+            var eventJsonObjs = jsonObject["event"] as JsonArray;
 
-            Console.WriteLine();
+            foreach (var eventJsonObj in eventJsonObjs) 
+            {
+                elements.Add (new Event(eventJsonObj as JsonObject));
+            }
+        }
+
+        public static ResultsPage.GetResultsDelegate GetMusicEventListResultsDelegate = 
+            new ResultsPage.GetResultsDelegate(GetEvents);
+
+        public static Events GetEvents(JsonObject jsonObject)
+        {
+            return new Events (jsonObject as JsonObject);
         }
     }
 }

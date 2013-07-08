@@ -79,7 +79,7 @@ namespace Banshee.SongKick
             //string uri = @"http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=invalidKey";
 
 
-            var downloadJob = new DownloadRecommendationsJob(uri, MusicEventListResults.GetMusicEventListResultsDelegate);
+            var downloadJob = new DownloadRecommendationsJob(uri, Events.GetMusicEventListResultsDelegate);
             scheduler.Add(downloadJob);
 
             Hyena.Log.Information ("Testing!  SongKick source has been instantiated!");

@@ -5,8 +5,7 @@ SOURCES =  \
 	Banshee.SongKick.Network/Downloader.cs \
 	Banshee.SongKick.Recommendations/DownloadRecommendationsJob.cs \
 	Banshee.SongKick.Recommendations/Event.cs \
-	Banshee.SongKick.Recommendations/MusicEvent.cs \
-	Banshee.SongKick.Recommendations/MusicEventListResults.cs \
+	Banshee.SongKick.Recommendations/Events.cs \
 	Banshee.SongKick.Recommendations/Results.cs \
 	Banshee.SongKick.Recommendations/ResultsError.cs \
 	Banshee.SongKick.Recommendations/ResultsPage.cs \

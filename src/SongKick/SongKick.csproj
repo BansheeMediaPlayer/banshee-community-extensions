@@ -66,7 +66,6 @@
   <ItemGroup>
     <Compile Include="Banshee.SongKick\SongKickSource.cs" />
     <Compile Include="Banshee.SongKick.Network\Downloader.cs" />
-    <Compile Include="Banshee.SongKick.Recommendations\MusicEvent.cs" />
     <Compile Include="Banshee.SongKick\Account.cs" />
     <Compile Include="Banshee.SongKick\SongKickCore.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\DownloadRecommendationsJob.cs" />
@@ -74,8 +73,8 @@
     <Compile Include="Banshee.SongKick.Recommendations\ResultsError.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Utils.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Results.cs" />
-    <Compile Include="Banshee.SongKick.Recommendations\MusicEventListResults.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Event.cs" />
+    <Compile Include="Banshee.SongKick.Recommendations\Events.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
