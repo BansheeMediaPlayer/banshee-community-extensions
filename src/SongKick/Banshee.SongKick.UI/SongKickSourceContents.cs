@@ -50,10 +50,10 @@ namespace Banshee.SongKick.UI
             main_box = new HBox () { Spacing = 6, BorderWidth = 5, ReallocateRedraws = true };
 
             menu_box = BuildTiles();
-            main_box.Add (menu_box);
+            main_box.PackStart (menu_box, false, false, 0);
 
             contents_box = BuildContents ();
-            main_box.Add (contents_box);
+            main_box.PackStart (contents_box, true, true, 0);
 
             // Clamp the width, preventing horizontal scrolling
             /*
@@ -74,8 +74,6 @@ namespace Banshee.SongKick.UI
             ShowAll ();
         }
 
-
-
         public bool SetSource (Banshee.Sources.ISource source)
         {
             if (source == null) {
@@ -93,7 +91,6 @@ namespace Banshee.SongKick.UI
             var titleLabel = new Label ("Menu:");
 
             vbox.PackStart (titleLabel, false, false, 0);
-
 
             var menu_items = new string [] {
                 "Personal recommendations", 
@@ -118,9 +115,7 @@ namespace Banshee.SongKick.UI
         Widget BuildContents ()
         {
             var vbox = new VBox () { Spacing = 2 };
-            var search_box = new HBox () { Spacing = 6, BorderWidth = 4 };
-
-            vbox.Add (search_box);
+            //var search_box = new HBox () { Spacing = 6, BorderWidth = 4 };
 
             var label = new Label ("SongKick new UI works");
             vbox.Add (label);
