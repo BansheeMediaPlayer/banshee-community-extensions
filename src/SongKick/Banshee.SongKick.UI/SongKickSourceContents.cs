@@ -36,6 +36,7 @@ namespace Banshee.SongKick.UI
 
         private Viewport viewport;
         private HBox main_box;
+        private Widget contents_box;
 
         //private HBox menu;
 
@@ -64,7 +65,8 @@ namespace Banshee.SongKick.UI
 
             main_box.Add (menu);
             */
-            main_box.Add (BuildTiles());
+            contents_box = BuildTiles();
+            main_box.Add (contents_box);
 
 
 
