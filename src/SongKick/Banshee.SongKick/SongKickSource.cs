@@ -42,6 +42,7 @@ using Banshee.PlaybackController;
 using Banshee.SongKick.Recommendations;
 using Hyena.Jobs;
 using Banshee.SongKick.Network;
+using Banshee.SongKick.UI;
 
 namespace Banshee.SongKick
 {
@@ -62,7 +63,7 @@ namespace Banshee.SongKick
 		                                       sort_order,
 		                                       "extension-unique-id")
         {
-            Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
+            Properties.Set<ISourceContents> ("Nereid.SourceContents", new SongKickSourceContents ());
 
             ServiceManager.RegisterService<SongKickService> ();
             ServiceManager.Get<SongKickService> ().Initialize ();
@@ -75,6 +76,7 @@ namespace Banshee.SongKick
             get { return 0; }
         }
 
+        /*
         private class CustomView : ISourceContents
         {
             Gtk.Label label = new Gtk.Label ("Custom view for SongKick extension is working!");
@@ -84,6 +86,6 @@ namespace Banshee.SongKick
             public Gtk.Widget Widget { get { return label; } }
             public ISource Source { get { return null; } }
         }
-
+        */
     }
 }

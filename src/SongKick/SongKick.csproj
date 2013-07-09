@@ -76,6 +76,7 @@
     <Compile Include="Banshee.SongKick.Recommendations\Events.cs" />
     <Compile Include="Banshee.SongKick.Network\SongKickService.cs" />
     <Compile Include="Banshee.SongKick.Network\DownloadJobs.cs" />
+    <Compile Include="Banshee.SongKick.UI\SongKickSourceContents.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -126,5 +127,6 @@
   <ItemGroup>
     <Folder Include="Banshee.SongKick.Network\" />
     <Folder Include="Banshee.SongKick.Recommendations\" />
+    <Folder Include="Banshee.SongKick.UI\" />
   </ItemGroup>
 </Project>
