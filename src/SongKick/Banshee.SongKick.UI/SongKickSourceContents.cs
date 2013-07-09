@@ -35,7 +35,9 @@ namespace Banshee.SongKick.UI
         SongKickSource source;
 
         private Viewport viewport;
-        private VBox main_box;
+        private HBox main_box;
+
+        //private HBox menu;
 
         private Gtk.Label label;
 
@@ -47,10 +49,24 @@ namespace Banshee.SongKick.UI
             viewport = new Viewport ();
             viewport.ShadowType = ShadowType.None;
 
-            main_box = new VBox ();
-            main_box.Spacing = 6;
-            main_box.BorderWidth = 5;
-            main_box.ReallocateRedraws = true;
+            main_box = new HBox () { Spacing = 6, BorderWidth = 5, ReallocateRedraws = true };
+            /*
+            menu = new HBox ();
+
+
+            var button = new Button ();
+            button.Add ( new Label ("first button") );
+            menu.Add (button);
+
+            var button2 = new Button ();
+            button2.Add ( new Label ("2nd button") );
+            menu.Add (button2);
+
+            main_box.Add (menu);
+            */
+            main_box.Add (BuildTiles());
+
+
 
             label = new Label ("SongKick new UI works");
             main_box.Add (label);
@@ -74,6 +90,8 @@ namespace Banshee.SongKick.UI
             ShowAll ();
         }
 
+
+
         public bool SetSource (Banshee.Sources.ISource source)
         {
             if (source == null) {
@@ -82,6 +100,35 @@ namespace Banshee.SongKick.UI
                 this.source = source as SongKickSource;
                 return true;
             }
+        }
+
+        private Widget BuildTiles ()
+        {
+            var vbox = new VBox () { Spacing = 12, BorderWidth = 4 };
+
+            var titleLabal = new Label ("Menu:");
+
+            vbox.PackStart (titleLabal, false, false, 0);
+
+
+            var categories = new string [] {
+                "Personal recommendations", 
+                "Find music events by place",
+                "Find music events by artist"
+            };
+
+            foreach (var cat in categories) {
+                var this_cat = cat;
+                var tile = new ImageButton (this_cat, null) {
+                    InnerPadding = 4
+                };
+                tile.LabelWidget.Xalign = 0;
+                //tile.Clicked += (o, a) => source.SetSearch (this_cat);
+
+                vbox.PackStart (tile, false, false, 0);
+            }
+
+            return vbox;
         }
 
         public void ResetSource ()
