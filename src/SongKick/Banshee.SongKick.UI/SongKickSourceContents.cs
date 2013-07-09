@@ -36,11 +36,8 @@ namespace Banshee.SongKick.UI
 
         private Viewport viewport;
         private HBox main_box;
+        private Widget menu_box;
         private Widget contents_box;
-
-        //private HBox menu;
-
-        private Gtk.Label label;
 
         public SongKickSourceContents ()
         {
@@ -51,27 +48,12 @@ namespace Banshee.SongKick.UI
             viewport.ShadowType = ShadowType.None;
 
             main_box = new HBox () { Spacing = 6, BorderWidth = 5, ReallocateRedraws = true };
-            /*
-            menu = new HBox ();
 
+            menu_box = BuildTiles();
+            main_box.Add (menu_box);
 
-            var button = new Button ();
-            button.Add ( new Label ("first button") );
-            menu.Add (button);
-
-            var button2 = new Button ();
-            button2.Add ( new Label ("2nd button") );
-            menu.Add (button2);
-
-            main_box.Add (menu);
-            */
-            contents_box = BuildTiles();
+            contents_box = BuildContents ();
             main_box.Add (contents_box);
-
-
-
-            label = new Label ("SongKick new UI works");
-            main_box.Add (label);
 
             // Clamp the width, preventing horizontal scrolling
             /*
@@ -113,15 +95,15 @@ namespace Banshee.SongKick.UI
             vbox.PackStart (titleLabel, false, false, 0);
 
 
-            var categories = new string [] {
+            var menu_items = new string [] {
                 "Personal recommendations", 
                 "Find music events by place",
                 "Find music events by artist"
             };
 
-            foreach (var cat in categories) {
-                var this_cat = cat;
-                var tile = new ImageButton (this_cat, null) {
+            foreach (var item in menu_items) {
+                var this_item = item;
+                var tile = new ImageButton (this_item, null) {
                     InnerPadding = 4
                 };
                 tile.LabelWidget.Xalign = 0;
@@ -129,6 +111,19 @@ namespace Banshee.SongKick.UI
 
                 vbox.PackStart (tile, false, false, 0);
             }
+
+            return vbox;
+        }
+
+        Widget BuildContents ()
+        {
+            var vbox = new VBox () { Spacing = 2 };
+            var search_box = new HBox () { Spacing = 6, BorderWidth = 4 };
+
+            vbox.Add (search_box);
+
+            var label = new Label ("SongKick new UI works");
+            vbox.Add (label);
 
             return vbox;
         }
