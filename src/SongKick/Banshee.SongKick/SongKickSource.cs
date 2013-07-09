@@ -63,12 +63,12 @@ namespace Banshee.SongKick
 		                                       sort_order,
 		                                       "extension-unique-id")
         {
-            Properties.Set<ISourceContents> ("Nereid.SourceContents", new SongKickSourceContents ());
+            Properties.Set<ISourceContents> ("Nereid.SourceContents", new LazyLoadSourceContents <SongKickSourceContents> ());
 
             ServiceManager.RegisterService<SongKickService> ();
             ServiceManager.Get<SongKickService> ().Initialize ();
 
-            Hyena.Log.Information ("Testing!  SongKick source has been instantiated!");
+            Hyena.Log.Information ("Testing! SongKick source has been instantiated!");
         }
 
         // A count of 0 will be hidden in the source TreeView
