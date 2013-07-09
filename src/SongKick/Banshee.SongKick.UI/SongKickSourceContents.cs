@@ -108,9 +108,9 @@ namespace Banshee.SongKick.UI
         {
             var vbox = new VBox () { Spacing = 12, BorderWidth = 4 };
 
-            var titleLabal = new Label ("Menu:");
+            var titleLabel = new Label ("Menu:");
 
-            vbox.PackStart (titleLabal, false, false, 0);
+            vbox.PackStart (titleLabel, false, false, 0);
 
 
             var categories = new string [] {
