@@ -28,6 +28,7 @@ using Banshee.Sources.Gui;
 using Hyena.Widgets;
 using Gtk;
 using Banshee.Widgets;
+using Banshee.SongKick.Recommendations;
 
 namespace Banshee.SongKick.UI
 {
@@ -122,13 +123,18 @@ namespace Banshee.SongKick.UI
             //var search_box = new HBox () { Spacing = 6, BorderWidth = 4 };
             //var label = new Label ("SongKick new UI works");
 
-            search_entry = new SearchEntry () {
+            // add search entry:
+            this.search_entry = new SearchEntry () {
                 WidthRequest = 150,
                 Visible = true,
                 EmptyMessage = "Type your query"
             };
             vbox.PackStart (search_entry, false, false, 2);
 
+            //add search results view:
+            var search_view = new SearchView (new Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Results>());
+
+            vbox.PackStart (search_view, true, true, 2);
             return vbox;
         }
 
