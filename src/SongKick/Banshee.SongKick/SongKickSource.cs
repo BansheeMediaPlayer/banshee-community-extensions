@@ -52,7 +52,7 @@ namespace Banshee.SongKick
     //        PrimarySource - 'owns' tracks, used by DaapSource, DapSource
     //          LibrarySource - used by Music, Video, Podcasts, and Audiobooks
 
-    public class SongKickSource : Source
+    public class SongKickSource : Source, IDisposable
     {
         // In the sources TreeView, sets the order value for this source, small on top
         const int sort_order = 190;
@@ -64,9 +64,6 @@ namespace Banshee.SongKick
 		                                       "extension-unique-id")
         {
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new LazyLoadSourceContents <SongKickSourceContents> ());
-
-            ServiceManager.RegisterService<SongKickService> ();
-            ServiceManager.Get<SongKickService> ().Initialize ();
 
             Hyena.Log.Information ("Testing! SongKick source has been instantiated!");
         }
@@ -87,5 +84,13 @@ namespace Banshee.SongKick
             public ISource Source { get { return null; } }
         }
         */
+
+        #region IDisposable implementation
+
+        public void Dispose ()
+        {
+            // no resources that need to be disposed
+        }
+        #endregion
     }
 }

@@ -80,5 +80,7 @@
   <Extension path="/Banshee/SourceManager/Source">
     <Source class="Banshee.SongKick.SongKickSource"/>
   </Extension>
-
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.SongKick.Network.SongKickService"/>
+  </Extension>
 </Addin>
