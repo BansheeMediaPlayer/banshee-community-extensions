@@ -27,6 +27,7 @@ using System;
 using Banshee.Sources.Gui;
 using Hyena.Widgets;
 using Gtk;
+using Banshee.Widgets;
 
 namespace Banshee.SongKick.UI
 {
@@ -39,6 +40,8 @@ namespace Banshee.SongKick.UI
         private Widget menu_box;
         private Widget contents_box;
 
+        private SearchEntry search_entry;
+
         public SongKickSourceContents ()
         {
             //HscrollbarPolicy = PolicyType.Never;
@@ -50,9 +53,9 @@ namespace Banshee.SongKick.UI
             main_box = new HBox () { Spacing = 6, BorderWidth = 5, ReallocateRedraws = true };
 
             menu_box = BuildTiles();
-            main_box.PackStart (menu_box, false, false, 0);
-
             contents_box = BuildContents ();
+
+            main_box.PackStart (menu_box, false, false, 0);
             main_box.PackStart (contents_box, true, true, 0);
 
             // Clamp the width, preventing horizontal scrolling
@@ -115,10 +118,16 @@ namespace Banshee.SongKick.UI
         Widget BuildContents ()
         {
             var vbox = new VBox () { Spacing = 2 };
-            //var search_box = new HBox () { Spacing = 6, BorderWidth = 4 };
 
-            var label = new Label ("SongKick new UI works");
-            vbox.Add (label);
+            //var search_box = new HBox () { Spacing = 6, BorderWidth = 4 };
+            //var label = new Label ("SongKick new UI works");
+
+            search_entry = new SearchEntry () {
+                WidthRequest = 150,
+                Visible = true,
+                EmptyMessage = "Type your query"
+            };
+            vbox.PackStart (search_entry, false, false, 2);
 
             return vbox;
         }
