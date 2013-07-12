@@ -79,17 +79,6 @@ namespace Banshee.SongKick.Recommendations
                 Hyena.Log.DebugException(e);
             }
         }
-        /*
-        protected virtual Results GetResults(JsonObject json)
-        {
-            return null;
-        }
-
-        protected virtual Results GetResults(JsonArray json)
-        {
-            return null;
-        }
-        */
     }
 }
 
