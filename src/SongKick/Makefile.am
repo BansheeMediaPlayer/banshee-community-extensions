@@ -9,6 +9,8 @@ SOURCES =  \
 	Banshee.SongKick.Recommendations/Artists.cs \
 	Banshee.SongKick.Recommendations/Event.cs \
 	Banshee.SongKick.Recommendations/Events.cs \
+	Banshee.SongKick.Recommendations/Location.cs \
+	Banshee.SongKick.Recommendations/Locations.cs \
 	Banshee.SongKick.Recommendations/Results.cs \
 	Banshee.SongKick.Recommendations/ResultsError.cs \
 	Banshee.SongKick.Recommendations/ResultsPage.cs \

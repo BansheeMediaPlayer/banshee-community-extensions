@@ -83,6 +83,8 @@
     <Compile Include="Banshee.SongKick.Search\Search.cs" />
     <Compile Include="Banshee.SongKick.Search\SearchType.cs" />
     <Compile Include="Banshee.SongKick.Search\ColumnHeader.cs" />
+    <Compile Include="Banshee.SongKick.Recommendations\Location.cs" />
+    <Compile Include="Banshee.SongKick.Recommendations\Locations.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
