@@ -55,7 +55,9 @@ namespace Banshee.SongKick.UI
 
             this.model = model;
             this.list_view.SetModel (model);
-            
+
+            model.Add (new Artist(-1, "Test Artist"));
+
             window.Child = list_view;
 
             this.PackStart (window, true, true, 0);
