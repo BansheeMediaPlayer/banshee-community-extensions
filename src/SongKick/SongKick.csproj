@@ -57,6 +57,12 @@
     <Reference Include="Hyena.Data.Sqlite, Version=1.7.0.0, Culture=neutral" />
     <Reference Include="Hyena.Gui, Version=1.7.0.0, Culture=neutral" />
     <Reference Include="System.Core" />
+    <Reference Include="gtk-sharp">
+      <HintPath>..\..\..\..\..\..\usr\lib\cli\gtk-sharp-2.0\gtk-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="atk-sharp">
+      <HintPath>..\..\..\..\..\..\usr\lib\cli\atk-sharp-2.0\atk-sharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SongKick.addin.xml">
