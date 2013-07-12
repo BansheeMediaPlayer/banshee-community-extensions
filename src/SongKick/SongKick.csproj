@@ -80,6 +80,9 @@
     <Compile Include="Banshee.SongKick.Recommendations\Artist.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Artists.cs" />
     <Compile Include="Banshee.SongKick.UI\SearchView.cs" />
+    <Compile Include="Banshee.SongKick.Search\Search.cs" />
+    <Compile Include="Banshee.SongKick.Search\SearchType.cs" />
+    <Compile Include="Banshee.SongKick.Search\ColumnHeader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -131,5 +134,6 @@
     <Folder Include="Banshee.SongKick.Network\" />
     <Folder Include="Banshee.SongKick.Recommendations\" />
     <Folder Include="Banshee.SongKick.UI\" />
+    <Folder Include="Banshee.SongKick.Search\" />
   </ItemGroup>
 </Project>

@@ -13,6 +13,9 @@ SOURCES =  \
 	Banshee.SongKick.Recommendations/ResultsError.cs \
 	Banshee.SongKick.Recommendations/ResultsPage.cs \
 	Banshee.SongKick.Recommendations/Utils.cs \
+	Banshee.SongKick.Search/ColumnHeader.cs \
+	Banshee.SongKick.Search/Search.cs \
+	Banshee.SongKick.Search/SearchType.cs \
 	Banshee.SongKick.UI/SearchView.cs \
 	Banshee.SongKick.UI/SongKickSourceContents.cs \
 	Banshee.SongKick/Account.cs \
