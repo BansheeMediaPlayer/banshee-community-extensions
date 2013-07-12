@@ -49,6 +49,8 @@ namespace Banshee.SongKick.UI
             var controller = new PersistentColumnController ("SongKick");
             list_view.ColumnController = controller;
             AddColumns ();
+            controller.Load ();
+
             list_view.RowActivated += (o, a) => {
                 return;
             };
@@ -62,6 +64,7 @@ namespace Banshee.SongKick.UI
             this.PackStart (window, true, true, 0);
             ShowAll ();
         }
+
         private class ResultListView : ListView<Artist>
         {
             public ResultListView ()
