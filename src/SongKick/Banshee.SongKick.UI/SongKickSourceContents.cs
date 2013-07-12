@@ -132,7 +132,7 @@ namespace Banshee.SongKick.UI
             vbox.PackStart (search_entry, false, false, 2);
 
             //add search results view:
-            var search_view = new SearchView (new Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Results>());
+            var search_view = new SearchView (new Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Artist>());
 
             vbox.PackStart (search_view, true, true, 2);
             return vbox;

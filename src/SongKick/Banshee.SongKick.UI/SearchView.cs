@@ -28,33 +28,73 @@ using Hyena.Data.Gui;
 using Banshee.SongKick.Recommendations;
 using Hyena.Data;
 using Hyena.Widgets;
+using Banshee.Collection.Gui;
 
 namespace Banshee.SongKick.UI
 {
     public class SearchView : Gtk.HBox
     {
-        private ListView<Results> list_view;
-        private MemoryListModel<Results> model;
+        private ListView<Artist> list_view;
+        private MemoryListModel<Artist> model;
 
-        MemoryListModel<Results> Model {
+        MemoryListModel<Artist> Model {
             get { return model; }
         }
 
         ScrolledWindow window = new ScrolledWindow ();
 
-        public SearchView(MemoryListModel<Results> model)
+        public SearchView (MemoryListModel<Artist> model)
         {
-            this.list_view = new Hyena.Data.Gui.ListView<Results> ();
-
+            list_view = new ResultListView ();
+            var controller = new PersistentColumnController ("SongKick");
+            list_view.ColumnController = controller;
+            AddColumns ();
             list_view.RowActivated += (o, a) => {
                 return;
             };
+
+
             this.model = model;
             this.list_view.SetModel (model);
 
             window.Child = list_view;
 
             this.PackStart (window, true, true, 0);
+            ShowAll ();
+        }
+        private class ResultListView : ListView<Artist>
+        {
+            public ResultListView ()
+            {
+                RulesHint = true;
+                IsEverReorderable = false;
+            }
+
+            protected override bool OnPopupMenu ()
+            {
+                //ServiceManager.Get<InterfaceActionService> ()["InternetArchive.IaResultPopup"].Activate ();
+                return true;
+            }
+        }
+        // TODO: do it using OOP
+        private void AddColumns ()
+        {
+            var cols = new SortableColumn [] {
+                Create ("DisplayName",      "Name"  , 0.9,  true, new ColumnCellText (null, true)),
+                Create ("Id",               "Id"    , 0.15, true, new ColumnCellText (null, true)),
+            };
+
+            foreach (var col in cols) {
+                list_view.ColumnController.Add (col);
+            }
+
+
+        }
+
+        SortableColumn Create (string property, string label, double width, bool visible, ColumnCell cell)
+        {
+            cell.Property = property;
+            return new SortableColumn (label, cell, width, property, visible);
         }
     }
 }
