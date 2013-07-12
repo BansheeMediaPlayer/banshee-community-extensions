@@ -38,6 +38,12 @@ namespace Banshee.SongKick.Recommendations
             Id = jsonObject.Get <int> ("id");
             DisplayName = jsonObject.Get <String> ("displayName");
         }
+
+        public Artist (int id, string displayName)
+        {
+            Id = id;
+            DisplayName = displayName;
+        }
     }
 }
 
