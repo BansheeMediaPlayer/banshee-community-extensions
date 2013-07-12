@@ -29,6 +29,7 @@ using Hyena.Widgets;
 using Gtk;
 using Banshee.Widgets;
 using Banshee.SongKick.Recommendations;
+using Banshee.SongKick.Search;
 
 namespace Banshee.SongKick.UI
 {
@@ -43,10 +44,16 @@ namespace Banshee.SongKick.UI
 
         private SearchEntry search_entry;
 
+        private Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Artist> model = 
+            new Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Artist>();
+
+
         public SongKickSourceContents ()
         {
             //HscrollbarPolicy = PolicyType.Never;
             //VscrollbarPolicy = PolicyType.Automatic;
+
+
 
             viewport = new Viewport ();
             viewport.ShadowType = ShadowType.None;
@@ -116,6 +123,7 @@ namespace Banshee.SongKick.UI
             return vbox;
         }
 
+
         Widget BuildContents ()
         {
             var vbox = new VBox () { Spacing = 2 };
@@ -132,7 +140,7 @@ namespace Banshee.SongKick.UI
             vbox.PackStart (search_entry, false, false, 2);
 
             //add search results view:
-            var search_view = new SearchView (new Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Artist>());
+            var search_view = new SearchView (this.model);
 
             vbox.PackStart (search_view, true, true, 2);
             return vbox;
@@ -150,6 +158,97 @@ namespace Banshee.SongKick.UI
         public Gtk.Widget Widget {
             get { return this; }
         }
+
+        /*
+        // Fetching results:
+        protected void Reload ()
+        {
+            model.Clear ();
+            Hyena.ThreadAssist.SpawnFromMain (delegate {
+                ThreadedFetch (0);
+            });
+        }
+
+        int total_results;
+        string status_text;
+        Banshee.SongKick.Search.Search search;
+
+        private void ThreadedFetch (int page)
+        {
+            bool success = false;
+            total_results = 0;
+            status_text = "";
+            Exception err = null;
+            int old_page = search.Page;
+            search.Page = page;
+
+            Hyena.ThreadAssist.ProxyToMain (delegate {
+                SetStatus (Catalog.GetString ("Searching the Internet Archive"), false, true, "gtk-find");
+            });
+
+            IA.SearchResults results = null;
+
+            try {
+                results = search.GetResults ();
+                total_results = results.TotalResults;
+            } catch (System.Net.WebException e) {
+                Hyena.Log.Exception ("Error searching the SongKick", e);
+                results = null;
+                err = e;
+            }
+
+            if (results != null) {
+                try {
+
+                    foreach (var result in results) {
+                        model.Add (result);
+
+                        // HACK to remove ugly empty description
+                        //if (track.Comment == "There is currently no description for this item.")
+                        //track.Comment = null;
+                    }
+
+                    success = true;
+                } catch (Exception e) {
+                    err = e;
+                    Hyena.Log.Exception ("Error searching the Internet Archive", e);
+                }
+            }
+
+            if (success) {
+                int count = model.Count;
+                if (total_results == 0) {
+                    Hyena.ThreadAssist.ProxyToMain (delegate {
+                        songKickSource.SetStatus (Catalog.GetString ("No matches."), false, false, "gtk-info");
+                    });
+                } else {
+                    Hyena.ThreadAssist.ProxyToMain (ClearMessages);
+                    status_text = String.Format (Catalog.GetPluralString (
+                        "Showing 1 match", "Showing 1 to {0:N0} of {1:N0} total matches", total_results),
+                                                 count, total_results
+                                                 );
+                }
+            } else {
+                search.Page = old_page;
+                ThreadAssist.ProxyToMain (delegate {
+                    var web_e = err as System.Net.WebException;
+                    if (web_e != null && web_e.Status == System.Net.WebExceptionStatus.Timeout) {
+                        SetStatus (Catalog.GetString ("Timed out searching the Internet Archive"), true);
+                        CurrentMessage.AddAction (new MessageAction (Catalog.GetString ("Try Again"), (o, a) => {
+                            if (page == 0) Reload (); else FetchMore ();
+                        }));
+                    } else {
+                        SetStatus (Catalog.GetString ("Error searching the Internet Archive"), true);
+                    }
+                });
+            }
+
+            ThreadAssist.ProxyToMain (delegate {
+                model.Reload ();
+                OnUpdated ();
+            });
+        }
+        */
     }
 }
 
