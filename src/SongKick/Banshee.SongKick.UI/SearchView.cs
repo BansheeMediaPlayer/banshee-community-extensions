@@ -45,7 +45,7 @@ namespace Banshee.SongKick.UI
 
         public SearchView (MemoryListModel<Artist> model)
         {
-            var list_view = new ResultListView ();
+            list_view = new ResultListView ();
             var controller = new PersistentColumnController ("SongKick");
             list_view.ColumnController = controller;
             AddColumns ();
@@ -53,10 +53,9 @@ namespace Banshee.SongKick.UI
                 return;
             };
 
-
             this.model = model;
             this.list_view.SetModel (model);
-
+            
             window.Child = list_view;
 
             this.PackStart (window, true, true, 0);
