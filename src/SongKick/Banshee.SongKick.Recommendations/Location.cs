@@ -28,7 +28,7 @@ using Hyena.Json;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class Location
+    public class Location : Result
     {
         public long Id { get; private set; }
         public string DisplayName { get; private set; }

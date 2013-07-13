@@ -1,5 +1,5 @@
 //
-// MusicEvent.cs
+// Result.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -24,26 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Hyena.Json;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class Event : Result
+    public class Result
     {
-        public long Id { get; private set; }
-        public string DisplayName { get; private set; }
-        public string Type { get; private set; }
-        //public DateTime Date { get; private set; }
-        public double Popularity { get; private set; }
-
-        public Event (JsonObject jsonObject)
+        public Result ()
         {
-            Id = jsonObject.Get <int> ("id");
-            DisplayName = jsonObject.Get <String> ("displayName");
-            Type = jsonObject.Get <String> ("type");
-            Popularity = jsonObject.Get <Double> ("popularity");
-
-            Console.WriteLine();
         }
     }
 }
