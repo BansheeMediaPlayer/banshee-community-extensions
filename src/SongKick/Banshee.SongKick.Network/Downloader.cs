@@ -27,6 +27,7 @@ using System;
 using System.Net;
 using System.IO;
 using System.Text;
+using Banshee.SongKick.Recommendations;
 
 namespace Banshee.SongKick.Network
 {
@@ -78,6 +79,39 @@ namespace Banshee.SongKick.Network
                 }
             }
             */
+        }
+    }
+
+    
+    public class SongKickDownloader
+    {
+        public string DefaultServiceUri {
+            get { return @"http://api.songkick.com/api/3.0/"; }
+        }
+        private string APIKey { get; set;}
+
+        public SongKickDownloader(String APIKey)
+        {
+            this.APIKey = APIKey;
+        }
+
+        public ResultsPage getResults(string query, ResultsPage.GetResultsDelegate getResultsDelegate)
+        {
+            //new MetroareaByIdDownloadJob (24426, SongKickCore.APIKey, Events.GetMusicEventListResultsDelegate);
+            var id = int.Parse (query);
+
+            var uriSB = new StringBuilder (DefaultServiceUri);
+            uriSB.Append (@"metro_areas/");
+            uriSB.Append (id.ToString());
+            uriSB.Append (@"/calendar.json?apikey=");
+            uriSB.Append (this.APIKey);
+
+            string replyString = Downloader.download(uriSB.ToString());
+
+            //var reply = new ResultsPage(replyString, (Object o) => {return null;});
+            var resultsPage = new ResultsPage(replyString, getResultsDelegate);
+
+            return resultsPage;
         }
     }
 }
