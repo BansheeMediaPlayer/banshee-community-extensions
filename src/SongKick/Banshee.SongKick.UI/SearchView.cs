@@ -55,9 +55,10 @@ namespace Banshee.SongKick.UI
                 return;
             };
 
-
             this.model = model;
             this.list_view.SetModel (model);
+
+            model.Add (new Artist(-1, "Test Artist"));
 
             window.Child = list_view;
 

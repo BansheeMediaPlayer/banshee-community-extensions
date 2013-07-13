@@ -63,6 +63,7 @@ namespace Banshee.SongKick
 		                                       sort_order,
 		                                       "extension-unique-id")
         {
+            //Change comment in lines below to see described behaviour:
             //Properties.Set<ISourceContents> ("Nereid.SourceContents", new SongKickSourceContents ());
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new LazyLoadSourceContents <SongKickSourceContents> ());
 

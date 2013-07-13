@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,7 +9,7 @@
     <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
     <AssemblyName>Banshee.SongKick</AssemblyName>
     <SchemaVersion>2.0</SchemaVersion>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Optimize>true</Optimize>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -21,7 +21,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <OutputPath>..\..\..\bin</OutputPath>
+    <OutputPath>..\..\..\banshee\bin</OutputPath>
     <CustomCommands>
       <CustomCommands>
         <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
@@ -32,7 +32,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <OutputPath>..\..\..\bin</OutputPath>
+    <OutputPath>..\..\..\banshee\bin</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
     <Optimize>false</Optimize>
   </PropertyGroup>
@@ -57,6 +57,12 @@
     <Reference Include="Hyena.Data.Sqlite, Version=1.7.0.0, Culture=neutral" />
     <Reference Include="Hyena.Gui, Version=1.7.0.0, Culture=neutral" />
     <Reference Include="System.Core" />
+    <Reference Include="gtk-sharp">
+      <HintPath>..\..\..\..\..\..\usr\lib\cli\gtk-sharp-2.0\gtk-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="atk-sharp">
+      <HintPath>..\..\..\..\..\..\usr\lib\cli\atk-sharp-2.0\atk-sharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SongKick.addin.xml">
@@ -80,12 +86,17 @@
     <Compile Include="Banshee.SongKick.Recommendations\Artist.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Artists.cs" />
     <Compile Include="Banshee.SongKick.UI\SearchView.cs" />
+    <Compile Include="Banshee.SongKick.Search\Search.cs" />
+    <Compile Include="Banshee.SongKick.Search\SearchType.cs" />
+    <Compile Include="Banshee.SongKick.Search\ColumnHeader.cs" />
+    <Compile Include="Banshee.SongKick.Recommendations\Location.cs" />
+    <Compile Include="Banshee.SongKick.Recommendations\Locations.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
-        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="True" RelativeMakefileName="Makefile.am">
+        <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile.am">
           <BuildFilesVar Sync="True" Name="SOURCES" />
           <DeployFilesVar />
           <ResourcesVar Sync="True" Name="RESOURCES" />
@@ -131,5 +142,6 @@
     <Folder Include="Banshee.SongKick.Network\" />
     <Folder Include="Banshee.SongKick.Recommendations\" />
     <Folder Include="Banshee.SongKick.UI\" />
+    <Folder Include="Banshee.SongKick.Search\" />
   </ItemGroup>
 </Project>

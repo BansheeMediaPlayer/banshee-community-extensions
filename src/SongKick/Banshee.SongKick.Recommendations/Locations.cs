@@ -1,5 +1,5 @@
 //
-// Artist.cs
+// Locations.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -24,25 +24,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using Hyena.Json;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class Artist
+    public class Locations : Results
     {
-        public long Id { get; private set; }
-        public string DisplayName { get; private set; }
+		public IList<Location> elements { get; set; }
 
-        public Artist (JsonObject jsonObject)
+        public Locations (JsonObject jsonObject)
         {
-            Id = jsonObject.Get <int> ("id");
-            DisplayName = jsonObject.Get <String> ("displayName");
+            this.elements = new List<Location> ();
+            var eventJsonObjs = jsonObject["artist"] as JsonArray;
+
+            foreach (var eventJsonObj in eventJsonObjs) 
+            {
+                elements.Add (new Location(eventJsonObj as JsonObject));
+            }
         }
 
-        public Artist (int id, string displayName)
+        public static ResultsPage.GetResultsDelegate GetLocationListResultsDelegate = 
+            new ResultsPage.GetResultsDelegate(GetLocation);
+
+		public static Locations GetLocation(JsonObject jsonObject)
         {
-            Id = id;
-            DisplayName = displayName;
+			return new Locations (jsonObject as JsonObject);
         }
     }
 }

@@ -1,5 +1,5 @@
 //
-// Artist.cs
+// Search.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -24,25 +24,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Hyena.Json;
+using System.Collections.Generic;
+using Banshee.SongKick.Recommendations;
+using Banshee.SongKick.Network;
+using Hyena.Jobs;
 
-namespace Banshee.SongKick.Recommendations
+namespace Banshee.SongKick.Search
 {
-    public class Artist
+    public class Search
     {
-        public long Id { get; private set; }
-        public string DisplayName { get; private set; }
+        List<ColumnHeader> result_fields = new List<ColumnHeader> ();
 
-        public Artist (JsonObject jsonObject)
+        public IList<ColumnHeader>  ReturnFields { get { return result_fields; } }
+        // public Results results;
+
+        public Search (SearchType searchType)
         {
-            Id = jsonObject.Get <int> ("id");
-            DisplayName = jsonObject.Get <String> ("displayName");
+            result_fields.AddRange (ColumnHeader.ColumnHeaders);
         }
 
-        public Artist (int id, string displayName)
+        public Results GetResults ()
         {
-            Id = id;
-            DisplayName = displayName;
+            throw new NotImplementedException ();
         }
     }
 }

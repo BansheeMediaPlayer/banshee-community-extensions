@@ -1,5 +1,5 @@
 //
-// Artist.cs
+// Location.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -28,18 +28,18 @@ using Hyena.Json;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class Artist
+    public class Location
     {
         public long Id { get; private set; }
         public string DisplayName { get; private set; }
 
-        public Artist (JsonObject jsonObject)
+        public Location (JsonObject jsonObject)
         {
             Id = jsonObject.Get <int> ("id");
             DisplayName = jsonObject.Get <String> ("displayName");
         }
 
-        public Artist (int id, string displayName)
+        public Location (int id, string displayName)
         {
             Id = id;
             DisplayName = displayName;

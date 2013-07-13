@@ -1,5 +1,5 @@
 //
-// Artist.cs
+// ColumnHeaders.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -24,25 +24,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Hyena.Json;
+using System.Collections.Generic;
+using Mono.Unix;
 
-namespace Banshee.SongKick.Recommendations
+namespace Banshee.SongKick.Search
 {
-    public class Artist
+    public class ColumnHeader
     {
-        public long Id { get; private set; }
-        public string DisplayName { get; private set; }
 
-        public Artist (JsonObject jsonObject)
-        {
-            Id = jsonObject.Get <int> ("id");
-            DisplayName = jsonObject.Get <String> ("displayName");
+        private static List<ColumnHeader> columnHeaders = new List<ColumnHeader> ();
+        public static ColumnHeader NameHeader     = new ColumnHeader   ("display_name", "Name", "DisplayName");
+        public static ColumnHeader IdHeader     = new ColumnHeader    ("id", "Id", "Id");
+
+        public static IEnumerable<ColumnHeader> ColumnHeaders {
+            get { return columnHeaders; }
         }
 
-        public Artist (int id, string displayName)
+        public string Name { get; private set; }
+        public string Id { get; private set; }
+        public string Property { get; private set; }
+
+        public ColumnHeader (string id, string property, string name)
         {
             Id = id;
-            DisplayName = displayName;
+            Name = name;
+            Property = property;
+
+            columnHeaders.Add (this);
+            columnHeaders.Sort ((a, b) => a.Name.CompareTo (b.Name));
         }
     }
 }

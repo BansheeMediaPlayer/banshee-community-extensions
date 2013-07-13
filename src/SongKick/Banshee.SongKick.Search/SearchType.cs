@@ -1,5 +1,5 @@
 //
-// Artist.cs
+// SearchType.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -24,25 +24,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Hyena.Json;
+using System.Collections.Generic;
 
-namespace Banshee.SongKick.Recommendations
+namespace Banshee.SongKick.Search
 {
-    public class Artist
+    public class SearchType
     {
-        public long Id { get; private set; }
-        public string DisplayName { get; private set; }
+        public static IList<SearchType> searchTypes = new List<SearchType> ();
 
-        public Artist (JsonObject jsonObject)
-        {
-            Id = jsonObject.Get <int> ("id");
-            DisplayName = jsonObject.Get <String> ("displayName");
-        }
+        public static SearchType Metroarea = new SearchType("metroarea", "Metroarea");
+        public static SearchType MusicEvent = new SearchType("music_event", "Music Event");
 
-        public Artist (int id, string displayName)
+        public string Id { get; private set; }
+        public string Name { get; private set; }
+
+        private SearchType (string id, string name)
         {
             Id = id;
-            DisplayName = displayName;
+            Name = name;
+
+            searchTypes.Add (this);
         }
     }
 }
