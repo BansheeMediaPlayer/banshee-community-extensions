@@ -95,9 +95,8 @@ namespace Banshee.SongKick.Network
             this.APIKey = APIKey;
         }
 
-        public ResultsPage getResults(string query, ResultsPage.GetResultsDelegate getResultsDelegate)
+        public ResultsPage getMetroareaMusicEvents(string query, ResultsPage.GetResultsDelegate getResultsDelegate)
         {
-            //new MetroareaByIdDownloadJob (24426, SongKickCore.APIKey, Events.GetMusicEventListResultsDelegate);
             var id = int.Parse (query);
 
             var uriSB = new StringBuilder (DefaultServiceUri);
@@ -107,8 +106,6 @@ namespace Banshee.SongKick.Network
             uriSB.Append (this.APIKey);
 
             string replyString = Downloader.download(uriSB.ToString());
-
-            //var reply = new ResultsPage(replyString, (Object o) => {return null;});
             var resultsPage = new ResultsPage(replyString, getResultsDelegate);
 
             return resultsPage;
