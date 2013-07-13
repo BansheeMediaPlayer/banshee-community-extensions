@@ -36,11 +36,13 @@ namespace Banshee.SongKick.Search
         List<ColumnHeader> result_fields = new List<ColumnHeader> ();
 
         public IList<ColumnHeader>  ReturnFields { get { return result_fields; } }
+        public String Query { get; private set; }
         // public Results results;
 
-        public Search (SearchType searchType)
+        public Search (SearchType searchType, string query)
         {
             result_fields.AddRange (ColumnHeader.ColumnHeaders);
+            Query = query;
         }
 
         public Results GetResults ()
