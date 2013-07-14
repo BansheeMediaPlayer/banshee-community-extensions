@@ -26,21 +26,28 @@
 using System;
 using Gtk;
 using Banshee.Widgets;
+using Mono.Unix;
 
 namespace Banshee.SongKick.UI
 {
     public class SearchBar : HBox
     {
         private SearchEntry search_entry;
+        private Button search_button;
 
         public SearchBar ()
         {
-            this.search_entry = new SearchEntry () {
+            search_entry = new SearchEntry () {
                 WidthRequest = 150,
                 Visible = true,
                 EmptyMessage = "Type your query"
             };
-            this.PackStart (search_entry, true, true, 2);
+           
+            PackStart (search_entry, true, true, 2);
+
+            search_button = new Hyena.Widgets.ImageButton (Catalog.GetString ("_Search"), Stock.Find);
+
+            PackEnd (search_button, false, false, 2);
         }
     }
 }
