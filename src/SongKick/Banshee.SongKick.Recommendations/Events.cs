@@ -29,9 +29,9 @@ using System.Collections.Generic;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class Events : Results
+    public class Events : Results<Event>
     {
-        public IList<Event> elements { get; set; }
+        //public IList<Event> elements { get; set; }
 
         public Events (JsonObject jsonObject)
         {
@@ -44,8 +44,8 @@ namespace Banshee.SongKick.Recommendations
             }
         }
 
-        public static ResultsPage.GetResultsDelegate GetMusicEventListResultsDelegate = 
-            new ResultsPage.GetResultsDelegate(GetEvents);
+        public static ResultsPage<Event>.GetResultsDelegate GetMusicEventListResultsDelegate = 
+            new ResultsPage<Event>.GetResultsDelegate(GetEvents);
 
         public static Events GetEvents(JsonObject jsonObject)
         {

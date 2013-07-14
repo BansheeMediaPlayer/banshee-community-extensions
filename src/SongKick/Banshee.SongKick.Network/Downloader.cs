@@ -95,7 +95,7 @@ namespace Banshee.SongKick.Network
             this.APIKey = APIKey;
         }
 
-        public ResultsPage getMetroareaMusicEvents(string query, ResultsPage.GetResultsDelegate getResultsDelegate)
+        public ResultsPage<Event> getMetroareaMusicEvents(string query, ResultsPage<Event>.GetResultsDelegate getResultsDelegate)
         {
             var id = int.Parse (query);
 
@@ -106,7 +106,7 @@ namespace Banshee.SongKick.Network
             uriSB.Append (this.APIKey);
 
             string replyString = Downloader.download(uriSB.ToString());
-            var resultsPage = new ResultsPage(replyString, getResultsDelegate);
+            var resultsPage = new ResultsPage<Event>(replyString, getResultsDelegate);
 
             return resultsPage;
         }

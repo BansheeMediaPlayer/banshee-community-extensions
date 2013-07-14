@@ -29,17 +29,17 @@ using System.Collections.Generic;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class ResultsPage
+    public class ResultsPage<T> where T : Result
     {
         public bool IsWellFormed { get; private set; }
         public bool IsStatusOk { 
             get { return (status == "ok"); }
         }
         public string status { get; private set; }
-        public Results results { get; private set; }
+        public Results<T> results { get; private set; }
         public ResultsError error { get; private set; }
 
-        public delegate Results GetResultsDelegate(JsonObject o);
+        public delegate Results<T> GetResultsDelegate(JsonObject o);
 
         public ResultsPage (string answer, GetResultsDelegate getResultsDelegate)
         {

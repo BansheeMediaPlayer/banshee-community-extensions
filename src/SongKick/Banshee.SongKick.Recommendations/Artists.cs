@@ -29,23 +29,23 @@ using Hyena.Json;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class Artists : Results
+    public class Artists : Results<Artist>
     {
-        public IList<Event> elements { get; set; }
+        //public IList<Event> elements { get; set; }
 
         public Artists (JsonObject jsonObject)
         {
-            this.elements = new List<Event> ();
+            this.elements = new List<Artist> ();
             var eventJsonObjs = jsonObject["artist"] as JsonArray;
 
             foreach (var eventJsonObj in eventJsonObjs) 
             {
-                elements.Add (new Event(eventJsonObj as JsonObject));
+                elements.Add (new Artist(eventJsonObj as JsonObject));
             }
         }
 
-        public static ResultsPage.GetResultsDelegate GetArtistListResultsDelegate = 
-            new ResultsPage.GetResultsDelegate(GetArtists);
+        public static ResultsPage<Artist>.GetResultsDelegate GetArtistListResultsDelegate = 
+            new ResultsPage<Artist>.GetResultsDelegate(GetArtists);
 
         public static Artists GetArtists(JsonObject jsonObject)
         {

@@ -25,11 +25,13 @@
 // THE SOFTWARE.
 using System;
 using Hyena.Json;
+using System.Collections.Generic;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public abstract class Results
+    public abstract class Results<T> where T : Result
     {
+        public IList<T> elements { get; set; }
     }
 }
 

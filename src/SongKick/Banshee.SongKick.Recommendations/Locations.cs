@@ -29,9 +29,9 @@ using Hyena.Json;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class Locations : Results
+    public class Locations : Results<Location>
     {
-		public IList<Location> elements { get; set; }
+		//public IList<Location> elements { get; set; }
 
         public Locations (JsonObject jsonObject)
         {
@@ -44,8 +44,8 @@ namespace Banshee.SongKick.Recommendations
             }
         }
 
-        public static ResultsPage.GetResultsDelegate GetLocationListResultsDelegate = 
-            new ResultsPage.GetResultsDelegate(GetLocation);
+        public static ResultsPage<Location>.GetResultsDelegate GetLocationListResultsDelegate = 
+            new ResultsPage<Location>.GetResultsDelegate(GetLocation);
 
 		public static Locations GetLocation(JsonObject jsonObject)
         {

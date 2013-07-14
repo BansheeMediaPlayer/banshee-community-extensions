@@ -32,10 +32,10 @@ using System.Text;
 
 namespace Banshee.SongKick.Network
 {
-    public class DownloadJob : SimpleAsyncJob
+    public class DownloadJob<T> : SimpleAsyncJob where T : Result
     {
         protected string Uri { get; set; }
-        protected ResultsPage.GetResultsDelegate GetResultsDelegate { get; set; }
+        protected ResultsPage<T>.GetResultsDelegate GetResultsDelegate { get; set; }
         public string DefaultServiceUri {
             get { return @"http://api.songkick.com/api/3.0/"; }
         }
@@ -44,7 +44,7 @@ namespace Banshee.SongKick.Network
         {
         }
 
-        public DownloadJob (string uri, ResultsPage.GetResultsDelegate getResultsDelegate)
+        public DownloadJob (string uri, ResultsPage<T>.GetResultsDelegate getResultsDelegate)
         {
             this.Uri = uri;
             this.GetResultsDelegate = getResultsDelegate;
@@ -55,7 +55,7 @@ namespace Banshee.SongKick.Network
             string replyString = Downloader.download(Uri);
 
             //var reply = new ResultsPage(replyString, (Object o) => {return null;});
-            var resultsPage = new ResultsPage(replyString, GetResultsDelegate);
+            var resultsPage = new ResultsPage<T>(replyString, GetResultsDelegate);
 
             Log.Debug("SongKick: Recieved server's reply: " 
                       + replyString.Substring(0, Math.Min(replyString.Length, 30)) + "...");
@@ -63,9 +63,9 @@ namespace Banshee.SongKick.Network
         }
     }
 
-    public class MetroareaByIdDownloadJob : DownloadJob
+    public class MetroareaByIdDownloadJob : DownloadJob<Event>
     {
-        public MetroareaByIdDownloadJob(long id, string apiKey, ResultsPage.GetResultsDelegate getResultsDelegate)
+        public MetroareaByIdDownloadJob(long id, string apiKey, ResultsPage<Event>.GetResultsDelegate getResultsDelegate)
         {
             // example string for events in London:
             // http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx6
