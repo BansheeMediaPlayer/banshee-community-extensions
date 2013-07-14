@@ -91,6 +91,7 @@
     <Compile Include="Banshee.SongKick.Recommendations\Location.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Locations.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Result.cs" />
+    <Compile Include="Banshee.SongKick.UI\SearchBar.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

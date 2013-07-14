@@ -42,7 +42,7 @@ namespace Banshee.SongKick.UI
         private Widget menu_box;
         private Widget contents_box;
 
-        private SearchEntry search_entry;
+        private SearchBar search_bar;
 
         private Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Result> model = 
             new Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Result>();
@@ -132,12 +132,8 @@ namespace Banshee.SongKick.UI
             //var label = new Label ("SongKick new UI works");
 
             // add search entry:
-            this.search_entry = new SearchEntry () {
-                WidthRequest = 150,
-                Visible = true,
-                EmptyMessage = "Type your query"
-            };
-            vbox.PackStart (search_entry, false, false, 2);
+            this.search_bar = new SearchBar ();
+            vbox.PackStart (search_bar, false, false, 2);
 
             //add search results view:
             var search_view = new SearchView (this.model);
