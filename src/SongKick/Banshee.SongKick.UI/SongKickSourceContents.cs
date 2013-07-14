@@ -44,8 +44,8 @@ namespace Banshee.SongKick.UI
 
         private SearchEntry search_entry;
 
-        private Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Artist> model = 
-            new Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Artist>();
+        private Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Result> model = 
+            new Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Result>();
 
 
         public SongKickSourceContents ()

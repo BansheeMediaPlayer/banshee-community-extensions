@@ -29,21 +29,23 @@ using Banshee.SongKick.Recommendations;
 using Hyena.Data;
 using Hyena.Widgets;
 using Banshee.Collection.Gui;
+using Banshee.SongKick.Network;
+using Hyena;
 
 namespace Banshee.SongKick.UI
 {
     public class SearchView : Gtk.HBox
     {
-        private ListView<Artist> list_view;
-        private MemoryListModel<Artist> model;
+        private ListView<Result> list_view;
+        private MemoryListModel<Result> model;
 
-        MemoryListModel<Artist> Model {
+        MemoryListModel<Result> Model {
             get { return model; }
         }
 
         ScrolledWindow window = new ScrolledWindow ();
 
-        public SearchView (MemoryListModel<Artist> model)
+        public SearchView (MemoryListModel<Result> model)
         {
             list_view = new ResultListView ();
             var controller = new PersistentColumnController ("SongKick");
