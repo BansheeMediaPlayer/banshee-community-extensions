@@ -51,6 +51,11 @@ namespace Banshee.SongKick.Search
         {
             throw new NotImplementedException ();
         }
+
+        public override string ToString ()
+        {
+            return string.Format ("[Search: Query={0}, SearchType={1}, ReturnFields={2}]", Query, SearchType.Id, ReturnFields);
+        }
     }
 }
 
