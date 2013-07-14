@@ -27,6 +27,8 @@ using System;
 using Gtk;
 using Banshee.Widgets;
 using Mono.Unix;
+using Banshee.SongKick.Search;
+using Banshee.SongKick.Recommendations;
 
 namespace Banshee.SongKick.UI
 {
@@ -34,9 +36,12 @@ namespace Banshee.SongKick.UI
     {
         private SearchEntry search_entry;
         private Button search_button;
+        ISearchPresenter<Result> search_presenter;
 
-        public SearchBar ()
+        public SearchBar (ISearchPresenter<Result> searchPresenter)
         {
+            search_presenter = searchPresenter;
+
             search_entry = new SearchEntry () {
                 WidthRequest = 150,
                 Visible = true,
