@@ -40,7 +40,7 @@ namespace Banshee.SongKick.UI
                 Visible = true,
                 EmptyMessage = "Type your query"
             };
-            this.PackStart (search_entry, false, false, 2);
+            this.PackStart (search_entry, true, true, 2);
         }
     }
 }
