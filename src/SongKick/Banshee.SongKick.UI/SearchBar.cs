@@ -57,7 +57,8 @@ namespace Banshee.SongKick.UI
         }
 
         protected void Search() {
-
+            var search = new Search<Result>(SearchType.MetroareaIds, search_entry.Query);
+            search_presenter.presentSearch (search);
         }
     }
 }
