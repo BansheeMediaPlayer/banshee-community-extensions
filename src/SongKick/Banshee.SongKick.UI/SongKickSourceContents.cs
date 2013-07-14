@@ -144,6 +144,7 @@ namespace Banshee.SongKick.UI
 
         public void presentSearch (Search<Result> search)
         {
+            Hyena.Log.Information (String.Format("SingKickSourceContents: performing search: {0}", search.ToString()));
             throw new NotImplementedException ();
         }
 
