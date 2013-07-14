@@ -33,7 +33,7 @@ using Banshee.SongKick.Search;
 
 namespace Banshee.SongKick.UI
 {
-    public class SongKickSourceContents : Hyena.Widgets.ScrolledWindow, ISourceContents
+    public class SongKickSourceContents : Hyena.Widgets.ScrolledWindow, ISourceContents, ISearchPresenter<Result>
     {
         SongKickSource source;
 
@@ -140,6 +140,11 @@ namespace Banshee.SongKick.UI
 
             vbox.PackStart (search_view, true, true, 2);
             return vbox;
+        }
+
+        public void presentSearch (Search<Result> search)
+        {
+            throw new NotImplementedException ();
         }
 
         public void ResetSource ()
