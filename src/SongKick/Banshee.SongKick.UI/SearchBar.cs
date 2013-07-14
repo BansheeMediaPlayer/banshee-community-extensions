@@ -46,8 +46,13 @@ namespace Banshee.SongKick.UI
             PackStart (search_entry, true, true, 2);
 
             search_button = new Hyena.Widgets.ImageButton (Catalog.GetString ("_Search"), Stock.Find);
+            search_button.Clicked += (o, a) => Search ();
 
             PackEnd (search_button, false, false, 2);
+        }
+
+        protected void Search() {
+
         }
     }
 }
