@@ -32,8 +32,9 @@ namespace Banshee.SongKick.Search
     {
         public static IList<SearchType> searchTypes = new List<SearchType> ();
 
-        public static SearchType Metroarea = new SearchType("metroarea", "Metroarea");
-        public static SearchType MusicEvent = new SearchType("music_event", "Music Event");
+        public static SearchType MetroareaIds = new SearchType("metroareas_by_name", "Find metroareas");
+        public static SearchType MetroareaMusicEvents = new SearchType("music_events_by_metroarea", "Concert in metroarea");
+        public static SearchType ArtistMusicEvents = new SearchType("music_events_by_artist", "Concert by artists");
 
         public string Id { get; private set; }
         public string Name { get; private set; }
