@@ -60,6 +60,13 @@ namespace Banshee.SongKick.UI
             this.model = model;
             this.list_view.SetModel (model);
 
+            //TODO: delete
+            //DownloadAndUpdate("24426");
+            string query = "24426"; // sample query
+            System.Threading.Thread thread = 
+                new System.Threading.Thread(new System.Threading.ThreadStart( () => DownloadAndUpdate(query)  ));
+            thread.Start();
+
             model.Add (new Artist(-1, "Test Artist"));
 
             window.Child = list_view;
@@ -68,7 +75,30 @@ namespace Banshee.SongKick.UI
             ShowAll ();
         }
 
-        private class ResultListView : ListView<Artist>
+        private void DownloadAndUpdate(string query)
+        {
+            //new MetroareaByIdDownloadJob (24426, SongKickCore.APIKey, Events.GetMusicEventListResultsDelegate);
+            var downloader = new SongKickDownloader (SongKickCore.APIKey);
+            var resultPage = downloader.getMetroareaMusicEvents (query, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
+            Events events = resultPage.results as Events;
+
+            foreach (var musicEvent in events.elements)
+            {
+                model.Add(musicEvent);
+            }
+
+            ThreadAssist.ProxyToMain (delegate {
+                model.Reload ();
+                OnUpdated ();
+            });
+        }
+
+        void OnUpdated ()
+        {
+            // TODO: implement
+        }
+
+        private class ResultListView : ListView<Result>
         {
             public ResultListView ()
             {
