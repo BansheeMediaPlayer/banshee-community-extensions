@@ -54,14 +54,20 @@ namespace Banshee.SongKick.Recommendations
                     this.status = resultsPage.Get <String> ("status");
                     if (IsStatusOk) {
                         // TODO: refactor
-                        JsonObject resultsJson = resultsPage.Get <JsonObject> ("results");
-                        if (resultsJson != null)  {
-                            this.results = getResultsDelegate(resultsJson);
+                        var hasAnyResults = resultsPage.Get <int>("totalEntries") != 0;
+                        if (hasAnyResults) {
+                            JsonObject resultsJson = resultsPage.Get <JsonObject> ("results");
+                            if (resultsJson != null)  {
+                                this.results = getResultsDelegate(resultsJson);
+                            } else {
+                                Hyena.Log.Error ("SongKick: Server returned 'ok' status without 'results'");
+                            }
                         }
                         else {
-                            Hyena.Log.Error ("SongKick: Server returned 'ok' status without 'results'");
+                            this.results = new Results<T>();
                         }
                     }
+
                     var errorJson = resultsPage.Get <JsonObject> ("error");
                     if (errorJson != null)
                     {
