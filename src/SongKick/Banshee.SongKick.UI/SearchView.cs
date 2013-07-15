@@ -36,8 +36,8 @@ namespace Banshee.SongKick.UI
 {
     public class SearchView<T> : Gtk.HBox where T : Result
     {
-        private ListView<T> list_view;
-        private MemoryListModel<T> model;
+        protected ListView<T> list_view;
+        protected MemoryListModel<T> model;
 
         MemoryListModel<T> Model {
             get { return model; }
@@ -60,14 +60,6 @@ namespace Banshee.SongKick.UI
             this.model = model;
             this.list_view.SetModel (model);
 
-            //TODO: delete
-            //DownloadAndUpdate("24426");
-            string query = "24426"; // sample query
-            System.Threading.Thread thread = 
-                new System.Threading.Thread(new System.Threading.ThreadStart( () => DownloadAndUpdate(query)  ));
-            thread.Start();
-
-            //model.Add (new Artist(-1, "Test Artist"));
 
             window.Child = list_view;
 
@@ -75,24 +67,6 @@ namespace Banshee.SongKick.UI
             ShowAll ();
         }
 
-        private void DownloadAndUpdate(string query)
-        {
-            //new MetroareaByIdDownloadJob (24426, SongKickCore.APIKey, Events.GetMusicEventListResultsDelegate);
-            var downloader = new SongKickDownloader (SongKickCore.APIKey);
-            //TODO: REFACTOR, later elements of resultPage.elements are casted on T
-            var resultPage = downloader.getMetroareaMusicEvents (query, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
-            Events events = resultPage.results as Events;
-
-            foreach (var musicEvent in events.elements)
-            {
-                model.Add(musicEvent as T);
-            }
-
-            ThreadAssist.ProxyToMain (delegate {
-                model.Reload ();
-                OnUpdated ();
-            });
-        }
 
         public void OnUpdated ()
         {
@@ -124,8 +98,6 @@ namespace Banshee.SongKick.UI
             foreach (var col in cols) {
                 list_view.ColumnController.Add (col);
             }
-
-
         }
 
         SortableColumn Create (string property, string label, double width, bool visible, ColumnCell cell)

@@ -139,7 +139,8 @@ namespace Banshee.SongKick.UI
             vbox.PackStart (search_bar, false, false, 2);
 
             //add search results view:
-            search_view = new SearchView<Event> (this.event_model);
+            //search_view = new SearchView<Event> (this.event_model);
+            search_view = new EventsByArtistNameSearchView (this.event_model);
 
             vbox.PackStart (search_view, true, true, 2);
             return vbox;
