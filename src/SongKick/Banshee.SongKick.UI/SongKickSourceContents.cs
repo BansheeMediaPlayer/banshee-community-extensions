@@ -43,12 +43,12 @@ namespace Banshee.SongKick.UI
         private Widget menu_box;
         private Widget contents_box;
 
-        SearchView search_view;
+        SearchView<Event> search_view;
 
         private SearchBar<Event> search_bar;
 
-        private Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Result> model = 
-            new Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Result>();
+        private Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Event> event_model = 
+            new Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Event>();
 
 
         public SongKickSourceContents ()
@@ -139,7 +139,7 @@ namespace Banshee.SongKick.UI
             vbox.PackStart (search_bar, false, false, 2);
 
             //add search results view:
-            search_view = new SearchView (this.model);
+            search_view = new SearchView<Event> (this.event_model);
 
             vbox.PackStart (search_view, true, true, 2);
             return vbox;
@@ -154,12 +154,12 @@ namespace Banshee.SongKick.UI
             if (search.ResultsPage.IsWellFormed && search.ResultsPage.IsStatusOk) 
             {
                 foreach (var result in search.ResultsPage.results.elements) {
-                    model.Add (result);
+                    event_model.Add (result);
                 }
             }
 
             ThreadAssist.ProxyToMain (delegate {
-                model.Reload ();
+                event_model.Reload ();
                 search_view.OnUpdated ();
             });
 

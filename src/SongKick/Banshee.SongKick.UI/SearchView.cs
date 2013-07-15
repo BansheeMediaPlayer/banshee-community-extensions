@@ -34,18 +34,18 @@ using Hyena;
 
 namespace Banshee.SongKick.UI
 {
-    public class SearchView : Gtk.HBox
+    public class SearchView<T> : Gtk.HBox where T : Result
     {
-        private ListView<Result> list_view;
-        private MemoryListModel<Result> model;
+        private ListView<T> list_view;
+        private MemoryListModel<T> model;
 
-        MemoryListModel<Result> Model {
+        MemoryListModel<T> Model {
             get { return model; }
         }
 
         ScrolledWindow window = new ScrolledWindow ();
 
-        public SearchView (MemoryListModel<Result> model)
+        public SearchView (MemoryListModel<T> model)
         {
             list_view = new ResultListView ();
             var controller = new PersistentColumnController ("SongKick");
@@ -67,7 +67,7 @@ namespace Banshee.SongKick.UI
                 new System.Threading.Thread(new System.Threading.ThreadStart( () => DownloadAndUpdate(query)  ));
             thread.Start();
 
-            model.Add (new Artist(-1, "Test Artist"));
+            //model.Add (new Artist(-1, "Test Artist"));
 
             window.Child = list_view;
 
@@ -79,12 +79,13 @@ namespace Banshee.SongKick.UI
         {
             //new MetroareaByIdDownloadJob (24426, SongKickCore.APIKey, Events.GetMusicEventListResultsDelegate);
             var downloader = new SongKickDownloader (SongKickCore.APIKey);
+            //TODO: REFACTOR, later elements of resultPage.elements are casted on T
             var resultPage = downloader.getMetroareaMusicEvents (query, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
             Events events = resultPage.results as Events;
 
             foreach (var musicEvent in events.elements)
             {
-                model.Add(musicEvent);
+                model.Add(musicEvent as T);
             }
 
             ThreadAssist.ProxyToMain (delegate {
@@ -98,7 +99,7 @@ namespace Banshee.SongKick.UI
             // TODO: implement
         }
 
-        private class ResultListView : ListView<Result>
+        private class ResultListView : ListView<T>
         {
             public ResultListView ()
             {
@@ -113,7 +114,7 @@ namespace Banshee.SongKick.UI
             }
         }
         // TODO: do it using OOP
-        private void AddColumns ()
+        protected virtual void AddColumns ()
         {
             var cols = new SortableColumn [] {
                 Create ("DisplayName",      "Name"  , 0.9,  true, new ColumnCellText (null, true)),
