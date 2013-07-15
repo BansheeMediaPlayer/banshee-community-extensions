@@ -150,6 +150,8 @@ namespace Banshee.SongKick.UI
         {
             Hyena.Log.Information (String.Format("SingKickSourceContents: performing search: {0}", search.ToString()));
 
+            event_model.Clear ();
+
             search.GetResultsPage ();
 
             if (search.ResultsPage.IsWellFormed && search.ResultsPage.IsStatusOk) 
