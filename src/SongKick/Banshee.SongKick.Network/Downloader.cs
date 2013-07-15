@@ -95,10 +95,13 @@ namespace Banshee.SongKick.Network
             this.APIKey = APIKey;
         }
 
-        public ResultsPage<Event> getMetroareaMusicEvents(string query, ResultsPage<Event>.GetResultsDelegate getResultsDelegate)
+        public ResultsPage<Event> getMetroareaMusicEvents(string id, ResultsPage<Event>.GetResultsDelegate getResultsDelegate)
         {
-            var id = int.Parse (query);
+            return getMetroareaMusicEvents (int.Parse (id), getResultsDelegate);
+        }
 
+        public ResultsPage<Event> getMetroareaMusicEvents(int id, ResultsPage<Event>.GetResultsDelegate getResultsDelegate)
+        {
             var uriSB = new StringBuilder (DefaultServiceUri);
             uriSB.Append (@"metro_areas/");
             uriSB.Append (id.ToString());
@@ -109,6 +112,40 @@ namespace Banshee.SongKick.Network
             var resultsPage = new ResultsPage<Event>(replyString, getResultsDelegate);
 
             return resultsPage;
+        }
+
+        public ResultsPage<Event> getArtistsMusicEvents(long id,  ResultsPage<Event>.GetResultsDelegate getResultsDelegate)
+        {
+            // http://api.songkick.com/api/3.0/artists/{artist_id}/calendar.json?apikey={your_api_key}
+
+            var uriSB = new StringBuilder (DefaultServiceUri);
+            uriSB.Append (@"artists/");
+            uriSB.Append (id.ToString());
+            uriSB.Append (@"/calendar.json?apikey=");
+            uriSB.Append (this.APIKey);
+
+            string replyString = Downloader.download(uriSB.ToString());
+            var resultsPage = new ResultsPage<Event>(replyString, getResultsDelegate);
+
+            return resultsPage;
+
+        }
+
+        public ResultsPage<Artist> findArtists(string artist, ResultsPage<Artist>.GetResultsDelegate getResultsDelegate)
+        {
+            //http://api.songkick.com/api/3.0/search/artists.json?query={search_query}&apikey={your_api_key}
+           
+            var uriSB = new StringBuilder (DefaultServiceUri);
+            uriSB.Append (@"search/artists.json?query=");
+            uriSB.Append (System.Uri.EscapeDataString(artist));
+            uriSB.Append (@"&apikey=");
+            uriSB.Append (this.APIKey);
+
+            string replyString = Downloader.download(uriSB.ToString());
+            var resultsPage = new ResultsPage<Artist>(replyString, getResultsDelegate);
+
+            return resultsPage;
+
         }
     }
 }
