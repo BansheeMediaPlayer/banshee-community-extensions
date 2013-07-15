@@ -93,7 +93,7 @@ namespace Banshee.SongKick.UI
             });
         }
 
-        void OnUpdated ()
+        public void OnUpdated ()
         {
             // TODO: implement
         }

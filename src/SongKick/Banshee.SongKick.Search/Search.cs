@@ -31,30 +31,43 @@ using Hyena.Jobs;
 
 namespace Banshee.SongKick.Search
 {
-    public class Search<T> where T : Result
+    public abstract class Search<T> where T : Result
     {
         List<ColumnHeader> result_fields = new List<ColumnHeader> ();
 
         public IList<ColumnHeader>  ReturnFields { get { return result_fields; } }
-        public String Query { get; private set; }
-        public SearchType SearchType { get; private set; }
-        // public Results results;
+        public String Query { get; protected set; }
+        public SearchType SearchType { get; protected set; }
+        public ResultsPage<T> ResultsPage { get; protected set; }
+
+        protected SongKickDownloader downloader;
 
         public Search (SearchType searchType, string query)
         {
-            result_fields.AddRange (ColumnHeader.ColumnHeaders);
-            SearchType = searchType;
             Query = query;
+            SearchType = searchType;
+            downloader = new SongKickDownloader (SongKickCore.APIKey);
+            result_fields.AddRange (ColumnHeader.ColumnHeaders);
         }
 
-        public Results<T> GetResults ()
-        {
-            throw new NotImplementedException ();
-        }
+        public abstract void GetResultsPage ();
 
         public override string ToString ()
         {
             return string.Format ("[Search: Query={0}, SearchType={1}, ReturnFields={2}]", Query, SearchType.Id, ReturnFields);
+        }
+    }
+
+    public class MetroAreaByIdSearch : Search<Event> {
+
+        public MetroAreaByIdSearch(SearchType searchType, string query) 
+            : base(searchType, query)
+        {
+        }
+
+        public override void GetResultsPage ()
+        {
+            ResultsPage = downloader.getMetroareaMusicEvents (Query, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
         }
     }
 }

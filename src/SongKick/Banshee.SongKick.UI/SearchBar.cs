@@ -32,13 +32,13 @@ using Banshee.SongKick.Recommendations;
 
 namespace Banshee.SongKick.UI
 {
-    public class SearchBar : HBox
+    public abstract class SearchBar<T> : HBox where T : Result
     {
-        private SearchEntry search_entry;
-        private Button search_button;
-        ISearchPresenter<Result> search_presenter;
+        protected SearchEntry search_entry;
+        protected Button search_button;
+        protected ISearchPresenter<T> search_presenter;
 
-        public SearchBar (ISearchPresenter<Result> searchPresenter)
+        public SearchBar (ISearchPresenter<T> searchPresenter)
         {
             search_presenter = searchPresenter;
 
@@ -56,8 +56,20 @@ namespace Banshee.SongKick.UI
             PackEnd (search_button, false, false, 2);
         }
 
-        protected void Search() {
-            var search = new Search<Result>(SearchType.MetroareaIds, search_entry.Query);
+        public abstract void Search();
+       
+    }
+
+    public class EventSearchBar : SearchBar<Event>
+    {
+        public EventSearchBar(ISearchPresenter<Event> searchPresenter)
+            : base(searchPresenter)
+        {
+        }
+
+         public override void Search() {
+            var search = new MetroAreaByIdSearch(SearchType.MetroareaIds, search_entry.Query);
+            search.GetResultsPage ();
             search_presenter.presentSearch (search);
         }
     }

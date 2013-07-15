@@ -30,10 +30,11 @@ using Gtk;
 using Banshee.Widgets;
 using Banshee.SongKick.Recommendations;
 using Banshee.SongKick.Search;
+using Hyena;
 
 namespace Banshee.SongKick.UI
 {
-    public class SongKickSourceContents : Hyena.Widgets.ScrolledWindow, ISourceContents, ISearchPresenter<Result>
+    public class SongKickSourceContents : Hyena.Widgets.ScrolledWindow, ISourceContents, ISearchPresenter<Event>  
     {
         SongKickSource source;
 
@@ -42,7 +43,9 @@ namespace Banshee.SongKick.UI
         private Widget menu_box;
         private Widget contents_box;
 
-        private SearchBar search_bar;
+        SearchView search_view;
+
+        private SearchBar<Event> search_bar;
 
         private Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Result> model = 
             new Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Result>();
@@ -132,20 +135,35 @@ namespace Banshee.SongKick.UI
             //var label = new Label ("SongKick new UI works");
 
             // add search entry:
-            this.search_bar = new SearchBar (this);
+            this.search_bar = new EventSearchBar (this);
             vbox.PackStart (search_bar, false, false, 2);
 
             //add search results view:
-            var search_view = new SearchView (this.model);
+            search_view = new SearchView (this.model);
 
             vbox.PackStart (search_view, true, true, 2);
             return vbox;
         }
 
-        public void presentSearch (Search<Result> search)
+        public void presentSearch (Search<Event> search)
         {
             Hyena.Log.Information (String.Format("SingKickSourceContents: performing search: {0}", search.ToString()));
-            throw new NotImplementedException ();
+
+            search.GetResultsPage ();
+
+            if (search.ResultsPage.IsWellFormed && search.ResultsPage.IsStatusOk) 
+            {
+                foreach (var result in search.ResultsPage.results.elements) {
+                    model.Add (result);
+                }
+            }
+
+            ThreadAssist.ProxyToMain (delegate {
+                model.Reload ();
+                search_view.OnUpdated ();
+            });
+
+            //throw new NotImplementedException ();
         }
 
         public void ResetSource ()
