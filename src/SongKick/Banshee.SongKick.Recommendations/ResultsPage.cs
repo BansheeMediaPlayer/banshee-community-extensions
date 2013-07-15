@@ -35,11 +35,15 @@ namespace Banshee.SongKick.Recommendations
         public bool IsStatusOk { 
             get { return (status == "ok"); }
         }
-        public string status { get; private set; }
-        public Results<T> results { get; private set; }
-        public ResultsError error { get; private set; }
+        public string status { get; internal set; }
+        public Results<T> results { get; internal set; }
+        public ResultsError error { get; internal set; }
 
         public delegate Results<T> GetResultsDelegate(JsonObject o);
+
+        public ResultsPage ()
+        {
+        }
 
         public ResultsPage (string answer, GetResultsDelegate getResultsDelegate)
         {

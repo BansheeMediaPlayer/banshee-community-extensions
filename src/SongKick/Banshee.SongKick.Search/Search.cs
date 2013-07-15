@@ -67,7 +67,18 @@ namespace Banshee.SongKick.Search
 
         public override void GetResultsPage ()
         {
-            ResultsPage = downloader.getMetroareaMusicEvents (Query, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
+
+            // temporary solution:
+            try {
+                var artist_results_page = 
+                    downloader.findArtists (Query, Banshee.SongKick.Recommendations.Artists.GetArtistListResultsDelegate);
+                var artist = artist_results_page.results.elements[0];
+                ResultsPage = downloader.getArtistsMusicEvents(artist.Id, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
+            }
+            catch (Exception e) {
+                ResultsPage = new ResultsPage<Event> () { error = new ResultsError("could not download music events")};
+                Hyena.Log.Exception (e);
+            }
         }
     }
 }
