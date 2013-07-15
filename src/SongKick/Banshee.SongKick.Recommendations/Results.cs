@@ -29,9 +29,13 @@ using System.Collections.Generic;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public abstract class Results<T> where T : Result
+    public class Results<T> where T : Result
     {
         public IList<T> elements { get; set; }
+
+        internal Results() {
+            elements = new List<T>();
+        }
     }
 }
 
