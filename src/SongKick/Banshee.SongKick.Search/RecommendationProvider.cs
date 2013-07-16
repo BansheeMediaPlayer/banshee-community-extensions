@@ -31,7 +31,7 @@ namespace Banshee.SongKick.Search
     public class RecommendationProvider
     {
         /*
-        DB query that list top artists (those which have tracks rated 4 or 5):
+        DB queries that list top artists (those which have tracks rated 4 or 5):
         
         SELECT CoreArtists.Name, CoreArtists.MusicBrainzID FROM 
           CoreTracks
@@ -41,6 +41,13 @@ namespace Banshee.SongKick.Search
             CoreTracks.Rating >=4
           AND
             CoreTracks.ArtistID=CoreArtists.ArtistID;
+
+        or
+
+        SELECT CoreArtists.Name, CoreArtists.MusicBrainzID FROM 
+            (SELECT ArtistID FROM CoreTracks WHERE CoreTracks.Rating >=4) AS TopTracks 
+          NATURAL JOIN 
+            CoreArtists;
         */
 
         public RecommendationProvider ()
