@@ -36,11 +36,11 @@ namespace Banshee.SongKick.UI
     {
         protected SearchEntry search_entry;
         protected Button search_button;
-        protected ISearchPresenter<T> search_presenter;
+        protected PresentSearch<T> present_search;
 
-        public SearchBar (ISearchPresenter<T> searchPresenter)
+        public SearchBar (PresentSearch<T> presentSearch)
         {
-            search_presenter = searchPresenter;
+            present_search = presentSearch;
 
             search_entry = new SearchEntry () {
                 WidthRequest = 150,
@@ -62,15 +62,15 @@ namespace Banshee.SongKick.UI
 
     public class EventSearchBar : SearchBar<Event>
     {
-        public EventSearchBar(ISearchPresenter<Event> searchPresenter)
-            : base(searchPresenter)
+        public EventSearchBar(PresentSearch<Event> presentSearch)
+            : base(presentSearch)
         {
         }
 
          public override void Search() {
             var search = new MetroAreaByIdSearch(SearchType.MetroareaIds, search_entry.Query);
             search.GetResultsPage ();
-            search_presenter.presentSearch (search);
+            present_search (search);
         }
     }
 }

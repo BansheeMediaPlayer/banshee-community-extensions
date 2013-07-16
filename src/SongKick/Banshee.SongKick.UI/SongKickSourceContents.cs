@@ -135,7 +135,7 @@ namespace Banshee.SongKick.UI
             //var label = new Label ("SongKick new UI works");
 
             // add search entry:
-            this.search_bar = new EventSearchBar (this);
+            this.search_bar = new EventSearchBar (presentSearch);
             vbox.PackStart (search_bar, false, false, 2);
 
             //add search results view:
