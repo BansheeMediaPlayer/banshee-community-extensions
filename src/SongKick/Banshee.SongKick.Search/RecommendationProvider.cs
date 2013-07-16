@@ -30,10 +30,21 @@ namespace Banshee.SongKick.Search
 {
     public class RecommendationProvider
     {
+        /*
+        DB query that list top artists (those which have tracks rated 4 or 5):
+        
+        SELECT CoreArtists.Name, CoreArtists.MusicBrainzID FROM 
+          CoreTracks
+        JOIN 
+          CoreArtists 
+        WHERE 
+            CoreTracks.Rating >=4
+          AND
+            CoreTracks.ArtistID=CoreArtists.ArtistID;
+        */
 
         public RecommendationProvider ()
         {
-
         }
     }
 }
