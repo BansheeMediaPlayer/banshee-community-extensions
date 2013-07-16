@@ -25,6 +25,8 @@
 // THE SOFTWARE.
 using System;
 using Banshee.ServiceStack;
+using Hyena.Data.Sqlite;
+using System.Collections.Generic;
 
 namespace Banshee.SongKick.Search
 {
@@ -50,8 +52,53 @@ namespace Banshee.SongKick.Search
             CoreArtists;
         */
 
+        private HyenaSqliteConnection connection = ServiceManager.DbConnection;
+        private string topArtistsQuery = @"
+                SELECT CoreArtists.Name, CoreArtists.MusicBrainzID FROM 
+                  CoreTracks
+                JOIN 
+                  CoreArtists 
+                WHERE 
+                    CoreTracks.Rating >=4
+                  AND
+                    CoreTracks.ArtistID=CoreArtists.ArtistID;";
+
         public RecommendationProvider ()
         {
+        }
+
+        public IEnumerable<RecommendedArtist> getRecommendations() {
+            var command = new HyenaSqliteCommand (topArtistsQuery);
+
+            using (IDataReader reader = connection.Query (command)) {
+                while (reader.Read ()) {
+                    var artistName = reader.Get<string> (0);
+                    var artistMusicBrainzId = reader.Get<string> (1);
+
+                    var artist = new RecommendedArtist (artistName, artistMusicBrainzId);
+
+                    // TODO: delete logging
+                    Hyena.Log.Information (
+                        String.Format ("Obtained recommendation:{0}", artist));
+
+                    yield return artist;
+                }
+            }
+        }
+
+        public class RecommendedArtist {
+            public string Name { get; private set; }
+            public string MusicBrainzID { get; private set; }
+
+            public RecommendedArtist(string name, string musicBrainzID) {
+                Name = name;
+                MusicBrainzID = musicBrainzID;
+            }
+
+            public override string ToString ()
+            {
+                return string.Format ("[RecommendedArtist: Name={0}, MusicBrainzID={1}]", Name, MusicBrainzID);
+            }
         }
     }
 }
