@@ -35,7 +35,7 @@ namespace Banshee.SongKick.Search
         /*
         DB queries that list top artists (those which have tracks rated 4 or 5):
         
-        SELECT CoreArtists.Name, CoreArtists.MusicBrainzID FROM 
+        SELECT DISTINCT CoreArtists.Name, CoreArtists.MusicBrainzID FROM 
           CoreTracks
         JOIN 
           CoreArtists 
@@ -47,14 +47,14 @@ namespace Banshee.SongKick.Search
         or
 
         SELECT CoreArtists.Name, CoreArtists.MusicBrainzID FROM 
-            (SELECT ArtistID FROM CoreTracks WHERE CoreTracks.Rating >=4) AS TopTracks 
+            (SELECT DISTINCT ArtistID FROM CoreTracks WHERE CoreTracks.Rating >=4) AS TopTracks 
           NATURAL JOIN 
             CoreArtists;
         */
 
         private HyenaSqliteConnection connection = ServiceManager.DbConnection;
         private string topArtistsQuery = @"
-                SELECT CoreArtists.Name, CoreArtists.MusicBrainzID FROM 
+                SELECT DISTINCT CoreArtists.Name, CoreArtists.MusicBrainzID FROM 
                   CoreTracks
                 JOIN 
                   CoreArtists 
