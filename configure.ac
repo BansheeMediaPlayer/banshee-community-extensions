@@ -230,7 +230,7 @@ ${PACKAGE}-${VERSION}
     OpenVP:                ${enable_OpenVP}
     RadioStationFetcher:   ${enable_RadioStationFetcher}
     RandomByLastfm:        ${enable_RandomByLastfm}
-    SongKick:              yes
+    SongKick:              no
     StreamRecorder:        ${enable_StreamRecorder}
     Telepathy:             ${enable_Telepathy}
     ZeitgeistDataprovider: ${enable_ZeitgeistDataprovider}

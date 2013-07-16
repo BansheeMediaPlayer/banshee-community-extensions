@@ -1,5 +1,4 @@
 SUBDIRS = \
-    SongKick \
 	AlarmClock \
 	AlbumArtWriter \
 	Ampache \
