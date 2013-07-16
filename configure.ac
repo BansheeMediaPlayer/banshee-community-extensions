@@ -207,7 +207,6 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
-    SongKick:            yes
     Alarm Clock:           ${enable_AlarmClock}
     AlbumArtWriter:        ${enable_AlbumArtWriter}
     Ampache:               ${enable_Ampache}
@@ -231,6 +230,7 @@ ${PACKAGE}-${VERSION}
     OpenVP:                ${enable_OpenVP}
     RadioStationFetcher:   ${enable_RadioStationFetcher}
     RandomByLastfm:        ${enable_RandomByLastfm}
+    SongKick:              yes
     StreamRecorder:        ${enable_StreamRecorder}
     Telepathy:             ${enable_Telepathy}
     ZeitgeistDataprovider: ${enable_ZeitgeistDataprovider}
