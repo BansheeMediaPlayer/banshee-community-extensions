@@ -34,7 +34,7 @@ using Hyena;
 
 namespace Banshee.SongKick.UI
 {
-    public class SongKickSourceContents : Hyena.Widgets.ScrolledWindow, ISourceContents, ISearchPresenter<Event>  
+    public class SongKickSourceContents : Hyena.Widgets.ScrolledWindow, ISourceContents 
     {
         SongKickSource source;
 

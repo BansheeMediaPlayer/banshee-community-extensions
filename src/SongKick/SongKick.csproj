@@ -92,10 +92,10 @@
     <Compile Include="Banshee.SongKick.Recommendations\Locations.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Result.cs" />
     <Compile Include="Banshee.SongKick.UI\SearchBar.cs" />
-    <Compile Include="Banshee.SongKick.Search\ISearchPresenter.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\EventsResultsPage.cs" />
     <Compile Include="Banshee.SongKick.UI\EventsByArtistNameSearchView.cs" />
     <Compile Include="Banshee.SongKick.Search\RecommendationProvider.cs" />
+    <Compile Include="Banshee.SongKick.Search\PresentSearch.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
