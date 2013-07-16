@@ -44,6 +44,8 @@ using Hyena.Jobs;
 using Banshee.SongKick.Network;
 using Banshee.SongKick.UI;
 
+using System.Linq;
+
 namespace Banshee.SongKick
 {
     // We are inheriting from Source, the top-level, most generic type of Source.
@@ -66,6 +68,16 @@ namespace Banshee.SongKick
             //Change comment in lines below to see described behaviour:
             //Properties.Set<ISourceContents> ("Nereid.SourceContents", new SongKickSourceContents ());
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new LazyLoadSourceContents <SongKickSourceContents> ());
+
+            // For testing purpose only:
+            System.Threading.Thread thread = 
+                new System.Threading.Thread(
+                    new System.Threading.ThreadStart( 
+                        () => new Banshee.SongKick.Search.RecommendationProvider ()
+                                   .getRecommendations()
+                                   .ToList<Banshee.SongKick.Search.RecommendationProvider.RecommendedArtist>()));
+            thread.Start();
+
 
             Hyena.Log.Information ("Testing! SongKick source has been instantiated!");
         }
