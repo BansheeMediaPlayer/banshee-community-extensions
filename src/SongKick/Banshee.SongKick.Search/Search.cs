@@ -58,9 +58,9 @@ namespace Banshee.SongKick.Search
         }
     }
 
-    public class MetroAreaByIdSearch : Search<Event> {
+    public class EventsByArtistSearch : Search<Event> {
 
-        public MetroAreaByIdSearch(SearchType searchType, string query) 
+        public EventsByArtistSearch(SearchType searchType, string query) 
             : base(searchType, query)
         {
         }
