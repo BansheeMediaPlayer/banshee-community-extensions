@@ -102,6 +102,10 @@ namespace Banshee.SongKick.Network
 
         public ResultsPage<Event> getMetroareaMusicEvents(int id, ResultsPage<Event>.GetResultsDelegate getResultsDelegate)
         {
+            // url format:
+            // http://api.songkick.com/api/3.0/metro_areas/{metro_area_id}/calendar.json?apikey={your_api_key}
+            // example url for events in London:
+            // http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx6
             var uriSB = new StringBuilder (DefaultServiceUri);
             uriSB.Append (@"metro_areas/");
             uriSB.Append (id.ToString());
