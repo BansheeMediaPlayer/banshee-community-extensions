@@ -62,22 +62,5 @@ namespace Banshee.SongKick.Network
             Log.Debug("SongKick: Parsed results page:" + resultsPage.ToString());
         }
     }
-
-    public class MetroareaByIdDownloadJob : DownloadJob<Event>
-    {
-        public MetroareaByIdDownloadJob(long id, string apiKey, ResultsPage<Event>.GetResultsDelegate getResultsDelegate)
-        {
-            // example string for events in London:
-            // http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx6
-            var uriSB = new StringBuilder (DefaultServiceUri);
-            uriSB.Append (@"metro_areas/");
-            uriSB.Append (id.ToString());
-            uriSB.Append (@"/calendar.json?apikey=");
-            uriSB.Append (apiKey);
-
-            this.Uri = uriSB.ToString ();
-            this.GetResultsDelegate = getResultsDelegate;
-        }
-    }
 }
 
