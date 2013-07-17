@@ -37,15 +37,13 @@ namespace Banshee.SongKick.Search
 
         public IList<ColumnHeader>  ReturnFields { get { return result_fields; } }
         public String Query { get; protected set; }
-        public SearchType SearchType { get; protected set; }
         public ResultsPage<T> ResultsPage { get; protected set; }
 
         protected SongKickDownloader downloader;
 
-        public Search (SearchType searchType, string query)
+        public Search (string query)
         {
             Query = query;
-            SearchType = searchType;
             downloader = new SongKickDownloader (SongKickCore.APIKey);
             result_fields.AddRange (ColumnHeader.ColumnHeaders);
         }
@@ -54,14 +52,14 @@ namespace Banshee.SongKick.Search
 
         public override string ToString ()
         {
-            return string.Format ("[Search: Query={0}, SearchType={1}, ReturnFields={2}]", Query, SearchType.Id, ReturnFields);
+            return string.Format ("[Search: Query={0}, ReturnFields={1}]", Query, ReturnFields);
         }
     }
 
     public class EventsByArtistSearch : Search<Event> {
 
-        public EventsByArtistSearch(SearchType searchType, string query) 
-            : base(searchType, query)
+        public EventsByArtistSearch(string query) 
+            : base(query)
         {
         }
 

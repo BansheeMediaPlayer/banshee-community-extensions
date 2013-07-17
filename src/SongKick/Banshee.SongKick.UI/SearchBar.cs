@@ -66,8 +66,8 @@ namespace Banshee.SongKick.UI
         {
         }
 
-         public override void Search() {
-            var search = new EventsByArtistSearch(SearchType.MetroareaIds, search_entry.Query);
+        public override void Search() {
+            var search = new EventsByArtistSearch(search_entry.Query);
             search.GetResultsPage ();
             present_search (search);
         }
