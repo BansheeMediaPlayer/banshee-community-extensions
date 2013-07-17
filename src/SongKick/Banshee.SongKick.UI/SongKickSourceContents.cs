@@ -31,6 +31,7 @@ using Banshee.Widgets;
 using Banshee.SongKick.Recommendations;
 using Banshee.SongKick.Search;
 using Hyena;
+using System.Linq;
 
 namespace Banshee.SongKick.UI
 {
@@ -41,15 +42,22 @@ namespace Banshee.SongKick.UI
         private Viewport viewport;
         private HBox main_box;
         private Widget menu_box;
-        private Widget contents_box;
 
-        SearchView<Event> search_view;
+        private Box contents_box;
+        // contents_box has exacltly one child at a time:
+        private Box search_by_artist_contents_box;
+        private Box recommendations_contents_box;
 
-        private SearchBar<Event> search_bar;
+        SearchView<Event> event_search_view;
+        SearchView<RecommendationProvider.RecommendedArtist> recommendad_artist_search_view;
 
-        private Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Event> event_model = 
-            new Hyena.Data.MemoryListModel<Banshee.SongKick.Recommendations.Event>();
+        private SearchBar<Event> event_search_bar;
 
+        private Hyena.Data.MemoryListModel<Event> event_model = 
+            new Hyena.Data.MemoryListModel<Event>();
+
+        private Hyena.Data.MemoryListModel<RecommendationProvider.RecommendedArtist> recommended_artist_model = 
+            new Hyena.Data.MemoryListModel<RecommendationProvider.RecommendedArtist>();
 
         public SongKickSourceContents ()
         {
@@ -63,11 +71,17 @@ namespace Banshee.SongKick.UI
 
             main_box = new HBox () { Spacing = 6, BorderWidth = 5, ReallocateRedraws = true };
 
+
+            search_by_artist_contents_box = BuildSearchByArtistContents ();
+            recommendations_contents_box = BuildRecommendationsContents ();
+
             menu_box = BuildTiles();
-            contents_box = BuildContents ();
 
             main_box.PackStart (menu_box, false, false, 0);
+            contents_box = new HBox ();
             main_box.PackStart (contents_box, true, true, 0);
+
+            contents_box.PackStart (search_by_artist_contents_box, true, true, 0);
 
             // Clamp the width, preventing horizontal scrolling
             /*
@@ -88,6 +102,17 @@ namespace Banshee.SongKick.UI
             ShowAll ();
         }
 
+        internal class SongKickViewInfo {
+            internal string Name { get; set; }
+            internal ImageButton Button { get; set; } 
+            internal Box CorrespondingBox { get; set; } 
+
+            internal SongKickViewInfo (string name, Box correspondingBox) {
+                Name = name;
+                CorrespondingBox = correspondingBox;
+            }
+        }
+
         public bool SetSource (Banshee.Sources.ISource source)
         {
             if (source == null) {
@@ -106,28 +131,37 @@ namespace Banshee.SongKick.UI
 
             vbox.PackStart (titleLabel, false, false, 0);
 
-            var menu_items = new string [] {
-                "Personal recommendations", 
-                "Find music events by place",
-                "Find music events by artist"
+            var songkickViews = new SongKickViewInfo [] {
+                new SongKickViewInfo("Personal recommendations", recommendations_contents_box) ,
+                //new SongKickViewInfo("Find music events by place"),
+                new SongKickViewInfo("Find music events by artist", search_by_artist_contents_box)
             };
 
-            foreach (var item in menu_items) {
-                var this_item = item;
-                var tile = new ImageButton (this_item, null) {
+            foreach (var view in songkickViews) {
+                var button = new ImageButton (view.Name, null) {
                     InnerPadding = 4
                 };
-                tile.LabelWidget.Xalign = 0;
-                //tile.Clicked += (o, a) => source.SetSearch (this_cat);
+                view.Button = button;
+                button.LabelWidget.Xalign = 0;
+                button.Clicked += (o, a) => this.SetView (view);
 
-                vbox.PackStart (tile, false, false, 0);
+                vbox.PackStart (button, false, false, 0);
             }
 
             return vbox;
         }
 
+        void SetView (SongKickViewInfo view)
+        {
+            foreach (Widget w in contents_box.AllChildren) {
+                contents_box.Remove (w);
+            }
 
-        Widget BuildContents ()
+            contents_box.PackStart(view.CorrespondingBox, true, true, 0);
+            ShowAll ();
+        }
+
+        Box BuildSearchByArtistContents ()
         {
             var vbox = new VBox () { Spacing = 2 };
 
@@ -135,18 +169,29 @@ namespace Banshee.SongKick.UI
             //var label = new Label ("SongKick new UI works");
 
             // add search entry:
-            this.search_bar = new EventSearchBar (presentSearch);
-            vbox.PackStart (search_bar, false, false, 2);
+            this.event_search_bar = new EventSearchBar (presentEventSearch);
+            vbox.PackStart (event_search_bar, false, false, 2);
 
             //add search results view:
             //search_view = new SearchView<Event> (this.event_model);
-            search_view = new EventsByArtistNameSearchView (this.event_model);
+            event_search_view = new EventsByArtistNameSearchView (this.event_model);
 
-            vbox.PackStart (search_view, true, true, 2);
+            vbox.PackStart (event_search_view, true, true, 2);
             return vbox;
         }
 
-        public void presentSearch (Search<Event> search)
+        Box BuildRecommendationsContents () {
+            var vbox = new VBox () { Spacing = 2 };
+
+            //add search results view:
+            //search_view = new SearchView<Event> (this.event_model);
+            recommendad_artist_search_view = new SearchView<RecommendationProvider.RecommendedArtist> (this.recommended_artist_model);
+
+            vbox.PackStart (this.recommendad_artist_search_view, true, true, 2);
+            return vbox;
+        }
+
+        public void presentEventSearch (Search<Event> search)
         {
             Hyena.Log.Information (String.Format("SingKickSourceContents: performing search: {0}", search.ToString()));
 
@@ -163,10 +208,14 @@ namespace Banshee.SongKick.UI
 
             ThreadAssist.ProxyToMain (delegate {
                 event_model.Reload ();
-                search_view.OnUpdated ();
+                event_search_view.OnUpdated ();
             });
 
             //throw new NotImplementedException ();
+        }
+
+        public void presentRecommendations(Search<RecommendationProvider.RecommendedArtist> search) {
+
         }
 
         public void ResetSource ()
