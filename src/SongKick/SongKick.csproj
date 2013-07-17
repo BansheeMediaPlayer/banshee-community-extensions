@@ -82,7 +82,6 @@
     <Compile Include="Banshee.SongKick.Recommendations\Event.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Events.cs" />
     <Compile Include="Banshee.SongKick.Network\SongKickService.cs" />
-    <Compile Include="Banshee.SongKick.Network\DownloadJobs.cs" />
     <Compile Include="Banshee.SongKick.UI\SongKickSourceContents.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Artist.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Artists.cs" />
