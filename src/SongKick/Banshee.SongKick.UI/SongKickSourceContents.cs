@@ -172,7 +172,7 @@ namespace Banshee.SongKick.UI
             //var label = new Label ("SongKick new UI works");
 
             // add search entry:
-            this.event_search_bar = new EventSearchBar (presentEventSearch);
+            this.event_search_bar = new SearchBar<Event> (presentEventSearch, new EventsByArtistSearch());
             vbox.PackStart (event_search_bar, false, false, 2);
 
             //add search results view:
@@ -199,8 +199,6 @@ namespace Banshee.SongKick.UI
             Hyena.Log.Information (String.Format("SingKickSourceContents: performing search: {0}", search.ToString()));
 
             event_model.Clear ();
-
-            search.GetResultsPage ();
 
             if (search.ResultsPage.IsWellFormed && search.ResultsPage.IsStatusOk) 
             {

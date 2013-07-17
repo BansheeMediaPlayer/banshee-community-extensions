@@ -37,10 +37,12 @@ namespace Banshee.SongKick.UI
         protected SearchEntry search_entry;
         protected Button search_button;
         protected PresentSearch<T> present_search;
+        public Search<T> Search { get; set; }
 
-        public SearchBar (PresentSearch<T> presentSearch)
+        public SearchBar (PresentSearch<T> presentSearch, Search<T> search)
         {
             present_search = presentSearch;
+            Search = search;
 
             search_entry = new SearchEntry () {
                 WidthRequest = 150,
@@ -51,28 +53,14 @@ namespace Banshee.SongKick.UI
             PackStart (search_entry, true, true, 2);
 
             search_button = new Hyena.Widgets.ImageButton (Catalog.GetString ("_Search"), Stock.Find);
-            search_button.Clicked += (o, a) => Search ();
+            search_button.Clicked += (o, a) => PerformSearch (Search);
 
             PackEnd (search_button, false, false, 2);
         }
 
-        public virtual void Search() {}
-
-        public void Search(Search<T> search) {
-            search.GetResultsPage ();
+        public void PerformSearch(Search<T> search) {
+            search.GetResultsPage (search_entry.Query);
             present_search (search);
-        }
-    }
-
-    public class EventSearchBar : SearchBar<Event>
-    {
-        public EventSearchBar(PresentSearch<Event> presentSearch)
-            : base(presentSearch)
-        {
-        }
-
-        public override void Search() {
-            base.Search(new EventsByArtistSearch(search_entry.Query));
         }
     }
 }

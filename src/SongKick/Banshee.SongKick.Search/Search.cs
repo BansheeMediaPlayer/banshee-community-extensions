@@ -41,14 +41,13 @@ namespace Banshee.SongKick.Search
 
         protected SongKickDownloader downloader;
 
-        public Search (string query)
+        public Search ()
         {
-            Query = query;
             downloader = new SongKickDownloader (SongKickCore.APIKey);
             result_fields.AddRange (ColumnHeader.ColumnHeaders);
         }
 
-        public abstract void GetResultsPage ();
+        public abstract void GetResultsPage (string query);
 
         public override string ToString ()
         {
@@ -58,14 +57,14 @@ namespace Banshee.SongKick.Search
 
     public class EventsByArtistSearch : Search<Event> {
 
-        public EventsByArtistSearch(string query) 
-            : base(query)
+        public EventsByArtistSearch() 
+            : base()
         {
         }
 
-        public override void GetResultsPage ()
+        public override void GetResultsPage (string query)
         {
-
+            Query = query;
             // temporary solution:
             try {
                 var artist_results_page = 
