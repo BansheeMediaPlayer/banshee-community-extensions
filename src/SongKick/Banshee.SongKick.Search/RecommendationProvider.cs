@@ -27,6 +27,7 @@ using System;
 using Banshee.ServiceStack;
 using Hyena.Data.Sqlite;
 using System.Collections.Generic;
+using Banshee.SongKick.Recommendations;
 
 namespace Banshee.SongKick.Search
 {
@@ -86,7 +87,7 @@ namespace Banshee.SongKick.Search
             }
         }
 
-        public class RecommendedArtist {
+        public class RecommendedArtist : Result {
             public string Name { get; private set; }
             public string MusicBrainzID { get; private set; }
 
