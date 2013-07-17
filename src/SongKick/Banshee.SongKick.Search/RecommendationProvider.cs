@@ -91,6 +91,15 @@ namespace Banshee.SongKick.Search
             public string Name { get; private set; }
             public string MusicBrainzID { get; private set; }
 
+            // propertied required by SearchView:
+            // TODO: change SearchView
+            public string DisplayName { 
+                get { return Name;} 
+            }
+            public int Id { 
+                get { return -1; } 
+            }
+
             public RecommendedArtist(string name, string musicBrainzID) {
                 Name = name;
                 MusicBrainzID = musicBrainzID;

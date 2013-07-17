@@ -32,6 +32,7 @@ using Banshee.SongKick.Recommendations;
 using Banshee.SongKick.Search;
 using Hyena;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Banshee.SongKick.UI
 {
@@ -97,6 +98,8 @@ namespace Banshee.SongKick.UI
                 viewport.ModifyBg (StateType.Normal, Style.Base (StateType.Normal));
                 viewport.ModifyFg (StateType.Normal, Style.Text (StateType.Normal));
             };
+
+            LoadAndPresentRecommendations ();
 
             AddWithFrame (viewport);
             ShowAll ();
@@ -214,8 +217,46 @@ namespace Banshee.SongKick.UI
             //throw new NotImplementedException ();
         }
 
-        public void presentRecommendations(Search<RecommendationProvider.RecommendedArtist> search) {
+        void LoadAndPresentRecommendations ()
+        {
+            System.Threading.Thread thread = 
+                new System.Threading.Thread(
+                    new System.Threading.ThreadStart( 
+                        () => presentRecommendedArtists(getRecommendedArtists())));
+            thread.Start();
+        }
 
+        public IEnumerable<RecommendationProvider.RecommendedArtist> getRecommendedArtists() 
+        {
+            var recommendationProvider = new Banshee.SongKick.Search.RecommendationProvider ();
+            return recommendationProvider.getRecommendations ();
+        }
+
+        public void presentRecommendedArtists(IEnumerable<RecommendationProvider.RecommendedArtist> recommendedArtists) 
+        {
+            /*
+            System.Threading.Thread thread = 
+                new System.Threading.Thread(
+                    new System.Threading.ThreadStart( 
+                         () => new Banshee.SongKick.Search.RecommendationProvider ()
+                         .getRecommendations()
+                         .ToList<Banshee.SongKick.Search.RecommendationProvider.RecommendedArtist>()));
+            thread.Start();
+            */
+
+            recommended_artist_model.Clear ();
+
+            foreach (var artist in recommendedArtists) {
+                recommended_artist_model.Add (artist);
+            }
+
+            var recommendationProvider = new Banshee.SongKick.Search.RecommendationProvider ();
+            recommendationProvider.getRecommendations ();
+
+            ThreadAssist.ProxyToMain (delegate {
+                recommended_artist_model.Reload ();
+                recommendad_artist_search_view.OnUpdated ();
+            });
         }
 
         public void ResetSource ()
