@@ -59,8 +59,14 @@ namespace Banshee.SongKick.UI
         }
 
         public void PerformSearch(Search<T> search) {
-            search.GetResultsPage (search_entry.Query);
-            present_search (search);
+            System.Threading.Thread thread = 
+                new System.Threading.Thread(
+                    new System.Threading.ThreadStart( 
+                            () => {             
+                                search.GetResultsPage (search_entry.Query);
+                                present_search (search);}));
+            thread.Start();
+
         }
     }
 }
