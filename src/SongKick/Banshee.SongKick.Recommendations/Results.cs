@@ -29,13 +29,100 @@ using System.Collections.Generic;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class Results<T> where T : Result
+    public class Results<T> : IList<T> where T : Result
     {
-        public IList<T> elements { get; set; }
+        private IList<T> elements;
 
         internal Results() {
             elements = new List<T>();
         }
+
+        #region IList implementation
+
+        public int IndexOf (T item)
+        {
+            return elements.IndexOf (item);
+        }
+
+        public void Insert (int index, T item)
+        {
+            elements.Insert (index, item);
+        }
+
+        public void RemoveAt (int index)
+        {
+            elements.RemoveAt (index);
+        }
+
+        public T this [int index] {
+            get {
+                return elements [index];
+            }
+            set {
+                elements [index] = value;
+            }
+        }
+
+        #endregion
+
+        #region ICollection implementation
+
+        public void Add (T item)
+        {
+            elements.Add (item);
+        }
+
+        public void Clear ()
+        {
+            elements.Clear ();
+        }
+
+        public bool Contains (T item)
+        {
+            return elements.Contains (item);
+        }
+
+        public void CopyTo (T[] array, int arrayIndex)
+        {
+            elements.CopyTo (array, arrayIndex);
+        }
+
+        public bool Remove (T item)
+        {
+            return elements.Remove (item);
+        }
+
+        public int Count {
+            get {
+                return elements.Count;
+            }
+        }
+
+        public bool IsReadOnly {
+            get {
+                return elements.IsReadOnly;
+            }
+        }
+
+        #endregion
+
+        #region IEnumerable implementation
+
+        public IEnumerator<T> GetEnumerator ()
+        {
+            return elements.GetEnumerator ();
+        }
+
+        #endregion
+
+        #region IEnumerable implementation
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        {
+            return (elements as System.Collections.IEnumerable).GetEnumerator ();
+        }
+
+        #endregion
     }
 }
 

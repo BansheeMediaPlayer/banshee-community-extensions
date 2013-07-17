@@ -31,16 +31,13 @@ namespace Banshee.SongKick.Recommendations
 {
     public class Events : Results<Event>
     {
-        //public IList<Event> elements { get; set; }
-
         public Events (JsonObject jsonObject)
         {
-            this.elements = new List<Event> ();
             var eventJsonObjs = jsonObject["event"] as JsonArray;
 
             foreach (var eventJsonObj in eventJsonObjs) 
             {
-                elements.Add (new Event(eventJsonObj as JsonObject));
+                this.Add (new Event(eventJsonObj as JsonObject));
             }
         }
 

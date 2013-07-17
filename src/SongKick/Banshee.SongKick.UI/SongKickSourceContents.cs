@@ -202,7 +202,7 @@ namespace Banshee.SongKick.UI
 
             if (search.ResultsPage.IsWellFormed && search.ResultsPage.IsStatusOk) 
             {
-                foreach (var result in search.ResultsPage.results.elements) {
+                foreach (var result in search.ResultsPage.results) {
                     event_model.Add (result);
                 }
             }

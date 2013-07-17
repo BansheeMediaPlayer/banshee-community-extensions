@@ -57,7 +57,7 @@ namespace Banshee.SongKick.UI
             var resultPage = downloader.getMetroareaMusicEvents (query, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
             Events events = resultPage.results as Events;
 
-            foreach (var musicEvent in events.elements)
+            foreach (var musicEvent in events)
             {
                 model.Add(musicEvent);
             }

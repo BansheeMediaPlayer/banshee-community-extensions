@@ -35,12 +35,11 @@ namespace Banshee.SongKick.Recommendations
 
         public Locations (JsonObject jsonObject)
         {
-            this.elements = new List<Location> ();
             var eventJsonObjs = jsonObject["artist"] as JsonArray;
 
             foreach (var eventJsonObj in eventJsonObjs) 
             {
-                elements.Add (new Location(eventJsonObj as JsonObject));
+                this.Add (new Location(eventJsonObj as JsonObject));
             }
         }
 

@@ -69,7 +69,7 @@ namespace Banshee.SongKick.Search
             try {
                 var artist_results_page = 
                     downloader.findArtists (Query, Banshee.SongKick.Recommendations.Artists.GetArtistListResultsDelegate);
-                var artist = artist_results_page.results.elements[0];
+                var artist = artist_results_page.results[0];
                 ResultsPage = downloader.getArtistsMusicEvents(artist.Id, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
             }
             catch (Exception e) {

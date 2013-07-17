@@ -35,12 +35,11 @@ namespace Banshee.SongKick.Recommendations
 
         public Artists (JsonObject jsonObject)
         {
-            this.elements = new List<Artist> ();
             var eventJsonObjs = jsonObject["artist"] as JsonArray;
 
             foreach (var eventJsonObj in eventJsonObjs) 
             {
-                elements.Add (new Artist(eventJsonObj as JsonObject));
+                this.Add (new Artist(eventJsonObj as JsonObject));
             }
         }
 
