@@ -30,9 +30,9 @@ using Hyena.Jobs;
 
 namespace Banshee.SongKick.Network
 {
+    // NOTE: This service is run by default, but doesn't do anything
     public class SongKickService : IExtensionService
     {
-        
         Scheduler scheduler = new Scheduler ();
 
         public SongKickService ()
@@ -45,6 +45,7 @@ namespace Banshee.SongKick.Network
 
         public void Initialize ()
         {
+            /*
             //for testing only:
 
             //text file:
@@ -64,6 +65,7 @@ namespace Banshee.SongKick.Network
             var downloadJob = new MetroareaByIdDownloadJob (24426, SongKickCore.APIKey, Events.GetMusicEventListResultsDelegate);
             
             scheduler.Add(downloadJob);
+            */
         }
 
         public void Dispose ()
