@@ -57,6 +57,11 @@ namespace Banshee.SongKick.UI
         }
 
         public virtual void Search() {}
+
+        public void Search(Search<T> search) {
+            search.GetResultsPage ();
+            present_search (search);
+        }
     }
 
     public class EventSearchBar : SearchBar<Event>
@@ -67,9 +72,7 @@ namespace Banshee.SongKick.UI
         }
 
         public override void Search() {
-            var search = new EventsByArtistSearch(search_entry.Query);
-            search.GetResultsPage ();
-            present_search (search);
+            base.Search(new EventsByArtistSearch(search_entry.Query));
         }
     }
 }
