@@ -93,7 +93,6 @@
     <Compile Include="Banshee.SongKick.Recommendations\Locations.cs" />
     <Compile Include="Banshee.SongKick.UI\SearchBar.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\EventsResultsPage.cs" />
-    <Compile Include="Banshee.SongKick.UI\EventsByArtistNameSearchView.cs" />
     <Compile Include="Banshee.SongKick.Search\RecommendationProvider.cs" />
     <Compile Include="Banshee.SongKick.Search\PresentSearch.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\IResult.cs" />
