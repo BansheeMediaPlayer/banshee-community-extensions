@@ -88,6 +88,7 @@ namespace Banshee.SongKick.Search
         }
 
         public class RecommendedArtist : IResult {
+            [DisplayAttribute("Artist", DisplayAttribute.DisplayType.Text)]
             public string Name { get; private set; }
             public string MusicBrainzID { get; private set; }
 

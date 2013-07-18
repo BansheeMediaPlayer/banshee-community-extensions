@@ -30,10 +30,15 @@ namespace Banshee.SongKick.Recommendations
 {
     public class Event : IResult
     {
+        //adding attribute below is useful during debugging:
+        //[DisplayAttribute("ID", DisplayAttribute.DisplayType.Text)]
         public long Id { get; private set; }
+        [DisplayAttribute("Name", DisplayAttribute.DisplayType.Text)]
         public string DisplayName { get; private set; }
+        [DisplayAttribute("Type", DisplayAttribute.DisplayType.Text)]
         public string Type { get; private set; }
         //public DateTime Date { get; private set; }
+        [DisplayAttribute("Popularity", DisplayAttribute.DisplayType.Text)]
         public double Popularity { get; private set; }
 
         public Event (JsonObject jsonObject)

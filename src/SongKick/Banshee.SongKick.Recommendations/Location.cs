@@ -31,6 +31,7 @@ namespace Banshee.SongKick.Recommendations
     public class Location : IResult
     {
         public long Id { get; private set; }
+        [DisplayAttribute("Location", DisplayAttribute.DisplayType.Text)]
         public string DisplayName { get; private set; }
 
         public Location (JsonObject jsonObject)
