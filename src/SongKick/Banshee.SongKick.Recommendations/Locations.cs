@@ -31,8 +31,6 @@ namespace Banshee.SongKick.Recommendations
 {
     public class Locations : Results<Location>
     {
-		//public IList<Location> elements { get; set; }
-
         public Locations (JsonObject jsonObject)
         {
             var eventJsonObjs = jsonObject["artist"] as JsonArray;
