@@ -166,9 +166,6 @@ namespace Banshee.SongKick.UI
         {
             var vbox = new VBox () { Spacing = 2 };
 
-            //var search_box = new HBox () { Spacing = 6, BorderWidth = 4 };
-            //var label = new Label ("SongKick new UI works");
-
             // add search entry:
             this.event_search_bar = new SearchBar<Event> (presentEventSearch, new EventsByArtistSearch());
             vbox.PackStart (event_search_bar, false, false, 2);
