@@ -65,8 +65,6 @@ namespace Banshee.SongKick.UI
             //HscrollbarPolicy = PolicyType.Never;
             //VscrollbarPolicy = PolicyType.Automatic;
 
-
-
             viewport = new Viewport ();
             viewport.ShadowType = ShadowType.None;
 
@@ -220,17 +218,17 @@ namespace Banshee.SongKick.UI
             System.Threading.Thread thread = 
                 new System.Threading.Thread(
                     new System.Threading.ThreadStart( 
-                        () => presentRecommendedArtists(getRecommendedArtists())));
+                        () => PresentRecommendedArtists (GetRecommendedArtists ())));
             thread.Start();
         }
 
-        public IEnumerable<RecommendationProvider.RecommendedArtist> getRecommendedArtists() 
+        public IEnumerable<RecommendationProvider.RecommendedArtist> GetRecommendedArtists ()
         {
             var recommendationProvider = new Banshee.SongKick.Search.RecommendationProvider ();
             return recommendationProvider.getRecommendations ();
         }
 
-        public void presentRecommendedArtists(IEnumerable<RecommendationProvider.RecommendedArtist> recommendedArtists) 
+        public void PresentRecommendedArtists (IEnumerable<RecommendationProvider.RecommendedArtist> recommendedArtists)
         {
             /*
             System.Threading.Thread thread = 
