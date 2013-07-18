@@ -215,11 +215,12 @@ namespace Banshee.SongKick.UI
 
         void LoadAndPresentRecommendations ()
         {
-            System.Threading.Thread thread = 
-                new System.Threading.Thread(
-                    new System.Threading.ThreadStart( 
-                        () => PresentRecommendedArtists (GetRecommendedArtists ())));
-            thread.Start();
+            ThreadAssist.SpawnFromMain (() => {
+                var artists = GetRecommendedArtists ();
+                ThreadAssist.ProxyToMain (() => {
+                    PresentRecommendedArtists (artists);
+                });
+            });
         }
 
         public IEnumerable<RecommendationProvider.RecommendedArtist> GetRecommendedArtists ()
