@@ -32,6 +32,8 @@ using Banshee.Collection.Gui;
 using Banshee.SongKick.Network;
 using Hyena;
 
+using System.Linq;
+
 namespace Banshee.SongKick.UI
 {
     public class SearchView<T> : Gtk.HBox where T : IResult
@@ -90,10 +92,20 @@ namespace Banshee.SongKick.UI
         // TODO: do it using OOP
         protected virtual void AddColumns ()
         {
-            var cols = new SortableColumn [] {
-                Create ("DisplayName",      "Name"  , 0.9,  true, new ColumnCellText (null, true)),
-                Create ("Id",               "Id"    , 0.15, true, new ColumnCellText (null, true)),
-            };
+            Type genericTypeT = typeof(T);
+            System.Collections.Generic.List<System.Reflection.PropertyInfo> propertyInfosWithDisplayableAttr = genericTypeT.GetProperties().Where(
+                p => Attribute.IsDefined(p, typeof(DisplayAttribute))).ToList();
+
+            var displayAttributes = propertyInfosWithDisplayableAttr
+                .Select (propertyInfo => propertyInfo.GetCustomAttributes(typeof(DisplayAttribute), true)[0] as DisplayAttribute)
+                .ToList<DisplayAttribute>();
+
+            var propertyInfoWithDisplayAttr = propertyInfosWithDisplayableAttr.Zip (
+                displayAttributes, 
+                (propInfo, attr) => new Tuple<System.Reflection.PropertyInfo, DisplayAttribute>(propInfo, attr));
+
+            var cols = propertyInfoWithDisplayAttr
+                .Select (pair => Create(pair.Item1.Name, pair.Item2.Name, 0.15, true, new ColumnCellText (null, true)));
 
             foreach (var col in cols) {
                 list_view.ColumnController.Add (col);
