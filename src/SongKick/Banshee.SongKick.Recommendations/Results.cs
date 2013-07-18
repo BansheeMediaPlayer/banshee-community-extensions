@@ -29,7 +29,7 @@ using System.Collections.Generic;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class Results<T> : IList<T> where T : Result
+    public class Results<T> : IList<T> where T : IResult
     {
         private IList<T> elements;
 

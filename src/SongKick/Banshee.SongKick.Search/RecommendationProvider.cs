@@ -87,7 +87,7 @@ namespace Banshee.SongKick.Search
             }
         }
 
-        public class RecommendedArtist : Result {
+        public class RecommendedArtist : IResult {
             public string Name { get; private set; }
             public string MusicBrainzID { get; private set; }
 

@@ -34,7 +34,7 @@ using Hyena;
 
 namespace Banshee.SongKick.UI
 {
-    public class SearchView<T> : Gtk.HBox where T : Result
+    public class SearchView<T> : Gtk.HBox where T : IResult
     {
         protected ListView<T> list_view;
         protected MemoryListModel<T> model;

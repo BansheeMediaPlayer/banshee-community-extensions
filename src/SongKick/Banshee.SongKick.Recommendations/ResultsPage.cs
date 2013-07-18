@@ -29,7 +29,7 @@ using System.Collections.Generic;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class ResultsPage<T> where T : Result
+    public class ResultsPage<T> where T : IResult
     {
         public bool IsWellFormed { get; private set; }
         public bool IsStatusOk { 

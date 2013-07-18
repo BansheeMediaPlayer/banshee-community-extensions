@@ -1,5 +1,5 @@
 //
-// Result.cs
+// IResult.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -27,11 +27,8 @@ using System;
 
 namespace Banshee.SongKick.Recommendations
 {
-    public class Result
+    public interface IResult
     {
-        public Result ()
-        {
-        }
     }
 }
 

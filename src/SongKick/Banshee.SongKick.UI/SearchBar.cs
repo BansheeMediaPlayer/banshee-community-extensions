@@ -32,7 +32,7 @@ using Banshee.SongKick.Recommendations;
 
 namespace Banshee.SongKick.UI
 {
-    public class SearchBar<T> : HBox where T : Result
+    public class SearchBar<T> : HBox where T : IResult
     {
         protected SearchEntry search_entry;
         protected Button search_button;

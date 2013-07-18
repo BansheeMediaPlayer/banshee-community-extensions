@@ -31,7 +31,7 @@ using Hyena.Jobs;
 
 namespace Banshee.SongKick.Search
 {
-    public abstract class Search<T> where T : Result
+    public abstract class Search<T> where T : IResult
     {
         List<ColumnHeader> result_fields = new List<ColumnHeader> ();
 
