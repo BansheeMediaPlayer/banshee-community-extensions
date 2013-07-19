@@ -47,18 +47,15 @@ namespace Banshee.SongKick.UI
         private Box contents_box;
         // contents_box has exacltly one child at a time:
         private Box search_by_artist_contents_box;
-        private Box recommendations_contents_box;
+        private RecommendedArtistsBox recommendations_contents_box;
 
         SearchView<Event> event_search_view;
-        SearchView<RecommendationProvider.RecommendedArtist> recommendad_artist_search_view;
 
         private SearchBar<Event> event_search_bar;
 
         private Hyena.Data.MemoryListModel<Event> event_model = 
             new Hyena.Data.MemoryListModel<Event>();
 
-        private Hyena.Data.MemoryListModel<RecommendationProvider.RecommendedArtist> recommended_artist_model = 
-            new Hyena.Data.MemoryListModel<RecommendationProvider.RecommendedArtist>();
 
         public SongKickSourceContents ()
         {
@@ -97,7 +94,7 @@ namespace Banshee.SongKick.UI
                 viewport.ModifyFg (StateType.Normal, Style.Text (StateType.Normal));
             };
 
-            LoadAndPresentRecommendations ();
+            recommendations_contents_box.LoadAndPresentRecommendations ();
 
             AddWithFrame (viewport);
             ShowAll ();
@@ -177,15 +174,8 @@ namespace Banshee.SongKick.UI
             return vbox;
         }
 
-        Box BuildRecommendationsContents () {
-            var vbox = new VBox () { Spacing = 2 };
-
-            //add search results view:
-            //search_view = new SearchView<Event> (this.event_model);
-            recommendad_artist_search_view = new SearchView<RecommendationProvider.RecommendedArtist> (this.recommended_artist_model);
-
-            vbox.PackStart (this.recommendad_artist_search_view, true, true, 2);
-            return vbox;
+        RecommendedArtistsBox BuildRecommendationsContents () {
+            return new RecommendedArtistsBox();
         }
 
         public void presentEventSearch (Search<Event> search)
@@ -209,48 +199,8 @@ namespace Banshee.SongKick.UI
             //throw new NotImplementedException ();
         }
 
-        void LoadAndPresentRecommendations ()
-        {
-            ThreadAssist.SpawnFromMain (() => {
-                var artists = GetRecommendedArtists ();
-                ThreadAssist.ProxyToMain (() => {
-                    PresentRecommendedArtists (artists);
-                });
-            });
-        }
 
-        public IEnumerable<RecommendationProvider.RecommendedArtist> GetRecommendedArtists ()
-        {
-            var recommendationProvider = new Banshee.SongKick.Search.RecommendationProvider ();
-            return recommendationProvider.getRecommendations ();
-        }
 
-        public void PresentRecommendedArtists (IEnumerable<RecommendationProvider.RecommendedArtist> recommendedArtists)
-        {
-            /*
-            System.Threading.Thread thread = 
-                new System.Threading.Thread(
-                    new System.Threading.ThreadStart( 
-                         () => new Banshee.SongKick.Search.RecommendationProvider ()
-                         .getRecommendations()
-                         .ToList<Banshee.SongKick.Search.RecommendationProvider.RecommendedArtist>()));
-            thread.Start();
-            */
-
-            recommended_artist_model.Clear ();
-
-            foreach (var artist in recommendedArtists) {
-                recommended_artist_model.Add (artist);
-            }
-
-            var recommendationProvider = new Banshee.SongKick.Search.RecommendationProvider ();
-            recommendationProvider.getRecommendations ();
-
-            ThreadAssist.ProxyToMain (delegate {
-                recommended_artist_model.Reload ();
-                recommendad_artist_search_view.OnUpdated ();
-            });
-        }
 
         public void ResetSource ()
         {
