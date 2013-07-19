@@ -105,11 +105,16 @@ namespace Banshee.SongKick.UI
                 (propInfo, attr) => new Tuple<System.Reflection.PropertyInfo, DisplayAttribute>(propInfo, attr));
 
             var cols = propertyInfoWithDisplayAttr
-                .Select (pair => CreateColumnHeader(pair.Item1.Name, pair.Item2.Name, 0.15, true, new ColumnCellText (null, true)));
+                .Select (pair => CreateColumnHeader(pair.Item1, pair.Item2));
 
             foreach (var col in cols) {
                 list_view.ColumnController.Add (col);
             }
+        }
+
+        SortableColumn CreateColumnHeader(System.Reflection.PropertyInfo propertyInfo, DisplayAttribute attr)
+        {
+            return CreateColumnHeader (propertyInfo.Name, attr.Name, 0.15, true, new ColumnCellText (null, true));
         }
 
         SortableColumn CreateColumnHeader (string property, string label, double width, bool visible, ColumnCell cell)
