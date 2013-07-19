@@ -46,16 +46,8 @@ namespace Banshee.SongKick.UI
 
         private Box contents_box;
         // contents_box has exacltly one child at a time:
-        private Box search_by_artist_contents_box;
+        private SearchEventsBox search_by_artist_contents_box;
         private RecommendedArtistsBox recommendations_contents_box;
-
-        SearchView<Event> event_search_view;
-
-        private SearchBar<Event> event_search_bar;
-
-        private Hyena.Data.MemoryListModel<Event> event_model = 
-            new Hyena.Data.MemoryListModel<Event>();
-
 
         public SongKickSourceContents ()
         {
@@ -159,48 +151,15 @@ namespace Banshee.SongKick.UI
             ShowAll ();
         }
 
-        Box BuildSearchByArtistContents ()
+        SearchEventsBox BuildSearchByArtistContents ()
         {
-            var vbox = new VBox () { Spacing = 2 };
-
-            // add search entry:
-            this.event_search_bar = new SearchBar<Event> (presentEventSearch, new EventsByArtistSearch());
-            vbox.PackStart (event_search_bar, false, false, 2);
-
-            //add search results view:
-            event_search_view = new SearchView<Event> (this.event_model);
-
-            vbox.PackStart (event_search_view, true, true, 2);
-            return vbox;
+            return new SearchEventsBox ();
         }
 
-        RecommendedArtistsBox BuildRecommendationsContents () {
+        RecommendedArtistsBox BuildRecommendationsContents () 
+        {
             return new RecommendedArtistsBox();
         }
-
-        public void presentEventSearch (Search<Event> search)
-        {
-            Hyena.Log.Information (String.Format("SingKickSourceContents: performing search: {0}", search.ToString()));
-
-            event_model.Clear ();
-
-            if (search.ResultsPage.IsWellFormed && search.ResultsPage.IsStatusOk) 
-            {
-                foreach (var result in search.ResultsPage.results) {
-                    event_model.Add (result);
-                }
-            }
-
-            ThreadAssist.ProxyToMain (delegate {
-                event_model.Reload ();
-                event_search_view.OnUpdated ();
-            });
-
-            //throw new NotImplementedException ();
-        }
-
-
-
 
         public void ResetSource ()
         {
