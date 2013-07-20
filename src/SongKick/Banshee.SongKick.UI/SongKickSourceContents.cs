@@ -60,8 +60,8 @@ namespace Banshee.SongKick.UI
             main_box = new HBox () { Spacing = 6, BorderWidth = 5, ReallocateRedraws = true };
 
 
-            search_by_artist_contents_box = BuildSearchByArtistContents ();
-            recommendations_contents_box = BuildRecommendationsContents ();
+            search_by_artist_contents_box = new SearchEventsBox ();
+            recommendations_contents_box = new RecommendedArtistsBox();
 
             menu_box = BuildTiles();
 
@@ -149,16 +149,6 @@ namespace Banshee.SongKick.UI
 
             contents_box.PackStart(view.CorrespondingBox, true, true, 0);
             ShowAll ();
-        }
-
-        SearchEventsBox BuildSearchByArtistContents ()
-        {
-            return new SearchEventsBox ();
-        }
-
-        RecommendedArtistsBox BuildRecommendationsContents () 
-        {
-            return new RecommendedArtistsBox();
         }
 
         public void ResetSource ()
