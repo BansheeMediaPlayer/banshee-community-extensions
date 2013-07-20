@@ -139,12 +139,8 @@ namespace Banshee.SongKick.UI
             }
 
             // add clickable SongKick logo:
-            var songKickImage = new Image(Gdk.Pixbuf.LoadFromResource ("concerts_by_songkick.png"));
-            var songKickEventBox = new EventBox ();
-            songKickEventBox.Add (songKickImage);
-            songKickEventBox.VisibleWindow = false;
-            songKickEventBox.ButtonReleaseEvent += new ButtonReleaseEventHandler (OpenSongKickInBrowser);
-            vbox.PackEnd (songKickEventBox, false, false, 0);
+
+            vbox.PackEnd (new SongKickLogo(), false, false, 0);
 
             return vbox;
         }
@@ -172,11 +168,19 @@ namespace Banshee.SongKick.UI
             get { return this; }
         }
 
-        static void OpenSongKickInBrowser (object obj, ButtonReleaseEventArgs args)
-        {
-            System.Diagnostics.Process.Start (@"http://songkick.com");
-        }
+        public class SongKickLogo : EventBox {
+            public SongKickLogo() {
+                var songKickImage = new Image(Gdk.Pixbuf.LoadFromResource ("concerts_by_songkick.png"));
+                this.Add (songKickImage);
+                this.VisibleWindow = false;
+                this.ButtonReleaseEvent += new ButtonReleaseEventHandler (OpenSongKickInBrowser);
+            }
 
+            static void OpenSongKickInBrowser (object obj, ButtonReleaseEventArgs args)
+            {
+                System.Diagnostics.Process.Start (@"http://songkick.com");
+            }
+        }
 
         /*
         // Fetching results:
