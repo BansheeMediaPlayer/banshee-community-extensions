@@ -138,6 +138,9 @@ namespace Banshee.SongKick.UI
                 vbox.PackStart (button, false, false, 0);
             }
 
+            var songKickImage = new Image(Gdk.Pixbuf.LoadFromResource ("concerts_by_songkick.png"));
+            vbox.PackEnd (songKickImage, false, false, 0);
+
             return vbox;
         }
 

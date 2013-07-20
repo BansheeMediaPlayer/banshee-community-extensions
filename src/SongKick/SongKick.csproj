@@ -69,6 +69,9 @@
     <EmbeddedResource Include="SongKick.addin.xml">
       <LogicalName>SongKick.addin.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\concerts_by_songkick.png">
+      <LogicalName>concerts_by_songkick.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.SongKick\SongKickSource.cs" />
@@ -151,5 +154,6 @@
     <Folder Include="Banshee.SongKick.Recommendations\" />
     <Folder Include="Banshee.SongKick.UI\" />
     <Folder Include="Banshee.SongKick.Search\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
 </Project>
