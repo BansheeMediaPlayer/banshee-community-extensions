@@ -72,6 +72,9 @@
     <EmbeddedResource Include="Resources\concerts_by_songkick.png">
       <LogicalName>concerts_by_songkick.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\songkick_logo.png">
+      <LogicalName>songkick_logo.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.SongKick\SongKickSource.cs" />

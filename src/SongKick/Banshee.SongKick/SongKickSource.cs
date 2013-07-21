@@ -69,6 +69,10 @@ namespace Banshee.SongKick
             //Properties.Set<ISourceContents> ("Nereid.SourceContents", new SongKickSourceContents ());
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new LazyLoadSourceContents <SongKickSourceContents> ());
 
+            // set logo:
+            // TODO: fix that so that it works with various resolutions
+            Properties.SetStringList ("Icon.Name", "songkick_logo");
+
             // For testing purpose only:
             System.Threading.Thread thread = 
                 new System.Threading.Thread(
