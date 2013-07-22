@@ -55,7 +55,7 @@ namespace Banshee.SongKick.UI
             return recommendationProvider.getRecommendations ();
         }
 
-        public void PresentRecommendedArtists (IEnumerable<RecommendationProvider.RecommendedArtist> recommendedArtists)
+        private void PresentRecommendedArtists (IEnumerable<RecommendationProvider.RecommendedArtist> recommendedArtists)
         {
             /*
             System.Threading.Thread thread = 
@@ -79,7 +79,7 @@ namespace Banshee.SongKick.UI
             });
         }
 
-        internal void LoadAndPresentRecommendations ()
+        public void LoadAndPresentRecommendations ()
         {
             ThreadAssist.SpawnFromMain (() => {
                 var artists = GetRecommendedArtists ();
@@ -95,7 +95,7 @@ namespace Banshee.SongKick.UI
 
 
 
-        void FillAdditionalInfo (RecommendationProvider.RecommendedArtist artist, 
+        private void FillAdditionalInfo (RecommendationProvider.RecommendedArtist artist, 
                                  ResultsPage<Banshee.SongKick.Recommendations.Event> songKickFirstAtristEvents)
         {
             artist.NumberOfConcerts = 0;   
@@ -112,7 +112,7 @@ namespace Banshee.SongKick.UI
                 });
         }
 
-        void ReloadModel (IEnumerable<RecommendationProvider.RecommendedArtist> recommendedArtists)
+        private void ReloadModel (IEnumerable<RecommendationProvider.RecommendedArtist> recommendedArtists)
         {
             recommended_artist_model.Clear ();
             foreach (var artist in recommendedArtists) {
