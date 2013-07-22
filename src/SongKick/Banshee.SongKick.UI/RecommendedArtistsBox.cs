@@ -66,11 +66,8 @@ namespace Banshee.SongKick.UI
             thread.Start();
             */
 
-            recommended_artist_model.Clear ();
+            ReloadModel (recommendedArtists);
 
-            foreach (var artist in recommendedArtists) {
-                recommended_artist_model.Add (artist);
-            }
 
             var recommendationProvider = new Banshee.SongKick.Search.RecommendationProvider ();
             recommendationProvider.getRecommendations ();
@@ -89,6 +86,14 @@ namespace Banshee.SongKick.UI
                     PresentRecommendedArtists (artists);
                 });
             });
+        }
+
+        void ReloadModel (IEnumerable<RecommendationProvider.RecommendedArtist> recommendedArtists)
+        {
+            recommended_artist_model.Clear ();
+            foreach (var artist in recommendedArtists) {
+                recommended_artist_model.Add (artist);
+            }
         }
     }
 }
