@@ -54,10 +54,29 @@ namespace Banshee.SongKick.Search
         }
 
         public void ProcessAll() {
+            const int numberOfThreads = 3;
+            for (int i = 0; i < numberOfThreads; i++) {
+                System.Threading.Thread thread = 
+                    new System.Threading.Thread (
+                        new System.Threading.ThreadStart (
+                            () => ProcessAllOneThread ()));
+                thread.Start();
+            }
+        }
+
+        private void ProcessAllOneThread()
+        {
             try {
                 while (artist_queue.Count > 0) {
-                    var artist = artist_queue.Dequeue();
-                    Process(artist);
+                    RecommendationProvider.RecommendedArtist artist = null;
+                    lock (artist_queue) {
+                        if (artist_queue.Count > 0) {
+                            artist = artist_queue.Dequeue();
+                        }
+                    }
+                    if (artist != null) {
+                        Process (artist);
+                    }
                 }
             } catch (InvalidOperationException e) { // exception that might be thrown by Dequeue()
                 Hyena.Log.Exception (e);
@@ -66,15 +85,9 @@ namespace Banshee.SongKick.Search
 
         private void Process(RecommendationProvider.RecommendedArtist artist)
         {
-            System.Threading.Thread thread = 
-                new System.Threading.Thread(
-                    new System.Threading.ThreadStart( 
-                        () => {
-                            var search = new EventsByArtistSearch();
-                            search.GetResultsPage (artist.Name);
-                            AddSongKickInfo (artist, search.ResultsPage);
-                }));
-            thread.Start();
+            var search = new EventsByArtistSearch();
+            search.GetResultsPage (artist.Name);
+            AddSongKickInfo (artist, search.ResultsPage);
         }
     }
 }
