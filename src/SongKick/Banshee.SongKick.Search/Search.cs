@@ -65,7 +65,9 @@ namespace Banshee.SongKick.Search
         public override void GetResultsPage (string query)
         {
             Query = query;
-            // temporary solution:
+            // temporary solution
+            // TODO: add meaningful ResultsError
+            // TODO: throw Web Exceptions
             try {
                 var artist_results_page = 
                     downloader.findArtists (Query, Banshee.SongKick.Recommendations.Artists.GetArtistListResultsDelegate);
