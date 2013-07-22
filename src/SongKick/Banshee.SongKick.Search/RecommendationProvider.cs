@@ -91,6 +91,8 @@ namespace Banshee.SongKick.Search
             [DisplayAttribute("Artist", DisplayAttribute.DisplayType.Text)]
             public string Name { get; private set; }
             public string MusicBrainzID { get; private set; }
+            [DisplayAttribute("Number of Concerts", DisplayAttribute.DisplayType.Text)]
+            public int? NumberOfConcerts { get; set; }
 
             // propertied required by SearchView:
             // TODO: change SearchView
