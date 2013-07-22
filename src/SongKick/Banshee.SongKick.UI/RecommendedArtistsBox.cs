@@ -35,10 +35,9 @@ namespace Banshee.SongKick.UI
 {
     public class RecommendedArtistsBox : VBox
     {
-        SearchView<RecommendationProvider.RecommendedArtist> recommendad_artist_search_view;
+        private SearchView<RecommendationProvider.RecommendedArtist> recommendad_artist_search_view;
 
         private IList<RecommendationProvider.RecommendedArtist> recommended_artists;
-
         private Hyena.Data.MemoryListModel<RecommendationProvider.RecommendedArtist> recommended_artist_model = 
             new Hyena.Data.MemoryListModel<RecommendationProvider.RecommendedArtist>();
 
@@ -60,21 +59,7 @@ namespace Banshee.SongKick.UI
 
         private void PresentRecommendedArtists ()
         {
-            /*
-            System.Threading.Thread thread = 
-                new System.Threading.Thread(
-                    new System.Threading.ThreadStart( 
-                         () => new Banshee.SongKick.Search.RecommendationProvider ()
-                         .getRecommendations()
-                         .ToList<Banshee.SongKick.Search.RecommendationProvider.RecommendedArtist>()));
-            thread.Start();
-            */
-
-            ReloadModel ();
-
-
-            var recommendationProvider = new Banshee.SongKick.Search.RecommendationProvider ();
-            recommendationProvider.getRecommendations ();
+            PopulateModel ();
 
             ThreadAssist.ProxyToMain (delegate {
                 recommended_artist_model.Reload ();
@@ -86,7 +71,7 @@ namespace Banshee.SongKick.UI
         {
             ThreadAssist.SpawnFromMain (() => {
                 recommended_artists = GetRecommendedArtists ().ToList();
-                ReloadModel ();
+                PopulateModel ();
                 ThreadAssist.ProxyToMain (() => {
                     PresentRecommendedArtists ();
                 });
@@ -112,7 +97,7 @@ namespace Banshee.SongKick.UI
                 });
         }
 
-        private void ReloadModel ()
+        private void PopulateModel ()
         {
             recommended_artist_model.Clear ();
             foreach (var artist in recommended_artists) {
