@@ -34,8 +34,6 @@ namespace Banshee.SongKick.Search
 
     public class RecommendationProcessor
     {
-        // TODO: ensure thread safety
-        // .NET 3.5 does not have ConcurrentQueue<T> class
         private Queue<RecommendationProvider.RecommendedArtist> artist_queue = 
             new Queue<RecommendationProvider.RecommendedArtist>();
 
@@ -48,8 +46,10 @@ namespace Banshee.SongKick.Search
 
         public void EnqueueArtists(IEnumerable<RecommendationProvider.RecommendedArtist> artists)
         {
-            foreach (var artist in artists) {
-                artist_queue.Enqueue (artist);
+            lock (artist_queue) {
+                foreach (var artist in artists) {
+                    artist_queue.Enqueue (artist);
+                }
             }
         }
 
