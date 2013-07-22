@@ -102,10 +102,10 @@ namespace Banshee.SongKick.UI
 
             var propertyInfoWithDisplayAttr = propertyInfosWithDisplayableAttr.Zip (
                 displayAttributes, 
-                (propInfo, attr) => new Tuple<System.Reflection.PropertyInfo, DisplayAttribute>(propInfo, attr));
+                (propInfo, attr) => new { Info = propInfo, Attribute = attr});
 
             var cols = propertyInfoWithDisplayAttr
-                .Select (pair => CreateColumnHeader(pair.Item1, pair.Item2));
+                .Select (infoWithAttr => CreateColumnHeader(infoWithAttr.Info, infoWithAttr.Attribute));
 
             foreach (var col in cols) {
                 list_view.ColumnController.Add (col);
