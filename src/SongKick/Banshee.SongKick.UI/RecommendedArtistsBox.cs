@@ -29,13 +29,16 @@ using Gtk;
 using Hyena;
 using System.Collections.Generic;
 using Banshee.SongKick.Recommendations;
+using System.Linq;
 
 namespace Banshee.SongKick.UI
 {
     public class RecommendedArtistsBox : VBox
     {
         SearchView<RecommendationProvider.RecommendedArtist> recommendad_artist_search_view;
-        
+
+        private IList<RecommendationProvider.RecommendedArtist> recommended_artists;
+
         private Hyena.Data.MemoryListModel<RecommendationProvider.RecommendedArtist> recommended_artist_model = 
             new Hyena.Data.MemoryListModel<RecommendationProvider.RecommendedArtist>();
 
@@ -55,7 +58,7 @@ namespace Banshee.SongKick.UI
             return recommendationProvider.getRecommendations ();
         }
 
-        private void PresentRecommendedArtists (IEnumerable<RecommendationProvider.RecommendedArtist> recommendedArtists)
+        private void PresentRecommendedArtists ()
         {
             /*
             System.Threading.Thread thread = 
@@ -67,7 +70,7 @@ namespace Banshee.SongKick.UI
             thread.Start();
             */
 
-            ReloadModel (recommendedArtists);
+            ReloadModel ();
 
 
             var recommendationProvider = new Banshee.SongKick.Search.RecommendationProvider ();
@@ -82,21 +85,20 @@ namespace Banshee.SongKick.UI
         public void LoadAndPresentRecommendations ()
         {
             ThreadAssist.SpawnFromMain (() => {
-                var artists = GetRecommendedArtists ();
+                recommended_artists = GetRecommendedArtists ().ToList();
+                ReloadModel ();
                 ThreadAssist.ProxyToMain (() => {
-                    PresentRecommendedArtists (artists);
+                    PresentRecommendedArtists ();
                 });
 
                 var processor = new RecommendationProcessor (FillAdditionalInfo);
-                processor.EnqueueArtists (artists);
+                processor.EnqueueArtists (recommended_artists);
                 processor.ProcessAll ();
             });
         }
 
-
-
         private void FillAdditionalInfo (RecommendationProvider.RecommendedArtist artist, 
-                                 ResultsPage<Banshee.SongKick.Recommendations.Event> songKickFirstAtristEvents)
+            ResultsPage<Banshee.SongKick.Recommendations.Event> songKickFirstAtristEvents)
         {
             artist.NumberOfConcerts = 0;   
 
@@ -104,18 +106,16 @@ namespace Banshee.SongKick.UI
                 artist.NumberOfConcerts = songKickFirstAtristEvents.results.Count;
             }
 
-            recommended_artist_model.Add (artist);
-
             ThreadAssist.ProxyToMain (() => {
                     recommended_artist_model.Reload ();
                     recommendad_artist_search_view.OnUpdated ();  
                 });
         }
 
-        private void ReloadModel (IEnumerable<RecommendationProvider.RecommendedArtist> recommendedArtists)
+        private void ReloadModel ()
         {
             recommended_artist_model.Clear ();
-            foreach (var artist in recommendedArtists) {
+            foreach (var artist in recommended_artists) {
                 recommended_artist_model.Add (artist);
             }
         }
