@@ -55,13 +55,12 @@ namespace Banshee.SongKick.Search
 
         public void ProcessAll() {
             try {
-                while (artist_queue.Count > 0) 
-                {
+                while (artist_queue.Count > 0) {
                     var artist = artist_queue.Dequeue();
                     Process(artist);
                 }
-            } catch (InvalidOperationException) { // exception that might be thrown by Dequeue()
-                // TODO
+            } catch (InvalidOperationException e) { // exception that might be thrown by Dequeue()
+                Hyena.Log.Exception (e);
             }
         }
 
