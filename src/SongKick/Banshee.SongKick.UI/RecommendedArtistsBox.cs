@@ -28,6 +28,7 @@ using Banshee.SongKick.Search;
 using Gtk;
 using Hyena;
 using System.Collections.Generic;
+using Banshee.SongKick.Recommendations;
 
 namespace Banshee.SongKick.UI
 {
@@ -85,7 +86,30 @@ namespace Banshee.SongKick.UI
                 ThreadAssist.ProxyToMain (() => {
                     PresentRecommendedArtists (artists);
                 });
+
+                var processor = new RecommendationProcessor (FillAdditionalInfo);
+                processor.EnqueueArtists (artists);
+                processor.ProcessAll ();
             });
+        }
+
+
+
+        void FillAdditionalInfo (RecommendationProvider.RecommendedArtist artist, 
+                                 ResultsPage<Banshee.SongKick.Recommendations.Event> songKickFirstAtristEvents)
+        {
+            artist.NumberOfConcerts = 0;   
+
+            if (songKickFirstAtristEvents.IsStatusOk) {
+                artist.NumberOfConcerts = songKickFirstAtristEvents.results.Count;
+            }
+
+            recommended_artist_model.Add (artist);
+
+            ThreadAssist.ProxyToMain (() => {
+                    recommended_artist_model.Reload ();
+                    recommendad_artist_search_view.OnUpdated ();  
+                });
         }
 
         void ReloadModel (IEnumerable<RecommendationProvider.RecommendedArtist> recommendedArtists)
