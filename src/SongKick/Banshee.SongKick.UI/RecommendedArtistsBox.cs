@@ -47,6 +47,7 @@ namespace Banshee.SongKick.UI
 
             this.recommendad_artist_search_view = new SearchView<RecommendationProvider.RecommendedArtist> 
                 (this.recommended_artist_model);
+            this.recommendad_artist_search_view.RowActivated += OnRowActivate;
 
             this.PackStart (this.recommendad_artist_search_view, true, true, 2);
         }
@@ -103,6 +104,11 @@ namespace Banshee.SongKick.UI
             foreach (var artist in recommended_artists) {
                 recommended_artist_model.Add (artist);
             }
+        }
+
+        protected void OnRowActivate (object o, Hyena.Data.Gui.RowActivatedArgs<RecommendationProvider.RecommendedArtist> args)
+        {
+            Hyena.Log.Debug(String.Format("row {0} was doubleclicked", args.RowValue));
         }
     }
 }
