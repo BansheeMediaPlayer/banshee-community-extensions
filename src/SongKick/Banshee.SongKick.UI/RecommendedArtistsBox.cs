@@ -77,7 +77,6 @@ namespace Banshee.SongKick.UI
         {
             ThreadAssist.SpawnFromMain (() => {
                 recommended_artists = GetRecommendedArtists ().ToList();
-                PopulateModel ();
                 ThreadAssist.ProxyToMain (() => {
                     PresentRecommendedArtists ();
                 });
