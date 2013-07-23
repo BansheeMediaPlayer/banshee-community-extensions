@@ -50,6 +50,7 @@ namespace Banshee.SongKick.UI
 
             //add search results view:
             this.event_search_view = new SearchView<Event> (this.event_model);
+            this.event_search_view.RowActivated += OnMusicEventRowActivated;
             this.PackStart (event_search_view, true, true, 2);
         }
 
@@ -75,6 +76,12 @@ namespace Banshee.SongKick.UI
                 event_model.Reload ();
                 event_search_view.OnUpdated ();
             });
+        }
+
+        private void OnMusicEventRowActivated (object o, Hyena.Data.Gui.RowActivatedArgs<Event> args)
+        {
+            var musicEvent = args.RowValue;
+            System.Diagnostics.Process.Start (musicEvent.Uri);
         }
     }
 }
