@@ -33,9 +33,6 @@ namespace Banshee.SongKick.Search
 {
     public abstract class Search<T> where T : IResult
     {
-        List<ColumnHeader> result_fields = new List<ColumnHeader> ();
-
-        public IList<ColumnHeader>  ReturnFields { get { return result_fields; } }
         public String Query { get; protected set; }
         public ResultsPage<T> ResultsPage { get; protected set; }
 
@@ -44,14 +41,13 @@ namespace Banshee.SongKick.Search
         public Search ()
         {
             downloader = new SongKickDownloader (SongKickCore.APIKey);
-            result_fields.AddRange (ColumnHeader.ColumnHeaders);
         }
 
         public abstract void GetResultsPage (string query);
 
         public override string ToString ()
         {
-            return string.Format ("[Search: Query={0}, ReturnFields={1}]", Query, ReturnFields);
+            return string.Format ("[Search: Query={0}]", Query);
         }
     }
 

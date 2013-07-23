@@ -94,7 +94,6 @@
     <Compile Include="Banshee.SongKick.UI\SearchView.cs" />
     <Compile Include="Banshee.SongKick.Search\Search.cs" />
     <Compile Include="Banshee.SongKick.Search\SearchType.cs" />
-    <Compile Include="Banshee.SongKick.Search\ColumnHeader.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Location.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\Locations.cs" />
     <Compile Include="Banshee.SongKick.UI\SearchBar.cs" />
