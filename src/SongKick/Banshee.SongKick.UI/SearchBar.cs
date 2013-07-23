@@ -53,18 +53,18 @@ namespace Banshee.SongKick.UI
             PackStart (search_entry, true, true, 2);
 
             search_button = new Hyena.Widgets.ImageButton (Catalog.GetString ("_Search"), Stock.Find);
-            search_button.Clicked += (o, a) => PerformSearch (Search);
+            search_button.Clicked += (o, a) => PerformSearch ();
 
             PackEnd (search_button, false, false, 2);
         }
 
-        public void PerformSearch(Search<T> search) {
+        public void PerformSearch() {
             System.Threading.Thread thread = 
                 new System.Threading.Thread(
                     new System.Threading.ThreadStart( 
                             () => {             
-                                search.GetResultsPage (search_entry.Query);
-                                present_search (search);}));
+                                Search.GetResultsPage (search_entry.Query);
+                                present_search (Search);}));
             thread.Start();
 
         }
