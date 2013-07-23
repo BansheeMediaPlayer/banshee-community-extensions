@@ -59,10 +59,6 @@ namespace Banshee.SongKick.UI
             AddColumns ();
             controller.Load ();
 
-            list_view.RowActivated += (o, a) => {
-                return;
-            };
-
             this.model = model;
             this.list_view.SetModel (model);
 
