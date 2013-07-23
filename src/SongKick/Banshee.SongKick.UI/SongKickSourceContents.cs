@@ -73,7 +73,8 @@ namespace Banshee.SongKick.UI
             contents_box = new HBox ();
             main_box.PackStart (contents_box, true, true, 0);
 
-            contents_box.PackStart (search_by_artist_contents_box, true, true, 0);
+            // set default contents box
+            contents_box.PackStart (recommendations_contents_box, true, true, 0);
 
             // Clamp the width, preventing horizontal scrolling
             /*
