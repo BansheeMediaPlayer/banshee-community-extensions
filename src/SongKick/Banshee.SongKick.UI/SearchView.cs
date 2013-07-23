@@ -41,8 +41,12 @@ namespace Banshee.SongKick.UI
         protected ListView<T> list_view;
         protected MemoryListModel<T> model;
 
-        MemoryListModel<T> Model {
+        public MemoryListModel<T> Model {
             get { return model; }
+        }
+        public event RowActivatedHandler<T> RowActivated {
+            add { list_view.RowActivated += value; }
+            remove {list_view.RowActivated -= value; }
         }
 
         ScrolledWindow window = new ScrolledWindow ();
@@ -62,9 +66,7 @@ namespace Banshee.SongKick.UI
             this.model = model;
             this.list_view.SetModel (model);
 
-
             window.Child = list_view;
-
             this.PackStart (window, true, true, 0);
             ShowAll ();
         }
