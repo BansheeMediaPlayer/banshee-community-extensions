@@ -53,6 +53,11 @@ namespace Banshee.SongKick.UI
             this.PackStart (event_search_view, true, true, 2);
         }
 
+        public void Search(string query) {
+            event_search_bar.Query = query;
+            event_search_bar.PerformSearch ();
+        }
+
         public void presentEventSearch (Search<Event> search)
         {
             Hyena.Log.Information (String.Format("SearchEventsBox: performing search: {0}", search.ToString()));
