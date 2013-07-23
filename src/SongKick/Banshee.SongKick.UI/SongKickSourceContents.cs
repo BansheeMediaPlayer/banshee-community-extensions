@@ -62,6 +62,7 @@ namespace Banshee.SongKick.UI
 
             search_by_artist_contents_box = new SearchEventsBox ();
             recommendations_contents_box = new RecommendedArtistsBox();
+            recommendations_contents_box.RowActivated += OnRowActivate;
 
             menu_box = BuildTiles();
 
@@ -182,6 +183,10 @@ namespace Banshee.SongKick.UI
             }
         }
 
+        protected void OnRowActivate (object o, Hyena.Data.Gui.RowActivatedArgs<RecommendationProvider.RecommendedArtist> args)
+        {
+            Hyena.Log.Debug(String.Format("row {0} was doubleclicked", args.RowValue));
+        }
         /*
         // Fetching results:
         protected void Reload ()
