@@ -37,6 +37,8 @@ namespace Banshee.SongKick.Recommendations
         public string DisplayName { get; private set; }
         [DisplayAttribute("Date", DisplayAttribute.DisplayType.Text)]
         public DateTime StartDateTime { get; private set; }
+        [DisplayAttribute("Location", DisplayAttribute.DisplayType.Text)]
+        public EventLocation Location { get; private set; }
         [DisplayAttribute("Type", DisplayAttribute.DisplayType.Text)]
         public string Type { get; private set; }
         //public DateTime Date { get; private set; }
@@ -52,6 +54,8 @@ namespace Banshee.SongKick.Recommendations
             Type = jsonObject.Get <String> ("type");
             Popularity = jsonObject.Get <Double> ("popularity");
             Uri = jsonObject.Get<String> ("uri");
+            Location = new EventLocation (jsonObject.Get<JsonObject> ("location"));
+
             var start = jsonObject.Get<JsonObject> ("start");
             StartDateTime = getDateTime (
                 start.Get <String> ("date"),
@@ -65,6 +69,27 @@ namespace Banshee.SongKick.Recommendations
             DateTime date;
             DateTime.TryParse (String.Format("{0} {1}", dateString, timeString), out date);
             return date;
+        }
+
+        public class EventLocation 
+        {
+            public String Name { get; private set; }
+            public double Latitude { get; private set; }
+            public double Longitude { get; private set; }
+
+            public EventLocation (JsonObject jsonLocation) 
+            {
+                // example:
+                // {"city":"San Francisco, CA, US","lng":-122.4332937,"lat":37.7842398}
+                Name = jsonLocation.Get<String> ("city");
+                Latitude= jsonLocation.Get<double> ("lat");
+                Longitude= jsonLocation.Get<double> ("lng");
+            }
+
+            public override string ToString ()
+            {
+                return Name;
+            }
         }
     }
 }
