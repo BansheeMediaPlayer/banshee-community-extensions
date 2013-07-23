@@ -40,6 +40,8 @@ namespace Banshee.SongKick.Recommendations
         //public DateTime Date { get; private set; }
         [DisplayAttribute("Popularity", DisplayAttribute.DisplayType.Text)]
         public double Popularity { get; private set; }
+        public string Uri { get; private set; }
+
 
         public Event (JsonObject jsonObject)
         {
@@ -47,6 +49,7 @@ namespace Banshee.SongKick.Recommendations
             DisplayName = jsonObject.Get <String> ("displayName");
             Type = jsonObject.Get <String> ("type");
             Popularity = jsonObject.Get <Double> ("popularity");
+            Uri = jsonObject.Get<String> ("uri");
 
             Console.WriteLine();
         }
