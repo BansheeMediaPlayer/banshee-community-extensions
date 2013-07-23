@@ -49,6 +49,9 @@ namespace Banshee.SongKick.UI
         private SearchEventsBox search_by_artist_contents_box;
         private RecommendedArtistsBox recommendations_contents_box;
 
+        SongKickViewInfo presonal_recommendation_view ;
+        SongKickViewInfo search_by_artist_view ;
+
         public SongKickSourceContents ()
         {
             //HscrollbarPolicy = PolicyType.Never;
@@ -122,10 +125,12 @@ namespace Banshee.SongKick.UI
 
             vbox.PackStart (titleLabel, false, false, 0);
 
+            this.presonal_recommendation_view = new SongKickViewInfo("Personal recommendations", recommendations_contents_box);
+            this.search_by_artist_view = new SongKickViewInfo("Find music events by artist", search_by_artist_contents_box);
+
             var songkickViews = new SongKickViewInfo [] {
-                new SongKickViewInfo("Personal recommendations", recommendations_contents_box) ,
-                //new SongKickViewInfo("Find music events by place"),
-                new SongKickViewInfo("Find music events by artist", search_by_artist_contents_box)
+                presonal_recommendation_view,
+                search_by_artist_view
             };
 
             foreach (var view in songkickViews) {
