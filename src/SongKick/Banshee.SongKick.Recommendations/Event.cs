@@ -35,6 +35,8 @@ namespace Banshee.SongKick.Recommendations
         public long Id { get; private set; }
         [DisplayAttribute("Name", DisplayAttribute.DisplayType.Text)]
         public string DisplayName { get; private set; }
+        [DisplayAttribute("Date", DisplayAttribute.DisplayType.Text)]
+        public DateTime StartDateTime { get; private set; }
         [DisplayAttribute("Type", DisplayAttribute.DisplayType.Text)]
         public string Type { get; private set; }
         //public DateTime Date { get; private set; }
@@ -50,8 +52,19 @@ namespace Banshee.SongKick.Recommendations
             Type = jsonObject.Get <String> ("type");
             Popularity = jsonObject.Get <Double> ("popularity");
             Uri = jsonObject.Get<String> ("uri");
+            var start = jsonObject.Get<JsonObject> ("start");
+            StartDateTime = getDateTime (
+                start.Get <String> ("date"),
+                start.Get <String> ("time"));
+        }
 
-            Console.WriteLine();
+        private DateTime getDateTime (String dateString, string timeString)
+        {
+            // TODO: add timezone
+            // this can be achieved by parsing "datetime" (e.g. "2012-04-18T20:00:00-0800")
+            DateTime date;
+            DateTime.TryParse (String.Format("{0} {1}", dateString, timeString), out date);
+            return date;
         }
     }
 }
