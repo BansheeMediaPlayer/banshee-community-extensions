@@ -52,6 +52,8 @@ namespace Banshee.SongKick.UI
         SongKickViewInfo presonal_recommendation_view ;
         SongKickViewInfo search_by_artist_view ;
 
+        ToggleButton active_button;
+
         public SongKickSourceContents ()
         {
             //HscrollbarPolicy = PolicyType.Never;
@@ -99,7 +101,7 @@ namespace Banshee.SongKick.UI
 
         internal class SongKickViewInfo {
             internal string Name { get; set; }
-            internal ImageButton Button { get; set; } 
+            internal ToggleButton Button { get; set; } 
             internal Box CorrespondingBox { get; set; } 
 
             internal SongKickViewInfo (string name, Box correspondingBox) {
@@ -135,15 +137,16 @@ namespace Banshee.SongKick.UI
             };
 
             foreach (var view in songkickViews) {
-                var button = new ImageButton (view.Name, null) {
-                    InnerPadding = 4
-                };
+                var button = new Gtk.ToggleButton (view.Name);
                 view.Button = button;
-                button.LabelWidget.Xalign = 0;
+
                 button.Clicked += (o, a) => this.SetView (view);
 
                 vbox.PackStart (button, false, false, 0);
             }
+
+            active_button = presonal_recommendation_view.Button;
+            active_button.State = StateType.Active;
 
             // add clickable SongKick logo:
 
@@ -157,6 +160,11 @@ namespace Banshee.SongKick.UI
             foreach (Widget w in contents_box.AllChildren) {
                 contents_box.Remove (w);
             }
+
+            if (active_button != null) {
+                active_button.State = StateType.Normal;
+            }
+            active_button = view.Button;
 
             contents_box.PackStart(view.CorrespondingBox, true, true, 0);
             ShowAll ();
