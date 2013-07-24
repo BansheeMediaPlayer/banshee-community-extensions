@@ -76,7 +76,7 @@ namespace Banshee.SongKick.UI
             main_box.PackStart (contents_box, true, true, 0);
 
             // set default contents box
-            contents_box.PackStart (recommendations_contents_box, true, true, 0);
+            SetView (this.presonal_recommendation_view);
 
             // Clamp the width, preventing horizontal scrolling
             /*
@@ -145,9 +145,6 @@ namespace Banshee.SongKick.UI
                 vbox.PackStart (button, false, false, 0);
             }
 
-            active_button = presonal_recommendation_view.Button;
-            active_button.State = StateType.Active;
-
             // add clickable SongKick logo:
 
             vbox.PackEnd (new SongKickLogo(), false, false, 0);
@@ -165,6 +162,7 @@ namespace Banshee.SongKick.UI
                 active_button.State = StateType.Normal;
             }
             active_button = view.Button;
+            active_button.State = StateType.Active;
 
             contents_box.PackStart(view.CorrespondingBox, true, true, 0);
             ShowAll ();
