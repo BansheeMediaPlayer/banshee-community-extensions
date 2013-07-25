@@ -52,7 +52,7 @@ namespace Banshee.SongKick.UI
         SongKickViewInfo presonal_recommendation_view ;
         SongKickViewInfo search_by_artist_view ;
 
-        ToggleButton active_button;
+        SongKickViewInfo active_view;
 
         public SongKickSourceContents ()
         {
@@ -158,11 +158,11 @@ namespace Banshee.SongKick.UI
                 contents_box.Remove (w);
             }
 
-            if (active_button != null) {
-                active_button.State = StateType.Normal;
+            if (active_view != null) {
+                active_view.Button.State = StateType.Normal;
             }
-            active_button = view.Button;
-            active_button.State = StateType.Active;
+            active_view = view;
+            active_view.Button.State = StateType.Active;
 
             contents_box.PackStart(view.CorrespondingBox, true, true, 0);
             ShowAll ();
