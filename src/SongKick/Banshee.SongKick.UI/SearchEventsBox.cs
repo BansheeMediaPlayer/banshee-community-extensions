@@ -37,8 +37,8 @@ namespace Banshee.SongKick.UI
 
         private SearchBar<Event> event_search_bar;
 
-        private Hyena.Data.MemoryListModel<Event> event_model = 
-            new Hyena.Data.MemoryListModel<Event>();
+        private SortableMemoryListModel<Event> event_model = 
+            new SortableMemoryListModel<Event>();
 
         public SearchEventsBox ()
         {

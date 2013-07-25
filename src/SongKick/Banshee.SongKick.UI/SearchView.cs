@@ -33,15 +33,16 @@ using Banshee.SongKick.Network;
 using Hyena;
 
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Banshee.SongKick.UI
 {
-    public class SearchView<T> : Gtk.HBox where T : IResult
+    public class SearchView<T> : Gtk.HBox where T : IResult // , ISortable
     {
         protected ListView<T> list_view;
-        protected MemoryListModel<T> model;
+        protected SortableMemoryListModel<T> model;
 
-        public MemoryListModel<T> Model {
+        public SortableMemoryListModel<T> Model {
             get { return model; }
         }
         public event RowActivatedHandler<T> RowActivated {
@@ -51,7 +52,7 @@ namespace Banshee.SongKick.UI
 
         ScrolledWindow window = new ScrolledWindow ();
 
-        public SearchView (MemoryListModel<T> model)
+        public SearchView (SortableMemoryListModel<T> model)
         {
             list_view = new ResultListView ();
             var controller = new PersistentColumnController ("SongKick");
@@ -73,12 +74,23 @@ namespace Banshee.SongKick.UI
             // TODO: implement
         }
 
-        private class ResultListView : ListView<T>
+        private class ResultListView : ListView<T> 
         {
             public ResultListView ()
             {
                 RulesHint = true;
-                IsEverReorderable = false;
+                IsEverReorderable = true;
+                IsReorderable = true;
+            }
+
+            protected override void OnColumnLeftClicked (Column clickedColumn)
+            {
+                /*
+                this.ColumnController.SortColumn = clickedColumn as ISortableColumn;
+                this.ColumnController.SortColumn.SortType = SortType.Ascending;
+                this.ShowAll ();
+                */
+                base.OnColumnLeftClicked (clickedColumn);
             }
 
             protected override bool OnPopupMenu ()
@@ -120,6 +132,102 @@ namespace Banshee.SongKick.UI
             cell.Property = property;
             return new SortableColumn (label, cell, width, property, visible);
         }
+      
+    }
+
+    public class SortableMemoryListModel<T> : BaseListModel<T>, ISortable
+    {
+        private ISortableColumn column;
+
+        private IList<T> elements = new List<T>();
+        
+        public SortableMemoryListModel() : base()
+        {
+            Selection = new Hyena.Collections.Selection ();
+            CanReorder = true;
+        }
+
+        #region implemented abstract members of BaseListModel
+
+        public override void Clear ()
+        {
+            lock (elements) {
+                elements.Clear ();
+            }
+
+            OnCleared ();
+        }
+
+        public override void Reload ()
+        {
+            OnReloaded ();
+        }
+
+        public int IndexOf (T item)
+        {
+            lock (elements) {
+                return elements.IndexOf (item);
+            }
+        }
+
+        public void Add (T item)
+        {
+            lock (elements) {
+                elements.Add (item);
+            }
+        }
+
+        public void Remove (T item)
+        {
+            lock (elements) {
+                elements.Remove (item);
+            }
+        }
+
+        public override T this[int index] {
+            get {
+                lock (elements) {
+                    if (elements.Count <= index || index < 0) {
+                        return default (T);
+                    }
+
+                    return elements[index];
+                }
+            }
+        }
+
+        public override int Count {
+            get {
+                lock (elements) {
+                    return elements.Count;
+                }
+            }
+        }
+
+        #endregion
+
+
+        #region ISortable implementation
+
+        public bool Sort (ISortableColumn column)
+        {
+            lock(elements) { // TODO: check if it is correct
+                this.column = column;
+                elements = elements
+                    .OrderBy (elem => typeof(T).GetProperty(column.SortKey).GetValue(elem, null)) 
+                    .ToList();
+                Reload ();
+            }
+            return true;
+        }
+
+        public ISortableColumn SortColumn {
+            get {
+                return column;
+            }
+        }
+
+        #endregion
     }
 }
 
