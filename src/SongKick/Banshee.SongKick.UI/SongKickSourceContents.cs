@@ -54,6 +54,9 @@ namespace Banshee.SongKick.UI
 
         SongKickViewInfo active_view;
 
+        private bool propagate_change_view_events;
+        private System.Object propagate_change_view_events_lock = new System.Object();
+
         public SongKickSourceContents ()
         {
             //HscrollbarPolicy = PolicyType.Never;
@@ -136,20 +139,37 @@ namespace Banshee.SongKick.UI
                 search_by_artist_view
             };
 
-            foreach (var view in songkickViews) {
-                var button = new Gtk.ToggleButton (view.Name);
-                view.Button = button;
+            // add buttons
+            lock (propagate_change_view_events_lock) {
+                propagate_change_view_events = false;
+                foreach (var view in songkickViews) {
+                    var button = new Gtk.ToggleButton (view.Name);
+                    view.Button = button;
 
-                button.Clicked += (o, a) => this.SetView (view);
+                    button.Clicked += (o, a) => this.HandleSetViewClick (view);
 
-                vbox.PackStart (button, false, false, 0);
+                    vbox.PackStart (button, false, false, 0);
+                }
+                propagate_change_view_events = true;
             }
 
             // add clickable SongKick logo:
-
             vbox.PackEnd (new SongKickLogo(), false, false, 0);
 
             return vbox;
+        }
+
+        void HandleSetViewClick(SongKickViewInfo view)
+        {
+            if (propagate_change_view_events) {
+                lock (propagate_change_view_events_lock) {
+                    if (propagate_change_view_events) {
+                        propagate_change_view_events = false;
+                        SetView (view);
+                        propagate_change_view_events = true;
+                    }
+                }
+            }
         }
 
         void SetView (SongKickViewInfo view)
@@ -159,10 +179,10 @@ namespace Banshee.SongKick.UI
             }
 
             if (active_view != null) {
-                active_view.Button.State = StateType.Normal;
+                ThreadAssist.ProxyToMain (() => active_view.Button.Active = false );
             }
             active_view = view;
-            active_view.Button.State = StateType.Active;
+            ThreadAssist.ProxyToMain (() => active_view.Button.Active = true );
 
             contents_box.PackStart(view.CorrespondingBox, true, true, 0);
             ShowAll ();
