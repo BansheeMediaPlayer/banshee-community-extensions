@@ -79,7 +79,7 @@ namespace Banshee.SongKick
                     new System.Threading.ThreadStart( 
                         () => new Banshee.SongKick.Search.RecommendationProvider ()
                                    .getRecommendations()
-                                   .ToList<Banshee.SongKick.Search.RecommendationProvider.RecommendedArtist>()));
+                                   .ToList<Banshee.SongKick.Search.RecommendedArtist>()));
             thread.Start();
 
 

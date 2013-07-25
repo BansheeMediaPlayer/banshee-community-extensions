@@ -36,13 +36,13 @@ namespace Banshee.SongKick.UI
 {
     public class RecommendedArtistsBox : VBox
     {
-        private SearchView<RecommendationProvider.RecommendedArtist> recommendad_artist_search_view;
+        private SearchView<RecommendedArtist> recommendad_artist_search_view;
 
-        private IList<RecommendationProvider.RecommendedArtist> recommended_artists;
-        private Hyena.Data.MemoryListModel<RecommendationProvider.RecommendedArtist> recommended_artist_model = 
-            new Hyena.Data.MemoryListModel<RecommendationProvider.RecommendedArtist>();
+        private IList<RecommendedArtist> recommended_artists;
+        private SortableMemoryListModel<RecommendedArtist> recommended_artist_model = 
+            new SortableMemoryListModel<RecommendedArtist>();
 
-        public event RowActivatedHandler<RecommendationProvider.RecommendedArtist> RowActivated {
+        public event RowActivatedHandler<RecommendedArtist> RowActivated {
             add { recommendad_artist_search_view.RowActivated += value; }
             remove {recommendad_artist_search_view.RowActivated -= value; }
         }
@@ -51,13 +51,13 @@ namespace Banshee.SongKick.UI
         {
             this.Spacing = 2;
 
-            this.recommendad_artist_search_view = new SearchView<RecommendationProvider.RecommendedArtist> 
+            this.recommendad_artist_search_view = new SearchView<RecommendedArtist> 
                 (this.recommended_artist_model);
 
             this.PackStart (this.recommendad_artist_search_view, true, true, 2);
         }
 
-        public IEnumerable<RecommendationProvider.RecommendedArtist> GetRecommendedArtists ()
+        public IEnumerable<RecommendedArtist> GetRecommendedArtists ()
         {
             var recommendationProvider = new Banshee.SongKick.Search.RecommendationProvider ();
             return recommendationProvider.getRecommendations ();
@@ -87,7 +87,7 @@ namespace Banshee.SongKick.UI
             });
         }
 
-        private void FillAdditionalInfo (RecommendationProvider.RecommendedArtist artist, 
+        private void FillAdditionalInfo (RecommendedArtist artist, 
             ResultsPage<Banshee.SongKick.Recommendations.Event> songKickFirstAtristEvents)
         {
             artist.NumberOfConcerts = 0;   

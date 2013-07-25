@@ -86,33 +86,6 @@ namespace Banshee.SongKick.Search
                 }
             }
         }
-
-        public class RecommendedArtist : IResult {
-            [DisplayAttribute("Artist", DisplayAttribute.DisplayType.Text)]
-            public string Name { get; private set; }
-            public string MusicBrainzID { get; private set; }
-            [DisplayAttribute("Number of Concerts", DisplayAttribute.DisplayType.Text)]
-            public int? NumberOfConcerts { get; set; }
-
-            // propertied required by SearchView:
-            // TODO: change SearchView
-            public string DisplayName { 
-                get { return Name;} 
-            }
-            public int Id { 
-                get { return -1; } 
-            }
-
-            public RecommendedArtist(string name, string musicBrainzID) {
-                Name = name;
-                MusicBrainzID = musicBrainzID;
-            }
-
-            public override string ToString ()
-            {
-                return string.Format ("[RecommendedArtist: Name={0}, MusicBrainzID={1}]", Name, MusicBrainzID);
-            }
-        }
     }
 }
 

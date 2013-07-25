@@ -195,7 +195,7 @@ namespace Banshee.SongKick.UI
             }
         }
 
-        protected void OnRecommendedArtistRowActivate (object o, Hyena.Data.Gui.RowActivatedArgs<RecommendationProvider.RecommendedArtist> args) {
+        protected void OnRecommendedArtistRowActivate (object o, Hyena.Data.Gui.RowActivatedArgs<RecommendedArtist> args) {
             var recommendedArtist = args.RowValue;
             search_by_artist_contents_box.Search (recommendedArtist.Name);
             SetView (search_by_artist_view);

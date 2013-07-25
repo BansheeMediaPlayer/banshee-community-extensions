@@ -105,6 +105,7 @@
     <Compile Include="Banshee.SongKick.UI\RecommendedArtistsBox.cs" />
     <Compile Include="Banshee.SongKick.UI\SearchEventsBox.cs" />
     <Compile Include="Banshee.SongKick.Search\RecommendationProcessor.cs" />
+    <Compile Include="Banshee.SongKick.Search\RecommendedArtist.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

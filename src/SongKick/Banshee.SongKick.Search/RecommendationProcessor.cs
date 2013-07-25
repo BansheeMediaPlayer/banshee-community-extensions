@@ -29,13 +29,13 @@ using Banshee.SongKick.Recommendations;
 
 namespace Banshee.SongKick.Search
 {
-    public delegate void AddSongKickInfo(RecommendationProvider.RecommendedArtist artist, 
+    public delegate void AddSongKickInfo(RecommendedArtist artist, 
                                          ResultsPage<Event> songKickFirstAtristEvents);
 
     public class RecommendationProcessor
     {
-        private Queue<RecommendationProvider.RecommendedArtist> artist_queue = 
-            new Queue<RecommendationProvider.RecommendedArtist>();
+        private Queue<RecommendedArtist> artist_queue = 
+            new Queue<RecommendedArtist>();
 
         public AddSongKickInfo AddSongKickInfo { get; private set; }
 
@@ -44,7 +44,7 @@ namespace Banshee.SongKick.Search
             AddSongKickInfo = addSongKickInfo;
         }
 
-        public void EnqueueArtists(IEnumerable<RecommendationProvider.RecommendedArtist> artists)
+        public void EnqueueArtists(IEnumerable<RecommendedArtist> artists)
         {
             lock (artist_queue) {
                 foreach (var artist in artists) {
@@ -68,7 +68,7 @@ namespace Banshee.SongKick.Search
         {
             try {
                 while (artist_queue.Count > 0) {
-                    RecommendationProvider.RecommendedArtist artist = null;
+                    RecommendedArtist artist = null;
                     lock (artist_queue) {
                         if (artist_queue.Count > 0) {
                             artist = artist_queue.Dequeue();
@@ -83,7 +83,7 @@ namespace Banshee.SongKick.Search
             }
         }
 
-        private void Process(RecommendationProvider.RecommendedArtist artist)
+        private void Process(RecommendedArtist artist)
         {
             var search = new EventsByArtistSearch();
             search.GetResultsPage (artist.Name);
