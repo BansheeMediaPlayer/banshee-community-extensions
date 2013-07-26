@@ -25,6 +25,8 @@
 // THE SOFTWARE.
 using System;
 using Hyena.Json;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace Banshee.SongKick.Recommendations
 {
@@ -71,7 +73,7 @@ namespace Banshee.SongKick.Recommendations
             return date;
         }
 
-        public class EventLocation 
+        public class EventLocation : IComparable, IComparable<EventLocation> , IComparer<EventLocation>, IComparer
         {
             public String Name { get; private set; }
             public double Latitude { get; private set; }
@@ -90,6 +92,42 @@ namespace Banshee.SongKick.Recommendations
             {
                 return Name;
             }
+
+            #region IComparable implementation
+
+            int IComparable<EventLocation>.CompareTo (EventLocation other)
+            {
+                return this.Name.CompareTo(other.Name);
+            }
+
+            int IComparable.CompareTo(object y)
+            {
+                if (y is EventLocation) {
+                    return (this as IComparable<EventLocation>).CompareTo(y as EventLocation);
+                } else {
+                    throw new InvalidOperationException("EventLocation can be Compared only to EventLocation");
+                }
+            }
+
+            #endregion
+
+            #region IComparer implementation
+
+            int IComparer<EventLocation>.Compare (EventLocation a, EventLocation b)
+            {
+                return a.Name.CompareTo (b.Name);
+            }
+
+            int IComparer.Compare (object x, object y)
+            {
+                if ((x is EventLocation) && (y is EventLocation)) {
+                    return (this as IComparer<EventLocation>).Compare(x as EventLocation, y as EventLocation);
+                } else {
+                    throw new InvalidOperationException("EventLocation can be Compared only to EventLocation");
+                }
+            }
+
+            #endregion
         }
     }
 }
