@@ -187,10 +187,6 @@ namespace Banshee.SongKick.UI
         public override T this[int index] {
             get {
                 lock (elements) {
-                    if (elements.Count <= index || index < 0) {
-                        return default (T);
-                    }
-
                     return elements[index];
                 }
             }
