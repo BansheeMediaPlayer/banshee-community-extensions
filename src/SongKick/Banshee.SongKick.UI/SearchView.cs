@@ -206,29 +206,29 @@ namespace Banshee.SongKick.UI
 
         #endregion
 
+        private IEnumerable<T> Sort(IEnumerable<T> elements, ISortableColumn column)
+        {
+            switch (column.SortType) {
+            case SortType.Ascending:
+                return elements
+                    .OrderBy (elem => typeof(T).GetProperty(column.SortKey).GetValue(elem, null));
+            case SortType.Descending:
+                return elements
+                    .OrderByDescending (elem => typeof(T).GetProperty(column.SortKey).GetValue(elem, null));
+            case SortType.None:
+                return elements;
+            default:
+                Hyena.Log.Debug (String.Format("Unknown SortType {0}", column.SortType));
+                return elements;
+            }
+        }
+
         public void Sort ()
         {
             if (column != null) {
-                lock(elements) { // TODO: check if it is correct
+                lock (elements) { // TODO: check if it is correct
                     if (column != null) {
-                        switch (column.SortType) {
-                        case SortType.Ascending:
-                            elements = elements
-                                .OrderBy (elem => typeof(T).GetProperty(column.SortKey).GetValue(elem, null)) 
-                                    .ToList();
-                            break;
-                        case SortType.Descending:
-                            elements = elements
-                                .OrderByDescending (elem => typeof(T).GetProperty(column.SortKey).GetValue(elem, null)) 
-                                    .ToList();
-                            break;
-                        case SortType.None:
-                            break;
-                        default:
-                            Hyena.Log.Debug (String.Format("Unknown SortType {0}", column.SortType));
-                            break;
-                        }
-
+                        elements = Sort (elements, column).ToList ();
                     }
                 }
             }
