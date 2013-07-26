@@ -34,6 +34,29 @@ namespace Banshee.SongKick.Recommendations
         [DisplayAttribute("Location", DisplayAttribute.DisplayType.Text)]
         public string DisplayName { get; private set; }
 
+        /*
+            Example Location: 
+            {
+               "city":{
+                  "displayName":"London",
+                  "country":{
+                     "displayName":"UK"
+                  },
+                  "lng":-0.128,
+                  "lat":51.5078
+               },
+               "metroArea":{
+                  "uri":"http://www.songkick.com/metro_areas/24426-uk-london",
+                  "displayName":"London",
+                  "country":{
+                     "displayName":"UK"
+                  },
+                  "id":24426,
+                  "lng":-0.128,
+                  "lat":51.5078
+               }
+            }
+        */
         public Location (JsonObject jsonObject)
         {
             var metroArea = jsonObject.Get<JsonObject> ("metroArea");
