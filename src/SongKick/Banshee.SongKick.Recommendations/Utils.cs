@@ -59,6 +59,16 @@ namespace Banshee.SongKick.Recommendations
             return item.Get <T> (key, default(T));
         }
 
+        public static string GetObjectDisplayName(this IDictionary<string, object> item, string objectName)
+        {
+            var thatObject = item.Get<IDictionary<string, object>> (objectName);
+            if (thatObject == null) {
+                return null;
+            } else {
+                return thatObject.Get<String> ("displayName");
+            }
+        }
+
         // based on InternetArchive.JsonExtensions:
         public static T Get<T> (this IDictionary<string, object> item, string key, T defaultValue)
         {
