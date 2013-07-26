@@ -43,7 +43,6 @@ namespace Banshee.SongKick.Recommendations
         public EventLocation Location { get; private set; }
         [DisplayAttribute("Type", DisplayAttribute.DisplayType.Text)]
         public string Type { get; private set; }
-        //public DateTime Date { get; private set; }
         [DisplayAttribute("Popularity", DisplayAttribute.DisplayType.Text)]
         public double Popularity { get; private set; }
         public string Uri { get; private set; }
