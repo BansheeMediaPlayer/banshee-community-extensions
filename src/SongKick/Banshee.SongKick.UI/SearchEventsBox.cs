@@ -31,54 +31,13 @@ using Banshee.SongKick.Search;
 
 namespace Banshee.SongKick.UI
 {
-    public class SearchEventsBox : VBox
+    public class SearchEventsBox : SearchBox<Event>
     {  
-        private SearchView<Event> event_search_view;
-
-        private SearchBar<Event> event_search_bar;
-
-        private SortableMemoryListModel<Event> event_model = 
-            new SortableMemoryListModel<Event>();
-
-        public SearchEventsBox (Search<Event> search)
+        public SearchEventsBox (Search<Event> search) : base(search)
         {
-            this.Spacing = 2;
-
-            // add search entry:
-            this.event_search_bar = new SearchBar<Event> (presentEventSearch, search);
-            this.PackStart (event_search_bar, false, false, 2);
-
-            //add search results view:
-            this.event_search_view = new SearchView<Event> (this.event_model);
-            this.event_search_view.RowActivated += OnMusicEventRowActivated;
-            this.PackStart (event_search_view, true, true, 2);
         }
 
-        public void Search(string query) {
-            event_search_bar.Query = query;
-            event_search_bar.PerformSearch ();
-        }
-
-        public void presentEventSearch (Search<Event> search)
-        {
-            Hyena.Log.Information (String.Format("SearchEventsBox: performing search: {0}", search.ToString()));
-
-            event_model.Clear ();
-
-            if (search.ResultsPage.IsWellFormed && search.ResultsPage.IsStatusOk) 
-            {
-                foreach (var result in search.ResultsPage.results) {
-                    event_model.Add (result);
-                }
-            }
-
-            ThreadAssist.ProxyToMain (delegate {
-                event_model.Reload ();
-                event_search_view.OnUpdated ();
-            });
-        }
-
-        private void OnMusicEventRowActivated (object o, Hyena.Data.Gui.RowActivatedArgs<Event> args)
+        protected override void OnRowActivated (object o, Hyena.Data.Gui.RowActivatedArgs<Event> args)
         {
             var musicEvent = args.RowValue;
             System.Diagnostics.Process.Start (musicEvent.Uri);
