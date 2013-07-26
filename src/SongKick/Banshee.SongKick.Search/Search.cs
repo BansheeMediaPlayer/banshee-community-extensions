@@ -102,5 +102,29 @@ namespace Banshee.SongKick.Search
             }
         }
     }
+
+    public class LocationSearch : Search<Location> {
+
+        public LocationSearch() 
+            : base()
+        {
+        }
+
+        public override void GetResultsPage (string query)
+        {
+            Query = query;
+            // temporary solution
+            // TODO: add meaningful ResultsError
+            // TODO: throw Web Exceptions
+            try {
+                ResultsPage = 
+                    downloader.findLocation (Query, Banshee.SongKick.Recommendations.Locations.GetLocationListResultsDelegate);
+            }
+            catch (Exception e) {
+                ResultsPage = new ResultsPage<Location> () { error = new ResultsError("could not download locations")};
+                Hyena.Log.Exception (e);
+            }
+        }
+    }
 }
 
