@@ -185,6 +185,14 @@ namespace Banshee.SongKick.Network
             return resultsPage;
 
         }
+
+        // find location based on IP:
+        // http://api.songkick.com/api/3.0/search/locations.json?location=clientip&apikey={your_api_key}
+        // i.e. 
+        // http://api.songkick.com/api/3.0/search/locations.json?location=clientip&apikey=Qjqhc2hkfU3BaTx6
+
+        // invalid API Key uri e.g:
+        // http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx600
     }
 }
 
