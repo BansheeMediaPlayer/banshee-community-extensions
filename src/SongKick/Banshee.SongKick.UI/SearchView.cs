@@ -104,8 +104,6 @@ namespace Banshee.SongKick.UI
         {
             var propertyInfoWithDisplayAttr = GetPropertyInfoWithDisplayAttr (typeof(DisplayAttribute));
 
-
-
             var cols = propertyInfoWithDisplayAttr
                 .Select (infoWithAttr => CreateColumnHeader(infoWithAttr.Info, infoWithAttr.Attribute));
 
