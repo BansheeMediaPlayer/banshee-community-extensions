@@ -31,8 +31,14 @@ namespace Banshee.SongKick.Recommendations
     public class Location : IResult
     {
         public long Id { get; private set; }
-        [DisplayAttribute("Location", DisplayAttribute.DisplayType.Text)]
-        public string DisplayName { get; private set; }
+        [DisplayAttribute("City", DisplayAttribute.DisplayType.Text)]
+        public string CityName { get; private set; }
+        [DisplayAttribute("Country", DisplayAttribute.DisplayType.Text)]
+        public string CityCountryName { get; private set; }
+        [DisplayAttribute("State", DisplayAttribute.DisplayType.Text)]
+        public string CityStateName { get; private set; }
+
+        public string Uri { get; private set; }
 
         /*
             Example Location: 
@@ -59,15 +65,15 @@ namespace Banshee.SongKick.Recommendations
         */
         public Location (JsonObject jsonObject)
         {
+            var city = jsonObject.Get<JsonObject> ("city");
             var metroArea = jsonObject.Get<JsonObject> ("metroArea");
-            Id = metroArea.Get <int> ("id");
-            DisplayName = metroArea.Get <String> ("displayName");
-        }
 
-        public Location (int id, string displayName)
-        {
-            Id = id;
-            DisplayName = displayName;
+            Id = metroArea.Get <int> ("id");
+            Uri = metroArea.Get <String> ("uri");
+
+            CityName = city.Get <String> ("displayName");
+            CityCountryName = city.GetObjectDisplayName("country");
+            CityStateName = city.GetObjectDisplayName ("state");
         }
     }
 }
