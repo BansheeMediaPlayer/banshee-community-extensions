@@ -224,7 +224,6 @@ namespace Banshee.SongKick.UI
         public bool Sort (ISortableColumn column)
         {
             this.column = column;
-            Sort ();
             Reload ();
             return true;
         }
@@ -236,6 +235,12 @@ namespace Banshee.SongKick.UI
         }
 
         #endregion
+
+        protected override void OnReloaded ()
+        {
+            Sort ();
+            base.OnReloaded ();
+        }
     }
 }
 
