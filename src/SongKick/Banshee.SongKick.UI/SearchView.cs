@@ -93,7 +93,7 @@ namespace Banshee.SongKick.UI
         // TODO: do it using OOP
         protected virtual void AddColumns ()
         {
-            var propertyInfoWithDisplayAttr = GetPropertyInfoWithDisplayAttr<DisplayAttribute> (typeof(DisplayAttribute));
+            var propertyInfoWithDisplayAttr = GetPropertyInfoWithDisplayAttr<DisplayAttribute> ();
 
             var cols = propertyInfoWithDisplayAttr
                 .Select (infoWithAttr => CreateColumnHeader(infoWithAttr.Info, infoWithAttr.Attribute));
@@ -105,7 +105,7 @@ namespace Banshee.SongKick.UI
 
         private void SetDefultSortColumn ()
         {
-            var propertyInfoWithDisplayAttr = GetPropertyInfoWithDisplayAttr<DefaultSortColumn> (typeof(DefaultSortColumn));
+            var propertyInfoWithDisplayAttr = GetPropertyInfoWithDisplayAttr<DefaultSortColumn> ();
 
             if (propertyInfoWithDisplayAttr.Count() == 1) {
                 var infoWithAttr = propertyInfoWithDisplayAttr.First();
@@ -125,9 +125,10 @@ namespace Banshee.SongKick.UI
 
         }
 
-        private IEnumerable<InfoWithAttr<T2>> GetPropertyInfoWithDisplayAttr<T2> (Type attributeType) where T2 : class
+        private IEnumerable<InfoWithAttr<T2>> GetPropertyInfoWithDisplayAttr<T2> () where T2 : class
         { 
             Type genericTypeT = typeof(T);
+            Type attributeType = typeof(T2);
             System.Collections.Generic.List<System.Reflection.PropertyInfo> propertyInfosWithDisplayableAttr = 
                 genericTypeT
                 .GetProperties ()
