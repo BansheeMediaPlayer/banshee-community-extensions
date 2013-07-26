@@ -69,6 +69,7 @@ namespace Banshee.SongKick.UI
 
 
             search_by_artist_contents_box = new SearchEventsBox ();
+            search_by_artist_contents_box = new SearchEventsBox (new EventsByArtistSearch());
             recommendations_contents_box = new RecommendedArtistsBox();
             recommendations_contents_box.RowActivated += OnRecommendedArtistRowActivate;
 

@@ -40,12 +40,12 @@ namespace Banshee.SongKick.UI
         private SortableMemoryListModel<Event> event_model = 
             new SortableMemoryListModel<Event>();
 
-        public SearchEventsBox ()
+        public SearchEventsBox (Search<Event> search)
         {
             this.Spacing = 2;
 
             // add search entry:
-            this.event_search_bar = new SearchBar<Event> (presentEventSearch, new EventsByArtistSearch());
+            this.event_search_bar = new SearchBar<Event> (presentEventSearch, search);
             this.PackStart (event_search_bar, false, false, 2);
 
             //add search results view:
