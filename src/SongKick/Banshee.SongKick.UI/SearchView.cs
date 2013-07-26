@@ -37,7 +37,7 @@ using System.Collections.Generic;
 
 namespace Banshee.SongKick.UI
 {
-    public class SearchView<T> : Gtk.HBox where T : IResult // , ISortable
+    public class SearchView<T> : Gtk.HBox where T : IResult
     {
         protected ListView<T> list_view;
         protected SortableMemoryListModel<T> model;
@@ -81,16 +81,6 @@ namespace Banshee.SongKick.UI
                 RulesHint = true;
                 IsEverReorderable = true;
                 IsReorderable = true;
-            }
-
-            protected override void OnColumnLeftClicked (Column clickedColumn)
-            {
-                /*
-                this.ColumnController.SortColumn = clickedColumn as ISortableColumn;
-                this.ColumnController.SortColumn.SortType = SortType.Ascending;
-                this.ShowAll ();
-                */
-                base.OnColumnLeftClicked (clickedColumn);
             }
 
             protected override bool OnPopupMenu ()
