@@ -102,17 +102,9 @@ namespace Banshee.SongKick.UI
         // TODO: do it using OOP
         protected virtual void AddColumns ()
         {
-            Type genericTypeT = typeof(T);
-            System.Collections.Generic.List<System.Reflection.PropertyInfo> propertyInfosWithDisplayableAttr = genericTypeT.GetProperties().Where(
-                p => Attribute.IsDefined(p, typeof(DisplayAttribute))).ToList();
+            var propertyInfoWithDisplayAttr = GetPropertyInfoWithDisplayAttr (typeof(DisplayAttribute));
 
-            var displayAttributes = propertyInfosWithDisplayableAttr
-                .Select (propertyInfo => propertyInfo.GetCustomAttributes(typeof(DisplayAttribute), true)[0] as DisplayAttribute)
-                .ToList<DisplayAttribute>();
 
-            var propertyInfoWithDisplayAttr = propertyInfosWithDisplayableAttr.Zip (
-                displayAttributes, 
-                (propInfo, attr) => new { Info = propInfo, Attribute = attr});
 
             var cols = propertyInfoWithDisplayAttr
                 .Select (infoWithAttr => CreateColumnHeader(infoWithAttr.Info, infoWithAttr.Attribute));
@@ -120,6 +112,33 @@ namespace Banshee.SongKick.UI
             foreach (var col in cols) {
                 list_view.ColumnController.Add (col);
             }
+        }
+
+        static IEnumerable<InfoWithAttr> GetPropertyInfoWithDisplayAttr (Type attributeType)
+        {
+            Type genericTypeT = typeof(T);
+            System.Collections.Generic.List<System.Reflection.PropertyInfo> propertyInfosWithDisplayableAttr = 
+                genericTypeT
+                .GetProperties ()
+                .Where (p => Attribute.IsDefined (p, typeof(DisplayAttribute)))
+                .ToList ();
+            var displayAttributes = 
+                propertyInfosWithDisplayableAttr
+                .Select (propertyInfo => propertyInfo.GetCustomAttributes (attributeType, true) [0] as DisplayAttribute)
+                .ToList<DisplayAttribute> ();
+            var propertyInfoWithDisplayAttr = 
+                propertyInfosWithDisplayableAttr
+                .Zip (displayAttributes, 
+                    (propInfo, attr) => new InfoWithAttr() {
+                        Info = propInfo,
+                        Attribute = attr
+                    });
+            return propertyInfoWithDisplayAttr;
+        }
+
+        private class InfoWithAttr {
+            public System.Reflection.PropertyInfo Info { get; set; }
+            public DisplayAttribute Attribute  { get; set; }
         }
 
         SortableColumn CreateColumnHeader(System.Reflection.PropertyInfo propertyInfo, DisplayAttribute attr)
@@ -242,6 +261,11 @@ namespace Banshee.SongKick.UI
         public ISortableColumn SortColumn {
             get {
                 return column;
+            }
+
+            // setter is not required by ISortable
+            set {
+                this.Sort (value);
             }
         }
 
