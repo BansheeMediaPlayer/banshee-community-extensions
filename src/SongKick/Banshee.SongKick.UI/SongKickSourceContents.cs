@@ -79,7 +79,7 @@ namespace Banshee.SongKick.UI
             main_box.PackStart (contents_box, true, true, 0);
 
             // set default contents box
-            SetView (this.presonal_recommendation_view);
+            SetViewHelper (this.presonal_recommendation_view);
 
             // Clamp the width, preventing horizontal scrolling
             /*
@@ -146,7 +146,7 @@ namespace Banshee.SongKick.UI
                     var button = new Gtk.ToggleButton (view.Name);
                     view.Button = button;
 
-                    button.Clicked += (o, a) => this.HandleSetViewClick (view);
+                    button.Clicked += (o, a) => this.SetView (view);
 
                     vbox.PackStart (button, false, false, 0);
                 }
@@ -159,20 +159,20 @@ namespace Banshee.SongKick.UI
             return vbox;
         }
 
-        void HandleSetViewClick(SongKickViewInfo view)
+        private void SetView(SongKickViewInfo view)
         {
             if (propagate_change_view_events) {
                 lock (propagate_change_view_events_lock) {
                     if (propagate_change_view_events) {
                         propagate_change_view_events = false;
-                        SetView (view);
+                        SetViewHelper (view);
                         propagate_change_view_events = true;
                     }
                 }
             }
         }
 
-        void SetView (SongKickViewInfo view)
+        private void SetViewHelper (SongKickViewInfo view)
         {
             foreach (Widget w in contents_box.AllChildren) {
                 contents_box.Remove (w);
@@ -218,7 +218,7 @@ namespace Banshee.SongKick.UI
         protected void OnRecommendedArtistRowActivate (object o, Hyena.Data.Gui.RowActivatedArgs<RecommendedArtist> args) {
             var recommendedArtist = args.RowValue;
             search_by_artist_contents_box.Search (recommendedArtist.Name);
-            SetView (search_by_artist_view);
+            SetViewHelper (search_by_artist_view);
         }
         /*
         // Fetching results:
