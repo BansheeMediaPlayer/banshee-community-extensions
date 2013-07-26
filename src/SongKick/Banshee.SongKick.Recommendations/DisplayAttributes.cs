@@ -1,5 +1,5 @@
 //
-// DisplayAttribute.cs
+// DisplayAttributes.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -40,6 +40,11 @@ namespace Banshee.SongKick.Recommendations
         }
 
         public enum DisplayType { Text, Hyperlink }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Field | System.AttributeTargets.Property)]
+    public class DefaultSortColumn : System.Attribute
+    {
     }
 }
 

@@ -101,11 +101,11 @@
     <Compile Include="Banshee.SongKick.Search\RecommendationProvider.cs" />
     <Compile Include="Banshee.SongKick.Search\PresentSearch.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\IResult.cs" />
-    <Compile Include="Banshee.SongKick.Recommendations\DisplayAttribute.cs" />
     <Compile Include="Banshee.SongKick.UI\RecommendedArtistsBox.cs" />
     <Compile Include="Banshee.SongKick.UI\SearchEventsBox.cs" />
     <Compile Include="Banshee.SongKick.Search\RecommendationProcessor.cs" />
     <Compile Include="Banshee.SongKick.Search\RecommendedArtist.cs" />
+    <Compile Include="Banshee.SongKick.Recommendations\DisplayAttributes.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
