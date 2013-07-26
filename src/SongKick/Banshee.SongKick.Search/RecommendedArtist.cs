@@ -32,6 +32,7 @@ namespace Banshee.SongKick.Search
         [DisplayAttribute("Artist", DisplayAttribute.DisplayType.Text)]
         public string Name { get; private set; }
         public string MusicBrainzID { get; private set; }
+        [DefaultSortColumn]
         [DisplayAttribute("Number of Concerts", DisplayAttribute.DisplayType.Text)]
         public int? NumberOfConcerts { get; set; }
 
