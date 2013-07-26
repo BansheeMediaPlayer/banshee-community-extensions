@@ -166,6 +166,9 @@ namespace Banshee.SongKick.UI
       
     }
 
+
+    // This class should inherit from MemoryListModel<T>, but MemoryListModel<T> has private field of type List<T>,
+    // which would make "Sort" method in this class inefficient.
     public class SortableMemoryListModel<T> : BaseListModel<T>, ISortable
     {
         private ISortableColumn column;
