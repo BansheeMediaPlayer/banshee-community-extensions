@@ -206,18 +206,26 @@ namespace Banshee.SongKick.UI
 
         #endregion
 
+        public void Sort ()
+        {
+            if (column != null) {
+                lock(elements) { // TODO: check if it is correct
+                    if (column != null) {
+                        elements = elements
+                            .OrderBy (elem => typeof(T).GetProperty(column.SortKey).GetValue(elem, null)) 
+                            .ToList();
+                    }
+                }
+            }
+        }
 
         #region ISortable implementation
 
         public bool Sort (ISortableColumn column)
         {
-            lock(elements) { // TODO: check if it is correct
-                this.column = column;
-                elements = elements
-                    .OrderBy (elem => typeof(T).GetProperty(column.SortKey).GetValue(elem, null)) 
-                    .ToList();
-                Reload ();
-            }
+            this.column = column;
+            Sort ();
+            Reload ();
             return true;
         }
 
