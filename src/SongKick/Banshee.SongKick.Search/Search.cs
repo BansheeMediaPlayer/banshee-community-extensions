@@ -76,5 +76,31 @@ namespace Banshee.SongKick.Search
             }
         }
     }
+
+    public class EventsByLocationSearch : Search<Event> {
+
+        public EventsByLocationSearch() 
+            : base()
+        {
+        }
+
+        public override void GetResultsPage (string query)
+        {
+            Query = query;
+            // temporary solution
+            // TODO: add meaningful ResultsError
+            // TODO: throw Web Exceptions
+            try {
+                var location_results_page = 
+                    downloader.findLocation (Query, Banshee.SongKick.Recommendations.Locations.GetLocationListResultsDelegate);
+                var location = location_results_page.results[0];
+                ResultsPage = downloader.getLocationMusicEvents(location.Id, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
+            }
+            catch (Exception e) {
+                ResultsPage = new ResultsPage<Event> () { error = new ResultsError("could not download music events")};
+                Hyena.Log.Exception (e);
+            }
+        }
+    }
 }
 
