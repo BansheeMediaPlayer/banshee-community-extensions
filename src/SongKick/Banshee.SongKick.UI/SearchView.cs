@@ -58,6 +58,7 @@ namespace Banshee.SongKick.UI
             var controller = new PersistentColumnController ("SongKick");
             list_view.ColumnController = controller;
             AddColumns ();
+            SetDefultSortColumn ();
             controller.Load ();
 
             this.model = model;
@@ -92,7 +93,7 @@ namespace Banshee.SongKick.UI
         // TODO: do it using OOP
         protected virtual void AddColumns ()
         {
-            var propertyInfoWithDisplayAttr = GetPropertyInfoWithDisplayAttr (typeof(DisplayAttribute));
+            var propertyInfoWithDisplayAttr = GetPropertyInfoWithDisplayAttr<DisplayAttribute> (typeof(DisplayAttribute));
 
             var cols = propertyInfoWithDisplayAttr
                 .Select (infoWithAttr => CreateColumnHeader(infoWithAttr.Info, infoWithAttr.Attribute));
@@ -102,31 +103,53 @@ namespace Banshee.SongKick.UI
             }
         }
 
-        static IEnumerable<InfoWithAttr> GetPropertyInfoWithDisplayAttr (Type attributeType)
+        private void SetDefultSortColumn ()
         {
+            var propertyInfoWithDisplayAttr = GetPropertyInfoWithDisplayAttr<DefaultSortColumn> (typeof(DefaultSortColumn));
+
+            if (propertyInfoWithDisplayAttr.Count() == 1) {
+                var infoWithAttr = propertyInfoWithDisplayAttr.First();
+                var column = list_view
+                    .ColumnController
+                    .Where (col => (col as SortableColumn).SortKey == infoWithAttr.Info.Name)
+                    .First () as SortableColumn;
+
+                // for now, every column should be sorted in Descending order
+                // TODO: get SortType from DefaultSortColumn attribute
+                column.SortType = SortType.Descending;
+
+                list_view.ColumnController.DefaultSortColumn = column;
+            } else if (propertyInfoWithDisplayAttr.Count() > 1){
+                Hyena.Log.Error ("Class must specify at most one DefaultSortColumn");
+            }
+
+        }
+
+        private IEnumerable<InfoWithAttr<T2>> GetPropertyInfoWithDisplayAttr<T2> (Type attributeType) where T2 : class
+        { 
             Type genericTypeT = typeof(T);
             System.Collections.Generic.List<System.Reflection.PropertyInfo> propertyInfosWithDisplayableAttr = 
                 genericTypeT
                 .GetProperties ()
-                .Where (p => Attribute.IsDefined (p, typeof(DisplayAttribute)))
+                .Where (p => Attribute.IsDefined (p, typeof(T2)))
                 .ToList ();
             var displayAttributes = 
                 propertyInfosWithDisplayableAttr
-                .Select (propertyInfo => propertyInfo.GetCustomAttributes (attributeType, true) [0] as DisplayAttribute)
-                .ToList<DisplayAttribute> ();
+                .Select (propertyInfo => propertyInfo.GetCustomAttributes (attributeType, true) [0] as T2)
+                .ToList<T2> ();
             var propertyInfoWithDisplayAttr = 
                 propertyInfosWithDisplayableAttr
                 .Zip (displayAttributes, 
-                    (propInfo, attr) => new InfoWithAttr() {
+                    (propInfo, attr) => new InfoWithAttr<T2>() {
                         Info = propInfo,
                         Attribute = attr
                     });
             return propertyInfoWithDisplayAttr;
         }
 
-        private class InfoWithAttr {
+        private class InfoWithAttr<T2> {
             public System.Reflection.PropertyInfo Info { get; set; }
-            public DisplayAttribute Attribute  { get; set; }
+            public T2 Attribute  { get; set; }
         }
 
         SortableColumn CreateColumnHeader(System.Reflection.PropertyInfo propertyInfo, DisplayAttribute attr)
