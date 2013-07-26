@@ -36,25 +36,25 @@ namespace Banshee.SongKick.UI
 {
     public class RecommendedArtistsBox : VBox
     {
-        private SearchView<RecommendedArtist> recommendad_artist_search_view;
+        private SearchView<RecommendedArtist> recommended_artist_search_view;
 
         private IList<RecommendedArtist> recommended_artists;
         private SortableMemoryListModel<RecommendedArtist> recommended_artist_model = 
             new SortableMemoryListModel<RecommendedArtist>();
 
         public event RowActivatedHandler<RecommendedArtist> RowActivated {
-            add { recommendad_artist_search_view.RowActivated += value; }
-            remove {recommendad_artist_search_view.RowActivated -= value; }
+            add { recommended_artist_search_view.RowActivated += value; }
+            remove {recommended_artist_search_view.RowActivated -= value; }
         }
 
         public RecommendedArtistsBox ()
         {
             this.Spacing = 2;
 
-            this.recommendad_artist_search_view = new SearchView<RecommendedArtist> 
+            this.recommended_artist_search_view = new SearchView<RecommendedArtist> 
                 (this.recommended_artist_model);
 
-            this.PackStart (this.recommendad_artist_search_view, true, true, 2);
+            this.PackStart (this.recommended_artist_search_view, true, true, 2);
         }
 
         public IEnumerable<RecommendedArtist> GetRecommendedArtists ()
@@ -69,7 +69,7 @@ namespace Banshee.SongKick.UI
 
             ThreadAssist.ProxyToMain (delegate {
                 recommended_artist_model.Reload ();
-                recommendad_artist_search_view.OnUpdated ();
+                recommended_artist_search_view.OnUpdated ();
             });
         }
 
@@ -98,7 +98,7 @@ namespace Banshee.SongKick.UI
 
             ThreadAssist.ProxyToMain (() => {
                     recommended_artist_model.Reload ();
-                    recommendad_artist_search_view.OnUpdated ();  
+                    recommended_artist_search_view.OnUpdated ();  
                 });
         }
 
