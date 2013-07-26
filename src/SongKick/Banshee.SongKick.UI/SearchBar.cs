@@ -53,6 +53,8 @@ namespace Banshee.SongKick.UI
                 Visible = true,
                 EmptyMessage = "Type your query"
             };
+
+            search_entry.Activated += (o, a) => { search_button.Activate (); };
            
             PackStart (search_entry, true, true, 2);
 
