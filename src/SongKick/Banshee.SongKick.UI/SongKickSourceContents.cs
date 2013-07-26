@@ -79,7 +79,7 @@ namespace Banshee.SongKick.UI
             main_box.PackStart (contents_box, true, true, 0);
 
             // set default contents box
-            SetViewHelper (this.presonal_recommendation_view);
+            SetView (this.presonal_recommendation_view);
 
             // Clamp the width, preventing horizontal scrolling
             /*
@@ -218,7 +218,7 @@ namespace Banshee.SongKick.UI
         protected void OnRecommendedArtistRowActivate (object o, Hyena.Data.Gui.RowActivatedArgs<RecommendedArtist> args) {
             var recommendedArtist = args.RowValue;
             search_by_artist_contents_box.Search (recommendedArtist.Name);
-            SetViewHelper (search_by_artist_view);
+            SetView (search_by_artist_view);
         }
         /*
         // Fetching results:
