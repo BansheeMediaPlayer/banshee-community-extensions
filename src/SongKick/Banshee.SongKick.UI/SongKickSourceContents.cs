@@ -46,11 +46,13 @@ namespace Banshee.SongKick.UI
 
         private Box contents_box;
         // contents_box has exacltly one child at a time:
-        private SearchEventsBox search_by_artist_contents_box;
         private RecommendedArtistsBox recommendations_contents_box;
+        private SearchEventsBox search_by_artist_contents_box;
+        private SearchEventsBox search_by_location_contents_box;
 
         SongKickViewInfo presonal_recommendation_view ;
         SongKickViewInfo search_by_artist_view ;
+        SongKickViewInfo search_by_location_view;
 
         SongKickViewInfo active_view;
 
@@ -68,8 +70,8 @@ namespace Banshee.SongKick.UI
             main_box = new HBox () { Spacing = 6, BorderWidth = 5, ReallocateRedraws = true };
 
 
-            search_by_artist_contents_box = new SearchEventsBox ();
             search_by_artist_contents_box = new SearchEventsBox (new EventsByArtistSearch());
+            search_by_location_contents_box = new SearchEventsBox (new EventsByLocationSearch());
             recommendations_contents_box = new RecommendedArtistsBox();
             recommendations_contents_box.RowActivated += OnRecommendedArtistRowActivate;
 
@@ -134,10 +136,12 @@ namespace Banshee.SongKick.UI
 
             this.presonal_recommendation_view = new SongKickViewInfo("Personal recommendations", recommendations_contents_box);
             this.search_by_artist_view = new SongKickViewInfo("Find music events by artist", search_by_artist_contents_box);
+            this.search_by_location_view = new SongKickViewInfo("Find music events by location", search_by_location_contents_box);
 
             var songkickViews = new SongKickViewInfo [] {
                 presonal_recommendation_view,
-                search_by_artist_view
+                search_by_artist_view,
+                search_by_location_view
             };
 
             // add buttons
