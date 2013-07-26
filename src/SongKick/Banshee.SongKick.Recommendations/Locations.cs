@@ -33,7 +33,7 @@ namespace Banshee.SongKick.Recommendations
     {
         public Locations (JsonObject jsonObject)
         {
-            var eventJsonObjs = jsonObject["artist"] as JsonArray;
+            var eventJsonObjs = jsonObject["location"] as JsonArray;
 
             foreach (var eventJsonObj in eventJsonObjs) 
             {

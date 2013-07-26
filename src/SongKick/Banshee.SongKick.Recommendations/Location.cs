@@ -36,8 +36,9 @@ namespace Banshee.SongKick.Recommendations
 
         public Location (JsonObject jsonObject)
         {
-            Id = jsonObject.Get <int> ("id");
-            DisplayName = jsonObject.Get <String> ("displayName");
+            var metroArea = jsonObject.Get<JsonObject> ("metroArea");
+            Id = metroArea.Get <int> ("id");
+            DisplayName = metroArea.Get <String> ("displayName");
         }
 
         public Location (int id, string displayName)
