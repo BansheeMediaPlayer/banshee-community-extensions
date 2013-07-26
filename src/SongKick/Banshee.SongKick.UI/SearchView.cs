@@ -211,9 +211,24 @@ namespace Banshee.SongKick.UI
             if (column != null) {
                 lock(elements) { // TODO: check if it is correct
                     if (column != null) {
-                        elements = elements
-                            .OrderBy (elem => typeof(T).GetProperty(column.SortKey).GetValue(elem, null)) 
-                            .ToList();
+                        switch (column.SortType) {
+                        case SortType.Ascending:
+                            elements = elements
+                                .OrderBy (elem => typeof(T).GetProperty(column.SortKey).GetValue(elem, null)) 
+                                    .ToList();
+                            break;
+                        case SortType.Descending:
+                            elements = elements
+                                .OrderByDescending (elem => typeof(T).GetProperty(column.SortKey).GetValue(elem, null)) 
+                                    .ToList();
+                            break;
+                        case SortType.None:
+                            break;
+                        default:
+                            Hyena.Log.Debug (String.Format("Unknown SortType {0}", column.SortType));
+                            break;
+                        }
+
                     }
                 }
             }
