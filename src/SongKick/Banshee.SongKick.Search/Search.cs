@@ -126,5 +126,29 @@ namespace Banshee.SongKick.Search
             }
         }
     }
+
+    public class ArtistSearch : Search<Artist> {
+
+        public ArtistSearch() 
+            : base()
+        {
+        }
+
+        public override void GetResultsPage (string query)
+        {
+            Query = query;
+            // temporary solution
+            // TODO: add meaningful ResultsError
+            // TODO: throw Web Exceptions
+            try {
+                ResultsPage = 
+                    downloader.findArtists (Query, Banshee.SongKick.Recommendations.Artists.GetArtistListResultsDelegate);
+            }
+            catch (Exception e) {
+                ResultsPage = new ResultsPage<Artist> () { error = new ResultsError("could not download locations")};
+                Hyena.Log.Exception (e);
+            }
+        }
+    }
 }
 
