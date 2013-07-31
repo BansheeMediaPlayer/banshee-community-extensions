@@ -33,7 +33,7 @@ namespace Banshee.SongKick.Search
 {
     public abstract class Search<T> where T : IResult
     {
-        public String Query { get; protected set; }
+        public Query Query { get; protected set; }
         public ResultsPage<T> ResultsPage { get; protected set; }
 
         protected SongKickDownloader downloader;
@@ -43,7 +43,7 @@ namespace Banshee.SongKick.Search
             downloader = new SongKickDownloader (SongKickCore.APIKey);
         }
 
-        public abstract void GetResultsPage (string query);
+        public abstract void GetResultsPage (Query query);
 
         public override string ToString ()
         {
@@ -58,7 +58,7 @@ namespace Banshee.SongKick.Search
         {
         }
 
-        public override void GetResultsPage (string query)
+        public override void GetResultsPage (Query query)
         {
             Query = query;
             // temporary solution
@@ -66,7 +66,7 @@ namespace Banshee.SongKick.Search
             // TODO: throw Web Exceptions
             try {
                 var artist_results_page = 
-                    downloader.findArtists (Query, Banshee.SongKick.Recommendations.Artists.GetArtistListResultsDelegate);
+                    downloader.findArtists (Query.String, Banshee.SongKick.Recommendations.Artists.GetArtistListResultsDelegate);
                 var artist = artist_results_page.results[0];
                 ResultsPage = downloader.getArtistsMusicEvents(artist.Id, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
             }
@@ -84,7 +84,7 @@ namespace Banshee.SongKick.Search
         {
         }
 
-        public override void GetResultsPage (string query)
+        public override void GetResultsPage (Query query)
         {
             Query = query;
             // temporary solution
@@ -92,7 +92,7 @@ namespace Banshee.SongKick.Search
             // TODO: throw Web Exceptions
             try {
                 var location_results_page = 
-                    downloader.findLocation (Query, Banshee.SongKick.Recommendations.Locations.GetLocationListResultsDelegate);
+                    downloader.findLocation (Query.String, Banshee.SongKick.Recommendations.Locations.GetLocationListResultsDelegate);
                 var location = location_results_page.results[0];
                 ResultsPage = downloader.getLocationMusicEvents(location.Id, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
             }
@@ -110,7 +110,7 @@ namespace Banshee.SongKick.Search
         {
         }
 
-        public override void GetResultsPage (string query)
+        public override void GetResultsPage (Query query)
         {
             Query = query;
             // temporary solution
@@ -118,7 +118,7 @@ namespace Banshee.SongKick.Search
             // TODO: throw Web Exceptions
             try {
                 ResultsPage = 
-                    downloader.findLocation (Query, Banshee.SongKick.Recommendations.Locations.GetLocationListResultsDelegate);
+                    downloader.findLocation (Query.String, Banshee.SongKick.Recommendations.Locations.GetLocationListResultsDelegate);
             }
             catch (Exception e) {
                 ResultsPage = new ResultsPage<Location> () { error = new ResultsError("could not download locations")};
@@ -134,7 +134,7 @@ namespace Banshee.SongKick.Search
         {
         }
 
-        public override void GetResultsPage (string query)
+        public override void GetResultsPage (Query query)
         {
             Query = query;
             // temporary solution
@@ -142,7 +142,7 @@ namespace Banshee.SongKick.Search
             // TODO: throw Web Exceptions
             try {
                 ResultsPage = 
-                    downloader.findArtists (Query, Banshee.SongKick.Recommendations.Artists.GetArtistListResultsDelegate);
+                    downloader.findArtists (Query.String, Banshee.SongKick.Recommendations.Artists.GetArtistListResultsDelegate);
             }
             catch (Exception e) {
                 ResultsPage = new ResultsPage<Artist> () { error = new ResultsError("could not download locations")};

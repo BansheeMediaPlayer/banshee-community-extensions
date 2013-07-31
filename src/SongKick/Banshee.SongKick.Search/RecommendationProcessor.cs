@@ -86,7 +86,7 @@ namespace Banshee.SongKick.Search
         private void Process(RecommendedArtist artist)
         {
             var search = new EventsByArtistSearch();
-            search.GetResultsPage (artist.Name);
+            search.GetResultsPage (new Banshee.SongKick.Search.Query(null, artist.Name));
             AddSongKickInfo (artist, search.ResultsPage);
         }
     }
