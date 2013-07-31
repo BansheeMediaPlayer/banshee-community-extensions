@@ -33,7 +33,7 @@ namespace Banshee.SongKick.Network
     // NOTE: This service is run by default, but doesn't do anything
     public class SongKickService : IExtensionService
     {
-        Scheduler scheduler = new Scheduler ();
+        //Scheduler scheduler = new Scheduler ();
 
         public SongKickService ()
         {
@@ -70,7 +70,7 @@ namespace Banshee.SongKick.Network
 
         public void Dispose ()
         {
-            scheduler.CancelAll (true);
+            //scheduler.CancelAll (true);
         }
     }
 }
