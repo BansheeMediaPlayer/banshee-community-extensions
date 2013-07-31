@@ -90,8 +90,7 @@ namespace Banshee.SongKick
             thread.Start();
             */
 
-
-            Hyena.Log.Information ("Testing! SongKick source has been instantiated!");
+            Hyena.Log.Information ("SongKick source has been instantiated!");
         }
 
         // A count of 0 will be hidden in the source TreeView
