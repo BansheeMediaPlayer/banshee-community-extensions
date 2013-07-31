@@ -186,10 +186,23 @@ namespace Banshee.SongKick.Network
 
         }
 
-        // find location based on IP:
-        // http://api.songkick.com/api/3.0/search/locations.json?location=clientip&apikey={your_api_key}
-        // i.e. 
-        // http://api.songkick.com/api/3.0/search/locations.json?location=clientip&apikey=Qjqhc2hkfU3BaTx6
+        public ResultsPage<Location> findLocationBasedOnIP(ResultsPage<Location>.GetResultsDelegate getResultsDelegate)
+        {
+            // http://api.songkick.com/api/3.0/search/locations.json?location=clientip&apikey={your_api_key}
+            // i.e. 
+            // http://api.songkick.com/api/3.0/search/locations.json?location=clientip&apikey=Qjqhc2hkfU3BaTx6
+
+            var uriSB = new StringBuilder (DefaultServiceUri);
+            uriSB.Append (@"search/locations.json?location=clientip&apikey=");
+            uriSB.Append (this.APIKey);
+
+            string replyString = Downloader.download(uriSB.ToString());
+            var resultsPage = new ResultsPage<Location>(replyString, getResultsDelegate);
+
+            return resultsPage;
+        }
+
+
 
         // invalid API Key uri e.g:
         // http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx600
