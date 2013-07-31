@@ -74,6 +74,7 @@ namespace Banshee.SongKick
             Properties.SetStringList ("Icon.Name", "songkick_logo");
 
             // For testing purpose only:
+            /*
             System.Threading.Thread thread = 
                 new System.Threading.Thread(
                     new System.Threading.ThreadStart( 
@@ -87,6 +88,7 @@ namespace Banshee.SongKick
                             }
                         }));
             thread.Start();
+            */
 
 
             Hyena.Log.Information ("Testing! SongKick source has been instantiated!");
