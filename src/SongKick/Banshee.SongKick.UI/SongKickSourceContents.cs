@@ -50,11 +50,13 @@ namespace Banshee.SongKick.UI
         private SearchEventsBox search_by_artist_contents_box;
         private SearchEventsBox search_by_location_contents_box;
         private SearchLocationBox search_location_contents_box;
+        private SearchArtistsBox search_artists_contents_box;
 
         SongKickViewInfo presonal_recommendation_view ;
         SongKickViewInfo search_by_artist_view ;
         SongKickViewInfo search_by_location_view;
         SongKickViewInfo search_locations;
+        SongKickViewInfo search_artists;
 
         SongKickViewInfo active_view;
 
@@ -75,6 +77,7 @@ namespace Banshee.SongKick.UI
             search_by_artist_contents_box = new SearchEventsBox (new EventsByArtistSearch());
             search_by_location_contents_box = new SearchEventsBox (new EventsByLocationSearch());
             search_location_contents_box = new SearchLocationBox (new LocationSearch());
+            search_artists_contents_box = new SearchArtistsBox (new ArtistSearch());
 
             recommendations_contents_box = new RecommendedArtistsBox();
             recommendations_contents_box.RowActivated += OnRecommendedArtistRowActivate;
@@ -147,12 +150,14 @@ namespace Banshee.SongKick.UI
             this.search_locations = new SongKickViewInfo ("Find locations", search_location_contents_box) { 
                 ShouldBeSeparated = true 
             };
+            this.search_artists = new SongKickViewInfo ("Find artists", search_artists_contents_box);
 
             var songkickViews = new SongKickViewInfo [] {
                 presonal_recommendation_view,
                 search_by_artist_view,
                 search_by_location_view,
-                search_locations
+                search_locations,
+                search_artists
             };
 
             // add buttons
