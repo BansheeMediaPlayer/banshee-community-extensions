@@ -77,9 +77,15 @@ namespace Banshee.SongKick
             System.Threading.Thread thread = 
                 new System.Threading.Thread(
                     new System.Threading.ThreadStart( 
-                        () => new Banshee.SongKick.Search.RecommendationProvider ()
-                                   .getRecommendations()
-                                   .ToList<Banshee.SongKick.Search.RecommendedArtist>()));
+                        () => {
+                            var list = new Banshee.SongKick.Network.SongKickDownloader(SongKickCore.APIKey)
+                               .findLocationBasedOnIP(Locations.GetLocationListResultsDelegate)
+                               .results
+                               .ToList<Banshee.SongKick.Recommendations.Location>();
+                            foreach(var elem in list) {
+                                Hyena.Log.Debug(elem.ToString());
+                            }
+                        }));
             thread.Start();
 
 
