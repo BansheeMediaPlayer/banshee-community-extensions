@@ -78,7 +78,7 @@ namespace Banshee.SongKick.Search
                         Process (artist);
                     }
                 }
-            } catch (InvalidOperationException e) { // exception that might be thrown by Dequeue()
+            } catch (InvalidOperationException e) { // this exception should never be thrown by Dequeue() thanks to lock
                 Hyena.Log.Exception (e);
             }
         }
