@@ -75,6 +75,12 @@ namespace Banshee.SongKick.Recommendations
             CityCountryName = city.GetObjectDisplayName("country");
             CityStateName = city.GetObjectDisplayName ("state");
         }
+
+        public override string ToString ()
+        {
+            return string.Format ("[Location: Id={0}, CityName={1}, CityCountryName={2}, CityStateName={3}, Uri={4}]", 
+                                  Id, CityName, CityCountryName, CityStateName, Uri);
+        }
     }
 }
 
