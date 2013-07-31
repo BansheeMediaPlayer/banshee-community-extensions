@@ -29,6 +29,7 @@ using Banshee.Widgets;
 using Mono.Unix;
 using Banshee.SongKick.Search;
 using Banshee.SongKick.Recommendations;
+using Hyena;
 
 namespace Banshee.SongKick.UI
 {
@@ -65,14 +66,21 @@ namespace Banshee.SongKick.UI
         }
 
         public void PerformSearch() {
+            var query = new Banshee.SongKick.Search.Query (null, search_entry.Query);
+            PerformSearch (query);
+        }
+
+        public void PerformSearch(Banshee.SongKick.Search.Query query) {
+            ThreadAssist.ProxyToMain( () => 
+                search_entry.Query = query.String);
             System.Threading.Thread thread = 
                 new System.Threading.Thread(
                     new System.Threading.ThreadStart( 
-                            () => {             
-                                Search.GetResultsPage (new Banshee.SongKick.Search.Query (null, search_entry.Query));
-                                present_search (Search);}));
+                        () => {             
+                            Search.GetResultsPage (query);
+                            present_search (Search);
+                        }));
             thread.Start();
-
         }
     }
 }
