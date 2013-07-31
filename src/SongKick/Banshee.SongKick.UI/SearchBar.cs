@@ -38,7 +38,7 @@ namespace Banshee.SongKick.UI
         protected Button search_button;
         protected PresentSearch<T> present_search;
         public Search<T> Search { get; set; }
-        public string Query { 
+        public string QueryString { 
             get { return search_entry.Query; }
             set { search_entry.Query = value; }
         }

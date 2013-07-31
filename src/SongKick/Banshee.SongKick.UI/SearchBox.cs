@@ -53,7 +53,7 @@ namespace Banshee.SongKick.UI
         }
 
         public void Search(string query) {
-            event_search_bar.Query = query;
+            event_search_bar.QueryString = query;
             event_search_bar.PerformSearch ();
         }
 
