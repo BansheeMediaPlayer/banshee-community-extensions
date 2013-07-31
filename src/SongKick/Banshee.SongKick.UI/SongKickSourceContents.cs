@@ -113,6 +113,7 @@ namespace Banshee.SongKick.UI
             internal string Name { get; set; }
             internal ToggleButton Button { get; set; } 
             internal Box CorrespondingBox { get; set; } 
+            internal bool ShouldBeSeparated { get; set; }
 
             internal SongKickViewInfo (string name, Box correspondingBox) {
                 Name = name;
@@ -138,10 +139,14 @@ namespace Banshee.SongKick.UI
 
             vbox.PackStart (titleLabel, false, false, 0);
 
-            this.presonal_recommendation_view = new SongKickViewInfo("Personal recommendations", recommendations_contents_box);
-            this.search_by_artist_view = new SongKickViewInfo("Find music events by artist", search_by_artist_contents_box);
+            this.presonal_recommendation_view = new SongKickViewInfo ("Personal recommendations", recommendations_contents_box);
+            this.search_by_artist_view = new SongKickViewInfo("Find music events by artist", search_by_artist_contents_box) {
+                ShouldBeSeparated = true
+            };
             this.search_by_location_view = new SongKickViewInfo("Find music events by location", search_by_location_contents_box);
-            this.search_locations = new SongKickViewInfo ("Find locations", search_location_contents_box);
+            this.search_locations = new SongKickViewInfo ("Find locations", search_location_contents_box) { 
+                ShouldBeSeparated = true 
+            };
 
             var songkickViews = new SongKickViewInfo [] {
                 presonal_recommendation_view,
@@ -154,6 +159,10 @@ namespace Banshee.SongKick.UI
             lock (propagate_change_view_events_lock) {
                 propagate_change_view_events = false;
                 foreach (var view in songkickViews) {
+                    if (view.ShouldBeSeparated) {
+                        vbox.PackStart (new HSeparator(), false, false, 0);
+                    }
+
                     var button = new Gtk.ToggleButton (view.Name);
                     view.Button = button;
 
