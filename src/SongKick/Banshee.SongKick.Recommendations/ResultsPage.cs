@@ -82,9 +82,6 @@ namespace Banshee.SongKick.Recommendations
                 } catch (ArgumentNullException e) {
                     Hyena.Log.DebugException (e);
                 }
-
-                Hyena.Log.Debug(resultsPage.ToString());
-
             } catch (ApplicationException e) {
                 Hyena.Log.DebugException(e);
             }

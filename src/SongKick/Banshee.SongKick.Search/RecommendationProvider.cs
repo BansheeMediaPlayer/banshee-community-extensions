@@ -78,10 +78,6 @@ namespace Banshee.SongKick.Search
 
                     var artist = new RecommendedArtist (artistName, artistMusicBrainzId);
 
-                    // TODO: delete logging
-                    Hyena.Log.Information (
-                        String.Format ("Obtained recommendation:{0}", artist));
-
                     yield return artist;
                 }
             }
