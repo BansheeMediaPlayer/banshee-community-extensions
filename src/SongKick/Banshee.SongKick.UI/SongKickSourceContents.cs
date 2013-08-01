@@ -83,6 +83,7 @@ namespace Banshee.SongKick.UI
             recommendations_contents_box.RowActivated += OnRecommendedArtistRowActivate;
 
             search_location_contents_box.View.RowActivated += SearchLocationRowActivate;
+            search_artists_contents_box.View.RowActivated += SearchArtistRowActivate;
 
             menu_box = BuildTiles();
 
@@ -253,6 +254,14 @@ namespace Banshee.SongKick.UI
             search_by_location_contents_box.Search (location.Id, location.CityName);
             SetView(this.search_by_location_view);
         }
+
+        protected void SearchArtistRowActivate (object o, Hyena.Data.Gui.RowActivatedArgs<Artist> args)
+        {
+            var artist = args.RowValue;
+            search_by_artist_contents_box.Search (artist.Id, artist.DisplayName);
+            SetView (this.search_by_artist_view);
+        }
+
         /*
         // Fetching results:
         protected void Reload ()
