@@ -91,10 +91,17 @@ namespace Banshee.SongKick.Search
             // TODO: add meaningful ResultsError
             // TODO: throw Web Exceptions
             try {
-                var location_results_page = 
-                    downloader.findLocation (Query.String, Banshee.SongKick.Recommendations.Locations.GetLocationListResultsDelegate);
-                var location = location_results_page.results[0];
-                ResultsPage = downloader.getLocationMusicEvents(location.Id, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
+                long locationId;
+                if (query.Id == null) {
+                    var location_results_page = 
+                        downloader.findLocation (Query.String, Banshee.SongKick.Recommendations.Locations.GetLocationListResultsDelegate);
+                    var location = location_results_page.results[0];
+                    locationId = location.Id;
+                } else {
+                    locationId = (long) query.Id;
+                }
+
+                ResultsPage = downloader.getLocationMusicEvents(locationId, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
             }
             catch (Exception e) {
                 ResultsPage = new ResultsPage<Event> () { error = new ResultsError("could not download music events")};
