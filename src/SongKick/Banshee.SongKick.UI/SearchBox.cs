@@ -61,9 +61,9 @@ namespace Banshee.SongKick.UI
             this.PackStart (event_search_view, true, true, 2);
         }
 
-        public void Search(string query) {
-            event_search_bar.QueryString = query;
-            event_search_bar.PerformSearch ();
+        public void Search(long? id, string queryString) {
+            var searchQuery = new Banshee.SongKick.Search.Query(id, queryString);
+            event_search_bar.PerformSearch (searchQuery);
         }
 
         public void presentSearch (Search<T> search)
