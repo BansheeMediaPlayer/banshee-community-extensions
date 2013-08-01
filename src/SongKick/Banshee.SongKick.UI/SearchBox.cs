@@ -34,9 +34,18 @@ namespace Banshee.SongKick.UI
     public class SearchBox<T> : VBox where T : IResult
     {
         protected SearchView<T> event_search_view;
+        public SearchView<T> View { 
+            get { return event_search_view; }
+        }
         protected SearchBar<T> event_search_bar;
+        public SearchBar<T> SearchBar { 
+            get { return event_search_bar; }
+        }
         protected SortableMemoryListModel<T> event_model = 
             new SortableMemoryListModel<T>();
+        public SortableMemoryListModel<T> Model { 
+            get { return event_model; }
+        }
 
         public SearchBox (Search<T> search)
         {
