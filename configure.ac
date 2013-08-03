@@ -218,7 +218,7 @@ ${PACKAGE}-${VERSION}
     CoverWallpaper:        ${enable_CoverWallpaper}
     CueSheets:             no
     DuplicateSongDetector: ${enable_DuplicateSongDetector}
-    Fanart:              yes
+    Fanart:                no
     FolderSync:            ${enable_FolderSync}
     Jamendo:               ${enable_Jamendo}
     Karaoke:               ${enable_Karaoke}
