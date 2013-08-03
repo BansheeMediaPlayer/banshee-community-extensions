@@ -1,4 +1,5 @@
 SUBDIRS = \
+    Fanart \
 	AlarmClock \
 	AlbumArtWriter \
 	Ampache \
