@@ -2,7 +2,7 @@
 // FanartSource.cs
 //
 // Authors:
-//   Cool Extension Author <cool.extension@author.com>
+//  Tomasz Maczyński <tmtimon@gmail.com>
 //
 // Copyright (C) 2011 Cool Extension Author
 //
