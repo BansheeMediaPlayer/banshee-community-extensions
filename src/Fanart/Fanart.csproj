@@ -9,7 +9,6 @@
     <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
     <AssemblyName>Banshee.Fanart</AssemblyName>
     <SchemaVersion>2.0</SchemaVersion>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <Optimize>true</Optimize>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
