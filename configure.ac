@@ -208,7 +208,6 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
-    Fanart:              yes
     Alarm Clock:           ${enable_AlarmClock}
     AlbumArtWriter:        ${enable_AlbumArtWriter}
     Ampache:               ${enable_Ampache}
@@ -219,6 +218,7 @@ ${PACKAGE}-${VERSION}
     CoverWallpaper:        ${enable_CoverWallpaper}
     CueSheets:             no
     DuplicateSongDetector: ${enable_DuplicateSongDetector}
+    Fanart:              yes
     FolderSync:            ${enable_FolderSync}
     Jamendo:               ${enable_Jamendo}
     Karaoke:               ${enable_Karaoke}
