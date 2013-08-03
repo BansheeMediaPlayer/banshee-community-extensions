@@ -121,7 +121,7 @@ namespace Banshee.Telepathy.DBus
         public int[] GetPlaylistIds (LibraryType type)
         {
             //Console.WriteLine ("I am in GetPlaylistIds");
-            int primary_source_id = 0;
+            long primary_source_id = 0;
 
             switch (type) {
                 case LibraryType.Music:
