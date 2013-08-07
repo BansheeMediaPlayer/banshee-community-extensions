@@ -118,5 +118,9 @@
       <Project>{C856EFD8-E812-4E61-8B76-E3583D94C233}</Project>
       <Name>Hyena.Gui</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\banshee\src\Clients\Nereid\Nereid.csproj">
+      <Project>{4F66A4DE-5204-4150-8D0B-CE21CA52E309}</Project>
+      <Name>Nereid</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
