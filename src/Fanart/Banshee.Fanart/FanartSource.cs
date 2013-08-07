@@ -62,6 +62,11 @@ namespace Banshee.Fanart
 
             var nereidInterface = (Nereid.PlayerInterface) ServiceManager.Get ("NereidPlayerInterface");
             var compositeView = nereidInterface.CompositeView;
+            var view1 = new Banshee.Collection.Gui.TrackFilterListView<Banshee.Collection.ArtistInfo>();
+            var view2 = new Banshee.Collection.Gui.TrackFilterListView<Banshee.Collection.ArtistInfo>();
+            compositeView.SetupArtistViews (view1, view2);
+            compositeView.SetSource (compositeView.Source); 
+            compositeView.ShowAll();
 
             Hyena.Log.Information ("Testing!  Fanart source has been instantiated!");
         }
