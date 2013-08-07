@@ -4,9 +4,9 @@
     version="1.0"
     compatVersion="1.0"
     copyright="Copyright © 2010 Tomasz Maczyński. Licensed under the MIT X11 license."
-    name="Concise Title for Fanart"
+    name="Fanart"
     category="Community Extensions"
-    description="Describe your extension, ideally starting with an action verb.  Keep it brief and avoid tech jargon."
+    description="Display artists' images in the music library."
     author="Tomasz Maczyński"
     url="http://banshee-project.org/"
     defaultEnabled="false">
