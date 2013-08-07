@@ -59,7 +59,8 @@ namespace Banshee.Fanart
         {
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
 
-            var nereidInterface = ServiceManager.Get ("NereidPlayerInterface");
+            var nereidInterface = (Nereid.PlayerInterface) ServiceManager.Get ("NereidPlayerInterface");
+            var compositeView = nereidInterface.CompositeView;
 
             Hyena.Log.Information ("Testing!  Fanart source has been instantiated!");
         }
