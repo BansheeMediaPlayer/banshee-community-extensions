@@ -39,6 +39,7 @@ using Banshee.ServiceStack;
 using Banshee.Preferences;
 using Banshee.MediaEngine;
 using Banshee.PlaybackController;
+using Banshee.Fanart.UI;
 
 namespace Banshee.Fanart
 {
@@ -57,7 +58,7 @@ namespace Banshee.Fanart
 		                                       sort_order,
 		                                       "extension-unique-id")
         {
-            Properties.Set<ISourceContents> ("Nereid.SourceContents", new CustomView ());
+            Properties.Set<ISourceContents> ("Nereid.SourceContents", new FanartSourceContents ());
 
             var nereidInterface = (Nereid.PlayerInterface) ServiceManager.Get ("NereidPlayerInterface");
             var compositeView = nereidInterface.CompositeView;
@@ -69,16 +70,5 @@ namespace Banshee.Fanart
         public override int Count {
             get { return 0; }
         }
-
-        private class CustomView : ISourceContents
-        {
-            Gtk.Label label = new Gtk.Label ("Custom view for Fanart extension is working!");
-
-            public bool SetSource (ISource source) { return true; }
-            public void ResetSource () { }
-            public Gtk.Widget Widget { get { return label; } }
-            public ISource Source { get { return null; } }
-        }
-
     }
 }

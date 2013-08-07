@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.Fanart\FanartSource.cs" />
+    <Compile Include="Banshee.Fanart.UI\FanartSourceContents.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -122,5 +123,8 @@
       <Project>{4F66A4DE-5204-4150-8D0B-CE21CA52E309}</Project>
       <Name>Nereid</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Banshee.Fanart.UI\" />
   </ItemGroup>
 </Project>
