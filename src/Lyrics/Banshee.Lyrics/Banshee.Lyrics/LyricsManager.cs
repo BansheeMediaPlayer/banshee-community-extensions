@@ -176,7 +176,7 @@ namespace Banshee.Lyrics
 
         public void UpdateDB (TrackInfo track, string lyrics)
         {
-            int track_id = ServiceManager.SourceManager.MusicLibrary.GetTrackIdForUri (track.Uri.AbsoluteUri);
+            long track_id = ServiceManager.SourceManager.MusicLibrary.GetTrackIdForUri (track.Uri.AbsoluteUri);
             ServiceManager.DbConnection.Execute (
                         "INSERT OR REPLACE INTO LyricsDownloads (TrackID, Downloaded) VALUES (?, ?)",
                         track_id, IsLyricsOk(lyrics));

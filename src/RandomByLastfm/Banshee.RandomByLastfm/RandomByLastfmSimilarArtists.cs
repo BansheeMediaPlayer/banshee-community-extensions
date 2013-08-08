@@ -57,8 +57,8 @@ namespace Banshee.RandomByLastfm
         private static bool searchActive = false;
         private static object searchActive_lock = new object ();
 
-        private static WeightedRandom<int> weightedRandom;
-        private static List<int> processedArtists;
+        private static WeightedRandom<long> weightedRandom;
+        private static List<long> processedArtists;
 
         private bool disposed = false;
 
@@ -73,8 +73,8 @@ namespace Banshee.RandomByLastfm
                 if (!initiated) {
                     ServiceManager.PlayerEngine.ConnectEvent (RandomByLastfmSimilarArtists.OnPlayerEvent, PlayerEvent.StateChange);
                     initiated = true;
-                    weightedRandom = new WeightedRandom<int> ();
-                    processedArtists = new List<int> ();
+                    weightedRandom = new WeightedRandom<long> ();
+                    processedArtists = new List<long> ();
                 }
             }
             
@@ -123,7 +123,7 @@ namespace Banshee.RandomByLastfm
             if (currentTrack == null)
                 return;
             
-            int currentArtistId = currentTrack.ArtistId;
+            long currentArtistId = currentTrack.ArtistId;
             if (ServiceManager.PlayerEngine.ActiveEngine.CurrentState == PlayerState.Playing && !processedArtists.Contains (currentArtistId)) {
                 if (!weightedRandom.Contains (currentArtistId)) {
                     // User changed Track to a not similar artist, clear list
