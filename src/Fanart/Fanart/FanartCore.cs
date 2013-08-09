@@ -29,7 +29,9 @@ namespace Fanart
 {
     public static class FanartCore
     {
-    
+        public static string ApiKey {
+            get { return "47733b6f6a151df75318780dda4f5664"; }
+        }
     }
 }
 
