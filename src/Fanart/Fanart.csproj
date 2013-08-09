@@ -76,6 +76,7 @@
     <Compile Include="Banshee.Fanart.UI\FanartArtistListView.cs" />
     <Compile Include="Fanart\FanartCore.cs" />
     <Compile Include="Fanart\Downloader.cs" />
+    <Compile Include="Fanart\FanartDownloader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
