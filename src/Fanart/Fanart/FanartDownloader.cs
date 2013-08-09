@@ -24,16 +24,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Text;
 
 namespace Fanart
 {
     public class FanartDownloader
     {
         public string ApiKey { get; private set; }
+        public string ServiceUri {
+            get { return "http://api.fanart.tv/webservice/"; }
+        }
 
         public FanartDownloader (string apiKey)
         {
             this.ApiKey = apiKey;
+        }
+
+        private StringBuilder GetUriBuilder () {
+            return new StringBuilder (ServiceUri);
         }
     }
 }
