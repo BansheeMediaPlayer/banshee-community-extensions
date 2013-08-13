@@ -55,9 +55,7 @@ namespace Banshee.Fanart
         #region IService implementation
 
         string IService.ServiceName {
-            get {
-                throw new NotImplementedException ();
-            }
+            get { return "FanartService"; }
         }
 
         #endregion
