@@ -40,6 +40,7 @@ using Banshee.Preferences;
 using Banshee.MediaEngine;
 using Banshee.PlaybackController;
 using Banshee.Fanart.UI;
+using Banshee.Gui;
 
 namespace Banshee.Fanart
 {
@@ -60,13 +61,10 @@ namespace Banshee.Fanart
         {
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new FanartSourceContents ());
 
-            var nereidInterface = (Nereid.PlayerInterface) ServiceManager.Get ("NereidPlayerInterface");
-            var compositeView = nereidInterface.CompositeView;
-            var view1 = new FanartArtistListView();
+            var view_set = ((IClientWindow) ServiceManager.Get ("NereidPlayerInterface"))
+                .InteractiveViewSet as CompositeTrackSourceContents;
 
-            compositeView.ArtistView = view1;
-            compositeView.ShowAll (); // is it necessary?
-
+            view_set.ArtistView = new FanartArtistListView ();
 
             Hyena.Log.Information ("Testing!  Fanart source has been instantiated!");
         }
