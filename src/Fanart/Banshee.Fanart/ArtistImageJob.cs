@@ -24,14 +24,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Banshee.ServiceStack;
+using Hyena.Data.Sqlite;
+using Hyena;
 
 namespace Banshee.Fanart
 {
-    public class ArtistImageJob
+    public class ArtistImageJob : DbIteratorJob
     {
-        public ArtistImageJob ()
+        public ArtistImageJob (DateTime date)  : base ("Downloading Artists' Images")
         {
         }
+
+        public void Start ()
+        {
+            Register ();
+        }
+
+        #region implemented abstract members of DbIteratorJob
+
+        protected override void IterateCore (HyenaDataReader reader)
+        {
+            Log.Debug ("ArtistImageJob.IterateCore method is called ");
+
+            // throw new NotImplementedException ();
+        }
+
+        #endregion
     }
 }
 

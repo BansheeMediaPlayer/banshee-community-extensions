@@ -2,6 +2,8 @@
 // FanartService.cs
 //
 // Author:
+//   James Willcox <snorp@novell.com>
+//   Gabriel Burt <gburt@novell.com>
 //   Tomasz Maczyński <tmtimon@gmail.com>
 //
 // Copyright 2013 Tomasz Maczyński
@@ -25,32 +27,145 @@
 // THE SOFTWARE.
 using System;
 using Banshee.ServiceStack;
+using Hyena;
+using Banshee.Configuration;
+using Banshee.Sources;
+using Hyena.Data.Sqlite;
 
 namespace Banshee.Fanart
 {
     public class FanartService : IExtensionService
     {
+        private bool disposed;
+        private ArtistImageJob job;
+
         public FanartService ()
         {
         }
 
-        #region IExtensionService implementation
-
         void IExtensionService.Initialize ()
         {
-            throw new NotImplementedException ();
+            if (!ServiceManager.DbConnection.TableExists ("ArtistImageDownloads")) {
+                ServiceManager.DbConnection.Execute (@"
+                    CREATE TABLE ArtistImageDownloads (
+                        AlbumID     INTEGER UNIQUE,
+                        Downloaded  BOOLEAN,
+                        LastAttempt INTEGER NOT NULL
+                    )");
+            }
+
+            if (!ServiceStartup ()) {
+                ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
+            }
         }
 
-        #endregion
-
-        #region IDisposable implementation
-
-        void IDisposable.Dispose ()
+        private bool ServiceStartup ()
         {
-            throw new NotImplementedException ();
+            if (ServiceManager.SourceManager.MusicLibrary == null) {
+                return false;
+            }
+
+            Initialize ();
+
+            return true;
         }
 
-        #endregion
+        private void Initialize ()
+        {
+            ServiceManager.SourceManager.MusicLibrary.TracksAdded += OnTracksAdded;
+            ServiceManager.SourceManager.MusicLibrary.TracksChanged += OnTracksChanged;
+            ServiceManager.SourceManager.MusicLibrary.TracksDeleted += OnTracksDeleted;
+            FetchArtistImages ();
+        }
+
+        public void FetchArtistImages ()
+        {
+            bool force = false;
+            if (!String.IsNullOrEmpty (Environment.GetEnvironmentVariable ("BANSHEE_FORCE_ARTISTS_IMAGES_FETCH"))) {
+                Log.Debug ("Forcing artists' images download session");
+                force = true;
+            }
+
+            FetchArtistImages (force);
+        }
+
+        public void FetchArtistImages (bool force)
+        {
+            if (job == null) {
+                var config_variable_name = "last_fanart_scan";
+                DateTime last_scan = DateTime.MinValue;
+
+                if (!force) {
+                    try {
+                        last_scan = DatabaseConfigurationClient.Client.Get<DateTime> (config_variable_name,
+                                                                                      DateTime.MinValue);
+                    } catch (FormatException) {
+                        Log.Warning (String.Format ("{0} is malformed, resetting to default value", 
+                                                    config_variable_name));
+                        DatabaseConfigurationClient.Client.Set<DateTime> (config_variable_name,
+                                                                          DateTime.MinValue);
+                    }
+                }
+                job = new ArtistImageJob (last_scan);
+                job.Finished += delegate {
+                    if (!job.IsCancelRequested) {
+                        DatabaseConfigurationClient.Client.Set<DateTime> (config_variable_name, DateTime.Now);
+                    }
+                    job = null;
+                };
+                job.Start ();
+            }
+        }
+
+        private void OnSourceAdded (SourceAddedArgs args)
+        {
+            if (ServiceStartup ()) {
+                ServiceManager.SourceManager.SourceAdded -= OnSourceAdded;
+            }
+        }
+
+        private void OnTracksAdded (Source sender, TrackEventArgs args)
+        {
+            FetchArtistImages ();
+        }
+
+        private void OnTracksChanged (Source sender, TrackEventArgs args)
+        {
+            if (args.ChangedFields == null) {
+                FetchArtistImages ();
+            } else {
+                foreach (Hyena.Query.QueryField field in args.ChangedFields) {
+                    // TODO: check that:
+                    if (field == Banshee.Query.BansheeQuery.AlbumField ||
+                        field == Banshee.Query.BansheeQuery.ArtistField ||
+                        field == Banshee.Query.BansheeQuery.AlbumArtistField) {
+                        FetchArtistImages ();
+                        break;
+                    }
+                }
+            }
+        }
+
+        private static HyenaSqliteCommand delete_query = new HyenaSqliteCommand (
+            "DELETE FROM ArtistImageDownloads WHERE ArtistID NOT IN (SELECT ArtistID FROM CoreArtists)");
+
+        private void OnTracksDeleted (Source sender, TrackEventArgs args)
+        {
+            ServiceManager.DbConnection.Execute (delete_query);
+        }
+
+        public void Dispose ()
+        {
+            if (disposed) {
+                return;
+            }
+
+            ServiceManager.SourceManager.MusicLibrary.TracksAdded -= OnTracksAdded;
+            ServiceManager.SourceManager.MusicLibrary.TracksChanged -= OnTracksChanged;
+            ServiceManager.SourceManager.MusicLibrary.TracksDeleted -= OnTracksDeleted;
+
+            disposed = true;
+        }
 
         #region IService implementation
 
@@ -59,6 +174,9 @@ namespace Banshee.Fanart
         }
 
         #endregion
+
+        // public static readonly SchemaEntry<bool> EnabledSchema
+        // is skipped
     }
 }
 
