@@ -235,6 +235,7 @@ namespace Banshee.Collection.Gui
                 }
             }
 
+            // TODO: fix sorting
             //bringing non-empty images to the front
             images.Sort (delegate (ImageSurface a, ImageSurface b) {
                 if (a == null && b != null) return 1;
@@ -372,6 +373,7 @@ namespace Banshee.Collection.Gui
                 height += text_h;
             }
 
+            // TODO: investigate MonoDevelop warning
             layout.Dispose ();
 
             if (use_small_images) {
