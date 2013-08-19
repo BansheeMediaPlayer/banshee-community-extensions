@@ -65,12 +65,11 @@ namespace Banshee.Collection.Gui
             get { return image_size; }
         }
 
-        private static ImageSurface default_cover_image
-            = PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "media-optical", "browser-album-cover"));
+        private static ImageSurface default_cover_image = 
+            PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "media-optical", "browser-album-cover"));
 
-        private static BansheeModelProvider<DatabaseAlbumInfo> provider = new BansheeModelProvider<DatabaseAlbumInfo> (
-            ServiceManager.DbConnection, "CoreAlbums"
-        );
+        private static BansheeModelProvider<DatabaseAlbumInfo> provider = 
+            new BansheeModelProvider<DatabaseAlbumInfo> (ServiceManager.DbConnection, "CoreAlbums");
 
         private static HyenaSqliteCommand default_select_command = new HyenaSqliteCommand (String.Format (
             "SELECT {0} FROM {1} WHERE {2} AND CoreAlbums.AlbumID IN " +
@@ -147,32 +146,37 @@ namespace Banshee.Collection.Gui
             Source source = ServiceManager.SourceManager.ActiveSource as Source;
 
             PlaylistSource playlist_source = null;
-            if (source is PlaylistSource)
+            if (source is PlaylistSource) {
                 playlist_source = source as PlaylistSource;
+            }
 
             SmartPlaylistSource sm_playlist_source = null;
-            if (source is SmartPlaylistSource)
+            if (source is SmartPlaylistSource) {
                 sm_playlist_source = source as SmartPlaylistSource;
+            }
 
-            while (!(source is PrimarySource))
+            while (!(source is PrimarySource)) {
                 source = source.Parent;
+            }
 
             IDataReader reader;
-            if (playlist_source != null)
+            if (playlist_source != null) {
                 reader = ServiceManager.DbConnection.Query (playlist_select_command, artist_id,
                     ((PrimarySource)source).DbId, playlist_source.DbId);
-            else if (sm_playlist_source != null)
+            } else if (sm_playlist_source != null) {
                 reader = ServiceManager.DbConnection.Query (sm_playlist_select_command, artist_id,
                     ((PrimarySource)source).DbId, sm_playlist_source.DbId);
-            else
+            } else {
                 reader = ServiceManager.DbConnection.Query (default_select_command,
                     artist_id, ((PrimarySource)source).DbId);
+            }
 
             List<AlbumInfo> albums = new List<AlbumInfo> ();
             while (reader.Read ()) {
                 AlbumInfo album = (provider.Load (reader)) as AlbumInfo;
-                if (album != null)
-                       albums.Add (album);
+                if (album != null) {
+                   albums.Add (album);
+                }
             }
             return albums.ToArray ();
         }
@@ -182,9 +186,10 @@ namespace Banshee.Collection.Gui
             PrimarySource source = ServiceManager.SourceManager.ActiveSource as PrimarySource;
             if (source != null) {
                 IDataReader reader = ServiceManager.DbConnection.Query (countall_select_command, source.DbId);
-                if (reader.Read ())
+                if (reader.Read ()) {
                     return reader.Get<int> (0);
-            }
+                }
+            } 
             return 0;
         }
 
@@ -213,20 +218,22 @@ namespace Banshee.Collection.Gui
                 .Replace (")", "\\)")
                 .Replace ("{0}", "[0-9]+");
 
-            if (!String.IsNullOrEmpty (artist.Name) && System.Text.RegularExpressions.Regex.IsMatch (artist.Name, pattern))
+            if (!String.IsNullOrEmpty (artist.Name) && System.Text.RegularExpressions.Regex.IsMatch (artist.Name, pattern)) {
                 album_count = GetAllAlbumsCount ();
+            }
 
             ImageSurface image = null;
             List<ImageSurface> images = new List<ImageSurface> ();
 
             int non_empty = 0;
-            for (int i = 0; i < albums.Length && non_empty < 3; i++)
+            for (int i = 0; i < albums.Length && non_empty < 3; i++) {
                 if (artwork_manager != null) {
                     ImageSurface sur = artwork_manager.LookupScaleSurface (albums[i].ArtworkId, image_size, true);
                     images.Add (sur);
                     if (sur != null)
                         non_empty++;
                 }
+            }
 
             //bringing non-empty images to the front
             images.Sort (delegate (ImageSurface a, ImageSurface b) {
@@ -235,8 +242,9 @@ namespace Banshee.Collection.Gui
                 return 0;
             });
 
-            if (images.Count > 3)
+            if (images.Count > 3) {
                 images.RemoveRange (3, images.Count - 3);
+            }
 
             if (images.Count == 3 && images[2] == null) {
                 images[2] = images[1];
@@ -262,8 +270,9 @@ namespace Banshee.Collection.Gui
 
             int y_image_spacing = 1;
             int x_offset = (use_small_images ? album_spacing_small : album_spacing_normal);
-            if (images.Count > 1)
+            if (images.Count > 1) {
                 x_offset *= 2;
+            }
             int y_offset = (images.Count > 1) ? y_image_spacing * 2 : y_image_spacing;
 
             for (int i = 1; i < images.Count; i++) {
@@ -273,12 +282,13 @@ namespace Banshee.Collection.Gui
                         image_render_size, image_render_size, !is_default, context.Theme.Context.Radius, true, new Color (1.0, 1.0, 1.0, 1.0));
             }
 
-            if (images.Count > 0)
+            if (images.Count > 0) {
                 ArtworkRenderer.RenderThumbnail (context.Context, image, false, x + x_offset, y + y_offset,
-                        image_render_size, image_render_size, !is_default, context.Theme.Context.Radius, true, new Color (1.0, 1.0, 1.0, 1.0));
-            else
+                    image_render_size, image_render_size, !is_default, context.Theme.Context.Radius, true, new Color (1.0, 1.0, 1.0, 1.0));
+            } else {
                 ArtworkRenderer.RenderThumbnail (context.Context, image, false, x + x_offset, y + y_offset,
-                        image_render_size, image_render_size, !is_default, context.Theme.Context.Radius);
+                    image_render_size, image_render_size, !is_default, context.Theme.Context.Radius);
+            }
 
             int fl_width = 0, fl_height = 0, sl_width = 0, sl_height = 0;
             Cairo.Color text_color = context.Theme.Colors.GetWidgetColor (GtkColorClass.Text, state);
@@ -307,20 +317,23 @@ namespace Banshee.Collection.Gui
 
             // Calculate the layout positioning
             x = ((int)cellHeight - x) + (use_small_images ? album_spacing_small : album_spacing_normal) + 8;
-            if (use_small_images)
+            if (use_small_images) {
                 y = (int)((cellHeight - (fl_height)) / 2);
-            else
+            } else {
                 y = (int)((cellHeight - (fl_height + sl_height)) / 2);
+            }
 
             // Render the second line first since we have that state already
             if (album_count > 0 && is_queryalble_source) {
-                if (use_small_images)
+                if (use_small_images) {
                     context.Context.MoveTo (cellWidth - sl_width - image_spacing, y + image_spacing / 2);
-                else
+                } else {
                     context.Context.MoveTo (x, y + fl_height);
+                }
                 context.Context.Color = text_color;
-                if (!use_small_images || fl_width + x + sl_width <= cellWidth)
+                if (!use_small_images || fl_width + x + sl_width <= cellWidth) {
                     PangoCairoHelper.ShowLayout (context.Context, layout);
+                }
             }
 
             // Render the first line, resetting the state
@@ -355,15 +368,17 @@ namespace Banshee.Collection.Gui
             layout.FontDescription.Style = Pango.Style.Italic;
             layout.SetText ("W");
             layout.GetPixelSize (out text_w, out text_h);
-            if (!use_small_images)
+            if (!use_small_images) {
                 height += text_h;
+            }
 
             layout.Dispose ();
 
-            if (use_small_images)
+            if (use_small_images) {
                 return (height < image_size ? image_size : height) + 6;
-            else
+            } else {
                 return (height < image_size ? image_size : height) + 6 + image_spacing;
+            }
         }
     }
 }
