@@ -64,7 +64,16 @@ namespace Banshee.Fanart
             var view_set = ((IClientWindow) ServiceManager.Get ("NereidPlayerInterface"))
                 .InteractiveViewSet as CompositeTrackSourceContents;
 
-            view_set.ArtistView = new FanartArtistListView ();
+            // set Fanart view:
+            //view_set.ArtistView = new FanartArtistListView ();
+
+
+            // set CoverArtArtistListView:
+            // FIXME: 
+            // "Single line mode" doesn't always work right away
+            view_set.ArtistView = new CoverArtArtistListView ();
+            view_set.AlbumartistView = new CoverArtArtistListView ();
+
 
             Hyena.Log.Information ("Testing!  Fanart source has been instantiated!");
         }
