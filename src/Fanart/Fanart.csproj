@@ -64,6 +64,10 @@
     <Reference Include="atk-sharp">
       <HintPath>..\..\..\..\..\..\usr\lib\cli\atk-sharp-2.0\atk-sharp.dll</HintPath>
     </Reference>
+    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Fanart.addin.xml">
@@ -79,6 +83,8 @@
     <Compile Include="Fanart\FanartDownloader.cs" />
     <Compile Include="Banshee.Fanart\FanartService.cs" />
     <Compile Include="Banshee.Fanart\ArtistImageJob.cs" />
+    <Compile Include="Banshee.Fanart.UI\CoverArtArtistListView.cs" />
+    <Compile Include="Banshee.Fanart.UI\CoverArtArtistColumnCell.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
