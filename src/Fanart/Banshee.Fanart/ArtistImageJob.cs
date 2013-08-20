@@ -37,7 +37,7 @@ namespace Banshee.Fanart
     public class ArtistImageJob : DbIteratorJob
     {
         private DateTime last_scan = DateTime.MinValue;
-        // private TimeSpan retry_every = TimeSpan.FromDays (7);
+        private TimeSpan retry_every = TimeSpan.FromDays (7);
 
         public ArtistImageJob (DateTime lastScan)  : base ("Downloading Artists' Images")
         {
@@ -48,6 +48,35 @@ namespace Banshee.Fanart
             if (last_scan == DateTime.MinValue) {
                 last_scan = DateTime.Now - TimeSpan.FromDays (365*50);
             }
+
+            CountCommand = new HyenaSqliteCommand (
+                @"SELECT count(DISTINCT CoreArtists.ArtistID)
+                    FROM CoreTracks, CoreArtists
+                    WHERE
+                        CoreTracks.PrimarySourceID = ? AND
+                        CoreTracks.DateUpdatedStamp > ? AND
+                        CoreTracks.ArtistID = CoreArtists.ArtistID AND
+                        CoreTracks.ArtistID NOT IN (
+                            SELECT ArtistImageDownloads.ArtistID FROM ArtistImageDownloads WHERE
+                                LastAttempt > ? OR Downloaded = 1)",
+               ServiceManager.SourceManager.MusicLibrary.DbId, last_scan, last_scan - retry_every
+            );
+
+
+            SelectCommand = new HyenaSqliteCommand (String.Format (
+                @"SELECT DISTINCT CoreArtists.ArtistID, CoreArtists.Name, {0}, CoreTracks.TrackID
+                    FROM CoreTracks, CoreArtists
+                    WHERE
+                        CoreTracks.PrimarySourceID = ? AND
+                        CoreTracks.DateUpdatedStamp > ? AND
+                        CoreTracks.ArtistID = CoreArtists.ArtistID AND
+                        CoreTracks.ArtistID NOT IN (
+                            SELECT ArtistImageDownloads.ArtistID FROM ArtistImageDownloads WHERE
+                                LastAttempt > ? OR Downloaded = 1)
+                    GROUP BY CoreTracks.ArtistID ORDER BY CoreTracks.DateUpdatedStamp DESC LIMIT ?",
+                    Banshee.Query.BansheeQuery.UriField.Column),
+                    ServiceManager.SourceManager.MusicLibrary.DbId, last_scan, last_scan - retry_every, 1
+            );
 
 
 
