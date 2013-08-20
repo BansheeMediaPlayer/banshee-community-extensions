@@ -373,7 +373,6 @@ namespace Banshee.Collection.Gui
                 height += text_h;
             }
 
-            // TODO: investigate MonoDevelop warning
             layout.Dispose ();
 
             if (use_small_images) {
