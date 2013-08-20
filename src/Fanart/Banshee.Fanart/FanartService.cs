@@ -48,7 +48,7 @@ namespace Banshee.Fanart
             if (!ServiceManager.DbConnection.TableExists ("ArtistImageDownloads")) {
                 ServiceManager.DbConnection.Execute (@"
                     CREATE TABLE ArtistImageDownloads (
-                        AlbumID     INTEGER UNIQUE,
+                        ArtistID    INTEGER UNIQUE,
                         Downloaded  BOOLEAN,
                         LastAttempt INTEGER NOT NULL
                     )");
