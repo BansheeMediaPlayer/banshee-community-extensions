@@ -2,8 +2,11 @@
 // ArtistImageJob.cs
 //
 // Author:
+//   James Willcox <snorp@novell.com>
+//   Gabriel Burt <gburt@novell.com>
 //   Tomasz Maczyński <tmtimon@gmail.com>
 //
+// Copyright (C) 2005-2008 Novell, Inc.
 // Copyright 2013 Tomasz Maczyński
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,13 +30,33 @@ using System;
 using Banshee.ServiceStack;
 using Hyena.Data.Sqlite;
 using Hyena;
+using Hyena.Jobs;
 
 namespace Banshee.Fanart
 {
     public class ArtistImageJob : DbIteratorJob
     {
-        public ArtistImageJob (DateTime date)  : base ("Downloading Artists' Images")
+        private DateTime last_scan = DateTime.MinValue;
+        // private TimeSpan retry_every = TimeSpan.FromDays (7);
+
+        public ArtistImageJob (DateTime lastScan)  : base ("Downloading Artists' Images")
         {
+            last_scan = lastScan;
+
+            // Since we do last_scan - retry_every, avoid out-of-range error by ensuring
+            // the last_scan date isn't already MinValue
+            if (last_scan == DateTime.MinValue) {
+                last_scan = DateTime.Now - TimeSpan.FromDays (365*50);
+            }
+
+
+
+            SetResources (Resource.Database);
+            PriorityHints = PriorityHints.LongRunning;
+
+            IsBackground = true;
+            CanCancel = true;
+            DelayShow = true;
         }
 
         public void Start ()
