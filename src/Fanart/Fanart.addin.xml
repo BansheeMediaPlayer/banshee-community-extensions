@@ -80,5 +80,8 @@
   <Extension path="/Banshee/SourceManager/Source">
     <Source class="Banshee.Fanart.FanartSource"/>
   </Extension>
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.Fanart.FanartService"/>
+  </Extension>-->  
 
 </Addin>
