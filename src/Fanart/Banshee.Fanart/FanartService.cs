@@ -92,7 +92,7 @@ namespace Banshee.Fanart
         public void FetchArtistImages (bool force)
         {
             if (job == null) {
-                var config_variable_name = "last_fanart_scan";
+                var config_variable_name = "last_artist_image_scan";
                 DateTime last_scan = DateTime.MinValue;
 
                 if (!force) {
