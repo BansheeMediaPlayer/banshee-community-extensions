@@ -43,6 +43,11 @@ namespace Fanart
         private StringBuilder GetUriBuilder () {
             return new StringBuilder (ServiceUri);
         }
+
+        private StringBuilder UrlPreview (StringBuilder sb)
+        {
+            return sb.Append (@"/preview");
+        }
     }
 }
 
