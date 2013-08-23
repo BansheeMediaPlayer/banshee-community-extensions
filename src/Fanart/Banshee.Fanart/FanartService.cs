@@ -45,6 +45,11 @@ namespace Banshee.Fanart
 
         void IExtensionService.Initialize ()
         {
+            // TODO: check it:
+            // TODO: add disposing
+            Banshee.Metadata.MetadataService.Instance.AddProvider (
+                new FanartMetadataProvider ());
+
             if (!ServiceManager.DbConnection.TableExists ("ArtistImageDownloads")) {
                 ServiceManager.DbConnection.Execute (@"
                     CREATE TABLE ArtistImageDownloads (

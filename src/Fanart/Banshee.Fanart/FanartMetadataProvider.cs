@@ -37,7 +37,7 @@ namespace Banshee.Fanart
 
         public override IMetadataLookupJob CreateJob (IBasicTrackInfo track)
         {
-            throw new NotImplementedException ();
+            return new FanartQueryJob (track);
         }
     }
 }

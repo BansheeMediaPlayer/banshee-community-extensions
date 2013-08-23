@@ -31,6 +31,9 @@ using Banshee.ServiceStack;
 using Hyena.Data.Sqlite;
 using Hyena;
 using Hyena.Jobs;
+using Banshee.Collection.Database;
+using Mono.Unix;
+using Banshee.Metadata;
 
 namespace Banshee.Fanart
 {
@@ -93,13 +96,58 @@ namespace Banshee.Fanart
             Register ();
         }
 
+        private class CoverartTrackInfo : DatabaseTrackInfo
+        {
+            public long DbId {
+                set { TrackId = value; }
+            }
+        }
+
         #region implemented abstract members of DbIteratorJob
 
         protected override void IterateCore (HyenaDataReader reader)
         {
             Log.Debug ("ArtistImageJob.IterateCore method is called ");
 
+            var track = new CoverartTrackInfo () {
+                ArtistName = reader.Get<string> (1),
+                PrimarySource = ServiceManager.SourceManager.MusicLibrary,
+                Uri = new SafeUri (reader.Get<string> (2)),
+                DbId = reader.Get<long> (3),
+                AlbumId = reader.Get<long> (0)
+            };
+
+            Status = String.Format (Catalog.GetString ("{0} - {1}"), track.ArtistName, track.AlbumTitle);
+            FetchForTrack (track);
             // throw new NotImplementedException ();
+        }
+
+        private void FetchForTrack (DatabaseTrackInfo track)
+        {
+            bool save = true;
+            try {
+                if (String.IsNullOrEmpty (track.ArtistName) || track.ArtistName == Catalog.GetString ("Unknown Artist")) {
+                    // Do not try to fetch album art for these
+                } else {
+                    IMetadataLookupJob job = MetadataService.Instance.CreateJob (track);
+                    job.Run ();
+                }
+            } catch (System.Threading.ThreadAbortException) {
+                save = false;
+                throw;
+            } catch (Exception e) {
+                Log.Exception (e);
+            } finally {
+                if (save) {
+                    Hyena.Log.Debug ("Fanart information should be wittten to DB");
+                    /*
+                    bool have_cover_art = CoverArtSpec.CoverExists (track.ArtistName, track.AlbumTitle);
+                    ServiceManager.DbConnection.Execute (
+                        "INSERT OR REPLACE INTO CoverArtDownloads (AlbumID, Downloaded, LastAttempt) VALUES (?, ?, ?)",
+                        track.AlbumId, have_cover_art, DateTime.Now);
+                    */
+                }
+            }
         }
 
         #endregion
