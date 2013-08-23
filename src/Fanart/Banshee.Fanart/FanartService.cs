@@ -111,7 +111,13 @@ namespace Banshee.Fanart
                                                                           DateTime.MinValue);
                     }
                 }
-                job = new ArtistImageJob (last_scan);
+
+
+                // this line is just to force update:
+                job = new ArtistImageJob (DateTime.MinValue);
+                // TODO: change it back
+                // job = new ArtistImageJob (last_scan);
+
                 job.Finished += delegate {
                     if (!job.IsCancelRequested) {
                         DatabaseConfigurationClient.Client.Set<DateTime> (config_variable_name, DateTime.Now);
