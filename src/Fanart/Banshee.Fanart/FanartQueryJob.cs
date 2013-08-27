@@ -46,7 +46,6 @@ using Banshee.Collection;
 using Banshee.Streaming;
 using Banshee.Networking;
 using Banshee.Collection.Database;
-using MusicBrainz;
 
 namespace Banshee.Fanart
 {
