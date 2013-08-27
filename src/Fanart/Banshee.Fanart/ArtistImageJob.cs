@@ -116,7 +116,7 @@ namespace Banshee.Fanart
                 PrimarySource = ServiceManager.SourceManager.MusicLibrary,
                 Uri = new SafeUri (reader.Get<string> (2)),
                 DbId = reader.Get<long> (3),
-                AlbumId = reader.Get<long> (0)
+                ArtistId = reader.Get<long> (0)
             };
 
             Status = String.Format (Catalog.GetString ("{0} - {1}"), track.ArtistName, track.AlbumTitle);
