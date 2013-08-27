@@ -59,12 +59,12 @@ namespace Banshee.Fanart
                     FROM CoreTracks, CoreArtists
                     WHERE
                         CoreTracks.PrimarySourceID = ? AND
-                        CoreTracks.DateUpdatedStamp > ? AND
+                        " + /*CoreTracks.DateUpdatedStamp > ? AND */ @"
                         CoreTracks.ArtistID = CoreArtists.ArtistID AND
                         CoreTracks.ArtistID NOT IN (
                             SELECT ArtistImageDownloads.ArtistID FROM ArtistImageDownloads WHERE
                                 LastAttempt > ? OR Downloaded = 1)",
-               ServiceManager.SourceManager.MusicLibrary.DbId, last_scan, last_scan - retry_every
+               ServiceManager.SourceManager.MusicLibrary.DbId, /*last_scan,*/ last_scan - retry_every
             );
 
 
@@ -73,14 +73,14 @@ namespace Banshee.Fanart
                     FROM CoreTracks, CoreArtists
                     WHERE
                         CoreTracks.PrimarySourceID = ? AND
-                        CoreTracks.DateUpdatedStamp > ? AND
+                        "  + /*CoreTracks.DateUpdatedStamp > ? AND */ @"
                         CoreTracks.ArtistID = CoreArtists.ArtistID AND
                         CoreTracks.ArtistID NOT IN (
                             SELECT ArtistImageDownloads.ArtistID FROM ArtistImageDownloads WHERE
                                 LastAttempt > ? OR Downloaded = 1)
                     GROUP BY CoreTracks.ArtistID ORDER BY CoreTracks.DateUpdatedStamp DESC LIMIT ?",
                     Banshee.Query.BansheeQuery.UriField.Column),
-                    ServiceManager.SourceManager.MusicLibrary.DbId, last_scan, last_scan - retry_every, 1
+                    ServiceManager.SourceManager.MusicLibrary.DbId, /* last_scan ,*/ last_scan - retry_every, 1
             );
 
 
