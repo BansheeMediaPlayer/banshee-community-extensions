@@ -112,11 +112,11 @@ namespace Banshee.Fanart
                     }
                 }
 
-
+                // TODO: leave only final version
                 // this line is just to force update:
-                job = new ArtistImageJob (DateTime.MinValue);
-                // TODO: change it back
-                // job = new ArtistImageJob (last_scan);
+                //job = new ArtistImageJob (DateTime.MinValue);
+                // final version:
+                job = new ArtistImageJob (last_scan);
 
                 job.Finished += delegate {
                     if (!job.IsCancelRequested) {
