@@ -108,6 +108,10 @@ namespace Banshee.Fanart
                     // Otherwise we do a MusicBrainz search
                 } else {
                     Hyena.Log.Debug ("FanartQueryJob : ArtistMusicBrainzId is null");
+
+                    var artistQuery = MusicBrainz.Artist.Query (Track.ArtistName);
+                    var artist = artistQuery.PerfectMatch ();
+                    artistMusicbrainzID = (artist != null) ? artist.Id : null;
                     /*
                     ReleaseQueryParameters parameters = new ReleaseQueryParameters ();
                     parameters.Title = Track.AlbumTitle;
