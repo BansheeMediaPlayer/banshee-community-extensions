@@ -46,6 +46,7 @@ using Banshee.Collection;
 using Banshee.Streaming;
 using Banshee.Networking;
 using Banshee.Collection.Database;
+using MusicBrainz;
 
 namespace Banshee.Fanart
 {
@@ -81,42 +82,55 @@ namespace Banshee.Fanart
 
             DatabaseTrackInfo dbtrack;
             dbtrack = Track as DatabaseTrackInfo;
-            /*
-            Release release;
 
-            // If we have the MBID of the album, we can do a direct MusicBrainz lookup
-            if (dbtrack != null && dbtrack.AlbumMusicBrainzId != null) {
+            if (dbtrack != null) 
+            {
+                //Release release;
+                var artistMusicbrainzID = dbtrack.Artist.MusicBrainzId ?? dbtrack.ArtistMusicBrainzId;
 
-                release = Release.Get (dbtrack.AlbumMusicBrainzId);
-                if (!String.IsNullOrEmpty (release.GetAsin ()) && SaveCover (String.Format (AmazonUriFormat, release.GetAsin ()))) {
-                    return true;
-                }
+                // If we have the MBID of the album, we can do a direct MusicBrainz lookup
+                if (artistMusicbrainzID != null) {
+                    // TODO: delete logging
+                    Hyena.Log.Debug (String.Format("FanartQueryJob : ArtistMusicBrainzId={0}", dbtrack.ArtistMusicBrainzId));
 
-                // Otherwise we do a MusicBrainz search
-            } else {
-                ReleaseQueryParameters parameters = new ReleaseQueryParameters ();
-                parameters.Title = Track.AlbumTitle;
-                parameters.Artist = Track.AlbumArtist;
-                if (dbtrack != null) {
-                    parameters.TrackCount = dbtrack.TrackCount;
-                }
-
-                Query<Release> query = Release.Query (parameters);
-                release = query.PerfectMatch ();
-
-                foreach (Release r in query.Best ()) {
-                    if (!String.IsNullOrEmpty (r.GetAsin ()) && SaveCover (String.Format (AmazonUriFormat, r.GetAsin ())) ) {
+                    /*
+                    release = Release.Get (dbtrack.AlbumMusicBrainzId);
+                    if (!String.IsNullOrEmpty (release.GetAsin ()) && SaveCover (String.Format (AmazonUriFormat, release.GetAsin ()))) {
                         return true;
                     }
-                }
-            }
+                    */
 
-            if (release == null) {
+                    // Otherwise we do a MusicBrainz search
+                } else {
+                    Hyena.Log.Debug ("FanartQueryJob : ArtistMusicBrainzId is null");
+                    /*
+                    ReleaseQueryParameters parameters = new ReleaseQueryParameters ();
+                    parameters.Title = Track.AlbumTitle;
+                    parameters.Artist = Track.AlbumArtist;
+                    if (dbtrack != null) {
+                        parameters.TrackCount = dbtrack.TrackCount;
+                    }
+
+                    Query<Release> query = Release.Query (parameters);
+                    release = query.PerfectMatch ();
+
+                    foreach (Release r in query.Best ()) {
+                        if (!String.IsNullOrEmpty (r.GetAsin ()) && SaveCover (String.Format (AmazonUriFormat, r.GetAsin ())) ) {
+                            return true;
+                        }
+                    }
+                    */
+                }
+                /*
+                if (release == null) {
+                    return false;
+                }
+               */
+
                 return false;
+            } else {
+                Hyena.Log.Debug ("Fanart: dbtrack info is null in FanartQueryJob");
             }
-            */
-            // No success with ASIN, let's try with other linked URLs
-            // skipped
 
             return false;
         }
