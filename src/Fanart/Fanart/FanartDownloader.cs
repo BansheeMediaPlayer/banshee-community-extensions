@@ -33,7 +33,7 @@ namespace Fanart
     {
         public string ApiKey { get; private set; }
         public string ServiceUri {
-            get { return "http://api.fanart.tv/webservice/"; }
+            get { return @"http://api.fanart.tv/webservice/"; }
         }
 
         public FanartDownloader (string apiKey)
