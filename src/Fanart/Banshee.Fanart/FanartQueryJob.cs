@@ -47,6 +47,7 @@ using Banshee.Streaming;
 using Banshee.Networking;
 using Banshee.Collection.Database;
 using MusicBrainz;
+using Fanart;
 
 namespace Banshee.Fanart
 {
@@ -92,6 +93,10 @@ namespace Banshee.Fanart
                 if (!String.IsNullOrEmpty (artistMusicbrainzID)) {
                     // TODO: delete logging
                     Hyena.Log.Debug (String.Format("FanartQueryJob : ArtistMusicBrainzId={0}", dbtrack.ArtistMusicBrainzId));
+
+                    var fanartDownloader = new FanartDownloader (FanartCore.ApiKey);
+                    var page = fanartDownloader.GetFanartArtistPage (artistMusicbrainzID);
+
 
                     /*
                     release = Release.Get (dbtrack.AlbumMusicBrainzId);
