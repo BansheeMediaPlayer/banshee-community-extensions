@@ -141,13 +141,14 @@ namespace Banshee.Fanart
                 Log.Exception (e);
             } finally {
                 if (save) {
-                    Hyena.Log.Debug ("Fanart information should be wittten to DB");
-                    /*
-                    bool have_cover_art = CoverArtSpec.CoverExists (track.ArtistName, track.AlbumTitle);
+                    // Hyena.Log.Debug ("Fanart information should be wittten to DB");
+
+                    // bool have_artist_image = CoverArtSpec.CoverExists (track.ArtistName, track.AlbumTitle);
+                    bool have_artist_image = false;
                     ServiceManager.DbConnection.Execute (
-                        "INSERT OR REPLACE INTO CoverArtDownloads (AlbumID, Downloaded, LastAttempt) VALUES (?, ?, ?)",
-                        track.AlbumId, have_cover_art, DateTime.Now);
-                    */
+                        "INSERT OR REPLACE INTO ArtistImageDownloads (ArtistID, Downloaded, LastAttempt) VALUES (?, ?, ?)",
+                        track.ArtistId, have_artist_image, DateTime.Now);
+
                 }
             }
         }
