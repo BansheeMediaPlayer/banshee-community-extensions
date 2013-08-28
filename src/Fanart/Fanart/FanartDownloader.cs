@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using System.Text;
+using Hyena.Json;
 
 namespace Fanart
 {
@@ -38,6 +39,13 @@ namespace Fanart
         public FanartDownloader (string apiKey)
         {
             this.ApiKey = apiKey;
+        }
+
+        public JsonObject GetFanartArtistPage (string mbid) 
+        {
+            var uri = ServiceUri + @"artist/" + ApiKey + @"/" + mbid + @"/json/musiclogo/1/1";
+            var reply = Downloader.Download (uri);
+            return JsonObject.FromString (reply);
         }
 
         private StringBuilder GetUriBuilder () {
