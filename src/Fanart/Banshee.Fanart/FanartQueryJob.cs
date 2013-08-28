@@ -89,7 +89,7 @@ namespace Banshee.Fanart
                 var artistMusicbrainzID = dbtrack.Artist.MusicBrainzId ?? dbtrack.ArtistMusicBrainzId;
 
                 // If we have the MBID of the album, we can do a direct MusicBrainz lookup
-                if (artistMusicbrainzID != null) {
+                if (!String.IsNullOrEmpty (artistMusicbrainzID)) {
                     // TODO: delete logging
                     Hyena.Log.Debug (String.Format("FanartQueryJob : ArtistMusicBrainzId={0}", dbtrack.ArtistMusicBrainzId));
 
