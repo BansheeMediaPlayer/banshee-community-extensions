@@ -61,8 +61,14 @@ namespace Banshee.Fanart
         {
             Properties.Set<ISourceContents> ("Nereid.SourceContents", new FanartSourceContents ());
 
-            var view_set = ((IClientWindow) ServiceManager.Get ("NereidPlayerInterface"))
-                .InteractiveViewSet as CompositeTrackSourceContents;
+            var composite_view = ((IClientWindow)ServiceManager.Get ("NereidPlayerInterface")).CompositeView;
+            if (composite_view == null) {
+                throw new InvalidOperationException ("IClientWindow.CompositeView was null");
+            }
+            var view = composite_view as CompositeTrackSourceContents;
+            if (view == null) {
+                throw new NotSupportedException ("IClientWindow.CompositeView needs to be of type CompositeTrackSourceContents for FanArt extension to work");
+            }
 
             // set Fanart view:
             //view_set.ArtistView = new FanartArtistListView ();
@@ -71,8 +77,8 @@ namespace Banshee.Fanart
             // set CoverArtArtistListView:
             // FIXME: 
             // "Single line mode" doesn't always work right away
-            view_set.ArtistView = new CoverArtArtistListView ();
-            view_set.AlbumartistView = new CoverArtArtistListView ();
+            view.ArtistView = new CoverArtArtistListView ();
+            view.AlbumartistView = new CoverArtArtistListView ();
 
 
             Hyena.Log.Information ("Testing!  Fanart source has been instantiated!");
