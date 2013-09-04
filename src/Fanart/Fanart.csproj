@@ -133,6 +133,10 @@
       <Project>{C856EFD8-E812-4E61-8B76-E3583D94C233}</Project>
       <Name>Hyena.Gui</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\banshee\src\Libraries\MusicBrainz\MusicBrainz.csproj">
+      <Project>{C5DD02DE-4F0E-4DC0-ABC7-035A8217CD50}</Project>
+      <Name>MusicBrainz</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banshee.Fanart.UI\" />
