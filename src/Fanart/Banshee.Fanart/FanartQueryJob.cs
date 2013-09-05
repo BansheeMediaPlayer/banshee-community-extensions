@@ -76,10 +76,11 @@ namespace Banshee.Fanart
                 return false;
             } else if (CoverArtSpec.CoverExists (artwork_id)) {
                 return false;
-            } else if (!InternetConnected) {
+            } else  */
+            if (!InternetConnected) {
                 return false;
             }
-            */
+
 
             DatabaseTrackInfo dbtrack;
             dbtrack = Track as DatabaseTrackInfo;
