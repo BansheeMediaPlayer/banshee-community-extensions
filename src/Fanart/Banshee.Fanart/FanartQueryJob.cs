@@ -103,7 +103,12 @@ namespace Banshee.Fanart
 
                     var correctResuts = results as CorrectResults;
                     if (correctResuts != null) {
-                        Hyena.Log.Debug ("FanartQueryJob: Artist image should be downloaded");
+                        var bestImageInfo = correctResuts.BestArtistImageInfo;
+                        if (bestImageInfo != null) {
+                            Hyena.Log.Debug ("FanartQueryJob: Artist image should be downloaded");
+                        } else {
+                            Hyena.Log.Debug ("FanartQueryJob: No artist image was found for ");
+                        }
                     } else {
                         Hyena.Log.Debug ("FanartQueryJob: Results were incrrect");
                         return false;
