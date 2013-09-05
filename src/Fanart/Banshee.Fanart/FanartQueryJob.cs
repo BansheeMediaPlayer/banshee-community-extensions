@@ -120,6 +120,15 @@ namespace Banshee.Fanart
                     var fanartDownloader = new FanartDownloader (FanartCore.ApiKey);
                     var answer = fanartDownloader.GetFanartArtistPage (artistMusicbrainzID);
                     var results = Results.FromString (answer);
+
+
+                    var correctResuts = results as CorrectResults;
+                    if (correctResuts != null) {
+                        Hyena.Log.Debug ("FanartQueryJob: Artist image should be downloaded");
+                    } else {
+                        Hyena.Log.Debug ("FanartQueryJob: Results were incrrect");
+                        return false;
+                    }
                     /*
                     release = Release.Get (dbtrack.AlbumMusicBrainzId);
                     if (!String.IsNullOrEmpty (release.GetAsin ()) && SaveCover (String.Format (AmazonUriFormat, release.GetAsin ()))) {
