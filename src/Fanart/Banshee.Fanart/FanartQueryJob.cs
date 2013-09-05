@@ -113,9 +113,7 @@ namespace Banshee.Fanart
                     */
                 }
 
-                // If we have the MBID of the album, we can do a direct MusicBrainz lookup
                 if (!String.IsNullOrEmpty (artistMusicbrainzID)) {
-                    // TODO: delete logging
                     Hyena.Log.Debug (String.Format("FanartQueryJob : Retrieving artist image for MBId={0}", artistMusicbrainzID));
 
                     var fanartDownloader = new FanartDownloader (FanartCore.ApiKey);
