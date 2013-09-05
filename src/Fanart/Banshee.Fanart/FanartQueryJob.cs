@@ -68,7 +68,6 @@ namespace Banshee.Fanart
             if (Track == null || (Track.MediaAttributes & TrackMediaAttributes.Podcast) != 0) {
                 return false;
             }
-
             /*
             string artwork_id = Track.ArtworkId;
 
@@ -81,8 +80,7 @@ namespace Banshee.Fanart
                 return false;
             }
 
-            DatabaseTrackInfo dbtrack;
-            dbtrack = Track as DatabaseTrackInfo;
+            DatabaseTrackInfo dbtrack = Track as DatabaseTrackInfo;
 
             if (dbtrack != null) {
                 var artistMusicbrainzID = dbtrack.Artist.MusicBrainzId ?? dbtrack.ArtistMusicBrainzId;
