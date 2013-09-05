@@ -41,11 +41,10 @@ namespace Fanart
             this.ApiKey = apiKey;
         }
 
-        public JsonObject GetFanartArtistPage (string mbid) 
+        public String GetFanartArtistPage (string mbid) 
         {
             var uri = ServiceUri + @"artist/" + ApiKey + @"/" + mbid + @"/json/musiclogo/1/1";
-            var reply = Downloader.Download (uri);
-            return JsonObject.FromString (reply);
+            return Downloader.Download (uri);
         }
 
         private StringBuilder GetUriBuilder () {
