@@ -38,6 +38,16 @@ namespace Banshee.Fanart
         public String Artist { get; private set; }
         public ArtistImageInfo[] ArtistImageInfos { get; private set; }
 
+        public ArtistImageInfo BestArtistImageInfo {
+            get { 
+                if (ArtistImageInfos.Length > 0) {
+                    return ArtistImageInfos [0];
+                } else {
+                    return null;
+                }
+            }
+        }
+
         public CorrectResults (JsonObject results)
         {
             if (results.Keys.Count != 0) {
