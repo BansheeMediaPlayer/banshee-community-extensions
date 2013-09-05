@@ -95,9 +95,8 @@ namespace Banshee.Fanart
                     Hyena.Log.Debug (String.Format("FanartQueryJob : ArtistMusicBrainzId={0}", dbtrack.ArtistMusicBrainzId));
 
                     var fanartDownloader = new FanartDownloader (FanartCore.ApiKey);
-                    var page = fanartDownloader.GetFanartArtistPage (artistMusicbrainzID);
-
-
+                    var answer = fanartDownloader.GetFanartArtistPage (artistMusicbrainzID);
+                    var results = Results.FromString (answer);
                     /*
                     release = Release.Get (dbtrack.AlbumMusicBrainzId);
                     if (!String.IsNullOrEmpty (release.GetAsin ()) && SaveCover (String.Format (AmazonUriFormat, release.GetAsin ()))) {
