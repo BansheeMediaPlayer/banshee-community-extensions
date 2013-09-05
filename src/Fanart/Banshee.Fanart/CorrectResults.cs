@@ -36,7 +36,7 @@ namespace Banshee.Fanart
     public class CorrectResults : Results
     {
         public String Artist { get; private set; }
-        public ArtistBackground[] MusicBackgrounds { get; private set; }
+        public ArtistImageInfo[] ArtistImageInfos { get; private set; }
 
         public CorrectResults (JsonObject results)
         {
@@ -44,23 +44,23 @@ namespace Banshee.Fanart
                 Artist = results.Keys.First ();
                 var artistObject = results.Get<JsonObject> (Artist);
 
-                MusicBackgrounds = artistObject.Get<JsonArray> ("musiclogo")
-                    .Select (elem => new ArtistBackground (elem as JsonObject))
+                ArtistImageInfos = artistObject.Get<JsonArray> ("musiclogo")
+                    .Select (elem => new ArtistImageInfo (elem as JsonObject))
                     .ToArray ();
             } else {
-                MusicBackgrounds = new ArtistBackground [] {};
+                ArtistImageInfos = new ArtistImageInfo [] {};
                 Hyena.Log.Debug ("No results in CorrectResults constructor");
             }
         }
     }
 
-    public class ArtistBackground
+    public class ArtistImageInfo
     {
         public long Id { get; private set; }
         public String Url { get; private set; }
         public long Likes { get; private set; }
 
-        public ArtistBackground (JsonObject json)
+        public ArtistImageInfo (JsonObject json)
         {
             Id = json.Get<long> ("id");
             Url = json.Get<String> ("url");
