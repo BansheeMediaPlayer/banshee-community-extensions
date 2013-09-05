@@ -42,8 +42,9 @@ namespace Banshee.Fanart
         {
             if (results.Keys.Count != 0) {
                 Artist = results.Keys.First ();
+                var artistObject = results.Get<JsonObject> (Artist);
 
-                MusicBackgrounds = (results[Artist] as JsonArray)
+                MusicBackgrounds = artistObject.Get<JsonArray> ("musiclogo")
                     .Select (elem => new ArtistBackground (elem as JsonObject))
                     .ToArray ();
             } else {
