@@ -84,29 +84,11 @@ namespace Banshee.Fanart
             DatabaseTrackInfo dbtrack;
             dbtrack = Track as DatabaseTrackInfo;
 
-            if (dbtrack != null) 
-            {
-                //Release release;
+            if (dbtrack != null) {
                 var artistMusicbrainzID = dbtrack.Artist.MusicBrainzId ?? dbtrack.ArtistMusicBrainzId;
 
-                // If we have the MBID of the album, we can do a direct MusicBrainz lookup
-                if (!String.IsNullOrEmpty (artistMusicbrainzID)) {
-                    // TODO: delete logging
-                    Hyena.Log.Debug (String.Format("FanartQueryJob : ArtistMusicBrainzId={0}", dbtrack.ArtistMusicBrainzId));
-
-                    var fanartDownloader = new FanartDownloader (FanartCore.ApiKey);
-                    var answer = fanartDownloader.GetFanartArtistPage (artistMusicbrainzID);
-                    var results = Results.FromString (answer);
-                    /*
-                    release = Release.Get (dbtrack.AlbumMusicBrainzId);
-                    if (!String.IsNullOrEmpty (release.GetAsin ()) && SaveCover (String.Format (AmazonUriFormat, release.GetAsin ()))) {
-                        return true;
-                    }
-                    */
-
-                    // Otherwise we do a MusicBrainz search
-                } else {
-                    Hyena.Log.Debug ("FanartQueryJob : ArtistMusicBrainzId is null");
+                if (String.IsNullOrEmpty (artistMusicbrainzID)) { 
+                    Hyena.Log.Debug ("FanartQueryJob : Trying to get MusicBrainzId of an artist");
 
                     var artistQuery = MusicBrainz.Artist.Query (Track.ArtistName);
                     var artist = artistQuery.PerfectMatch ();
@@ -129,6 +111,24 @@ namespace Banshee.Fanart
                     }
                     */
                 }
+
+                // If we have the MBID of the album, we can do a direct MusicBrainz lookup
+                if (!String.IsNullOrEmpty (artistMusicbrainzID)) {
+                    // TODO: delete logging
+                    Hyena.Log.Debug (String.Format("FanartQueryJob : Retrieving artist image for MBId={0}", artistMusicbrainzID));
+
+                    var fanartDownloader = new FanartDownloader (FanartCore.ApiKey);
+                    var answer = fanartDownloader.GetFanartArtistPage (artistMusicbrainzID);
+                    var results = Results.FromString (answer);
+                    /*
+                    release = Release.Get (dbtrack.AlbumMusicBrainzId);
+                    if (!String.IsNullOrEmpty (release.GetAsin ()) && SaveCover (String.Format (AmazonUriFormat, release.GetAsin ()))) {
+                        return true;
+                    }
+                    */
+
+                    // Otherwise we do a MusicBrainz search
+                } 
                 /*
                 if (release == null) {
                     return false;
