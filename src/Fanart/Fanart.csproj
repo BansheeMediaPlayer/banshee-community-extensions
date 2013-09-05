@@ -87,6 +87,7 @@
     <Compile Include="Banshee.Fanart.UI\CoverArtArtistColumnCell.cs" />
     <Compile Include="Banshee.Fanart\FanartMetadataProvider.cs" />
     <Compile Include="Banshee.Fanart\FanartQueryJob.cs" />
+    <Compile Include="Utils\IDictionaryUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -141,5 +142,6 @@
   <ItemGroup>
     <Folder Include="Banshee.Fanart.UI\" />
     <Folder Include="Fanart\" />
+    <Folder Include="Utils\" />
   </ItemGroup>
 </Project>
