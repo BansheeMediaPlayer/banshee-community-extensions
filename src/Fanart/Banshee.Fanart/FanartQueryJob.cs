@@ -81,7 +81,6 @@ namespace Banshee.Fanart
                 return false;
             }
 
-
             DatabaseTrackInfo dbtrack;
             dbtrack = Track as DatabaseTrackInfo;
 
@@ -95,23 +94,6 @@ namespace Banshee.Fanart
                     var artistQuery = MusicBrainz.Artist.Query (Track.ArtistName);
                     var artist = artistQuery.PerfectMatch ();
                     artistMusicbrainzID = (artist != null) ? artist.Id : null;
-                    /*
-                    ReleaseQueryParameters parameters = new ReleaseQueryParameters ();
-                    parameters.Title = Track.AlbumTitle;
-                    parameters.Artist = Track.AlbumArtist;
-                    if (dbtrack != null) {
-                        parameters.TrackCount = dbtrack.TrackCount;
-                    }
-
-                    Query<Release> query = Release.Query (parameters);
-                    release = query.PerfectMatch ();
-
-                    foreach (Release r in query.Best ()) {
-                        if (!String.IsNullOrEmpty (r.GetAsin ()) && SaveCover (String.Format (AmazonUriFormat, r.GetAsin ())) ) {
-                            return true;
-                        }
-                    }
-                    */
                 }
 
                 if (!String.IsNullOrEmpty (artistMusicbrainzID)) {
@@ -121,7 +103,6 @@ namespace Banshee.Fanart
                     var answer = fanartDownloader.GetFanartArtistPage (artistMusicbrainzID);
                     var results = Results.FromString (answer);
 
-
                     var correctResuts = results as CorrectResults;
                     if (correctResuts != null) {
                         Hyena.Log.Debug ("FanartQueryJob: Artist image should be downloaded");
@@ -129,26 +110,11 @@ namespace Banshee.Fanart
                         Hyena.Log.Debug ("FanartQueryJob: Results were incrrect");
                         return false;
                     }
-                    /*
-                    release = Release.Get (dbtrack.AlbumMusicBrainzId);
-                    if (!String.IsNullOrEmpty (release.GetAsin ()) && SaveCover (String.Format (AmazonUriFormat, release.GetAsin ()))) {
-                        return true;
-                    }
-                    */
-
-                    // Otherwise we do a MusicBrainz search
                 } 
-                /*
-                if (release == null) {
-                    return false;
-                }
-               */
-
                 return false;
             } else {
                 Hyena.Log.Debug ("Fanart: dbtrack info is null in FanartQueryJob");
             }
-
             return false;
         }
 
