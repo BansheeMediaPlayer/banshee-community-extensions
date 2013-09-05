@@ -89,7 +89,8 @@ namespace Banshee.Fanart
                 var artistMusicbrainzID = dbtrack.Artist.MusicBrainzId ?? dbtrack.ArtistMusicBrainzId;
 
                 if (String.IsNullOrEmpty (artistMusicbrainzID)) { 
-                    Hyena.Log.Debug ("FanartQueryJob : Trying to get MusicBrainzId of an artist");
+                    Hyena.Log.Debug (String.Format("FanartQueryJob : Trying to get MusicBrainzId of an artist {0}",
+                                                   dbtrack.ArtistName ?? ""));
 
                     var artistQuery = MusicBrainz.Artist.Query (Track.ArtistName);
                     var artist = artistQuery.PerfectMatch ();
