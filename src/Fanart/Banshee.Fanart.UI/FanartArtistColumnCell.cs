@@ -43,25 +43,21 @@ namespace Banshee.Fanart.UI
 
         public override void Render (CellContext context, StateType state, double cellWidth, double cellHeight)
         {
-            int image_size = 20;
+            int spacing = 2;
+
+            int thumb_size = 22;
+            int image_size = thumb_size - (2 * spacing);
 
             // TODO: improve image
             var defaultImage = PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "applications-multimedia"));
             var image = defaultImage;
 
-            bool is_default = false;
+            bool has_border = false;
 
-            int x = 1;
-            int x_offset = 1;
-            int y = 1;
-            int y_offset = 1;
-
-            var image_render_width = defaultImage.Width + 2;
-            var image_render_height = defaultImage.Height + 2;
-
-            // TODO: fix w, h, width and height calculations 
-            ArtworkRenderer.RenderThumbnail (context.Context, image, false, x + x_offset, y + y_offset,
-                                             image_render_width + x_offset * 2, image_render_height + y_offset * 2, !is_default, context.Theme.Context.Radius);
+            ArtworkRenderer.RenderThumbnail (context.Context, image, false, 
+                                            spacing, spacing,
+                                            thumb_size, thumb_size, 
+                                            false, context.Theme.Context.Radius);
         }
     }
 }
