@@ -30,6 +30,7 @@ using Banshee.Gui;
 using Gtk;
 using Hyena.Data.Gui;
 using Hyena.Gui;
+using Banshee.Collection;
 
 namespace Banshee.Fanart.UI
 {
@@ -43,6 +44,12 @@ namespace Banshee.Fanart.UI
 
         public override void Render (CellContext context, StateType state, double cellWidth, double cellHeight)
         {
+            if (BoundObject == null) {
+                return;
+            } else if (!(BoundObject is ArtistInfo)) {
+                throw new InvalidCastException ("FanartArtistColumnCell can only bind ArtistInfo objects");
+            }
+
             int spacing = 2;
 
             int thumb_size = 22;
