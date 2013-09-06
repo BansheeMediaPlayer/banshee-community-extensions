@@ -45,8 +45,8 @@ namespace Banshee.Fanart.UI
         {
             int image_size = 20;
 
-            // TODO: change image
-            var defaultImage = PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "media-optical", "browser-album-cover"));
+            // TODO: improve image
+            var defaultImage = PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "applications-multimedia"));
             var image = defaultImage;
 
             bool is_default = false;
