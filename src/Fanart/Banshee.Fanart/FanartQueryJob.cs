@@ -106,6 +106,8 @@ namespace Banshee.Fanart
                         var bestImageInfo = correctResuts.BestArtistImageInfo;
                         if (bestImageInfo != null) {
                             Hyena.Log.Debug ("FanartQueryJob: Artist image should be downloaded");
+                            SaveArtistImage (bestImageInfo.Url);
+                            return true;
                         } else {
                             Hyena.Log.Debug ("FanartQueryJob: No artist image was found for ");
                         }
@@ -121,7 +123,14 @@ namespace Banshee.Fanart
             return false;
         }
 
-        private bool SaveCover (string uri) {
+        private bool SaveArtistImage (string uri) {
+            var artistId = FanartArtistImageSpec.CreateArtistId (Track.ArtistName);
+
+            if (SaveHttpStream (new Uri (uri), FanartArtistImageSpec.GetPath (artistId), null)) {
+                // TODO: add code here
+                return true;
+            }
+            return false;
             /*
             string artwork_id = Track.ArtworkId;
 
@@ -135,7 +144,7 @@ namespace Banshee.Fanart
                 return true;
             }
             */
-            return false;
+
         }
 
     }
