@@ -77,8 +77,8 @@ namespace Banshee.Fanart
             // set CoverArtArtistListView:
             // FIXME: 
             // "Single line mode" doesn't always work right away
-            view.ArtistView = new CoverArtArtistListView ();
-            view.AlbumartistView = new CoverArtArtistListView ();
+            view.ArtistView = new FanartArtistListView ();
+            view.AlbumartistView = new FanartArtistListView ();
 
 
             Hyena.Log.Information ("Testing!  Fanart source has been instantiated!");
