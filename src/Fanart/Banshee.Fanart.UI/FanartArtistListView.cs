@@ -32,11 +32,22 @@ namespace Banshee.Fanart.UI
 {
     public class FanartArtistListView : TrackFilterListView<ArtistInfo>
     {
+        private FanartArtistColumnCell image_column_cell;
+        private Column image_column;
+        private Column artist_name_column;
+
         protected FanartArtistListView (IntPtr ptr) : base () {}
 
         public FanartArtistListView () : base ()
         {
-            column_controller.Add (new Column ("Artist", new ColumnCellText ("DisplayName", true), 1.0));
+            image_column_cell = new FanartArtistColumnCell ();
+
+            image_column = new Column ("Artist Image", image_column_cell, 0.2);
+            artist_name_column = new Column ("Artist", new ColumnCellText ("DisplayName", true), 1.0);
+
+            column_controller.Add (image_column);
+            column_controller.Add (artist_name_column);
+
             ColumnController = column_controller;
         }
        
