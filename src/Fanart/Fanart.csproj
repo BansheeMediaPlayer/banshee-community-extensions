@@ -91,6 +91,7 @@
     <Compile Include="Banshee.Fanart\CorrectResults.cs" />
     <Compile Include="Banshee.Fanart\IncorrectResults.cs" />
     <Compile Include="Utils\IDictionaryUtils.cs" />
+    <Compile Include="Banshee.Fanart\FanartArtistImageSpec.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
