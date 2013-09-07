@@ -53,8 +53,17 @@ namespace Banshee.Fanart
             if (!ServiceManager.DbConnection.TableExists ("ArtistImageDownloads")) {
                 ServiceManager.DbConnection.Execute (@"
                     CREATE TABLE ArtistImageDownloads (
-                        ArtistID    INTEGER UNIQUE,
+                        MusicBrainzID INTEGER UNIQUE,
                         Downloaded  BOOLEAN,
+                        LastAttempt INTEGER NOT NULL
+                    )");
+            }
+
+            if (!ServiceManager.DbConnection.TableExists ("ArtistMusicBrainz")) {
+                ServiceManager.DbConnection.Execute (@"
+                    CREATE TABLE ArtistMusicBrainz (
+                        ArtistName TEXT UNIQUE,
+                        MusicBrainzID INTEGER,
                         LastAttempt INTEGER NOT NULL
                     )");
             }
@@ -157,12 +166,15 @@ namespace Banshee.Fanart
             }
         }
 
+        // TODO: update:
+        /*
         private static HyenaSqliteCommand delete_query = new HyenaSqliteCommand (
             "DELETE FROM ArtistImageDownloads WHERE ArtistID NOT IN (SELECT ArtistID FROM CoreArtists)");
+        */
 
         private void OnTracksDeleted (Source sender, TrackEventArgs args)
         {
-            ServiceManager.DbConnection.Execute (delete_query);
+            // ServiceManager.DbConnection.Execute (delete_query);
         }
 
         public void Dispose ()
