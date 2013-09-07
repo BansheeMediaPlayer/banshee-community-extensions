@@ -46,7 +46,10 @@ namespace Banshee.Fanart.UI
         {
             if (BoundObject == null) {
                 return;
-            } else if (!(BoundObject is ArtistInfo)) {
+            } 
+
+            var artistInfo = BoundObject as ArtistInfo;
+            if (artistInfo == null) {
                 throw new InvalidCastException ("FanartArtistColumnCell can only bind ArtistInfo objects");
             }
 
