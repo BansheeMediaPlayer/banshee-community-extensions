@@ -62,14 +62,26 @@ namespace Banshee.Fanart.UI
             var defaultImage = PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "applications-multimedia"));
             var image = defaultImage;
 
-            /*
-            string exampleImagePath = @"/home/tomasz/.cache/media-art/artist-fe345db2378e56564f0e455063172b71";
-            var artistPixbuf = new Gdk.Pixbuf(exampleImagePath);
-            artistPixbuf = artistPixbuf.ScaleSimple (image_size, 2 * image_size, Gdk.InterpType.Bilinear);
-            var artistImage = PixbufImageSurface.Create (artistPixbuf);
+            // TODO: get MBDI using costum queries
+            // currently musicBrainzID is always null
+            var musicBrainzID = artistInfo.MusicBrainzId;
 
-            image = artistImage;
-            */
+            //TODO: improve code below:
+            if (musicBrainzID != null) {
+                try {
+                    string exampleImagePath = FanartArtistImageSpec.GetPath (musicBrainzID);
+                    var artistPixbuf = new Gdk.Pixbuf (exampleImagePath);
+                    artistPixbuf = artistPixbuf.ScaleSimple (image_size, 2 * image_size, Gdk.InterpType.Bilinear);
+                    var artistImage = PixbufImageSurface.Create (artistPixbuf);
+
+                    image = artistImage;
+                } catch (Exception e) {
+                    Hyena.Log.Debug (String.Format (
+                        "Could not get artist image for artist '{0}' with MBDI {1}, because exception {2} was thrown", 
+                        artistInfo.Name ?? "", musicBrainzID ?? "", e));
+                }
+            }
+
 
             bool has_border = false;
 
