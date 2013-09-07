@@ -67,7 +67,7 @@ namespace Banshee.Fanart.UI
             ArtworkRenderer.RenderThumbnail (context.Context, image, false, 
                                             spacing, spacing,
                                             thumb_size, thumb_size, 
-                                            false, context.Theme.Context.Radius);
+                                            has_border, context.Theme.Context.Radius);
         }
     }
 }
