@@ -62,6 +62,15 @@ namespace Banshee.Fanart.UI
             var defaultImage = PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "applications-multimedia"));
             var image = defaultImage;
 
+            /*
+            string exampleImagePath = @"/home/tomasz/.cache/media-art/artist-fe345db2378e56564f0e455063172b71";
+            var artistPixbuf = new Gdk.Pixbuf(exampleImagePath);
+            artistPixbuf = artistPixbuf.ScaleSimple (image_size, 2 * image_size, Gdk.InterpType.Bilinear);
+            var artistImage = PixbufImageSurface.Create (artistPixbuf);
+
+            image = artistImage;
+            */
+
             bool has_border = false;
 
             ArtworkRenderer.RenderThumbnail (context.Context, image, false, 
