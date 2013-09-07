@@ -61,10 +61,14 @@ namespace Banshee.Fanart
                         CoreTracks.PrimarySourceID = ? AND
                         " + /*CoreTracks.DateUpdatedStamp > ? AND */ @"
                         CoreTracks.ArtistID = CoreArtists.ArtistID AND
-                        CoreTracks.ArtistID NOT IN (
-                            SELECT ArtistImageDownloads.ArtistID FROM ArtistImageDownloads WHERE
-                                LastAttempt > ? OR Downloaded = 1)",
-               ServiceManager.SourceManager.MusicLibrary.DbId, /*last_scan,*/ last_scan - retry_every
+                        CoreArtists.Name NOT IN (
+                            SELECT ArtistMusicBrainz.ArtistName FROM ArtistMusicBrainz, ArtistImageDownloads WHERE
+                                ArtistMusicBrainz.MusicBrainzID = ArtistImageDownloads.MusicBrainzID AND 
+                                   (ArtistMusicBrainz.LastAttempt > ? OR 
+                                    ArtistMusicBrainz.LastAttempt > ? OR 
+                                    Downloaded = 1)
+                            )",
+                ServiceManager.SourceManager.MusicLibrary.DbId, /*last_scan,*/ last_scan - retry_every, last_scan - retry_every
             );
 
 
@@ -75,12 +79,16 @@ namespace Banshee.Fanart
                         CoreTracks.PrimarySourceID = ? AND
                         "  + /*CoreTracks.DateUpdatedStamp > ? AND */ @"
                         CoreTracks.ArtistID = CoreArtists.ArtistID AND
-                        CoreTracks.ArtistID NOT IN (
-                            SELECT ArtistImageDownloads.ArtistID FROM ArtistImageDownloads WHERE
-                                LastAttempt > ? OR Downloaded = 1)
+                        CoreArtists.Name NOT IN (
+                            SELECT ArtistMusicBrainz.ArtistName FROM ArtistMusicBrainz, ArtistImageDownloads WHERE
+                                ArtistMusicBrainz.MusicBrainzID = ArtistImageDownloads.MusicBrainzID AND 
+                                   (ArtistMusicBrainz.LastAttempt > ? OR 
+                                    ArtistMusicBrainz.LastAttempt > ? OR 
+                                    Downloaded = 1)
+                            )
                     GROUP BY CoreTracks.ArtistID ORDER BY CoreTracks.DateUpdatedStamp DESC LIMIT ?",
                     Banshee.Query.BansheeQuery.UriField.Column),
-                    ServiceManager.SourceManager.MusicLibrary.DbId, /* last_scan ,*/ last_scan - retry_every, 1
+                                                    ServiceManager.SourceManager.MusicLibrary.DbId, /* last_scan ,*/ last_scan - retry_every, last_scan - retry_every, 1
             );
 
 
@@ -146,9 +154,8 @@ namespace Banshee.Fanart
                     // bool have_artist_image = CoverArtSpec.CoverExists (track.ArtistName, track.AlbumTitle);
                     bool have_artist_image = false;
                     ServiceManager.DbConnection.Execute (
-                        "INSERT OR REPLACE INTO ArtistImageDownloads (ArtistID, Downloaded, LastAttempt) VALUES (?, ?, ?)",
+                        "INSERT OR REPLACE INTO ArtistImageDownloads (MusicBrainzID, Downloaded, LastAttempt) VALUES (?, ?, ?)",
                         track.ArtistId, have_artist_image, DateTime.Now);
-
                 }
             }
         }
