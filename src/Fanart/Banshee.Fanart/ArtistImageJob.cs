@@ -154,6 +154,10 @@ namespace Banshee.Fanart
                     // bool have_artist_image = CoverArtSpec.CoverExists (track.ArtistName, track.AlbumTitle);
                     bool have_artist_image = false;
                     ServiceManager.DbConnection.Execute (
+                        "INSERT OR REPLACE INTO ArtistMusicBrainz (ArtistName, MusicBrainzId, LastAttempt) VALUES (?, ?, ?)",
+                        track.ArtistName, track.ArtistId, DateTime.Now);
+
+                    ServiceManager.DbConnection.Execute (
                         "INSERT OR REPLACE INTO ArtistImageDownloads (MusicBrainzID, Downloaded, LastAttempt) VALUES (?, ?, ?)",
                         track.ArtistId, have_artist_image, DateTime.Now);
                 }
