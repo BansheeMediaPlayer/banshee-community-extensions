@@ -48,6 +48,7 @@ using Banshee.Networking;
 using Banshee.Collection.Database;
 using MusicBrainz;
 using Fanart;
+using Banshee.ServiceStack;
 
 namespace Banshee.Fanart
 {
@@ -92,6 +93,10 @@ namespace Banshee.Fanart
                     var artistQuery = MusicBrainz.Artist.Query (Track.ArtistName);
                     var artist = artistQuery.PerfectMatch ();
                     artistMusicbrainzID = (artist != null) ? artist.Id : null;
+
+                    if (artistMusicbrainzID != null) {
+                        SaveDbMusicBrainz (Track.ArtistName, artistMusicbrainzID);
+                    }
                 }
 
                 if (!String.IsNullOrEmpty (artistMusicbrainzID)) {
@@ -106,7 +111,9 @@ namespace Banshee.Fanart
                         var bestImageInfo = correctResuts.BestArtistImageInfo;
                         if (bestImageInfo != null) {
                             Hyena.Log.Debug ("FanartQueryJob: Artist image should be downloaded");
-                            SaveArtistImage (bestImageInfo.Url);
+                            SaveArtistImage (bestImageInfo.Url, artistMusicbrainzID);
+                            var downloaded = true;
+                            SaveDbImageData (artistMusicbrainzID, downloaded);
                             return true;
                         } else {
                             Hyena.Log.Debug ("FanartQueryJob: No artist image was found for ");
@@ -123,10 +130,10 @@ namespace Banshee.Fanart
             return false;
         }
 
-        private bool SaveArtistImage (string uri) {
-            var artistId = FanartArtistImageSpec.CreateArtistId (Track.ArtistName);
+        bool SaveArtistImage (string uri, string artistMusicbrainzID) {
+            var filename = FanartArtistImageSpec.CreateArtistImageFileName (artistMusicbrainzID);
 
-            if (SaveHttpStream (new Uri (uri), FanartArtistImageSpec.GetPath (artistId), null)) {
+            if (SaveHttpStream (new Uri (uri), FanartArtistImageSpec.GetPath (filename), null)) {
                 // TODO: add code here
                 return true;
             }
@@ -145,6 +152,19 @@ namespace Banshee.Fanart
             }
             */
 
+        }
+
+        private void SaveDbImageData (string artistMusicbrainzID, bool downloaded)
+        {
+            ServiceManager.DbConnection.Execute (
+                "INSERT OR REPLACE INTO ArtistImageDownloads (MusicBrainzID, Downloaded, LastAttempt) VALUES (?, ?, ?)",
+                artistMusicbrainzID, downloaded, DateTime.Now);
+        }
+
+        private void SaveDbMusicBrainz (string artistName, string artistMBDI) {
+            ServiceManager.DbConnection.Execute (
+                "INSERT OR REPLACE INTO ArtistMusicBrainz (ArtistName, MusicBrainzId, LastAttempt) VALUES (?, ?, ?)",
+                artistName, artistMBDI, DateTime.Now);
         }
 
     }

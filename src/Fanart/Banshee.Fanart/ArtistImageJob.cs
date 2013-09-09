@@ -152,14 +152,7 @@ namespace Banshee.Fanart
                     // Hyena.Log.Debug ("Fanart information should be wittten to DB");
 
                     // bool have_artist_image = CoverArtSpec.CoverExists (track.ArtistName, track.AlbumTitle);
-                    bool have_artist_image = false;
-                    ServiceManager.DbConnection.Execute (
-                        "INSERT OR REPLACE INTO ArtistMusicBrainz (ArtistName, MusicBrainzId, LastAttempt) VALUES (?, ?, ?)",
-                        track.ArtistName, track.ArtistMusicBrainzId, DateTime.Now);
 
-                    ServiceManager.DbConnection.Execute (
-                        "INSERT OR REPLACE INTO ArtistImageDownloads (MusicBrainzID, Downloaded, LastAttempt) VALUES (?, ?, ?)",
-                        track.ArtistMusicBrainzId, have_artist_image, DateTime.Now);
                 }
             }
         }
