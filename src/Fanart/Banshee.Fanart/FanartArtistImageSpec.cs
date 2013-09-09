@@ -48,13 +48,14 @@ namespace Banshee.Fanart
             get { return root_path; }
         }
 
-        public static string CreateArtistId (string artist)
+        public static string CreateArtistImageFileName (string artistMBDI)
         {
-            if (IsArtistUnknown (artist)) {
+            /*
+            if (IsArtistUnknown (artistMBDI)) {
                 return null;
             }
-
-            return String.Format ("artist-{0}", CoverArtSpec.Digest (artist));
+            */
+            return String.Format ("artist-{0}", artistMBDI);
         }
 
         static bool IsArtistUnknown (string artist)

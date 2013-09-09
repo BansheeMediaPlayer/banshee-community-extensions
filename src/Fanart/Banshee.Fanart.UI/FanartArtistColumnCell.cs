@@ -83,8 +83,10 @@ namespace Banshee.Fanart.UI
             //TODO: improve code below:
             if (musicBrainzID != null) {
                 try {
-                    string exampleImagePath = FanartArtistImageSpec.GetPath (musicBrainzID);
-                    var artistPixbuf = new Gdk.Pixbuf (exampleImagePath);
+                    string imagePath = FanartArtistImageSpec.GetPath (
+                            FanartArtistImageSpec.CreateArtistImageFileName(musicBrainzID)
+                        );
+                    var artistPixbuf = new Gdk.Pixbuf (imagePath);
                     artistPixbuf = artistPixbuf.ScaleSimple (image_size, 2 * image_size, Gdk.InterpType.Bilinear);
                     var artistImage = PixbufImageSurface.Create (artistPixbuf);
 
