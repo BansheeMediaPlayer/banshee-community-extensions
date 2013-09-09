@@ -41,8 +41,8 @@ namespace Banshee.Fanart
     {
         private DateTime last_scan = DateTime.MinValue;
         // TODO: change it back:
-        // private TimeSpan retry_every = TimeSpan.FromDays (7);
-        private TimeSpan retry_every = TimeSpan.FromSeconds(1);
+        private TimeSpan retry_every = TimeSpan.FromDays (7);
+        // private TimeSpan retry_every = TimeSpan.FromSeconds(1);
 
         public ArtistImageJob (DateTime lastScan)  : base ("Downloading Artists' Images")
         {
@@ -60,14 +60,17 @@ namespace Banshee.Fanart
                     WHERE
                         CoreTracks.PrimarySourceID = ? AND
                         " + /*CoreTracks.DateUpdatedStamp > ? AND */ @"
-                        CoreTracks.ArtistID = CoreArtists.ArtistID AND
+                        CoreTracks.ArtistID = CoreArtists.ArtistID AND 
                         CoreArtists.Name NOT IN (
-                            SELECT ArtistMusicBrainz.ArtistName FROM ArtistMusicBrainz, ArtistImageDownloads WHERE
-                                ArtistMusicBrainz.MusicBrainzID = ArtistImageDownloads.MusicBrainzID AND 
-                                   (ArtistMusicBrainz.LastAttempt > ? OR 
-                                    ArtistMusicBrainz.LastAttempt > ? OR 
+                            SELECT ArtistName FROM ArtistMusicBrainz WHERE
+                                   LastAttempt > ?
+                            ) AND
+                        CoreArtists.MusicBrainzID NOT IN (
+                            SELECT ArtistImageDownloads.MusicBrainzID FROM CoreArtists, ArtistImageDownloads WHERE                                    
+                                ArtistImageDownloads.MusicBrainzID = ArtistImageDownloads.MusicBrainzID AND 
+                                   (ArtistImageDownloads.LastAttempt > ? OR 
                                     Downloaded = 1)
-                            )",
+                         )",
                 ServiceManager.SourceManager.MusicLibrary.DbId, /*last_scan,*/ last_scan - retry_every, last_scan - retry_every
             );
 
@@ -78,14 +81,16 @@ namespace Banshee.Fanart
                     WHERE
                         CoreTracks.PrimarySourceID = ? AND
                         "  + /*CoreTracks.DateUpdatedStamp > ? AND */ @"
-                        CoreTracks.ArtistID = CoreArtists.ArtistID AND
+                        CoreTracks.ArtistID = CoreArtists.ArtistID AND 
                         CoreArtists.Name NOT IN (
-                            SELECT ArtistMusicBrainz.ArtistName FROM ArtistMusicBrainz, ArtistImageDownloads WHERE
-                                ArtistMusicBrainz.MusicBrainzID = ArtistImageDownloads.MusicBrainzID AND 
-                                   (ArtistMusicBrainz.LastAttempt > ? OR 
-                                    ArtistMusicBrainz.LastAttempt > ? OR 
+                            SELECT ArtistName FROM ArtistMusicBrainz WHERE
+                                LastAttempt > ?
+                            ) AND
+                        CoreArtists.MusicBrainzID NOT IN (
+                            SELECT ArtistImageDownloads.MusicBrainzID FROM CoreArtists, ArtistImageDownloads WHERE                                    
+                                   (ArtistImageDownloads.LastAttempt > ? OR 
                                     Downloaded = 1)
-                            )
+                        ) 
                     GROUP BY CoreTracks.ArtistID ORDER BY CoreTracks.DateUpdatedStamp DESC LIMIT ?",
                     Banshee.Query.BansheeQuery.UriField.Column),
                                                     ServiceManager.SourceManager.MusicLibrary.DbId, /* last_scan ,*/ last_scan - retry_every, last_scan - retry_every, 1
