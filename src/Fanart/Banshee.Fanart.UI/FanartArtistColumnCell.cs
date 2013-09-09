@@ -66,7 +66,7 @@ namespace Banshee.Fanart.UI
 
             // TODO: get MBDI using costum queries
             // currently musicBrainzID is always null
-            long musicBrainzID;
+            string musicBrainzID = null;
 
             var dbAlbumArtistInfo = artistInfo as DatabaseAlbumArtistInfo;
             if (dbAlbumArtistInfo != null) {
@@ -75,6 +75,7 @@ namespace Banshee.Fanart.UI
                 // TODO: check id dbAlbumArtistInfo.MusicBrainzId is artist's or album's MBID
                 musicBrainzID = FanartMusicBrainz.MBIDByArtistID (dbAlbumArtistInfo.DbId);
             }
+
             if (musicBrainzID == null) {
                 musicBrainzID = FanartMusicBrainz.MBIDByArtistName (artistInfo.Name);
             }

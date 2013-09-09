@@ -32,7 +32,7 @@ namespace Banshee.Fanart
     public static class FanartMusicBrainz
     {
         public static string MBIDByArtistID (long dbId) {
-            ServiceManager.DbConnection.Query<string> (
+            return ServiceManager.DbConnection.Query<string> (
                     String.Format (@"SELECT MusicBrainzID FROM CoreArtists WHERE ArtistID={0} LIMIT 1" , dbId)
                 );
         }
