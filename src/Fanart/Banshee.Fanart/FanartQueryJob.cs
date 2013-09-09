@@ -99,31 +99,44 @@ namespace Banshee.Fanart
                     }
                 }
 
+
                 if (!String.IsNullOrEmpty (artistMusicbrainzID)) {
-                    Hyena.Log.Debug (String.Format("FanartQueryJob : Retrieving artist image for MBId={0}", artistMusicbrainzID));
+                    try {
+                        Hyena.Log.Debug (String.Format("FanartQueryJob : Retrieving artist image for MBId={0}", artistMusicbrainzID));
 
-                    var fanartDownloader = new FanartDownloader (FanartCore.ApiKey);
-                    var answer = fanartDownloader.GetFanartArtistPage (artistMusicbrainzID);
-                    var results = Results.FromString (answer);
+                        var fanartDownloader = new FanartDownloader (FanartCore.ApiKey);
+                        var answer = fanartDownloader.GetFanartArtistPage (artistMusicbrainzID);
+                        var results = Results.FromString (answer);
 
-                    var correctResuts = results as CorrectResults;
-                    if (correctResuts != null) {
-                        var bestImageInfo = correctResuts.BestArtistImageInfo;
-                        if (bestImageInfo != null) {
-                            Hyena.Log.Debug ("FanartQueryJob: Artist image should be downloaded");
-                            SaveArtistImage (bestImageInfo.Url, artistMusicbrainzID);
-                            var downloaded = true;
-                            SaveDbImageData (artistMusicbrainzID, downloaded);
-                            return true;
+                        var correctResuts = results as CorrectResults;
+                        if (correctResuts != null) {
+                            var bestImageInfo = correctResuts.BestArtistImageInfo;
+                            if (bestImageInfo != null) {
+                                Hyena.Log.Debug ("FanartQueryJob: Artist image should be downloaded");
+                                SaveArtistImage (bestImageInfo.Url, artistMusicbrainzID);
+                                var downloaded = true;
+                                SaveDbImageData (artistMusicbrainzID, downloaded);
+                                /*
+                                var dbTrack = Track as DatabaseTrackInfo;
+                                if (dbTrack != null) {
+                                    dbTrack.ArtistMusicBrainzId = artistMusicbrainzID;
+                                }
+                                */
+
+                                return true;
+                            } else {
+                                Hyena.Log.Debug ("FanartQueryJob: No artist image was found");
+                            }
                         } else {
-                            Hyena.Log.Debug ("FanartQueryJob: No artist image was found for ");
+                            Hyena.Log.Debug ("FanartQueryJob: Results were incrrect");
+                            return false;
                         }
-                    } else {
-                        Hyena.Log.Debug ("FanartQueryJob: Results were incrrect");
-                        return false;
+                    } catch (Exception e) {
+                        Hyena.Log.Debug (String.Format ("Could not download image for {0}, bacause of exception {1}", artistMusicbrainzID, e));
                     }
-                } 
+                }
                 return false;
+
             } else {
                 Hyena.Log.Debug ("Fanart: dbtrack info is null in FanartQueryJob");
             }
