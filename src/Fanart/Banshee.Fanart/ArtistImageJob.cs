@@ -61,15 +61,20 @@ namespace Banshee.Fanart
                         CoreTracks.PrimarySourceID = ? AND
                         " + /*CoreTracks.DateUpdatedStamp > ? AND */ @"
                         CoreTracks.ArtistID = CoreArtists.ArtistID AND 
+                        (CoreArtists.Name IS NULL OR
                         CoreArtists.Name NOT IN (
                             SELECT ArtistName FROM ArtistMusicBrainz WHERE
                                    LastAttempt > ?
-                            ) AND
+                            )) AND
+                        (CoreArtists.MusicBrainzID IS NULL OR 
                         CoreArtists.MusicBrainzID NOT IN (
-                            SELECT ArtistImageDownloads.MusicBrainzID FROM CoreArtists, ArtistImageDownloads WHERE                                    
+                            SELECT ArtistImageDownloads.MusicBrainzID FROM ArtistImageDownloads WHERE                                    
                                 ArtistImageDownloads.MusicBrainzID = ArtistImageDownloads.MusicBrainzID AND 
                                    (ArtistImageDownloads.LastAttempt > ? OR 
-                                    Downloaded = 1)
+                                    Downloaded = 1)))
+                        AND (
+                              CoreArtists.Name IS NOT NULL OR 
+                              CoreArtists.MusicBrainzID IS NOT NULL
                          )",
                 ServiceManager.SourceManager.MusicLibrary.DbId, /*last_scan,*/ last_scan - retry_every, last_scan - retry_every
             );
@@ -82,15 +87,22 @@ namespace Banshee.Fanart
                         CoreTracks.PrimarySourceID = ? AND
                         "  + /*CoreTracks.DateUpdatedStamp > ? AND */ @"
                         CoreTracks.ArtistID = CoreArtists.ArtistID AND 
+                        (CoreArtists.Name IS NULL OR
                         CoreArtists.Name NOT IN (
                             SELECT ArtistName FROM ArtistMusicBrainz WHERE
                                 LastAttempt > ?
-                            ) AND
+                            )
+                        ) AND
+                        (CoreArtists.MusicBrainzID IS NULL OR 
                         CoreArtists.MusicBrainzID NOT IN (
-                            SELECT ArtistImageDownloads.MusicBrainzID FROM CoreArtists, ArtistImageDownloads WHERE                                    
+                            SELECT ArtistImageDownloads.MusicBrainzID FROM ArtistImageDownloads WHERE                                    
                                    (ArtistImageDownloads.LastAttempt > ? OR 
-                                    Downloaded = 1)
-                        ) 
+                                    Downloaded = 1)) 
+                        )
+                    AND (
+                          CoreArtists.Name IS NOT NULL OR 
+                          CoreArtists.MusicBrainzID IS NOT NULL
+                     )
                     GROUP BY CoreTracks.ArtistID ORDER BY CoreTracks.DateUpdatedStamp DESC LIMIT ?",
                     Banshee.Query.BansheeQuery.UriField.Column),
                                                     ServiceManager.SourceManager.MusicLibrary.DbId, /* last_scan ,*/ last_scan - retry_every, last_scan - retry_every, 1
