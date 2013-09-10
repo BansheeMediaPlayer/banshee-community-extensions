@@ -94,9 +94,7 @@ namespace Banshee.Fanart
                     var artist = artistQuery.PerfectMatch ();
                     artistMusicbrainzID = (artist != null) ? artist.Id : null;
 
-                    if (artistMusicbrainzID != null) {
-                        SaveDbMusicBrainz (Track.ArtistName, artistMusicbrainzID);
-                    }
+                    SaveDbMusicBrainz (Track.ArtistName, artistMusicbrainzID);
                 }
 
 
