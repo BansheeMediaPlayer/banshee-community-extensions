@@ -31,6 +31,9 @@ using Hyena;
 using Banshee.Configuration;
 using Banshee.Sources;
 using Hyena.Data.Sqlite;
+using Banshee.Sources.Gui;
+using Banshee.Gui;
+using Banshee.Fanart.UI;
 
 namespace Banshee.Fanart
 {
@@ -45,6 +48,8 @@ namespace Banshee.Fanart
 
         void IExtensionService.Initialize ()
         {
+            InitializeViews ();
+
             // TODO: check it:
             // TODO: add disposing
             Banshee.Metadata.MetadataService.Instance.AddProvider (
@@ -90,6 +95,20 @@ namespace Banshee.Fanart
             ServiceManager.SourceManager.MusicLibrary.TracksChanged += OnTracksChanged;
             ServiceManager.SourceManager.MusicLibrary.TracksDeleted += OnTracksDeleted;
             FetchArtistImages ();
+        }
+
+        static void InitializeViews ()
+        {
+            var composite_view = ((IClientWindow)ServiceManager.Get ("NereidPlayerInterface")).CompositeView;
+            if (composite_view == null) {
+                throw new InvalidOperationException ("IClientWindow.CompositeView was null");
+            }
+            var view = composite_view as CompositeTrackSourceContents;
+            if (view == null) {
+                throw new NotSupportedException ("IClientWindow.CompositeView needs to be of type CompositeTrackSourceContents for FanArt extension to work");
+            }
+            view.ArtistView = new FanartArtistListView ();
+            view.AlbumartistView = new FanartArtistListView ();
         }
 
         public void FetchArtistImages ()
