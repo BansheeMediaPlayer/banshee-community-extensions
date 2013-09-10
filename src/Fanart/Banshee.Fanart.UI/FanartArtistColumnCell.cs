@@ -66,7 +66,6 @@ namespace Banshee.Fanart.UI
             string musicBrainzID = null;
             var dbAlbumArtistInfo = artistInfo as DatabaseAlbumArtistInfo;
             if (dbAlbumArtistInfo != null) {
-                // TODO: check id dbAlbumArtistInfo.MusicBrainzId is artist's or album's MBID
                 musicBrainzID = FanartMusicBrainz.MBIDByArtistID (dbAlbumArtistInfo.DbId);
             }
             if (musicBrainzID == null) {
