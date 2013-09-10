@@ -49,7 +49,6 @@ namespace Banshee.Fanart.UI
                 return;
             } 
 
-            // TODO: check DatabaseArtistInfo
             var artistInfo = BoundObject as ArtistInfo;
             if (artistInfo == null) {
                 throw new InvalidCastException ("FanartArtistColumnCell can only bind ArtistInfo objects");
@@ -64,18 +63,12 @@ namespace Banshee.Fanart.UI
             var defaultImage = PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "applications-multimedia"));
             var image = defaultImage;
 
-            // TODO: get MBDI using costum queries
-            // currently musicBrainzID is always null
             string musicBrainzID = null;
-
             var dbAlbumArtistInfo = artistInfo as DatabaseAlbumArtistInfo;
             if (dbAlbumArtistInfo != null) {
-                Hyena.Log.Debug (String.Format ("artistInfo is a DatabaseArtistInfo ({0})", dbAlbumArtistInfo));
-
                 // TODO: check id dbAlbumArtistInfo.MusicBrainzId is artist's or album's MBID
                 musicBrainzID = FanartMusicBrainz.MBIDByArtistID (dbAlbumArtistInfo.DbId);
             }
-
             if (musicBrainzID == null) {
                 musicBrainzID = FanartMusicBrainz.MBIDByArtistName (artistInfo.Name);
             }
