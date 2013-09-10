@@ -45,24 +45,24 @@ namespace Banshee.Fanart.UI
 
         public override void Render (CellContext context, StateType state, double cellWidth, double cellHeight)
         {
+            // check state and parameters:
             if (BoundObject == null) {
                 return;
             } 
-
             var artistInfo = BoundObject as ArtistInfo;
             if (artistInfo == null) {
                 throw new InvalidCastException ("FanartArtistColumnCell can only bind ArtistInfo objects");
             }
 
+            // calculate size:
             int spacing = 2;
-
             int thumb_size = 22;
             int image_size = thumb_size - (2 * spacing);
 
             var image = GetDefaultArtistImage (image_size);
             string musicBrainzID = GetArtistsMbid (artistInfo);
 
-            //TODO: improve code below:
+            // get artist image:
             if (musicBrainzID != null && FanartMusicBrainz.HasImage(musicBrainzID)) {
                 try {
                     string imagePath = FanartArtistImageSpec.GetPath (
@@ -80,9 +80,8 @@ namespace Banshee.Fanart.UI
                 }
             }
 
-
+            // display get artist image:
             bool has_border = false;
-
             ArtworkRenderer.RenderThumbnail (context.Context, image, false, 
                                             spacing, spacing,
                                             thumb_size, thumb_size, 
