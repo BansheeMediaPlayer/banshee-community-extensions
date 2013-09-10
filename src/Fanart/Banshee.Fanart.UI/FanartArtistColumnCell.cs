@@ -59,8 +59,7 @@ namespace Banshee.Fanart.UI
             int thumb_size = 22;
             int image_size = thumb_size - (2 * spacing);
 
-            var defaultImage = GetDefaultArtistImage (image_size);
-            var image = defaultImage;
+            var image = GetDefaultArtistImage (image_size);
 
             string musicBrainzID = null;
             var dbAlbumArtistInfo = artistInfo as DatabaseAlbumArtistInfo;
