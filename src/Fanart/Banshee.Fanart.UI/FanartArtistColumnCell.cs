@@ -59,7 +59,6 @@ namespace Banshee.Fanart.UI
             int thumb_size = 22;
             int image_size = thumb_size - (2 * spacing);
 
-            // TODO: improve image
             var defaultImage = GetDefaultArtistImage (image_size);
             var image = defaultImage;
 
@@ -101,6 +100,7 @@ namespace Banshee.Fanart.UI
 
         private Cairo.ImageSurface GetDefaultArtistImage (int image_size)
         {
+            // TODO: improve image
             return PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "applications-multimedia"));
         }
     }
