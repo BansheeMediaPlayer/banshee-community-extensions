@@ -97,7 +97,7 @@ namespace Banshee.Fanart
             FetchArtistImages ();
         }
 
-        static void InitializeViews ()
+        private void InitializeViews ()
         {
             var composite_view = ((IClientWindow)ServiceManager.Get ("NereidPlayerInterface")).CompositeView;
             if (composite_view == null) {
