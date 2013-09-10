@@ -41,7 +41,7 @@ namespace Banshee.Fanart
         public ArtistImageInfo BestArtistImageInfo {
             get { 
                 if (ArtistImageInfos.Length > 0) {
-                    return ArtistImageInfos [0];
+                    return ArtistImageInfos[0];
                 } else {
                     return null;
                 }

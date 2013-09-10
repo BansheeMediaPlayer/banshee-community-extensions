@@ -87,8 +87,8 @@ namespace Banshee.Fanart
                 var artistMusicbrainzID = dbtrack.Artist.MusicBrainzId ?? dbtrack.ArtistMusicBrainzId;
 
                 if (String.IsNullOrEmpty (artistMusicbrainzID)) { 
-                    Hyena.Log.Debug (String.Format("FanartQueryJob : Trying to get MusicBrainzId of an artist {0}",
-                                                   dbtrack.ArtistName ?? ""));
+                    Hyena.Log.Debug (String.Format ("FanartQueryJob : Trying to get MusicBrainzId of an artist {0}",
+                        dbtrack.ArtistName ?? ""));
 
                     var artistQuery = MusicBrainz.Artist.Query (Track.ArtistName);
                     var artist = artistQuery.PerfectMatch ();
@@ -130,7 +130,8 @@ namespace Banshee.Fanart
                             return false;
                         }
                     } catch (Exception e) {
-                        Hyena.Log.Debug (String.Format ("Could not download image for {0}, bacause of exception {1}", artistMusicbrainzID, e));
+                        Hyena.Log.Debug (String.Format ("Could not download image for {0}, bacause of exception {1}", 
+                            artistMusicbrainzID, e));
                     }
                 }
                 return false;
@@ -177,7 +178,6 @@ namespace Banshee.Fanart
                 "INSERT OR REPLACE INTO ArtistMusicBrainz (ArtistName, MusicBrainzId, LastAttempt) VALUES (?, ?, ?)",
                 artistName, artistMBDI, DateTime.Now);
         }
-
     }
 }
 

@@ -37,8 +37,6 @@ namespace Banshee.Fanart.UI
 {
     public class FanartArtistColumnCell : ColumnCell
     {
-
-
         public FanartArtistColumnCell () : base (null, true)
         {
         }
@@ -63,10 +61,10 @@ namespace Banshee.Fanart.UI
             Cairo.ImageSurface image;
 
             // get artist image:
-            if (musicBrainzID != null && FanartMusicBrainz.HasImage(musicBrainzID)) {
+            if (musicBrainzID != null && FanartMusicBrainz.HasImage (musicBrainzID)) {
                 try {
                     string imagePath = FanartArtistImageSpec.GetPath (
-                            FanartArtistImageSpec.CreateArtistImageFileName(musicBrainzID)
+                            FanartArtistImageSpec.CreateArtistImageFileName (musicBrainzID)
                         );
                     var artistPixbuf = new Gdk.Pixbuf (imagePath);
                     artistPixbuf = artistPixbuf.ScaleSimple (image_size, 2 * image_size, Gdk.InterpType.Bilinear);
@@ -86,9 +84,9 @@ namespace Banshee.Fanart.UI
             // display get artist image:
             bool has_border = false;
             ArtworkRenderer.RenderThumbnail (context.Context, image, false, 
-                                            spacing, spacing,
-                                            thumb_size, thumb_size, 
-                                            has_border, context.Theme.Context.Radius);
+                spacing, spacing,
+                thumb_size, thumb_size, 
+                has_border, context.Theme.Context.Radius);
         }
 
         private Cairo.ImageSurface GetDefaultArtistImage (int image_size)

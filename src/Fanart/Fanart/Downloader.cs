@@ -33,7 +33,7 @@ namespace Fanart
         public static string Download(string uri)
         {
             if (String.IsNullOrEmpty (uri)) {
-                throw new ArgumentException("Specify uri of resource you want to download");
+                throw new ArgumentException ("Specify uri of resource you want to download");
             }
 
             string response;
