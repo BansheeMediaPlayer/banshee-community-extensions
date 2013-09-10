@@ -60,7 +60,7 @@ namespace Banshee.Fanart.UI
             int image_size = thumb_size - (2 * spacing);
 
             // TODO: improve image
-            var defaultImage = PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "applications-multimedia"));
+            var defaultImage = GetDefaultArtistImage (image_size);
             var image = defaultImage;
 
             string musicBrainzID = null;
@@ -97,6 +97,11 @@ namespace Banshee.Fanart.UI
                                             spacing, spacing,
                                             thumb_size, thumb_size, 
                                             has_border, context.Theme.Context.Radius);
+        }
+
+        private Cairo.ImageSurface GetDefaultArtistImage (int image_size)
+        {
+            return PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "applications-multimedia"));
         }
     }
 }
