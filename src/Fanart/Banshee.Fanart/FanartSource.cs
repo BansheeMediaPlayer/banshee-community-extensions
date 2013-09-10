@@ -70,13 +70,6 @@ namespace Banshee.Fanart
                 throw new NotSupportedException ("IClientWindow.CompositeView needs to be of type CompositeTrackSourceContents for FanArt extension to work");
             }
 
-            // set Fanart view:
-            //view_set.ArtistView = new FanartArtistListView ();
-
-
-            // set CoverArtArtistListView:
-            // FIXME: 
-            // "Single line mode" doesn't always work right away
             view.ArtistView = new FanartArtistListView ();
             view.AlbumartistView = new FanartArtistListView ();
 
