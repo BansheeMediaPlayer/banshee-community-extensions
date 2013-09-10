@@ -60,15 +60,7 @@ namespace Banshee.Fanart.UI
             int image_size = thumb_size - (2 * spacing);
 
             var image = GetDefaultArtistImage (image_size);
-
-            string musicBrainzID = null;
-            var dbAlbumArtistInfo = artistInfo as DatabaseAlbumArtistInfo;
-            if (dbAlbumArtistInfo != null) {
-                musicBrainzID = FanartMusicBrainz.MBIDByArtistID (dbAlbumArtistInfo.DbId);
-            }
-            if (musicBrainzID == null) {
-                musicBrainzID = FanartMusicBrainz.MBIDByArtistName (artistInfo.Name);
-            }
+            string musicBrainzID = GetArtistsMbid (artistInfo);
 
             //TODO: improve code below:
             if (musicBrainzID != null && FanartMusicBrainz.HasImage(musicBrainzID)) {
@@ -101,6 +93,22 @@ namespace Banshee.Fanart.UI
         {
             // TODO: improve image
             return PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "applications-multimedia"));
+        }
+
+        private string GetArtistsMbid (ArtistInfo artistInfo)
+        {
+            string musicBrainzID = null;
+
+            var dbAlbumArtistInfo = artistInfo as DatabaseAlbumArtistInfo;
+            if (dbAlbumArtistInfo != null) {
+                musicBrainzID = FanartMusicBrainz.MBIDByArtistID (dbAlbumArtistInfo.DbId);
+            }
+
+            if (musicBrainzID == null) {
+                musicBrainzID = FanartMusicBrainz.MBIDByArtistName (artistInfo.Name);
+            }
+
+            return musicBrainzID;
         }
     }
 }
