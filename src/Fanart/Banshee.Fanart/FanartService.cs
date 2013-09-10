@@ -34,6 +34,7 @@ using Hyena.Data.Sqlite;
 using Banshee.Sources.Gui;
 using Banshee.Gui;
 using Banshee.Fanart.UI;
+using Banshee.Collection.Gui;
 
 namespace Banshee.Fanart
 {
@@ -41,6 +42,7 @@ namespace Banshee.Fanart
     {
         private bool disposed;
         private ArtistImageJob job;
+        CompositeTrackSourceContents view;
 
         public FanartService ()
         {
@@ -103,7 +105,7 @@ namespace Banshee.Fanart
             if (composite_view == null) {
                 throw new InvalidOperationException ("IClientWindow.CompositeView was null");
             }
-            var view = composite_view as CompositeTrackSourceContents;
+            view = composite_view as CompositeTrackSourceContents;
             if (view == null) {
                 throw new NotSupportedException ("IClientWindow.CompositeView needs to be of type CompositeTrackSourceContents for FanArt extension to work");
             }
@@ -201,6 +203,12 @@ namespace Banshee.Fanart
             if (disposed) {
                 return;
             }
+
+            if (view != null) {
+                view.ArtistView = new ArtistListView ();
+                view.AlbumartistView = new ArtistListView ();
+            }
+
 
             ServiceManager.SourceManager.MusicLibrary.TracksAdded -= OnTracksAdded;
             ServiceManager.SourceManager.MusicLibrary.TracksChanged -= OnTracksChanged;
