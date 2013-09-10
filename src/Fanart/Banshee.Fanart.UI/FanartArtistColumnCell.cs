@@ -60,7 +60,7 @@ namespace Banshee.Fanart.UI
             int image_size = thumb_size - (2 * spacing);
 
             var musicBrainzID = GetArtistsMbid (artistInfo);
-            Cairo.ImageSurface image = GetDefaultArtistImage (image_size);
+            Cairo.ImageSurface image;
 
             // get artist image:
             if (musicBrainzID != null && FanartMusicBrainz.HasImage(musicBrainzID)) {
@@ -77,7 +77,10 @@ namespace Banshee.Fanart.UI
                     Hyena.Log.Debug (String.Format (
                         "Could not get artist image for artist '{0}' with MBDI {1}, because exception {2} was thrown", 
                         artistInfo.Name ?? "", musicBrainzID ?? "", e));
+                    image = GetDefaultArtistImage (image_size);
                 }
+            } else {
+                image = GetDefaultArtistImage (image_size);
             }
 
             // display get artist image:
