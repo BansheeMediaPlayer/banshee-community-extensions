@@ -74,7 +74,7 @@ namespace Banshee.Fanart.UI
             }
 
             //TODO: improve code below:
-            if (musicBrainzID != null) {
+            if (musicBrainzID != null && FanartMusicBrainz.HasImage(musicBrainzID)) {
                 try {
                     string imagePath = FanartArtistImageSpec.GetPath (
                             FanartArtistImageSpec.CreateArtistImageFileName(musicBrainzID)

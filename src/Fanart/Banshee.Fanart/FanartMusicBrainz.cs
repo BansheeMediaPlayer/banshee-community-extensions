@@ -43,6 +43,16 @@ namespace Banshee.Fanart
                     new HyenaSqliteCommand (@"SELECT MusicBrainzID FROM ArtistMusicBrainz WHERE ArtistName=? LIMIT 1" , artistName)
                 );
         }
+
+        public static bool HasImage (string mbdi) {
+            return ServiceManager.DbConnection.Query<bool> (
+                new HyenaSqliteCommand (@"
+                    SELECT COUNT(*)>0 FROM ArtistImageDownloads 
+                    WHERE MusicBrainzID=? AND 
+                    Downloaded=1",
+                    mbdi)
+                );
+        }
     }
 }
 
