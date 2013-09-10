@@ -75,8 +75,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Banshee.Fanart\FanartSource.cs" />
-    <Compile Include="Banshee.Fanart.UI\FanartSourceContents.cs" />
     <Compile Include="Banshee.Fanart.UI\FanartArtistListView.cs" />
     <Compile Include="Fanart\FanartCore.cs" />
     <Compile Include="Fanart\Downloader.cs" />
