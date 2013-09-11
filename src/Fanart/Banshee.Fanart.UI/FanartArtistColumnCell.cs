@@ -52,10 +52,12 @@ namespace Banshee.Fanart.UI
                 throw new InvalidCastException ("FanartArtistColumnCell can only bind ArtistInfo objects");
             }
 
+            // majority of artist images has size 400 * 155
             // calculate size:
             int spacing = 2;
-            int thumb_size = 22;
-            int image_size = thumb_size - (2 * spacing);
+            int thumb_height = 31;
+            int thumb_width = 80;
+            int image_size = thumb_height - (2 * spacing);
 
             var musicBrainzID = GetArtistsMbid (artistInfo);
             Cairo.ImageSurface image;
@@ -67,7 +69,7 @@ namespace Banshee.Fanart.UI
                             FanartArtistImageSpec.CreateArtistImageFileName (musicBrainzID)
                         );
                     var artistPixbuf = new Gdk.Pixbuf (imagePath);
-                    artistPixbuf = artistPixbuf.ScaleSimple (image_size, 2 * image_size, Gdk.InterpType.Bilinear);
+                    artistPixbuf = artistPixbuf.ScaleSimple (thumb_width, thumb_height, Gdk.InterpType.Bilinear);
                     var artistImage = PixbufImageSurface.Create (artistPixbuf);
 
                     image = artistImage;
@@ -85,7 +87,7 @@ namespace Banshee.Fanart.UI
             bool has_border = false;
             ArtworkRenderer.RenderThumbnail (context.Context, image, false, 
                 spacing, spacing,
-                thumb_size, thumb_size, 
+                thumb_width, thumb_height, 
                 has_border, context.Theme.Context.Radius);
         }
 
