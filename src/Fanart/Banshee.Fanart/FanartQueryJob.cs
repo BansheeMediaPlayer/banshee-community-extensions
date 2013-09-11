@@ -84,6 +84,7 @@ namespace Banshee.Fanart
             DatabaseTrackInfo dbtrack = Track as DatabaseTrackInfo;
 
             if (dbtrack != null) {
+                Hyena.Log.Debug (String.Format ("FanartQueryJob : Processing DatabaseTrackInfo {0}", dbtrack));
                 var artistMusicbrainzID = dbtrack.Artist.MusicBrainzId ?? dbtrack.ArtistMusicBrainzId;
 
                 if (String.IsNullOrEmpty (artistMusicbrainzID)) { 
