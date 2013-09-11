@@ -54,7 +54,7 @@ namespace Banshee.Fanart.UI
 
             // majority of artist images has size 400 * 155
             // calculate size:
-            int spacing = 2;
+            int spacing = 0;
             int thumb_height = 31;
             int thumb_width = 80;
             int image_size = thumb_height - (2 * spacing);
