@@ -53,10 +53,15 @@ namespace Banshee.Fanart.UI
             }
 
             // majority of artist images has size 400 * 155
+            int originalImageWidth = 400;
+            int orginalImageHeight = 155;
+
+            double scale = 0.2;
+
             // calculate size:
             int spacing = 0;
-            int thumb_height = 31;
-            int thumb_width = 80;
+            int thumb_height = (int) (orginalImageHeight * scale);
+            int thumb_width = (int) (originalImageWidth * scale);
             int image_size = thumb_height - (2 * spacing);
 
             var musicBrainzID = GetArtistsMbid (artistInfo);
