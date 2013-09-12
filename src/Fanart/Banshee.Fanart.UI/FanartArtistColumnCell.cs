@@ -97,6 +97,10 @@ namespace Banshee.Fanart.UI
             return PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "applications-multimedia"));
         }
 
+        public virtual int ComputeRowHeight (Widget w) {
+            return 50;
+        }
+
         private string GetArtistsMbid (ArtistInfo artistInfo)
         {
             string musicBrainzID = null;

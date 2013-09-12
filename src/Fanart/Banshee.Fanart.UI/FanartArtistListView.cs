@@ -50,6 +50,11 @@ namespace Banshee.Fanart.UI
 
             ColumnController = column_controller;
         }
+
+        protected override Gdk.Size OnMeasureChild ()
+        {
+            return new Gdk.Size (0, image_column_cell.ComputeRowHeight (this));
+        }
        
         // TODO add context menu for artists/albums...probably need a Banshee.Gui/ArtistActions.cs file.  Should
         // make TrackActions.cs more generic with regards to the TrackSelection stuff, using the new properties
