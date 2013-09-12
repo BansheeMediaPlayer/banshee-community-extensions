@@ -42,11 +42,11 @@ namespace Banshee.Fanart.UI
         {
             image_column_cell = new FanartArtistColumnCell ();
 
-            image_column = new Column ("Artist Image", image_column_cell, 0.3);
-            artist_name_column = new Column ("Artist", new ColumnCellText ("DisplayName", true), 0.7);
+            artist_name_column = new Column ("Artist", new ColumnCellText ("DisplayName", true), 0.65);
+            image_column = new Column ("Artist Image", image_column_cell, 0.35);
 
-            column_controller.Add (image_column);
             column_controller.Add (artist_name_column);
+            column_controller.Add (image_column);
 
             ColumnController = column_controller;
         }

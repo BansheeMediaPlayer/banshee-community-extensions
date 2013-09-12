@@ -56,7 +56,7 @@ namespace Banshee.Fanart.UI
             int originalImageWidth = 400;
             int orginalImageHeight = 155;
 
-            double scale = 0.2;
+            double scale = 0.22;
 
             // calculate size:
             int spacing = 0;
@@ -82,18 +82,20 @@ namespace Banshee.Fanart.UI
                     Hyena.Log.Debug (String.Format (
                         "Could not get artist image for artist '{0}' with MBDI {1}, because exception {2} was thrown", 
                         artistInfo.Name ?? "", musicBrainzID ?? "", e));
-                    image = GetDefaultArtistImage (image_size);
+                    image = null;
                 }
             } else {
-                image = GetDefaultArtistImage (image_size);
+                image = null;
             }
 
-            // display get artist image:
-            bool has_border = false;
-            ArtworkRenderer.RenderThumbnail (context.Context, image, false, 
-                spacing, spacing,
-                thumb_width, thumb_height, 
-                has_border, context.Theme.Context.Radius);
+            if (image != null) {
+                // display get artist image:
+                bool has_border = false;
+                ArtworkRenderer.RenderThumbnail (context.Context, image, false, 
+                    spacing, spacing,
+                    thumb_width, thumb_height, 
+                    has_border, context.Theme.Context.Radius);
+            }
         }
 
         private Cairo.ImageSurface GetDefaultArtistImage (int image_size)
@@ -103,7 +105,7 @@ namespace Banshee.Fanart.UI
         }
 
         public virtual int ComputeRowHeight (Widget w) {
-            return 50;
+            return 40;
         }
 
         private string GetArtistsMbid (ArtistInfo artistInfo)
