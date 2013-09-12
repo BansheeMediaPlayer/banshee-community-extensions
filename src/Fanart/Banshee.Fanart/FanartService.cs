@@ -35,6 +35,7 @@ using Banshee.Sources.Gui;
 using Banshee.Gui;
 using Banshee.Fanart.UI;
 using Banshee.Collection.Gui;
+using Banshee.Collection;
 
 namespace Banshee.Fanart
 {
@@ -42,7 +43,13 @@ namespace Banshee.Fanart
     {
         private bool disposed;
         private ArtistImageJob job;
-        CompositeTrackSourceContents view;
+
+        private bool shouldRestoreDefaultViews = false;
+        private TrackFilterListView<ArtistInfo> oldArtistView;
+        private TrackFilterListView<ArtistInfo> oldAlbumartistView;
+
+
+        private CompositeTrackSourceContents view;
 
         public FanartService ()
         {
@@ -50,7 +57,9 @@ namespace Banshee.Fanart
 
         void IExtensionService.Initialize ()
         {
-            InitializeViews ();
+            PrepareViews ();
+            StoreOldViewInfo ();
+            InitializeFanartViews ();
 
             // TODO: check it:
             // TODO: add disposing
@@ -99,7 +108,7 @@ namespace Banshee.Fanart
             FetchArtistImages ();
         }
 
-        private void InitializeViews ()
+        private void PrepareViews ()
         {
             var composite_view = ((IClientWindow)ServiceManager.Get ("NereidPlayerInterface")).CompositeView;
             if (composite_view == null) {
@@ -109,6 +118,9 @@ namespace Banshee.Fanart
             if (view == null) {
                 throw new NotSupportedException ("IClientWindow.CompositeView needs to be of type CompositeTrackSourceContents for FanArt extension to work");
             }
+        }
+
+        private void InitializeFanartViews () {
             view.ArtistView = new FanartArtistListView ();
             view.AlbumartistView = new FanartArtistListView ();
         }
@@ -158,6 +170,35 @@ namespace Banshee.Fanart
             }
         }
 
+        private void StoreOldViewInfo ()
+        {
+            if ((view.ArtistView is ArtistListView || view.ArtistView == null) &&
+                (view.AlbumartistView is ArtistListView || view.AlbumartistView == null)) {
+                shouldRestoreDefaultViews = true;
+            } else {
+                Hyena.Log.Warning ("Fanart: ArtistView or AlbumartistView is not and instance of " +
+                                   "ArtistListView, Fanart extension may not function properly " +
+                                   "because of other extensions that are turned on.");
+                shouldRestoreDefaultViews = false;
+
+                oldArtistView = view.ArtistView;
+                oldAlbumartistView = view.AlbumartistView;
+            }     
+        }
+
+        private void RestoreOldViews ()
+        {
+            if (shouldRestoreDefaultViews) {
+                if (view != null) {
+                    view.ArtistView = new ArtistListView ();
+                    view.AlbumartistView = new ArtistListView ();
+                }
+            } else {
+                view.ArtistView = oldArtistView;
+                view.AlbumartistView = oldAlbumartistView;
+            }
+        }
+
         private void OnSourceAdded (SourceAddedArgs args)
         {
             if (ServiceStartup ()) {
@@ -204,10 +245,7 @@ namespace Banshee.Fanart
                 return;
             }
 
-            if (view != null) {
-                view.ArtistView = new ArtistListView ();
-                view.AlbumartistView = new ArtistListView ();
-            }
+            RestoreOldViews ();
 
 
             ServiceManager.SourceManager.MusicLibrary.TracksAdded -= OnTracksAdded;
