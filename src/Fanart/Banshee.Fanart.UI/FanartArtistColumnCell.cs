@@ -32,6 +32,7 @@ using Hyena.Data.Gui;
 using Hyena.Gui;
 using Banshee.Collection;
 using Banshee.Collection.Database;
+using Hyena.Gui.Theming;
 
 namespace Banshee.Fanart.UI
 {
@@ -95,6 +96,29 @@ namespace Banshee.Fanart.UI
                     spacing, spacing,
                     thumb_width, thumb_height, 
                     has_border, context.Theme.Context.Radius);
+            } else {
+                Cairo.Color text_color = context.Theme.Colors.GetWidgetColor (GtkColorClass.Text, state);
+                Pango.Layout layout = context.Layout;
+
+                layout.Width = (int)(1.5 * 400.0 * 0.22 * Pango.Scale.PangoScale); // text can take at most 1.5 times image width
+                layout.Ellipsize = Pango.EllipsizeMode.End;
+                layout.FontDescription.Weight = Pango.Weight.Bold;
+
+                int old_size = layout.FontDescription.Size + 1;
+
+                layout.SetText (artistInfo.DisplayName);
+
+                int x = 5;
+                int y = 15;
+                context.Context.MoveTo (x, y);
+
+                layout.FontDescription.Weight = Pango.Weight.Bold;
+                layout.FontDescription.Size = old_size;
+                layout.FontDescription.Style = Pango.Style.Normal;
+
+                text_color.A = 1;
+                context.Context.Color = text_color;
+                PangoCairoHelper.ShowLayout (context.Context, layout);
             }
         }
 
