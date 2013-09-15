@@ -188,7 +188,7 @@ namespace Banshee.Fanart.UI
         private void SetNormalTwoColumns () 
         {
             artist_name_column = new Column ("Artist", new ColumnCellText ("DisplayName", true), 0.65);
-            image_column_cell = new FanartArtistColumnCell () { RenderNameWhenNoImage = true };
+            image_column_cell = new FanartArtistColumnCell () { RenderNameWhenNoImage = false };
             image_column = new Column ("Artist Image", image_column_cell, 0.35);
 
             column_controller.Add (artist_name_column);
