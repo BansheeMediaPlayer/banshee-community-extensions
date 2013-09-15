@@ -27,6 +27,7 @@ using System;
 using Banshee.Collection.Gui;
 using Banshee.Collection;
 using Hyena.Data.Gui;
+using Banshee.Configuration;
 
 namespace Banshee.Fanart.UI
 {
@@ -35,6 +36,15 @@ namespace Banshee.Fanart.UI
         private FanartArtistColumnCell image_column_cell;
         private Column image_column;
         private Column artist_name_column;
+
+        public static FanartArtistListViewKind ViewKind {
+            get { 
+                return ListViewKindSchema.Get (); 
+            }
+            set {
+                ListViewKindSchema.Set (value);
+            }
+        }
 
         protected FanartArtistListView (IntPtr ptr) : base () {}
 
@@ -55,6 +65,18 @@ namespace Banshee.Fanart.UI
         {
             return new Gdk.Size (0, image_column_cell.ComputeRowHeight (this));
         }
+
+        public enum FanartArtistListViewKind {
+            NormalOneColumn,
+            NormalTwoColumns,
+        }
+
+        private static readonly SchemaEntry<FanartArtistListViewKind> ListViewKindSchema = new SchemaEntry<FanartArtistListViewKind> (
+            "player_window", "fanart_artist_listview_kind",
+            FanartArtistListViewKind.NormalOneColumn,
+            "Desired kind of FanartListView's appearance",
+            "Desired kind of FanartListView's appearance"
+            );
        
         // TODO add context menu for artists/albums...probably need a Banshee.Gui/ArtistActions.cs file.  Should
         // make TrackActions.cs more generic with regards to the TrackSelection stuff, using the new properties
