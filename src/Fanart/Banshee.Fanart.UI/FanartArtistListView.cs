@@ -93,6 +93,7 @@ namespace Banshee.Fanart.UI
                     viewKindActions = new ActionGroup ("ArtistGridView");
 
                     viewKindActions.Add (new Gtk.Action("FanartViewKindMenuAction", "FanartViewKindMenuAction"));
+
                     viewKindActions.Add (new RadioActionEntry [] {
                         new RadioActionEntry ("FanartViewOneColumnKindAction", null,
                                                "One column mode", null,
@@ -110,24 +111,24 @@ namespace Banshee.Fanart.UI
                    
                 }
             }
-            /*
+
             ServiceManager.SourceManager.ActiveSourceChanged += delegate {
                 ThreadAssist.ProxyToMain (delegate {
                     if (ServiceManager.SourceManager.ActiveSource is ITrackModelSource) {
                         ITrackModelSource source = ServiceManager.SourceManager.ActiveSource as ITrackModelSource;
-                        action_service.FindAction("ArtistGridView.NormalOneColumn").Visible = source.ShowBrowser;
-                        action_service.FindAction("ArtistGridView.NormalOneColumn").Sensitive = source.ShowBrowser;
-                        action_service.FindAction("ArtistGridView.NormalTwoColumns").Visible = source.ShowBrowser;
-                        action_service.FindAction("ArtistGridView.NormalTwoColumns").Sensitive = source.ShowBrowser;
+                        action_service.FindAction("ArtistGridView.FanartViewOneColumnKindAction").Visible = source.ShowBrowser;
+                        action_service.FindAction("ArtistGridView.FanartViewOneColumnKindAction").Sensitive = source.ShowBrowser;
+                        action_service.FindAction("ArtistGridView.FanartViewTwoColumnsKindAction").Visible = source.ShowBrowser;
+                        action_service.FindAction("ArtistGridView.FanartViewTwoColumnsKindAction").Sensitive = source.ShowBrowser;
                     } else {
-                        action_service.FindAction("ArtistGridView.NormalOneColumn").Visible = false;
-                        action_service.FindAction("ArtistGridView.NormalOneColumn").Sensitive = false;
-                        action_service.FindAction("ArtistGridView.NormalTwoColumns").Visible = false;
-                        action_service.FindAction("ArtistGridView.NormalTwoColumns").Sensitive = false;
+                        action_service.FindAction("ArtistGridView.FanartViewOneColumnKindAction").Visible = false;
+                        action_service.FindAction("ArtistGridView.FanartViewOneColumnKindAction").Sensitive = false;
+                        action_service.FindAction("ArtistGridView.FanartViewTwoColumnsKindAction").Visible = false;
+                        action_service.FindAction("ArtistGridView.FanartViewTwoColumnsKindAction").Sensitive = false;
                     }
                 });
             };
-            */
+
         }
 
         void OnNormalOneColumnSelected (object sender, EventArgs e)
