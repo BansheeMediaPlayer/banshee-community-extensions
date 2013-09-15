@@ -66,7 +66,7 @@ namespace Banshee.Fanart.UI
             </ui>
         ";
 
-        public static FanartArtistListViewKind ViewKind {
+        private static FanartArtistListViewKind ViewKind {
             get { 
                 return ListViewKindSchema.Get (); 
             }
@@ -80,8 +80,7 @@ namespace Banshee.Fanart.UI
         public FanartArtistListView () : base ()
         {
             InstallPreferences ();
-            SetNormalOneColumn ();
-            //SetNormalTwoColumns ();
+            SetView (ViewKind);
         }
 
         private void InstallPreferences ()
@@ -131,6 +130,36 @@ namespace Banshee.Fanart.UI
 
         }
 
+        private void SwitchToView (FanartArtistListViewKind viewKind)
+        {
+            ClearColumns ();
+            SetView (viewKind);
+        }
+
+        void ClearColumns ()
+        {
+            column_controller.Clear ();
+            ColumnController = column_controller;
+        }
+
+        private void SetView (FanartArtistListViewKind viewKind)
+        {
+            switch (viewKind) {
+            case FanartArtistListViewKind.NormalOneColumn:
+                SetNormalOneColumn ();
+                break;
+            case FanartArtistListViewKind.NormalTwoColumns:
+                SetNormalTwoColumns ();
+                break;
+            default:
+                var msg = "FanartArtistListViewKind enum value with no corresponding method was passed to SetView method";
+                Hyena.Log.Debug (msg);
+                throw new NotImplementedException (msg);
+            }
+
+            QueueDraw ();
+        }
+
         void OnNormalOneColumnSelected (object sender, EventArgs e)
         {
             Hyena.Log.Debug ("OnNormalTwoColumnsSelected");
@@ -141,9 +170,10 @@ namespace Banshee.Fanart.UI
             Hyena.Log.Debug ("OnNormalTwoColumnsSelected");
         }
 
-        void OnViewKindChanged (object o, ChangedArgs args)
+        private void OnViewKindChanged (object o, ChangedArgs args)
         {
-            Hyena.Log.Debug ("OnViewKindChanged");
+            var button = o as RadioAction;
+            SwitchToView ((FanartArtistListViewKind) button.Value);
         }
 
         private void SetNormalOneColumn () 
