@@ -50,9 +50,23 @@ namespace Banshee.Fanart.UI
 
         public FanartArtistListView () : base ()
         {
-            image_column_cell = new FanartArtistColumnCell ();
+            SetNormalOneColumn ();
+            //SetNormalTwoColumns ();
+        }
 
+        private void SetNormalOneColumn () 
+        {
+            image_column_cell = new FanartArtistColumnCell () { RenderNameWhenNoImage = true };
+            image_column = new Column ("Artist Image", image_column_cell, 1.0);
+            column_controller.Add (image_column);
+
+            ColumnController = column_controller;
+        }
+
+        private void SetNormalTwoColumns () 
+        {
             artist_name_column = new Column ("Artist", new ColumnCellText ("DisplayName", true), 0.65);
+            image_column_cell = new FanartArtistColumnCell () { RenderNameWhenNoImage = true };
             image_column = new Column ("Artist Image", image_column_cell, 0.35);
 
             column_controller.Add (artist_name_column);
