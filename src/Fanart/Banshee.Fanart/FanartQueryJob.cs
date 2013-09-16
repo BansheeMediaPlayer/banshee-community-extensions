@@ -146,12 +146,7 @@ namespace Banshee.Fanart
         bool SaveArtistImage (string uri, string artistMusicbrainzID) {
             var filename = FanartArtistImageSpec.CreateArtistImageFileName (artistMusicbrainzID);
 
-            if (SaveHttpStream (new Uri (uri), FanartArtistImageSpec.GetPath (filename), null)) {
-                // TODO: add code here
-                return true;
-            }
-            return false;
-
+            return SaveHttpStream (new Uri (uri), FanartArtistImageSpec.GetPath (filename), null);
         }
 
         private void SaveDbImageData (string artistMusicbrainzID, bool downloaded)
