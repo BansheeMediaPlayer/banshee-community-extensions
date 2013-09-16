@@ -151,19 +151,6 @@ namespace Banshee.Fanart
                 return true;
             }
             return false;
-            /*
-            string artwork_id = Track.ArtworkId;
-
-            if (SaveHttpStreamCover (new Uri (uri), artwork_id, null)) {
-                Log.Debug ("Downloaded cover art", artwork_id);
-                StreamTag tag = new StreamTag ();
-                tag.Name = CommonTags.AlbumCoverId;
-                tag.Value = artwork_id;
-
-                AddTag (tag);
-                return true;
-            }
-            */
 
         }
 

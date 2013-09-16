@@ -154,10 +154,6 @@ namespace Banshee.Fanart
                     }
                 }
 
-                // TODO: leave only final version
-                // this line is just to force update:
-                //job = new ArtistImageJob (DateTime.MinValue);
-                // final version:
                 job = new ArtistImageJob (last_scan);
 
                 job.Finished += delegate {
@@ -262,9 +258,6 @@ namespace Banshee.Fanart
         }
 
         #endregion
-
-        // public static readonly SchemaEntry<bool> EnabledSchema
-        // is skipped
     }
 }
 

@@ -50,11 +50,6 @@ namespace Banshee.Fanart
 
         public static string CreateArtistImageFileName (string artistMBDI)
         {
-            /*
-            if (IsArtistUnknown (artistMBDI)) {
-                return null;
-            }
-            */
             return String.Format ("artist-{0}", artistMBDI);
         }
 
