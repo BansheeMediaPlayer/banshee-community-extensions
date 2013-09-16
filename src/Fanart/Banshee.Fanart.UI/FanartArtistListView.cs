@@ -3,8 +3,12 @@
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
+//   Aaron Bockover <abockover@novell.com>
+//   Frank Ziegler <funtastix@googlemail.com>
 //
 // Copyright 2013 Tomasz Maczyński
+// Copyright (C) 2007 Novell, Inc.
+// Copyright (C) 2011 Frank Ziegler
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +32,12 @@ using Banshee.Collection.Gui;
 using Banshee.Collection;
 using Hyena.Data.Gui;
 using Banshee.Configuration;
+using Banshee.ServiceStack;
+using Banshee.Gui;
+using Gtk;
+using Banshee.I18n;
+using Hyena;
+using Banshee.Sources;
 
 namespace Banshee.Fanart.UI
 {
@@ -36,6 +46,25 @@ namespace Banshee.Fanart.UI
         private FanartArtistColumnCell image_column_cell;
         private Column image_column;
         private Column artist_name_column;
+
+        private InterfaceActionService action_service;
+        private ActionGroup viewKindActions;
+
+        private static string menu_xml = @"
+            <ui>
+              <menubar name=""MainMenu"">
+                <menu name=""ViewMenu"" action=""ViewMenuAction"">
+                  <placeholder name=""ViewMenuAdditions"">
+                    <menu name=""FanartViewKindMenu"" action=""FanartViewKindMenuAction"">
+                        <menuitem name=""FanartViewOneColumnKind"" action=""FanartViewOneColumnKindAction"" />
+                        <menuitem name=""FanartViewTwoColumnsKind"" action=""FanartViewTwoColumnsKindAction"" />
+                    </menu>
+                    <separator />
+                  </placeholder>
+                </menu>
+              </menubar>
+            </ui>
+        ";
 
         public static FanartArtistListViewKind ViewKind {
             get { 
@@ -50,8 +79,70 @@ namespace Banshee.Fanart.UI
 
         public FanartArtistListView () : base ()
         {
+            InstallPreferences ();
             SetNormalOneColumn ();
             //SetNormalTwoColumns ();
+        }
+
+        private void InstallPreferences ()
+        {
+            if (ServiceManager.Contains ("InterfaceActionService")) {
+                action_service = ServiceManager.Get<InterfaceActionService> ();
+
+                if (action_service.FindActionGroup ("ArtistGridView") == null) {
+                    viewKindActions = new ActionGroup ("ArtistGridView");
+
+                    viewKindActions.Add (new Gtk.Action("FanartViewKindMenuAction", "FanartViewKindMenuAction"));
+                    viewKindActions.Add (new RadioActionEntry [] {
+                        new RadioActionEntry ("FanartViewOneColumnKindAction", null,
+                                               "One column mode", null,
+                                               "Use one column mode...",
+                                               ViewKind == FanartArtistListViewKind.NormalOneColumn ? 1 : 0),
+
+                        new RadioActionEntry ("FanartViewTwoColumnsKindAction", null,
+                                               "Two columns mode", null,
+                                               "Use two columns mode...",
+                                               ViewKind == FanartArtistListViewKind.NormalTwoColumns ? 1 : 0)
+                    }, (int)ViewKind, OnViewKindChanged);
+
+                    action_service.AddActionGroup (viewKindActions);
+                    action_service.UIManager.AddUiFromString (menu_xml);
+                   
+                }
+            }
+            /*
+            ServiceManager.SourceManager.ActiveSourceChanged += delegate {
+                ThreadAssist.ProxyToMain (delegate {
+                    if (ServiceManager.SourceManager.ActiveSource is ITrackModelSource) {
+                        ITrackModelSource source = ServiceManager.SourceManager.ActiveSource as ITrackModelSource;
+                        action_service.FindAction("ArtistGridView.NormalOneColumn").Visible = source.ShowBrowser;
+                        action_service.FindAction("ArtistGridView.NormalOneColumn").Sensitive = source.ShowBrowser;
+                        action_service.FindAction("ArtistGridView.NormalTwoColumns").Visible = source.ShowBrowser;
+                        action_service.FindAction("ArtistGridView.NormalTwoColumns").Sensitive = source.ShowBrowser;
+                    } else {
+                        action_service.FindAction("ArtistGridView.NormalOneColumn").Visible = false;
+                        action_service.FindAction("ArtistGridView.NormalOneColumn").Sensitive = false;
+                        action_service.FindAction("ArtistGridView.NormalTwoColumns").Visible = false;
+                        action_service.FindAction("ArtistGridView.NormalTwoColumns").Sensitive = false;
+                    }
+                });
+            };
+            */
+        }
+
+        void OnNormalOneColumnSelected (object sender, EventArgs e)
+        {
+            Hyena.Log.Debug ("OnNormalTwoColumnsSelected");
+        }
+
+        void OnNormalTwoColumnsSelected (object sender, EventArgs e)
+        {
+            Hyena.Log.Debug ("OnNormalTwoColumnsSelected");
+        }
+
+        void OnViewKindChanged (object o, ChangedArgs args)
+        {
+            Hyena.Log.Debug ("OnViewKindChanged");
         }
 
         private void SetNormalOneColumn () 
