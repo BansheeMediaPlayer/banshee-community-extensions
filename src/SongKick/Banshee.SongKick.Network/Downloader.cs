@@ -33,15 +33,8 @@ namespace Banshee.SongKick.Network
 {
     public static class Downloader
     {
-        /**
-         * method for synchronic download of data
-         */
         public static string download(string uri)
         {
-            // System.Net.WebException: Error: NameResolutionFailure
-            // is rised in some cases with no apparent reason
-
-
             if (String.IsNullOrEmpty(uri))
             {
                 throw new ArgumentException("Specify uri of resource you want to download");
