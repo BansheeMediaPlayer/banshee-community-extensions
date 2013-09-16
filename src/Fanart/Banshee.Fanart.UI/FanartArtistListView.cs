@@ -162,8 +162,8 @@ namespace Banshee.Fanart.UI
 
         private void OnViewKindChanged (object o, ChangedArgs args)
         {
-            var button = o as RadioAction;
-            SwitchToView ((FanartArtistListViewKind) button.Value);
+            var action = o as RadioAction;
+            SwitchToView ((FanartArtistListViewKind) action.CurrentValue);
         }
 
         private void SetNormalOneColumn () 
