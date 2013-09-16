@@ -126,12 +126,6 @@ namespace Banshee.Fanart.UI
             }
         }
 
-        private Cairo.ImageSurface GetDefaultArtistImage (int image_size)
-        {
-            // TODO: improve image
-            return PixbufImageSurface.Create (IconThemeUtils.LoadIcon (image_size, "applications-multimedia"));
-        }
-
         public virtual int ComputeRowHeight (Widget w) {
             return 40;
         }
