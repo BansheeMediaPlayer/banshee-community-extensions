@@ -35,8 +35,9 @@ namespace Banshee.Fanart
             try {
                 var json = JsonObject.FromString (answer);
                 return new CorrectResults (json);
-            } catch (Exception e) { // TODO: make it more specyfic
+            } catch (Exception e) { 
                 Hyena.Log.Debug ("Could not construct CorrectResults object from retrieved string");
+                Hyena.Log.Exception (e);
                 return new IncorrectResults (e);
             }
         }
