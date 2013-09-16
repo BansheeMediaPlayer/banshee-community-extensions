@@ -29,17 +29,6 @@ namespace Banshee.SongKick
 {
     public static class SongKickCore
     {
-        private static Account account;
-        public static Account Account {
-            get {
-                if (account == null) {
-                    account = new Account ();
-                }
-                
-                return account;
-            }
-        }
-
         public static string APIKey {
             get { return "Qjqhc2hkfU3BaTx6"; }
         }

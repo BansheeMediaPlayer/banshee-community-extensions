@@ -79,7 +79,6 @@
   <ItemGroup>
     <Compile Include="Banshee.SongKick\SongKickSource.cs" />
     <Compile Include="Banshee.SongKick.Network\Downloader.cs" />
-    <Compile Include="Banshee.SongKick\Account.cs" />
     <Compile Include="Banshee.SongKick\SongKickCore.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\ResultsPage.cs" />
     <Compile Include="Banshee.SongKick.Recommendations\ResultsError.cs" />
