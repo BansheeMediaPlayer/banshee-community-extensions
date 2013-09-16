@@ -160,16 +160,6 @@ namespace Banshee.Fanart.UI
             QueueDraw ();
         }
 
-        void OnNormalOneColumnSelected (object sender, EventArgs e)
-        {
-            Hyena.Log.Debug ("OnNormalTwoColumnsSelected");
-        }
-
-        void OnNormalTwoColumnsSelected (object sender, EventArgs e)
-        {
-            Hyena.Log.Debug ("OnNormalTwoColumnsSelected");
-        }
-
         private void OnViewKindChanged (object o, ChangedArgs args)
         {
             var button = o as RadioAction;
