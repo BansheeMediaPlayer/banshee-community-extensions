@@ -68,10 +68,10 @@ namespace Banshee.Fanart.UI
 
         private static FanartArtistListViewKind ViewKind {
             get { 
-                return ListViewKindSchema.Get (); 
+                return (FanartArtistListViewKind)ListViewKindSchema.Get (); 
             }
             set {
-                ListViewKindSchema.Set (value);
+                ListViewKindSchema.Set ((int)value);
             }
         }
 
@@ -93,16 +93,19 @@ namespace Banshee.Fanart.UI
 
                     viewKindActions.Add (new Gtk.Action("FanartViewKindMenuAction", "FanartViewKindMenuAction"));
 
-                    viewKindActions.Add (new RadioActionEntry [] {
+                    var oneColumnAction = 
                         new RadioActionEntry ("FanartViewOneColumnKindAction", null,
-                                               "One column mode", null,
-                                               "Use one column mode...",
-                                               ViewKind == FanartArtistListViewKind.NormalOneColumn ? 1 : 0),
-
+                          "One column mode", null,
+                          "Use one column mode...",
+                          (int)FanartArtistListViewKind.NormalOneColumn);
+                    var twoColumnsAction = 
                         new RadioActionEntry ("FanartViewTwoColumnsKindAction", null,
-                                               "Two columns mode", null,
-                                               "Use two columns mode...",
-                                               ViewKind == FanartArtistListViewKind.NormalTwoColumns ? 1 : 0)
+                          "Two columns mode", null,
+                          "Use two columns mode...",
+                          (int)FanartArtistListViewKind.NormalTwoColumns);
+
+                    viewKindActions.Add (new RadioActionEntry [] {
+                        oneColumnAction, twoColumnsAction
                     }, (int)ViewKind, OnViewKindChanged);
 
                     action_service.AddActionGroup (viewKindActions);
@@ -163,7 +166,8 @@ namespace Banshee.Fanart.UI
         private void OnViewKindChanged (object o, ChangedArgs args)
         {
             var action = o as RadioAction;
-            SwitchToView ((FanartArtistListViewKind) action.CurrentValue);
+            ViewKind = (FanartArtistListViewKind)action.CurrentValue;
+            SwitchToView (ViewKind);
         }
 
         private void SetNormalOneColumn () 
@@ -197,9 +201,9 @@ namespace Banshee.Fanart.UI
             NormalTwoColumns,
         }
 
-        private static readonly SchemaEntry<FanartArtistListViewKind> ListViewKindSchema = new SchemaEntry<FanartArtistListViewKind> (
-            "player_window", "fanart_artist_listview_kind",
-            FanartArtistListViewKind.NormalOneColumn,
+        private static readonly SchemaEntry<int> ListViewKindSchema = new SchemaEntry<int> (
+            "player_window", "fanart_artist_listview_kind_int",
+            (int)FanartArtistListViewKind.NormalOneColumn,
             "Desired kind of FanartListView's appearance",
             "Desired kind of FanartListView's appearance"
             );
