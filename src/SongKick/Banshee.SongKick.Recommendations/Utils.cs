@@ -36,7 +36,9 @@ namespace Banshee.SongKick.Recommendations
 
             if (!succeded) 
             {
-                Hyena.Log.Warning(String.Format("TryGetValueAndLog failed to assign value. Message: {0}",logMsg));
+                Hyena.Log.Warning (String.Format (
+                    "TryGetValueAndLog failed to assign value. Message: {0}",
+                    logMsg));
             }
 
             return succeded;               
@@ -49,7 +51,7 @@ namespace Banshee.SongKick.Recommendations
                 return value;
             }
             catch (KeyNotFoundException) {
-                Hyena.Log.Warning(String.Format("GetValueAndLogOnFailure failed to get value. Message: {0}", logMsg));
+                Hyena.Log.Warning (String.Format ("GetValueAndLogOnFailure failed to get value. Message: {0}", logMsg));
                 return default(V);
             }                  
         }
@@ -110,7 +112,7 @@ namespace Banshee.SongKick.Recommendations
 
                     return (T)result;
                 } catch {
-                    Hyena.Log.Warning (String.Format("SongKick: Couldn't cast {0} ({1}) as {2} for key {3}", result, result.GetType (), typeof(T), key));
+                    Hyena.Log.Warning (String.Format ("SongKick: Couldn't cast {0} ({1}) as {2} for key {3}", result, result.GetType (), typeof(T), key));
                 }
             }
 

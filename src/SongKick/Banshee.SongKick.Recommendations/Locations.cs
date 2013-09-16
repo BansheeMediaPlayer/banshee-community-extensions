@@ -42,9 +42,9 @@ namespace Banshee.SongKick.Recommendations
         }
 
         public static ResultsPage<Location>.GetResultsDelegate GetLocationListResultsDelegate = 
-            new ResultsPage<Location>.GetResultsDelegate(GetLocation);
+            new ResultsPage<Location>.GetResultsDelegate (GetLocation);
 
-		public static Locations GetLocation(JsonObject jsonObject)
+		public static Locations GetLocation (JsonObject jsonObject)
         {
 			return new Locations (jsonObject as JsonObject);
         }

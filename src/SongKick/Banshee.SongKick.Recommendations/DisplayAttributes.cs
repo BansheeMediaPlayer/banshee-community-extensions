@@ -27,7 +27,7 @@ using System;
 
 namespace Banshee.SongKick.Recommendations
 {
-    [System.AttributeUsage(System.AttributeTargets.Field | System.AttributeTargets.Property)]
+    [System.AttributeUsage (System.AttributeTargets.Field | System.AttributeTargets.Property)]
     public class DisplayAttribute : System.Attribute
     {
         public string Name { get; private set;}
@@ -42,7 +42,7 @@ namespace Banshee.SongKick.Recommendations
         public enum DisplayType { Text, Hyperlink }
     }
 
-    [System.AttributeUsage(System.AttributeTargets.Field | System.AttributeTargets.Property)]
+    [System.AttributeUsage (System.AttributeTargets.Field | System.AttributeTargets.Property)]
     public class DefaultSortColumn : System.Attribute
     {
     }

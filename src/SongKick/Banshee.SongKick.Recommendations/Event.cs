@@ -35,16 +35,16 @@ namespace Banshee.SongKick.Recommendations
         //adding attribute below is useful during debugging:
         //[DisplayAttribute("ID", DisplayAttribute.DisplayType.Text)]
         public long Id { get; private set; }
-        [DisplayAttribute("Name", DisplayAttribute.DisplayType.Text)]
+        [DisplayAttribute ("Name", DisplayAttribute.DisplayType.Text)]
         public string DisplayName { get; private set; }
-        [DisplayAttribute("Date", DisplayAttribute.DisplayType.Text)]
+        [DisplayAttribute ("Date", DisplayAttribute.DisplayType.Text)]
         public DateTime StartDateTime { get; private set; }
-        [DisplayAttribute("Location", DisplayAttribute.DisplayType.Text)]
+        [DisplayAttribute ("Location", DisplayAttribute.DisplayType.Text)]
         public EventLocation Location { get; private set; }
-        [DisplayAttribute("Type", DisplayAttribute.DisplayType.Text)]
+        [DisplayAttribute ("Type", DisplayAttribute.DisplayType.Text)]
         public string Type { get; private set; }
         [DefaultSortColumn]
-        [DisplayAttribute("Popularity", DisplayAttribute.DisplayType.Text)]
+        [DisplayAttribute ("Popularity", DisplayAttribute.DisplayType.Text)]
         public double Popularity { get; private set; }
         public string Uri { get; private set; }
 
@@ -103,9 +103,9 @@ namespace Banshee.SongKick.Recommendations
             int IComparable.CompareTo(object y)
             {
                 if (y is EventLocation) {
-                    return (this as IComparable<EventLocation>).CompareTo(y as EventLocation);
+                    return (this as IComparable<EventLocation>).CompareTo (y as EventLocation);
                 } else {
-                    throw new InvalidOperationException("EventLocation can be Compared only to EventLocation");
+                    throw new InvalidOperationException ("EventLocation can be Compared only to EventLocation");
                 }
             }
 
@@ -121,9 +121,9 @@ namespace Banshee.SongKick.Recommendations
             int IComparer.Compare (object x, object y)
             {
                 if ((x is EventLocation) && (y is EventLocation)) {
-                    return (this as IComparer<EventLocation>).Compare(x as EventLocation, y as EventLocation);
+                    return (this as IComparer<EventLocation>).Compare (x as EventLocation, y as EventLocation);
                 } else {
-                    throw new InvalidOperationException("EventLocation can be Compared only to EventLocation");
+                    throw new InvalidOperationException ("EventLocation can be Compared only to EventLocation");
                 }
             }
 

@@ -53,8 +53,8 @@ namespace Banshee.SongKick.Search
 
     public class EventsByArtistSearch : Search<Event> {
 
-        public EventsByArtistSearch() 
-            : base()
+        public EventsByArtistSearch () 
+            : base ()
         {
         }
 
@@ -86,8 +86,8 @@ namespace Banshee.SongKick.Search
 
     public class EventsByLocationSearch : Search<Event> {
 
-        public EventsByLocationSearch() 
-            : base()
+        public EventsByLocationSearch () 
+            : base ()
         {
         }
 
@@ -119,8 +119,8 @@ namespace Banshee.SongKick.Search
 
     public class LocationSearch : Search<Location> {
 
-        public LocationSearch() 
-            : base()
+        public LocationSearch () 
+            : base ()
         {
         }
 
@@ -143,8 +143,8 @@ namespace Banshee.SongKick.Search
 
     public class ArtistSearch : Search<Artist> {
 
-        public ArtistSearch() 
-            : base()
+        public ArtistSearch () 
+            : base ()
         {
         }
 

@@ -31,7 +31,7 @@ namespace Banshee.SongKick.Recommendations
     public class Artist : IResult
     {
         public long Id { get; private set; }
-        [DisplayAttribute("Artist", DisplayAttribute.DisplayType.Text)]
+        [DisplayAttribute ("Artist", DisplayAttribute.DisplayType.Text)]
         public string DisplayName { get; private set; }
 
         public Artist (JsonObject jsonObject)

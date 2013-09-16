@@ -58,7 +58,7 @@ namespace Banshee.SongKick.Recommendations
                     this.status = resultsPage.Get <String> ("status");
                     if (IsStatusOk) {
                         // TODO: refactor
-                        var hasAnyResults = resultsPage.Get <int>("totalEntries") != 0;
+                        var hasAnyResults = resultsPage.Get <int> ("totalEntries") != 0;
                         if (hasAnyResults) {
                             JsonObject resultsJson = resultsPage.Get <JsonObject> ("results");
                             if (resultsJson != null)  {
@@ -68,14 +68,14 @@ namespace Banshee.SongKick.Recommendations
                             }
                         }
                         else {
-                            this.results = new Results<T>();
+                            this.results = new Results<T> ();
                         }
                     }
 
                     var errorJson = resultsPage.Get <JsonObject> ("error");
                     if (errorJson != null)
                     {
-                        this.error = new ResultsError(errorJson);
+                        this.error = new ResultsError (errorJson);
                     }
 
                     this.IsWellFormed = true;
@@ -83,7 +83,7 @@ namespace Banshee.SongKick.Recommendations
                     Hyena.Log.DebugException (e);
                 }
             } catch (ApplicationException e) {
-                Hyena.Log.DebugException(e);
+                Hyena.Log.DebugException (e);
             }
         }
     }

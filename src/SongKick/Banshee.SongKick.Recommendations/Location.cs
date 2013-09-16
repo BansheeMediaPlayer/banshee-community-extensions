@@ -31,11 +31,11 @@ namespace Banshee.SongKick.Recommendations
     public class Location : IResult
     {
         public long Id { get; private set; }
-        [DisplayAttribute("City", DisplayAttribute.DisplayType.Text)]
+        [DisplayAttribute ("City", DisplayAttribute.DisplayType.Text)]
         public string CityName { get; private set; }
-        [DisplayAttribute("Country", DisplayAttribute.DisplayType.Text)]
+        [DisplayAttribute ("Country", DisplayAttribute.DisplayType.Text)]
         public string CityCountryName { get; private set; }
-        [DisplayAttribute("State", DisplayAttribute.DisplayType.Text)]
+        [DisplayAttribute ("State", DisplayAttribute.DisplayType.Text)]
         public string CityStateName { get; private set; }
 
         public string Uri { get; private set; }
@@ -72,7 +72,7 @@ namespace Banshee.SongKick.Recommendations
             Uri = metroArea.Get <String> ("uri");
 
             CityName = city.Get <String> ("displayName");
-            CityCountryName = city.GetObjectDisplayName("country");
+            CityCountryName = city.GetObjectDisplayName ("country");
             CityStateName = city.GetObjectDisplayName ("state");
         }
 

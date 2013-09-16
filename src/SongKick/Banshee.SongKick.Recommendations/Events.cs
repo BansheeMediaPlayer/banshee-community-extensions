@@ -37,14 +37,14 @@ namespace Banshee.SongKick.Recommendations
 
             foreach (var eventJsonObj in eventJsonObjs) 
             {
-                this.Add (new Event(eventJsonObj as JsonObject));
+                this.Add (new Event (eventJsonObj as JsonObject));
             }
         }
 
         public static ResultsPage<Event>.GetResultsDelegate GetMusicEventListResultsDelegate = 
-            new ResultsPage<Event>.GetResultsDelegate(GetEvents);
+            new ResultsPage<Event>.GetResultsDelegate (GetEvents);
 
-        public static Events GetEvents(JsonObject jsonObject)
+        public static Events GetEvents (JsonObject jsonObject)
         {
             return new Events (jsonObject as JsonObject);
         }

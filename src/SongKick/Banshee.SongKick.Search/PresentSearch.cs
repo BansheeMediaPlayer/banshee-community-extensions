@@ -28,6 +28,6 @@ using Banshee.SongKick.Recommendations;
 
 namespace Banshee.SongKick.Search
 {
-    public delegate void PresentSearch<T>(Search<T> search) where T : IResult;
+    public delegate void PresentSearch<T> (Search<T> search) where T : IResult;
 }
 

@@ -35,7 +35,7 @@ namespace Banshee.SongKick.Search
     public class RecommendationProcessor
     {
         private Queue<RecommendedArtist> artist_queue = 
-            new Queue<RecommendedArtist>();
+            new Queue<RecommendedArtist> ();
 
         public AddSongKickInfo AddSongKickInfo { get; private set; }
 
@@ -44,7 +44,7 @@ namespace Banshee.SongKick.Search
             AddSongKickInfo = addSongKickInfo;
         }
 
-        public void EnqueueArtists(IEnumerable<RecommendedArtist> artists)
+        public void EnqueueArtists (IEnumerable<RecommendedArtist> artists)
         {
             lock (artist_queue) {
                 foreach (var artist in artists) {
@@ -53,7 +53,7 @@ namespace Banshee.SongKick.Search
             }
         }
 
-        public void ProcessAll() {
+        public void ProcessAll () {
             const int numberOfThreads = 3;
             for (int i = 0; i < numberOfThreads; i++) {
                 System.Threading.Thread thread = 
@@ -64,7 +64,7 @@ namespace Banshee.SongKick.Search
             }
         }
 
-        private void ProcessAllOneThread()
+        private void ProcessAllOneThread ()
         {
             try {
                 while (artist_queue.Count > 0) {
@@ -83,10 +83,10 @@ namespace Banshee.SongKick.Search
             }
         }
 
-        private void Process(RecommendedArtist artist)
+        private void Process (RecommendedArtist artist)
         {
-            var search = new EventsByArtistSearch();
-            search.GetResultsPage (new Banshee.SongKick.Search.Query(null, artist.Name));
+            var search = new EventsByArtistSearch ();
+            search.GetResultsPage (new Banshee.SongKick.Search.Query (null, artist.Name));
             AddSongKickInfo (artist, search.ResultsPage);
         }
     }

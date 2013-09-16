@@ -40,7 +40,7 @@ namespace Banshee.SongKick.UI
 
         private IList<RecommendedArtist> recommended_artists;
         private SortableMemoryListModel<RecommendedArtist> recommended_artist_model = 
-            new SortableMemoryListModel<RecommendedArtist>();
+            new SortableMemoryListModel<RecommendedArtist> ();
 
         public event RowActivatedHandler<RecommendedArtist> RowActivated {
             add { recommended_artist_search_view.RowActivated += value; }
@@ -51,8 +51,8 @@ namespace Banshee.SongKick.UI
         {
             this.Spacing = 2;
 
-            this.recommended_artist_search_view = new SearchView<RecommendedArtist> 
-                (this.recommended_artist_model);
+            this.recommended_artist_search_view = 
+                new SearchView<RecommendedArtist> (this.recommended_artist_model);
 
             this.PackStart (this.recommended_artist_search_view, true, true, 2);
         }

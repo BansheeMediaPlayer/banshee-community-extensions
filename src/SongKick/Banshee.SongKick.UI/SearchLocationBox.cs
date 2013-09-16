@@ -31,7 +31,7 @@ namespace Banshee.SongKick.UI
 {
     public class SearchLocationBox : SearchBox<Location>
     {
-        public SearchLocationBox (Search<Location> search) : base(search)
+        public SearchLocationBox (Search<Location> search) : base (search)
         {
         }
     }

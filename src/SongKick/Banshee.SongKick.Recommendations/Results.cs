@@ -33,7 +33,7 @@ namespace Banshee.SongKick.Recommendations
     {
         private IList<T> elements;
 
-        internal Results() {
+        internal Results () {
             elements = new List<T>();
         }
 
