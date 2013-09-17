@@ -65,7 +65,6 @@ namespace Banshee.Fanart.UI
             int spacing = 0;
             int thumb_height = (int) (orginalImageHeight * scale);
             int thumb_width = (int) (originalImageWidth * scale);
-            int image_size = thumb_height - (2 * spacing);
 
             var musicBrainzID = GetArtistsMbid (artistInfo);
             Cairo.ImageSurface image;
