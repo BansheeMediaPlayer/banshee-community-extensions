@@ -23,7 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
+
 using Hyena.Json;
 
 namespace Banshee.Fanart
@@ -32,14 +32,15 @@ namespace Banshee.Fanart
     {
         public static Results FromString (string answer) 
         {
-            try {
-                var json = JsonObject.FromString (answer);
-                return new CorrectResults (json);
-            } catch (Exception e) { 
-                Hyena.Log.Debug ("Could not construct CorrectResults object from retrieved string");
-                Hyena.Log.Exception (e);
-                return new IncorrectResults (e);
+            var json = JsonObject.FromString (answer);
+            if (json == null) {
+                if (answer != IncorrectResults.LogoNotFoundResponse) {
+                    Hyena.Log.Warning ("Could not convert response to JSON: " + answer);
+                }
+                return new IncorrectResults (answer);
             }
+
+            return new CorrectResults (json);
         }
     }
 }

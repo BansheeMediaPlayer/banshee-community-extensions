@@ -50,6 +50,9 @@ namespace Banshee.Fanart
 
         public CorrectResults (JsonObject results)
         {
+            if (results == null) {
+                throw new ArgumentNullException ("results");
+            }
             if (results.Keys.Count != 0) {
                 Artist = results.Keys.First ();
                 var artistObject = results.Get<JsonObject> (Artist);
