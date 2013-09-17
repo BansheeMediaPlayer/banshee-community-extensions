@@ -36,6 +36,8 @@ using Banshee.Gui;
 using Banshee.Fanart.UI;
 using Banshee.Collection.Gui;
 using Banshee.Collection;
+using Mono.Addins;
+using System.Linq;
 
 namespace Banshee.Fanart
 {
@@ -86,6 +88,27 @@ namespace Banshee.Fanart
 
             if (!ServiceStartup ()) {
                 ServiceManager.SourceManager.SourceAdded += OnSourceAdded;
+            }
+
+            Mono.Addins.AddinManager.ExtensionChanged += OnExtensionChanged;
+
+        }
+
+        void OnExtensionChanged (object sender, ExtensionEventArgs args)
+        {
+            var addinEngine = sender as AddinEngine;
+            if (addinEngine != null && 
+                addinEngine.CurrentAddin.Id == "Banshee.Fanart") {
+                    var addins = AddinManager.Registry.GetAddins ();
+                    var isEnabled = addins.Where (
+                    a => a.LocalId == "Banshee.Fanart" && a.Enabled)
+                    .Count () > 0;
+
+                if (!isEnabled) {
+                    Hyena.Log.Debug ("Fanart extension is being disabled, performing cleanup");
+                    OnDisabled ();
+                }
+
             }
         }
 
@@ -249,6 +272,11 @@ namespace Banshee.Fanart
             ServiceManager.SourceManager.MusicLibrary.TracksDeleted -= OnTracksDeleted;
 
             disposed = true;
+        }
+
+        private void OnDisabled ()
+        {
+            // TODO: delete db tables and cache entries
         }
 
         #region IService implementation
