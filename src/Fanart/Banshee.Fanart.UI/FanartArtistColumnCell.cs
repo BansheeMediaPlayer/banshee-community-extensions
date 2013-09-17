@@ -114,7 +114,7 @@ namespace Banshee.Fanart.UI
                     int y = 15;
                     context.Context.MoveTo (x, y);
 
-                    layout.FontDescription.Weight = Pango.Weight.Bold;
+                    layout.FontDescription.Weight = Pango.Weight.Normal;
                     layout.FontDescription.Size = old_size;
                     layout.FontDescription.Style = Pango.Style.Normal;
 
