@@ -224,15 +224,15 @@ namespace Banshee.Fanart
             }
         }
 
-        // TODO: update:
-        /*
-        private static HyenaSqliteCommand delete_query = new HyenaSqliteCommand (
-            "DELETE FROM ArtistImageDownloads WHERE ArtistID NOT IN (SELECT ArtistID FROM CoreArtists)");
-        */
+        private static HyenaSqliteCommand deleteQuery = new HyenaSqliteCommand (
+            "DELETE FROM ArtistMusicBrainz WHERE ArtistName NOT IN (SELECT Name FROM CoreArtists)");
+        private static HyenaSqliteCommand deleteQuery2 = new HyenaSqliteCommand (
+            "DELETE FROM ArtistImageDownloads WHERE MusicBrainzID NOT IN (SELECT MusicBrainzID FROM CoreArtists UNION SELECT MusicBrainzID FROM ArtistMusicBrainz)");
 
         private void OnTracksDeleted (Source sender, TrackEventArgs args)
         {
-            // ServiceManager.DbConnection.Execute (delete_query);
+            ServiceManager.DbConnection.Execute (deleteQuery);
+            ServiceManager.DbConnection.Execute (deleteQuery2);
         }
 
         public void Dispose ()
