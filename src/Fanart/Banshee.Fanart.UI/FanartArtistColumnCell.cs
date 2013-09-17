@@ -105,7 +105,6 @@ namespace Banshee.Fanart.UI
 
                     layout.Width = (int)(1.5 * 400.0 * 0.22 * Pango.Scale.PangoScale); // text can take at most 1.5 times image width
                     layout.Ellipsize = Pango.EllipsizeMode.End;
-                    layout.FontDescription.Weight = Pango.Weight.Bold;
 
                     int old_size = layout.FontDescription.Size + 1;
 
