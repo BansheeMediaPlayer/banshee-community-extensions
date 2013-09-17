@@ -131,7 +131,7 @@ namespace Banshee.Fanart
                             return false;
                         }
                     } catch (Exception e) {
-                        Hyena.Log.Debug (String.Format ("Could not download image for {0}, bacause of exception {1}", 
+                        Hyena.Log.Debug (String.Format ("Could not download image for {0}, because of exception {1}", 
                             artistMusicbrainzID, e));
                     }
                 }
