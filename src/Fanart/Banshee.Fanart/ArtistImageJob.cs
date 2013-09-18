@@ -146,7 +146,6 @@ namespace Banshee.Fanart
 
             Status = String.Format (Catalog.GetString ("{0} - {1}"), track.ArtistName, track.AlbumTitle);
             FetchForTrack (track);
-            // throw new NotImplementedException ();
         }
 
         private void FetchForTrack (DatabaseTrackInfo track)
