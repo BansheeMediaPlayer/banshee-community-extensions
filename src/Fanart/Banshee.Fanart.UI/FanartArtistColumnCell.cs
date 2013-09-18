@@ -99,29 +99,29 @@ namespace Banshee.Fanart.UI
                     thumb_width, thumb_height, 
                     has_border, context.Theme.Context.Radius);
             } else {
-                if (RenderNameWhenNoImage) {
-                    Cairo.Color text_color = context.Theme.Colors.GetWidgetColor (GtkColorClass.Text, state);
-                    Pango.Layout layout = context.Layout;
+                RenderArtistText (artistInfo.DisplayName, context, state);
+            }
+        }
 
-                    layout.Width = (int)(1.5 * 400.0 * 0.22 * Pango.Scale.PangoScale); // text can take at most 1.5 times image width
-                    layout.Ellipsize = Pango.EllipsizeMode.End;
-
-                    int old_size = layout.FontDescription.Size + 1;
-
-                    layout.SetText (artistInfo.DisplayName);
-
-                    int x = 5;
-                    int y = 15;
-                    context.Context.MoveTo (x, y);
-
-                    layout.FontDescription.Weight = Pango.Weight.Normal;
-                    layout.FontDescription.Size = old_size;
-                    layout.FontDescription.Style = Pango.Style.Normal;
-
-                    text_color.A = 1;
-                    context.Context.Color = text_color;
-                    PangoCairoHelper.ShowLayout (context.Context, layout);
-                }
+        private void RenderArtistText (string name, CellContext context, StateType state)
+        {
+            if (RenderNameWhenNoImage) {
+                Cairo.Color text_color = context.Theme.Colors.GetWidgetColor (GtkColorClass.Text, state);
+                Pango.Layout layout = context.Layout;
+                layout.Width = (int)(1.5 * 400.0 * 0.22 * Pango.Scale.PangoScale);
+                // text can take at most 1.5 times image width
+                layout.Ellipsize = Pango.EllipsizeMode.End;
+                int old_size = layout.FontDescription.Size + 1;
+                layout.SetText (name);
+                int x = 5;
+                int y = 15;
+                context.Context.MoveTo (x, y);
+                layout.FontDescription.Weight = Pango.Weight.Normal;
+                layout.FontDescription.Size = old_size;
+                layout.FontDescription.Style = Pango.Style.Normal;
+                text_color.A = 1;
+                context.Context.Color = text_color;
+                PangoCairoHelper.ShowLayout (context.Context, layout);
             }
         }
 
