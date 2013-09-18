@@ -35,12 +35,6 @@ namespace Banshee.Fanart
 {
     public class FanartArtistImageSpec
     {
-        // TODO:
-        // maybe creating $XDG_CACHE_HOME/.cache/media-fanart-extension
-        // and using:
-        // private static string root_path = Path.Combine (XdgBaseDirectorySpec.GetUserDirectory (
-        //      "XDG_CACHE_HOME", ".cache"),  "media-fanart-extension");
-        // is a better solution
         private static string root_path = Path.Combine (XdgBaseDirectorySpec.GetUserDirectory (
             "XDG_CACHE_HOME", ".cache"),  "media-art");
 
