@@ -106,20 +106,24 @@ namespace Banshee.Fanart.UI
         private void RenderArtistText (string name, double cellWidth, CellContext context, StateType state)
         {
             if (RenderNameWhenNoImage) {
-                Cairo.Color text_color = context.Theme.Colors.GetWidgetColor (GtkColorClass.Text, state);
                 Pango.Layout layout = context.Layout;
+                Cairo.Color text_color = context.Theme.Colors.GetWidgetColor (GtkColorClass.Text, state);
+
                 layout.Width = Pango.Units.FromPixels((int) cellWidth);
                 layout.Ellipsize = Pango.EllipsizeMode.End;
-                int old_size = layout.FontDescription.Size + 1;
+
                 layout.SetText (name);
+
                 int x = 5;
                 int y = 15;
                 context.Context.MoveTo (x, y);
+
                 layout.FontDescription.Weight = Pango.Weight.Normal;
-                layout.FontDescription.Size = old_size;
+                layout.FontDescription.Size = layout.FontDescription.Size + 1;
                 layout.FontDescription.Style = Pango.Style.Normal;
-                text_color.A = 1;
                 context.Context.Color = text_color;
+                text_color.A = 1;
+
                 PangoCairoHelper.ShowLayout (context.Context, layout);
             }
         }
