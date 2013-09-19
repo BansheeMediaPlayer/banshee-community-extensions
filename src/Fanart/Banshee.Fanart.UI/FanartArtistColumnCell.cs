@@ -108,8 +108,7 @@ namespace Banshee.Fanart.UI
             if (RenderNameWhenNoImage) {
                 Cairo.Color text_color = context.Theme.Colors.GetWidgetColor (GtkColorClass.Text, state);
                 Pango.Layout layout = context.Layout;
-                layout.Width = (int)(1.5 * 400.0 * 0.22 * Pango.Scale.PangoScale);
-                // text can take at most 1.5 times image width
+                // layout.Width = Int32.MaxValue;
                 layout.Ellipsize = Pango.EllipsizeMode.End;
                 int old_size = layout.FontDescription.Size + 1;
                 layout.SetText (name);
