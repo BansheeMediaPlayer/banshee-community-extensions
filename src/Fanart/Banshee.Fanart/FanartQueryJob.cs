@@ -128,21 +128,20 @@ namespace Banshee.Fanart
 
         private bool Save (string artistMusicbrainzID, Results results)
         {
+            var downloaded = false;
             var correctResuts = results as CorrectResults;
             if (correctResuts != null) {
                 var bestImageInfo = correctResuts.BestArtistImageInfo;
                 if (bestImageInfo != null) {
                     Hyena.Log.Debug ("FanartQueryJob: Artist image should be downloaded");
                     SaveArtistImage (bestImageInfo.Url, artistMusicbrainzID);
-                    var downloaded = true;
-                    SaveDbImageData (artistMusicbrainzID, downloaded);
+                    downloaded = true;
                     /*
                     var dbTrack = Track as DatabaseTrackInfo;
                     if (dbTrack != null) {
                     dbTrack.ArtistMusicBrainzId = artistMusicbrainzID;
                     }
                     */
-                    return true;
                 }
                 else {
                     Hyena.Log.Debug ("FanartQueryJob: No artist image was found");
@@ -151,7 +150,9 @@ namespace Banshee.Fanart
             else {
                 Hyena.Log.Debug ("FanartQueryJob: Results were incorrect");
             }
-            return false;
+
+            SaveDbImageData (artistMusicbrainzID, downloaded);
+            return downloaded;
         }
 
         bool SaveArtistImage (string uri, string artistMusicbrainzID) {
