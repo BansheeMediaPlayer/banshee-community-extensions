@@ -127,7 +127,7 @@ namespace Banshee.Fanart
                                 Hyena.Log.Debug ("FanartQueryJob: No artist image was found");
                             }
                         } else {
-                            Hyena.Log.Debug ("FanartQueryJob: Results were incrrect");
+                            Hyena.Log.Debug ("FanartQueryJob: Results were incorrect");
                             return false;
                         }
                     } catch (Exception e) {
