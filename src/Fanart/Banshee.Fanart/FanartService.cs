@@ -25,6 +25,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using Banshee.ServiceStack;
 using Hyena;
@@ -45,6 +46,7 @@ namespace Banshee.Fanart
     {
         private bool disposed;
         private ArtistImageJob job;
+        const string ExtensionId = "Banshee.Fanart"; // have this in sync with Fanart.addin.xml's <Addin id> attribute
 
         private bool shouldRestoreDefaultViews = false;
         private TrackFilterListView<ArtistInfo> oldArtistView;
@@ -97,18 +99,14 @@ namespace Banshee.Fanart
         void OnExtensionChanged (object sender, ExtensionEventArgs args)
         {
             var addinEngine = sender as AddinEngine;
-            if (addinEngine != null && 
-                addinEngine.CurrentAddin.Id == "Banshee.Fanart") {
-                    var addins = AddinManager.Registry.GetAddins ();
-                    var isEnabled = addins.Where (
-                    a => a.LocalId == "Banshee.Fanart" && a.Enabled)
-                    .Count () > 0;
+            if (addinEngine != null && addinEngine.CurrentAddin.Id == ExtensionId) {
+                var addins = AddinManager.Registry.GetAddins ();
+                var isEnabled = addins.Any (a => a.LocalId == ExtensionId && a.Enabled);
 
                 if (!isEnabled) {
                     Hyena.Log.Debug ("Fanart extension is being disabled, performing cleanup");
                     OnDisabled ();
                 }
-
             }
         }
 
