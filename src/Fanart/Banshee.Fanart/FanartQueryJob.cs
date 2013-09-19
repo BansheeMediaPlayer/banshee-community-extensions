@@ -103,33 +103,8 @@ namespace Banshee.Fanart
                     try {
                         Hyena.Log.Debug (String.Format("FanartQueryJob : Retrieving artist image for MBId={0}", artistMusicbrainzID));
 
-                        var fanartDownloader = new FanartDownloader (FanartCore.ApiKey);
-                        var answer = fanartDownloader.GetFanartArtistPage (artistMusicbrainzID);
-                        var results = Results.FromString (answer);
+                        return FanartDownload (artistMusicbrainzID);
 
-                        var correctResuts = results as CorrectResults;
-                        if (correctResuts != null) {
-                            var bestImageInfo = correctResuts.BestArtistImageInfo;
-                            if (bestImageInfo != null) {
-                                Hyena.Log.Debug ("FanartQueryJob: Artist image should be downloaded");
-                                SaveArtistImage (bestImageInfo.Url, artistMusicbrainzID);
-                                var downloaded = true;
-                                SaveDbImageData (artistMusicbrainzID, downloaded);
-                                /*
-                                var dbTrack = Track as DatabaseTrackInfo;
-                                if (dbTrack != null) {
-                                    dbTrack.ArtistMusicBrainzId = artistMusicbrainzID;
-                                }
-                                */
-
-                                return true;
-                            } else {
-                                Hyena.Log.Debug ("FanartQueryJob: No artist image was found");
-                            }
-                        } else {
-                            Hyena.Log.Debug ("FanartQueryJob: Results were incorrect");
-                            return false;
-                        }
                     } catch (Exception e) {
                         Hyena.Log.Debug (String.Format ("Could not download image for {0}, because of exception {1}", 
                             artistMusicbrainzID, e));
@@ -139,6 +114,42 @@ namespace Banshee.Fanart
 
             } else {
                 Hyena.Log.Debug ("Fanart: dbtrack info is null in FanartQueryJob");
+            }
+            return false;
+        }
+
+        private bool FanartDownload (string artistMusicbrainzID)
+        {
+            var fanartDownloader = new FanartDownloader (FanartCore.ApiKey);
+            var answer = fanartDownloader.GetFanartArtistPage (artistMusicbrainzID);
+            var results = Results.FromString (answer);
+            return Save (artistMusicbrainzID, results);
+        }
+
+        private bool Save (string artistMusicbrainzID, Results results)
+        {
+            var correctResuts = results as CorrectResults;
+            if (correctResuts != null) {
+                var bestImageInfo = correctResuts.BestArtistImageInfo;
+                if (bestImageInfo != null) {
+                    Hyena.Log.Debug ("FanartQueryJob: Artist image should be downloaded");
+                    SaveArtistImage (bestImageInfo.Url, artistMusicbrainzID);
+                    var downloaded = true;
+                    SaveDbImageData (artistMusicbrainzID, downloaded);
+                    /*
+                    var dbTrack = Track as DatabaseTrackInfo;
+                    if (dbTrack != null) {
+                    dbTrack.ArtistMusicBrainzId = artistMusicbrainzID;
+                    }
+                    */
+                    return true;
+                }
+                else {
+                    Hyena.Log.Debug ("FanartQueryJob: No artist image was found");
+                }
+            }
+            else {
+                Hyena.Log.Debug ("FanartQueryJob: Results were incorrect");
             }
             return false;
         }
