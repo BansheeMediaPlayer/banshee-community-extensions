@@ -30,30 +30,6 @@ namespace Utils
 {
     public static class Utils
     {
-        public static bool TryGetValueAndLog<K, V> (this IDictionary<K, V> dict, K key, out V value, string logMsg)
-        {
-            bool succeded = dict.TryGetValue (key, out value);
-
-            if (!succeded) 
-            {
-                Hyena.Log.Warning(String.Format("TryGetValueAndLog failed to assign value. Message: {0}",logMsg));
-            }
-
-            return succeded;               
-        }
-
-        public static V GetValueAndLogOnfFailure<K, V> (this IDictionary<K, V> dict, K key, string logMsg)
-        {
-            try {
-                V value = dict[key];
-                return value;
-            }
-            catch (KeyNotFoundException) {
-                Hyena.Log.Warning(String.Format("GetValueAndLogOnFailure failed to get value. Message: {0}", logMsg));
-                return default(V);
-            }                  
-        }
-
         public static T Get<T> (this IDictionary<string, object> item, string key)
         {
             return item.Get <T> (key, default(T));
