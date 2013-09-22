@@ -47,7 +47,16 @@ namespace Banshee.Fanart
     {
         private bool disposed;
         private ArtistImageJob job;
-        const string ExtensionId = "Banshee.Fanart"; // have this in sync with Fanart.addin.xml's <Addin id> attribute
+
+        private string extensionId = null;
+        string ExtensionId {
+            get {
+                if (extensionId == null) {
+                    extensionId = Mono.Addins.AddinManager.CurrentAddin.Id; 
+                }
+                return extensionId;
+            }
+        }
 
         private bool shouldRestoreDefaultViews = false;
         private TrackFilterListView<ArtistInfo> oldArtistView;

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- NOTE: please have the Addin->id attribute in sync with FanartService.ExtensionId field -->
 <Addin 
     id="Banshee.Fanart"
     version="1.0"
