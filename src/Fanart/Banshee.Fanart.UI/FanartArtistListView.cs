@@ -57,7 +57,7 @@ namespace Banshee.Fanart.UI
                   <placeholder name=""ViewMenuAdditions"">
                     <menu name=""FanartViewKindMenu"" action=""FanartViewKindMenuAction"">
                         <menuitem name=""FanartViewOneColumnKind"" action=""FanartViewOneColumnKindAction"" />
-                        <menuitem name=""FanartViewTwoColumnsKind"" action=""FanartViewTwoColumnsKindAction"" />
+                        <menuitem name=""FanartViewTwoColumnKind"" action=""FanartViewTwoColumnKindAction"" />
                     </menu>
                     <separator />
                   </placeholder>
@@ -96,16 +96,16 @@ namespace Banshee.Fanart.UI
                     var oneColumnAction = 
                         new RadioActionEntry ("FanartViewOneColumnKindAction", null,
                           "One column mode", null,
-                          "Use one column mode...",
+                          "Use one column mode.",
                           (int)FanartArtistListViewKind.NormalOneColumn);
-                    var twoColumnsAction = 
-                        new RadioActionEntry ("FanartViewTwoColumnsKindAction", null,
-                          "Two columns mode", null,
-                          "Use two columns mode...",
-                          (int)FanartArtistListViewKind.NormalTwoColumns);
+                    var twoColumnAction = 
+                        new RadioActionEntry ("FanartViewTwoColumnKindAction", null,
+                          "Two column mode", null,
+                          "Use two column mode.",
+                          (int)FanartArtistListViewKind.NormalTwoColumn);
 
                     viewKindActions.Add (new RadioActionEntry [] {
-                        oneColumnAction, twoColumnsAction
+                        oneColumnAction, twoColumnAction
                     }, (int)ViewKind, OnViewKindChanged);
 
                     action_service.AddActionGroup (viewKindActions);
@@ -120,13 +120,13 @@ namespace Banshee.Fanart.UI
                         ITrackModelSource source = ServiceManager.SourceManager.ActiveSource as ITrackModelSource;
                         action_service.FindAction("ArtistGridView.FanartViewOneColumnKindAction").Visible = source.ShowBrowser;
                         action_service.FindAction("ArtistGridView.FanartViewOneColumnKindAction").Sensitive = source.ShowBrowser;
-                        action_service.FindAction("ArtistGridView.FanartViewTwoColumnsKindAction").Visible = source.ShowBrowser;
-                        action_service.FindAction("ArtistGridView.FanartViewTwoColumnsKindAction").Sensitive = source.ShowBrowser;
+                        action_service.FindAction("ArtistGridView.FanartViewTwoColumnKindAction").Visible = source.ShowBrowser;
+                        action_service.FindAction("ArtistGridView.FanartViewTwoColumnKindAction").Sensitive = source.ShowBrowser;
                     } else {
                         action_service.FindAction("ArtistGridView.FanartViewOneColumnKindAction").Visible = false;
                         action_service.FindAction("ArtistGridView.FanartViewOneColumnKindAction").Sensitive = false;
-                        action_service.FindAction("ArtistGridView.FanartViewTwoColumnsKindAction").Visible = false;
-                        action_service.FindAction("ArtistGridView.FanartViewTwoColumnsKindAction").Sensitive = false;
+                        action_service.FindAction("ArtistGridView.FanartViewTwoColumnKindAction").Visible = false;
+                        action_service.FindAction("ArtistGridView.FanartViewTwoColumnKindAction").Sensitive = false;
                     }
                 });
             };
@@ -151,7 +151,7 @@ namespace Banshee.Fanart.UI
             case FanartArtistListViewKind.NormalOneColumn:
                 SetNormalOneColumn ();
                 break;
-            case FanartArtistListViewKind.NormalTwoColumns:
+            case FanartArtistListViewKind.NormalTwoColumn:
                 SetNormalTwoColumns ();
                 break;
             default:
@@ -198,7 +198,7 @@ namespace Banshee.Fanart.UI
 
         public enum FanartArtistListViewKind {
             NormalOneColumn,
-            NormalTwoColumns,
+            NormalTwoColumn,
         }
 
         private static readonly SchemaEntry<int> ListViewKindSchema = new SchemaEntry<int> (
