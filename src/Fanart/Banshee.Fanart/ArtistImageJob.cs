@@ -40,9 +40,7 @@ namespace Banshee.Fanart
     public class ArtistImageJob : DbIteratorJob
     {
         private DateTime last_scan = DateTime.MinValue;
-        // TODO: change it back:
         private TimeSpan retry_every = TimeSpan.FromDays (7);
-        // private TimeSpan retry_every = TimeSpan.FromSeconds(1);
 
         public ArtistImageJob (DateTime lastScan)  : base ("Downloading Artists' Images")
         {
