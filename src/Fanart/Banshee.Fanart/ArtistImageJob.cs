@@ -152,9 +152,7 @@ namespace Banshee.Fanart
         {
             bool save = true;
             try {
-                if (String.IsNullOrEmpty (track.ArtistName) || track.ArtistName == Catalog.GetString ("Unknown Artist")) {
-                    // Do not try to fetch album art for these
-                } else {
+                if (!String.IsNullOrEmpty (track.ArtistName) && track.ArtistName != Catalog.GetString ("Unknown Artist")) {
                     IMetadataLookupJob job = MetadataService.Instance.CreateJob (track);
                     job.Run ();
                 }
@@ -165,10 +163,7 @@ namespace Banshee.Fanart
                 Log.Exception (e);
             } finally {
                 if (save) {
-                    // Hyena.Log.Debug ("Fanart information should be wittten to DB");
-
-                    // bool have_artist_image = CoverArtSpec.CoverExists (track.ArtistName, track.AlbumTitle);
-
+                    // additional work might be done here
                 }
             }
         }
