@@ -274,7 +274,19 @@ namespace Banshee.Fanart
 
         private void OnDisabled ()
         {
-            // TODO: delete db tables and cache entries
+            DropDbTables ();
+            DeleteCachedFiles ();
+        }
+
+        private void DropDbTables ()
+        {
+            ServiceManager.DbConnection.Execute (@"DROP TABLE IF EXISTS ArtistImageDownloads");
+            ServiceManager.DbConnection.Execute (@"DROP TABLE IF EXISTS ArtistMusicBrainz");
+        }
+
+        void DeleteCachedFiles ()
+        {
+            // TODO: implement this method
         }
 
         #region IService implementation
