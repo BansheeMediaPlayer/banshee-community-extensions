@@ -91,7 +91,7 @@ namespace Banshee.Fanart.UI
                 if (action_service.FindActionGroup ("ArtistGridView") == null) {
                     viewKindActions = new ActionGroup ("ArtistGridView");
 
-                    viewKindActions.Add (new Gtk.Action("FanartViewKindMenuAction", "FanartViewKindMenuAction"));
+                    viewKindActions.Add (new Gtk.Action("FanartViewKindMenuAction", "Artist View Mode"));
 
                     var oneColumnAction = 
                         new RadioActionEntry ("FanartViewOneColumnKindAction", null,
