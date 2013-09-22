@@ -39,6 +39,7 @@ using Banshee.Collection.Gui;
 using Banshee.Collection;
 using Mono.Addins;
 using System.Linq;
+using System.IO;
 
 namespace Banshee.Fanart
 {
@@ -284,9 +285,23 @@ namespace Banshee.Fanart
             ServiceManager.DbConnection.Execute (@"DROP TABLE IF EXISTS ArtistMusicBrainz");
         }
 
-        void DeleteCachedFiles ()
+        private void DeleteCachedFiles ()
         {
-            // TODO: implement this method
+            var files = FanartArtistImageSpec.GetAllFileArtistImagePaths ();
+            foreach (var file in files) {
+                try {
+                    File.Delete (file);
+                } catch (Exception e) {
+                    if (e is DirectoryNotFoundException ||
+                        e is IOException ||
+                        e is UnauthorizedAccessException) {
+                        Hyena.Log.Debug (String.Format ("Could not delete file {0}", file));
+                        Hyena.Log.Exception (e);
+                    } else {
+                        throw;
+                    }
+                }
+            }
         }
 
         #region IService implementation

@@ -64,6 +64,12 @@ namespace Banshee.Fanart
                 ? Path.Combine (RootPath, String.Format ("{0}", filename)) 
                 : Path.Combine (RootPath, Path.Combine (size.ToString (), String.Format ("{0}", filename)));
         }
+
+        public static string[] GetAllFileArtistImagePaths () 
+        {
+            string fileMask = @"artist-*";
+            return System.IO.Directory.GetFiles (RootPath, fileMask);
+        }
     }
 }
 
