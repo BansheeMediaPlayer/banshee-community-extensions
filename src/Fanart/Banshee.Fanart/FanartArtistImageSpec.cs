@@ -59,7 +59,6 @@ namespace Banshee.Fanart
 
         public static string GetPathForSize (string filename, int size)
         {
-            // TODO: maybe one should add an extension?
             return size == 0
                 ? Path.Combine (RootPath, String.Format ("{0}", filename)) 
                 : Path.Combine (RootPath, Path.Combine (size.ToString (), String.Format ("{0}", filename)));
