@@ -8,6 +8,7 @@ SUBDIRS = \
 	ClutterFlow \
 	CoverWallpaper \
 	DuplicateSongDetector \
+	Fanart \
 	FolderSync \
 	Jamendo \
 	LastfmFingerprint \
@@ -20,6 +21,7 @@ SUBDIRS = \
 	OpenVP \
 	RadioStationFetcher \
 	RandomByLastfm \
+	SongKick \
 	StreamRecorder \
         Karaoke \
 	Telepathy \
