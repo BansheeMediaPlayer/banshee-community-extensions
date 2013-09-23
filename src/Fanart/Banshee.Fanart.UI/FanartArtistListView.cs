@@ -38,6 +38,7 @@ using Gtk;
 using Banshee.I18n;
 using Hyena;
 using Banshee.Sources;
+using System.Collections.Generic;
 
 namespace Banshee.Fanart.UI
 {
@@ -74,13 +75,18 @@ namespace Banshee.Fanart.UI
                 ListViewKindSchema.Set ((int)value);
             }
         }
+        
+        // TODO: fix a bug - sometimes ListView.Dispose () is not called, when it should be called,
+        // so this list is too long in some cases (e.g. when if extension is turned off and on).
+        private static IList<FanartArtistListView> FanartListViews = new List<FanartArtistListView> ();
 
         protected FanartArtistListView (IntPtr ptr) : base () {}
 
         public FanartArtistListView () : base ()
         {
+            FanartListViews.Add (this);
             InstallPreferences ();
-            SetView (ViewKind);
+            SetAllViews (ViewKind);
         }
 
         private void InstallPreferences ()
@@ -130,19 +136,30 @@ namespace Banshee.Fanart.UI
                     }
                 });
             };
-
         }
 
-        private void SwitchToView (FanartArtistListViewKind viewKind)
+        private void Switch (FanartArtistListViewKind viewKind)
         {
             ClearColumns ();
             SetView (viewKind);
         }
 
-        void ClearColumns ()
+        private void SwitchInAllViews (FanartArtistListViewKind viewKind) {
+            foreach (var fanartListView in FanartListViews) {
+                fanartListView.Switch (viewKind);
+            }
+        }
+
+        private void ClearColumns ()
         {
             column_controller.Clear ();
             ColumnController = column_controller;
+        }
+
+        private static void SetAllViews (FanartArtistListViewKind viewKind) {
+            foreach (var fanartListView in FanartListViews) {
+                fanartListView.SetView (viewKind);
+            }
         }
 
         private void SetView (FanartArtistListViewKind viewKind)
@@ -167,7 +184,7 @@ namespace Banshee.Fanart.UI
         {
             var action = o as RadioAction;
             ViewKind = (FanartArtistListViewKind)action.CurrentValue;
-            SwitchToView (ViewKind);
+            SwitchInAllViews (ViewKind);
         }
 
         private void SetNormalOneColumn () 
@@ -207,6 +224,11 @@ namespace Banshee.Fanart.UI
             "Desired kind of FanartListView's appearance",
             "Desired kind of FanartListView's appearance"
             );
+
+        public override void Dispose () {
+            FanartListViews.Remove (this);
+            base.Dispose ();
+        }
     }
 }
 
