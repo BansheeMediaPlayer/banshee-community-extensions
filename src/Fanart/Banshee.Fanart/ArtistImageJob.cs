@@ -166,6 +166,12 @@ namespace Banshee.Fanart
             }
         }
 
+        protected override void OnCancelled ()
+        {
+            base.OnCancelled ();
+            AbortThread ();
+        }
+
         #endregion
     }
 }
