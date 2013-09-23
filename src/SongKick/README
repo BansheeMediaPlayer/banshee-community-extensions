@@ -1,0 +1,7 @@
+== Compilation ==
+
+Notice that Makefile integration is turned off, so changes are saved to .csproj file instead of Makefile. Correct Makefile is required for command-line build and packaging. 
+
+Makefile can be easily updated by enabling Makefile integration on in MonoDevelop and using .csproj as a master copy.
+
+
