@@ -81,8 +81,6 @@
     <Compile Include="Fanart\FanartDownloader.cs" />
     <Compile Include="Banshee.Fanart\FanartService.cs" />
     <Compile Include="Banshee.Fanart\ArtistImageJob.cs" />
-    <Compile Include="Banshee.Fanart.UI\CoverArtArtistListView.cs" />
-    <Compile Include="Banshee.Fanart.UI\CoverArtArtistColumnCell.cs" />
     <Compile Include="Banshee.Fanart\FanartMetadataProvider.cs" />
     <Compile Include="Banshee.Fanart\FanartQueryJob.cs" />
     <Compile Include="Banshee.Fanart\Results.cs" />
