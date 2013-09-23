@@ -30,7 +30,7 @@ namespace Fanart
 {
     public static class Downloader
     {
-        public static string Download(string uri)
+        public static string Download (string uri)
         {
             if (String.IsNullOrEmpty (uri)) {
                 throw new ArgumentException ("Specify uri of resource you want to download");
