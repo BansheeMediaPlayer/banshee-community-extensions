@@ -20,4 +20,9 @@ SOURCES =  \
 
 RESOURCES = Fanart.addin.xml
 
+if ENABLE_FANART
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif
+

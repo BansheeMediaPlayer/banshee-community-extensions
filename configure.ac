@@ -86,6 +86,7 @@ BCE_CLUTTERFLOW
 BCE_COVERWALLPAPER
 BCE_DUPLICATESONGDETECTOR
 BCE_FOLDERSYNC
+BCE_FANART
 BCE_JAMENDO
 BCE_LASTFMFINGERPRINT
 BCE_LCD
@@ -218,7 +219,7 @@ ${PACKAGE}-${VERSION}
     CoverWallpaper:        ${enable_CoverWallpaper}
     CueSheets:             no
     DuplicateSongDetector: ${enable_DuplicateSongDetector}
-    Fanart:                no
+    Fanart:                ${enable_Fanart}
     FolderSync:            ${enable_FolderSync}
     Jamendo:               ${enable_Jamendo}
     Karaoke:               ${enable_Karaoke}
