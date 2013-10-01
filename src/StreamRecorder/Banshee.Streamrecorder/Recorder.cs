@@ -52,6 +52,8 @@ namespace Banshee.Streamrecorder
         private PlayerAudioTee audiotee;
         private Bin encoder_bin;
         private TagSetter tagger;
+        private string lastArtist = "";
+        private string lastTitle = "";
         private FileSink file_sink;
         private string empty_file = "/dev/null";
         private GhostPad ghost_pad;
@@ -334,9 +336,14 @@ namespace Banshee.Streamrecorder
                 return false;
 
             if (splitfiles && file_sink != null && track.ArtistName != null && track.ArtistName.Length > 0) {
-                SetMetadataFilename (track.TrackTitle, track.ArtistName);
-                SetNewTrackLocation (output_file + file_extension);
+                if (track.ArtistName != lastArtist || track.TrackTitle != lastTitle) {
+                    SetMetadataFilename (track.TrackTitle, track.ArtistName);
+                    SetNewTrackLocation (output_file + file_extension);
+                }
             }
+
+            lastArtist = track.ArtistName;
+            lastTitle = track.TrackTitle;
 
             if (tagger == null || tagger.IsNull ()) {
                 Hyena.Log.Debug ("[Recorder]<AddStreamTags> tagger is null, not tagging!");
@@ -353,6 +360,8 @@ namespace Banshee.Streamrecorder
                     taglist.AddStringValue (TagMergeMode.ReplaceAll, "artist", track.ArtistName);
                 if (track.AlbumArtist != null)
                     taglist.AddStringValue (TagMergeMode.ReplaceAll, "album-artist", track.AlbumArtist);
+                if (track.AlbumTitle != null)
+                    taglist.AddStringValue (TagMergeMode.ReplaceAll, "album", track.AlbumTitle);
 
                 tagger.MergeTags (taglist, TagMergeMode.ReplaceAll);
             } catch (Exception e) {
