@@ -47,11 +47,6 @@ namespace Banshee.Fanart
             return String.Format ("artist-{0}", artistMBDI);
         }
 
-        static bool IsArtistUnknown (string artist)
-        {
-            return artist == null || artist == ArtistInfo.UnknownArtistNameUntranslated || artist == ArtistInfo.UnknownArtistName;
-        }
-
         public static string GetPath (string filename)
         {
             return GetPathForSize (filename, 0);
