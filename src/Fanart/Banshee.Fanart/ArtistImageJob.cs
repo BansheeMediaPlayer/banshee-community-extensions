@@ -150,7 +150,7 @@ namespace Banshee.Fanart
         {
             bool save = true;
             try {
-                if (!String.IsNullOrEmpty (track.ArtistName) && track.ArtistName != Catalog.GetString ("Unknown Artist")) {
+                if (!String.IsNullOrEmpty (track.ArtistName)) {
                     IMetadataLookupJob job = MetadataService.Instance.CreateJob (track);
                     job.Run ();
                 }
