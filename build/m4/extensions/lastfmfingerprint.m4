@@ -19,11 +19,11 @@ AC_DEFUN([BCE_LASTFMFINGERPRINT],
 		[banshee-lastfm],
 		[banshee-lastfm was not found. Please install it or disable the LastfmFingerprint extension by passing --disable-lastfmfingerprint])
 
-	GSTREAMER_REQUIRED_VERSION=0.10.15
+	GSTREAMER_REQUIRED_VERSION=1.0
 	BCE_CHECK_EXTENSION_DEP([LastfmFingerprint], [GSTREAMER],
-		[gstreamer-0.10 >= $GSTREAMER_REQUIRED_VERSION
-		 gstreamer-base-0.10 >= $GSTREAMER_REQUIRED_VERSION
-		 gstreamer-plugins-base-0.10 >= $GSTREAMER_REQUIRED_VERSION],
+		[gstreamer-1.0 >= $GSTREAMER_REQUIRED_VERSION
+		 gstreamer-base-1.0 >= $GSTREAMER_REQUIRED_VERSION
+		 gstreamer-plugins-base-1.0 >= $GSTREAMER_REQUIRED_VERSION],
 		[GStreamer >= $GSTREAMER_REQUIRED_VERSION not found. Please install it or disable the LastfmFingerprint extension by passing --disable-lastfmfingerprint])
 
 	if test "x$enable_LastfmFingerprint" = "xtry" \

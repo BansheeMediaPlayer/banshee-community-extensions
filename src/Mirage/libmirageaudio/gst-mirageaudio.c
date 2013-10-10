@@ -23,10 +23,12 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
+#include <stdlib.h>
 
 #include <glib.h>
 #include <fftw3.h>
 #include <gst/gst.h>
+#include <gst/audio/audio.h>
 #include <samplerate.h>
 
 #include "gst-mirageaudio.h"
@@ -89,33 +91,57 @@ void toc()
 }
 
 static void
-mirageaudio_cb_newpad(GstElement *decodebin, GstPad *pad, gboolean last, MirageAudio *ma)
+mirageaudio_link_audio_pad(GstPad *pad, GstCaps *caps, MirageAudio *ma)
 {
-    GstCaps *caps;
     GstStructure *str;
     GstPad *audiopad;
 
     // only link once
-    audiopad = gst_element_get_pad(ma->audio, "sink");
+    audiopad = gst_element_get_static_pad(ma->audio, "sink");
     if (GST_PAD_IS_LINKED(audiopad)) {
         g_object_unref(audiopad);
         return;
     }
 
     // check media type
-    caps = gst_pad_get_caps(pad);
     str = gst_caps_get_structure(caps, 0);
-
-    if (!g_strrstr(gst_structure_get_name(str), "audio")) {
-        gst_caps_unref(caps);
+    if (!g_strrstr(gst_structure_get_name(str), "audio/")) {
         gst_object_unref(audiopad);
         return;
     }
-    gst_caps_unref(caps);
+
+    if (!gst_structure_get_int(str, "rate", &ma->filerate))
+        ma->filerate = -1;
 
     // link
     gst_pad_link(pad, audiopad);
     gst_object_unref(audiopad);
+}
+
+static void
+mirageaudio_cb_caps_notify(GstPad *pad, GParamSpec *unused, MirageAudio *ma)
+{
+    GstCaps *caps;
+
+    caps = gst_pad_get_current_caps(pad);
+    mirageaudio_link_audio_pad(pad, caps, ma);
+    gst_caps_unref (caps);
+}
+
+static void
+mirageaudio_cb_newpad(GstElement *decodebin, GstPad *pad, MirageAudio *ma)
+{
+    GstCaps *caps;
+
+    caps = gst_pad_get_current_caps(pad);
+    /* If we have no caps yet, wait until we have them */
+    if (!caps) {
+      g_signal_connect(pad, "notify::caps", G_CALLBACK(mirageaudio_cb_caps_notify), ma);
+      return;
+    }
+
+    mirageaudio_link_audio_pad(pad, caps, ma);
+    gst_caps_unref (caps);
 }
 
 static void
@@ -126,17 +152,20 @@ mirageaudio_cb_have_data(GstElement *element, GstBuffer *buffer, GstPad *pad, Mi
     gint i;
     gint j;
     gint fill;
+    GstMapInfo map;
 
     // if data continues to flow/EOS is not yet processed
     if (ma->quit)
         return;
 
     // exit on empty buffer
-    if (buffer->size <= 0)
+    if (gst_buffer_get_size (buffer) <= 0)
         return;
+    if (!gst_buffer_map (buffer, &map, GST_MAP_READ))
+      return;
 
-    ma->src_data.data_in = (float*)GST_BUFFER_DATA(buffer);
-    ma->src_data.input_frames = GST_BUFFER_SIZE(buffer)/sizeof(float);
+    ma->src_data.data_in = (float*)map.data;
+    ma->src_data.input_frames = map.size/sizeof(float);
 
     do {
         // set end of input flag if necessary
@@ -152,8 +181,10 @@ mirageaudio_cb_have_data(GstElement *element, GstBuffer *buffer, GstPad *pad, Mi
             g_print("libmirageaudio: SRC Error - %s\n", src_strerror(err));
         }
         // return if no output
-        if (ma->src_data.output_frames_gen == 0)
+        if (ma->src_data.output_frames_gen == 0) {
+            gst_buffer_unmap (buffer, &map);
             return;
+        }
 
         buffersamples = ma->src_data.output_frames_gen;
         bufferpos = 0;
@@ -202,6 +233,7 @@ mirageaudio_cb_have_data(GstElement *element, GstBuffer *buffer, GstPad *pad, Mi
                     g_print("libmirageaudio: EOS Message sent\n");
                     gst_object_unref(bus);
                     ma->quit = TRUE;
+                    gst_buffer_unmap (buffer, &map);
                     return;
                 }
 
@@ -217,6 +249,8 @@ mirageaudio_cb_have_data(GstElement *element, GstBuffer *buffer, GstPad *pad, Mi
         ma->src_data.input_frames -= ma->src_data.input_frames_used;
 
     } while (ma->src_data.input_frames > 0);
+
+    gst_buffer_unmap (buffer, &map);
 
     return;
 }
@@ -279,7 +313,7 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
     src = gst_element_factory_make("filesrc", "source");
     g_object_set(G_OBJECT(src), "location", file, NULL);
     dec = gst_element_factory_make("decodebin", "decoder");
-    g_signal_connect(dec, "new-decoded-pad", G_CALLBACK(mirageaudio_cb_newpad), ma);
+    g_signal_connect(dec, "pad-added", G_CALLBACK(mirageaudio_cb_newpad), ma);
     gst_bin_add_many(GST_BIN(ma->pipeline), src, dec, NULL);
     gst_element_link(src, dec);
 
@@ -287,8 +321,8 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
     ma->audio = gst_bin_new("audio");
 
     audioconvert = gst_element_factory_make("audioconvert", "conv");
-    filter_float = gst_caps_new_simple("audio/x-raw-float",
-         "width", G_TYPE_INT, 32,
+    filter_float = gst_caps_new_simple("audio/x-raw",
+         "format", G_TYPE_STRING, GST_AUDIO_NE(F32),
          NULL);
     cfilt_float = gst_element_factory_make("capsfilter", "cfilt_float");
     g_object_set(G_OBJECT(cfilt_float), "caps", filter_float, NULL);
@@ -296,7 +330,8 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
 
     audioresample = gst_element_factory_make("audioresample", "resample");
 
-    filter_resample =  gst_caps_new_simple("audio/x-raw-float",
+    filter_resample =  gst_caps_new_simple("audio/x-raw",
+          "format", G_TYPE_STRING, GST_AUDIO_NE(F32),
           "channels", G_TYPE_INT, 1,
           NULL);
     cfilt_resample = gst_element_factory_make("capsfilter", "cfilt_resample");
@@ -316,7 +351,7 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
            audioresample, cfilt_resample,
            sink, NULL);
 
-    audiopad = gst_element_get_pad(audioconvert, "sink");
+    audiopad = gst_element_get_static_pad(audioconvert, "sink");
     gst_element_add_pad(ma->audio,
             gst_ghost_pad_new("sink", audiopad));
     gst_object_unref(audiopad);
@@ -331,18 +366,6 @@ mirageaudio_initgstreamer(MirageAudio *ma, const gchar *file)
     if (gst_element_set_state(ma->pipeline, GST_STATE_PAUSED) == GST_STATE_CHANGE_ASYNC) {
         gst_element_get_state(ma->pipeline, NULL, NULL, max_wait);
     }
-
-    GstPad *pad = gst_element_get_pad(sink, "sink");
-    GstCaps *caps = gst_pad_get_negotiated_caps(pad);
-    if (GST_IS_CAPS(caps)) {
-        GstStructure *str = gst_caps_get_structure(caps, 0);
-        gst_structure_get_int(str, "rate", &ma->filerate);
-
-    } else {
-        ma->filerate = -1;
-    }
-    gst_caps_unref(caps);
-    gst_object_unref(pad);
 }
 
 float*

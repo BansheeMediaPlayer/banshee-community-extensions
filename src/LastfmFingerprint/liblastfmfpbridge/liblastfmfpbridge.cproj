@@ -21,7 +21,7 @@
     <CompileTarget>SharedLibrary</CompileTarget>
     <Includes>
       <Includes>
-        <Include>/usr/include/gstreamer-0.10</Include>
+        <Include>/usr/include/gstreamer-1.0</Include>
         <Include>/usr/include/glib-2.0</Include>
         <Include>/usr/lib/glib-2.0/include</Include>
         <Include>/usr/include/libxml2</Include>
