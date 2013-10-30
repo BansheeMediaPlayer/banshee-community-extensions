@@ -41,4 +41,8 @@ RESOURCES =  \
 	Resources/songkick_logo.png \
 	SongKick.addin.xml
 
+if ENABLE_SONGKICK
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif
