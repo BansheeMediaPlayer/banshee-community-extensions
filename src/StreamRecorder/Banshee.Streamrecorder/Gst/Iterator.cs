@@ -23,24 +23,27 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+extern alias oldGlib;
+using OldGLib = oldGlib.GLib;
+
+using System;
+using System.Collections;
+using System.Runtime.InteropServices;
 
 namespace Banshee.Streamrecorder.Gst
 {
-    using System;
-    using System.Collections;
-    using System.Runtime.InteropServices;
 
-    public partial class Iterator : GLib.Opaque, IEnumerable
+    public partial class Iterator : OldGLib.Opaque, IEnumerable
     {
 
         public Iterator (IntPtr raw) : base(raw)
         {
         }
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         static extern int gst_iterator_next (IntPtr iterator, out IntPtr elem);
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         static extern void gst_iterator_resync (IntPtr iterator);
 
         private class Enumerator : IEnumerator
@@ -111,7 +114,7 @@ namespace Banshee.Streamrecorder.Gst
             return this.enumerator;
         }
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         static extern void gst_iterator_free (IntPtr iterator);
 
         ~Iterator ()

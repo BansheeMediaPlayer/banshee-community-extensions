@@ -80,6 +80,7 @@ namespace Banshee.Streamrecorder
         public StreamrecorderConfigDialog (StreamrecorderService service, string previous_output_folder, string previous_encoder, bool is_importing_enabled, bool is_splitting_enabled)
         {
             streamrecorder_service = service;
+            encoderbox.IdColumn = 0;
 
             preferences_image.Yalign = 0f;
             preferences_image.IconName = "gtk-preferences";
@@ -163,7 +164,7 @@ namespace Banshee.Streamrecorder
 
             main_container.PackStart (preferences_image, true, true, 5);
             main_container.PackEnd (action_container, true, true, 5);
-            this.VBox.PackStart (main_container, true, true, 5);
+            this.ContentArea.PackStart (main_container, true, true, 5);
 
             AddActionWidget (cancel_button, 0);
             AddActionWidget (save_button, 0);
@@ -176,8 +177,8 @@ namespace Banshee.Streamrecorder
             IconName = "gtk-preferences";
             Resizable = false;
             BorderWidth = 6;
-            HasSeparator = false;
-            this.VBox.Spacing = 12;
+//            HasSeparator = false;
+            this.ContentArea.Spacing = 12;
 
             ShowAll ();
         }
@@ -219,8 +220,8 @@ namespace Banshee.Streamrecorder
                 StreamrecorderService.OutputDirectoryEntry.Set (output_folder.Text.Trim ());
             }
 
-            streamrecorder_service.ActiveEncoder = encoderbox.ActiveText;
-            StreamrecorderService.ActiveEncoderEntry.Set (encoderbox.ActiveText);
+            streamrecorder_service.ActiveEncoder = encoderbox.ActiveId;
+            StreamrecorderService.ActiveEncoderEntry.Set (encoderbox.ActiveId);
 
             Destroy ();
         }

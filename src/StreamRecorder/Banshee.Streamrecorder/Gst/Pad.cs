@@ -25,6 +25,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+extern alias oldGlib;
+using OldGLib = oldGlib.GLib;
 
 using System;
 using System.Runtime.InteropServices;
@@ -39,7 +41,7 @@ namespace Banshee.Streamrecorder.Gst
         {
         }
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         unsafe private static extern IntPtr gst_pad_new (IntPtr name, PadDirection direction);
 
         public Pad (PadDirection direction) : this(IntPtr.Zero, direction)
@@ -48,16 +50,16 @@ namespace Banshee.Streamrecorder.Gst
 
         public Pad (string name, PadDirection direction) : base(IntPtr.Zero)
         {
-            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+            IntPtr native_name = OldGLib.Marshaller.StringToPtrGStrdup (name);
             raw = gst_pad_new (native_name, direction);
-            GLib.Marshaller.Free (native_name);
+            OldGLib.Marshaller.Free (native_name);
         }
 
         protected Pad (IntPtr native_name, PadDirection direction) : this(gst_pad_new (native_name, direction))
         {
         }
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         unsafe private static extern IntPtr gst_pad_get_peer (IntPtr element);
 
         public Pad GetPeer ()
@@ -65,7 +67,7 @@ namespace Banshee.Streamrecorder.Gst
             return new Pad (gst_pad_get_peer (raw));
         }
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         private static extern bool gst_pad_send_event (IntPtr pad, IntPtr gevent);
 
         public bool SendEvent (IntPtr segment)
@@ -73,7 +75,29 @@ namespace Banshee.Streamrecorder.Gst
             return gst_pad_send_event (raw, segment);
         }
 
-        [DllImport("libgstreamer-0.10.so.0", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("libgstreamer-1.0.so.0", CallingConvention = CallingConvention.Cdecl)]
+        static extern ulong gst_pad_remove_probe (IntPtr pad, ulong id);
+
+        public void RemoveProbe (ulong id)
+        {
+            Hyena.Log.Debug ("[Streamrecorder.Gst.Pad]<RemoveProbe> START (" + id + ")");
+            gst_pad_remove_probe (raw, id);
+            Hyena.Log.Debug ("[Streamrecorder.Gst.Pad]<RemoveProbe> END");
+        }
+
+        [DllImport("libgstreamer-1.0.so.0", CallingConvention = CallingConvention.Cdecl)]
+        static extern ulong gst_pad_add_probe (IntPtr pad, PadProbeType mask, PadProbeCallbackNative cb, IntPtr user_data, OldGLib.DestroyNotify destroy_data);
+
+        public ulong AddProbe (PadProbeType mask, PadProbeCallback cb, IntPtr user_data, OldGLib.DestroyNotify destroy_data)
+        {
+            Hyena.Log.Debug ("[Streamrecorder.Gst.Pad]<PadAddProbe> START");
+            PadProbeCallbackWrapper cb_wrapper = new PadProbeCallbackWrapper (cb);
+            ulong ret = gst_pad_add_probe (raw, mask, cb_wrapper.NativeDelegate, user_data, destroy_data);
+            Hyena.Log.Debug ("[Streamrecorder.Gst.Pad]<PadAddProbe> END (" + ret + ")");
+            return ret;
+        }
+
+/*        [DllImport("libgstreamer-1.0.so.0", CallingConvention = CallingConvention.Cdecl)]
         static extern bool gst_pad_set_blocked_async (IntPtr pad, bool blocked, PadBlockCallbackNative cb, IntPtr user_data);
 
         public bool SetBlockedAsync (bool blocked, PadBlockCallback cb, IntPtr user_data)
@@ -85,13 +109,14 @@ namespace Banshee.Streamrecorder.Gst
             return ret;
         }
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         private static extern bool gst_pad_set_blocked (IntPtr pad, bool blocked);
 
         public bool SetBlocked (bool blocked)
         {
             return gst_pad_set_blocked (raw, blocked);
         }
+*/
 
         public GhostPad ToGhostPad ()
         {

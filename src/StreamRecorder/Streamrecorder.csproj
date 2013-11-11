@@ -45,19 +45,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
-    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
-    </Reference>
     <Reference Include="Mono.Posix" />
-    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
-    </Reference>
-    <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <Package>mono-addins</Package>
-    </Reference>
-    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>glib-sharp-2.0</Package>
-    </Reference>
     <Reference Include="Banshee.Core, Version=1.6.0.0, Culture=neutral">
       <Package>banshee-core</Package>
       <SpecificVersion>False</SpecificVersion>
@@ -74,8 +62,33 @@
       <Package>banshee-thickclient</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Hyena, Version=1.9.0.0, Culture=neutral">
+    <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>glib-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="Hyena.Gui, Version=2.9.0.0, Culture=neutral">
+      <Private>False</Private>
+      <Package>banshee-hyena-gui</Package>
+    </Reference>
+    <Reference Include="Hyena, Version=2.9.0.0, Culture=neutral">
+      <Private>False</Private>
       <Package>banshee-hyena</Package>
+    </Reference>
+    <Reference Include="Mono.Addins, Version=0.6.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Private>False</Private>
+      <Package>mono-addins</Package>
+    </Reference>
+    <Reference Include="pango-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>gtk-sharp-3.0</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +130,10 @@
     <Compile Include="Banshee.Streamrecorder\Gst\BusFunc.cs" />
     <Compile Include="Banshee.Streamrecorder\Gst\ElementFactory.cs" />
     <Compile Include="Banshee.Streamrecorder\Gst\Iterator.cs" />
+    <Compile Include="Banshee.Streamrecorder\Gst\PadProbeCallback.cs" />
+    <Compile Include="Banshee.Streamrecorder\Gst\PadProbeType.cs" />
+    <Compile Include="Banshee.Streamrecorder\Gst\PadProbeReturn.cs" />
+    <Compile Include="Banshee.Streamrecorder\Gst\PadProbeInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

@@ -1,5 +1,5 @@
 //
-// Format.cs
+// Recorder.cs
 //
 // Author:
 //   Frank Ziegler
@@ -25,20 +25,31 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+extern alias oldGlib;
+using OldGLib = oldGlib.GLib;
+
+using System.Runtime.InteropServices;
 
 using System;
+using System.IO;
+using System.Collections.Generic;
+
+using Banshee.Collection;
+using Banshee.Collection.Database;
+using Banshee.Streamrecorder.Gst;
+using Banshee.ServiceStack;
+using Banshee.MediaEngine;
 
 namespace Banshee.Streamrecorder.Gst
 {
 
-    public enum Format
+    public struct PadProbeInfo
     {
-        Undefined,
-        Default = 1,
-        Bytes = 2,
-        Time = 3,
-        Buffers = 4,
-        Percent = 5
+        public PadProbeType type;
+        public ulong id;
+        public IntPtr data;
+        public UInt64 offset;
+        public uint size;
     }
 
 }

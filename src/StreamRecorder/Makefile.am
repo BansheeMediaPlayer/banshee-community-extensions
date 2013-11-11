@@ -1,5 +1,8 @@
 ASSEMBLY = Banshee.Streamrecorder
-LINK = $(BANSHEE_LIBS)
+
+OLD_GLIB = -r:oldGlib=${expanded_libdir}/pkgconfig/../../lib/cli/glib-sharp-2.0/glib-sharp.dll
+LINK = $(BANSHEE_LIBS) $(OLD_GLIB)
+
 GMCS_FLAGS = -unsafe
 
 SOURCES =  \
@@ -18,6 +21,10 @@ SOURCES =  \
 	Banshee.Streamrecorder/Gst/Pad.cs \
 	Banshee.Streamrecorder/Gst/PadBlockCallback.cs \
 	Banshee.Streamrecorder/Gst/PadDirection.cs \
+	Banshee.Streamrecorder/Gst/PadProbeCallback.cs \
+	Banshee.Streamrecorder/Gst/PadProbeInfo.cs \
+	Banshee.Streamrecorder/Gst/PadProbeReturn.cs \
+	Banshee.Streamrecorder/Gst/PadProbeType.cs \
 	Banshee.Streamrecorder/Gst/Parse.cs \
 	Banshee.Streamrecorder/Gst/Pipeline.cs \
 	Banshee.Streamrecorder/Gst/State.cs \

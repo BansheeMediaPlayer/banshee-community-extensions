@@ -33,7 +33,6 @@ namespace Banshee.Streamrecorder.Gst
 
     public enum State
     {
-
         VoidPending,
         Null = 1,
         Ready = 2,

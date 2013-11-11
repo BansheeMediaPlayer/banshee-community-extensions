@@ -25,6 +25,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+extern alias oldGlib;
+using OldGLib = oldGlib.GLib;
 
 using System;
 using System.Runtime.InteropServices;
@@ -71,10 +73,11 @@ namespace Banshee.Streamrecorder.Gst
             return ret;
         }
 
-        public static IntPtr CreateSegment ()
+        public static IntPtr CreateSegmentEvent ()
         {
-            ulong ClockTimeNone = 0xffffffffffffffffuL;
-            return gst_event_new_new_segment (true, 1.0, Gst.Format.Default, 0, (long)ClockTimeNone, 0);
+            IntPtr segment = gst_segment_new ();
+            gst_segment_init (segment, Gst.Format.Default);
+            return gst_event_new_segment (segment);
         }
 
         public static void DebugSetActive (bool active)
@@ -98,28 +101,34 @@ namespace Banshee.Streamrecorder.Gst
         }
 
         /* Helper Imports*/
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         private static extern string gst_version_string ();
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         private static extern void gst_debug_set_active (bool active);
 
         [DllImport("libgobject-2.0.so.0")]
         public static extern void g_signal_connect_data (IntPtr instance, IntPtr detailed_signal, BusFunc cb, IntPtr data, IntPtr zero, uint flags);
 
-        [DllImport("libgstreamer-0.10.so.0")]
-        private static extern IntPtr gst_event_new_new_segment (bool update, double rate, Gst.Format format, long start, long stop, long position);
+        [DllImport("libgstreamer-1.0.so.0")]
+        private static extern IntPtr gst_event_new_segment (IntPtr segment);
 
-        [DllImport("libgstreamer-0.10.so.0")]
-        unsafe public static extern GLib.Value gst_structure_get_value (IntPtr structure, IntPtr name);
+        [DllImport("libgstreamer-1.0.so.0")]
+        private static extern IntPtr gst_segment_new ();
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
+        private static extern void gst_segment_init (IntPtr segment, Gst.Format format);
+
+        [DllImport("libgstreamer-1.0.so.0")]
+        unsafe public static extern OldGLib.Value gst_structure_get_value (IntPtr structure, IntPtr name);
+
+        [DllImport("libgstreamer-1.0.so.0")]
         unsafe public static extern IntPtr gst_message_get_structure (IntPtr message);
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         unsafe public static extern IntPtr gst_event_new_eos ();
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         unsafe public static extern void gst_init (IntPtr argc, IntPtr argv);
 
     }
