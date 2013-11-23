@@ -69,26 +69,23 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Tao.FreeGlut, Version=2.4.0.1, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d">
-      <Package>tao-freeglut</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Tao.OpenGl, Version=2.1.0.7, Culture=neutral, PublicKeyToken=1ca010269a4501ef">
-      <Package>tao-opengl</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Tao.Sdl, Version=1.2.12.0, Culture=neutral, PublicKeyToken=9c7a200e36c0094e">
       <SpecificVersion>False</SpecificVersion>
-      <Package>tao-sdl</Package>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
-        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" RelativeConfigureInPath="..">
-          <BuildFilesVar Sync="true" Name="SOURCES" />
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="True" RelativeMakefileName="Makefile.am" RelativeConfigureInPath="..">
+          <BuildFilesVar Sync="True" Name="SOURCES" />
           <DeployFilesVar />
-          <ResourcesVar Sync="true" Name="RESOURCES" />
+          <ResourcesVar Sync="True" Name="RESOURCES" />
           <OthersVar />
           <GacRefVar />
           <AsmRefVar />
