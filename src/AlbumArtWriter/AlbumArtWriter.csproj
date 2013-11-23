@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,7 +9,6 @@
     <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
     <AssemblyName>Banshee.AlbumArtWriter</AssemblyName>
     <SchemaVersion>2.0</SchemaVersion>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <Optimize>true</Optimize>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -50,24 +49,31 @@
     </Reference>
     <Reference Include="Banshee.Core, Version=1.7.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
+      <Package>banshee-core</Package>
     </Reference>
     <Reference Include="Banshee.Services, Version=1.7.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
+      <Package>banshee-services</Package>
     </Reference>
     <Reference Include="Banshee.ThickClient, Version=1.7.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
+      <Package>banshee-thickclient</Package>
     </Reference>
     <Reference Include="Banshee.Widgets, Version=1.7.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
+      <Package>banshee-thickclient</Package>
     </Reference>
     <Reference Include="Hyena, Version=1.7.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
+      <Package>banshee-hyena</Package>
     </Reference>
     <Reference Include="Hyena.Data.Sqlite, Version=1.7.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
+      <Package>banshee-hyena-data-sqlite</Package>
     </Reference>
     <Reference Include="Hyena.Gui, Version=1.7.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
+      <Package>banshee-hyena-gui</Package>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,7 +9,6 @@
     <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
     <AssemblyName>Banshee.SoundCloud</AssemblyName>
     <SchemaVersion>2.0</SchemaVersion>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <Optimize>true</Optimize>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -75,10 +74,10 @@
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
-        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am">
-          <BuildFilesVar Sync="true" Name="SOURCES" />
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="True" RelativeMakefileName="Makefile.am">
+          <BuildFilesVar Sync="True" Name="SOURCES" />
           <DeployFilesVar />
-          <ResourcesVar Sync="true" Name="RESOURCES" />
+          <ResourcesVar Sync="True" Name="RESOURCES" />
           <OthersVar />
           <GacRefVar />
           <AsmRefVar />

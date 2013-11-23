@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -15,7 +15,6 @@
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <RootNamespace>Banshee.CueSheets</RootNamespace>
     <AssemblyOriginatorKeyFile>.</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,21 +59,27 @@
     <Reference Include="System.Core" />
     <Reference Include="Banshee.Services">
       <HintPath>..\..\..\..\..\..\usr\local\banshee\lib\banshee\Banshee.Services.dll</HintPath>
+      <Package>banshee-services</Package>
     </Reference>
     <Reference Include="Banshee.CollectionIndexer">
       <HintPath>..\..\..\..\..\..\usr\local\banshee\lib\banshee\Banshee.CollectionIndexer.dll</HintPath>
+      <Package>banshee-collection-indexer</Package>
     </Reference>
     <Reference Include="Banshee.Core">
       <HintPath>..\..\..\..\..\..\usr\local\banshee\lib\banshee\Banshee.Core.dll</HintPath>
+      <Package>banshee-core</Package>
     </Reference>
     <Reference Include="Banshee.ThickClient">
       <HintPath>..\..\..\..\..\..\usr\local\banshee\lib\banshee\Banshee.ThickClient.dll</HintPath>
+      <Package>banshee-thickclient</Package>
     </Reference>
     <Reference Include="Banshee.WebBrowser">
       <HintPath>..\..\..\..\..\..\usr\local\banshee\lib\banshee\Banshee.WebBrowser.dll</HintPath>
+      <Package>banshee-webbrowser</Package>
     </Reference>
     <Reference Include="Banshee.Widgets">
       <HintPath>..\..\..\..\..\..\usr\local\banshee\lib\banshee\Banshee.Widgets.dll</HintPath>
+      <Package>banshee-thickclient</Package>
     </Reference>
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Private>False</Private>

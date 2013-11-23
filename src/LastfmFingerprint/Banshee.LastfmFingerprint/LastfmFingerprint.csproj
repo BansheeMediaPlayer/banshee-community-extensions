@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,7 +9,6 @@
     <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
     <AssemblyName>Banshee.LastfmFingerprint</AssemblyName>
     <SchemaVersion>2.0</SchemaVersion>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <Optimize>true</Optimize>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -45,7 +44,9 @@
       <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="Mono.Cairo" />
-    <Reference Include="Mono.Addins" />
+    <Reference Include="Mono.Addins">
+      <Package>mono-addins</Package>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="Lastfm.Gui, Version=1.9.0.0, Culture=neutral">
