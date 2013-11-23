@@ -137,9 +137,6 @@ help/Makefile
 po/Makefile.in
 
 src/Makefile
-src/Fanart/Makefile
-src/SongKick/Makefile
-src/CueSheets/Makefile
 src/AssemblyInfo.cs
 
 src/AlarmClock/Makefile
@@ -152,7 +149,9 @@ src/ClutterFlow/Makefile
 src/ClutterFlow/Banshee.ClutterFlow/Makefile
 src/ClutterFlow/ClutterFlow/Makefile
 src/CoverWallpaper/Makefile
+src/CueSheets/Makefile
 src/DuplicateSongDetector/Makefile
+src/Fanart/Makefile
 src/FolderSync/Makefile
 src/Jamendo/Makefile
 src/Karaoke/Makefile
@@ -183,6 +182,7 @@ src/Mirage/Banshee.Mirage/Makefile
 src/Mirage/Test/Makefile
 src/RadioStationFetcher/Makefile
 src/RandomByLastfm/Makefile
+src/SongKick/Makefile
 src/StreamRecorder/Makefile
 src/Telepathy/Makefile
 src/Telepathy/Banshee.Telepathy/Makefile

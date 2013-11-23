@@ -11,6 +11,7 @@ SUBDIRS = \
 	Fanart \
 	FolderSync \
 	Jamendo \
+	Karaoke \
 	LastfmFingerprint \
 	LCD \
 	Lirc \
@@ -23,7 +24,6 @@ SUBDIRS = \
 	RandomByLastfm \
 	SongKick \
 	StreamRecorder \
-        Karaoke \
 	Telepathy \
 	ZeitgeistDataprovider
 
