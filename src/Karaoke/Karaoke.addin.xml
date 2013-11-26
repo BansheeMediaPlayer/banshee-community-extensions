@@ -24,11 +24,11 @@
      <PostInitializeGtk class="Banshee.Karaoke.KaraokeLyricsConditionConfiguration"/>
   </Extension>
   
-  <Extension path="/Banshee/ThickClient/ContextPane">
+  <!--Extension path="/Banshee/ThickClient/ContextPane">
   	<Condition id="KaraokeLyrics">
 	    <ContextPage class="Banshee.Karaoke.Gui.ContextPage"/>
 	</Condition>
-  </Extension>
+  </Extension-->
 
   <Extension path="/Banshee/ServiceManager/Service">
     <Service class="Banshee.Karaoke.KaraokeService"/>
