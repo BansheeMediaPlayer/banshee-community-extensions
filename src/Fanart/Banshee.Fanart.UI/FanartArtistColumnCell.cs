@@ -44,7 +44,7 @@ namespace Banshee.Fanart.UI
         {
         }
 
-        public override void Render (CellContext context, StateType state, double cellWidth, double cellHeight)
+        public override void Render (CellContext context, StateFlags state, double cellWidth, double cellHeight)
         {
             // check state and parameters:
             if (BoundObject == null) {
@@ -103,11 +103,14 @@ namespace Banshee.Fanart.UI
             }
         }
 
-        private void RenderArtistText (string name, double cellWidth, CellContext context, StateType state)
+        private void RenderArtistText (string name, double cellWidth, CellContext context, StateFlags state)
         {
             if (RenderNameWhenNoImage) {
                 Pango.Layout layout = context.Layout;
-                Cairo.Color text_color = context.Theme.Colors.GetWidgetColor (GtkColorClass.Text, state);
+                context.Widget.StyleContext.Save ();
+                context.Widget.StyleContext.AddClass ("entry");
+                Cairo.Color text_color = CairoExtensions.GdkRGBAToCairoColor (context.Widget.StyleContext.GetColor (state));
+                context.Widget.StyleContext.Restore ();
 
                 layout.Width = Pango.Units.FromPixels((int) cellWidth);
                 layout.Ellipsize = Pango.EllipsizeMode.End;
@@ -121,10 +124,10 @@ namespace Banshee.Fanart.UI
                 layout.FontDescription.Weight = Pango.Weight.Normal;
                 layout.FontDescription.Size = layout.FontDescription.Size + 1;
                 layout.FontDescription.Style = Pango.Style.Normal;
-                context.Context.Color = text_color;
+                context.Context.SetSourceColor (text_color);
                 text_color.A = 1;
 
-                PangoCairoHelper.ShowLayout (context.Context, layout);
+				Pango.CairoHelper.ShowLayout (context.Context, layout);
             }
         }
 
