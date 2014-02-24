@@ -1,5 +1,5 @@
 //
-// Format.cs
+// Pad.cs
 //
 // Author:
 //   Frank Ziegler
@@ -25,20 +25,16 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-
 using System;
 
 namespace Banshee.Streamrecorder.Gst
 {
-
-    public enum Format
-    {
-        Undefined,
-        Default = 1,
-        Bytes = 2,
-        Time = 3,
-        Buffers = 4,
-        Percent = 5
+	public enum PadProbeReturn
+	{
+          GST_PAD_PROBE_DROP,
+          GST_PAD_PROBE_OK,
+          GST_PAD_PROBE_REMOVE,
+          GST_PAD_PROBE_PASS
     }
-
+    
 }

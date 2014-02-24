@@ -1,5 +1,5 @@
 //
-// PadBlockCallback.cs
+// Pad.cs
 //
 // Author:
 //   Frank Ziegler
@@ -34,47 +34,50 @@ using System.Runtime.InteropServices;
 namespace Banshee.Streamrecorder.Gst
 {
 
-    public delegate void PadBlockCallback (IntPtr pad, bool blocked, IntPtr user_data);
+    public delegate PadProbeReturn PadProbeCallback (IntPtr pad, IntPtr probe_info, IntPtr user_data);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal delegate void PadBlockCallbackNative (IntPtr pad, bool blocked, IntPtr user_data);
+    internal delegate PadProbeReturn PadProbeCallbackNative (IntPtr pad, IntPtr probe_info, IntPtr user_data);
 
-    internal class PadBlockCallbackInvoker
+    internal class PadProbeCallbackInvoker
     {
 
-        PadBlockCallbackNative native_cb;
+        PadProbeCallbackNative native_cb;
 
-        ~PadBlockCallbackInvoker ()
+        ~PadProbeCallbackInvoker ()
         {
         }
 
-        internal PadBlockCallbackInvoker (PadBlockCallbackNative native_cb)
+        internal PadProbeCallbackInvoker (PadProbeCallbackNative native_cb)
         {
             this.native_cb = native_cb;
         }
 
-        internal PadBlockCallback Handler {
-            get { return new PadBlockCallback (InvokeNative); }
+        internal PadProbeCallback Handler {
+            get { return new PadProbeCallback (InvokeNative); }
         }
 
-        void InvokeNative (IntPtr pad, bool blocked, IntPtr user_data)
+        PadProbeReturn InvokeNative (IntPtr pad, IntPtr probe_info, IntPtr user_data)
         {
-            native_cb (pad, blocked, user_data);
+            return native_cb (pad, probe_info, user_data);
         }
     }
 
-    internal class PadBlockCallbackWrapper
+    internal class PadProbeCallbackWrapper
     {
 
-        public void NativeCallback (IntPtr pad, bool blocked, IntPtr user_data)
+        public PadProbeReturn NativeCallback (IntPtr pad, IntPtr probe_info, IntPtr user_data)
         {
             try {
-                managed (pad, blocked, user_data);
+                PadProbeReturn ret;
+                ret = managed (pad, probe_info, user_data);
                 if (release_on_call)
                     gch.Free ();
+                return ret;
             } catch (Exception e) {
                 OldGLib.ExceptionManager.RaiseUnhandledException (e, false);
             }
+            return PadProbeReturn.GST_PAD_PROBE_DROP;
         }
 
         bool release_on_call = false;
@@ -86,21 +89,21 @@ namespace Banshee.Streamrecorder.Gst
             gch = GCHandle.Alloc (this);
         }
 
-        internal PadBlockCallbackNative NativeDelegate;
-        PadBlockCallback managed;
+        internal PadProbeCallbackNative NativeDelegate;
+        PadProbeCallback managed;
 
-        public PadBlockCallbackWrapper (PadBlockCallback managed)
+        public PadProbeCallbackWrapper (PadProbeCallback managed)
         {
             this.managed = managed;
             if (managed != null)
-                NativeDelegate = new PadBlockCallbackNative (NativeCallback);
+                NativeDelegate = new PadProbeCallbackNative (NativeCallback);
         }
 
-        public static PadBlockCallback GetManagedDelegate (PadBlockCallbackNative native)
+        public static PadProbeCallback GetManagedDelegate (PadProbeCallbackNative native)
         {
             if (native == null)
                 return null;
-            PadBlockCallbackWrapper wrapper = (PadBlockCallbackWrapper)native.Target;
+            PadProbeCallbackWrapper wrapper = (PadProbeCallbackWrapper)native.Target;
             if (wrapper == null)
                 return null;
             return wrapper.managed;

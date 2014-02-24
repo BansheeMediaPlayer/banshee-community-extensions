@@ -25,6 +25,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+extern alias oldGlib;
+using OldGLib = oldGlib.GLib;
 
 using System;
 using System.Runtime.InteropServices;
@@ -73,7 +75,7 @@ namespace Banshee.Streamrecorder.Gst
                     gch.Free ();
                 return __ret;
             } catch (Exception e) {
-                GLib.ExceptionManager.RaiseUnhandledException (e, false);
+                OldGLib.ExceptionManager.RaiseUnhandledException (e, false);
                 return false;
             }
         }

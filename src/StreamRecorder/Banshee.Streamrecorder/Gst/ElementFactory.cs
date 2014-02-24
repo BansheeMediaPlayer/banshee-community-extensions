@@ -25,6 +25,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+extern alias oldGlib;
+using OldGLib = oldGlib.GLib;
 
 using System;
 using System.Runtime.InteropServices;
@@ -40,35 +42,35 @@ namespace Banshee.Streamrecorder.Gst
         {
         }
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         unsafe private static extern IntPtr gst_element_factory_make (IntPtr factoryname, IntPtr name);
 
         public static Element Make (string factoryname)
         {
-            IntPtr native_factoryname = GLib.Marshaller.StringToPtrGStrdup (factoryname);
+            IntPtr native_factoryname = OldGLib.Marshaller.StringToPtrGStrdup (factoryname);
             IntPtr raw_ret = gst_element_factory_make (native_factoryname, IntPtr.Zero);
-            GLib.Marshaller.Free (native_factoryname);
+            OldGLib.Marshaller.Free (native_factoryname);
             return new Element (raw_ret);
         }
 
         public static Element Make (string factoryname, string name)
         {
-            IntPtr native_factoryname = GLib.Marshaller.StringToPtrGStrdup (factoryname);
-            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+            IntPtr native_factoryname = OldGLib.Marshaller.StringToPtrGStrdup (factoryname);
+            IntPtr native_name = OldGLib.Marshaller.StringToPtrGStrdup (name);
             IntPtr raw_ret = gst_element_factory_make (native_factoryname, native_name);
-            GLib.Marshaller.Free (native_factoryname);
-            GLib.Marshaller.Free (native_name);
+            OldGLib.Marshaller.Free (native_factoryname);
+            OldGLib.Marshaller.Free (native_name);
             return new Element (raw_ret);
         }
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         unsafe private static extern IntPtr gst_element_factory_find (IntPtr name);
 
         public static ElementFactory Find (string name)
         {
-            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+            IntPtr native_name = OldGLib.Marshaller.StringToPtrGStrdup (name);
             ElementFactory element_factory = new ElementFactory (gst_element_factory_find (native_name));
-            GLib.Marshaller.Free (native_name);
+            OldGLib.Marshaller.Free (native_name);
             return element_factory;
         }
 

@@ -25,6 +25,10 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+extern alias oldGlib;
+using OldGLib = oldGlib.GLib;
+
+using System.Runtime.InteropServices;
 
 using System;
 using System.IO;
@@ -86,7 +90,7 @@ namespace Banshee.Streamrecorder
                 if (Marshaller.Initialize ()) {
                     encoders.Add (new Encoder ("None (unchanged stream)", "! identity ", null));
 
-                    has_lame = Marshaller.CheckGstPlugin ("lame") && Marshaller.CheckGstPlugin ("id3v2mux");
+                    has_lame = Marshaller.CheckGstPlugin ("lamemp3enc") && Marshaller.CheckGstPlugin ("id3v2mux");
                     Hyena.Log.Debug ("[Streamrecorder] GstPlugin lame" + (has_lame ? "" : " not") + " found");
                     if (has_lame) encoders.Add (new Encoder (lame_name, lame_pipeline, lame_extension));
 
@@ -128,6 +132,7 @@ namespace Banshee.Streamrecorder
                 }
 
                 encoder_bin = Parse.BinFromDescription (bin_description, true);
+//                Hyena.Log.Debug ("DEBUG bin to string: " + encoder_bin.ToString());
 
                 tagger = new TagSetter (encoder_bin.GetByInterface (TagSetter.GetType ()));
                 file_sink = encoder_bin.GetByName ("file_sink").ToFileSink ();
@@ -136,7 +141,7 @@ namespace Banshee.Streamrecorder
                 file_sink.SetBooleanProperty ("sync", true);
                 file_sink.SetBooleanProperty ("async", false);
 
-                GLib.Object.GetObject (file_sink.ToIntPtr ()).AddNotification ("allow-overwrite", OnAllowOverwrite);
+                OldGLib.Object.GetObject (file_sink.ToIntPtr ()).AddNotification ("allow-overwrite", OnAllowOverwrite);
 
                 ghost_pad = encoder_bin.GetStaticPad ("sink").ToGhostPad ();
 
@@ -153,6 +158,7 @@ namespace Banshee.Streamrecorder
                 Hyena.Log.Debug ("[Recorder] Recorder attached");
             } catch (Exception e) {
                 Hyena.Log.InformationFormat ("[Streamrecorder] An exception occurred during pipeline construction: {0}", bin_description);
+                Hyena.Log.Debug (e.Message);
                 Hyena.Log.Debug (e.StackTrace);
                 return false;
             }
@@ -269,7 +275,7 @@ namespace Banshee.Streamrecorder
         /// <param name="args">
         /// A <see cref="GLib.NotifyArgs"/> -- not used
         /// </param>
-        private void OnAllowOverwrite (object o, GLib.NotifyArgs args)
+        private void OnAllowOverwrite (object o, OldGLib.NotifyArgs args)
         {
             return;
         }
@@ -286,9 +292,8 @@ namespace Banshee.Streamrecorder
             if (outputselector != null && !outputselector.IsNull () && encoder_bin != null && !encoder_bin.IsNull ()) {
                 try {
                     //switch output-selector: set file location and set active pad to filesink
-                    SetNewTrackLocation (output_file + file_extension);
-                    outputselector.SetProperty ("active-pad", new Element (selector_filepad.ToIntPtr ()));
-                    Hyena.Log.Debug ("[Recorder] <StartRecording> Recording started");
+                    SetNewTrackLocation (output_file + file_extension,selector_filepad.ToIntPtr ());
+                    //outputselector.SetProperty ("active-pad", new Element (selector_filepad.ToIntPtr ()));
                     is_recording = true;
                 } catch (Exception e) {
                     is_recording = false;
@@ -305,9 +310,9 @@ namespace Banshee.Streamrecorder
         {
             if (encoder_bin != null && !encoder_bin.IsNull () && outputselector != null && !outputselector.IsNull ()) {
                 try {
-                    //switch output-selector: set file location to /tmp and set active pad to fakesink
-                    SetNewTrackLocation (empty_file);
-                    outputselector.SetProperty ("active-pad", new Element (selector_fakepad.ToIntPtr ()));
+                    //switch output-selector: set file location to /dev/null and set active pad to fakesink
+                    SetNewTrackLocation (empty_file,selector_fakepad.ToIntPtr ());
+                    //outputselector.SetProperty ("active-pad", new Element (selector_fakepad.ToIntPtr ()));
                     //string outputpadparent = new Pad (outputselector.GetProperty ("active-pad")).GetPeer ().GetParent ().GetPathString ();
                     Hyena.Log.Debug ("[Recorder] <StopRecording> Recording stopped");
                     is_recording = false;
@@ -338,7 +343,7 @@ namespace Banshee.Streamrecorder
             if (splitfiles && file_sink != null && track.ArtistName != null && track.ArtistName.Length > 0) {
                 if (track.ArtistName != lastArtist || track.TrackTitle != lastTitle) {
                     SetMetadataFilename (track.TrackTitle, track.ArtistName);
-                    SetNewTrackLocation (output_file + file_extension);
+                    SetNewTrackLocation (output_file + file_extension, IntPtr.Zero);
                 }
             }
 
@@ -363,7 +368,7 @@ namespace Banshee.Streamrecorder
                 if (track.AlbumTitle != null)
                     taglist.AddStringValue (TagMergeMode.ReplaceAll, "album", track.AlbumTitle);
 
-                tagger.MergeTags (taglist, TagMergeMode.ReplaceAll);
+                tagger.MergeTags (taglist, TagMergeMode.KeepAll);
             } catch (Exception e) {
                 Hyena.Log.Information ("[Streamrecorder] An exception occurred during gstreamer operation");
                 Hyena.Log.Debug (e.StackTrace);
@@ -451,29 +456,60 @@ namespace Banshee.Streamrecorder
         /// <param name="new_location">
         /// A <see cref="System.String"/> containing the full new filename and path
         /// </param>
-        private void SetNewTrackLocation (string new_location)
+        private void SetNewTrackLocation (string new_location, IntPtr active_pad)
         {
             try {
                 Pad teepad = ghost_pad.GetPeer ();
-                if (ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing)
+                if (encoder_bin.GetState () == StateChangeReturn.Success &&
+                    ServiceManager.PlayerEngine.CurrentState == PlayerState.Playing)
                 {
-                    teepad.SetBlocked (true);
-                    encoder_bin.SendEvent (Marshaller.NewEOSEvent ());
-                    encoder_bin.SetState (State.Null);
-                    file_sink.Location = new_location;
-                    encoder_bin.SetState (State.Ready);
-                    encoder_bin.SetState (State.Playing);
-                    teepad.SetBlocked (false);
+                    object[] user_objects = new object[3] { teepad.ToIntPtr (), new_location, active_pad };
+                    GCHandle gch = GCHandle.Alloc (user_objects);
+                    IntPtr user_data = GCHandle.ToIntPtr (gch);
+                    ulong probe_id = teepad.AddProbe (PadProbeType.GST_PAD_PROBE_TYPE_BLOCK, SetNewTrackLocationBlocked, user_data, null);
+                    Hyena.Log.Information ("[Streamrecorder] changing location during playing state (probe_id=" + probe_id + ")");
                 } else {
                     encoder_bin.SendEvent (Marshaller.NewEOSEvent ());
                     encoder_bin.SetState (State.Null);
                     file_sink.Location = new_location;
+                    if (active_pad != IntPtr.Zero)
+                        outputselector.SetProperty ("active-pad", new Element (active_pad));
                     encoder_bin.SetState (State.Ready);
                 }
             } catch (Exception e) {
                 Hyena.Log.Information ("[Streamrecorder] An exception occurred during gstreamer operation");
                 Hyena.Log.Debug (e.StackTrace);
             }
+        }
+
+        private PadProbeReturn SetNewTrackLocationBlocked (IntPtr pad, IntPtr probe_info, IntPtr user_data)
+        {
+            Hyena.ThreadAssist.Spawn( delegate () {
+            //Hyena.Log.Information ("[Streamrecorder] changing location blocked" + (Hyena.ThreadAssist.InMainThread ? " in main thread" : " in new thread"));
+            GCHandle gch = GCHandle.FromIntPtr (user_data);
+            object[] user_objects = (object[])gch.Target;
+            PadProbeInfo info = (PadProbeInfo) Marshal.PtrToStructure (probe_info, typeof (PadProbeInfo));
+            Pad teepad = new Pad ((IntPtr) user_objects[0]);
+            string new_location = (string)user_objects [1];
+            IntPtr active_pad = (IntPtr)user_objects [2];
+            encoder_bin.SendEvent (Marshaller.NewEOSEvent ());
+            encoder_bin.SetState (State.Null);
+            if (encoder_bin.GetState () == StateChangeReturn.Success) {
+                //Hyena.Log.Information ("[Streamrecorder] setting new location: " + new_location);
+                file_sink.Location = new_location;
+            } else {
+                Hyena.Log.Debug ("[Streamrecorder] State change failed");
+            }
+            encoder_bin.SetState (State.Playing);
+            teepad.RemoveProbe (info.id);
+            if (active_pad != IntPtr.Zero)
+                outputselector.SetProperty ("active-pad", new Element (active_pad));
+            if (!new_location.Equals (empty_file)) {
+                Hyena.Log.Debug ("[Streamrecorder] <SetNewTrackLocationBlocked> Recording started");
+                is_recording = true;
+                }
+            });
+            return PadProbeReturn.GST_PAD_PROBE_OK;
         }
 
         /// <summary>

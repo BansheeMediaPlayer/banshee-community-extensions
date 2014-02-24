@@ -25,6 +25,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+extern alias oldGlib;
+using OldGLib = oldGlib.GLib;
 
 using System;
 using System.Runtime.InteropServices;
@@ -39,31 +41,31 @@ namespace Banshee.Streamrecorder.Gst
         {
         }
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         unsafe private static extern IntPtr gst_parse_launch (IntPtr bin_description, out IntPtr gerror);
 
         unsafe public static Pipeline Launch (string pipeline_description)
         {
-            IntPtr native_bin_description = GLib.Marshaller.StringToPtrGStrdup (pipeline_description);
+            IntPtr native_bin_description = OldGLib.Marshaller.StringToPtrGStrdup (pipeline_description);
             IntPtr error = IntPtr.Zero;
             IntPtr raw_ret = gst_parse_launch (native_bin_description, out error);
-            GLib.Marshaller.Free (native_bin_description);
+            OldGLib.Marshaller.Free (native_bin_description);
             if (error != IntPtr.Zero)
-                throw new GLib.GException (error);
+                throw new OldGLib.GException (error);
             return new Pipeline (raw_ret);
         }
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         unsafe private static extern IntPtr gst_parse_bin_from_description (IntPtr bin_description, bool ghost_unlinked_pads, out IntPtr gerror);
 
         unsafe public static Bin BinFromDescription (string bin_description, bool ghost_unlinked_pads)
         {
-            IntPtr native_bin_description = GLib.Marshaller.StringToPtrGStrdup (bin_description);
+            IntPtr native_bin_description = OldGLib.Marshaller.StringToPtrGStrdup (bin_description);
             IntPtr error = IntPtr.Zero;
             IntPtr raw_ret = gst_parse_bin_from_description (native_bin_description, ghost_unlinked_pads, out error);
-            GLib.Marshaller.Free (native_bin_description);
+            OldGLib.Marshaller.Free (native_bin_description);
             if (error != IntPtr.Zero)
-                throw new GLib.GException (error);
+                throw new OldGLib.GException (error);
             return new Bin (raw_ret);
         }
 

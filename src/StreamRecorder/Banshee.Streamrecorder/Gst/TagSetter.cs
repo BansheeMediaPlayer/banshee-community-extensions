@@ -25,6 +25,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+extern alias oldGlib;
+using OldGLib = oldGlib.GLib;
 
 using System;
 using System.Runtime.InteropServices;
@@ -39,15 +41,15 @@ namespace Banshee.Streamrecorder.Gst
         {
         }
 
-        [DllImport("libgstreamer-0.10.so.0")]
-        private static extern GLib.GType gst_tag_setter_get_type ();
+        [DllImport("libgstreamer-1.0.so.0")]
+        private static extern OldGLib.GType gst_tag_setter_get_type ();
 
-        public static new GLib.GType GetType ()
+        public static new OldGLib.GType GetType ()
         {
             return gst_tag_setter_get_type ();
         }
 
-        [DllImport("libgstreamer-0.10.so.0")]
+        [DllImport("libgstreamer-1.0.so.0")]
         unsafe private static extern void gst_tag_setter_merge_tags (IntPtr tagsetter, IntPtr taglist, TagMergeMode mode);
 
         public void MergeTags (TagList taglist, Gst.TagMergeMode mode)
