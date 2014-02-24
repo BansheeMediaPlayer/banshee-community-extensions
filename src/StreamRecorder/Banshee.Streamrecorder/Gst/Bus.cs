@@ -25,8 +25,6 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-extern alias oldGlib;
-using OldGLib = oldGlib.GLib;
 
 using System;
 using System.Runtime.InteropServices;
@@ -41,7 +39,7 @@ namespace Banshee.Streamrecorder.Gst
         {
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         public static extern IntPtr gst_bus_pop (IntPtr bus);
 
         protected IntPtr Pop ()
@@ -49,19 +47,19 @@ namespace Banshee.Streamrecorder.Gst
             return gst_bus_pop (raw);
         }
 
-        public OldGLib.Value PopMessageStructure (string name)
+        public GLib.Value PopMessageStructure (string name)
         {
             IntPtr structure = Gst.Marshaller.gst_message_get_structure (Pop ());
             if (structure == IntPtr.Zero) {
-                return new OldGLib.Value (IntPtr.Zero);
+                return new GLib.Value (IntPtr.Zero);
             }
-            IntPtr native_name = OldGLib.Marshaller.StringToPtrGStrdup (name);
-            OldGLib.Value val = Gst.Marshaller.gst_structure_get_value (structure, native_name);
-            OldGLib.Marshaller.Free (native_name);
+            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
+            GLib.Value val = Gst.Marshaller.gst_structure_get_value (structure, native_name);
+            GLib.Marshaller.Free (native_name);
             return val;
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         unsafe public static extern void gst_bus_add_signal_watch (IntPtr bus);
 
         public void AddSignalWatch ()

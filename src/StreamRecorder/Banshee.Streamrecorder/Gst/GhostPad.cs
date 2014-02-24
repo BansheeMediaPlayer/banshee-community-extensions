@@ -25,8 +25,6 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-extern alias oldGlib;
-using OldGLib = oldGlib.GLib;
 
 using System;
 using System.Runtime.InteropServices;
@@ -41,17 +39,17 @@ namespace Banshee.Streamrecorder.Gst
         {
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         unsafe private static extern IntPtr gst_ghost_pad_new (IntPtr name, IntPtr target);
 
         public GhostPad (string name, Pad target) : base(IntPtr.Zero)
         {
-            IntPtr native_name = OldGLib.Marshaller.StringToPtrGStrdup (name);
+            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
             this.raw = gst_ghost_pad_new (native_name, target.ToIntPtr ());
-            OldGLib.Marshaller.Free (native_name);
+            GLib.Marshaller.Free (native_name);
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         unsafe private static extern bool gst_ghost_pad_set_target (IntPtr element, IntPtr target);
 
         public bool SetTarget (Pad target)

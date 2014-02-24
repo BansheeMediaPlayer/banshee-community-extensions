@@ -25,8 +25,6 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-extern alias oldGlib;
-using OldGLib = oldGlib.GLib;
 
 using System;
 using System.Runtime.InteropServices;
@@ -37,7 +35,7 @@ namespace Banshee.Streamrecorder.Gst
     public class TagList : GstObject
     {
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         unsafe private static extern IntPtr gst_tag_list_new ();
 
         protected TagList (IntPtr taglist) : base(taglist)
@@ -48,16 +46,16 @@ namespace Banshee.Streamrecorder.Gst
         {
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
-        unsafe private static extern void gst_tag_list_add_value (IntPtr taglist, TagMergeMode mode, IntPtr tag, ref OldGLib.Value value);
+        [DllImport("libgstreamer-0.10.so.0")]
+        unsafe private static extern void gst_tag_list_add_value (IntPtr taglist, TagMergeMode mode, IntPtr tag, ref GLib.Value value);
 
         public void AddStringValue (TagMergeMode mode, string tag, string value)
         {
-            OldGLib.Value val = new OldGLib.Value (OldGLib.GType.String);
+            GLib.Value val = new GLib.Value (GLib.GType.String);
             val.Val = value;
-            IntPtr native_tag = OldGLib.Marshaller.StringToPtrGStrdup (tag);
+            IntPtr native_tag = GLib.Marshaller.StringToPtrGStrdup (tag);
             gst_tag_list_add_value (raw, mode, native_tag, ref val);
-            OldGLib.Marshaller.Free (native_tag);
+            GLib.Marshaller.Free (native_tag);
         }
 
     }

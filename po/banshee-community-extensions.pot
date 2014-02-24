@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-10 17:02+1100\n"
+"POT-Creation-Date: 2013-02-17 15:05-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -552,12 +552,12 @@ msgid "Restore _defaults"
 msgstr ""
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:127
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:103
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:102
 msgid "_Cancel"
 msgstr ""
 
 #: ../src/Karaoke/Banshee.Karaoke/KaraokeConfigDialog.cs:129
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:105
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:104
 msgid "_Save"
 msgstr ""
 
@@ -1172,36 +1172,36 @@ msgstr ""
 msgid "Play songs from your Top Artists (via Lastfm)"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:89
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:88
 #, csharp-format
 msgid ""
 "{0}Streamrecorder configuration\n"
 "{1}"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:94
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:93
 msgid ""
 "Please select output folder for ripped files and if ripped\n"
 "files should be imported to media library.\n"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:97
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:96
 msgid "Output folder:"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:98
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:97
 msgid "Encoder:"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:100
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:99
 msgid "_Browse"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:107
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:106
 msgid "Import files to media library"
 msgstr ""
 
-#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:109
+#: ../src/StreamRecorder/Banshee.Streamrecorder/StreamrecorderConfigDialog.cs:108
 msgid "Enable automatic files splitting by Metadata"
 msgstr ""
 

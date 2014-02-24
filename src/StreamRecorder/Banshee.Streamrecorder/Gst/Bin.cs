@@ -25,8 +25,6 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-extern alias oldGlib;
-using OldGLib = oldGlib.GLib;
 
 using System;
 using System.Runtime.InteropServices;
@@ -38,7 +36,7 @@ namespace Banshee.Streamrecorder.Gst
     public class Bin : Element
     {
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         private static extern IntPtr gst_bin_new (IntPtr name);
 
         public Bin () : base(gst_bin_new (IntPtr.Zero))
@@ -49,13 +47,13 @@ namespace Banshee.Streamrecorder.Gst
         {
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         private static extern IntPtr gst_bin_iterate_sorted (IntPtr bin);
 
         public override string ToString ()
         {
             IntPtr raw_ret = gst_bin_iterate_sorted (raw);
-            Iterator ret = raw_ret == IntPtr.Zero ? null : (Iterator) OldGLib.Opaque.GetOpaque (raw_ret, typeof (Iterator), false);
+            Iterator ret = raw_ret == IntPtr.Zero ? null : (Iterator) GLib.Opaque.GetOpaque (raw_ret, typeof (Iterator), false);
             IEnumerator e = ret.GetEnumerator ();
             if (e == null) return "null";
             StringBuilder res = new StringBuilder ();
@@ -75,26 +73,26 @@ namespace Banshee.Streamrecorder.Gst
 
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
-        private static extern IntPtr gst_bin_get_by_interface (IntPtr bin, OldGLib.GType iface);
+        [DllImport("libgstreamer-0.10.so.0")]
+        private static extern IntPtr gst_bin_get_by_interface (IntPtr bin, GLib.GType iface);
 
-        public IntPtr GetByInterface (OldGLib.GType iface)
+        public IntPtr GetByInterface (GLib.GType iface)
         {
             return gst_bin_get_by_interface (raw, iface);
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         private static extern IntPtr gst_bin_get_by_name (IntPtr bin, IntPtr name);
 
         public Element GetByName (string name)
         {
-            IntPtr native_name = OldGLib.Marshaller.StringToPtrGStrdup (name);
+            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
             IntPtr raw_ret = gst_bin_get_by_name (raw, native_name);
-            OldGLib.Marshaller.Free (native_name);
+            GLib.Marshaller.Free (native_name);
             return new Element (raw_ret);
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         static extern bool gst_bin_add (IntPtr bin, IntPtr element);
 
         public bool Add (Element element)
@@ -109,7 +107,7 @@ namespace Banshee.Streamrecorder.Gst
             }
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         static extern bool gst_bin_remove (IntPtr bin, IntPtr element);
 
         public bool Remove (Element element)

@@ -33,6 +33,7 @@ namespace Banshee.Streamrecorder.Gst
 
     public enum StateChangeReturn
     {
+
         Failure,
         Success = 1,
         Async = 2,

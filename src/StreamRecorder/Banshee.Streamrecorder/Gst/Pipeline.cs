@@ -39,7 +39,7 @@ namespace Banshee.Streamrecorder.Gst
         {
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         unsafe public static extern IntPtr gst_pipeline_get_bus (IntPtr pipeline);
 
         public Bus GetBus ()

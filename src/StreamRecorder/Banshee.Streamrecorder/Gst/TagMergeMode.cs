@@ -33,6 +33,7 @@ namespace Banshee.Streamrecorder.Gst
 
     public enum TagMergeMode
     {
+
         Undefined,
         ReplaceAll,
         Replace,

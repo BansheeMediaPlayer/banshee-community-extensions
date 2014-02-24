@@ -25,8 +25,6 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-extern alias oldGlib;
-using OldGLib = oldGlib.GLib;
 
 using System;
 using System.Runtime.InteropServices;
@@ -41,7 +39,7 @@ namespace Banshee.Streamrecorder.Gst
         {
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         static extern bool gst_element_remove_pad (IntPtr element, IntPtr pad);
 
         public bool RemovePad (Pad pad)
@@ -50,18 +48,18 @@ namespace Banshee.Streamrecorder.Gst
             return ret;
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         static extern IntPtr gst_element_get_static_pad (IntPtr element, IntPtr name);
 
         public Pad GetStaticPad (string name)
         {
-            IntPtr native_name = OldGLib.Marshaller.StringToPtrGStrdup (name);
+            IntPtr native_name = GLib.Marshaller.StringToPtrGStrdup (name);
             Pad ret = new Pad (gst_element_get_static_pad (raw, native_name));
-            OldGLib.Marshaller.Free (native_name);
+            GLib.Marshaller.Free (native_name);
             return ret;
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         static extern bool gst_element_add_pad (IntPtr element, IntPtr pad);
 
         public bool AddPad (Pad pad)
@@ -69,7 +67,7 @@ namespace Banshee.Streamrecorder.Gst
             return gst_element_add_pad (raw, pad.ToIntPtr ());
         }
 
-        [DllImport("libgstreamer-1.0.so.0", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("libgstreamer-0.10.so.0", CallingConvention = CallingConvention.Cdecl)]
         static extern bool gst_element_link (IntPtr src, IntPtr dest);
 
         public bool Link (Element dest)
@@ -88,7 +86,7 @@ namespace Banshee.Streamrecorder.Gst
             }
         }
 
-        [DllImport("libgstreamer-1.0.so.0", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("libgstreamer-0.10.so.0", CallingConvention = CallingConvention.Cdecl)]
         static extern void gst_element_unlink (IntPtr src, IntPtr dest);
 
         public void Unlink (Element dest)
@@ -96,7 +94,7 @@ namespace Banshee.Streamrecorder.Gst
             gst_element_unlink (raw, dest.ToIntPtr ());
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         static extern int gst_element_set_state (IntPtr element, int state);
 
         public StateChangeReturn SetState (State state)
@@ -106,18 +104,7 @@ namespace Banshee.Streamrecorder.Gst
             return ret;
         }
 
-        [DllImport("libgstreamer-1.0.so.0")]
-        static extern int gst_element_get_state (IntPtr element, IntPtr state, IntPtr pending_state, UInt64 clocktime);
-
-        public StateChangeReturn GetState ()
-        {
-            //18446744073709551615 is infinite
-            int raw_ret = gst_element_get_state (raw, IntPtr.Zero, IntPtr.Zero, 100);
-            StateChangeReturn ret = (StateChangeReturn)raw_ret;
-            return ret;
-        }
-
-        [DllImport("libgstreamer-1.0.so.0")]
+        [DllImport("libgstreamer-0.10.so.0")]
         static extern bool gst_element_send_event (IntPtr element, IntPtr gstevent);
 
         public bool SendEvent (IntPtr gstevent)

@@ -33,6 +33,7 @@ namespace Banshee.Streamrecorder.Gst
 
     public enum Format
     {
+
         Undefined,
         Default = 1,
         Bytes = 2,
