@@ -33,6 +33,7 @@ autom4te.cache/
 bin/
 data/desktop-files/*.desktop
 install-sh
+compile
 libtool
 ltmain.sh
 missing
