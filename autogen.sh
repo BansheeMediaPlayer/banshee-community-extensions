@@ -66,7 +66,7 @@ check_autotool_version pkg-config 0.14.0
 
 run intltoolize --force --copy
 run $LIBTOOLIZE --force --copy --automake
-run aclocal -I build/m4/shamrock -I build/m4/shave -I build/m4/extensions $ACLOCAL_FLAGS
+run aclocal -I build/m4 -I build/m4/shamrock -I build/m4/shave -I build/m4/extensions $ACLOCAL_FLAGS
 run autoconf
 run autoheader
 test -f config.h.in && touch config.h.in
