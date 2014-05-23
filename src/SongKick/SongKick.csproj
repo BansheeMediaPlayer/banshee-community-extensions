@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <ProjectGuid>{460378DF-B87B-4E9A-8B3D-4C5F84D0B733}</ProjectGuid>
     <OutputType>Library</OutputType>
     <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
@@ -38,17 +38,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
-    </Reference>
     <Reference Include="Mono.Posix" />
-    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
-    </Reference>
     <Reference Include="Mono.Cairo" />
-    <Reference Include="Mono.Addins">
-      <Package>mono-addins</Package>
-    </Reference>
+    <Reference Include="Mono.Addins" />
     <Reference Include="Banshee.Core">
       <Package>banshee-core</Package>
     </Reference>
@@ -71,12 +63,11 @@
       <Package>banshee-hyena-gui</Package>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="gtk-sharp">
-      <HintPath>..\..\..\..\..\..\usr\lib\cli\gtk-sharp-2.0\gtk-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="atk-sharp">
-      <HintPath>..\..\..\..\..\..\usr\lib\cli\atk-sharp-2.0\atk-sharp.dll</HintPath>
-    </Reference>
+    <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SongKick.addin.xml">
