@@ -78,6 +78,7 @@ SHAMROCK_CHECK_UNIT_TESTS
 dnl Extensions
 BCE_ALARMCLOCK
 BCE_ALBUMARTWRITER
+BCE_ALBUMMETADATAFIXER
 BCE_AMPACHE
 BCE_ANDROIDREMOTE
 BCE_APPINDICATOR
@@ -141,6 +142,7 @@ src/AssemblyInfo.cs
 
 src/AlarmClock/Makefile
 src/AlbumArtWriter/Makefile
+src/AlbumMetadataFixer/Makefile
 src/Ampache/Makefile
 src/AndroidRemote/Makefile
 src/AppIndicator/Makefile
@@ -212,6 +214,7 @@ ${PACKAGE}-${VERSION}
   Extensions:
     Alarm Clock:           ${enable_AlarmClock}
     AlbumArtWriter:        ${enable_AlbumArtWriter}
+    AlbumMetadataFixer:    ${enable_AlbumMetadataFixer}
     Ampache:               ${enable_Ampache}
     AndroidRemote:         ${enable_AndroidRemote}
     AppIndicator:          ${enable_AppIndicator}

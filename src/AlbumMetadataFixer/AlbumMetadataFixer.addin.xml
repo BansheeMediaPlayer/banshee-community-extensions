@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.AlbumMetadataFixer"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="Copyright © 20114 Marcin Kolny. Licensed under the MIT X11 license."
+    name="Album Metadata Fixer"
+    category="Community Extensions"
+    description="Find tracks with empty album's names and fix it."
+    author="Marcin Kolny"
+    url="http://banshee-project.org/"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Fixup" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/MetadataFix/Solver">
+    <Source class="Banshee.AlbumMetadataFixer.AlbumMetadataFixerSource"/>
+  </Extension>
+
+</Addin>
