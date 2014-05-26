@@ -9,7 +9,7 @@
     description="Find tracks with empty album's names and fix it."
     author="Marcin Kolny"
     url="http://banshee-project.org/"
-    defaultEnabled="false">
+    defaultEnabled="true">
 
   <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
 
@@ -18,7 +18,7 @@
   </Dependencies>
 
   <Extension path="/Banshee/MetadataFix/Solver">
-    <Source class="Banshee.AlbumMetadataFixer.AlbumMetadataFixerSource"/>
+    <Solver class="Banshee.AlbumMetadataFixer.AlbumMetadataFixerSource"/>
   </Extension>
 
 </Addin>

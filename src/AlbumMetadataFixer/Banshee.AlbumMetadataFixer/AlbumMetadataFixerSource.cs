@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using Mono.Unix;
 using Hyena.Data.Sqlite;
 using Banshee.ServiceStack;
+using Banshee.Fixup;
 
 namespace Banshee.AlbumMetadataFixer
 {

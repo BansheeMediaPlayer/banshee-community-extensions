@@ -57,7 +57,7 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.Fixup, Version=1.7.0.0, Culture=neutral">
-      <Package>banshee-fixup</Package>
+      <Package>banshee-extensions</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Banshee.Widgets, Version=1.7.0.0, Culture=neutral">
@@ -83,7 +83,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AlbumMetadataFixer.addin.xml">
+    <EmbeddedResource Include="Banshee.AlbumMetadataFixer.addin.xml">
       <LogicalName>AlbumMetadataFixer.addin.xml</LogicalName>
     </EmbeddedResource>
   </ItemGroup>

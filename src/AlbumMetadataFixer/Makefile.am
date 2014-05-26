@@ -3,7 +3,7 @@ LINK = $(BANSHEE_LIBS)
 
 SOURCES = Banshee.AlbumMetadataFixer/AlbumMetadataFixerSource.cs
 
-RESOURCES = AlbumMetadataFixer.addin.xml
+RESOURCES = Banshee.AlbumMetadataFixer.addin.xml
 
 if ENABLE_ALBUMMETADATAFIXER
 include $(top_srcdir)/build/build.mk
