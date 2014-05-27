@@ -28,7 +28,7 @@ SHAMROCK_FIND_MONO_3_0_COMPILER
 SHAMROCK_FIND_MONO_RUNTIME
 
 dnl Banshee deps
-PKG_CHECK_MODULES(BANSHEE, banshee-fixup >= 2.4.0)
+PKG_CHECK_MODULES(BANSHEE, banshee-thickclient >= 2.4.0)
 AC_SUBST(BANSHEE_LIBS)
 
 dnl Banshee Extensions Path
