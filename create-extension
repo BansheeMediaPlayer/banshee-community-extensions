@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use Getopt::Long;
+
 # Functions
 sub replace {
     my $file = shift;
@@ -10,10 +12,15 @@ sub replace {
 }
 
 # Execution starts here
-my $name = $ARGV[0];
+my $name;
+my $fsharp;
+
+GetOptions ("fsharp" => \$fsharp);
+
+$name = $ARGV[0];
 if (!$name || $name eq '') {
     print "name: $name\n";
-    print "Usage:  ./create-extension EXTENSION_NAME\n\n";
+    print "Usage:  ./create-extension [--fsharp] EXTENSION_NAME\n\n";
     print "Example: ./create-extension AlarmClock\n";
     exit ();
 }
@@ -25,9 +32,16 @@ if ($name !~ m/^[A-Z][a-zA-Z0-9]+$/) {
 
 my $dir = "src/$name";
 
-if (-d $dir || -e dir) {
+if (-d $dir || -e $dir) {
     print "$dir already exists; remove it or choose a new name\n";
     exit ();
+}
+
+my $ext = "cs";
+my $proj_type = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
+if ($fsharp) {
+    $ext = "fs";
+    $proj_type = "{4925A630-B079-445d-BCD4-3A9C94FE9307}";
 }
 
 # TODO ensure the working copy of git is clean
@@ -37,27 +51,27 @@ print ('=' x 80);
 print "\n\n";
 print `mkdir -p $dir`;
 
-print `cp -R build/extension-template/* $dir/`;
+print `cp -R build/extension-templates/$ext/* $dir/`;
 
 # Rename files appropriately
 my $name_source = $name . 'Source';
-print `mv $dir/Banshee.Template/TemplateSource.cs $dir/Banshee.Template/$name_source.cs`;
+print `mv $dir/Banshee.Template/TemplateSource.$ext $dir/Banshee.Template/$name_source.$ext`;
 print `mv $dir/Banshee.Template/ $dir/Banshee.$name`;
 print `mv $dir/Template.addin.xml $dir/$name.addin.xml`;
-print `mv $dir/Template.csproj $dir/$name.csproj`;
+print `mv $dir/Template.${ext}proj $dir/$name.${ext}proj`;
 
 # Replace the GUID
 if (not -f "build/gen-guid.exe") {
     `gmcs build/gen-guid.cs`;
 }
 my $guid = `mono build/gen-guid.exe`; chomp($guid); $guid = uc($guid);
-replace ("$dir/$name.csproj", "TEMPLATE-GUID", $guid);
+replace ("$dir/$name.${ext}proj", "TEMPLATE-GUID", $guid);
 
 # Replace the extension name
-replace ("$dir/Makefile.am",                    "EXTENSION-NAME", $name);
-replace ("$dir/$name.addin.xml",                "EXTENSION-NAME", $name);
-replace ("$dir/$name.csproj",                   "EXTENSION-NAME", $name);
-replace ("$dir/Banshee.$name/$name_source.cs",  "EXTENSION-NAME", $name);
+replace ("$dir/Makefile.am",                        "EXTENSION-NAME", $name);
+replace ("$dir/$name.addin.xml",                    "EXTENSION-NAME", $name);
+replace ("$dir/$name.${ext}proj",                   "EXTENSION-NAME", $name);
+replace ("$dir/Banshee.$name/$name_source.${ext}",  "EXTENSION-NAME", $name);
 
 # Add to configure.ac
 replace ("configure.ac", 'src\\/Makefile', 'src\\/Makefile\nsrc\\/' . $name. '\\/Makefile');
@@ -69,8 +83,8 @@ replace ("src/Makefile.am", $subdirs, $subdirs . ' \n    ' . $name . ' \\\\\\');
 replace ("src/Makefile.am", " \$", "");
 
 # Add to Extensions.sln
-replace ("Extensions.sln", "Studio 2008", 'Studio 2008\n' . 
-         'Project(\"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}\") = \"' . $name . '\", \"src\\\\\\'. $name . '\\\\\\' . $name . '.csproj\", \"{' . $guid . '}\"\nEndProject');
+replace ("Extensions.sln", "Visual Studio 2010", 'Visual Studio 2010\n' .
+         'Project(\"' . $proj_type . '\") = \"' . $name . '\", \"src\\\\\\'. $name . '\\\\\\' . $name . '.' . $ext . 'proj\", \"{' . $guid . '}\"\nEndProject');
 replace ("Extensions.sln", "postSolution", 'postSolution\n'.
         "\t\t{$guid}.Debug|x86.ActiveCfg = Debug|Any CPU".'\n'.
 		"\t\t{$guid}.Debug|x86.Build.0 = Debug|Any CPU".'\n'.
