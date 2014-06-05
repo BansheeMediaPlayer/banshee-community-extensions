@@ -1,4 +1,5 @@
 SUBDIRS = \
+    SongKickGeoLocation \
 	AlarmClock \
 	AlbumArtWriter \
 	AlbumMetadataFixer \
