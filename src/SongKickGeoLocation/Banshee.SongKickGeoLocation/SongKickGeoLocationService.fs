@@ -26,6 +26,8 @@
 
 namespace Banshee.SongKickGeoLocation
 
+open FSharp.Data
+
 open Banshee.ServiceStack
 open Banshee.Sources
 
@@ -37,11 +39,22 @@ open Mono.Addins
 module Constants =
     let NAME = "SongKickGeoLocation"
 
+type GeoLocation = JsonProvider<"./GeoLocationSample.json">
+
 type Service() = 
-    let name = Constants.NAME + ".Service"
+    let name      = Constants.NAME + ".Service"
+    let serverUrl = "https://geoip.fedoraproject.org/city"
 
     interface IExtensionService with
         member this.Initialize() = 
             Log.Information <| name + " is inititalizing"
+            let res =
+                try
+                    Some (GeoLocation.Load(serverUrl))
+                with
+                   | :? System.Net.WebException -> None
+            match res with
+            | Some x -> Log.Information <| x.City
+            | None   -> Log.Information <| GeoLocation.GetSample().City
         member this.Dispose() = ()
-        member this.ServiceName = name 
+        member this.ServiceName = name
