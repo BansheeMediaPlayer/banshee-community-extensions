@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
+Project("{4925A630-B079-445d-BCD4-3A9C94FE9307}") = "AlbumMetadataFixer", "src\AlbumMetadataFixer\AlbumMetadataFixer.fsproj", "{58E5E425-AFD6-4FB3-84D3-F4522E1F1064}"
+EndProject
 Project("{4925A630-B079-445d-BCD4-3A9C94FE9307}") = "SongKickGeoLocation", "src\SongKickGeoLocation\SongKickGeoLocation.fsproj", "{BD3412F5-B9B8-4339-BDF7-F05325A55A63}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanart", "src\Fanart\Fanart.csproj", "{DC53C617-A7B7-4922-A83F-BB2BB906957D}"
@@ -93,8 +95,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FolderSync", "src\FolderSyn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundCloud", "src\SoundCloud\SoundCloud.csproj", "{9B6CC053-4C1A-49BF-B816-F639DAD42920}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlbumMetadataFixer", "src\AlbumMetadataFixer\AlbumMetadataFixer.csproj", "{CFF6A7FF-E614-4F72-B842-33FEFB98F806}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -102,6 +102,10 @@ Global
 		Windows|Any CPU = Windows|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58E5E425-AFD6-4FB3-84D3-F4522E1F1064}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{58E5E425-AFD6-4FB3-84D3-F4522E1F1064}.Debug|x86.Build.0 = Debug|Any CPU
+		{58E5E425-AFD6-4FB3-84D3-F4522E1F1064}.Release|x86.ActiveCfg = Release|Any CPU
+		{58E5E425-AFD6-4FB3-84D3-F4522E1F1064}.Release|x86.Build.0 = Release|Any CPU
 		{BD3412F5-B9B8-4339-BDF7-F05325A55A63}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{BD3412F5-B9B8-4339-BDF7-F05325A55A63}.Debug|x86.Build.0 = Debug|Any CPU
 		{BD3412F5-B9B8-4339-BDF7-F05325A55A63}.Release|x86.ActiveCfg = Release|Any CPU
