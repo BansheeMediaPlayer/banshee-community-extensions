@@ -35,24 +35,13 @@ open Hyena.Data
 open Mono.Addins
 
 module Constants =
-    let SORT = 190
     let NAME = "SongKickGeoLocation"
 
-type Source() as this = 
-    inherit Banshee.Sources.Source (AddinManager.CurrentLocalizer.GetString (Constants.NAME),
-                                    AddinManager.CurrentLocalizer.GetString (Constants.NAME),
-                                    Constants.SORT,
-                                    "extension-unique-id")
-    let name = Constants.NAME + ".Source"
-    do 
-        this.Properties.SetStringList ("Icon.Name", "multimedia-player")
-        Log.DebugFormat ("Instantiating {0}", name)
+type Service() = 
+    let name = Constants.NAME + ".Service"
 
-//type Service() =
-//    let name = Constants.NAME + ".Service"
-//    do Log.DebugFormat ("Instantiating {0}", name)
-//    interface IExtensionService with
-//        member x.Dispose () = ()
-//        member x.ServiceName = name
-//        member x.Initialize () = Log.DebugFormat ("Initializing {0}", name)
-
+    interface IExtensionService with
+        member this.Initialize() = 
+            Log.Information <| name + " is inititalizing"
+        member this.Dispose() = ()
+        member this.ServiceName = name 

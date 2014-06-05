@@ -77,8 +77,7 @@
 
   <!-- Define a Source extension.  This will instantiate a new Source object,
        listed in the left-most Source TreeView. -->
-  <Extension path="/Banshee/SourceManager/Source">
-    <Source class="Banshee.SongKickGeoLocation.Source"/>
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.SongKickGeoLocation.Service"/>
   </Extension>
-
 </Addin>

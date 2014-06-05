@@ -1,7 +1,7 @@
 ASSEMBLY = Banshee.SongKickGeoLocation
 LINK = $(BANSHEE_LIBS)
 
-SOURCES = Banshee.SongKickGeoLocation/SongKickGeoLocationSource.fs
+SOURCES = Banshee.SongKickGeoLocation/SongKickGeoLocationService.fs
 
 RESOURCES = SongKickGeoLocation.addin.xml
 
