@@ -100,6 +100,7 @@ BCE_OPENVP
 BCE_RADIOSTATIONFETCHER
 BCE_RANDOMBYLASTFM
 BCE_SONGKICK
+BCE_SONGKICKGEOLOCATION
 BCE_STREAMRECORDER
 BCE_KARAOKE
 BCE_TELEPATHY
@@ -138,7 +139,6 @@ help/Makefile
 po/Makefile.in
 
 src/Makefile
-src/SongKickGeoLocation/Makefile
 src/AssemblyInfo.cs
 
 src/AlarmClock/Makefile
@@ -186,6 +186,7 @@ src/Mirage/Test/Makefile
 src/RadioStationFetcher/Makefile
 src/RandomByLastfm/Makefile
 src/SongKick/Makefile
+src/SongKickGeoLocation/Makefile
 src/StreamRecorder/Makefile
 src/Telepathy/Makefile
 src/Telepathy/Banshee.Telepathy/Makefile
@@ -213,7 +214,6 @@ ${PACKAGE}-${VERSION}
     User Help:           ${enable_user_help} (requires gnome-doc-utils >= 0.17.3)
 
   Extensions:
-    SongKickGeoLocation: yes
     Alarm Clock:           ${enable_AlarmClock}
     AlbumArtWriter:        ${enable_AlbumArtWriter}
     AlbumMetadataFixer:    ${enable_AlbumMetadataFixer}
@@ -240,6 +240,7 @@ ${PACKAGE}-${VERSION}
     RadioStationFetcher:   ${enable_RadioStationFetcher}
     RandomByLastfm:        ${enable_RandomByLastfm}
     SongKick:              ${enable_Songkick}
+    SongKickGeoLocation:   ${enable_SongKickGeoLocation}
     StreamRecorder:        ${enable_StreamRecorder}
     Telepathy:             ${enable_Telepathy}
     ZeitgeistDataprovider: ${enable_ZeitgeistDataprovider}

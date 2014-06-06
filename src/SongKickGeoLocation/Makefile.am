@@ -7,7 +7,11 @@ RESOURCES = SongKickGeoLocation.addin.xml
 
 XBUILD = xbuild
 
+if ENABLE_SONGKICKGEOLOCATION
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif
 
 $(ASSEMBLY_FILE): $(SOURCES_BUILD) $(RESOURCES_EXPANDED) $(DEP_LINK)
 	@mkdir -p $(top_builddir)/bin

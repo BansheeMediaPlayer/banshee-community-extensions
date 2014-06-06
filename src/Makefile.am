@@ -1,6 +1,5 @@
 SUBDIRS = \
-    SongKickGeoLocation \
-	AlarmClock \
+    AlarmClock \
 	AlbumArtWriter \
 	AlbumMetadataFixer \
 	Ampache \
@@ -25,6 +24,7 @@ SUBDIRS = \
 	RadioStationFetcher \
 	RandomByLastfm \
 	SongKick \
+	SongKickGeoLocation \
 	StreamRecorder \
 	Telepathy \
 	ZeitgeistDataprovider
