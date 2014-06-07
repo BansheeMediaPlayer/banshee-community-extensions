@@ -77,9 +77,15 @@
 
   <!-- Define a Source extension.  This will instantiate a new Source object,
        listed in the left-most Source TreeView. -->
+
+  <ExtensionPoint path="/Banshee/GeoLocation/CityProvider">
+	<ExtensionNode name="CityProvider"/>
+  </ExtensionPoint>
+
   <Extension path="/Banshee/SourceManager/Source">
     <Source class="Banshee.SongKick.SongKickSource"/>
   </Extension>
+
   <Extension path="/Banshee/ServiceManager/Service">
     <Service class="Banshee.SongKick.Network.SongKickService"/>
   </Extension>
