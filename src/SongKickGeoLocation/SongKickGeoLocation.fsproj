@@ -51,6 +51,9 @@
     <Reference Include="Banshee.Widgets, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-thickclient</Package>
     </Reference>
+    <Reference Include="Banshee.SongKick">
+      <HintPath>..\..\bin\Banshee.SongKick.dll</HintPath>
+    </Reference>
     <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>gtk-sharp-3.0</Package>
     </Reference>
