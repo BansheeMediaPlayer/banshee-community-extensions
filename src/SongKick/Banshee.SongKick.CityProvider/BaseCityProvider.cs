@@ -24,10 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace Banshee.SongKick.Network
+namespace Banshee.SongKick.CityProvider
 {
     public abstract class BaseCityProvider
     {
+        public abstract void   GetData();
         public abstract string CityName { get; }
     }
 }

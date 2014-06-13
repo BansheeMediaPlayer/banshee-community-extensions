@@ -126,7 +126,9 @@
     <Compile Include="Banshee.SongKick.UI\SearchArtistsBox.cs" />
     <Compile Include="Banshee.SongKick.Network\SongKickDownloader.cs" />
     <Compile Include="Banshee.SongKick.Search\Query.cs" />
-    <Compile Include="Banshee.SongKick.Network\BaseCityProvider.cs" />
+    <Compile Include="Banshee.SongKick.CityProvider\BaseCityProvider.cs" />
+    <Compile Include="Banshee.SongKick.CityProvider\CityProviderManager.cs" />
+    <Compile Include="Banshee.SongKick.CityProvider\ICityObserver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -150,5 +152,6 @@
     <Folder Include="Banshee.SongKick.UI\" />
     <Folder Include="Banshee.SongKick.Search\" />
     <Folder Include="Resources\" />
+    <Folder Include="Banshee.SongKick.CityProvider\" />
   </ItemGroup>
 </Project>
