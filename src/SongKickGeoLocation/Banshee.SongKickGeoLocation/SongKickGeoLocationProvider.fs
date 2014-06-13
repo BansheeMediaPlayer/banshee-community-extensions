@@ -2,9 +2,9 @@
 // SongKickGeoLocationSource.fs 
 //
 // Authors:
-//   Cool Extension Author <cool.extension@author.com>
+//   Dmitrii Petukhov <dimart.sp@gmail.com>
 //
-// Copyright (C) 2011 Cool Extension Author
+// Copyright (C) 2014 Dmitrii Petukhov
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ namespace Banshee.SongKickGeoLocation
 
 open FSharp.Data
 
+open Banshee.SongKick.CityProvider;
 open Banshee.ServiceStack
 open Banshee.Sources
 
@@ -41,20 +42,20 @@ module Constants =
 
 type GeoLocation = JsonProvider<"./GeoLocationSample.json">
 
-type Service() = 
-    let name      = Constants.NAME + ".Service"
-    let serverUrl = "https://geoip.fedoraproject.org/city"
+type Provider() = 
+    inherit BaseCityProvider()
 
-    interface IExtensionService with
-        member this.Initialize() = 
-            Log.Information <| name + " is inititalizing"
-            let res =
-                try
-                    Some (GeoLocation.Load(serverUrl))
-                with
-                   | :? System.Net.WebException -> None
-            match res with
-            | Some x -> Log.Information <| x.City
-            | None   -> Log.Information <| GeoLocation.GetSample().City
-        member this.Dispose() = ()
-        member this.ServiceName = name
+    let name        = Constants.NAME + ".Service"
+    let serverUrl   = "https://geoip.fedoraproject.org/city"
+    let mutable res = None;
+
+    override this.CityName
+      with get() = 
+        match res with
+            | Some x -> (x : GeoLocation.Root).City;
+            | None   -> GeoLocation.GetSample().City
+    
+    override this.GetData() = 
+        res <-
+             try Some (GeoLocation.Load(serverUrl))
+             with :? System.Net.WebException -> None

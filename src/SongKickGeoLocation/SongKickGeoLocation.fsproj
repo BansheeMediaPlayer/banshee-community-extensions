@@ -75,7 +75,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Banshee.SongKickGeoLocation\SongKickGeoLocationService.fs" />
+    <Compile Include="Banshee.SongKickGeoLocation\SongKickGeoLocationProvider.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
   <ItemGroup>
