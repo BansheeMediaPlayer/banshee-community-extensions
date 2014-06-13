@@ -55,7 +55,7 @@ type Provider() =
             | Some x -> (x : GeoLocation.Root).City;
             | None   -> GeoLocation.GetSample().City
     
-    override this.GetData() = 
+    override this.UpdateData() = 
         res <-
              try Some (GeoLocation.Load(serverUrl))
              with :? System.Net.WebException -> None
