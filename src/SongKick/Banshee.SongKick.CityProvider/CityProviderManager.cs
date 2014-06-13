@@ -2,9 +2,9 @@
 // CityProviderManager.cs
 //
 // Author:
-//   dmitrii <>
+//   Dmitrii Petukhov <dimart.sp@gmail.com>
 //
-// Copyright (c) 2014 dmitrii
+// Copyright (c) 2014 Dmitrii Petukhov
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -37,13 +37,12 @@ namespace Banshee.SongKick.CityProvider
     {
         private static List<ICityObserver> cityObservers = new List<ICityObserver>();
 
-        private static bool hasProvider;
         public static bool HasProvider {
-            get { return hasProvider; }
+            get { return provider != null; }
         }
 
         private static BaseCityProvider provider;
-        public static BaseCityProvider CityProvider {
+        public static BaseCityProvider GetProvider {
             get { return provider; }
         }
 
@@ -52,40 +51,39 @@ namespace Banshee.SongKick.CityProvider
             Mono.Addins.AddinManager.AddExtensionNodeHandler ("/Banshee/GeoLocation/CityProvider", OnUpdated);
         }
 
-        public static void OnUpdated (object o, ExtensionNodeEventArgs args)
+        private static void OnUpdated (object o, ExtensionNodeEventArgs args)
         {
             TypeExtensionNode node = (TypeExtensionNode)args.ExtensionNode;
 
             if (args.Change == ExtensionChange.Add) {
                 provider = (BaseCityProvider)node.CreateInstance ();
-                hasProvider = true;
                 ThreadAssist.SpawnFromMain (() => {
-                    provider.GetData();
+                    provider.UpdateData();
                     NotifyObservers ();
                 });
             } else {
                 provider = null;
-                hasProvider = false;
-                cityObservers.ForEach ((x) => x.UpdateCity ("Type your query"));
             }
         }
 
-        public static void RegisterMe (ICityObserver o)
+        public static void Register (ICityObserver o)
         {
             cityObservers.Add (o);
             NotifyObservers ();
         }
 
-        public static void DetachMe (ICityObserver o)
+        public static void Detach (ICityObserver o)
         {
             cityObservers.Remove (o);
         }
 
         private static void NotifyObservers () 
         {
-            foreach (ICityObserver o in cityObservers)
-            {
-                o.UpdateCity (provider.CityName);
+            if (HasProvider) {
+                foreach (ICityObserver o in cityObservers)
+                {
+                    o.UpdateCity (provider.CityName);
+                }
             }
         }
     }

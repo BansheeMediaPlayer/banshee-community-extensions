@@ -29,6 +29,7 @@ using Banshee.Widgets;
 using Mono.Unix;
 using Banshee.SongKick.Search;
 using Banshee.SongKick.Recommendations;
+using Banshee.SongKick.Network;
 using Banshee.SongKick.CityProvider;
 using Hyena;
 
@@ -59,7 +60,7 @@ namespace Banshee.SongKick.UI
             search_entry.Activated += (o, a) => { search_button.Activate (); };
 
             if (this.GetType() == typeof(SearchBar<Location>)) {
-                CityProviderManager.RegisterMe (this);
+                CityProviderManager.Register (this);
             }
 
             PackStart (search_entry, true, true, 2);
@@ -90,7 +91,7 @@ namespace Banshee.SongKick.UI
 
         public void UpdateCity (string cityName)
         {
-            this.search_entry.EmptyMessage = cityName;
+            this.search_entry.Text = cityName;
         }
     }
 }
