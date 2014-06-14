@@ -23,20 +23,99 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+using System.Collections.Generic;
+
+using Mono.Unix;
+
 using Banshee.ServiceStack;
-using Banshee.SongKick.Recommendations;
+using Banshee.Networking;
+using Banshee.Sources;
+
 using Hyena.Jobs;
+
+using Banshee.SongKick.Recommendations;
+using Banshee.SongKick.Search;
+using Banshee.SongKick.CityProvider;
+
 
 namespace Banshee.SongKick.Network
 {
-    // NOTE: This service is run by default, but doesn't do anything
-    public class SongKickService : IExtensionService
+    public class SongKickService : IExtensionService, ICityObserver
     {
         //Scheduler scheduler = new Scheduler ();
+        private string current_city_name = "";
+        private uint refresh_timeout_id = 0;
 
         public SongKickService ()
         {
+            CityProviderManager.Register (this);
+
+            // Every 20 sec try to refresh again
+            refresh_timeout_id = Application.RunTimeout (1000 * 20, RefreshLocalConcertsList);
+        }
+
+        private bool RefreshLocalConcertsList()
+        {
+            Hyena.Log.Debug ("Refreshing list of local concerts");
+            Banshee.Kernel.Scheduler.Schedule (new Banshee.Kernel.DelegateJob (delegate {
+                DateTime now = DateTime.Now;
+                var search = new EventsByArtistSearch ();
+                var recommended_artists = new Search.RecommendationProvider ().getRecommendations ();
+
+                foreach (RecommendedArtist artist in recommended_artists) {
+                    search.GetResultsPage (new Banshee.SongKick.Search.Query (null, artist.Name));
+                    foreach (var res in search.ResultsPage.results) {
+                        if (IsItMyCity(res.Location.Name)) {
+                            Hyena.Log.InformationFormat ("This gig takes place in your city: {0} ", res.DisplayName);
+
+                            foreach(var src in ServiceManager.SourceManager.Sources) {
+                                if (src is SongKickSource) {
+                                    var msg = new SourceMessage(src);
+                                    msg.ClearActions();
+                                    msg.Text = String.Format("This gig takes place in your city: {0}!", res.DisplayName);
+                                    msg.CanClose = true;
+                                    msg.AddAction (new MessageAction (Catalog.GetString ("More info"), delegate {
+                                        System.Diagnostics.Process.Start (res.Uri);
+                                        msg.IsHidden = true;
+                                    }));
+                                    src.PushMessage(msg);
+                                    src.NotifyUser();
+                                }
+                            }
+                            }
+                        }
+                    }
+            }));
+            return true;
+        }
+
+        private bool IsItMyCity (string x) {
+            //ex: Mountain View, CA, US
+            //ex: Madrid, Spain
+            //ex: St. Petersburg, Russian Federation
+            var subs = x.Split(',');
+            foreach (var sub in subs) {
+                //ex: "Madrid" && " Spain"
+                //ex: "Mountain View" && " CA" && " US"
+                //ex: "St. Petersburg" && " Russian Federation"
+                if (current_city_name.Contains (sub)) {
+                    return true;
+                } else if (sub.Contains(". ")) {
+                    var subsub = sub.Split ('.');
+                    foreach (var item in subsub) {
+                        if (current_city_name.Contains (item))
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public void UpdateCity (string cityName)
+        {
+            current_city_name = cityName;
         }
 
         public string ServiceName {
