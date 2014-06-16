@@ -40,8 +40,6 @@ namespace Banshee.SongKick.UI
     {
         const int sort_order = 195;
 
-        private SongKickSource sk_source;
-
         public Results<Event> Events { get; private set; }
         public LocalEventsView view;
 
