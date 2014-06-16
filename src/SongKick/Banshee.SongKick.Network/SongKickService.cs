@@ -142,6 +142,7 @@ namespace Banshee.SongKick.Network
         public void UpdateCity (string cityName)
         {
             current_city_name = cityName;
+            RefreshLocalConcertsList ();
         }
 
         public void Initialize ()
