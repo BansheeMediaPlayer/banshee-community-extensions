@@ -77,7 +77,8 @@ namespace Banshee.SongKick.Network
 
         private bool RefreshLocalConcertsList()
         {
-            if (!ServiceManager.Get<Networking.Network> ().Connected)
+            if (!ServiceManager.Get<Networking.Network> ().Connected ||
+                !CityProviderManager.HasProvider)
                 return true;
 
             Hyena.Log.Debug ("Refreshing list of local concerts");
