@@ -176,6 +176,10 @@ namespace Banshee.SongKick.Network
 
             ServiceManager.Get<Networking.Network> ().StateChanged -= OnNetworkStateChanged;
         }
+
+        public string ServiceName {
+            get { return "SongKickService"; }
+        }
     }
 }
 
