@@ -61,6 +61,12 @@ namespace Banshee.SongKick.UI
             this.PackStart (event_search_view, true, true, 2);
         }
 
+        public void SetModel (SortableMemoryListModel<T> model)
+        {
+            event_model = model;
+            event_search_view.SetModel (event_model);
+        }
+
         public void Search(long? id, string queryString) {
             var searchQuery = new Banshee.SongKick.Search.Query(id, queryString);
             event_search_bar.PerformSearch (searchQuery);
