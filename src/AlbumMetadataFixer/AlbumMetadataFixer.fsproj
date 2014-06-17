@@ -66,9 +66,6 @@
     <Reference Include="Hyena.Data.Sqlite, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-hyena-data-sqlite</Package>
     </Reference>
-    <Reference Include="Hyena.Gui, Version=2.9.0.0, Culture=neutral">
-      <Package>banshee-hyena-gui</Package>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.AlbumMetadataFixer/AlbumMetadataFixerSource.fs" />
