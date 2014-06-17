@@ -28,6 +28,7 @@ namespace Banshee.AlbumMetadataFixer
 
 open System;
 open System.Linq;
+open System.Xml;
 open System.Collections.Generic;
 open Mono.Unix;
 open Hyena.Data.Sqlite;
@@ -50,9 +51,23 @@ type AlbumMetadataFixerSource () =
                 WHERE IFNULL((SELECT Title from CoreAlbums where AlbumID = CoreTracks.AlbumID), '') = ''
                     GROUP BY TrackID 
                     ORDER BY Title"));
-    override this.IdentifyCore () = 
-          ServiceManager.DbConnection.Execute ("DELETE FROM CoreAlbums WHERE AlbumID NOT IN (SELECT DISTINCT(AlbumID) FROM CoreTracks)") |> ignore;
-          ServiceManager.DbConnection.Execute (find_cmd, this.Generation) |> ignore;
+
+    // sample usage: AlbumMetadataFixerSource.GetAlbumTitle("http://musicbrainz.org/ws/1/track/?type=xml&artist=Sonata%20Arctica&title=Destruction%20Preventer");
+    static member GetAlbumTitle (url : String) : String =
+        let mutable album_name = Unchecked.defaultof<String>;
+        let reader = new XmlTextReader (url);
+        while reader.Read() && album_name = Unchecked.defaultof<String> do 
+            if reader.Name = "release" then
+                reader.Read () |> ignore;
+                while reader.Name <> "release" && album_name = Unchecked.defaultof<String> do
+                    if reader.Name = "title" then
+                        album_name <- reader.ReadString ();
+            reader.Read();
+        album_name;                
+        
+    override this.IdentifyCore () =              
+        ServiceManager.DbConnection.Execute ("DELETE FROM CoreAlbums WHERE AlbumID NOT IN (SELECT DISTINCT(AlbumID) FROM CoreTracks)") |> ignore;
+        ServiceManager.DbConnection.Execute (find_cmd, this.Generation) |> ignore;
 
     override this.Fix (problems) =
         for problem in problems do

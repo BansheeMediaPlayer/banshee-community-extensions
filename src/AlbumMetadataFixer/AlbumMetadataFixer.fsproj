@@ -37,6 +37,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+	<Reference Include="System.Xml" />
     <Reference Include="Banshee.Core, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-core</Package>
     </Reference>
