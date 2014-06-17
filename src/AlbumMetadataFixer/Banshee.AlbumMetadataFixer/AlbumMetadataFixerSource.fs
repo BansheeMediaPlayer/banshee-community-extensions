@@ -51,10 +51,10 @@ type AlbumMetadataFixerSource () =
                     GROUP BY TrackID 
                     ORDER BY Title"));
     override this.IdentifyCore () = 
-          ServiceManager.DbConnection.Execute ("DELETE FROM CoreAlbums WHERE AlbumID NOT IN (SELECT DISTINCT(AlbumID) FROM CoreTracks)");
-          ServiceManager.DbConnection.Execute (find_cmd, this.Generation);
+          ServiceManager.DbConnection.Execute ("DELETE FROM CoreAlbums WHERE AlbumID NOT IN (SELECT DISTINCT(AlbumID) FROM CoreTracks)") |> ignore;
+          ServiceManager.DbConnection.Execute (find_cmd, this.Generation) |> ignore;
 
     override this.Fix (problems) =
         for problem in problems do
-            ServiceManager.DbConnection.Execute (@"UPDATE CoreAlbums SET Title = ? WHERE AlbumID = ?;", new_album_name, problem.ObjectIds. [0]);
+            ServiceManager.DbConnection.Execute (@"UPDATE CoreAlbums SET Title = ? WHERE AlbumID = ?;", new_album_name, problem.ObjectIds. [0]) |> ignore;
             
