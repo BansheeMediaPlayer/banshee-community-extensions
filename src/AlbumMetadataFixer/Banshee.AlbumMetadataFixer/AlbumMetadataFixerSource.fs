@@ -33,7 +33,7 @@ open Mono.Unix;
 open Hyena.Data.Sqlite;
 open Banshee.ServiceStack;
 
-type AlbumMetadataFixerSource () as this = 
+type AlbumMetadataFixerSource () = 
     inherit Banshee.Fixup.Solver()
         do
             base.Id <- "empty-albums";
@@ -44,7 +44,7 @@ type AlbumMetadataFixerSource () as this =
             INSERT INTO MetadataProblems (ProblemType, TypeOrder, Generation, SolutionOptions, ObjectIds)
                 SELECT
                     'empty-albums', 1, ?,
-                    Title || ',' || (SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID),
+                     Title || ',' || IFNULL((SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID), ''),
                     AlbumID || ',' || TrackID
                 FROM CoreTracks
                 WHERE IFNULL((SELECT Title from CoreAlbums where AlbumID = CoreTracks.AlbumID), '') = ''
@@ -53,18 +53,8 @@ type AlbumMetadataFixerSource () as this =
     override this.IdentifyCore () = 
           ServiceManager.DbConnection.Execute ("DELETE FROM CoreAlbums WHERE AlbumID NOT IN (SELECT DISTINCT(AlbumID) FROM CoreTracks)");
           ServiceManager.DbConnection.Execute (find_cmd, this.Generation);
-          let q = ServiceManager.DbConnection.QueryEnumerable<string> (new HyenaSqliteCommand (String.Format(@"SELECT
-                    Title || ',' || (SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID)
-                FROM CoreTracks
-                WHERE IFNULL((SELECT Title from CoreAlbums where AlbumID = CoreTracks.AlbumID), '') = ''
-                    GROUP BY TrackID 
-                    ORDER BY Title")));
-                    
-          for itt in q do
-            printfn "%s" itt;
-          printfn "xx"
+
     override this.Fix (problems) =
         for problem in problems do
-            ServiceManager.DbConnection.Execute (
-            @"UPDATE CoreAlbums SET Title = ? WHERE AlbumID = ?;",
-            new_album_name, problem.ObjectIds. [0]);
+            ServiceManager.DbConnection.Execute (@"UPDATE CoreAlbums SET Title = ? WHERE AlbumID = ?;", new_album_name, problem.ObjectIds. [0]);
+            
