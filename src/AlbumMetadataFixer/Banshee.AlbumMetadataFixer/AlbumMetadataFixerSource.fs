@@ -52,8 +52,8 @@ type AlbumMetadataFixerSource () =
                     GROUP BY TrackID 
                     ORDER BY Title"));
 
-    // sample usage: AlbumMetadataFixerSource.GetAlbumTitle("http://musicbrainz.org/ws/1/track/?type=xml&artist=Sonata%20Arctica&title=Destruction%20Preventer");
-    static member GetAlbumTitle (url : String) : String =
+    static member GetAlbumTitle (artist : String, title : String) : String =
+        let url = String.Format("http://musicbrainz.org/ws/1/track/?type=xml&artist={0}&title={1}", artist, title);
         let mutable album_name = Unchecked.defaultof<String>;
         let reader = new XmlTextReader (url);
         while reader.Read() && album_name = Unchecked.defaultof<String> do 
@@ -71,5 +71,7 @@ type AlbumMetadataFixerSource () =
 
     override this.Fix (problems) =
         for problem in problems do
-            ServiceManager.DbConnection.Execute (@"UPDATE CoreAlbums SET Title = ? WHERE AlbumID = ?;", new_album_name, problem.ObjectIds. [0]) |> ignore;
+            let track_info = problem.SolutionOptions. [0].Split(',');
+            ServiceManager.DbConnection.Execute (@"UPDATE CoreAlbums SET Title = ? WHERE AlbumID = ?;",
+                AlbumMetadataFixerSource.GetAlbumTitle(track_info. [1], track_info. [0]), problem.ObjectIds. [0]) |> ignore;
             
