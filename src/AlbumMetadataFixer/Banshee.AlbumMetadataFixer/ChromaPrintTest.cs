@@ -29,9 +29,16 @@ namespace AlbumMetadataFixer
             {
                 switch (args.Message.Type) {
                 case MessageType.Eos:
-                    Console.WriteLine ("EOS!");
-                    Console.WriteLine ("FingerPrint: " + chroma_print ["fingerprint"] ?? "null value");
                     Loop.Quit();
+                    break;
+                case MessageType.Tag:
+                    TagList tags = args.Message.ParseTag();
+                    string fingerprint;
+                    tags.GetString("chromaprint-fingerprint", out fingerprint);
+
+                    if (fingerprint != null)
+                        Console.WriteLine("Fingerprint: " + fingerprint);
+
                     break;
                 }
             };
@@ -54,6 +61,7 @@ namespace AlbumMetadataFixer
             chroma_print.AddNotification ((o, arg) => {
                 // todo: Why it doesn't work? Probably some kind of a bug in chromaprint element?
                 // todo: check it.
+                // todo: checked: there is no `notify` on property change
                 var e = o as Element;
                 if (e == null || e.Name != "processor" || arg.Property != "fingerprint") {
                     return;
