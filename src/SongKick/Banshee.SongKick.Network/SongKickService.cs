@@ -130,6 +130,7 @@ namespace Banshee.SongKick.Network
             }
 
             events_source.view.UpdateEvents (local_events);
+            events_source.NotifyUser ();
 
             foreach (var e in local_events) {
                 var notification = new Notification ();
