@@ -39,9 +39,23 @@ namespace AlbumMetadataFixer
 
             System.Xml.XmlNodeList results = doc.SelectNodes ("/response/results/result");
 
+            double current_score = 0;
+            string current_id = string.Empty;
+
             foreach (System.Xml.XmlNode result in results) {
-                Console.WriteLine ("Score: {0}, ID: {1}", result ["score"].InnerText, result ["id"].InnerText);
+                double score;
+
+                if (result ["score"] == null || result ["id"] == null || !double.TryParse (result ["score"].InnerText, out score)) {
+                    continue;
+                }
+
+                if (score > current_score) {
+                    current_score = score;
+                    current_id = result ["id"].InnerText;
+                }
             }
+
+            Console.WriteLine ("ID: {0}", current_id);
         }
 
         public static void Main(string[] argv)
