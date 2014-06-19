@@ -6,7 +6,44 @@ namespace AlbumMetadataFixer
     class ChromaPrintTest
     {
         static GLib.MainLoop Loop;
-        
+        static long duration = -1;
+        static string fingerprint = null;
+
+        static void ProcessFingerprint ()
+        {
+            if (fingerprint == null || duration == -1) {
+                Console.WriteLine ("Fingerprint or duration unavialable yet");
+                return;
+            }
+
+            string key = "8XaBELgH"; // todo: it's example key. Banshee should be registered in acoustID system.
+            string url = string.Format ("http://api.acoustid.org/v2/lookup?format=xml&client={0}&duration={1}&fingerprint={2}", key, duration, fingerprint);
+
+            var reader = new System.Xml.XmlTextReader (url);
+            var doc = new System.Xml.XmlDocument ();
+            doc.Load (reader);
+            Console.WriteLine (url);
+            System.Xml.XmlNode status = doc.SelectSingleNode ("/response/status");
+
+            if (status == null) {
+                Console.WriteLine ("Cannot read response's status");
+                return;
+            }
+
+            string response_status = status.InnerText;
+
+            if (response_status != "ok") {
+                Console.WriteLine ("Invalid response status. Expected 'ok', but is: `{0}`", response_status);
+                return;
+            }
+
+            System.Xml.XmlNodeList results = doc.SelectNodes ("/response/results/result");
+
+            foreach (System.Xml.XmlNode result in results) {
+                Console.WriteLine ("Score: {0}, ID: {1}", result ["score"].InnerText, result ["id"].InnerText);
+            }
+        }
+
         public static void Main(string[] argv)
         {
             if (argv.Length < 1) {
@@ -28,17 +65,25 @@ namespace AlbumMetadataFixer
             pipeline.Bus.Message += (o, args) =>
             {
                 switch (args.Message.Type) {
+                case MessageType.DurationChanged:
+                    bool ok = pipeline.QueryDuration (Format.Time, out duration);
+                    if (ok) {
+                        duration /= Gst.Constants.SECOND;
+                        Console.WriteLine ("Duration: {0}", duration);
+                        ProcessFingerprint ();
+                    }
+                    break;
                 case MessageType.Eos:
                     Loop.Quit();
                     break;
                 case MessageType.Tag:
                     TagList tags = args.Message.ParseTag();
-                    string fingerprint;
                     tags.GetString("chromaprint-fingerprint", out fingerprint);
 
-                    if (fingerprint != null)
+                    if (fingerprint != null) {
                         Console.WriteLine("Fingerprint: " + fingerprint);
-
+                        ProcessFingerprint ();
+                    }
                     break;
                 }
             };
@@ -77,6 +122,7 @@ namespace AlbumMetadataFixer
             };
 
             pipeline.SetState (State.Playing);
+
             Loop.Run();
         }
     }
