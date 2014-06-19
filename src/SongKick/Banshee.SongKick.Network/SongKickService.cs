@@ -90,6 +90,7 @@ namespace Banshee.SongKick.Network
                     search.GetResultsPage (new Search.Query (null, artist.Name));
                     foreach (var res in search.ResultsPage.results) {
                         if (IsItMyCity(res.Location.Name) && !local_events.Contains(res)) {
+                            res.ArtistName = artist.Name;
                             local_events.Add(res);
                         }
                     }
@@ -134,8 +135,8 @@ namespace Banshee.SongKick.Network
 
             foreach (var e in local_events) {
                 var notification = new Notification ();
-                notification.Body = e.DisplayName;
-                notification.Summary = String.Format ("SongKick found a gig near you!");
+                notification.Body = String.Format ("{0} in {1} on {2}", e.ArtistName, current_city_name, e.StartDateTime);
+                notification.Summary = "SongKick found a gig near you!";
                 notification.Icon = Gdk.Pixbuf.LoadFromResource ("songkick_logo_300x300.png");
                 notification.Show ();
             }
