@@ -136,6 +136,7 @@ namespace Banshee.SongKick.Network
                 var notification = new Notification ();
                 notification.Body = e.DisplayName;
                 notification.Summary = String.Format ("New event in {0}!", current_city_name);
+                notification.Icon = Gdk.Pixbuf.LoadFromResource ("songkick_logo_300x300.png");
                 notification.Show ();
             }
         }
