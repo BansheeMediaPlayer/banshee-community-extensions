@@ -53,6 +53,7 @@ namespace Banshee.SongKick.Network
         private Results<Event> local_events = new Results<Event> ();
 
         private LocalEventsSource events_source;
+        private Gtk.Window banshee_window;
 
         public SongKickService ()
         {
@@ -68,6 +69,12 @@ namespace Banshee.SongKick.Network
 
                 ServiceManager.Get<Networking.Network> ().StateChanged += OnNetworkStateChanged;
             });
+
+            foreach (var w in Gtk.Window.ListToplevels()) {
+                if (w is Banshee.Gui.BaseClientWindow) {
+                    banshee_window = w;
+                }
+            }
         }
 
         private void OnNetworkStateChanged (object o, NetworkStateChangedArgs args)
@@ -131,7 +138,12 @@ namespace Banshee.SongKick.Network
             }
 
             events_source.view.UpdateEvents (local_events);
-            events_source.NotifyUser ();
+
+            if (banshee_window.Focus.HasFocus) {
+                events_source.NotifyUser ();
+            } else {
+                banshee_window.Focus.FocusInEvent += OnFocusInEvent;
+            }
 
             foreach (var e in local_events) {
                 var notification = new Notification ();
@@ -152,6 +164,12 @@ namespace Banshee.SongKick.Network
         {
             current_city_name = cityName;
             RefreshLocalConcertsList ();
+        }
+
+        private void OnFocusInEvent(object o, Gtk.FocusInEventArgs args)
+        {
+            events_source.NotifyUser ();
+            banshee_window.Focus.FocusInEvent -= OnFocusInEvent;
         }
 
         public void Initialize ()
