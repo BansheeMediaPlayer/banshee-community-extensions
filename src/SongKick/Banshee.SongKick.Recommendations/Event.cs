@@ -37,6 +37,7 @@ namespace Banshee.SongKick.Recommendations
         public long Id { get; private set; }
         [DisplayAttribute ("Name", DisplayAttribute.DisplayType.Text)]
         public string DisplayName { get; private set; }
+        public string ArtistName { get; set; }
         [DisplayAttribute ("Date", DisplayAttribute.DisplayType.Text)]
         public DateTime StartDateTime { get; private set; }
         [DisplayAttribute ("Location", DisplayAttribute.DisplayType.Text)]
