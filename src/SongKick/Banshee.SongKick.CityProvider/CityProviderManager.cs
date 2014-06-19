@@ -69,7 +69,9 @@ namespace Banshee.SongKick.CityProvider
         public static void Register (ICityObserver o)
         {
             cityObservers.Add (o);
-            NotifyObservers ();
+            if (HasProvider) {
+                o.UpdateCity (provider.CityName);
+            }
         }
 
         public static void Detach (ICityObserver o)
