@@ -9,11 +9,13 @@ namespace AlbumMetadataFixer
         static long duration = -1;
         static string fingerprint = null;
 
-        static void ProcessFingerprint ()
-        {
+        static string ReadID ()
+        {            
+            string current_id = string.Empty;
+
             if (fingerprint == null || duration == -1) {
                 Console.WriteLine ("Fingerprint or duration unavialable yet");
-                return;
+                return current_id;
             }
 
             string key = "8XaBELgH"; // todo: it's example key. Banshee should be registered in acoustID system.
@@ -22,25 +24,24 @@ namespace AlbumMetadataFixer
             var reader = new System.Xml.XmlTextReader (url);
             var doc = new System.Xml.XmlDocument ();
             doc.Load (reader);
-            Console.WriteLine (url);
+
             System.Xml.XmlNode status = doc.SelectSingleNode ("/response/status");
 
             if (status == null) {
                 Console.WriteLine ("Cannot read response's status");
-                return;
+                return current_id;
             }
 
             string response_status = status.InnerText;
 
             if (response_status != "ok") {
                 Console.WriteLine ("Invalid response status. Expected 'ok', but is: `{0}`", response_status);
-                return;
+                return current_id;
             }
 
             System.Xml.XmlNodeList results = doc.SelectNodes ("/response/results/result");
 
             double current_score = 0;
-            string current_id = string.Empty;
 
             foreach (System.Xml.XmlNode result in results) {
                 double score;
@@ -55,7 +56,7 @@ namespace AlbumMetadataFixer
                 }
             }
 
-            Console.WriteLine ("ID: {0}", current_id);
+            return current_id;
         }
 
         public static void Main(string[] argv)
@@ -84,7 +85,7 @@ namespace AlbumMetadataFixer
                     if (ok) {
                         duration /= Gst.Constants.SECOND;
                         Console.WriteLine ("Duration: {0}", duration);
-                        ProcessFingerprint ();
+                        ReadID ();
                     }
                     break;
                 case MessageType.Eos:
@@ -96,7 +97,7 @@ namespace AlbumMetadataFixer
 
                     if (fingerprint != null) {
                         Console.WriteLine("Fingerprint: " + fingerprint);
-                        ProcessFingerprint ();
+                        ReadID ();
                     }
                     break;
                 }
