@@ -36,13 +36,13 @@ namespace AlbumMetadataFixer
         Pipeline pipeline;
         private List<Recording> recordings;
 
-        Action<List<Recording>> completion_handler;
+        Action<string, List<Recording>> completion_handler;
 
         public AcoustIDReader (string key) {
             this.key = key;
         }
 
-        public void GetID (string filename, Action<List<Recording>> completion_handler) {
+        public void GetID (string filename, Action<string, List<Recording>> completion_handler) {
             this.filename = filename;
             this.completion_handler = completion_handler;
             StartPipeline ();
@@ -187,7 +187,7 @@ namespace AlbumMetadataFixer
         private void OnCompleted ()
         {
             if (completion_handler != null) {
-                completion_handler (recordings);
+                completion_handler (current_id, recordings);
             }
         }
     }
@@ -207,7 +207,8 @@ namespace AlbumMetadataFixer
             Loop = new GLib.MainLoop();
 
             var reader = new AcoustIDReader ("8XaBELgH"); // todo: it's example key. Banshee should be registered in acoustID system.
-            reader.GetID (argv [0], (list) => {
+            reader.GetID (argv [0], (id, list) => {
+                Console.WriteLine ("Track ID: " + id);
                 foreach (Recording rec in list) {
                     Console.WriteLine ("=========================");
                     Console.WriteLine ("Recording ID: " + rec.ID);
