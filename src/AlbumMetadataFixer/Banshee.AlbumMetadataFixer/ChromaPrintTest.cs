@@ -17,10 +17,14 @@ namespace AlbumMetadataFixer
 		public string Type
 		{ private set; get; }
 
-		public ReleaseGroup (string id, string title, string type) {
+		public List<string> SecondaryTypes
+		{ private set; get; }
+
+		public ReleaseGroup (string id, string title, string type, List<string> secondary_types) {
 			ID = id;
 			Title = title;
 			Type = type;
+			SecondaryTypes = secondary_types;
 		}
 	}
 
@@ -225,7 +229,15 @@ namespace AlbumMetadataFixer
 			var list = new List<ReleaseGroup> ();
 			foreach (XmlNode releasegroup in result.SelectNodes ("releasegroups/releasegroup")) {
 				if (releasegroup ["id"] != null) {
-					list.Add (new ReleaseGroup (releasegroup ["id"].InnerText, GetInner (releasegroup ["title"]), GetInner (releasegroup ["type"])));
+					var secondary_types = new List<string> ();
+					foreach (XmlNode sec_type in releasegroup.SelectNodes ("secondarytypes/secondarytype")) {
+						secondary_types.Add (GetInner (sec_type));
+					}
+					list.Add (new ReleaseGroup (
+						releasegroup ["id"].InnerText, 
+						GetInner (releasegroup ["title"]), 
+						GetInner (releasegroup ["type"]),
+						secondary_types));
 				}
 			}
 			return list;
@@ -275,7 +287,16 @@ namespace AlbumMetadataFixer
 					}
 					Console.WriteLine("Release Groups: ");
 					foreach (ReleaseGroup release_group in rec.ReleaseGroups) {
-						Console.WriteLine ("\t * {0} (Type: {1}, ID: {2})", release_group.Title, release_group.Type, release_group.ID);
+						string sec_types = "";
+						if (release_group.SecondaryTypes.Count == 0) {
+							sec_types = "no secondary types";
+						} else {
+							foreach (string t in release_group.SecondaryTypes) {
+								sec_types += t + ", ";
+							}
+							sec_types = sec_types.Remove (sec_types.Length - 2);
+						}
+						Console.WriteLine ("\t * {0} (Type: {1} /{3}/, ID: {2})", release_group.Title, release_group.Type, release_group.ID, sec_types);
 					}
 				}
 
