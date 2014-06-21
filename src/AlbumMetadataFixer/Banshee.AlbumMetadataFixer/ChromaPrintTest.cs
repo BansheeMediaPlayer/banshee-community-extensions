@@ -1,8 +1,31 @@
 using System;
+using System.Collections.Generic;
 using Gst;
 
 namespace AlbumMetadataFixer
 {
+    class Recording
+    {
+        public string ID
+        { private set; get; }
+
+        public string Title
+        { private set; get; }
+
+        public List<string> Artists
+        { private set; get; }
+
+        public List<string> ReleaseGroups
+        { private set; get; }
+
+        public Recording(string id, string title, List<string> artists, List<string> release_groups) {
+            ID = id;
+            Title = title;
+            Artists = artists;
+            ReleaseGroups = release_groups;
+        }
+    }
+
     class AcoustIDReader
     {
         string fingerprint = null;
@@ -11,15 +34,15 @@ namespace AlbumMetadataFixer
         string current_id;
         string key;
         Pipeline pipeline;
+        private List<Recording> recordings;
 
-
-        Action<string> completion_handler;
+        Action<List<Recording>> completion_handler;
 
         public AcoustIDReader (string key) {
             this.key = key;
         }
 
-        public void GetID (string filename, Action<string> completion_handler) {
+        public void GetID (string filename, Action<List<Recording>> completion_handler) {
             this.filename = filename;
             this.completion_handler = completion_handler;
             StartPipeline ();
@@ -68,9 +91,10 @@ namespace AlbumMetadataFixer
                 return;
             }
 
-            string url = string.Format ("http://api.acoustid.org/v2/lookup?format=xml&client={0}&duration={1}&fingerprint={2}", key, duration, fingerprint);
-
+            string url = string.Format ("http://api.acoustid.org/v2/lookup?meta=recordings+releasegroups&format=xml&client={0}&duration={1}&fingerprint={2}", key, duration, fingerprint);
+                                                
             var reader = new System.Xml.XmlTextReader (url);
+            //var reader = new System.Xml.XmlTextReader ("/home/loganek/lookup");
             var doc = new System.Xml.XmlDocument ();
             doc.Load (reader);
 
@@ -103,8 +127,39 @@ namespace AlbumMetadataFixer
                 if (score > current_score) {
                     current_score = score;
                     current_id = result ["id"].InnerText;
+
+                    ProcessRecordings (result);
                 }
             }
+        }
+
+        private void ProcessRecordings (System.Xml.XmlNode result) {
+            recordings = new List<Recording>();
+            foreach (System.Xml.XmlNode recording in result.SelectNodes ("recordings/recording")) {
+                if (recording ["title"] != null && recording ["id"] != null) {
+                    recordings.Add (new Recording (recording ["id"].InnerText, recording ["title"].InnerText, ReadArtists (recording), ReadReleaseGroups (recording)));
+                }
+            }
+        }
+
+        private List<string> ReadArtists (System.Xml.XmlNode result) {
+            var list = new List<string> ();
+            foreach (System.Xml.XmlNode artist in result.SelectNodes ("artists/artist")) {
+                if (artist ["name"] != null) {
+                    list.Add (artist ["name"].InnerText);
+                }
+            }
+            return list;
+        }
+
+        private List<string> ReadReleaseGroups (System.Xml.XmlNode result) {
+            var list = new List<string> ();
+            foreach (System.Xml.XmlNode releasegroup in result.SelectNodes ("releasegroups/releasegroup")) {
+                if (releasegroup ["title"] != null) {
+                    list.Add (releasegroup ["title"].InnerText);
+                }
+            }
+            return list;
         }
 
         private void MsgHandler(object o, MessageArgs args) {
@@ -132,7 +187,7 @@ namespace AlbumMetadataFixer
         private void OnCompleted ()
         {
             if (completion_handler != null) {
-                completion_handler (current_id);
+                completion_handler (recordings);
             }
         }
     }
@@ -152,8 +207,21 @@ namespace AlbumMetadataFixer
             Loop = new GLib.MainLoop();
 
             var reader = new AcoustIDReader ("8XaBELgH"); // todo: it's example key. Banshee should be registered in acoustID system.
-            reader.GetID (argv [0], (id) => {
-                Console.WriteLine ("ID: {0}", id);
+            reader.GetID (argv [0], (list) => {
+                foreach (Recording rec in list) {
+                    Console.WriteLine ("=========================");
+                    Console.WriteLine ("Recording ID: " + rec.ID);
+                    Console.WriteLine ("Title: " + rec.Title);
+                    Console.WriteLine ("Artists: ");
+                    foreach (string artist in rec.Artists) {
+                        Console.WriteLine ("\t * " + artist);
+                    }
+                    Console.WriteLine("Release Groups: ");
+                    foreach (string release_group in rec.ReleaseGroups) {
+                        Console.WriteLine ("\t * " + release_group);
+                    }
+                }
+
                 Loop.Quit ();
             });
 
