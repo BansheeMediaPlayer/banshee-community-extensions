@@ -4,6 +4,38 @@ using Gst;
 
 namespace AlbumMetadataFixer
 {
+	class ReleaseGroup
+	{
+		public string ID
+		{ private set; get; }
+
+		public string Title
+		{ private set; get; }
+
+		public string Type
+		{ private set; get; }
+
+		public ReleaseGroup (string id, string title, string type) {
+			ID = id;
+			Title = title;
+			Type = type;
+		}
+	}
+
+	class Artist
+	{
+		public string ID
+		{ private set; get; }
+
+		public string Name
+		{ private set; get; }
+
+		public Artist (string id, string name) {
+			ID = id;
+			Name = name;
+		}
+	}
+
     class Recording
     {
         public string ID
@@ -12,13 +44,13 @@ namespace AlbumMetadataFixer
         public string Title
         { private set; get; }
 
-        public List<string> Artists
+        public List<Artist> Artists
         { private set; get; }
 
-        public List<string> ReleaseGroups
+        public List<ReleaseGroup> ReleaseGroups
         { private set; get; }
 
-        public Recording(string id, string title, List<string> artists, List<string> release_groups) {
+		public Recording(string id, string title, List<Artist> artists, List<ReleaseGroup> release_groups) {
             ID = id;
             Title = title;
             Artists = artists;
@@ -136,27 +168,36 @@ namespace AlbumMetadataFixer
         private void ProcessRecordings (System.Xml.XmlNode result) {
             recordings = new List<Recording>();
             foreach (System.Xml.XmlNode recording in result.SelectNodes ("recordings/recording")) {
-                if (recording ["title"] != null && recording ["id"] != null) {
-                    recordings.Add (new Recording (recording ["id"].InnerText, recording ["title"].InnerText, ReadArtists (recording), ReadReleaseGroups (recording)));
+                if (recording ["id"] != null) {
+                    recordings.Add (new Recording (
+						recording ["id"].InnerText, 
+						GetInner (recording ["title"]), 
+						ReadArtists (recording), 
+						ReadReleaseGroups (recording)
+						));
                 }
             }
         }
 
-        private List<string> ReadArtists (System.Xml.XmlNode result) {
-            var list = new List<string> ();
+        private List<Artist> ReadArtists (System.Xml.XmlNode result) {
+			var list = new List<Artist> ();
             foreach (System.Xml.XmlNode artist in result.SelectNodes ("artists/artist")) {
                 if (artist ["name"] != null) {
-                    list.Add (artist ["name"].InnerText);
+					list.Add (new Artist (artist ["id"].InnerText, GetInner (artist ["name"])));
                 }
             }
             return list;
         }
 
-        private List<string> ReadReleaseGroups (System.Xml.XmlNode result) {
-            var list = new List<string> ();
+        private List<ReleaseGroup> ReadReleaseGroups (System.Xml.XmlNode result) {
+			var list = new List<ReleaseGroup> ();
             foreach (System.Xml.XmlNode releasegroup in result.SelectNodes ("releasegroups/releasegroup")) {
-                if (releasegroup ["title"] != null) {
-                    list.Add (releasegroup ["title"].InnerText);
+                if (releasegroup ["id"] != null) {
+					list.Add (new ReleaseGroup(
+						releasegroup ["id"].InnerText, 
+						GetInner (releasegroup ["title"]), 
+						GetInner (releasegroup ["type"])
+						));
                 }
             }
             return list;
@@ -190,6 +231,10 @@ namespace AlbumMetadataFixer
                 completion_handler (current_id, recordings);
             }
         }
+
+		private static string GetInner(System.Xml.XmlNode node) {
+			return node == null ? "" : node.InnerText;
+		}
     }
 
     class ChromaPrintTest
@@ -214,12 +259,12 @@ namespace AlbumMetadataFixer
                     Console.WriteLine ("Recording ID: " + rec.ID);
                     Console.WriteLine ("Title: " + rec.Title);
                     Console.WriteLine ("Artists: ");
-                    foreach (string artist in rec.Artists) {
-                        Console.WriteLine ("\t * " + artist);
+                    foreach (Artist artist in rec.Artists) {
+						Console.WriteLine ("\t * {0} (ID: {1})", artist.Name, artist.ID);
                     }
                     Console.WriteLine("Release Groups: ");
-                    foreach (string release_group in rec.ReleaseGroups) {
-                        Console.WriteLine ("\t * " + release_group);
+                    foreach (ReleaseGroup release_group in rec.ReleaseGroups) {
+						Console.WriteLine ("\t * {0} (Type: {1}, ID: {2})", release_group.Title, release_group.Type, release_group.ID);
                     }
                 }
 
