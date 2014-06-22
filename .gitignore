@@ -1,7 +1,4 @@
 obj
-*~
-*.patch
-*.diff
 *.swp
 *.gmo
 *.pc
