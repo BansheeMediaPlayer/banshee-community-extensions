@@ -93,6 +93,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundCloud", "src\SoundClou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlbumMetadataFixer", "src\AlbumMetadataFixer\AlbumMetadataFixer.csproj", "{CFF6A7FF-E614-4F72-B842-33FEFB98F806}"
 EndProject
+Project("{4925A630-B079-445d-BCD4-3A9C94FE9307}") = "Banshee.Dap.Bluetooth", "src\Banshee.Dap.Bluetooth\Banshee.Dap.Bluetooth.fsproj", "{2E209F0E-21A3-4841-8692-4A44CE7C3444}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -132,6 +134,12 @@ Global
 		{2940FD14-8A3F-4E13-B904-4A3641DE6E78}.Debug|x86.Build.0 = Debug|Any CPU
 		{2940FD14-8A3F-4E13-B904-4A3641DE6E78}.Release|x86.ActiveCfg = Release|Any CPU
 		{2940FD14-8A3F-4E13-B904-4A3641DE6E78}.Release|x86.Build.0 = Release|Any CPU
+		{2E209F0E-21A3-4841-8692-4A44CE7C3444}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2E209F0E-21A3-4841-8692-4A44CE7C3444}.Debug|x86.Build.0 = Debug|Any CPU
+		{2E209F0E-21A3-4841-8692-4A44CE7C3444}.Release|x86.ActiveCfg = Release|Any CPU
+		{2E209F0E-21A3-4841-8692-4A44CE7C3444}.Release|x86.Build.0 = Release|Any CPU
+		{2E209F0E-21A3-4841-8692-4A44CE7C3444}.Windows|Any CPU.ActiveCfg = Release|Any CPU
+		{2E209F0E-21A3-4841-8692-4A44CE7C3444}.Windows|Any CPU.Build.0 = Release|Any CPU
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Debug|x86.Build.0 = Debug|Any CPU
 		{31BFFB6B-357F-4BF5-B9FA-C83E6B8259A9}.Release|x86.ActiveCfg = Release|Any CPU

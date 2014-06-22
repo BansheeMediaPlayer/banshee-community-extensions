@@ -1,0 +1,8 @@
+﻿<ui>
+  <toolbar name="HeaderToolbar">
+    <placeholder name="SourceActions">
+      <toolitem action="PowerAction"/>
+      <toolitem action="DiscoverAction"/>
+    </placeholder>
+  </toolbar>
+</ui>

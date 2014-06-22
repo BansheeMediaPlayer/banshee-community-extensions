@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FAFA7C00-0010-444E-BADA-0D40A8F6664F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Banshee.Dap.Bluetooth</RootNamespace>
+    <AssemblyName>Banshee.Dap.Bluetooth</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OutputPath>..\..\bin</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <PlatformTarget>
+    </PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <PlatformTarget>
+    </PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+    <Tailcalls>true</Tailcalls>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="Banshee.Core, Version=2.9.0.0, Culture=neutral">
+      <Package>banshee-core</Package>
+    </Reference>
+    <Reference Include="Banshee.Services, Version=2.9.0.0, Culture=neutral">
+      <Package>banshee-services</Package>
+    </Reference>
+    <Reference Include="Banshee.ThickClient, Version=2.9.0.0, Culture=neutral">
+      <Package>banshee-thickclient</Package>
+    </Reference>
+    <Reference Include="Banshee.Widgets, Version=2.9.0.0, Culture=neutral">
+      <Package>banshee-thickclient</Package>
+    </Reference>
+    <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Addins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="Hyena, Version=2.9.0.0, Culture=neutral">
+      <Package>banshee-hyena</Package>
+    </Reference>
+    <Reference Include="Hyena.Gui, Version=2.9.0.0, Culture=neutral">
+      <Package>banshee-hyena-gui</Package>
+    </Reference>
+    <Reference Include="Hyena.Data.Sqlite, Version=2.9.0.0, Culture=neutral">
+      <Package>banshee-hyena-data-sqlite</Package>
+    </Reference>
+    <Reference Include="dbus-sharp, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5675b0c3093115b5" />
+    <Reference Include="Banshee.Dap">
+      <HintPath>..\..\..\banshee\bin\Banshee.Dap.dll</HintPath>
+    </Reference>
+    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="cairo-sharp, Version=1.10.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="pango-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Posix" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Banshee.Dap.Bluetooth\MimeApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\DBusApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\AdapterApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\DeviceApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\ObexApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\SupportApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Wrappers.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\DeviceManager.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Gui\ManagerActions.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Gui\ManagerSource.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\AddinEntryPoint.fs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Banshee.Dap.Bluetooth.addin.xml">
+      <LogicalName>BluetoothDap.addin.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ManagerSourceUI.xml" />
+    <EmbeddedResource Include="Resources\paired-black.png">
+      <LogicalName>paired-black.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Banshee.Dap.Bluetooth\Gui\" />
+  </ItemGroup>
+</Project>

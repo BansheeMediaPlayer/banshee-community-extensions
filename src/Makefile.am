@@ -6,6 +6,7 @@ SUBDIRS = \
 	AndroidRemote \
 	AppIndicator \
 	Awn \
+	Banshee.Dap.Bluetooth\
 	ClutterFlow \
 	CoverWallpaper \
 	DuplicateSongDetector \
