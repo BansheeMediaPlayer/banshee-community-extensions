@@ -19,7 +19,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <OutputPath>..\..\..\banshee\bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <CustomCommands>
       <CustomCommands>
         <Command type="Execute" command="make run" workingdir="${SolutionDir}" />
@@ -31,7 +31,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <OutputPath>..\..\..\banshee\bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
     <Optimize>false</Optimize>
     <LangVersion>3</LangVersion>
@@ -40,7 +40,9 @@
     <Reference Include="System" />
     <Reference Include="Mono.Posix" />
     <Reference Include="Mono.Cairo" />
-    <Reference Include="Mono.Addins" />
+    <Reference Include="Mono.Addins">
+      <Package>mono-addins</Package>
+    </Reference>
     <Reference Include="Banshee.Core">
       <Package>banshee-core</Package>
     </Reference>
@@ -53,6 +55,9 @@
     <Reference Include="Banshee.Widgets">
       <Package>banshee-thickclient</Package>
     </Reference>
+    <Reference Include="Banshee.NotificationArea">
+      <HintPath>..\..\..\banshee\bin\Banshee.NotificationArea.dll</HintPath>
+    </Reference>
     <Reference Include="Hyena">
       <Package>banshee-hyena</Package>
     </Reference>
@@ -63,11 +68,21 @@
       <Package>banshee-hyena-gui</Package>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>glib-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gio-sharp-3.0</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SongKick.addin.xml">
@@ -78,6 +93,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\songkick_logo.png">
       <LogicalName>songkick_logo.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\songkick_logo_300x300.png">
+      <LogicalName>songkick_logo_300x300.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +132,11 @@
     <Compile Include="Banshee.SongKick.UI\SearchArtistsBox.cs" />
     <Compile Include="Banshee.SongKick.Network\SongKickDownloader.cs" />
     <Compile Include="Banshee.SongKick.Search\Query.cs" />
+    <Compile Include="Banshee.SongKick.CityProvider\BaseCityProvider.cs" />
+    <Compile Include="Banshee.SongKick.CityProvider\CityProviderManager.cs" />
+    <Compile Include="Banshee.SongKick.CityProvider\ICityObserver.cs" />
+    <Compile Include="Banshee.SongKick.UI\LocalEventsSource.cs" />
+    <Compile Include="Banshee.SongKick.UI\LocalEventsView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -137,5 +160,6 @@
     <Folder Include="Banshee.SongKick.UI\" />
     <Folder Include="Banshee.SongKick.Search\" />
     <Folder Include="Resources\" />
+    <Folder Include="Banshee.SongKick.CityProvider\" />
   </ItemGroup>
 </Project>

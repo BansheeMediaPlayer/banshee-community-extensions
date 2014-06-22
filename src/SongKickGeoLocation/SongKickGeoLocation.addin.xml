@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Addin 
-    id="Banshee.SongKick"
+    id="Banshee.SongKickGeoLocation"
     version="1.0"
     compatVersion="1.0"
-    copyright="Copyright © 2013 Tomasz Maczyński. Licensed under the MIT X11 license."
-    name="SongKick"
+    copyright="Copyright © 2010 Cool Extension Author. Licensed under the MIT X11 license."
+    name="Concise Title for SongKickGeoLocation"
     category="Community Extensions"
-    description="Provides personalized concert recommendations."
-    author="Tomasz Maczyński"
+    description="Describe your extension, ideally starting with an action verb.  Keep it brief and avoid tech jargon."
+    author="Cool Extension Author"
     url="http://banshee-project.org/"
     defaultEnabled="false">
 
@@ -16,6 +16,7 @@
   <Dependencies>
     <Addin id="Banshee.Services" version="1.0"/>
     <Addin id="Banshee.ThickClient" version="1.0"/>
+    <Addin id="Banshee.SongKick" version="1.0"/>
   </Dependencies>
 
   <!--  Extensions are loaded by Banshee via Mono.Addins by extending a
@@ -31,7 +32,7 @@
         Here is an example of how to define an extension point:
 
         <Extension path="ExtensionPointPath">
-            <ExtensionPointType class="Banshee.SongKick.SongKickExtensionPointType"/>
+            <ExtensionPointType class="Banshee.Template.TemplateExtensionPointType"/>
         </Extension>
 
         An extension must have one or more such definitions.
@@ -70,23 +71,14 @@
   -->
 
   <!-- Define a Service extension.  This will instantiate the specified class on startup,
-       letting us do whatever we want.
-  <Extension path="/Banshee/ServiceManager/Service">
-    <Service class="Banshee.SongKick.SongKickService"/>
+       letting us do whatever we want. -->
+  <!--<Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.SongKickGeoLocation.Service"/>
   </Extension>-->
 
   <!-- Define a Source extension.  This will instantiate a new Source object,
        listed in the left-most Source TreeView. -->
-
-  <ExtensionPoint path="/Banshee/GeoLocation/CityProvider">
-	<ExtensionNode name="CityProvider"/>
-  </ExtensionPoint>
-
-  <Extension path="/Banshee/SourceManager/Source">
-    <Source class="Banshee.SongKick.SongKickSource"/>
-  </Extension>
-
-  <Extension path="/Banshee/ServiceManager/Service">
-    <Service class="Banshee.SongKick.Network.SongKickService"/>
+  <Extension path="/Banshee/GeoLocation/CityProvider">
+	<CityProvider class="Banshee.SongKickGeoLocation.Provider"/>
   </Extension>
 </Addin>

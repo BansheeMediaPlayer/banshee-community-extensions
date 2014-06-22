@@ -29,11 +29,13 @@ using Banshee.Widgets;
 using Mono.Unix;
 using Banshee.SongKick.Search;
 using Banshee.SongKick.Recommendations;
+using Banshee.SongKick.Network;
+using Banshee.SongKick.CityProvider;
 using Hyena;
 
 namespace Banshee.SongKick.UI
 {
-    public class SearchBar<T> : HBox where T : IResult
+    public class SearchBar<T> : HBox, ICityObserver where T : IResult
     {
         protected SearchEntry search_entry;
         protected Button search_button;
@@ -56,7 +58,11 @@ namespace Banshee.SongKick.UI
             };
 
             search_entry.Activated += (o, a) => { search_button.Activate (); };
-           
+
+            if (this.GetType() == typeof(SearchBar<Location>)) {
+                CityProviderManager.Register (this);
+            }
+
             PackStart (search_entry, true, true, 2);
 
             search_button = new Hyena.Widgets.ImageButton (Catalog.GetString ("_Search"), Stock.Find);
@@ -81,6 +87,11 @@ namespace Banshee.SongKick.UI
                             present_search (Search);
                         }));
             thread.Start();
+        }
+
+        public void UpdateCity (string cityName)
+        {
+            this.search_entry.Text = cityName;
         }
     }
 }

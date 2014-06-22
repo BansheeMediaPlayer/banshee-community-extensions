@@ -103,12 +103,12 @@ namespace Banshee.SongKick.UI
             */
 
             viewport.Add (main_box);
-
+            #pragma warning disable 612
             StyleSet += delegate {
                 viewport.ModifyBg (StateType.Normal, Style.Base (StateType.Normal));
                 viewport.ModifyFg (StateType.Normal, Style.Text (StateType.Normal));
             };
-
+            #pragma warning restore 612
             recommendations_contents_box.LoadAndPresentRecommendations ();
 
             AddWithFrame (viewport);

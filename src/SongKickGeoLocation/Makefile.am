@@ -1,13 +1,13 @@
-ASSEMBLY = Banshee.AlbumMetadataFixer
+ASSEMBLY = Banshee.SongKickGeoLocation
 LINK = $(BANSHEE_LIBS)
 
-SOURCES = Banshee.AlbumMetadataFixer/AlbumMetadataFixerSource.fs
+SOURCES = Banshee.SongKickGeoLocation/SongKickGeoLocationProvider.fs
 
-RESOURCES = AlbumMetadataFixer.addin.xml
+RESOURCES = SongKickGeoLocation.addin.xml
 
 XBUILD = xbuild
 
-if ENABLE_ALBUMMETADATAFIXER
+if ENABLE_SONGKICKGEOLOCATION
 include $(top_srcdir)/build/build.mk
 else
 EXTRA_DIST = $(SOURCES) $(RESOURCES)
@@ -15,7 +15,7 @@ endif
 
 $(ASSEMBLY_FILE): $(SOURCES_BUILD) $(RESOURCES_EXPANDED) $(DEP_LINK)
 	@mkdir -p $(top_builddir)/bin
-	$(XBUILD) AlbumMetadataFixer.fsproj
+	$(XBUILD) SongKickGeoLocation.fsproj
 	@if [ -e $(srcdir)/$(notdir $@.config) ]; then \
 		cp $(srcdir)/$(notdir $@.config) $(top_builddir)/bin; \
 	fi;
@@ -24,6 +24,6 @@ $(ASSEMBLY_FILE): $(SOURCES_BUILD) $(RESOURCES_EXPANDED) $(DEP_LINK)
 	fi;
 
 clean:
-	$(XBUILD) AlbumMetadataFixer.fsproj /target:Clean
+	$(XBUILD) SongKickGeoLocation.fsproj /target:Clean
 
 .PHONY: $(ASSEMBLY_FILE)

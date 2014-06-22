@@ -101,6 +101,7 @@ BCE_OPENVP
 BCE_RADIOSTATIONFETCHER
 BCE_RANDOMBYLASTFM
 BCE_SONGKICK
+BCE_SONGKICKGEOLOCATION
 BCE_STREAMRECORDER
 BCE_KARAOKE
 BCE_TELEPATHY
@@ -187,6 +188,7 @@ src/Mirage/Test/Makefile
 src/RadioStationFetcher/Makefile
 src/RandomByLastfm/Makefile
 src/SongKick/Makefile
+src/SongKickGeoLocation/Makefile
 src/StreamRecorder/Makefile
 src/Telepathy/Makefile
 src/Telepathy/Banshee.Telepathy/Makefile
@@ -241,6 +243,7 @@ ${PACKAGE}-${VERSION}
     RadioStationFetcher:   ${enable_RadioStationFetcher}
     RandomByLastfm:        ${enable_RandomByLastfm}
     SongKick:              ${enable_Songkick}
+    SongKickGeoLocation:   ${enable_SongKickGeoLocation}
     StreamRecorder:        ${enable_StreamRecorder}
     Telepathy:             ${enable_Telepathy}
     ZeitgeistDataprovider: ${enable_ZeitgeistDataprovider}

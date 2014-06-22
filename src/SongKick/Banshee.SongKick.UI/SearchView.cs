@@ -69,10 +69,15 @@ namespace Banshee.SongKick.UI
             ShowAll ();
         }
 
+        public void SetModel (SortableMemoryListModel<T> model)
+        {
+            this.model = model;
+            list_view.SetModel (model);
+        }
 
         public void OnUpdated ()
         {
-            // TODO: implement
+            model.Reload ();
         }
 
         private class ResultListView : ListView<T> 
