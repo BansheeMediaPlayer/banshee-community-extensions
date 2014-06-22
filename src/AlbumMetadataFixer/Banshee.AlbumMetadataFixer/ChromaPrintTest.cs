@@ -274,7 +274,7 @@ namespace AlbumMetadataFixer
 			Application.Init ();
 			Loop = new GLib.MainLoop();
 
-			var reader = new AcoustIDReader ("8XaBELgH"); // todo: it's example key. Banshee should be registered in acoustID system.
+			var reader = new AcoustIDReader ("TP95csTg");
 			reader.GetID (argv [0], (id, list) => {
 				Console.WriteLine ("Track ID: " + id);
 				foreach (Recording rec in list) {
