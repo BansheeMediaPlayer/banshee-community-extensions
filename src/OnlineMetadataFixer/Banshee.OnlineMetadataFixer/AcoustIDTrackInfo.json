@@ -1,0 +1,38 @@
+{
+  "status": "dummy-status", 
+  "results": [
+    {
+      "recordings": [
+        {
+        "artists": [
+                     {
+                     "id": "dummy-recording-artist-id",
+                     "name": "dymmy-recording-artist-name"
+                     }
+                   ], 
+        "duration": 123, 
+        "releasegroups": [
+                           {
+                           "artists": [
+                                        {
+                                        "id": "dummy-releasegroups-artist-id",
+                                        "name": "dymmy-releasegroups-artist-name"
+                                        }
+                                      ], 
+                           "secondarytypes": [
+                                               "dummy-secondarytypes-name"
+                                             ],
+                           "type": "dummy-releasegroup-name", 
+                           "id": "dummy-releasegroup-id",
+                           "title": "dummy-releasegroup-title"
+                           }
+                         ],
+        "title": "dummy-recording-title", 
+        "id": "dummy-recording-id"
+        }
+      ],
+      "score": 0.123,
+      "id": "dummy-result-id"
+    }
+  ]
+}

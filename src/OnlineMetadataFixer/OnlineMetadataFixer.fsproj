@@ -87,4 +87,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <None Include="Banshee.OnlineMetadataFixer\AcoustIDTrackInfo.json" />
+  </ItemGroup>
 </Project>
