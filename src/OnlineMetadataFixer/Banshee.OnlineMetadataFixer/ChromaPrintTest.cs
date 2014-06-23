@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using Gst;
 
-namespace AlbumMetadataFixer
+namespace OnlineMetadataFixer
 {
 	#region Helper classes
 	class ReleaseGroup

@@ -1,7 +1,6 @@
 SUBDIRS = \
 	AlarmClock \
 	AlbumArtWriter \
-	AlbumMetadataFixer \
 	Ampache \
 	AndroidRemote \
 	AppIndicator \
