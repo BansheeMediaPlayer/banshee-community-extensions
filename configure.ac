@@ -97,6 +97,7 @@ BCE_LIVERADIO
 BCE_LYRICS
 BCE_MAGNATUNE
 BCE_MIRAGE
+BCE_ONLINEMETADATAFIXER
 BCE_OPENVP
 BCE_RADIOSTATIONFETCHER
 BCE_RANDOMBYLASTFM
@@ -171,6 +172,7 @@ src/Lirc/GUITestHarness/Makefile
 src/Lirc/NUnitTests/Makefile
 src/LiveRadio/Makefile
 src/Lyrics/Makefile
+src/OnlineMetadataFixer/Makefile
 src/OpenVP/Makefile
 src/OpenVP/Cdh.Affe/Makefile
 src/OpenVP/Cdh.Affe.Tests/Makefile
@@ -239,6 +241,7 @@ ${PACKAGE}-${VERSION}
     Lyrics:                ${enable_Lyrics}
     Magnatune:             ${enable_Magnatune}
     Mirage:                ${enable_Mirage}
+    OnlineMetadataFixer:   ${enable_OnlineMetadataFixer}
     OpenVP:                ${enable_OpenVP}
     RadioStationFetcher:   ${enable_RadioStationFetcher}
     RandomByLastfm:        ${enable_RandomByLastfm}

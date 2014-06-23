@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.OnlineMetadataFixer"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="Copyright © 2014 Marcin Kolny. Licensed under the MIT X11 license."
+    name="Online Metadata Fixer"
+    category="Community Extensions"
+    description="Find metadata of tracks using their fingerprints and fix it."
+    author="Marcin Kolny"
+    url="http://banshee-project.org/"
+    defaultEnabled="true">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.Fixup" version="1.0"/>
+  </Dependencies>
+  
+  <Extension path="/Banshee/MetadataFix/Solver">
+    <Source class="Banshee.OnlineMetadataFixer.OnlineMetadataFixerSource"/>
+  </Extension>
+
+</Addin>

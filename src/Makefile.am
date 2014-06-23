@@ -21,6 +21,7 @@ SUBDIRS = \
 	Lyrics \
 	Magnatune \
 	Mirage \
+	OnlineMetadataFixer \
 	OpenVP \
 	RadioStationFetcher \
 	RandomByLastfm \
