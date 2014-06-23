@@ -34,18 +34,19 @@ open Banshee.Dap.Bluetooth.SupportApi
 open DBus
 
 module Constants =
-    let UUID_OBEXFTP = "00001106-0000-1000-8000-00805f9b34fb"
-    let UUID_HEADSET = "00001108-0000-1000-8000-00805f9b34fb"
+    let UUID_OBEXFTP      = "00001106-0000-1000-8000-00805f9b34fb"
+    let UUID_HEADSET      = "00001108-0000-1000-8000-00805f9b34fb"
     let UUID_AUDIO_SOURCE = "0000110a-0000-1000-8000-00805f9b34fb"
-    let UUID_AUDIO_SINK = "0000110b-0000-1000-8000-00805f9b34fb"
-    let UUID_AVRC = "0000110c-0000-1000-8000-00805f9b34fb"
+    let UUID_AUDIO_SINK   = "0000110b-0000-1000-8000-00805f9b34fb"
+    let UUID_AVRC_TARGET  = "0000110c-0000-1000-8000-00805f9b34fb"
+    let UUID_AVRC         = "0000110e-0000-1000-8000-00805f9b34fb"
 
 module Functions =
     let HasUuid (u: string) (x: IBluetoothDevice) = 
         x.UUIDs |> Array.exists (fun uuid -> u = uuid.ToLower())
     let HasSync x = HasUuid Constants.UUID_OBEXFTP x
     let HasAudioIn x = HasUuid Constants.UUID_AUDIO_SINK x
-    let HasAudioOut x = HasUuid Constants.UUID_AVRC x
+    let HasAudioOut x = HasUuid Constants.UUID_AUDIO_SOURCE x
     let HasHeadset x = HasUuid Constants.UUID_HEADSET x
 
 type IBansheeAdapter =
