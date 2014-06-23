@@ -3,16 +3,18 @@ open System.Collections.Generic
 open Gst
 open FSharp.Data
 
-type ReleaseGroup =  {
+[<StructuredFormatDisplay("Name: {Name}, ID: {ID}")>]
+type Artist = {
+    ID : string;
+    Name : string;
+}
+
+type ReleaseGroup = {
     ID : string;
     Title : string;
     GroupType : string;
     SecondaryTypes : List<string>;
-}
-
-type Artist = {
-    ID : string;
-    Name : string;
+    Artists : List<Artist>;
 }
 
 type Recording = {
@@ -71,7 +73,13 @@ type JSonAcoustIDReader (url : string, completion_handler) = class
     member x.ReadReleaseGroups releasegroup_list =
         let releaseGroups = new List<ReleaseGroup> ()
         for releasegroup in releasegroup_list do
-            {ID = releasegroup.Id; Title = releasegroup.Title; GroupType = releasegroup.Type; SecondaryTypes = x.ReadSecondaryTypes (releasegroup)} |>  releaseGroups.Add // todo secondarytype, artists
+            {
+                ID = releasegroup.Id;
+                Title = releasegroup.Title;
+                GroupType = releasegroup.Type;
+                SecondaryTypes = x.ReadSecondaryTypes (releasegroup);
+                Artists = x.ReadArtists (releasegroup.Artists)
+            } |>  releaseGroups.Add // todo secondarytype, artists
         releaseGroups
         
     member x.ReadSecondaryTypes releasegroup = 
@@ -182,10 +190,14 @@ let main(args) =
                 if release_group.SecondaryTypes.Count = 0 then
                     sec_types <- "no secondary types";
                 else
-                    for t in release_group.SecondaryTypes do
-                        sec_types <- sec_types + t + ", "
-                    sec_types <- sec_types.Remove (sec_types.Length - 2)
-                Console.WriteLine ("\t * {0} (Type: {1} /Secondary types: {3}/, ID: {2})", release_group.Title, release_group.GroupType, release_group.ID, sec_types))
+                    sec_types <- String.Join (", ", release_group.SecondaryTypes.ToArray())
+                let mutable arts = ""
+                if release_group.Artists.Count = 0 then
+                    arts <- "no artists types";
+                else
+                    let preetyList = seq {for art in release_group.Artists do yield String.Format("\n\t\t\t * Name: {0} (ID: {1})", art.Name, art.ID)}
+                    arts <- String.Join (", ", preetyList)
+                Console.WriteLine ("\t * {0} (\n\t\t * Type: {1} /Secondary types: {3}/\n\t\t * Artists: {4}\n\t\t * ID: {2})", release_group.Title, release_group.GroupType, release_group.ID, sec_types, arts))
 
     loop.Run ()
     0
