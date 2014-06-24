@@ -1,7 +1,11 @@
 ASSEMBLY = Banshee.OnlineMetadataFixer
 LINK = $(BANSHEE_LIBS)
 
-SOURCES = Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs
+SOURCES =  \
+	Banshee.OnlineMetadataFixer/AcoustIDReader.fs \
+	Banshee.OnlineMetadataFixer/HelperRecords.fs \
+	Banshee.OnlineMetadataFixer/JSonAcoustIDReader.fs \
+	Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs
 
 RESOURCES = OnlineMetadataFixer.addin.xml
 

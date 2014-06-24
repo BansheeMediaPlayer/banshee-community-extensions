@@ -1,10 +1,10 @@
-﻿//
-// OnlineMetadataFixerSource.fs 
 //
-// Authors:
+// HelperRecords.fs
+//
+// Author:
 //   Marcin Kolny <marcin.kolny@gmail.com>
 //
-// Copyright (C) 2014 Marcin Kolny
+// Copyright (c) 2014 Marcin Kolny
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,18 +26,24 @@
 
 namespace Banshee.OnlineMetadataFixer
 
-open Banshee.ServiceStack
-open Banshee.Sources
+open System.Collections.Generic
 
-open Hyena
-open Hyena.Data
+type Artist = {
+    ID : string;
+    Name : string;
+}
 
-open Mono.Addins
+type ReleaseGroup = {
+    ID : string;
+    Title : string;
+    GroupType : string;
+    SecondaryTypes : List<string>;
+    Artists : List<Artist>;
+}
 
-module Constants =
-    let SORT = 190
-    let NAME = "OnlineMetadataFixer"
-
-type OnlineMetadataFixerSource() = class
-end
-
+type Recording = {
+    ID : string;
+    Title : string;
+    Artists : List<Artist>;
+    ReleaseGroups : List<ReleaseGroup>;
+}
