@@ -16,9 +16,9 @@
   <Dependencies>
     <Addin id="Banshee.Fixup" version="1.0"/>
   </Dependencies>
-  
+
   <Extension path="/Banshee/MetadataFix/Solver">
-    <Source class="Banshee.OnlineMetadataFixer.OnlineMetadataFixerSource"/>
+    <Solver class="Banshee.OnlineMetadataFixer.OnlineMetadataFixerSource" />
   </Extension>
 
 </Addin>

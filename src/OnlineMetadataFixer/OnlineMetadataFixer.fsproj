@@ -78,7 +78,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
   <ItemGroup>
-    <EmbeddedResource Include="Resources/OnlineMetadataFixer.addin.xml">
+    <EmbeddedResource Include="OnlineMetadataFixer.addin.xml">
       <LogicalName>OnlineMetadataFixer.addin.xml</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources/AcoustIDTrackInfo.json">
