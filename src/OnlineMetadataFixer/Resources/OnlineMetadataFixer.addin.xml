@@ -8,7 +8,7 @@
     category="Community Extensions"
     description="Find metadata of tracks using their fingerprints and fix it."
     author="Marcin Kolny"
-    url="http://banshee-project.org/"
+    url="http://http://cookandcommit.blogspot.com/"
     defaultEnabled="true">
 
   <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>

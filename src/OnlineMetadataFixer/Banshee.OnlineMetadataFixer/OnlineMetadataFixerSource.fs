@@ -26,18 +26,21 @@
 
 namespace Banshee.OnlineMetadataFixer
 
-open Banshee.ServiceStack
-open Banshee.Sources
+open System;
+open System.Linq;
+open System.Collections.Generic;
 
-open Hyena
-open Hyena.Data
+open Mono.Unix;
 
-open Mono.Addins
+type OnlineMetadataFixerSource () = 
+    inherit Banshee.Fixup.Solver()
+    do
+        base.Id <- "online-fix";
+        base.Name <- Catalog.GetString ("Online Fix");
+        base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee");
 
-module Constants =
-    let SORT = 190
-    let NAME = "OnlineMetadataFixer"
+    override this.IdentifyCore () =              
+        ()
 
-type OnlineMetadataFixerSource() = class
-end
-
+    override this.Fix (problems) =
+        ()
