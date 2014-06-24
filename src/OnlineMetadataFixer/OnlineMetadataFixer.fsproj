@@ -48,7 +48,7 @@
       <Package>banshee-thickclient</Package>
     </Reference>
     <Reference Include="Banshee.Widgets, Version=2.9.0.0, Culture=neutral">
-      <Package>banshee-thickclient</Package>
+      <Package>banshee-widgets</Package>
     </Reference>
     <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>gtk-sharp-3.0</Package>
@@ -78,8 +78,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
   <ItemGroup>
-    <EmbeddedResource Include="OnlineMetadataFixer.addin.xml">
+    <EmbeddedResource Include="Resources/OnlineMetadataFixer.addin.xml">
       <LogicalName>OnlineMetadataFixer.addin.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources/AcoustIDTrackInfo.json">
+      <LogicalName>AcoustIDTrackInfo.json</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
@@ -98,6 +101,5 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
-    <None Include="Banshee.OnlineMetadataFixer/AcoustIDTrackInfo.json" />
   </ItemGroup>
 </Project>

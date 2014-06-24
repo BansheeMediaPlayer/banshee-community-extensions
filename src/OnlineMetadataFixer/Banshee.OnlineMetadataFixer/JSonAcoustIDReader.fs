@@ -29,7 +29,7 @@ namespace Banshee.OnlineMetadataFixer
 open System
 open System.Collections.Generic
 
-type AcoustIDJsonProvider = FSharp.Data.JsonProvider<"/home/loganek/banshee/banshee-community-extensions/src/OnlineMetadataFixer/Banshee.OnlineMetadataFixer/AcoustIDTrackInfo.json">
+type AcoustIDJsonProvider = FSharp.Data.JsonProvider<"Resources/AcoustIDTrackInfo.json", EmbeddedResource="AcoustIDTrackInfo.json">
 
 type JSonAcoustIDReader (url : string, completion_handler) = class
     let jsonProvider = AcoustIDJsonProvider.Load (url)

@@ -7,7 +7,9 @@ SOURCES =  \
 	Banshee.OnlineMetadataFixer/JSonAcoustIDReader.fs \
 	Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs
 
-RESOURCES = OnlineMetadataFixer.addin.xml
+RESOURCES = \
+	Resources/AcoustIDTrackInfo.json \
+	Resources/OnlineMetadataFixer.addin.xml
 
 XBUILD = xbuild
 
