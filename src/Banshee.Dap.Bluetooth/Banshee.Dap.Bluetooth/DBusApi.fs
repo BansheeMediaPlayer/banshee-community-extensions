@@ -29,6 +29,16 @@ open System
 open System.Collections.Generic
 open DBus
 
+type Functions =
+    static member InterfaceOf (x: Type) =
+        try
+          let attr = Attribute.GetCustomAttribute (x, typeof<InterfaceAttribute>) :?> InterfaceAttribute
+          attr.Name
+        with
+        | _ -> x.FullName
+    static member InterfaceOf<'t> () = Functions.InterfaceOf typeof<'t>
+
+
 module Constants =
     [<Literal>]
     let IF_DBUS_PROPERTIES = "org.freedesktop.DBus.Properties"

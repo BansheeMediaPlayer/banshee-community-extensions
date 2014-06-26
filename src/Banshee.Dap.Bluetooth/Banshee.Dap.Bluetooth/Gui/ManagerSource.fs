@@ -35,6 +35,8 @@ open Banshee.ServiceStack
 open Banshee.Dap.Bluetooth
 open Banshee.Dap.Bluetooth.AdapterApi
 open Banshee.Dap.Bluetooth.DeviceApi
+open Banshee.Dap.Bluetooth.SupportApi
+open Banshee.Dap.Bluetooth.InversionApi
 open Banshee.Dap.Bluetooth.Wrappers
 open Banshee.Gui
 open DBus
@@ -42,12 +44,10 @@ open Gtk
 open Hyena
 open Mono.Addins
 
-module Functions = 
-    let inline IsNull< ^a when ^a : not struct> (x: ^a) =
-        obj.ReferenceEquals (x, Unchecked.defaultof<_>)
+module Functions =
     let inline IconOf< ^a when ^a : (member Icon : string)> (x: ^a) : string = 
         let icon = (^a : (member Icon : string) (x))
-        if IsNull icon then "bluetooth"
+        if Functions.IsNull icon then "bluetooth"
         else icon
     let AdapterString adapters = 
         let sb = StringBuilder("<b>")

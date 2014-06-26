@@ -79,6 +79,7 @@
     <Compile Include="Banshee.Dap.Bluetooth\DeviceApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\ObexApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\SupportApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\InversionApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Wrappers.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\DeviceManager.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Gui\ManagerActions.fs" />

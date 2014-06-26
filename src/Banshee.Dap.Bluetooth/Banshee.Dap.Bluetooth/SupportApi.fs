@@ -30,6 +30,9 @@ open System
 open System.ComponentModel
 open System.Collections.Generic
 open System.Linq
+open System.Reflection
+open System.Runtime.Remoting.Messaging
+open System.Runtime.Remoting.Proxies
 
 open Banshee.Dap.Bluetooth.DBusApi
 
@@ -39,9 +42,12 @@ module Functions =
     let Merge (y: seq<KeyValuePair<'a,'b>>) (x: IDictionary<'a,'b>) = 
         for z in y do x.[z.Key] <- z.Value
         x
+    let inline IsNull< ^a when ^a : not struct> (x: ^a) =
+        obj.ReferenceEquals (x, Unchecked.defaultof<_>)
 
-type PropertiesUpdatedArgs(ps: string[]) = 
+type PropertiesUpdatedArgs(i: string, ps: string[]) =
         inherit EventArgs()
+        member x.Interface with get () = i
         member x.Properties with get() = ps
 
 type PropertiesUpdatedHandler = delegate of obj * PropertiesUpdatedArgs -> unit
@@ -62,7 +68,7 @@ type PropertyManager(bus: Bus, name: string, path: ObjectPath, ipv: InterfacePro
                                                else Functions.Merge pv ipv.[i] |> ignore
                                                for p in ip do ipv.[i].[p] <- None
                                                let pu = Array.append (pv.Keys.ToArray()) ip
-                                               let arg = new PropertiesUpdatedArgs(pu)
+                                               let arg = new PropertiesUpdatedArgs(i, pu)
                                                ce.Trigger(op, arg)
                                                printfn "Properties Changed: %s" i)
     member x.Get i p = try 
@@ -88,25 +94,68 @@ type PropertyManager(bus: Bus, name: string, path: ObjectPath, ipv: InterfacePro
         member x.PropertiesUpdated = x.PropertiesUpdated
     new(bus, name, path) = PropertyManager(bus, name, path, InterfacePropertyMap())
 
-[<AbstractClass>]
-type DBusWrapper<'T>(bus: Bus, name: string, path: ObjectPath, ps: IPropertyManager) as this = 
-    do printfn "Wrapping %s at %s for %s" typeof<'T>.Name (path.ToString()) name
-    let ob = bus.GetObject<'T>(name, path)
-    let pc = Event<_,_>()
+type Factory = obj -> IPropertyManager -> obj
+
+type IDBusWrapper =
+    inherit IEquatable<IDBusWrapper>
+    inherit IComparable
+    inherit IComparable<IDBusWrapper>
+    abstract Name : string with get
+    abstract Path : ObjectPath with get
+    abstract Remove : Type -> obj option
+    abstract Put : Type -> Factory -> obj option
+    abstract Get : unit -> 't option
+
+type DBusWrapper(bus: Bus, name: string, path: ObjectPath, ps: IPropertyManager) =
+    do printfn "Creating Wrapper for %s at %s" name (path.ToString())
+    let tim = Dictionary<Type, string>()
+    let iom = Dictionary<string, obj>()
     do printfn "Created Wrapper"
-       ps.PropertiesUpdated.Add(fun pua -> for y in pua.Properties do 
-                                             pc.Trigger(this, new PropertyChangedEventArgs(y)))
     member x.Name with get () = name
     member x.Path with get () = path
     member x.Properties with get () = ps
-    member x.Object with get () = ob
-    override x.Equals y = match y with
-                          | :? DBusWrapper<'T> as yaw -> name = yaw.Name && path = yaw.Path
-                          | _ -> false
-    override x.GetHashCode () = name.GetHashCode() ^^^ path.GetHashCode()
-    interface INotifyPropertyChanged with
-        [<CLIEvent>]
-        member x.PropertyChanged = pc.Publish
+    member x.Remove t = if tim.ContainsKey t then
+                          let o = iom.[tim.[t]]
+                          iom.Remove tim.[t] |> ignore
+                          tim.Remove t |> ignore
+                          Some o
+                        else None
+    member x.Put t f = try
+                         let i = Functions.InterfaceOf t
+                         let dbo = bus.GetObject(t, name, path)
+                         let o = f dbo ps
+                         if not (ps.Has i) then ps.Use i
+                         tim.[t] <- i
+                         iom.[i] <- o
+                         Some o
+                       with
+                       | _ -> None
+    member x.Get<'t> () = try
+                            let i = tim.[typeof<'t>]
+                            let o = iom.[i] :?> 't
+                            Some o
+                          with
+                          | _ -> None
+    member x.CompareTo (y: obj) =
+        match y with
+        | :? IDBusWrapper as y -> let xt = (x.Name, x.Path)
+                                  let yt = (y.Name, y.Path)
+                                  compare xt yt
+        | _ -> 0
+    override x.Equals y =
+        match y with
+        | :? IDBusWrapper as ydw -> x.Name = ydw.Name && x.Path = ydw.Path
+        | _ -> false
+    override x.GetHashCode () = x.Name.GetHashCode() ^^^ x.Path.GetHashCode()
+    interface IDBusWrapper with
+        member x.Name = x.Name
+        member x.Path = x.Path
+        member x.Equals y = x.Equals y
+        member x.CompareTo (y: IDBusWrapper) = x.CompareTo y
+        member x.CompareTo (y: obj) = x.CompareTo y
+        member x.Remove t = x.Remove t
+        member x.Put t f = x.Put t f
+        member x.Get () = x.Get ()
     new(bus, name, path, ipv: InterfacePropertyMap) = 
-        new DBusWrapper<_>(bus, name, path, PropertyManager(bus, name, path, ipv))
-    new(bus, name, path) = new DBusWrapper<_>(bus, name, path, InterfacePropertyMap())
+        new DBusWrapper(bus, name, path, PropertyManager(bus, name, path, ipv))
+    new(bus, name, path) = new DBusWrapper(bus, name, path, InterfacePropertyMap())

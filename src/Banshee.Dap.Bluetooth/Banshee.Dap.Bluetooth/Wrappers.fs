@@ -61,11 +61,22 @@ type IBansheeDevice =
     abstract AudioOut : bool with get
     abstract Headset : bool with get
 
-type AdapterWrapper (bus: Bus, name: string, path: ObjectPath, ps: InterfacePropertyMap) =
-    inherit DBusWrapper<IAdapter>(bus, name, path, ps)
-    do if 0 = ps.Count then base.Properties.Use Constants.IF_ADAPTER
-    member private x.GetProp y = x.Properties.Get Constants.IF_ADAPTER y
-    member private x.SetProp y z = x.Properties.Set Constants.IF_ADAPTER y z
+[<AbstractClass>]
+type ObjectDecorator<'t> (obj: 't, ps: IPropertyManager) as this =
+    let i = Functions.InterfaceOf<'t>()
+    let e = Event<_,_>()
+    do ps.PropertiesUpdated.Add (fun pua -> if i = pua.Interface then
+                                              for p in pua.Properties do
+                                                e.Trigger (this, new PropertyChangedEventArgs(p)))
+    member x.GetProp p = ps.Get i p
+    member x.SetProp p v = ps.Set i p v
+    member x.Interface = i
+    interface INotifyPropertyChanged with
+        [<CLIEvent>]
+        member x.PropertyChanged = e.Publish
+
+type AdapterWrapper (obj: IAdapter, ps: IPropertyManager) =
+    inherit ObjectDecorator<IAdapter>(obj, ps)
     member x.Address = x.GetProp "Address"
     member x.Name = x.GetProp "Name"
     member x.Alias with get () = x.GetProp "Alias"
@@ -79,9 +90,9 @@ type AdapterWrapper (bus: Bus, name: string, path: ObjectPath, ps: InterfaceProp
                       and set y = x.SetProp "Pairable" y
     member x.Discovering with get () = x.GetProp "Discovering"
     member x.StartDiscovery () = if not x.Powered then x.Powered <- true
-                                 x.Object.StartDiscovery ()
-    member x.StopDiscovery () = x.Object.StopDiscovery ()
-    member x.RemoveDevice y = x.Object.RemoveDevice y
+                                 obj.StartDiscovery ()
+    member x.StopDiscovery () = obj.StopDiscovery ()
+    member x.RemoveDevice y = obj.RemoveDevice y
     interface IBansheeAdapter with
         member x.Address = x.Address
         member x.Name = x.Name
@@ -99,21 +110,18 @@ type AdapterWrapper (bus: Bus, name: string, path: ObjectPath, ps: InterfaceProp
         member x.StopDiscovery () = x.StopDiscovery ()
         member x.RemoveDevice y = x.RemoveDevice y
 
-type DeviceWrapper (bus: Bus, name: string, path: ObjectPath, ps: InterfacePropertyMap) =
-    inherit DBusWrapper<IBluetoothDevice>(bus, name, path, ps)
-    do if 0 = ps.Count then base.Properties.Use Constants.IF_DEVICE
-    member private x.GetProp y = x.Properties.Get Constants.IF_DEVICE y
-    member private x.SetProp y z = x.Properties.Set Constants.IF_DEVICE y z
+type DeviceWrapper (obj: IBluetoothDevice, ps: IPropertyManager) =
+    inherit ObjectDecorator<IBluetoothDevice>(obj, ps)
     member x.Sync = Functions.HasSync x
     member x.AudioIn = Functions.HasAudioIn x
     member x.AudioOut = Functions.HasAudioOut x
     member x.Headset = Functions.HasHeadset x
-    member x.Disconnect () = x.Object.Disconnect ()
-    member x.Connect () = x.Object.Connect ()
-    member x.ConnectProfile y = x.Object.ConnectProfile y
-    member x.DisconnectProfile y = x.Object.DisconnectProfile y
-    member x.Pair () = x.Object.Pair ()
-    member x.CancelPairing () = x.Object.CancelPairing ()
+    member x.Disconnect () = obj.Disconnect ()
+    member x.Connect () = obj.Connect ()
+    member x.ConnectProfile y = obj.ConnectProfile y
+    member x.DisconnectProfile y = obj.DisconnectProfile y
+    member x.Pair () = obj.Pair ()
+    member x.CancelPairing () = obj.CancelPairing ()
     member x.Address = x.GetProp "Address"
     member x.Name = x.GetProp "Name"
     member x.Alias with get () = x.GetProp "Alias"

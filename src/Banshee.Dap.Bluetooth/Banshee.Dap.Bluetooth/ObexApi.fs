@@ -66,12 +66,14 @@ type ITransfer =
     abstract Session : ObjectPath with get
     abstract Name : string with get
     abstract Type : string with get
+    abstract Time : uint64 with get
     abstract Size : uint64 with get
     abstract Transferred : uint64 with get
     abstract Filename : string with get
 
 [<Interface (Constants.IF_FILETRANSFER)>]
 type IFileTransfer =
+    inherit ISession
     abstract ChangeFolder : string -> unit
     abstract CreateFolder : string -> unit
     abstract ListFolder : unit -> List<StringVariantMap>

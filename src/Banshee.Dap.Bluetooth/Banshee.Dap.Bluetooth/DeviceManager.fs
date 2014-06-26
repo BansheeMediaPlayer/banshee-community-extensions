@@ -36,6 +36,8 @@ open Banshee.Dap.Bluetooth.DBusApi
 open Banshee.Dap.Bluetooth.AdapterApi
 open Banshee.Dap.Bluetooth.DeviceApi
 open Banshee.Dap.Bluetooth.ObexApi
+open Banshee.Dap.Bluetooth.SupportApi
+open Banshee.Dap.Bluetooth.InversionApi
 open Banshee.Dap.Bluetooth.Wrappers
 
 open DBus
@@ -69,61 +71,60 @@ module Constants =
     let NAME_BLUEZ = "org.bluez"
     let NAME_BLUEZ_OBEX = "org.bluez.obex"
 
-type ObjectAction = | Added | Changed | Removed
-
-type ObjectChangedArgs(a: ObjectAction) =
-    inherit EventArgs()
-    member x.Action = a
-
-type AdapterChangedArgs(a:ObjectAction, d: IBansheeAdapter) =
-    inherit ObjectChangedArgs(a)
+type AdapterChangedArgs(a:ObjectAction, d: IBansheeAdapter, p: ObjectPath) =
+    inherit ObjectChangedArgs(a, d, p)
     member x.Adapter = d
-type DeviceChangedArgs(a:ObjectAction, d: IBansheeDevice) =
-    inherit ObjectChangedArgs(a)
+type DeviceChangedArgs(a:ObjectAction, d: IBansheeDevice, p: ObjectPath) =
+    inherit ObjectChangedArgs(a, d, p)
     member x.Device = d
 
 type AdapterChangedHandler = delegate of obj * AdapterChangedArgs -> unit
 type DeviceChangedHandler = delegate of obj * DeviceChangedArgs -> unit
 
 type DeviceManager(system: Bus) as this =
-    let oman = system.GetObject<IObjectManager>(Constants.NAME_BLUEZ, ObjectPath.Root)
+    let oman = DBusInverter(system, Constants.NAME_BLUEZ, ObjectPath.Root)
     let adapters = ConcurrentDictionary<_,IBansheeAdapter>() :> IDictionary<_,_>
     let devices = ConcurrentDictionary<_,IBansheeDevice>() :> IDictionary<_,_>
     let ac = Event<AdapterChangedHandler,AdapterChangedArgs>()
     let dc = Event<DeviceChangedHandler,DeviceChangedArgs>()
+    let add (p: ObjectPath) (o: obj) =
+        printfn "Added"
+        match box o with
+        | :? IBansheeAdapter as aw -> adapters.Add(p, aw)
+                                      printfn "Added Adapter"
+                                      aw.PropertyChanged.Add(fun o -> ac.Trigger(this, AdapterChangedArgs(Changed, aw, p)))
+                                      ac.Trigger (this, AdapterChangedArgs(Added, aw, p))
+        | :? IBansheeDevice as dw -> devices.Add(p, dw)
+                                     printfn "Added Device"
+                                     dw.PropertyChanged.Add(fun o -> dc.Trigger(this, DeviceChangedArgs(Changed, dw, p)))
+                                     dc.Trigger(this, DeviceChangedArgs(Added, dw, p))
+        | _ -> printfn "Added: %s" (o.GetType().FullName)
+    let rem (p: ObjectPath) =
+        printfn "Removed"
+        match (adapters.ContainsKey p, devices.ContainsKey p) with
+        | (true, false) -> let a = adapters.[p]
+                           adapters.Remove p |> ignore
+                           printfn "Removed Adapter"
+                           ac.Trigger(this, AdapterChangedArgs(Removed, a, p))
+                           true
+        | (false, true) -> let d = devices.[p]
+                           devices.Remove p |> ignore
+                           printfn "Removed Device"
+                           dc.Trigger(this, DeviceChangedArgs(Removed, d, p))
+                           true
+        | _ -> false
     do
-        oman.add_InterfacesAdded(fun o ip -> printfn "Interfaces Added: %s" (o.ToString())
-                                             this.Add o ip)
-        oman.add_InterfacesRemoved(fun o is -> printfn "Interfaces Removed: %s" (o.ToString())
-                                               if adapters.ContainsKey o then let a = adapters.[o]
-                                                                              adapters.Remove o |> ignore
-                                                                              printfn "Removed Adapter"
-                                                                              ac.Trigger(this, AdapterChangedArgs(Removed, a))
-                                               if devices.ContainsKey o then let d = devices.[o]
-                                                                             devices.Remove o |> ignore
-                                                                             printfn "Removed Device"
-                                                                             dc.Trigger(this, DeviceChangedArgs(Removed, d)))
-        let objects = oman.GetManagedObjects() in
-            objects :> seq<_> 
-                |> Seq.filter (fun x -> x.Value.ContainsKey Constants.IF_ADAPTER || x.Value.ContainsKey Constants.IF_DEVICE) 
-                |> Seq.iter (fun x -> this.Add x.Key x.Value)
+        oman.Register<IAdapter> (fun o p -> let a = o :?> IAdapter
+                                            AdapterWrapper(a, p) :> obj)
+        oman.Register<IBluetoothDevice> (fun o p -> let d = o :?> IBluetoothDevice
+                                                    DeviceWrapper(d, p) :> obj)
+        oman.ObjectChanged.Add(fun o -> match o.Action with
+                                        | Added -> add o.Path o.Object
+                                        | Removed -> rem o.Path |> ignore
+                                        | _ -> ())
+        oman.Refresh ()
     member x.AdapterChanged = ac.Publish
     member x.DeviceChanged = dc.Publish
-    member private x.Add (y: ObjectPath) (z: InterfacePropertyMap) = 
-        //printfn "%s" (Functions.PrintMap z)
-        let oip = ObjectInterfacePropertyMap() in
-        oip.Add(y, z)
-        Functions.PrintOipMap oip
-        if z.ContainsKey(Constants.IF_ADAPTER) then x.AddAdapter y z
-        else if z.ContainsKey(Constants.IF_DEVICE) then x.AddDevice y z
-    member private x.AddAdapter y z = adapters.[y] <- AdapterWrapper(system, Constants.NAME_BLUEZ, y, z)
-                                      (adapters.[y] :> INotifyPropertyChanged).PropertyChanged.Add(fun o -> (ac.Trigger (this, AdapterChangedArgs(Changed, adapters.[y]))))
-                                      printfn "Added Adapter"
-                                      ac.Trigger(this, AdapterChangedArgs(Added, adapters.[y]))
-    member private x.AddDevice y z = devices.[y] <- DeviceWrapper(system, Constants.NAME_BLUEZ, y, z)
-                                     (devices.[y] :> INotifyPropertyChanged).PropertyChanged.Add(fun o -> dc.Trigger (this, DeviceChangedArgs(Changed, devices.[y])))
-                                     printfn "Added Device"
-                                     dc.Trigger(this, DeviceChangedArgs(Added, devices.[y]))
     member x.Adapters = adapters.Values
     member x.Devices = devices.Values
     member x.Powered with get () = x.Adapters |> Seq.exists (fun (o: IBansheeAdapter) -> o.Powered)
