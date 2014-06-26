@@ -56,9 +56,10 @@ type AcoustIDReader(key : string) = class
         
         let elements = [src; decoder; chromaPrint; sink];
         
+        (* todo 
         if elements |> List.tryFind (fun x -> x = null) <> None then
             pipeline <- null
-            failwith "Cannot create pipeline!"
+            failwith "Cannot create pipeline!" *)
             
         
         sink. ["sync"] <- 0

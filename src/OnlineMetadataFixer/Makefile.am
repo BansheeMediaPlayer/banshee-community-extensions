@@ -5,6 +5,7 @@ SOURCES =  \
 	Banshee.OnlineMetadataFixer/AcoustIDReader.fs \
 	Banshee.OnlineMetadataFixer/HelperRecords.fs \
 	Banshee.OnlineMetadataFixer/JSonAcoustIDReader.fs \
+	Banshee.OnlineMetadataFixer/MissingArtistTitleSource.fs \
 	Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs
 
 RESOURCES =  \
