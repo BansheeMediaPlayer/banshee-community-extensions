@@ -38,6 +38,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="Mono.Posix, Version=4.0.0.0" />
     <Reference Include="Banshee.Core, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-core</Package>
     </Reference>
@@ -63,6 +64,9 @@
     <Reference Include="Hyena, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-hyena</Package>
     </Reference>
+    <Reference Include="Hyena.Data.Sqlite, Version=2.9.0.0, Culture=neutral">
+      <Package>banshee-hyena-data-sqlite</Package>
+    </Reference>
     <Reference Include="Hyena.Gui, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-hyena-gui</Package>
     </Reference>
@@ -75,6 +79,7 @@
     <Compile Include="Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/JSonAcoustIDReader.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/AcoustIDReader.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/MissingArtistTitleSource.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
   <ItemGroup>
