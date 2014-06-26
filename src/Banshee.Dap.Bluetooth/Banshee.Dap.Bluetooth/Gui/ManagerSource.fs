@@ -50,11 +50,13 @@ module Functions =
         if Functions.IsNull icon then "bluetooth"
         else icon
     let AdapterString adapters = 
-        let sb = StringBuilder("<b>")
-        adapters |> Seq.iteri (fun i (x: IBansheeAdapter) -> match i with
-                                                             | 0 -> sb.Append (x.Alias) |> ignore
-                                                             | _ -> sb.AppendFormat (", {0}", x.Alias) |> ignore)
-        sb.Append("</b>").ToString()
+        match Seq.isEmpty adapters with
+        | true -> AddinManager.CurrentLocalizer.GetString("No Bluetooth Adapters")
+        | false -> let sb = StringBuilder("<b>")
+                   adapters |> Seq.iteri (fun i (x: IBansheeAdapter) -> match i with
+                                                                        | 0 -> sb.Append (x.Alias) |> ignore
+                                                                        | _ -> sb.AppendFormat (", {0}", x.Alias) |> ignore)
+                   sb.Append("</b>").ToString()
     let BoxOf text image = let bx = new HBox(false, 5)
                            let local = AddinManager.CurrentLocalizer.GetString(text)
                            bx.PackStart(new Label(Text = local, UseMarkup = true), false, false, 0u)
@@ -95,6 +97,9 @@ type AdapterControls(dm: DeviceManager) =
     member x.Discovery with get () = dis.Active
                        and set v = dis.Active <- v
     member x.Refresh () = label.Markup <- dm.Adapters |> Functions.AdapterString
+                          let ops = dm.Adapters |> Seq.isEmpty |> not
+                          pow.Sensitive <- ops
+                          dis.Sensitive <- ops
     [<CLIEvent>]
     member x.PowerEvent = pev.Publish
     [<CLIEvent>]
