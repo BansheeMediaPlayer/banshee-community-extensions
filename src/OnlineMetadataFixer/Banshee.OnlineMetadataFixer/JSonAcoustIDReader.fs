@@ -41,14 +41,14 @@ type JSonAcoustIDReader (url : string, completion_handler) = class
         currentID <- String.Empty
         
         if jsonProvider.Status |> x.CheckStatus then
+            x.FindBestID ()
             completionHandler (currentID, recordings)
         else
-            x.FindBestID ()
             completionHandler (currentID, recordings)
         ()
 
     member x.CheckStatus = function
-        | "true" -> true
+        | "ok" -> true
         | _ -> false
 
     member x.FindBestID () = 
