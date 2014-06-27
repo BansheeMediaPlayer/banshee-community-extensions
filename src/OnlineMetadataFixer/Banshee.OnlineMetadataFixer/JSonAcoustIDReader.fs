@@ -32,7 +32,8 @@ open System.Collections.Generic
 type AcoustIDJsonProvider = FSharp.Data.JsonProvider<"Resources/AcoustIDTrackInfo.json", EmbeddedResource="AcoustIDTrackInfo.json">
 
 type JSonAcoustIDReader (url : string, completion_handler) = class
-    let jsonProvider = AcoustIDJsonProvider.Load (url)
+    let webClient = new System.Net.WebClient ()
+    let jsonProvider = AcoustIDJsonProvider.Parse (webClient.DownloadString (url))
     let mutable currentID = String.Empty
     let mutable recordings = new List<Recording> ()
     let mutable completionHandler = completion_handler
@@ -52,12 +53,12 @@ type JSonAcoustIDReader (url : string, completion_handler) = class
         | _ -> false
 
     member x.FindBestID () = 
-        let mutable currentScore = 0.0m
-        
+        let mutable currentScore = 0.0
+
         for result in jsonProvider.Results do
-            if result.Score > currentScore then
+            if Convert.ToDouble(result.Score) > currentScore then
                 currentID <- result.Id
-                currentScore <- result.Score
+                currentScore <- result.Score |> Convert.ToDouble
                 x.ReadRecordings (result)
 
     member x.ReadRecordings (result) = 

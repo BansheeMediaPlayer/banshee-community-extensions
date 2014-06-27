@@ -31,7 +31,7 @@
         "id": "dummy-recording-id"
         }
       ],
-      "score": 0.123,
+      "score": "score",
       "id": "dummy-result-id"
     }
   ]
