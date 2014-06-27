@@ -70,6 +70,9 @@
     <Reference Include="Hyena.Gui, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-hyena-gui</Package>
     </Reference>
+    <Reference Include="Banshee.Fixup, Version=2.9.0.0, Culture=neutral">
+      <Package>banshee-fixup</Package>
+    </Reference>
     <Reference Include="gstreamer-sharp, Version=0.99.0.0, Culture=neutral, PublicKeyToken=5cbf79803e97ff61">
       <Package>gstreamer-sharp-1.0</Package>
     </Reference>
