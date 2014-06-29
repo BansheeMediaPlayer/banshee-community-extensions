@@ -7,8 +7,7 @@ open System
 let main(args) =
     Gst.Application.Init ()
     let loop = new GLib.MainLoop ()
-    let reader = new Banshee.OnlineMetadataFixer.AcoustIDReader ()
-    let id, list = reader.GetID (args.[0])
+    let id, list = Banshee.OnlineMetadataFixer.AcoustIDReader.ReadFingerPrint (args.[0])
     Console.WriteLine ("Track ID: {0}", id)
     for record in list do
         Console.WriteLine ("=========================")

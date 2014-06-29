@@ -28,16 +28,14 @@ namespace Banshee.OnlineMetadataFixer
 
 open System
 open System.Collections.Generic
+
 open Gst
 
 type AcoustIDReader() = class
-    let acoustIDKey = "TP95csTg"
-    let timeout = uint64 Constants.SECOND * 10UL
+    static let acoustIDKey = "TP95csTg"
+    static let timeout = uint64 Constants.SECOND * 10UL
     
-    member x.GetID (filename) = 
-        x.StartPipeline (filename)
-
-    member x.StartPipeline (filename) =
+    static member private BuildPipeline (filename) =
         let pipeline = new Pipeline ()
         let src = ElementFactory.Make ("filesrc", "source")
         let decoder = ElementFactory.Make ("decodebin", "decoder")
@@ -57,10 +55,18 @@ type AcoustIDReader() = class
             if not (e |> pipeline.Add) then
                 failwith "Cannot add element!"
             
-        decoder |> src.Link |> x.CheckLink
-        sink |> chromaPrint.Link |> x.CheckLink
+        decoder |> src.Link |> AcoustIDReader.CheckLink
+        sink |> chromaPrint.Link |> AcoustIDReader.CheckLink
+        decoder.PadAdded.Add (fun args -> "sink" |> chromaPrint.GetStaticPad |> args.NewPad.Link = PadLinkReturn.Ok |> AcoustIDReader.CheckLink)
         
-        decoder.PadAdded.Add (fun args -> "sink" |> chromaPrint.GetStaticPad |> args.NewPad.Link = PadLinkReturn.Ok |> x.CheckLink)
+        pipeline, chromaPrint
+
+    static member private CheckLink (is_ok) =
+        if not is_ok then
+            failwith "Cannot link elements!"
+    
+    static member ReadFingerPrint (filename) =
+        let pipeline, chromaPrint = AcoustIDReader.BuildPipeline (filename)
         
         if State.Playing |> pipeline.SetState = StateChangeReturn.Failure then
             failwith "Cannot start pipeline"
@@ -72,11 +78,7 @@ type AcoustIDReader() = class
         if eos <> null && pipeline.QueryDuration (Format.Time, duration) then
             let url = String.Format ("http://api.acoustid.org/v2/lookup?meta=recordings+releasegroups&format=json&client={0}&duration={1}&fingerprint={2}", acoustIDKey, duration.Value / int64 Constants.SECOND, chromaPrint. ["fingerprint"])
             let reader = new JSonAcoustIDReader (url)
-            reader.ReadID ()
+            reader.GetInfo ()
         else
             (String.Empty, new List<Recording> ())
-
-    member x.CheckLink (is_ok) =
-        if not is_ok then
-            failwith "Cannot link elements!"
 end

@@ -29,19 +29,19 @@ namespace Banshee.OnlineMetadataFixer
 open System
 open System.Collections.Generic
 
-type AcoustIDJsonProvider = FSharp.Data.JsonProvider<"/home/loganek/banshee/banshee-community-extensions/src/OnlineMetadataFixer/Resources/AcoustIDTrackInfo.json">
+type AcoustIDJsonProvider = FSharp.Data.JsonProvider<"Resources/AcoustIDTrackInfo.json", EmbeddedResource="AcoustIDTrackInfo.json">
 
 type JSonAcoustIDReader (url : string) = class
     // Workaround a FSharp.Data bug. See here: https://github.com/fsharp/FSharp.Data/issues/642
     let webClient = new System.Net.WebClient ()
     let jsonProvider = AcoustIDJsonProvider.Parse (webClient.DownloadString (url))
 
-    member x.ReadID () =
+    member x.GetInfo () =
         match jsonProvider.Status with
-        | "ok" -> x.FindBestID ()
+        | "ok" -> x.GetBestInfo ()
         | _ -> (String.Empty, new List<Recording> ())
 
-    member x.FindBestID () = 
+    member x.GetBestInfo () = 
         let mutable currentScore = 0.0
         let mutable id = ""
         let recordings = new List<Recording> ()
