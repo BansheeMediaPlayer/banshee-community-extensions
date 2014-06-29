@@ -40,19 +40,15 @@ type OnlineMetadataFixerSource () =
             base.Id <- "empty-albums"
             base.Name <- Catalog.GetString ("Empty Album Name")
             base.Description <- Catalog.GetString ("Displayed are tracks with empty album's name.")
-            (*let f a b = 
-                let str = "str"
-                str :> obj*)
-                //OnlineMetadataFixerSource.SomethingUp (a, b)
 
-            BinaryFunction.Add("empty-albums", new Func<obj, obj, obj>(fun a b -> OnlineMetadataFixerSource.GetAlbumTitle (a :?> string, b :?> string) :> obj))
+            BinaryFunction.Add(base.Id, new Func<obj, obj, obj>(fun a b -> OnlineMetadataFixerSource.GetAlbumTitle (a :?> string, b :?> string) :> obj))
 
         static member GetFindCmd () = 
             let artistOrNothing = "IFNULL((SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID), '')"
             new HyenaSqliteCommand (String.Format (@"
                 INSERT INTO MetadataProblems (ProblemType, TypeOrder, Generation, SolutionValue, SolutionOptions, ObjectIds, TrackInfo)
                     SELECT
-                        'empty-albums', 1, ?,
+                        '{1}', 1, ?,
                          COALESCE (
                             NULLIF (
                                 MIN(CASE (upper(Title) = Title AND NOT lower(Title) = Title)
@@ -60,13 +56,13 @@ type OnlineMetadataFixerSource () =
                                     ELSE Title END),
                                 '~~~'),
                             Title) as val,
-                         IFNULL(HYENA_BINARY_FUNCTION ('empty-albums', Title, {0}), '') as albums,                        
+                         IFNULL(HYENA_BINARY_FUNCTION ('{1}', Title, {0}), '') as albums,                        
                          AlbumID || ',' || TrackID,
                          Title || ',' || {0}
                     FROM CoreTracks
                     WHERE IFNULL((SELECT Title from CoreAlbums where AlbumID = CoreTracks.AlbumID), '') = '' AND albums <> ''
                         GROUP BY TrackID 
-                        ORDER BY Title DESC", artistOrNothing));
+                        ORDER BY Title DESC", artistOrNothing, base.Id));
 
     static member GetAlbumTitle (title : String, artist : String) : String =
         match (title, artist) with
