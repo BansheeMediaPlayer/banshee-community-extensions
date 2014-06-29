@@ -30,29 +30,19 @@ open System
 open System.Collections.Generic
 open Gst
 
-type AcoustIDReader(key : string) = class
-    let mutable filename = ""
-    let mutable completionHandler = fun (id : string, list : List<Recording>) -> ()
-    let mutable pipeline = null
-    let mutable duration = -1L
-    let mutable fingerprint = ""
+type AcoustIDReader() = class
+    let acoustIDKey = "TP95csTg"
+    let timeout = uint64 Constants.SECOND * 10UL
     
-    member x.Key = key
-    
-    member x.GetID (file, completion_handler) = 
-        filename <- file
-        completionHandler <- completion_handler
-        x.StartPipeline ()
-    
-    member x.StartPipeline () =
-        pipeline <- new Pipeline ()
+    member x.GetID (filename) = 
+        x.StartPipeline (filename)
+
+    member x.StartPipeline (filename) =
+        let pipeline = new Pipeline ()
         let src = ElementFactory.Make ("filesrc", "source")
         let decoder = ElementFactory.Make ("decodebin", "decoder")
         let chromaPrint = ElementFactory.Make ("chromaprint", "processor")
         let sink = ElementFactory.Make ("fakesink", "sink")
-        
-        pipeline.Bus.AddSignalWatch ()
-        x.MsgHandler |> pipeline.Bus.Message.Add
         
         let elements = [src; decoder; chromaPrint; sink];
         
@@ -60,12 +50,12 @@ type AcoustIDReader(key : string) = class
         if elements |> List.tryFind (fun x -> x = null) <> None then
             pipeline <- null
             failwith "Cannot create pipeline!" *)
-            
-        
+
         sink. ["sync"] <- 0
         src. ["location"] <- filename
         for e in elements do
-            e |> x.TryAdd
+            if not (e |> pipeline.Add) then
+                failwith "Cannot add element!"
             
         decoder |> src.Link |> x.CheckLink
         sink |> chromaPrint.Link |> x.CheckLink
@@ -74,38 +64,19 @@ type AcoustIDReader(key : string) = class
         
         if State.Playing |> pipeline.SetState = StateChangeReturn.Failure then
             failwith "Cannot start pipeline"
+            
+        let duration = ref -1L
+        let state = ref State.Playing
+        let pending = ref State.Playing
+        let eos = pipeline.Bus.TimedPopFiltered(timeout, MessageType.Eos)
+        if eos <> null && pipeline.QueryDuration (Format.Time, duration) then
+            let url = String.Format ("http://api.acoustid.org/v2/lookup?meta=recordings+releasegroups&format=json&client={0}&duration={1}&fingerprint={2}", acoustIDKey, duration.Value / int64 Constants.SECOND, chromaPrint. ["fingerprint"])
+            let reader = new JSonAcoustIDReader (url)
+            reader.ReadID ()
+        else
+            (String.Empty, new List<Recording> ())
 
-    member x.TryAdd (element) =
-        if not (element |> pipeline.Add) then
-            failwith "Cannot add element!"
-    
     member x.CheckLink (is_ok) =
         if not is_ok then
             failwith "Cannot link elements!"
-            
-    member x.MsgHandler args =
-        match args.Message.Type with
-        | MessageType.DurationChanged -> 
-            let ok, dur =  pipeline.QueryDuration (Format.Time)
-            if ok then
-                duration <- dur / int64 Gst.Constants.SECOND
-                x.ReadID()
-        | MessageType.Eos -> () // todo finish
-        | MessageType.Tag -> 
-            let tags = args.Message.ParseTag ()
-            let ok, fingpr = "chromaprint-fingerprint" |> tags.GetString
-            
-            if (ok && fingpr <> null) then
-                fingerprint <- fingpr
-                x.ReadID()
-        | _ -> ()
-                
-    member x.ReadID () =
-        if (duration = -1L || String.IsNullOrEmpty (fingerprint)) then
-            ()
-            // todo: timeout or sth?
-        else
-            let url = String.Format ("http://api.acoustid.org/v2/lookup?meta=recordings+releasegroups&format=json&client={0}&duration={1}&fingerprint={2}", key, duration, fingerprint)
-            let reader = new JSonAcoustIDReader (url, completionHandler)
-            reader.ReadID ()
 end

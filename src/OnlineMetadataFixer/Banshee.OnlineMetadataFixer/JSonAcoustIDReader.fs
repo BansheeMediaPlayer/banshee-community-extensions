@@ -29,41 +29,32 @@ namespace Banshee.OnlineMetadataFixer
 open System
 open System.Collections.Generic
 
-type AcoustIDJsonProvider = FSharp.Data.JsonProvider<"Resources/AcoustIDTrackInfo.json", EmbeddedResource="AcoustIDTrackInfo.json">
+type AcoustIDJsonProvider = FSharp.Data.JsonProvider<"/home/loganek/banshee/banshee-community-extensions/src/OnlineMetadataFixer/Resources/AcoustIDTrackInfo.json">
 
-type JSonAcoustIDReader (url : string, completion_handler) = class
+type JSonAcoustIDReader (url : string) = class
     // Workaround a FSharp.Data bug. See here: https://github.com/fsharp/FSharp.Data/issues/642
     let webClient = new System.Net.WebClient ()
     let jsonProvider = AcoustIDJsonProvider.Parse (webClient.DownloadString (url))
-    let mutable currentID = String.Empty
-    let mutable recordings = new List<Recording> ()
-    let mutable completionHandler = completion_handler
-    
-    member x.ReadID () =
-        currentID <- String.Empty
-        
-        if jsonProvider.Status |> x.CheckStatus then
-            x.FindBestID ()
-            completionHandler (currentID, recordings)
-        else
-            completionHandler (currentID, recordings)
-        ()
 
-    member x.CheckStatus = function
-        | "ok" -> true
-        | _ -> false
+    member x.ReadID () =
+        match jsonProvider.Status with
+        | "ok" -> x.FindBestID ()
+        | _ -> (String.Empty, new List<Recording> ())
 
     member x.FindBestID () = 
         let mutable currentScore = 0.0
-
+        let mutable id = ""
+        let recordings = new List<Recording> ()
         for result in jsonProvider.Results do
             if Convert.ToDouble(result.Score) > currentScore then
-                currentID <- result.Id
+                recordings.Clear ()
                 currentScore <- result.Score |> Convert.ToDouble
-                x.ReadRecordings (result)
+                x.ReadRecordings (result) |> recordings.AddRange
+                id <- result.Id
+        (id, recordings)
 
     member x.ReadRecordings (result) = 
-        recordings <- new List<Recording> ()
+        let recordings = new List<Recording> ()
         for recording in result.Recordings do
             {
                 ID = recording.Id; 
@@ -71,6 +62,7 @@ type JSonAcoustIDReader (url : string, completion_handler) = class
                 Artists = x.ReadArtists (recording.Artists); 
                 ReleaseGroups = x.ReadReleaseGroups (recording.Releasegroups)
             } |> recordings.Add 
+        recordings
     
     member x.ReadArtists art_list =
         let artists = new List<Artist> ()

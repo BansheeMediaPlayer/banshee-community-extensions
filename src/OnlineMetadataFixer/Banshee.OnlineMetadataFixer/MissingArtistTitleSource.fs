@@ -47,10 +47,9 @@ type MissingArtistTitleSource () =
     override this.IdentifyCore () =              
         ServiceManager.DbConnection.Execute ("DELETE FROM CoreAlbums WHERE AlbumID NOT IN (SELECT DISTINCT(AlbumID) FROM CoreTracks)") |> ignore;
         Gst.Application.Init ()
-        let reader = new Banshee.OnlineMetadataFixer.AcoustIDReader ("TP95csTg")
-        reader.GetID ("/home/loganek/Desktop/owieczka.mp3", fun (id, list) ->
-            Console.WriteLine ("Found it!")
-        )
+        let reader = new Banshee.OnlineMetadataFixer.AcoustIDReader ()
+        reader.GetID ("/home/loganek/Desktop/owieczka.mp3")
+        ()
 
     override this.Fix (problems) =
         ()
