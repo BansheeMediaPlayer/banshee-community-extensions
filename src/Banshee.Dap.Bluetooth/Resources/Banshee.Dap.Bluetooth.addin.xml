@@ -9,13 +9,12 @@
     description="Provides DAP support through your Bluetooth connection."
     author="Nicholas J. Little"
     url="http://gbbmtp.wordpress.com/"
-    defaultEnabled="true">
+    defaultEnabled="false">
 
   <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
 
   <Dependencies>
-    <Addin id="Banshee.Services" version="1.0"/>
-    <Addin id="Banshee.ThickClient" version="1.0"/>
+	<Addin id="Banshee.Dap" version="1.0" />
   </Dependencies>
 
   <!--  Extensions are loaded by Banshee via Mono.Addins by extending a

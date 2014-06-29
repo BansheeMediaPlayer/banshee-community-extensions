@@ -32,10 +32,10 @@ open System.Linq
 open Microsoft.FSharp.Collections
 
 type MediaType =
-    | Unrecognised 
-    | Asf | M3u | Pls 
+    | Unrecognised
+    | Asf | M3u | Pls
     | Mp3 | Ogg | Wma | Aac | Wav | Flac | M4a
-    | Avi | Mp4 | Mpeg | Qt | Wmv 
+    | Avi | Mp4 | Mpeg | Qt | Wmv
 
 module Constants =
     let PlaylistTypes = Set [ Asf; M3u; Pls ]
@@ -71,7 +71,7 @@ module Extensions =
                                     | MediaType.Pls  -> "audio/x-scpls"
                                     | _ -> null
     [<System.Runtime.CompilerServices.Extension>]
-    let ToMimeType(this: string) = 
+    let ToMimeType(this: string) =
         let is x = this.EndsWith(x, StringComparison.InvariantCultureIgnoreCase)
         match this with
         | this when is "mp3"  -> MediaType.Mp3

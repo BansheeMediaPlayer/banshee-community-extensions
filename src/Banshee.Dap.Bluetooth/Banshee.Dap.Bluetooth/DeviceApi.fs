@@ -27,6 +27,7 @@ namespace Banshee.Dap.Bluetooth.DeviceApi
 
 open System
 open System.Collections.Generic
+open System.Globalization
 
 open Banshee.Dap.Bluetooth.DBusApi
 
@@ -48,7 +49,7 @@ type IBluetoothDevice =
     abstract Name : string with get
     abstract Alias : string with get, set
     abstract Class : uint32 with get
-    abstract Appearance : uint16 with get 
+    abstract Appearance : uint16 with get
     abstract Icon : string with get
     abstract Paired : bool with get
     abstract Trusted : bool with get, set

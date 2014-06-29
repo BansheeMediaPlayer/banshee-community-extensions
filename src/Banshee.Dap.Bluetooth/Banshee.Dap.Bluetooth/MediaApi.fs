@@ -1,5 +1,5 @@
 ﻿//
-// ManagerActions.fs
+// MediaApi.fs
 //
 // Author:
 //   Nicholas J. Little <arealityfarbetween@googlemail.com>
@@ -23,25 +23,37 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace Banshee.Dap.Bluetooth.Gui
+namespace Banshee.Dap.Bluetooth.MediaApi
 
-open Banshee.Dap.Bluetooth
-open Banshee.Gui
-open Hyena.Gui
-open Mono.Unix
-open Gtk
+open DBus
 
-type ManagerActions(dm: DeviceManager) =
-    inherit BansheeActionGroup("btman")
-    do
-        base.AddImportant (new ActionEntry ("PowerAction", null, Catalog.GetString ("Power"), null, "", fun o x -> ()))
-        base.AddImportant (new ActionEntry ("DiscoverAction", null, Catalog.GetString ("Discover"), null, "", fun o x -> ()))
+module Constants =
+    [<Literal>]
+    let IF_MEDIA_CONTROL = "org.bluez.MediaControl1"
+    [<Literal>]
+    let IF_MEDIA_TRANSPORT = "org.bluez.MediaTransport1"
 
-        base.AddUiFromFile ("ManagerSourceUI.xml");
+[<Interface (Constants.IF_MEDIA_CONTROL)>]
+type IMediaControl =
+    abstract Play : unit -> unit
+    abstract Pause : unit -> unit
+    abstract Stop : unit -> unit
+    abstract Next : unit -> unit
+    abstract Previous : unit -> unit
+    abstract VolumeUp : unit -> unit
+    abstract VolumeDown : unit -> unit
+    abstract FastForward : unit -> unit
+    abstract Rewind : unit -> unit
+    abstract Connected : bool with get
 
-            //this["SyncDapAction"].IconName = Stock.Refresh;
-            //ServiceManager.SourceManager.ActiveSourceChanged += OnActiveSourceChanged;
-            //Actions.SourceActions.Updated += delegate { UpdateActions (); };
-            //OnActiveSourceChanged (null);
+type TransportState = | Idle | Pending | Active
 
-        base.Register ();
+[<Interface (Constants.IF_MEDIA_TRANSPORT)>]
+type IMediaTransport =
+    abstract Aquire : unit -> (ObjectPath * uint16 * uint16)
+    abstract TryAquire : unit -> (ObjectPath * uint16 * uint16)
+    abstract Release : unit -> unit
+    abstract Device : ObjectPath with get
+    abstract UUID : string with get
+    abstract Codec : byte with get
+    abstract State : string with get

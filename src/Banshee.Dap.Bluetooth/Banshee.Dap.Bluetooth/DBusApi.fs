@@ -53,7 +53,7 @@ type PropertiesChangedHandler = delegate of string * StringVariantMap * string[]
 
 [<Interface (Constants.IF_DBUS_PROPERTIES)>]
 type IProperties =
-    abstract member Get : string -> string -> obj 
+    abstract member Get : string -> string -> obj
     abstract member Set : string -> string -> obj -> unit
     abstract member GetAll : string -> StringVariantMap
     [<CLIEvent>]
@@ -66,6 +66,6 @@ type InterfacesRemovedHandler = delegate of ObjectPath * string[] -> unit
 type IObjectManager =
     abstract member GetManagedObjects : unit -> ObjectInterfacePropertyMap
     [<CLIEvent>]
-    abstract member InterfacesAdded : IDelegateEvent<InterfacesAddedHandler> 
+    abstract member InterfacesAdded : IDelegateEvent<InterfacesAddedHandler>
     [<CLIEvent>]
     abstract member InterfacesRemoved : IDelegateEvent<InterfacesRemovedHandler>

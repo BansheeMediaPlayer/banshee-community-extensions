@@ -76,6 +76,6 @@ type IFileTransfer =
     inherit ISession
     abstract ChangeFolder : string -> unit
     abstract CreateFolder : string -> unit
-    abstract ListFolder : unit -> List<StringVariantMap>
+    abstract ListFolder : unit -> KeyValuePair<string,obj>[][]
     abstract PutFile : string -> string -> ObjectPath
     abstract Delete : string -> unit

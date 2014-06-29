@@ -30,16 +30,13 @@ open System
 open System.ComponentModel
 open System.Collections.Generic
 open System.Linq
-open System.Reflection
-open System.Runtime.Remoting.Messaging
-open System.Runtime.Remoting.Proxies
 
 open Banshee.Dap.Bluetooth.DBusApi
 
 open DBus
 
 module Functions =
-    let Merge (y: seq<KeyValuePair<'a,'b>>) (x: IDictionary<'a,'b>) = 
+    let Merge (y: seq<KeyValuePair<'a,'b>>) (x: IDictionary<'a,'b>) =
         for z in y do x.[z.Key] <- z.Value
         x
     let inline IsNull< ^a when ^a : not struct> (x: ^a) =
@@ -69,9 +66,8 @@ type PropertyManager(bus: Bus, name: string, path: ObjectPath, ipv: InterfacePro
                                                for p in ip do ipv.[i].[p] <- None
                                                let pu = Array.append (pv.Keys.ToArray()) ip
                                                let arg = new PropertiesUpdatedArgs(i, pu)
-                                               ce.Trigger(op, arg)
-                                               printfn "Properties Changed: %s" i)
-    member x.Get i p = try 
+                                               ce.Trigger(op, arg))
+    member x.Get i p = try
                         ipv.[i].[p] :?> 'a
                        with
                        | _ -> Unchecked.defaultof<'a>
@@ -107,10 +103,8 @@ type IDBusWrapper =
     abstract Get : unit -> 't option
 
 type DBusWrapper(bus: Bus, name: string, path: ObjectPath, ps: IPropertyManager) =
-    do printfn "Creating Wrapper for %s at %s" name (path.ToString())
     let tim = Dictionary<Type, string>()
     let iom = Dictionary<string, obj>()
-    do printfn "Created Wrapper"
     member x.Name with get () = name
     member x.Path with get () = path
     member x.Properties with get () = ps
@@ -156,6 +150,6 @@ type DBusWrapper(bus: Bus, name: string, path: ObjectPath, ps: IPropertyManager)
         member x.Remove t = x.Remove t
         member x.Put t f = x.Put t f
         member x.Get () = x.Get ()
-    new(bus, name, path, ipv: InterfacePropertyMap) = 
+    new(bus, name, path, ipv: InterfacePropertyMap) =
         new DBusWrapper(bus, name, path, PropertyManager(bus, name, path, ipv))
     new(bus, name, path) = new DBusWrapper(bus, name, path, InterfacePropertyMap())
