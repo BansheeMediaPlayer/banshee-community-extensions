@@ -46,7 +46,6 @@ type MissingArtistTitleSource () =
 
     override this.IdentifyCore () =              
         ServiceManager.DbConnection.Execute ("DELETE FROM CoreAlbums WHERE AlbumID NOT IN (SELECT DISTINCT(AlbumID) FROM CoreTracks)") |> ignore;
-        Gst.Application.Init ()
         AcoustIDReader.ReadFingerPrint ("/home/loganek/Desktop/owieczka.mp3")
         ()
 

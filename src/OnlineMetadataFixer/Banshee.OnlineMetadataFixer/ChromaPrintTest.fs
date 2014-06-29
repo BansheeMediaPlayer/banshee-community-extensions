@@ -5,7 +5,6 @@ open System
 
 [<EntryPoint>]
 let main(args) =
-    Gst.Application.Init ()
     let loop = new GLib.MainLoop ()
     let id, list = Banshee.OnlineMetadataFixer.AcoustIDReader.ReadFingerPrint (args.[0])
     Console.WriteLine ("Track ID: {0}", id)

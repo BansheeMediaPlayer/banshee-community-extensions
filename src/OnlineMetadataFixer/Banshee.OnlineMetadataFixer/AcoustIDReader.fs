@@ -36,6 +36,9 @@ type AcoustIDReader() = class
     static let timeout = uint64 Constants.SECOND * 10UL
     
     static member private BuildPipeline (filename) =
+        if not Gst.Application.IsInitialized then 
+            Gst.Application.Init ()
+
         let pipeline = new Pipeline ()
         let src = ElementFactory.Make ("filesrc", "source")
         let decoder = ElementFactory.Make ("decodebin", "decoder")
