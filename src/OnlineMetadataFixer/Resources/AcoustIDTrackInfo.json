@@ -25,6 +25,19 @@
                            "type": "dummy-releasegroup-name", 
                            "id": "dummy-releasegroup-id",
                            "title": "dummy-releasegroup-title"
+                           },
+                           {
+                           "artists": [
+                                        {
+                                        "id": "dummy-releasegroups-artist-id",
+                                        "name": "dymmy-releasegroups-artist-name"
+                                        }
+                                      ], 
+                           "secondarytypes": [
+                                               "dummy-secondarytypes-name"
+                                             ],
+                           "id": "dummy-releasegroup-id",
+                           "title": "dummy-releasegroup-title"
                            }
                          ],
         "title": "dummy-recording-title", 
