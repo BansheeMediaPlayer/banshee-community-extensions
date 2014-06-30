@@ -44,8 +44,11 @@ open Banshee.Hardware
 open Banshee.Sources
 open DBus
 open Hyena
+open Mono.Addins
 
 module Functions =
+    let Singular x = AddinManager.CurrentLocalizer.GetString x
+    let Plural x xs n = AddinManager.CurrentLocalizer.GetPluralString (x, xs, n)
     let inline IconOf< ^a when ^a : (member Icon : string)> (x: ^a) : string =
         let icon = (^a : (member Icon : string) (x))
         if Functions.IsNull icon then "bluetooth"
@@ -80,8 +83,7 @@ module Functions =
                                           else if filter nm then (nm::file |> List.rev)::state
                                           else state) acc
         printfn "Iterate: From Root = '%s'" root
-        let files = InnerIterate root [] []
-        files |> List.rev
+        InnerIterate root [] []
 
 type BluetoothCapabilities() =
     interface IDeviceMediaCapabilities with
@@ -130,7 +132,7 @@ type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
     override x.CanImport = false
     override x.GetIconNames () = [| dev.Icon |]
     override x.LoadFromDevice () =
-        base.SetStatus ("Loading Track Information...", false)
+        base.SetStatus (Functions.Singular "Loading Track Information...", false)
         let nne (f: string) (x: DatabaseTrackInfo) =
             let fn = Path.GetFileNameWithoutExtension f
             let ex = Path.GetExtension f
@@ -138,23 +140,28 @@ type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
             if m.Success then
               x.TrackNumber <- Int32.Parse(m.Groups.[1].Value)
               x.TrackTitle <- m.Groups.[2].Value
+            else
+              x.TrackTitle <- fn
             x.MimeType <- ToMimeType ex |> ToString
         let fx f (x: DatabaseTrackInfo) =
             match f with
-            | ar::al::fn::[] -> x.AlbumArtist <- ar
+            | ar::al::fn::[] -> x.ArtistName <- ar
                                 x.AlbumTitle <- al
                                 nne fn x
             | fn::[] -> nne fn x
             | _ -> ()
-            x.Uri <- new SafeUri("file:///" + String.Join("/", f))
-        Functions.Iterate ftp dev.MediaCapabilities.AudioFolders.[0] (fun x -> ToMimeType x |> IsAudio)
-        |> Seq.iter (fun f -> printfn "%A" f
-                              let dti = DatabaseTrackInfo(PrimarySource = x)
-                              fx f dti
-                              dti.Save())
+            x.Uri <- SafeUri("bt:///" + String.Join("/", f))
+        let files = Functions.Iterate ftp dev.MediaCapabilities.AudioFolders.[0] (fun x -> ToMimeType x |> IsAudio)
+        files
+        |> List.iteri (fun i f -> printfn "%A" f
+                                  let txt = Functions.Singular "Processing Track {0} of {1}\u2026"
+                                  x.SetStatus (String.Format (txt, i, files.Length), false)
+                                  let dti = DatabaseTrackInfo(PrimarySource = x)
+                                  fx f dti
+                                  dti.Save())
         base.OnTracksAdded ()
     override x.AddTrackToDevice (y, z) = ()
     override x.DeleteTrack y = false
     do base.DeviceInitialize dev
        base.Initialize ()
-       base.TrackEqualHandler <- fun dti ti -> ti.Uri.AbsolutePath.EndsWith(dti.Uri.AbsolutePath)
+       base.TrackEqualHandler <- fun dti ti -> dti.Uri = ti.Uri
