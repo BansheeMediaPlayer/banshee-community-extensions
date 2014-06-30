@@ -59,7 +59,7 @@ type MissingArtistTitleSource () =
         base.Id <- fixId
         base.Name <- Catalog.GetString ("Missing Artist and Titles Fix");
         base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee");
-        
+
         BinaryFunction.Add(base.Id, new Func<obj, obj, obj>(fun uri b -> MissingArtistTitleSource.GetSolutions (uri :?> string, b) :> obj))
 
     static member private GetSolutions (uri : string, b : obj) : String = 

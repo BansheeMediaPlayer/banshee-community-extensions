@@ -36,7 +36,7 @@ exception GstreamerError of string
 type AcoustIDReader() = class
     static let acoustIDKey = "TP95csTg"
     static let timeout = uint64 Constants.SECOND * 10UL
-    
+
     static member private BuildPipeline (filename) =
         if not Gst.Application.IsInitialized then 
             Gst.Application.Init ()
@@ -72,8 +72,7 @@ type AcoustIDReader() = class
         if not is_ok then
             raise (GstreamerError ("Cannot link elements"))
     
-    static member ReadFingerPrint (filename) =
-        Hyena.Log.DebugFormat ("Looking for {0} fingerprint", filename :> obj)
+    static member private LoadFingerprintFromGst (filename) =
         let pipeline, chromaPrint = AcoustIDReader.BuildPipeline (filename)
         
         if State.Playing |> pipeline.SetState = StateChangeReturn.Failure then
@@ -84,7 +83,22 @@ type AcoustIDReader() = class
         let pending = ref State.Playing
         let eos = pipeline.Bus.TimedPopFiltered(timeout, MessageType.Eos)
         if eos <> null && pipeline.QueryDuration (Format.Time, duration) then
-            let url = String.Format ("http://api.acoustid.org/v2/lookup?meta=recordings+releasegroups&format=json&client={0}&duration={1}&fingerprint={2}", acoustIDKey, duration.Value / int64 Constants.SECOND, chromaPrint. ["fingerprint"])
+            AcoustIDStorage.SaveFingerprint (chromaPrint. ["fingerprint"], filename, duration.Value)
+            (duration.Value, Some (string chromaPrint. ["fingerprint"]))
+        else
+            (duration.Value, None)
+
+    static member ReadFingerPrint (filename) =
+        Hyena.Log.DebugFormat ("Looking for {0} fingerprint", filename :> obj)
+        let (dur, fileFP) = AcoustIDStorage.LoadFingerprint (filename)
+        let (duration, fingerprint) = 
+            if fileFP.IsNone then 
+                AcoustIDReader.LoadFingerprintFromGst (filename)
+            else 
+                (dur, fileFP)
+        
+        if fingerprint.IsSome then
+            let url = String.Format ("http://api.acoustid.org/v2/lookup?meta=recordings+releasegroups&format=json&client={0}&duration={1}&fingerprint={2}", acoustIDKey, duration / int64 Constants.SECOND, fingerprint.Value)
             let reader = new JSonAcoustIDReader (url)
             reader.GetInfo ()
         else

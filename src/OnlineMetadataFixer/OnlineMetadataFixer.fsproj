@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.OnlineMetadataFixer/HelperRecords.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/AcoustIDStorage.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/JSonAcoustIDReader.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/AcoustIDReader.fs" />
