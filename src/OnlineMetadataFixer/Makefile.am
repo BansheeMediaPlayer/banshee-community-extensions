@@ -2,9 +2,10 @@ ASSEMBLY = Banshee.OnlineMetadataFixer
 LINK = $(BANSHEE_LIBS)
 
 SOURCES =  \
+	Banshee.OnlineMetadataFixer/AcoustIDFingerprintJob.fs \
 	Banshee.OnlineMetadataFixer/AcoustIDReader.fs \
-	Banshee.OnlineMetadataFixer/HelperRecords.fs \
 	Banshee.OnlineMetadataFixer/AcoustIDStorage.fs \
+	Banshee.OnlineMetadataFixer/HelperRecords.fs \
 	Banshee.OnlineMetadataFixer/JSonAcoustIDReader.fs \
 	Banshee.OnlineMetadataFixer/MissingArtistTitleSource.fs \
 	Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs

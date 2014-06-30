@@ -41,6 +41,7 @@ open Mono.Unix;
 
 type MissingArtistTitleSource () = 
     inherit Banshee.Fixup.Solver()
+    let mutable job = new AcoustIDFingerprintJob ()
     let fixId = "missing-artist-online-fix"
     let artistOrNothing = "IFNULL((SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID), '')"
     let findCmd = new HyenaSqliteCommand (String.Format (@"
@@ -62,27 +63,31 @@ type MissingArtistTitleSource () =
         base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee");
 
         BinaryFunction.Add(base.Id, new Func<obj, obj, obj>(fun uri b -> MissingArtistTitleSource.GetSolutions (uri :?> string, b) :> obj))
+        ServiceManager.SourceManager.add_SourceAdded (
+            fun e -> 
+                job <- new AcoustIDFingerprintJob ()
+(*                job.add_Finished (
+                    fun e -> 
+                        job <- null
+                        ())*)
+                job.Start ()
+                ()
+            )
 
     static member private GetSolutions (uri : string, b : obj) : String = 
-        let su = new SafeUri (uri)
-        match su.IsFile with
-        | true ->
-            try
-                let id, list = AcoustIDReader.ReadFingerPrint (su.AbsolutePath)
-                let solutions = new StringBuilder ()
-                for recording in list do
-                    solutions.Append (String.Join(", ", recording.Artists.Select(fun z -> z.Name))) |> ignore
-                    solutions.Append (" - ") |> ignore
-                    solutions.Append (recording.Title) |> ignore
-                    solutions.Append (";;") |> ignore
-                match solutions.Length > 2 with
-                | true -> solutions.ToString (0, solutions.Length - 2)
-                | _ -> solutions.ToString ()
-            with GstreamerError (ex) -> 
-                Hyena.Log.WarningFormat ("Cannot read {0} fingerprint. Internal error: {1}.", su.AbsolutePath, ex)
-                ""
-        | _ -> 
-            Hyena.Log.WarningFormat ("Cannot read {0} fingerprint. Element is not a local file.", uri)
+        try
+            let id, list = AcoustIDReader.ReadFingerPrint (uri)
+            let solutions = new StringBuilder ()
+            for recording in list do
+                solutions.Append (String.Join(", ", recording.Artists.Select(fun z -> z.Name))) |> ignore
+                solutions.Append (" - ") |> ignore
+                solutions.Append (recording.Title) |> ignore
+                solutions.Append (";;") |> ignore
+            match solutions.Length > 2 with
+            | true -> solutions.ToString (0, solutions.Length - 2)
+            | _ -> solutions.ToString ()
+        with GstreamerError (ex) -> 
+            Hyena.Log.WarningFormat ("Cannot read {0} fingerprint. Internal error: {1}.", uri, ex)
             ""
 
     override this.HasTrackInfo () = 

@@ -75,3 +75,16 @@ type AcoustIDStorage() =
                 (0L, None)
         else
             (0L, None)
+            
+    static member FingerprintExists (uri : string) =
+        let su = new Hyena.SafeUri (uri)
+        match su.IsFile with
+        | true ->
+            su.AbsolutePath
+            |> AcoustIDStorage.GetHashedFilename
+            |> File.Exists
+        | _ -> false
+
+    static member FingerprintMayExists (uri : string) =
+        let su = new Hyena.SafeUri (uri)
+        su.IsFile

@@ -84,6 +84,7 @@
     <Compile Include="Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/JSonAcoustIDReader.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/AcoustIDReader.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/AcoustIDFingerprintJob.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/MissingArtistTitleSource.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />

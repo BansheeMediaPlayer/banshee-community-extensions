@@ -88,19 +88,26 @@ type AcoustIDReader() = class
         else
             (duration.Value, None)
 
-    static member ReadFingerPrint (filename) =
-        Hyena.Log.DebugFormat ("Looking for {0} fingerprint", filename :> obj)
-        let (dur, fileFP) = AcoustIDStorage.LoadFingerprint (filename)
-        let (duration, fingerprint) = 
-            if fileFP.IsNone then 
-                AcoustIDReader.LoadFingerprintFromGst (filename)
-            else 
-                (dur, fileFP)
-        
-        if fingerprint.IsSome then
-            let url = String.Format ("http://api.acoustid.org/v2/lookup?meta=recordings+releasegroups&format=json&client={0}&duration={1}&fingerprint={2}", acoustIDKey, duration / int64 Constants.SECOND, fingerprint.Value)
-            let reader = new JSonAcoustIDReader (url)
-            reader.GetInfo ()
-        else
+    static member ReadFingerPrint (uri : string) =
+        let su = new Hyena.SafeUri (uri)
+        match su.IsFile with
+        | true ->
+            let filename = su.AbsolutePath
+            Hyena.Log.DebugFormat ("Looking for {0} fingerprint", filename :> obj)
+            let (dur, fileFP) = AcoustIDStorage.LoadFingerprint (filename)
+            let (duration, fingerprint) = 
+                if fileFP.IsNone then 
+                    AcoustIDReader.LoadFingerprintFromGst (filename)
+                else 
+                    (dur, fileFP)
+            
+            if fingerprint.IsSome then
+                let url = String.Format ("http://api.acoustid.org/v2/lookup?meta=recordings+releasegroups&format=json&client={0}&duration={1}&fingerprint={2}", acoustIDKey, duration / int64 Constants.SECOND, fingerprint.Value)
+                let reader = new JSonAcoustIDReader (url)
+                reader.GetInfo ()
+            else
+                (String.Empty, new List<Recording> ())
+        | _ -> 
+            Hyena.Log.WarningFormat ("Cannot read {0} fingerprint. Element is not a local file.", uri)
             (String.Empty, new List<Recording> ())
 end
