@@ -29,6 +29,7 @@ namespace Banshee.OnlineMetadataFixer
 open System;
 open System.Linq;
 open System.Text
+open System.Text.RegularExpressions
 open System.Collections.Generic;
 
 open Hyena
@@ -47,7 +48,7 @@ type MissingArtistTitleSource () =
             SELECT
                 '{1}', 1, ?,
                  IFNULL(HYENA_BINARY_FUNCTION ('{1}', uri, NULL), '') as solutions,
-                 AlbumID || ',' || TrackID,
+                 ArtistID || ',' || TrackID,
                  Uri
             FROM CoreTracks
             WHERE
@@ -93,4 +94,17 @@ type MissingArtistTitleSource () =
         ()
 
     override this.Fix (problems) =
-        ()
+        for problem in problems do
+            if not (String.IsNullOrEmpty (problem.SolutionValue)) then
+                let trackMetadata = Regex.Split (problem.SolutionValue, " - ")
+                ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET Title = ? WHERE TrackID = ?;", trackMetadata. [1], problem.ObjectIds. [1]) |> ignore
+                
+            let artistId = ServiceManager.DbConnection.Query<int>(@"SELECT ArtistID from CoreArtists where Name = ?", problem.SolutionValue)
+            let newId = 
+                if artistId = 0 then
+                    ServiceManager.DbConnection.Execute (@"INSERT INTO CoreArtists (Name) VALUES (?)", problem.SolutionValue) |> ignore
+                    ServiceManager.DbConnection.Query<int>(@"SELECT ArtistID from CoreArtists where Name = ?", problem.SolutionValue)
+                else
+                    artistId
+            ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET ArtistID = ? WHERE TrackID = ?;",
+               newId, problem.ObjectIds. [1]) |> ignore;
