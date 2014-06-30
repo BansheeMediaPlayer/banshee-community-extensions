@@ -59,20 +59,18 @@ type AcoustIDStorage() =
             sw.Write (duration.ToString () + " " + fingerprint.ToString ())
             sw.Close ()
         with
-        | :? Exception as ex -> Hyena.Log.WarningFormat ("Cannot save fingerprint: ", ex.Message)
+        | :? SystemException as ex -> Hyena.Log.WarningFormat ("Cannot save fingerprint: ", ex.Message)
 
     static member LoadFingerprint (filename) =
         let hashedFileName = AcoustIDStorage.GetHashedFilename (filename)
-        printfn "checkhing hashed %s" hashedFileName
         if File.Exists (hashedFileName) then
             try
-                printfn "hashed OK"
                 let sr = new StreamReader (hashedFileName)
                 let data = sr.ReadToEnd ();
                 let a = data.Split (' ')
                 (Convert.ToInt64 (a. [0]), Some (a. [1]))
             with
-            | :? Exception as ex ->
+            | :? SystemException as ex ->
                 Hyena.Log.WarningFormat ("Cannot read fingerprint: ", ex.Message)
                 (0L, None)
         else

@@ -50,7 +50,7 @@ type OnlineMetadataFixerSource () =
                         '~~~'),
                     Title) as val,
                  IFNULL(HYENA_BINARY_FUNCTION ('{1}', Title, {0}), '') as albums,                        
-                 AlbumID || ',' || TrackID,
+                 TrackID,
                  Title || ',' || {0}
             FROM CoreTracks
             WHERE IFNULL((SELECT Title from CoreAlbums where AlbumID = CoreTracks.AlbumID), '') = '' AND albums <> ''
@@ -92,7 +92,14 @@ type OnlineMetadataFixerSource () =
 
     override this.Fix (problems) =
         for problem in problems do
-            let track_info = problem.SolutionOptions. [0].Split(',');
-            ServiceManager.DbConnection.Execute (@"UPDATE CoreAlbums SET Title = ? WHERE AlbumID = ?;",
-               problem.SolutionValue, problem.ObjectIds. [0]) |> ignore;
+            let albumId = ServiceManager.DbConnection.Query<int>(@"SELECT AlbumID from CoreAlbums where Title = ?", problem.SolutionValue)
+            let newId = 
+                if albumId = 0 then
+                    ServiceManager.DbConnection.Execute (@"INSERT INTO CoreAlbums (Title) VALUES (?)", problem.SolutionValue) |> ignore
+                    ServiceManager.DbConnection.Query<int>(@"SELECT AlbumID from CoreAlbums where Title = ?", problem.SolutionValue)
+                else
+                    albumId
+                
+            ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET AlbumID = ? WHERE TrackID = ?;",
+               newId, problem.ObjectIds. [0]) |> ignore;
             
