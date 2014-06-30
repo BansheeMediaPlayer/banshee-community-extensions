@@ -61,27 +61,27 @@ type JSonAcoustIDReader (url : string) = class
                 Title = recording.Title; 
                 Artists = x.ReadArtists (recording.Artists); 
                 ReleaseGroups = x.ReadReleaseGroups (recording.Releasegroups)
-            } |> recordings.Add 
+            } |> recordings.Add
         recordings
-    
+
     member x.ReadArtists art_list =
         let artists = new List<Artist> ()
         for artist in art_list do
             {ID = artist.Id; Name = artist.Name} |>  artists.Add
         artists
-        
+
     member x.ReadReleaseGroups releasegroup_list =
         let releaseGroups = new List<ReleaseGroup> ()
         for releasegroup in releasegroup_list do
             {
                 ID = releasegroup.Id;
                 Title = releasegroup.Title;
-                GroupType = releasegroup.Type;
+                GroupType = if releasegroup.Type.IsNone then "" else releasegroup.Type.Value;
                 SecondaryTypes = x.ReadSecondaryTypes (releasegroup);
                 Artists = x.ReadArtists (releasegroup.Artists)
             } |>  releaseGroups.Add // todo secondarytype, artists
         releaseGroups
-        
+
     member x.ReadSecondaryTypes releasegroup = 
         let list = new List<string> ()
         for secType in releasegroup.Secondarytypes do

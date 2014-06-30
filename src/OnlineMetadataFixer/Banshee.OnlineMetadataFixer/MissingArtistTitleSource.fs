@@ -28,8 +28,10 @@ namespace Banshee.OnlineMetadataFixer
 
 open System;
 open System.Linq;
+open System.Text
 open System.Collections.Generic;
 
+open Hyena
 open Hyena.Data.Sqlite
 
 open Banshee.ServiceStack
@@ -38,15 +40,56 @@ open Mono.Unix;
 
 type MissingArtistTitleSource () = 
     inherit Banshee.Fixup.Solver()
-    let mutable findCmd = null
+    let fixId = "missing-artist-online-fix"
+    let artistOrNothing = "IFNULL((SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID), '')"
+    let findCmd = new HyenaSqliteCommand (String.Format (@"
+        INSERT INTO MetadataProblems (ProblemType, TypeOrder, Generation, SolutionOptions, ObjectIds, TrackInfo)
+            SELECT
+                '{1}', 1, ?,
+                 IFNULL(HYENA_BINARY_FUNCTION ('{1}', uri, NULL), '') as solutions,
+                 AlbumID || ',' || TrackID,
+                 Uri
+            FROM CoreTracks
+            WHERE
+                (IFNULL((SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID), '') = '' OR
+                IFNULL(Title, '') = '') AND IFNULL(solutions, '') <> ''
+                GROUP BY TrackID
+                ORDER BY Uri DESC", artistOrNothing, fixId));
     do
-        base.Id <- "missing-artist-online-fix";
+        base.Id <- fixId
         base.Name <- Catalog.GetString ("Missing Artist and Titles Fix");
         base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee");
+        
+        BinaryFunction.Add(base.Id, new Func<obj, obj, obj>(fun uri b -> MissingArtistTitleSource.GetSolutions (uri :?> string, b) :> obj))
 
-    override this.IdentifyCore () =              
+    static member private GetSolutions (uri : string, b : obj) : String = 
+        let su = new SafeUri (uri)
+        match su.IsFile with
+        | true ->
+            try
+                let id, list = AcoustIDReader.ReadFingerPrint (su.AbsolutePath)
+                let solutions = new StringBuilder ()
+                for recording in list do
+                    solutions.Append (String.Join(", ", recording.Artists.Select(fun z -> z.Name))) |> ignore
+                    solutions.Append (" - ") |> ignore
+                    solutions.Append (recording.Title) |> ignore
+                    solutions.Append (";;") |> ignore
+                match solutions.Length > 2 with
+                | true -> solutions.ToString (0, solutions.Length - 2)
+                | _ -> solutions.ToString ()
+            with GstreamerError (ex) -> 
+                Hyena.Log.WarningFormat ("Cannot read {0} fingerprint. Internal error: {1}.", su.AbsolutePath, ex)
+                ""
+        | _ -> 
+            Hyena.Log.WarningFormat ("Cannot read {0} fingerprint. Element is not a local file.", uri)
+            ""
+
+    override this.HasTrackInfo () = 
+        true
+
+    override this.IdentifyCore () =
         ServiceManager.DbConnection.Execute ("DELETE FROM CoreAlbums WHERE AlbumID NOT IN (SELECT DISTINCT(AlbumID) FROM CoreTracks)") |> ignore;
-        AcoustIDReader.ReadFingerPrint ("/home/loganek/Desktop/owieczka.mp3")
+        ServiceManager.DbConnection.Execute (findCmd, this.Generation) |> ignore;
         ()
 
     override this.Fix (problems) =

@@ -31,6 +31,8 @@ open System.Collections.Generic
 
 open Gst
 
+exception GstreamerError of string
+
 type AcoustIDReader() = class
     static let acoustIDKey = "TP95csTg"
     static let timeout = uint64 Constants.SECOND * 10UL
@@ -45,19 +47,21 @@ type AcoustIDReader() = class
         let chromaPrint = ElementFactory.Make ("chromaprint", "processor")
         let sink = ElementFactory.Make ("fakesink", "sink")
         
-        let elements = [src; decoder; chromaPrint; sink];
+        let elements = [src; decoder; chromaPrint; sink]
         
-        (* todo 
-        if elements |> List.tryFind (fun x -> x = null) <> None then
-            pipeline <- null
-            failwith "Cannot create pipeline!" *)
-
+        (* todo why is it not working?
+        if elements |> Seq.exists (fun x->x = null) then
+            raise (GstreamerError ("Cannot create GStreamer elements"))
+        Workaround :*)
+        for element in elements do
+            if element = null then
+                raise (GstreamerError ("Cannot create GStreamer elements"))
+            
         sink. ["sync"] <- 0
         src. ["location"] <- filename
         for e in elements do
             if not (e |> pipeline.Add) then
-                failwith "Cannot add element!"
-            
+                raise (GstreamerError ("Cannot add element"))
         decoder |> src.Link |> AcoustIDReader.CheckLink
         sink |> chromaPrint.Link |> AcoustIDReader.CheckLink
         decoder.PadAdded.Add (fun args -> "sink" |> chromaPrint.GetStaticPad |> args.NewPad.Link = PadLinkReturn.Ok |> AcoustIDReader.CheckLink)
@@ -66,14 +70,15 @@ type AcoustIDReader() = class
 
     static member private CheckLink (is_ok) =
         if not is_ok then
-            failwith "Cannot link elements!"
+            raise (GstreamerError ("Cannot link elements"))
     
     static member ReadFingerPrint (filename) =
+        Hyena.Log.DebugFormat ("Looking for {0} fingerprint", filename :> obj)
         let pipeline, chromaPrint = AcoustIDReader.BuildPipeline (filename)
         
         if State.Playing |> pipeline.SetState = StateChangeReturn.Failure then
-            failwith "Cannot start pipeline"
-            
+            raise (GstreamerError ("Cannot start pipeline"))
+        
         let duration = ref -1L
         let state = ref State.Playing
         let pending = ref State.Playing
