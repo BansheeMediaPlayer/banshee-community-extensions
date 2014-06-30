@@ -14,7 +14,11 @@ RESOURCES =  \
 
 XBUILD = xbuild
 
+if ENABLE_ONLINEMETADATAFIXER
 include $(top_srcdir)/build/build.mk
+else
+EXTRA_DIST = $(SOURCES) $(RESOURCES)
+endif
 
 $(ASSEMBLY_FILE): $(SOURCES_BUILD) $(RESOURCES_EXPANDED) $(DEP_LINK)
 	@mkdir -p $(top_builddir)/bin
