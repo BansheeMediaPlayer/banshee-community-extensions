@@ -46,6 +46,18 @@ open DBus
 open Hyena
 open Mono.Addins
 
+type NodeType = | Folder | File
+
+type RemoteNode = {
+    path  : string list
+    name  : string
+    ntype : NodeType
+    size  : uint64
+    ctime : uint64
+    atime : uint64
+    mtime : uint64
+    }
+
 module Functions =
     let Singular x = AddinManager.CurrentLocalizer.GetString x
     let Plural x xs n = AddinManager.CurrentLocalizer.GetPluralString (x, xs, n)
@@ -68,21 +80,50 @@ module Functions =
           | _ -> def
         with
         | _ -> def
-    let Iterate (ftp: IFileTransfer) root filter =
+    let SafeUriOf x = SafeUri(Uri("bt:///" + String.Join("/", List.rev x)))
+    let NodeTypeOf x = match x.ToString() with
+                       | "file" -> File
+                       | "folder" -> Folder
+                       | _ -> failwith "Invalid Node Type: %s" x
+    let RemoteNodeOf path (x: Map<string,_>) =
+        let UInt64Of x = let v = ref 0UL
+                         UInt64.TryParse(x.ToString(), v) |> ignore
+                         !v
+        let LookupOrDefaultOf tv key def =
+            let v = Map.tryFind key x
+            match v with
+            | Some v -> tv v
+            | None -> def
+        let nm = x.["Name"].ToString()
+        let nt = x.["Type"].ToString() |> NodeTypeOf
+        let size = LookupOrDefaultOf UInt64Of "Size" 0UL
+        let ctime = LookupOrDefaultOf UInt64Of "Created" 0UL
+        let atime = LookupOrDefaultOf UInt64Of "Accessed" 0UL
+        let mtime = LookupOrDefaultOf UInt64Of "Modified" 0UL
+        { path = path;
+          name = nm;
+          ntype = nt;
+          size = size;
+          ctime = ctime;
+          atime = atime;
+          mtime = mtime }
+    let Iterate (ftp: IFileTransfer) root =
         let ToDict (x: KeyValuePair<_,_>[]) = x :> seq<_> |> Functions.DictConv
-        let rec InnerIterate root (acc: string list list) (file: string list) =
+        let ListFolder path =
+            ftp.ListFolder ()
+            |> Seq.map (fun afi -> ToDict afi |> RemoteNodeOf path)
+        let rec InnerIterate root (path: string list) (acc: RemoteNode list) =
             ftp.ChangeFolder root
-            ftp.ListFolder()
-            |> Seq.fold (fun state afi -> let fi = ToDict afi
-                                          let tp = fi.["Type"].ToString()
-                                          let nm = fi.["Name"].ToString()
-                                          if "folder" = tp then
-                                            let f = InnerIterate nm state (nm::file)
-                                            ftp.ChangeFolder ".."
-                                            f
-                                          else if filter nm then (nm::file |> List.rev)::state
-                                          else state) acc
-        printfn "Iterate: From Root = '%s'" root
+            let path = root::path
+            let children =
+              ListFolder path
+              |> Seq.fold (fun state i ->
+                let state = i::state
+                match i.ntype with
+                | File -> state
+                | Folder -> InnerIterate i.name path state) []
+            ftp.ChangeFolder ".."
+            acc@children
         InnerIterate root [] []
 
 type BluetoothCapabilities() =
@@ -106,9 +147,9 @@ type BluetoothDevice(dev: IBansheeDevice) =
     member x.Uuid = dev.Modalias
     member x.Serial = dev.Address
     member x.Product = let _,p,_ = vpd
-                       Convert.ToString(p)
+                       sprintf "0x%04X" p
     member x.Vendor = let v,_,_ = vpd
-                      Convert.ToString(v)
+                      sprintf "0x%04X" v
     member x.Name = dev.Alias
     member x.MediaCapabilities = BluetoothCapabilities() :> IDeviceMediaCapabilities
     member x.ResolveRootUsbDevice () = null
@@ -125,9 +166,9 @@ type BluetoothDevice(dev: IBansheeDevice) =
 
 type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
     inherit DapSource() with
-    override x.IsReadOnly = true
+    override x.IsReadOnly = false
     override x.BytesUsed = 0L
-    override x.BytesCapacity = 0L
+    override x.BytesCapacity = Int64.MaxValue
     override x.Import () = ()
     override x.CanImport = false
     override x.GetIconNames () = [| dev.Icon |]
@@ -143,25 +184,73 @@ type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
             else
               x.TrackTitle <- fn
             x.MimeType <- ToMimeType ex |> ToString
-        let fx f (x: DatabaseTrackInfo) =
-            match f with
-            | ar::al::fn::[] -> x.ArtistName <- ar
-                                x.AlbumTitle <- al
-                                nne fn x
-            | fn::[] -> nne fn x
-            | _ -> ()
-            x.Uri <- SafeUri("bt:///" + String.Join("/", f))
-        let files = Functions.Iterate ftp dev.MediaCapabilities.AudioFolders.[0] (fun x -> ToMimeType x |> IsAudio)
-        files
-        |> List.iteri (fun i f -> printfn "%A" f
-                                  let txt = Functions.Singular "Processing Track {0} of {1}\u2026"
-                                  x.SetStatus (String.Format (txt, i, files.Length), false)
-                                  let dti = DatabaseTrackInfo(PrimarySource = x)
-                                  fx f dti
-                                  dti.Save())
+        let fx (rn: RemoteNode) (x: DatabaseTrackInfo) =
+            let fp = rn.name::rn.path
+            match fp with
+            | fn::al::ar::root::[] -> x.ArtistName <- ar
+                                      x.AlbumTitle <- al
+                                      nne fn x
+            | fn::root::[] -> nne fn x
+            | _ -> failwith "Case Not Possible: %A" rn
+            x.FileSize <- Convert.ToInt64 rn.size
+            x.Uri <- Functions.SafeUriOf fp
+        let files = Functions.Iterate ftp dev.MediaCapabilities.AudioFolders.[0]
+        files |> List.iteri (fun i f ->
+            let txt = Functions.Singular "Processing Track {0} of {1}\u2026"
+            x.SetStatus (String.Format (txt, i, files.Length), false)
+            match ToMimeType f.name with
+            | m when IsAudio m ->
+                let dti = DatabaseTrackInfo(PrimarySource = x)
+                fx f dti
+                dti.Save()
+            | _ -> ())
         base.OnTracksAdded ()
-    override x.AddTrackToDevice (y, z) = ()
-    override x.DeleteTrack y = false
+    override x.AddTrackToDevice (y, z) =
+        try
+          printfn "cd: %s" dev.MediaCapabilities.AudioFolders.[0]
+          ftp.ChangeFolder dev.MediaCapabilities.AudioFolders.[0]
+          try
+            printfn "cd: %s" y.AlbumArtist
+            ftp.ChangeFolder y.AlbumArtist
+          with
+          | _ -> printfn "md: %s" y.AlbumArtist
+                 ftp.CreateFolder y.AlbumArtist
+          try
+            printfn "cd: %s" y.AlbumTitle
+            ftp.ChangeFolder y.AlbumTitle
+          with
+          | _ -> printfn "md: %s" y.AlbumTitle
+                 ftp.CreateFolder y.AlbumTitle
+          let mt = ToMimeType y.MimeType
+          let fn = sprintf "%02d. %s.%s" y.TrackNumber y.TrackTitle (ExtensionOf mt)
+          printfn "put: %s => %s" z.AbsolutePath fn
+          ftp.PutFile z.AbsolutePath fn |> ignore
+          y.PrimarySource <- x
+          y.Uri <- Functions.SafeUriOf (fn::y.AlbumArtist::y.AlbumTitle::dev.MediaCapabilities.AudioFolders.[0]::[])
+          y.Save (true)
+          printfn "cd: ../../../"
+          ftp.ChangeFolder ".."
+          ftp.ChangeFolder ".."
+          ftp.ChangeFolder ".."
+        with
+        | x -> printfn "%s" x.Message
+    override x.DeleteTrack y =
+        let rec del path =
+            match path with
+            | fn::[] -> printfn "rm: %s" fn
+                        ftp.Delete fn
+                        true
+            | dir::rest -> printfn "cd: %s" dir
+                           ftp.ChangeFolder dir
+                           let rv = del rest
+                           printfn "cd: .."
+                           ftp.ChangeFolder ".."
+                           rv
+            | [] -> false
+        let uepath = Uri(y.Uri.AbsoluteUri).AbsolutePath |> Uri.UnescapeDataString
+        printfn "DeleteTrack: %s" uepath
+        uepath.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
+        |> List.ofArray |> del
     do base.DeviceInitialize dev
        base.Initialize ()
        base.TrackEqualHandler <- fun dti ti -> dti.Uri = ti.Uri

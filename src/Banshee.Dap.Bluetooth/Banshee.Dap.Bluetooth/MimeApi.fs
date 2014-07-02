@@ -53,23 +53,24 @@ module Extensions =
     [<System.Runtime.CompilerServices.Extension>]
     let IsVideo(this: MediaType) = Constants.VideoTypes.Contains this
     [<System.Runtime.CompilerServices.Extension>]
-    let ToString(this: MediaType) = match this with
-                                    | MediaType.Mp3  -> "audio/mpeg"
-                                    | MediaType.Ogg  -> "audio/ogg"
-                                    | MediaType.Wma  -> "audio/x-ms-wma"
-                                    | MediaType.Wmv  -> "audio/x-ms-wmv"
-                                    | MediaType.Asf  -> "audio/x-ms-asf"
-                                    | MediaType.Aac  -> "audio/x-aac"
-                                    | MediaType.Mp4  -> "video/mp4"
-                                    | MediaType.Avi  -> "video/avi"
-                                    | MediaType.Wav  -> "video/wav"
-                                    | MediaType.Mpeg -> "video/mpeg"
-                                    | MediaType.Flac -> "audio/flac"
-                                    | MediaType.Qt   -> "video/quicktime"
-                                    | MediaType.M4a  -> "audio/mp4"
-                                    | MediaType.M3u  -> "audio/x-mpegurl"
-                                    | MediaType.Pls  -> "audio/x-scpls"
-                                    | _ -> null
+    let ToString(this: MediaType) =
+        match this with
+        | MediaType.Mp3  -> "audio/mpeg"
+        | MediaType.Ogg  -> "audio/ogg"
+        | MediaType.Wma  -> "audio/x-ms-wma"
+        | MediaType.Wmv  -> "audio/x-ms-wmv"
+        | MediaType.Asf  -> "audio/x-ms-asf"
+        | MediaType.Aac  -> "audio/x-aac"
+        | MediaType.Mp4  -> "video/mp4"
+        | MediaType.Avi  -> "video/avi"
+        | MediaType.Wav  -> "video/wav"
+        | MediaType.Mpeg -> "video/mpeg"
+        | MediaType.Flac -> "audio/flac"
+        | MediaType.Qt   -> "video/quicktime"
+        | MediaType.M4a  -> "audio/mp4"
+        | MediaType.M3u  -> "audio/x-mpegurl"
+        | MediaType.Pls  -> "audio/x-scpls"
+        | _ -> failwith "MediaType Not Mapped to Mime Type: %s" this
     [<System.Runtime.CompilerServices.Extension>]
     let ToMimeType(this: string) =
         let is x = this.EndsWith(x, StringComparison.InvariantCultureIgnoreCase)
@@ -91,3 +92,22 @@ module Extensions =
         | this when is "m3u"  -> MediaType.M3u
         | this when is "pls"  -> MediaType.Pls
         | _ -> MediaType.Unrecognised
+    [<System.Runtime.CompilerServices.Extension>]
+    let ExtensionOf(this: MediaType) =
+        match this with
+        | MediaType.Mp3  -> "mp3"
+        | MediaType.Ogg  -> "ogg"
+        | MediaType.Wma  -> "wma"
+        | MediaType.Wmv  -> "wmv"
+        | MediaType.Asf  -> "asf"
+        | MediaType.Aac  -> "aac"
+        | MediaType.Mp4  -> "mp4"
+        | MediaType.Avi  -> "avi"
+        | MediaType.Wav  -> "wav"
+        | MediaType.Mpeg -> "mpg"
+        | MediaType.Flac -> "flac"
+        | MediaType.Qt   -> "mov"
+        | MediaType.M4a  -> "m4a"
+        | MediaType.M3u  -> "m3u"
+        | MediaType.Pls  -> "pls"
+        | _ -> failwith "No Defined Extension: %s" this

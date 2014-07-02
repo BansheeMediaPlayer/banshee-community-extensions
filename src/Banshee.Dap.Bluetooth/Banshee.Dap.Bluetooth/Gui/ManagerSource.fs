@@ -251,8 +251,8 @@ type ManagerContents(s, dm: DeviceManager, cm: ClientManager) as this =
                                | :? IBansheeAdapter as a -> awm.Remove a
                                | :? IBansheeDevice as d -> box.Remove dwm.[d]
                                                            dwm.Remove d
-                               | :? IBansheeMediaControl as m -> box.Remove mwm.[m]
-                                                                 mwm.Remove m
+                               //| :? IBansheeMediaControl as m -> box.Remove mwm.[m]
+                               //                                  mwm.Remove m
                                | _ -> false
     interface ISourceContents with
         member x.SetSource y = false
