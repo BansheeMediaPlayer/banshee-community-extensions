@@ -198,11 +198,12 @@ type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
         files |> List.iteri (fun i f ->
             let txt = Functions.Singular "Processing Track {0} of {1}\u2026"
             x.SetStatus (String.Format (txt, i, files.Length), false)
-            match ToMimeType f.name with
-            | m when IsAudio m ->
+            match (f.ntype, ToMimeType f.name) with
+            | (File,m) when IsAudio m ->
                 let dti = DatabaseTrackInfo(PrimarySource = x)
                 fx f dti
                 dti.Save()
+            | (Folder,f) -> ()
             | _ -> ())
         base.OnTracksAdded ()
     override x.AddTrackToDevice (y, z) =
