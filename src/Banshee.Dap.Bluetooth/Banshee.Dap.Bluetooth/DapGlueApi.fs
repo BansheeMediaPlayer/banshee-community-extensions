@@ -202,7 +202,9 @@ type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
             | (File,m) when IsAudio m ->
                 let dti = DatabaseTrackInfo(PrimarySource = x)
                 fx f dti
-                dti.Save()
+                let tid = DatabaseTrackInfo.GetTrackIdForUri(dti.Uri, x.DbId)
+                if 0L = tid then
+                  dti.Save()
             | (Folder,f) -> ()
             | _ -> ())
         base.OnTracksAdded ()
