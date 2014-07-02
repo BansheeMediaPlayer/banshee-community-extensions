@@ -226,9 +226,9 @@ type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
           let fn = sprintf "%02d. %s.%s" y.TrackNumber y.TrackTitle (ExtensionOf mt)
           printfn "put: %s => %s" z.AbsolutePath fn
           ftp.PutFile z.AbsolutePath fn |> ignore
-          y.PrimarySource <- x
-          y.Uri <- Functions.SafeUriOf (fn::y.AlbumArtist::y.AlbumTitle::dev.MediaCapabilities.AudioFolders.[0]::[])
-          y.Save (true)
+          let uri = Functions.SafeUriOf (fn::y.AlbumTitle::y.AlbumArtist::dev.MediaCapabilities.AudioFolders.[0]::[])
+          let dti = DatabaseTrackInfo(y, PrimarySource = x, Uri = uri)
+          dti.Save(false)
           printfn "cd: ../../../"
           ftp.ChangeFolder ".."
           ftp.ChangeFolder ".."
