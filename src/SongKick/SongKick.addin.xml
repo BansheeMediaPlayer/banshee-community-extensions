@@ -78,8 +78,8 @@
   <!-- Define a Source extension.  This will instantiate a new Source object,
        listed in the left-most Source TreeView. -->
 
-  <ExtensionPoint path="/Banshee/GeoLocation/CityProvider">
-	<ExtensionNode name="CityProvider"/>
+  <ExtensionPoint path="/Banshee/GeoLocation/LocationProvider">
+	<ExtensionNode name="LocationProvider"/>
   </ExtensionPoint>
 
   <Extension path="/Banshee/SourceManager/Source">

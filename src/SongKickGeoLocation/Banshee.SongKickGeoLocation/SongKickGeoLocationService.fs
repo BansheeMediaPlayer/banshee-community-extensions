@@ -34,7 +34,7 @@ open Banshee.NotificationArea
 open Banshee.SongKick.Recommendations
 open Banshee.SongKick.Search
 open Banshee.SongKick
-open Banshee.SongKick.CityProvider
+open Banshee.SongKick.LocationProvider
 open Banshee.SongKickGeoLocation.UI
 open Hyena
 
@@ -46,12 +46,12 @@ type Service() as this =
     let events_source = new LocalEventsSource (local_events)
 
     member x.Initialize () =
-        CityProviderManager.Register this
+        LocationProviderManager.Register this
         ThreadAssist.SpawnFromMain (fun() ->
             refresh_timeout_id <- Application.RunTimeout (refresh_timeout, x.RefreshLocalConcertsList))
 
     member x.RefreshLocalConcertsList = new TimeoutHandler (fun () ->
-        if not CityProviderManager.HasProvider ||
+        if not LocationProviderManager.HasProvider ||
            not (ServiceManager.Get<Banshee.Networking.Network> ()).Connected
         then true
         else
@@ -70,8 +70,8 @@ type Service() as this =
         true)
 
     member x.IsItInUserCity (lat : float, long : float) =
-        abs (lat  - float CityProviderManager.GetLatitude)  < 1.0 &&
-        abs (long - float CityProviderManager.GetLongitude) < 1.0
+        abs (lat  - float LocationProviderManager.GetLatitude)  < 1.0 &&
+        abs (long - float LocationProviderManager.GetLongitude) < 1.0
 
     member x.NotifyUser () =
         for src in ServiceManager.SourceManager.Sources do
@@ -89,7 +89,7 @@ type Service() as this =
             notification.Body <- String.Format (
                     "{0} in {1} on {2} at {3}",
                     e.ArtistName,
-                    CityProviderManager.GetCityName,
+                    LocationProviderManager.GetCityName,
                     e.StartDateTime.ToShortDateString(),
                     e.StartDateTime.ToShortTimeString())
             notification.Summary <- "SongKick found a gig near you!"
@@ -107,8 +107,8 @@ type Service() as this =
     member x.Dispose ()  = Application.IdleTimeoutRemove (refresh_timeout_id)   |> ignore
     member x.ServiceName = Constants.NAME + ".Service"
 
-    interface ICityObserver with
-        member x.UpdateCity (cn : string) = x.RefreshLocalConcertsList.Invoke() |> ignore
+    interface ICityNameObserver with
+        member x.OnCityNameUpdated (cn : string) = x.RefreshLocalConcertsList.Invoke() |> ignore
     interface IService with
         member x.ServiceName = x.ServiceName
     interface IDisposable with

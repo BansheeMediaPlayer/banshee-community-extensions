@@ -1,10 +1,10 @@
 ﻿//
-// ICityObserver.cs
+// ICityNameObserver.cs
 //
 // Author:
-//   dmitrii <>
+//   Dmitrii Petukhov <dimart.sp@gmail.com>
 //
-// Copyright (c) 2014 dmitrii
+// Copyright (c) 2014 Dmitrii Petukhov
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace Banshee.SongKick.CityProvider
+namespace Banshee.SongKick.LocationProvider
 {
-    public interface ICityObserver 
+    public interface ICityNameObserver 
     {
-        void UpdateCity (string cityName); 
+        void OnCityNameUpdated (string cityName); 
     }
 }
 

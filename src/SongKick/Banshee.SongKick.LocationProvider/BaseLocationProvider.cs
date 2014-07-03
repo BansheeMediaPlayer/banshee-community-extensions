@@ -1,5 +1,5 @@
 ﻿//
-// BaseCityProvider.cs
+// BaseLocationProvider.cs
 //
 // Author:
 //   Dmitrii Petukhov <dimart.sp@gmail.com>
@@ -24,9 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace Banshee.SongKick.CityProvider
+namespace Banshee.SongKick.LocationProvider
 {
-    public abstract class BaseCityProvider
+    public abstract class BaseLocationProvider
     {
         public abstract string CityName  { get; }
         public abstract int    Latitude  { get; }

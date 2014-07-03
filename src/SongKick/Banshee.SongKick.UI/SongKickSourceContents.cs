@@ -73,7 +73,6 @@ namespace Banshee.SongKick.UI
 
             main_box = new HBox () { Spacing = 6, BorderWidth = 5, ReallocateRedraws = true };
 
-
             search_by_artist_contents_box = new SearchEventsBox (new EventsByArtistSearch());
             search_by_location_contents_box = new SearchEventsBox (new EventsByLocationSearch());
             search_location_contents_box = new SearchLocationBox (new LocationSearch());

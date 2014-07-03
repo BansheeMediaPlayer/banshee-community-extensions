@@ -41,7 +41,7 @@ using Banshee.PlaybackController;
 using Banshee.SongKick.Recommendations;
 using Hyena.Jobs;
 using Banshee.SongKick.Network;
-using Banshee.SongKick.CityProvider;
+using Banshee.SongKick.LocationProvider;
 using Banshee.SongKick.UI;
 
 using System.Linq;
@@ -73,7 +73,7 @@ namespace Banshee.SongKick
             // TODO: fix that so that it works with various resolutions
             Properties.SetStringList ("Icon.Name", "songkick_logo");
 
-            CityProviderManager.Initialize ();
+            LocationProviderManager.Initialize ();
 
             Hyena.Log.Information ("SongKick source has been instantiated!");
         }

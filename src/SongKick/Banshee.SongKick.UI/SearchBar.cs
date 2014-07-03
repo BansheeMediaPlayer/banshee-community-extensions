@@ -30,12 +30,12 @@ using Mono.Unix;
 using Banshee.SongKick.Search;
 using Banshee.SongKick.Recommendations;
 using Banshee.SongKick.Network;
-using Banshee.SongKick.CityProvider;
+using Banshee.SongKick.LocationProvider;
 using Hyena;
 
 namespace Banshee.SongKick.UI
 {
-    public class SearchBar<T> : HBox, ICityObserver where T : IResult
+    public class SearchBar<T> : HBox, ICityNameObserver where T : IResult
     {
         protected SearchEntry search_entry;
         protected Button search_button;
@@ -60,7 +60,7 @@ namespace Banshee.SongKick.UI
             search_entry.Activated += (o, a) => { search_button.Activate (); };
 
             if (this.GetType() == typeof(SearchBar<Location>)) {
-                CityProviderManager.Register (this);
+                LocationProviderManager.Register (this);
             }
 
             PackStart (search_entry, true, true, 2);
@@ -89,7 +89,7 @@ namespace Banshee.SongKick.UI
             thread.Start();
         }
 
-        public void UpdateCity (string cityName)
+        public void OnCityNameUpdated (string cityName)
         {
             this.search_entry.Text = cityName;
         }

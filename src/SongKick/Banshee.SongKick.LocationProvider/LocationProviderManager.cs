@@ -31,18 +31,18 @@ using Mono.Addins;
 
 using Hyena;
 
-namespace Banshee.SongKick.CityProvider
+namespace Banshee.SongKick.LocationProvider
 {
-    public static class CityProviderManager
+    public static class LocationProviderManager
     {
-        private static List<ICityObserver> cityObservers = new List<ICityObserver>();
+        private static List<ICityNameObserver> cityObservers = new List<ICityNameObserver>();
 
         private static string city_name = String.Empty;
         public static string GetCityName {
             get { return city_name; }
         }
 
-        private static int latitude  = 0;
+        private static int latitude = 0;
         public static int GetLatitude {
             get { return latitude; }
         }
@@ -52,8 +52,8 @@ namespace Banshee.SongKick.CityProvider
             get { return longitude; }
         }
 
-        private static BaseCityProvider provider;
-        public static BaseCityProvider GetProvider {
+        private static BaseLocationProvider provider;
+        public static BaseLocationProvider GetProvider {
             get { return provider; }
         }
 
@@ -63,7 +63,7 @@ namespace Banshee.SongKick.CityProvider
 
         public static void Initialize()
         {
-            Mono.Addins.AddinManager.AddExtensionNodeHandler ("/Banshee/GeoLocation/CityProvider", OnUpdated);
+            Mono.Addins.AddinManager.AddExtensionNodeHandler ("/Banshee/GeoLocation/LocationProvider", OnUpdated);
         }
 
         private static void OnUpdated (object o, ExtensionNodeEventArgs args)
@@ -71,7 +71,7 @@ namespace Banshee.SongKick.CityProvider
             TypeExtensionNode node = (TypeExtensionNode)args.ExtensionNode;
 
             if (args.Change == ExtensionChange.Add) {
-                provider = (BaseCityProvider)node.CreateInstance ();
+                provider = (BaseLocationProvider)node.CreateInstance ();
                 ThreadAssist.SpawnFromMain (() => {
                     city_name = provider.CityName;
                     latitude  = provider.Latitude;
@@ -83,15 +83,15 @@ namespace Banshee.SongKick.CityProvider
             }
         }
 
-        public static void Register (ICityObserver o)
+        public static void Register (ICityNameObserver o)
         {
             cityObservers.Add (o);
             if (HasProvider) {
-                o.UpdateCity (provider.CityName);
+                o.OnCityNameUpdated (provider.CityName);
             }
         }
 
-        public static void Detach (ICityObserver o)
+        public static void Detach (ICityNameObserver o)
         {
             cityObservers.Remove (o);
         }
@@ -99,9 +99,9 @@ namespace Banshee.SongKick.CityProvider
         private static void NotifyObservers () 
         {
             if (HasProvider) {
-                foreach (ICityObserver o in cityObservers)
+                foreach (ICityNameObserver o in cityObservers)
                 {
-                    o.UpdateCity (city_name);
+                    o.OnCityNameUpdated (city_name);
                 }
             }
         }

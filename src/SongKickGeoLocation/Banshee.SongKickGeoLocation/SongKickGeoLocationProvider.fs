@@ -28,7 +28,7 @@ namespace Banshee.SongKickGeoLocation
 
 open FSharp.Data
 
-open Banshee.SongKick.CityProvider
+open Banshee.SongKick.LocationProvider
 open Banshee.ServiceStack
 open Banshee.Sources
 
@@ -43,29 +43,29 @@ module Constants =
 type GeoLocation = JsonProvider<"./GeoLocationSample.json">
 
 type Provider() = 
-    inherit BaseCityProvider()
+    inherit BaseLocationProvider()
 
     let name        = Constants.NAME + ".Service"
     let serverUrl   = "https://geoip.fedoraproject.org/city"
 
     override x.CityName
       with get() =
-        match x.UpdateData() with
+        match x.GetDataFromServer () with
             | Some x -> (x : GeoLocation.Root).City
             | None   -> GeoLocation.GetSample().City
 
     override x.Latitude
       with get() =
-        match x.UpdateData() with
+        match x.GetDataFromServer () with
             | Some x -> (x : GeoLocation.Root).Latitude
             | None   -> GeoLocation.GetSample().Latitude
 
     override x.Longitude
       with get() =
-        match x.UpdateData() with
+        match x.GetDataFromServer () with
             | Some x -> (x : GeoLocation.Root).Longitude
             | None   -> GeoLocation.GetSample().Longitude
 
-    member x.UpdateData() =
+    member x.GetDataFromServer () =
              try Some (GeoLocation.Load(serverUrl))
              with :? System.Net.WebException -> None
