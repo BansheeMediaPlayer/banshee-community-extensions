@@ -85,6 +85,7 @@
     <Compile Include="Banshee.OnlineMetadataFixer/JSonAcoustIDReader.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/AcoustIDReader.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/AcoustIDFingerprintJob.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/MissingFromAcoustIDSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/MissingArtistTitleSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/MissingAlbumSource.fs" />
   </ItemGroup>
