@@ -20,6 +20,7 @@
   <Extension path="/Banshee/MetadataFix/Solver">
     <Solver class="Banshee.OnlineMetadataFixer.OnlineMetadataFixerSource" />
     <Solver class="Banshee.OnlineMetadataFixer.MissingArtistTitleSource" />
+    <Solver class="Banshee.OnlineMetadataFixer.MissingAlbumSource" />
   </Extension>
 
 </Addin>
