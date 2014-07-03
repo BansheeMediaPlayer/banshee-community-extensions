@@ -37,13 +37,28 @@ namespace Banshee.SongKick.CityProvider
     {
         private static List<ICityObserver> cityObservers = new List<ICityObserver>();
 
-        public static bool HasProvider {
-            get { return provider != null; }
+        private static string city_name = String.Empty;
+        public static string GetCityName {
+            get { return city_name; }
+        }
+
+        private static int latitude  = 0;
+        public static int GetLatitude {
+            get { return latitude; }
+        }
+
+        private static int longitude = 0;
+        public static int GetLongitude {
+            get { return longitude; }
         }
 
         private static BaseCityProvider provider;
         public static BaseCityProvider GetProvider {
             get { return provider; }
+        }
+
+        public static bool HasProvider {
+            get { return provider != null; }
         }
 
         public static void Initialize()
@@ -58,7 +73,9 @@ namespace Banshee.SongKick.CityProvider
             if (args.Change == ExtensionChange.Add) {
                 provider = (BaseCityProvider)node.CreateInstance ();
                 ThreadAssist.SpawnFromMain (() => {
-                    provider.UpdateData();
+                    city_name = provider.CityName;
+                    latitude  = provider.Latitude;
+                    longitude = provider.Longitude;
                     NotifyObservers ();
                 });
             } else {
@@ -84,7 +101,7 @@ namespace Banshee.SongKick.CityProvider
             if (HasProvider) {
                 foreach (ICityObserver o in cityObservers)
                 {
-                    o.UpdateCity (provider.CityName);
+                    o.UpdateCity (city_name);
                 }
             }
         }
