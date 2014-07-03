@@ -107,6 +107,9 @@
     <EmbeddedResource Include="Resources\songkick_logo_300x300.png">
       <LogicalName>songkick_logo_300x300.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\city_concerts_logo.png">
+      <LogicalName>city_concerts_logo.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

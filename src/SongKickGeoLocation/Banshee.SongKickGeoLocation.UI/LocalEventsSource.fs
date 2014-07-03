@@ -63,44 +63,44 @@ type public LocalEventsSource(events : Results<Event>) as this =
     [<DefaultValue>] val mutable view : LocalEventsView
 
     do
-        this.Events <- events;
-        base.Properties.SetStringList ("Icon.Name", "");
-        base.Properties.SetString ("UnmapSourceActionLabel", Catalog.GetString ("Close Item"));
-        base.Properties.SetString ("UnmapSourceActionIconName", "gtk-close");
+        this.Events <- events
+        base.Properties.SetStringList ("Icon.Name", "city_concerts_logo")
+        base.Properties.SetString ("UnmapSourceActionLabel", Catalog.GetString ("Close Item"))
+        base.Properties.SetString ("UnmapSourceActionIconName", "gtk-close")
 
         this.view <- new LocalEventsView(this,events)
-        base.Properties.Set<ISourceContents> ("Nereid.SourceContents", this.view);
-        Hyena.Log.Information ("SongKick CityConcerts source has been instantiated!");
+        base.Properties.Set<ISourceContents> ("Nereid.SourceContents", this.view)
+        Hyena.Log.Information ("SongKick CityConcerts source has been instantiated!")
     interface IUnmapableSource with
         member x.CanUnmap = true
         member x.ConfirmBeforeUnmap = false
         member x.Unmap() =
             if (this :> Source) = ServiceManager.SourceManager.ActiveSource
-            then ServiceManager.SourceManager.SetActiveSource (this.Parent);
-            this.Parent.RemoveChildSource (this);
+            then ServiceManager.SourceManager.SetActiveSource (this.Parent)
+            this.Parent.RemoveChildSource (this)
             true
 
 and public LocalEventsView(source : LocalEventsSource, events : Results<Event>) as this =
     inherit SearchBox<Event>(new EventsByLocationSearch())
 
-    [<DefaultValue>] val mutable source : LocalEventsSource;
-    [<DefaultValue>] val mutable events : Results<Event>;
+    [<DefaultValue>] val mutable source : LocalEventsSource
+    [<DefaultValue>] val mutable events : Results<Event>
 
     do
-        this.source <- source;
-        this.events <- events;
-        this.UpdateEvents ();
+        this.source <- source
+        this.events <- events
+        this.UpdateEvents ()
 
     member x.UpdateEvents(events : Results<Event>) =
-            this.events <- events;
-            this.UpdateEvents ();
+            this.events <- events
+            this.UpdateEvents ()
 
     member x.UpdateEvents() =
             for e in events do
-                this.event_model.Add(e);
+                this.event_model.Add(e)
 
-            base.SetModel (this.event_model);
-            this.event_search_view.OnUpdated ();
+            base.SetModel (this.event_model)
+            this.event_search_view.OnUpdated ()
 
     interface ISourceContents with
         member x.SetSource (source : ISource) =

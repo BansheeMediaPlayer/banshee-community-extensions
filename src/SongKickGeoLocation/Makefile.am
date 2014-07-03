@@ -7,6 +7,7 @@ SOURCES =  \
 	Banshee.SongKickGeoLocation/SongKickGeoLocationService.fs
 
 RESOURCES =  \
+	Resources/city_concerts_logo.png \
 	Resources/songkick_logo_300x300.png \
 	SongKickGeoLocation.addin.xml
 

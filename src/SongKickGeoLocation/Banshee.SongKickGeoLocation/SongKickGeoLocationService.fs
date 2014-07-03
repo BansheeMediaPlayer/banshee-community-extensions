@@ -50,11 +50,11 @@ type Service() as this =
         ThreadAssist.SpawnFromMain (fun() ->
             refresh_timeout_id <- Application.RunTimeout (refresh_timeout, x.RefreshLocalConcertsList))
 
-    member x.RefreshLocalConcertsList = new TimeoutHandler (fun () -> 
+    member x.RefreshLocalConcertsList = new TimeoutHandler (fun () ->
         if not CityProviderManager.HasProvider ||
-           not (ServiceManager.Get<Banshee.Networking.Network> ()).Connected 
+           not (ServiceManager.Get<Banshee.Networking.Network> ()).Connected
         then true
-        else 
+        else
         Hyena.Log.Debug ("Refreshing list of local concerts");
         Scheduler.Schedule (new DelegateJob (fun () ->
             let search = new EventsByArtistSearch ()
@@ -69,11 +69,11 @@ type Service() as this =
             x.NotifyUser()))
         true)
 
-    member x.IsItInUserCity (lat : float, long : float) = 
+    member x.IsItInUserCity (lat : float, long : float) =
         abs (lat  - float CityProviderManager.GetLatitude)  < 1.0 &&
-        abs (long - float CityProviderManager.GetLongitude) < 1.0 
+        abs (long - float CityProviderManager.GetLongitude) < 1.0
 
-    member x.NotifyUser () = 
+    member x.NotifyUser () =
         for src in ServiceManager.SourceManager.Sources do
             if (src :? SongKickSource && not (src.ContainsChildSource events_source))
             then src.AddChildSource (events_source)
@@ -100,7 +100,7 @@ type Service() as this =
          Gtk.Window.ListToplevels () |> Array.find (fun w -> w :? Banshee.Gui.BaseClientWindow)
 
     member x.OnFocusInEvent =
-        new Gtk.FocusInEventHandler (fun obj args -> 
+        new Gtk.FocusInEventHandler (fun obj args ->
             events_source.NotifyUser ()
             banshee_window.Focus.FocusInEvent.RemoveHandler x.OnFocusInEvent)
 
