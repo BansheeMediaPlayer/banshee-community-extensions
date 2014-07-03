@@ -1,7 +1,4 @@
 obj
-*~
-*.patch
-*.diff
 *.swp
 *.gmo
 *.pc
@@ -60,3 +57,8 @@ help/*/*.mo
 help/*/*.page
 !help/C/*.page
 src/LastfmFingerprint/liblastfmfpbridge/lastfmfpbridgetest
+
+# FSharp.Data generated directories
+DesignTimeURIs
+FreebaseSchema
+WorldBankSchema

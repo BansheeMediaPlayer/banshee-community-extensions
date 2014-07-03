@@ -78,11 +78,11 @@ SHAMROCK_CHECK_UNIT_TESTS
 dnl Extensions
 BCE_ALARMCLOCK
 BCE_ALBUMARTWRITER
-BCE_ALBUMMETADATAFIXER
 BCE_AMPACHE
 BCE_ANDROIDREMOTE
 BCE_APPINDICATOR
 BCE_AWN
+BCE_BLUETOOTHDAP
 BCE_CLUTTERFLOW
 BCE_COVERWALLPAPER
 BCE_DUPLICATESONGDETECTOR
@@ -96,6 +96,7 @@ BCE_LIVERADIO
 BCE_LYRICS
 BCE_MAGNATUNE
 BCE_MIRAGE
+BCE_ONLINEMETADATAFIXER
 BCE_OPENVP
 BCE_RADIOSTATIONFETCHER
 BCE_RANDOMBYLASTFM
@@ -143,11 +144,11 @@ src/AssemblyInfo.cs
 
 src/AlarmClock/Makefile
 src/AlbumArtWriter/Makefile
-src/AlbumMetadataFixer/Makefile
 src/Ampache/Makefile
 src/AndroidRemote/Makefile
 src/AppIndicator/Makefile
 src/Awn/Makefile
+src/Banshee.Dap.Bluetooth/Makefile
 src/ClutterFlow/Makefile
 src/ClutterFlow/Banshee.ClutterFlow/Makefile
 src/ClutterFlow/ClutterFlow/Makefile
@@ -169,6 +170,7 @@ src/Lirc/GUITestHarness/Makefile
 src/Lirc/NUnitTests/Makefile
 src/LiveRadio/Makefile
 src/Lyrics/Makefile
+src/OnlineMetadataFixer/Makefile
 src/OpenVP/Makefile
 src/OpenVP/Cdh.Affe/Makefile
 src/OpenVP/Cdh.Affe.Tests/Makefile
@@ -216,11 +218,11 @@ ${PACKAGE}-${VERSION}
   Extensions:
     Alarm Clock:           ${enable_AlarmClock}
     AlbumArtWriter:        ${enable_AlbumArtWriter}
-    AlbumMetadataFixer:    ${enable_AlbumMetadataFixer}
     Ampache:               ${enable_Ampache}
     AndroidRemote:         ${enable_AndroidRemote}
     AppIndicator:          ${enable_AppIndicator}
     Awn:                   ${enable_Awn}
+    BluetoothDap:          ${enable_BluetoothDap}
     ClutterFlow:           ${enable_ClutterFlow}
     CoverWallpaper:        ${enable_CoverWallpaper}
     CueSheets:             no
@@ -236,6 +238,7 @@ ${PACKAGE}-${VERSION}
     Lyrics:                ${enable_Lyrics}
     Magnatune:             ${enable_Magnatune}
     Mirage:                ${enable_Mirage}
+    OnlineMetadataFixer:   ${enable_OnlineMetadataFixer}
     OpenVP:                ${enable_OpenVP}
     RadioStationFetcher:   ${enable_RadioStationFetcher}
     RandomByLastfm:        ${enable_RandomByLastfm}

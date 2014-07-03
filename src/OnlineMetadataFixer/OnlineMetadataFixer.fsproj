@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{58E5E425-AFD6-4FB3-84D3-F4522E1F1064}</ProjectGuid>
+    <ProjectGuid>{4AD946A9-FEC2-4F10-BFAE-FFD564E0845C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Banshee.AlbumMetadataFixer</RootNamespace>
-    <AssemblyName>Banshee.AlbumMetadataFixer</AssemblyName>
+    <RootNamespace>Banshee.OnlineMetadataFixer</RootNamespace>
+    <AssemblyName>Banshee.OnlineMetadataFixer</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,15 +34,14 @@
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="FSharp.Data, Version=2.0.9" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-	<Reference Include="System.Xml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Mono.Posix, Version=4.0.0.0" />
     <Reference Include="Banshee.Core, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-core</Package>
-    </Reference>
-    <Reference Include="Banshee.Fixup, Version=2.9.0.0, Culture=neutral">
-      <Package>banshee-fixup</Package>
     </Reference>
     <Reference Include="Banshee.Services, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-services</Package>
@@ -51,7 +50,7 @@
       <Package>banshee-thickclient</Package>
     </Reference>
     <Reference Include="Banshee.Widgets, Version=2.9.0.0, Culture=neutral">
-      <Package>banshee-thickclient</Package>
+      <Package>banshee-widgets</Package>
     </Reference>
     <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>gtk-sharp-3.0</Package>
@@ -59,22 +58,42 @@
     <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>gtk-sharp-3.0</Package>
     </Reference>
+   <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>glib-sharp-3.0</Package>
+    </Reference>
     <Reference Include="Mono.Addins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="Mono.Posix" />
     <Reference Include="Hyena, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-hyena</Package>
     </Reference>
     <Reference Include="Hyena.Data.Sqlite, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-hyena-data-sqlite</Package>
     </Reference>
+    <Reference Include="Hyena.Gui, Version=2.9.0.0, Culture=neutral">
+      <Package>banshee-hyena-gui</Package>
+    </Reference>
+    <Reference Include="Banshee.Fixup, Version=2.9.0.0, Culture=neutral">
+      <Package>banshee-fixup</Package>
+    </Reference>
+    <Reference Include="gstreamer-sharp, Version=0.99.0.0, Culture=neutral, PublicKeyToken=5cbf79803e97ff61">
+      <Package>gstreamer-sharp-1.0</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Banshee.AlbumMetadataFixer/AlbumMetadataFixerSource.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/HelperRecords.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/AcoustIDStorage.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/JSonAcoustIDReader.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/AcoustIDReader.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/AcoustIDFingerprintJob.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/MissingArtistTitleSource.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
   <ItemGroup>
-    <EmbeddedResource Include="AlbumMetadataFixer.addin.xml">
-      <LogicalName>AlbumMetadataFixer.addin.xml</LogicalName>
+    <EmbeddedResource Include="OnlineMetadataFixer.addin.xml">
+      <LogicalName>OnlineMetadataFixer.addin.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources/AcoustIDTrackInfo.json">
+      <LogicalName>AcoustIDTrackInfo.json</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
@@ -92,4 +111,6 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+  </ItemGroup>
 </Project>

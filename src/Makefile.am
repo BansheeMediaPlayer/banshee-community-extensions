@@ -1,11 +1,11 @@
 SUBDIRS = \
 	AlarmClock \
 	AlbumArtWriter \
-	AlbumMetadataFixer \
 	Ampache \
 	AndroidRemote \
 	AppIndicator \
 	Awn \
+	Banshee.Dap.Bluetooth\
 	ClutterFlow \
 	CoverWallpaper \
 	DuplicateSongDetector \
@@ -20,6 +20,7 @@ SUBDIRS = \
 	Lyrics \
 	Magnatune \
 	Mirage \
+	OnlineMetadataFixer \
 	OpenVP \
 	RadioStationFetcher \
 	RandomByLastfm \
