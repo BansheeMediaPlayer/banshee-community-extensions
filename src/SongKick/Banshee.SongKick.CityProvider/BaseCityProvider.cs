@@ -28,7 +28,8 @@ namespace Banshee.SongKick.CityProvider
 {
     public abstract class BaseCityProvider
     {
-        public abstract void   UpdateData();
-        public abstract string CityName { get; }
+        public abstract string CityName  { get; }
+        public abstract int    Latitude  { get; }
+        public abstract int    Longitude { get; }
     }
 }
