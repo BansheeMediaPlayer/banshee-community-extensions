@@ -55,7 +55,7 @@ type Service() as this =
            not (ServiceManager.Get<Banshee.Networking.Network> ()).Connected
         then true
         else
-        Hyena.Log.Debug ("Refreshing list of local concerts");
+        Hyena.Log.Debug ("Refreshing list of local concerts")
         Scheduler.Schedule (new DelegateJob (fun () ->
             let search = new EventsByArtistSearch ()
             let recommendation_provider = new Banshee.SongKick.Search.RecommendationProvider ()

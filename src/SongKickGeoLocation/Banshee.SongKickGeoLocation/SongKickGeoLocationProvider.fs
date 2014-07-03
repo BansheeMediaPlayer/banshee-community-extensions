@@ -28,7 +28,7 @@ namespace Banshee.SongKickGeoLocation
 
 open FSharp.Data
 
-open Banshee.SongKick.CityProvider;
+open Banshee.SongKick.CityProvider
 open Banshee.ServiceStack
 open Banshee.Sources
 

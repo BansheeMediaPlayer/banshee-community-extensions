@@ -26,25 +26,25 @@
 
 namespace Banshee.SongKickGeoLocation.UI
 
-open System;
+open System
 
-open Gtk;
+open Gtk
 
-open Mono.Addins;
-open Mono.Unix;
+open Mono.Addins
+open Mono.Unix
 
-open Banshee.Sources;
-open Banshee.Sources.Gui;
-open Banshee.ServiceStack;
+open Banshee.Sources
+open Banshee.Sources.Gui
+open Banshee.ServiceStack
 
-open Banshee.SongKick.Recommendations;
+open Banshee.SongKick.Recommendations
 
-open Banshee.Sources;
-open Banshee.Sources.Gui;
+open Banshee.Sources
+open Banshee.Sources.Gui
 
-open Banshee.SongKick.Recommendations;
-open Banshee.SongKick.Search;
-open Banshee.SongKick.UI;
+open Banshee.SongKick.Recommendations
+open Banshee.SongKick.Search
+open Banshee.SongKick.UI
 
 module Constants =
     let SORT_ORDER = 195
@@ -104,12 +104,12 @@ and public LocalEventsView(source : LocalEventsSource, events : Results<Event>) 
 
     interface ISourceContents with
         member x.SetSource (source : ISource) =
-            this.source <- source :?> LocalEventsSource;
-            Functions.isNull this.source;
+            this.source <- source :?> LocalEventsSource
+            Functions.isNull this.source
         member x.ResetSource () = ()
         member x.Source with get() = this.source :> ISource
         member x.Widget with get() = this :> Widget
 
     override x.OnRowActivated (o : obj, args : Hyena.Data.Gui.RowActivatedArgs<Event>) =
-            let musicEvent = args.RowValue;
+            let musicEvent = args.RowValue
             System.Diagnostics.Process.Start (musicEvent.Uri) |> ignore
