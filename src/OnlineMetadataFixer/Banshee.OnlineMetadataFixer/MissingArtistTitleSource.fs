@@ -43,20 +43,19 @@ type MissingArtistTitleSource () =
     inherit Banshee.Fixup.Solver()
     let mutable job = new AcoustIDFingerprintJob ()
     let fixId = "missing-artist-online-fix"
-    let artistOrNothing = "IFNULL((SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID), '')"
     let findCmd = new HyenaSqliteCommand (String.Format (@"
         INSERT INTO MetadataProblems (ProblemType, TypeOrder, Generation, SolutionOptions, ObjectIds, TrackInfo)
             SELECT
-                '{1}', 1, ?,
-                 IFNULL(HYENA_BINARY_FUNCTION ('{1}', uri, NULL), '') as solutions,
-                 ArtistID || ',' || TrackID,
+                '{0}', 1, ?,
+                 IFNULL(HYENA_BINARY_FUNCTION ('{0}', uri, NULL), '') as solutions,
+                 TrackID,
                  Uri
             FROM CoreTracks
             WHERE
                 (IFNULL((SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID), '') = '' OR
                 IFNULL(Title, '') = '') AND IFNULL(solutions, '') <> ''
                 GROUP BY TrackID
-                ORDER BY Uri DESC", artistOrNothing, fixId));
+                ORDER BY Uri DESC", fixId));
     do
         base.Id <- fixId
         base.Name <- Catalog.GetString ("Missing Artist and Titles Fix");
@@ -102,14 +101,14 @@ type MissingArtistTitleSource () =
         for problem in problems do
             if not (String.IsNullOrEmpty (problem.SolutionValue)) then
                 let trackMetadata = Regex.Split (problem.SolutionValue, " - ")
-                ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET Title = ? WHERE TrackID = ?;", trackMetadata. [1], problem.ObjectIds. [1]) |> ignore
+                ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET Title = ? WHERE TrackID = ?;", trackMetadata. [1], problem.ObjectIds. [0]) |> ignore
                 
-            let artistId = ServiceManager.DbConnection.Query<int>(@"SELECT ArtistID from CoreArtists where Name = ?", problem.SolutionValue)
-            let newId = 
-                if artistId = 0 then
-                    ServiceManager.DbConnection.Execute (@"INSERT INTO CoreArtists (Name) VALUES (?)", problem.SolutionValue) |> ignore
-                    ServiceManager.DbConnection.Query<int>(@"SELECT ArtistID from CoreArtists where Name = ?", problem.SolutionValue)
-                else
-                    artistId
-            ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET ArtistID = ? WHERE TrackID = ?;",
-               newId, problem.ObjectIds. [1]) |> ignore;
+                let artistId = ServiceManager.DbConnection.Query<int>(@"SELECT ArtistID from CoreArtists where Name = ?", trackMetadata. [0])
+                let newId = 
+                    if artistId = 0 then
+                        ServiceManager.DbConnection.Execute (@"INSERT INTO CoreArtists (Name) VALUES (?)", trackMetadata. [0]) |> ignore
+                        ServiceManager.DbConnection.Query<int>(@"SELECT ArtistID from CoreArtists where Name = ?", trackMetadata. [0])
+                    else
+                        artistId
+                ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET ArtistID = ? WHERE TrackID = ?;",
+                   newId, problem.ObjectIds. [0]) |> ignore;
