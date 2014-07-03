@@ -1,5 +1,5 @@
 ﻿//
-// CityProviderManager.cs
+// LocationProviderManager.cs
 //
 // Author:
 //   Dmitrii Petukhov <dimart.sp@gmail.com>
