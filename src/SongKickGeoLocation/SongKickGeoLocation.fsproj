@@ -54,6 +54,9 @@
     <Reference Include="Banshee.SongKick">
       <HintPath>..\..\bin\Banshee.SongKick.dll</HintPath>
     </Reference>
+    <Reference Include="Banshee.NotificationArea">
+      <HintPath>..\..\..\banshee\bin\Banshee.NotificationArea.dll</HintPath>
+    </Reference>
     <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>gtk-sharp-3.0</Package>
     </Reference>
@@ -73,14 +76,36 @@
       <HintPath>..\..\packages\FSharp.Data.2.0.8\lib\net40\FSharp.Data.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="Mono.Posix" />
+    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>glib-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="Mono.Cairo" />
+    <Reference Include="cairo-sharp, Version=1.10.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="pango-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gio-sharp-3.0</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.SongKickGeoLocation\SongKickGeoLocationProvider.fs" />
+    <Compile Include="Banshee.SongKickGeoLocation.UI\LocalEventsSource.fs" />
+    <Compile Include="Banshee.SongKickGeoLocation\SongKickGeoLocationService.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <EmbeddedResource Include="SongKickGeoLocation.addin.xml">
       <LogicalName>SongKickGeoLocation.addin.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\songkick_logo_300x300.png">
+      <LogicalName>songkick_logo_300x300.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
@@ -100,5 +125,9 @@
   </ProjectExtensions>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Banshee.SongKickGeoLocation.UI\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
 </Project>

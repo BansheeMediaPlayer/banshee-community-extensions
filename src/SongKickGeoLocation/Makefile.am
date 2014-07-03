@@ -1,9 +1,14 @@
 ASSEMBLY = Banshee.SongKickGeoLocation
 LINK = $(BANSHEE_LIBS)
 
-SOURCES = Banshee.SongKickGeoLocation/SongKickGeoLocationProvider.fs
+SOURCES =  \
+	Banshee.SongKickGeoLocation.UI/LocalEventsSource.fs \
+	Banshee.SongKickGeoLocation/SongKickGeoLocationProvider.fs \
+	Banshee.SongKickGeoLocation/SongKickGeoLocationService.fs
 
-RESOURCES = SongKickGeoLocation.addin.xml
+RESOURCES =  \
+	Resources/songkick_logo_300x300.png \
+	SongKickGeoLocation.addin.xml
 
 XBUILD = xbuild
 

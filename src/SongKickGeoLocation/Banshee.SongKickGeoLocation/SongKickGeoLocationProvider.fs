@@ -47,15 +47,25 @@ type Provider() =
 
     let name        = Constants.NAME + ".Service"
     let serverUrl   = "https://geoip.fedoraproject.org/city"
-    let mutable res = None
 
-    override this.CityName
-      with get() = 
-        match res with
+    override x.CityName
+      with get() =
+        match x.UpdateData() with
             | Some x -> (x : GeoLocation.Root).City
             | None   -> GeoLocation.GetSample().City
-    
-    override this.UpdateData() = 
-        res <-
+
+    override x.Latitude
+      with get() =
+        match x.UpdateData() with
+            | Some x -> (x : GeoLocation.Root).Latitude
+            | None   -> GeoLocation.GetSample().Latitude
+
+    override x.Longitude
+      with get() =
+        match x.UpdateData() with
+            | Some x -> (x : GeoLocation.Root).Longitude
+            | None   -> GeoLocation.GetSample().Longitude
+
+    member x.UpdateData() =
              try Some (GeoLocation.Load(serverUrl))
              with :? System.Net.WebException -> None

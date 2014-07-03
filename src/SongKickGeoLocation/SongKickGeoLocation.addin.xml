@@ -81,4 +81,8 @@
   <Extension path="/Banshee/GeoLocation/CityProvider">
 	<CityProvider class="Banshee.SongKickGeoLocation.Provider"/>
   </Extension>
+
+  <Extension path="/Banshee/ServiceManager/Service">
+    <Service class="Banshee.SongKickGeoLocation.Service"/>
+  </Extension>
 </Addin>

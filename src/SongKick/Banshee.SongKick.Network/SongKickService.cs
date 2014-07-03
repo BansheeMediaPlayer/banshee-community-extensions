@@ -25,151 +25,19 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-
-using Mono.Unix;
-
-using Banshee.Base;
 using Banshee.ServiceStack;
-using Banshee.Networking;
-using Banshee.Sources;
-using Notifications;
-
-using Hyena;
-
 using Banshee.SongKick.Recommendations;
-using Banshee.SongKick.Search;
-using Banshee.SongKick.CityProvider;
-using Banshee.SongKick.UI;
+using Hyena.Jobs;
 
 namespace Banshee.SongKick.Network
 {
-    public class SongKickService : IExtensionService, ICityObserver, IDisposable
+    // NOTE: This service is run by default, but doesn't do anything
+    public class SongKickService : IExtensionService
     {
-        private string current_city_name = "";
-        private uint refresh_timeout_id;
-        private uint refresh_timeout;
-
-        private Results<Event> local_events = new Results<Event> ();
-
-        private LocalEventsSource events_source;
-        private Gtk.Window banshee_window;
+        //Scheduler scheduler = new Scheduler ();
 
         public SongKickService ()
         {
-            events_source = new LocalEventsSource (local_events);
-
-            CityProviderManager.Register (this);
-
-            ThreadAssist.SpawnFromMain (delegate {
-                RefreshLocalConcertsList ();
-
-                refresh_timeout = 1000 * 60 * 60 * 12; //Every 12 hours try to refresh again
-                refresh_timeout_id = Application.RunTimeout (refresh_timeout, RefreshLocalConcertsList);
-
-                ServiceManager.Get<Networking.Network> ().StateChanged += OnNetworkStateChanged;
-            });
-
-            foreach (var w in Gtk.Window.ListToplevels()) {
-                if (w is Banshee.Gui.BaseClientWindow) {
-                    banshee_window = w;
-                }
-            }
-        }
-
-        private void OnNetworkStateChanged (object o, NetworkStateChangedArgs args)
-        {
-            RefreshLocalConcertsList ();
-        }
-
-        private bool RefreshLocalConcertsList()
-        {
-            if (!ServiceManager.Get<Networking.Network> ().Connected ||
-                !CityProviderManager.HasProvider)
-                return true;
-
-            Hyena.Log.Debug ("Refreshing list of local concerts");
-            Kernel.Scheduler.Schedule (new Kernel.DelegateJob (delegate {
-                var search = new EventsByArtistSearch ();
-                var recommended_artists = new RecommendationProvider().getRecommendations();
-
-                foreach (RecommendedArtist artist in recommended_artists) {
-                    search.GetResultsPage (new Search.Query (null, artist.Name));
-                    foreach (var res in search.ResultsPage.results) {
-                        if (IsItMyCity(res.Location.Name) && !local_events.Contains(res)) {
-                            res.ArtistName = artist.Name;
-                            local_events.Add(res);
-                        }
-                    }
-                }
-                NotifyUser ();
-            }));
-            return true;
-        }
-
-        private bool IsItMyCity (string x) {
-            //ex: Mountain View, CA, US
-            //ex: Madrid, Spain
-            //ex: St. Petersburg, Russian Federation
-            var subs = x.Split(',');
-            foreach (var sub in subs) {
-                //ex: "Madrid" && " Spain"
-                //ex: "Mountain View" && " CA" && " US"
-                //ex: "St. Petersburg" && " Russian Federation"
-                if (current_city_name.Contains (sub)) {
-                    return true;
-                } else if (sub.Contains(". ")) {
-                    var subsub = sub.Split ('.');
-                    foreach (var item in subsub) {
-                        if (current_city_name.Contains (item))
-                            return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        private void NotifyUser()
-        {
-            foreach (var src in ServiceManager.SourceManager.Sources) {
-                if (src is SongKickSource && !src.ContainsChildSource(events_source)) {
-                    src.AddChildSource (events_source);
-                }
-            }
-
-            events_source.view.UpdateEvents (local_events);
-
-            if (banshee_window.Focus.HasFocus) {
-                events_source.NotifyUser ();
-            } else {
-                banshee_window.Focus.FocusInEvent += OnFocusInEvent;
-            }
-
-            foreach (var e in local_events) {
-                var notification = new Notification ();
-                notification.Body = String.Format (
-                    "{0} in {1} on {2} at {3}",
-                    e.ArtistName,
-                    current_city_name,
-                    e.StartDateTime.ToShortDateString(),
-                    e.StartDateTime.ToShortTimeString());
-
-                notification.Summary = "SongKick found a gig near you!";
-                notification.Icon = Gdk.Pixbuf.LoadFromResource ("songkick_logo_300x300.png");
-                notification.Show ();
-            }
-        }
-
-        public void UpdateCity (string cityName)
-        {
-            current_city_name = cityName;
-            RefreshLocalConcertsList ();
-        }
-
-        private void OnFocusInEvent(object o, Gtk.FocusInEventArgs args)
-        {
-            events_source.NotifyUser ();
-            banshee_window.Focus.FocusInEvent -= OnFocusInEvent;
         }
 
         public void Initialize ()
@@ -200,10 +68,6 @@ namespace Banshee.SongKick.Network
         public void Dispose ()
         {
             //scheduler.CancelAll (true);
-            Application.IdleTimeoutRemove (refresh_timeout_id);
-            refresh_timeout_id = 0;
-
-            ServiceManager.Get<Networking.Network> ().StateChanged -= OnNetworkStateChanged;
         }
 
         public string ServiceName {

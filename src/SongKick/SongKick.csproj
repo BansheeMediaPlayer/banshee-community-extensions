@@ -94,9 +94,6 @@
     <EmbeddedResource Include="Resources\songkick_logo.png">
       <LogicalName>songkick_logo.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\songkick_logo_300x300.png">
-      <LogicalName>songkick_logo_300x300.png</LogicalName>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.SongKick\SongKickSource.cs" />
@@ -135,8 +132,6 @@
     <Compile Include="Banshee.SongKick.CityProvider\BaseCityProvider.cs" />
     <Compile Include="Banshee.SongKick.CityProvider\CityProviderManager.cs" />
     <Compile Include="Banshee.SongKick.CityProvider\ICityObserver.cs" />
-    <Compile Include="Banshee.SongKick.UI\LocalEventsSource.cs" />
-    <Compile Include="Banshee.SongKick.UI\LocalEventsView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
