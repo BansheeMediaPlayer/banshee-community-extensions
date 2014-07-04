@@ -51,8 +51,8 @@ type Service() as this =
             refresh_timeout_id <- Application.RunTimeout (refresh_timeout, x.RefreshLocalConcertsList))
 
     member x.RefreshLocalConcertsList = new TimeoutHandler (fun () ->
-        if not LocationProviderManager.HasProvider ||
-           not (ServiceManager.Get<Banshee.Networking.Network> ()).Connected
+        if not LocationProviderManager.HasProvider //||
+           //not (ServiceManager.Get<Banshee.Networking.Network> ()).Connected
         then true
         else
         Hyena.Log.Debug ("Refreshing list of local concerts")
@@ -70,8 +70,8 @@ type Service() as this =
         true)
 
     member x.IsItInUserCity (lat : float, long : float) =
-        abs (lat  - float LocationProviderManager.GetLatitude)  < 1.0 &&
-        abs (long - float LocationProviderManager.GetLongitude) < 1.0
+        abs (lat  - LocationProviderManager.GetLatitude)  < 1.0 &&
+        abs (long - LocationProviderManager.GetLongitude) < 1.0
 
     member x.NotifyUser () =
         for src in ServiceManager.SourceManager.Sources do

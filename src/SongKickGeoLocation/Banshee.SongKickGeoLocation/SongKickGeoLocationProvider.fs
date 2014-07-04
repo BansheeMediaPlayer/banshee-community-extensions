@@ -1,5 +1,5 @@
 ﻿//
-// SongKickGeoLocationSource.fs 
+// SongKickGeoLocationProvider.fs 
 //
 // Authors:
 //   Dmitrii Petukhov <dimart.sp@gmail.com>
@@ -27,6 +27,7 @@
 namespace Banshee.SongKickGeoLocation
 
 open FSharp.Data
+open FSharp.Data.JsonExtensions
 
 open Banshee.SongKick.LocationProvider
 open Banshee.ServiceStack
@@ -40,32 +41,69 @@ open Mono.Addins
 module Constants =
     let NAME = "SongKickGeoLocation"
 
-type GeoLocation = JsonProvider<"./GeoLocationSample.json">
+type MozillaGeoLocation = JsonProvider<"./MozillaGeoLocationSample.json">
+type FedoraGeoLocation  = JsonProvider<"./FedoraGeoLocationSample.json">
+type OpenStreetMap      = XmlProvider<"./OpenStreetMapSample.xml">
+
+type GeoResult =
+    | MozillaResponse of MozillaGeoLocation.Root
+    | FedoraResponse  of FedoraGeoLocation.Root
+    | NoRespose
+
+module Fun =
+    let toFloat = JsonExtensions.AsFloat
 
 type Provider() = 
     inherit BaseLocationProvider()
 
-    let name        = Constants.NAME + ".Service"
-    let serverUrl   = "https://geoip.fedoraproject.org/city"
+    let name             = Constants.NAME + ".Service"
+    let mozillaApiKey    = "2363677d-0913-4a7d-8659-5df67963dc20"
+    let fedoraUrl        = "https://geoip.fedoraproject.org/city"
+    let mozillaUrl       = "https://location.services.mozilla.com/v1/geolocate?key="
+    let openStreetMapUrl = "http://nominatim.openstreetmap.org/reverse?format=xml"
 
     override x.CityName
       with get() =
         match x.GetDataFromServer () with
-            | Some x -> (x : GeoLocation.Root).City
-            | None   -> GeoLocation.GetSample().City
+        | MozillaResponse r -> x.DetermineCityByLatAndLong
+                                 (Fun.toFloat r.Location.JsonValue?lat,
+                                  Fun.toFloat r.Location.JsonValue?lng)
+        | FedoraResponse  r -> r.City
+        | NoRespose         -> ""
 
     override x.Latitude
       with get() =
         match x.GetDataFromServer () with
-            | Some x -> (x : GeoLocation.Root).Latitude
-            | None   -> GeoLocation.GetSample().Latitude
+        | MozillaResponse x -> Fun.toFloat x.Location.JsonValue?lat
+        | FedoraResponse  x -> Fun.toFloat x.JsonValue?latitude
+        | NoRespose         -> 0.0
 
     override x.Longitude
       with get() =
         match x.GetDataFromServer () with
-            | Some x -> (x : GeoLocation.Root).Longitude
-            | None   -> GeoLocation.GetSample().Longitude
+           | MozillaResponse x -> Fun.toFloat x.Location.JsonValue?lng
+           | FedoraResponse  x -> Fun.toFloat x.JsonValue?latitude
+           | NoRespose         -> 0.0
 
     member x.GetDataFromServer () =
-             try Some (GeoLocation.Load(serverUrl))
-             with :? System.Net.WebException -> None
+        try MozillaResponse <| MozillaGeoLocation.Parse(x.SendPostRequestToMozilla ())
+        with _ ->
+            try FedoraResponse <| FedoraGeoLocation.Load(fedoraUrl)
+            with _ -> NoRespose
+
+    member x.DetermineCityByLatAndLong (lat, long) =
+        let queryUrl = openStreetMapUrl + "&lat=" + lat.ToString()
+                                        + "&lon=" + long.ToString()
+                                        + "&zoom=11"
+        let res = try Some <| OpenStreetMap.Load (queryUrl) with _ -> None
+        match res with
+        | Some x -> try x.Addressparts.City 
+                    with _ -> (OpenStreetMap.GetSample().Addressparts).City 
+                   // ^^^ if there were no "city" val in xml from server ^^^
+        | None   -> (OpenStreetMap.GetSample().Addressparts).City
+
+    member x.SendPostRequestToMozilla () =
+        try Http.RequestString (mozillaUrl + mozillaApiKey,
+                                headers = ["Content-Type", HttpContentTypes.Json],
+                                body = TextRequest "{}")
+        with e -> Log.Error e.Message; ""
