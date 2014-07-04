@@ -84,3 +84,13 @@ type MissingArtistTitleSource () =
                 artistId
         ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET ArtistID = ? WHERE TrackID = ?;",
            newId, problem.ObjectIds. [0]) |> ignore;
+           
+        let albumId = ServiceManager.DbConnection.Query<int>(@"SELECT AlbumID from CoreAlbums where Title = ?", trackMetadata. [2])
+        let newAlbumId = 
+            if albumId = 0 then
+                ServiceManager.DbConnection.Execute (@"INSERT INTO CoreAlbums (Title) VALUES (?)", trackMetadata. [2]) |> ignore
+                ServiceManager.DbConnection.Query<int>(@"SELECT AlbumID from CoreAlbums where Title = ?", trackMetadata. [2])
+            else
+                albumId
+        ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET AlbumID = ? WHERE TrackID = ?;",
+                   newAlbumId, problem.ObjectIds. [0]) |> ignore;

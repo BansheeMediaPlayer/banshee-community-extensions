@@ -1,5 +1,5 @@
 //
-// MissingAlbumSource.fs
+// MissingMostOfMetadataSource.fs
 //
 // Author:
 //   Marcin Kolny <marcin.kolny@gmail.com>
@@ -27,6 +27,8 @@
 namespace Banshee.OnlineMetadataFixer
 
 open System
+open System.Linq
+open System.Text.RegularExpressions
 open System.Collections.Generic
 
 open Hyena
@@ -36,12 +38,12 @@ open Banshee.ServiceStack
 
 open Mono.Unix;
 
-type MissingAlbumSource () = 
-    inherit MissingFromAcoustIDSource("missing-album-online-fix")
+type MissingMostOfMetadataSource() = 
+    inherit MissingFromAcoustIDSource("missing-most-of-metadata-online-fix")
     let mutable job = new AcoustIDFingerprintJob ()
     do
-        base.Name <- Catalog.GetString ("Missing Albums Fix");
-        base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee without album metadata");
+        base.Name <- Catalog.GetString ("Missing Most of Metadata Fix");
+        base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee without most of metadata");
 
         ServiceManager.SourceManager.add_SourceAdded (
             fun e -> 
@@ -55,28 +57,36 @@ type MissingAlbumSource () =
             )
 
     override this.IdentifyCore () =
+        "DELETE FROM CoreArtists WHERE ArtistID NOT IN (SELECT DISTINCT(ArtistID) FROM CoreTracks)"
+        |> ServiceManager.DbConnection.Execute 
+        |> ignore
         "DELETE FROM CoreAlbums WHERE AlbumID NOT IN (SELECT DISTINCT(AlbumID) FROM CoreTracks)"
         |> ServiceManager.DbConnection.Execute 
         |> ignore
         
-        ("IFNULL((SELECT Title from CoreAlbums where AlbumID = CoreTracks.AlbumID), '') = ''"
+        (@"IFNULL((SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID), '') = '' AND
+        IFNULL(Title, '') = '' AND
+        IFNULL((SELECT Title from CoreAlbums where AlbumID = CoreTracks.AlbumID), '') = ''"
         |> this.GetFindMethod, this.Generation)
         |> ServiceManager.DbConnection.Execute |> ignore;
     
     override x.ProcessSolution (id, recordings) =
-        let groups = new HashSet<String> ()
+        let solutions = new HashSet<String> ()
         for recording in recordings do
-            for releaseGroup in recording.ReleaseGroups do
-                releaseGroup.Title |> groups.Add |> ignore
-        String.Join(";;", groups)
+            for release in recording.ReleaseGroups do
+                solutions.Add (String.Join(", ", recording.Artists.Select(fun z -> z.Name)) + " - " + recording.Title + " - " + release.Title) |> ignore
+        String.Join(";;", solutions)
         
     override x.ProcessProblem (problem) =
-        let albumId = ServiceManager.DbConnection.Query<int>(@"SELECT AlbumID from CoreAlbums where Title = ?", problem.SolutionValue)
+        let trackMetadata = Regex.Split (problem.SolutionValue, " - ")
+        ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET Title = ? WHERE TrackID = ?;", trackMetadata. [1], problem.ObjectIds. [0]) |> ignore
+        
+        let artistId = ServiceManager.DbConnection.Query<int>(@"SELECT ArtistID from CoreArtists where Name = ?", trackMetadata. [0])
         let newId = 
-            if albumId = 0 then
-                ServiceManager.DbConnection.Execute (@"INSERT INTO CoreAlbums (Title) VALUES (?)", problem.SolutionValue) |> ignore
-                ServiceManager.DbConnection.Query<int>(@"SELECT AlbumID from CoreAlbums where Title = ?", problem.SolutionValue)
+            if artistId = 0 then
+                ServiceManager.DbConnection.Execute (@"INSERT INTO CoreArtists (Name) VALUES (?)", trackMetadata. [0]) |> ignore
+                ServiceManager.DbConnection.Query<int>(@"SELECT ArtistID from CoreArtists where Name = ?", trackMetadata. [0])
             else
-                albumId
-        ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET AlbumID = ? WHERE TrackID = ?;",
-                   newId, problem.ObjectIds. [0]) |> ignore;
+                artistId
+        ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET ArtistID = ? WHERE TrackID = ?;",
+           newId, problem.ObjectIds. [0]) |> ignore;

@@ -7,9 +7,10 @@ SOURCES =  \
 	Banshee.OnlineMetadataFixer/AcoustIDStorage.fs \
 	Banshee.OnlineMetadataFixer/HelperRecords.fs \
 	Banshee.OnlineMetadataFixer/JSonAcoustIDReader.fs \
-	Banshee.OnlineMetadataFixer/MissingFromAcoustIDSource.fs \
 	Banshee.OnlineMetadataFixer/MissingAlbumSource.fs \
 	Banshee.OnlineMetadataFixer/MissingArtistTitleSource.fs \
+	Banshee.OnlineMetadataFixer/MissingFromAcoustIDSource.fs \
+	Banshee.OnlineMetadataFixer/MissingMostOfMetadataSource.fs \
 	Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs
 
 RESOURCES =  \
