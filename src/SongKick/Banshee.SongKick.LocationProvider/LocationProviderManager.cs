@@ -73,9 +73,7 @@ namespace Banshee.SongKick.LocationProvider
             if (args.Change == ExtensionChange.Add) {
                 provider = (BaseLocationProvider)node.CreateInstance ();
                 ThreadAssist.SpawnFromMain (() => {
-                    city_name = provider.CityName;
-                    latitude  = provider.Latitude;
-                    longitude = provider.Longitude;
+                    RefreshGeoPosition ();
                     NotifyObservers ();
                 });
             } else {
@@ -94,6 +92,13 @@ namespace Banshee.SongKick.LocationProvider
         public static void Detach (ICityNameObserver o)
         {
             cityObservers.Remove (o);
+        }
+
+        public static void RefreshGeoPosition ()
+        {
+            city_name = provider.CityName;
+            latitude  = provider.Latitude;
+            longitude = provider.Longitude;
         }
 
         private static void NotifyObservers () 
