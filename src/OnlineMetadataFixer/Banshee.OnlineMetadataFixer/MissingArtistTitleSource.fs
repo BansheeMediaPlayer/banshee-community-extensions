@@ -28,7 +28,6 @@ namespace Banshee.OnlineMetadataFixer
 
 open System
 open System.Linq
-open System.Text
 open System.Text.RegularExpressions
 open System.Collections.Generic
 
@@ -44,7 +43,7 @@ type MissingArtistTitleSource () =
     let mutable job = new AcoustIDFingerprintJob ()
     do
         base.Name <- Catalog.GetString ("Missing Artist and Titles Fix");
-        base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee");
+        base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee without artist or title metadata");
 
         ServiceManager.SourceManager.add_SourceAdded (
             fun e -> 
@@ -67,15 +66,10 @@ type MissingArtistTitleSource () =
         |> ServiceManager.DbConnection.Execute |> ignore;
     
     override x.ProcessSolution (id, recordings) =
-        let solutions = new StringBuilder ()
+        let solutions = new HashSet<String> ()
         for recording in recordings do
-            solutions.Append (String.Join(", ", recording.Artists.Select(fun z -> z.Name))) |> ignore
-            solutions.Append (" - ") |> ignore
-            solutions.Append (recording.Title) |> ignore
-            solutions.Append (";;") |> ignore
-        match solutions.Length > 2 with
-        | true -> solutions.ToString (0, solutions.Length - 2)
-        | _ -> solutions.ToString ()
+            solutions.Add (String.Join(", ", recording.Artists.Select(fun z -> z.Name)) + " - " + recording.Title) |> ignore
+        String.Join(";;", solutions)
         
     override x.ProcessProblem (problem) =
         let trackMetadata = Regex.Split (problem.SolutionValue, " - ")
