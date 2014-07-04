@@ -48,11 +48,12 @@ type Service() as this =
     member x.Initialize () =
         LocationProviderManager.Register this
         ThreadAssist.SpawnFromMain (fun() ->
-            refresh_timeout_id <- Application.RunTimeout (refresh_timeout, x.RefreshLocalConcertsList))
+            refresh_timeout_id <- Application.RunTimeout (refresh_timeout, x.RefreshLocalConcertsList)
+            ServiceManager.Get<Banshee.Networking.Network>().StateChanged.AddHandler x.OnNetworkStateChanged)
 
     member x.RefreshLocalConcertsList = new TimeoutHandler (fun () ->
-        if not LocationProviderManager.HasProvider //||
-           //not (ServiceManager.Get<Banshee.Networking.Network> ()).Connected
+        if not LocationProviderManager.HasProvider ||
+           not (ServiceManager.Get<Banshee.Networking.Network> ()).Connected
         then true
         else
         Hyena.Log.Debug ("Refreshing list of local concerts")
@@ -63,7 +64,8 @@ type Service() as this =
             for artist in recommendations do
                 search.GetResultsPage (new Query(System.Nullable(), artist.Name))
                 for res in search.ResultsPage.results do
-                    if x.IsItInUserCity (res.Location.Latitude, res.Location.Longitude) && not (local_events.Contains res)
+                    if x.IsItInUserCity (res.Location.Latitude, res.Location.Longitude)
+                       && not (local_events.Contains res)
                     then res.ArtistName <- artist.Name
                          local_events.Add (res)
             x.NotifyUser()))
@@ -100,11 +102,21 @@ type Service() as this =
          Gtk.Window.ListToplevels () |> Array.find (fun w -> w :? Banshee.Gui.BaseClientWindow)
 
     member x.OnFocusInEvent =
-        new Gtk.FocusInEventHandler (fun obj args ->
+        new Gtk.FocusInEventHandler (fun o a ->
             events_source.NotifyUser ()
             banshee_window.Focus.FocusInEvent.RemoveHandler x.OnFocusInEvent)
 
-    member x.Dispose ()  = Application.IdleTimeoutRemove (refresh_timeout_id)   |> ignore
+    member x.OnNetworkStateChanged =
+        new Banshee.Networking.NetworkStateChangedHandler (fun o a ->
+            ThreadAssist.SpawnFromMain (fun () ->
+                Threading.Thread.Sleep 500
+                LocationProviderManager.RefreshGeoPosition ()
+                this.RefreshLocalConcertsList.Invoke() |> ignore))
+
+    member x.Dispose () =
+        Application.IdleTimeoutRemove (refresh_timeout_id) |> ignore
+        ServiceManager.Get<Banshee.Networking.Network>().StateChanged.RemoveHandler x.OnNetworkStateChanged
+
     member x.ServiceName = Constants.NAME + ".Service"
 
     interface ICityNameObserver with

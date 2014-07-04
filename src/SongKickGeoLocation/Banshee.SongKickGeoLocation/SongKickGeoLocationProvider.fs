@@ -106,4 +106,4 @@ type Provider() =
         try Http.RequestString (mozillaUrl + mozillaApiKey,
                                 headers = ["Content-Type", HttpContentTypes.Json],
                                 body = TextRequest "{}")
-        with e -> Log.Error e.Message; ""
+        with _ -> ""
