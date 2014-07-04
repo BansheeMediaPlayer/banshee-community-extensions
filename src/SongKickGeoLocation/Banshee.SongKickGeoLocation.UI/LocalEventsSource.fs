@@ -59,16 +59,14 @@ type public LocalEventsSource(events : Results<Event>) as this =
                    Constants.SORT_ORDER,
                    "SongKick-city-concerts")
 
-    [<DefaultValue>] val mutable Events : Results<Event>
     [<DefaultValue>] val mutable view : LocalEventsView
 
     do
-        this.Events <- events
         base.Properties.SetStringList ("Icon.Name", "city_concerts_logo")
         base.Properties.SetString ("UnmapSourceActionLabel", Catalog.GetString ("Close Item"))
         base.Properties.SetString ("UnmapSourceActionIconName", "gtk-close")
 
-        this.view <- new LocalEventsView(this,events)
+        this.view <- new LocalEventsView(this, events)
         base.Properties.Set<ISourceContents> ("Nereid.SourceContents", this.view)
         Hyena.Log.Information ("SongKick CityConcerts source has been instantiated!")
     interface IUnmapableSource with
