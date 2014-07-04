@@ -29,7 +29,7 @@ namespace Banshee.SongKick.LocationProvider
     public abstract class BaseLocationProvider
     {
         public abstract string CityName  { get; }
-        public abstract int    Latitude  { get; }
-        public abstract int    Longitude { get; }
+        public abstract double Latitude  { get; }
+        public abstract double Longitude { get; }
     }
 }

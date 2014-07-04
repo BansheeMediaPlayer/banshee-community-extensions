@@ -42,13 +42,13 @@ namespace Banshee.SongKick.LocationProvider
             get { return city_name; }
         }
 
-        private static int latitude = 0;
-        public static int GetLatitude {
+        private static double latitude = 0.0;
+        public static double GetLatitude {
             get { return latitude; }
         }
 
-        private static int longitude = 0;
-        public static int GetLongitude {
+        private static double longitude = 0.0;
+        public static double GetLongitude {
             get { return longitude; }
         }
 
