@@ -54,8 +54,8 @@ module Functions =
         obj.ReferenceEquals (x, Unchecked.defaultof<_>)
 
 type public LocalEventsSource(events : Results<Event>) as this =
-    inherit Source(AddinManager.CurrentLocalizer.GetString ("City Concerts"),
-                   AddinManager.CurrentLocalizer.GetString ("City Concerts"),
+    inherit Source(AddinManager.CurrentLocalizer.GetString ("Gigs, Recommended for You"),
+                   AddinManager.CurrentLocalizer.GetString ("Gigs, Recommended for You"),
                    Constants.SORT_ORDER,
                    "SongKick-city-concerts")
 
