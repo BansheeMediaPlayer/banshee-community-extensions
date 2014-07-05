@@ -99,6 +99,9 @@
     <EmbeddedResource Include="Resources\paired-black.png">
       <LogicalName>paired-black.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\21cc-sync.png">
+      <LogicalName>21cc-sync.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banshee.Dap.Bluetooth\Gui\" />

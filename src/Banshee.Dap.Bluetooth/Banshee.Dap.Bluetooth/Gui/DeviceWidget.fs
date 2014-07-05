@@ -35,24 +35,31 @@ type DeviceWidget(dev: IBansheeDevice, cm: ClientManager) as this =
     inherit HBox(false, 4)
     static let PIXBUF_PREFS = "gnome-settings"
     static let PIXBUF_PAIR = Gdk.Pixbuf.LoadFromResource("paired-black.png")
+    static let PIXBUF_SYNC = Gdk.Pixbuf.LoadFromResource("21cc-sync.png")
     static let PIXBUF_AI = "audio-input-microphone"
     static let PIXBUF_AO = "audio-speakers"
     static let PIXBUF_HS = "audio-headphones"
     let icon = new Image()
-    let label = new Label()
+    let label = new Label(UseMarkup = true)
+    let bbox = new HBox(true, 10)
     let ai = new ToggleButton(Image = new Image(IconName = PIXBUF_AI))
     let ao = new ToggleButton(Image = new Image(IconName = PIXBUF_AO))
     let hs = new ToggleButton(Image = new Image(IconName = PIXBUF_HS))
     let pair = new ToggleButton(Image = new Image(PIXBUF_PAIR))
-    let conf = new ToggleButton("\u21cc")
+    let conf = new ToggleButton(Image = new Image(PIXBUF_SYNC))
     let src = ref None
+    let DeviceString () = if dev.Connected then
+                            sprintf "<b>%s</b>" dev.Alias
+                          else
+                            sprintf "%s" dev.Alias
     do  base.PackStart (icon, false, false, 0u)
         base.PackStart (label, false, false, 0u)
-        base.PackEnd (conf, false, false, 0u)
-        base.PackEnd (pair, false, false, 0u)
-        base.PackEnd (ai, false, false, 0u)
-        base.PackEnd (ao, false, false, 0u)
-        base.PackEnd (hs, false, false, 0u)
+        bbox.PackEnd (pair, false, false, 0u)
+        bbox.PackEnd (conf, false, false, 0u)
+        bbox.PackEnd (ai, false, false, 0u)
+        bbox.PackEnd (ao, false, false, 0u)
+        bbox.PackEnd (hs, false, false, 0u)
+        base.PackEnd (bbox, false, false, 10u)
         base.ShowAll ()
         pair.Clicked.Add(fun o -> match (pair.Active, dev.Paired) with
                                   | (true, false) -> dev.Pair ()
@@ -77,10 +84,9 @@ type DeviceWidget(dev: IBansheeDevice, cm: ClientManager) as this =
                                   | _ -> ())
         this.Refresh ()
     member x.Refresh () : unit = icon.IconName <- Functions.IconOf dev
-                                 label.Text <- sprintf "%s - RSSI: %d" dev.Alias dev.RSSI
+                                 label.Markup <- sprintf "%s - RSSI: %d" (DeviceString()) dev.RSSI
                                  ai.Visible <- dev.AudioOut
                                  ao.Visible <- dev.AudioIn
                                  hs.Visible <- dev.Headset
-                                 pair.Sensitive <- not dev.Paired
-                                 pair.Active <- dev.Paired
-                                 conf.Sensitive <- dev.Sync
+                                 conf.Visible <- dev.Sync
+                                 pair.Visible <- not dev.Paired

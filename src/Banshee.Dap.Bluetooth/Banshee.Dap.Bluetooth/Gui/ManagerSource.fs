@@ -117,12 +117,14 @@ type ManagerService(name: string) =
     do Log.DebugFormat ("Instantiating {0}", name)
     let mutable dm : DeviceManager = Unchecked.defaultof<_>
     let mutable cm : ClientManager = Unchecked.defaultof<_>
+    let mutable ms : ManagerSource = Unchecked.defaultof<_>
     member x.DeviceManager = dm
-    member x.Dispose () = ()
+    member x.Dispose () = ServiceManager.SourceManager.RemoveSource (ms)
     member x.ServiceName = name
     member x.Initialize () = dm <- DeviceManager(Bus.System)
                              cm <- ClientManager(Bus.Session)
-    member x.DelayedInitialize () = ServiceManager.SourceManager.AddSource (new ManagerSource(dm, cm))
+    member x.DelayedInitialize () = ms <- new ManagerSource(dm, cm)
+                                    ServiceManager.SourceManager.AddSource (ms)
     interface IService with
         member x.ServiceName = x.ServiceName
     interface IDisposable with
