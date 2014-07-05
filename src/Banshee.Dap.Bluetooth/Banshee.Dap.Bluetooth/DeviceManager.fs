@@ -77,7 +77,7 @@ type AdapterChangedArgs(a:ObjectAction, d: IBansheeAdapter, p: ObjectPath) =
 type DeviceChangedArgs(a:ObjectAction, d: IBansheeDevice, p: ObjectPath) =
     inherit ObjectChangedArgs(a, d, p)
     member x.Device = d
-type MediaControlArgs(a: ObjectAction, m: IMediaControl, p: ObjectPath) =
+type MediaControlArgs(a: ObjectAction, m: IBansheeMediaControl, p: ObjectPath) =
     inherit ObjectChangedArgs(a, m, p)
     member x.MediaControl = m
 
@@ -89,7 +89,7 @@ type DeviceManager(system: Bus) as this =
     let oman = DBusInverter(system, Constants.NAME_BLUEZ, ObjectPath.Root)
     let adapters = ConcurrentDictionary<_,IBansheeAdapter>() :> IDictionary<_,_>
     let devices = ConcurrentDictionary<_,IBansheeDevice>() :> IDictionary<_,_>
-    let media = ConcurrentDictionary<_,IMediaControl>() :> IDictionary<_,_>
+    let media = ConcurrentDictionary<_,IBansheeMediaControl>() :> IDictionary<_,_>
     let ac = Event<AdapterChangedHandler,AdapterChangedArgs>()
     let dc = Event<DeviceChangedHandler,DeviceChangedArgs>()
     let mc = Event<MediaControlHandler,MediaControlArgs>()

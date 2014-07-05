@@ -86,6 +86,9 @@
     <Compile Include="Banshee.Dap.Bluetooth\DeviceManager.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\ClientManager.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\DapGlueApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Gui\AdaptersWidget.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Gui\DeviceWidget.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Gui\MediaControlWidget.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Gui\ManagerSource.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />

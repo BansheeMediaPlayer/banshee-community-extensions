@@ -32,6 +32,7 @@ open System.Collections
 open System.Collections.Generic
 open System.Text.RegularExpressions
 
+open Banshee.Base
 open Banshee.Collection.Database
 open Banshee.Dap
 open Banshee.Dap.Bluetooth
@@ -166,6 +167,7 @@ type BluetoothDevice(dev: IBansheeDevice) =
 
 type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
     inherit DapSource() with
+    //override x.PurgeOnLoad = false
     override x.IsReadOnly = false
     override x.BytesUsed = 0L
     override x.BytesCapacity = Int64.MaxValue
@@ -204,39 +206,41 @@ type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
                 fx f dti
                 let tid = DatabaseTrackInfo.GetTrackIdForUri(dti.Uri, x.DbId)
                 if 0L = tid then
-                  dti.Save()
+                  dti.Save(false)
+                //else x.OnTrackExists tid
             | (Folder,f) -> ()
             | _ -> ())
         base.OnTracksAdded ()
     override x.AddTrackToDevice (y, z) =
-        try
-          printfn "cd: %s" dev.MediaCapabilities.AudioFolders.[0]
-          ftp.ChangeFolder dev.MediaCapabilities.AudioFolders.[0]
-          try
-            printfn "cd: %s" y.AlbumArtist
-            ftp.ChangeFolder y.AlbumArtist
-          with
-          | _ -> printfn "md: %s" y.AlbumArtist
-                 ftp.CreateFolder y.AlbumArtist
-          try
-            printfn "cd: %s" y.AlbumTitle
-            ftp.ChangeFolder y.AlbumTitle
-          with
-          | _ -> printfn "md: %s" y.AlbumTitle
-                 ftp.CreateFolder y.AlbumTitle
+          let root = dev.MediaCapabilities.AudioFolders.[0]
+          let fsart = FileNamePattern.Escape y.DisplayArtistName
+          let fsalb = FileNamePattern.Escape y.DisplayAlbumTitle
+          let fsttl = FileNamePattern.Escape y.DisplayTrackTitle
           let mt = ToMimeType y.MimeType
-          let fn = sprintf "%02d. %s.%s" y.TrackNumber y.TrackTitle (ExtensionOf mt)
-          printfn "put: %s => %s" z.AbsolutePath fn
+          let fn = sprintf "%02d. %s.%s" y.TrackNumber fsttl (ExtensionOf mt)
+          let uri = Functions.SafeUriOf (fn::fsalb::fsart::root::[])
+
+          printfn "cd: %s" root
+          ftp.ChangeFolder root
+          try
+            printfn "cd: %s" fsart
+            ftp.ChangeFolder fsart
+          with
+          | _ -> printfn "md: %s" fsart
+                 ftp.CreateFolder fsart
+          try
+            printfn "cd: %s" fsalb
+            ftp.ChangeFolder fsalb
+          with
+          | _ -> printfn "md: %s" fsalb
+                 ftp.CreateFolder fsalb
           ftp.PutFile z.AbsolutePath fn |> ignore
-          let uri = Functions.SafeUriOf (fn::y.AlbumTitle::y.AlbumArtist::dev.MediaCapabilities.AudioFolders.[0]::[])
           let dti = DatabaseTrackInfo(y, PrimarySource = x, Uri = uri)
           dti.Save(false)
           printfn "cd: ../../../"
           ftp.ChangeFolder ".."
           ftp.ChangeFolder ".."
           ftp.ChangeFolder ".."
-        with
-        | x -> printfn "%s" x.Message
     override x.DeleteTrack y =
         let rec del path =
             match path with
@@ -254,6 +258,7 @@ type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
         printfn "DeleteTrack: %s" uepath
         uepath.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
         |> List.ofArray |> del
+    //member private x.OnTrackExists y = base.OnTrackExists y
     do base.DeviceInitialize dev
        base.Initialize ()
        base.TrackEqualHandler <- fun dti ti -> dti.Uri = ti.Uri
