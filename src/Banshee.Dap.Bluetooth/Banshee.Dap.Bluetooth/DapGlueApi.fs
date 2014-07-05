@@ -43,8 +43,10 @@ open Banshee.Dap.Bluetooth.SupportApi
 open Banshee.Dap.Bluetooth.Wrappers
 open Banshee.Hardware
 open Banshee.Sources
+open Banshee.ServiceStack
 open DBus
 open Hyena
+open Hyena.Data.Sqlite
 open Mono.Addins
 
 type NodeType = | Folder | File
@@ -126,6 +128,27 @@ module Functions =
             ftp.ChangeFolder ".."
             acc@children
         InnerIterate root [] []
+    let FuzzyLookup (x: DatabaseTrackInfo) =
+        let ArtistIdOf (x: string) =
+            let faq = HyenaSqliteCommand("select ArtistID from CoreArtists where Name like ? limit 1")
+            ServiceManager.DbConnection.Query<int>(faq, x)
+        let AlbumIdOf (x: int) (y: string) =
+            let faq = HyenaSqliteCommand("select AlbumID from CoreAlbums where ArtistID = ? and Title like ? limit 1")
+            ServiceManager.DbConnection.Query<int>(faq, x, y)
+        match (x.ArtistName, x.AlbumTitle) with
+        | (null, null) | ("", "") -> x
+        | _ ->
+          try
+            let art = ArtistIdOf x.ArtistName
+            let alb = AlbumIdOf art x.AlbumTitle
+            let faq = "PrimarySourceID = 1 and CoreTracks.ArtistID = ? " +
+                      "and CoreTracks.AlbumID = ? and CoreTracks.TrackNumber = ? " +
+                      "and CoreTracks.Title like ?"
+            let dti = DatabaseTrackInfo.Provider.FetchFirstMatching(faq, art, alb, x.TrackNumber, x.TrackTitle)
+            if Functions.IsNull dti then x
+            else dti
+          with
+          | _ -> x
 
 type BluetoothCapabilities() =
     interface IDeviceMediaCapabilities with
@@ -204,10 +227,8 @@ type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
             | (File,m) when IsAudio m ->
                 let dti = DatabaseTrackInfo(PrimarySource = x)
                 fx f dti
-                let tid = DatabaseTrackInfo.GetTrackIdForUri(dti.Uri, x.DbId)
-                if 0L = tid then
-                  dti.Save(false)
-                //else x.OnTrackExists tid
+                let look = Functions.FuzzyLookup dti
+                DatabaseTrackInfo(look, Uri = dti.Uri, PrimarySource = x).Save(false)
             | (Folder,f) -> ()
             | _ -> ())
         base.OnTracksAdded ()
