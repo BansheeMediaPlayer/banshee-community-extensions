@@ -190,7 +190,6 @@ type BluetoothDevice(dev: IBansheeDevice) =
 
 type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
     inherit DapSource() with
-    //override x.PurgeOnLoad = false
     override x.IsReadOnly = false
     override x.BytesUsed = 0L
     override x.BytesCapacity = Int64.MaxValue
@@ -279,7 +278,8 @@ type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
         printfn "DeleteTrack: %s" uepath
         uepath.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
         |> List.ofArray |> del
-    //member private x.OnTrackExists y = base.OnTrackExists y
-    do base.DeviceInitialize dev
+    do base.SupportsVideo <- false
+       base.SupportsPlaylists <- false
+       base.DeviceInitialize dev
        base.Initialize ()
        base.TrackEqualHandler <- fun dti ti -> dti.Uri = ti.Uri
