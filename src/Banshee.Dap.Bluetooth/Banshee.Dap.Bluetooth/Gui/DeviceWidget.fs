@@ -84,7 +84,7 @@ type DeviceWidget(dev: IBansheeDevice, cm: ClientManager) as this =
                                   | _ -> ())
         this.Refresh ()
     member x.Refresh () : unit = icon.IconName <- Functions.IconOf dev
-                                 label.Markup <- sprintf "%s - RSSI: %d" (DeviceString()) dev.RSSI
+                                 label.Markup <- DeviceString()
                                  ai.Visible <- dev.AudioOut
                                  ao.Visible <- dev.AudioIn
                                  hs.Visible <- dev.Headset

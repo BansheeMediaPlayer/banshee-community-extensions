@@ -106,4 +106,7 @@
   <ItemGroup>
     <Folder Include="Banshee.Dap.Bluetooth\Gui\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Attribution.txt" />
+  </ItemGroup>
 </Project>
