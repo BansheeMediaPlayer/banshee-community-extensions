@@ -40,6 +40,17 @@ type MissingFromAcoustIDSource(problemId) as x =
     do
         base.Id <- problemId
         BinaryFunction.Add(base.Id, new Func<obj, obj, obj>(fun uri b -> x.GetSolutions (uri :?> string, b) :> obj))
+        
+        ServiceManager.SourceManager.add_SourceAdded (
+            fun e ->
+                let job = AcoustIDFingerprintJob.Instance 
+                try
+                    AcoustIDFingerprintJob.Instance.Start ()
+                    printfn " startuje "
+                        
+                with :? System.Exception -> ()
+            )
+
 
     abstract member ProcessSolution: string * List<Recording> -> string
     abstract member ProcessProblem: Banshee.Fixup.Problem -> unit

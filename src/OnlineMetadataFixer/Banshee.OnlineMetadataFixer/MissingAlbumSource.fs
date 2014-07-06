@@ -38,21 +38,10 @@ open Mono.Unix;
 
 type MissingAlbumSource () = 
     inherit MissingFromAcoustIDSource("missing-album-online-fix")
-    let mutable job = new AcoustIDFingerprintJob ()
+    let job = AcoustIDFingerprintJob.Instance
     do
         base.Name <- Catalog.GetString ("Missing Albums Fix");
         base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee without album metadata");
-
-        ServiceManager.SourceManager.add_SourceAdded (
-            fun e -> 
-                job <- new AcoustIDFingerprintJob ()
-(*                job.add_Finished (
-                    fun e -> 
-                        job <- null
-                        ())*)
-                job.Start ()
-                ()
-            )
 
     override this.IdentifyCore () =
         "DELETE FROM CoreAlbums WHERE AlbumID NOT IN (SELECT DISTINCT(AlbumID) FROM CoreTracks)"

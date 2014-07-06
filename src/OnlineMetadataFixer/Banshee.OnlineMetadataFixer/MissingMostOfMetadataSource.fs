@@ -40,21 +40,10 @@ open Mono.Unix;
 
 type MissingMostOfMetadataSource() = 
     inherit MissingFromAcoustIDSource("missing-most-of-metadata-online-fix")
-    let mutable job = new AcoustIDFingerprintJob ()
+    let job = AcoustIDFingerprintJob.Instance
     do
         base.Name <- Catalog.GetString ("Missing Most of Metadata Fix");
         base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee without most of metadata");
-
-        ServiceManager.SourceManager.add_SourceAdded (
-            fun e -> 
-                job <- new AcoustIDFingerprintJob ()
-(*                job.add_Finished (
-                    fun e -> 
-                        job <- null
-                        ())*)
-                job.Start ()
-                ()
-            )
 
     override this.IdentifyCore () =
         "DELETE FROM CoreArtists WHERE ArtistID NOT IN (SELECT DISTINCT(ArtistID) FROM CoreTracks)"

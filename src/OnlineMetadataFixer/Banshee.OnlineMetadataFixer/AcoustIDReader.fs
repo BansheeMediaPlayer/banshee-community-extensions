@@ -89,6 +89,7 @@ type AcoustIDReader() = class
             (duration.Value, None)
 
     static member ReadFingerPrint (uri : string) =
+        Console.WriteLine ("odczytuje {0}", uri)
         let su = new Hyena.SafeUri (uri)
         match su.IsFile with
         | true ->
