@@ -55,6 +55,7 @@ type IPropertyManager =
     abstract member All : string -> StringVariantMap
     abstract member Use : string -> unit
     abstract member Has : string -> bool
+    abstract member Not : string -> unit
     [<CLIEvent>]
     abstract member PropertiesUpdated : IEvent<PropertiesUpdatedHandler,PropertiesUpdatedArgs>
 
@@ -63,7 +64,7 @@ type PropertyManager(bus: Bus, name: string, path: ObjectPath, ipv: InterfacePro
     let ce = Event<_,_>()
     do op.add_PropertiesChanged(fun i pv ip -> if not (this.Has i) then ipv.[i] <- pv
                                                else Functions.Merge pv ipv.[i] |> ignore
-                                               for p in ip do ipv.[i].[p] <- None
+                                               for p in ip do ipv.[i].[p] <- null
                                                let pu = Array.append (pv.Keys.ToArray()) ip
                                                let arg = new PropertiesUpdatedArgs(i, pu)
                                                ce.Trigger(op, arg))
@@ -79,6 +80,7 @@ type PropertyManager(bus: Bus, name: string, path: ObjectPath, ipv: InterfacePro
     member x.All i = ipv.[i]
     member x.Use i = ipv.[i] <- op.GetAll i
     member x.Has i = ipv.ContainsKey i
+    member x.Not i = ipv.Remove i |> ignore
     member x.PropertiesUpdated = ce.Publish
     interface IPropertyManager with
         member x.Get i p = x.Get i p
@@ -86,6 +88,7 @@ type PropertyManager(bus: Bus, name: string, path: ObjectPath, ipv: InterfacePro
         member x.All i = x.All i
         member x.Use i = x.Use i
         member x.Has i = x.Has i
+        member x.Not i = x.Not i
         [<CLIEvent>]
         member x.PropertiesUpdated = x.PropertiesUpdated
     new(bus, name, path) = PropertyManager(bus, name, path, InterfacePropertyMap())
@@ -109,9 +112,11 @@ type DBusWrapper(bus: Bus, name: string, path: ObjectPath, ps: IPropertyManager)
     member x.Path with get () = path
     member x.Properties with get () = ps
     member x.Remove t = if tim.ContainsKey t then
-                          let o = iom.[tim.[t]]
-                          iom.Remove tim.[t] |> ignore
+                          let i = tim.[t]
+                          let o = iom.[i]
+                          iom.Remove i |> ignore
                           tim.Remove t |> ignore
+                          ps.Not i
                           Some o
                         else None
     member x.Put t f = try

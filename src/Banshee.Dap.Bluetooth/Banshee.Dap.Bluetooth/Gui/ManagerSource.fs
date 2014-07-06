@@ -70,7 +70,8 @@ type ManagerContents(s, dm: DeviceManager, cm: ClientManager) as this =
                                                     act.Refresh ())
        dm.DeviceChanged.Add (fun o -> match o.Action with
                                       | Added -> this.Add o.Device
-                                      | Changed -> dwm.[o.Device].Refresh()
+                                      | Changed -> if dwm.ContainsKey o.Device then
+                                                     dwm.[o.Device].Refresh()
                                       | Removed -> this.Remove o.Device |> ignore)
        dm.MediaControlChanged.Add (fun o -> match o.Action with
                                             | Added -> this.Add o.MediaControl
