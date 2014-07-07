@@ -41,9 +41,22 @@ open Banshee.Dap.Bluetooth.SupportApi
 open Banshee.Dap.Bluetooth.InversionApi
 open Banshee.Dap.Bluetooth.Wrappers
 
+open Bluetooth
+
 open DBus
 
 module Functions =
+    let SetKillswitch x =
+        use ks = new Killswitch()
+        let xs = match x with
+                 | true -> KillswitchState.SoftBlocked
+                 | false -> KillswitchState.Unblocked
+        match (xs, ks.State) with
+        | (xs, y) when xs = y -> true
+        | (_, KillswitchState.HardBlocked)
+        | (_, KillswitchState.NoAdapter) -> false
+        | (xs, _) -> ks.State <- xs
+                     true
     let PathAdapter x = sprintf "/org/bluez/hci%d" x
     let DBusMac (x: string) = x.Replace (":", "_")
     let PathDevice x y = sprintf "/org/bluez/hci%d/dev_%s" x (DBusMac y)
@@ -139,8 +152,12 @@ type DeviceManager(system: Bus) as this =
     member x.Devices = devices.Values
     member x.MediaControls = media.Values
     member x.Powered with get () = x.Adapters |> Seq.exists (fun (o: IBansheeAdapter) -> o.Powered)
-                     and set y = x.Adapters |> Seq.iter (fun (o: IBansheeAdapter) -> if y <> o.Powered then o.Powered <- y)
+                     and set y =
+                        not y |> Functions.SetKillswitch |> ignore
+                        x.Adapters
+                        |> Seq.iter (fun (o: IBansheeAdapter) -> if y <> o.Powered then o.Powered <- y)
     member x.Discovering with get () = Seq.exists (fun (o: IBansheeAdapter) -> o.Discovering) x.Adapters
                          and set y = Seq.iter (fun (o: IBansheeAdapter) -> if o.Discovering <> y then
-                                                                             if y then o.StartDiscovery ()
+                                                                             if y then Functions.SetKillswitch false |> ignore
+                                                                                       o.StartDiscovery ()
                                                                              else o.StopDiscovery ()) x.Adapters

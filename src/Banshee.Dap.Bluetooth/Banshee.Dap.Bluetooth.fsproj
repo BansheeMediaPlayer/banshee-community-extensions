@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FAFA7C00-0010-444E-BADA-0D40A8F6664F}</ProjectGuid>
+    <ProjectGuid>{2E209F0E-21A3-4841-8692-4A44CE7C3444}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Banshee.Dap.Bluetooth</RootNamespace>
     <AssemblyName>Banshee.Dap.Bluetooth</AssemblyName>
@@ -108,5 +108,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Attribution.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="gnome-bluetooth-sharp\GnomeBluetooth.csproj">
+      <Project>{F10BDA1E-3B53-4A41-A15D-02191220733E}</Project>
+      <Name>GnomeBluetooth</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
