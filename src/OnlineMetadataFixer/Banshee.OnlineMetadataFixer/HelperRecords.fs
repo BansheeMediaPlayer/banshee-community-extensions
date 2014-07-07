@@ -37,13 +37,13 @@ type ReleaseGroup = {
     ID : string;
     Title : string;
     GroupType : string;
-    SecondaryTypes : List<string>;
-    Artists : List<Artist>;
+    SecondaryTypes : seq<string>;
+    Artists : seq<Artist>;
 }
 
 type Recording = {
     ID : string;
     Title : string;
-    Artists : List<Artist>;
-    ReleaseGroups : List<ReleaseGroup>;
+    Artists : seq<Artist>;
+    ReleaseGroups : seq<ReleaseGroup>;
 }

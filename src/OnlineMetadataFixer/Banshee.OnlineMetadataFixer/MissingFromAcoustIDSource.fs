@@ -50,7 +50,7 @@ type MissingFromAcoustIDSource(problemId) as x =
             )
 
 
-    abstract member ProcessSolution: string * List<Recording> -> string
+    abstract member ProcessSolution: string * seq<Recording> -> string
     abstract member ProcessProblem: Banshee.Fixup.Problem -> unit
 
     member private x.GetSolutions (uri : string, b : obj) : String = 

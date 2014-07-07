@@ -106,8 +106,8 @@ type AcoustIDReader() = class
                 let reader = new JSonAcoustIDReader (url)
                 reader.GetInfo ()
             else
-                (String.Empty, new List<Recording> ())
+                (String.Empty, Seq.empty)
         | _ -> 
             Hyena.Log.WarningFormat ("Cannot read {0} fingerprint. Element is not a local file.", uri)
-            (String.Empty, new List<Recording> ())
+            (String.Empty, Seq.empty)
 end

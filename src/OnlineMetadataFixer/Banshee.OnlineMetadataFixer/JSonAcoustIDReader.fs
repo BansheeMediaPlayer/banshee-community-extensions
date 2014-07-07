@@ -39,52 +39,38 @@ type JSonAcoustIDReader (url : string) = class
     member x.GetInfo () =
         match jsonProvider.Status with
         | "ok" -> x.GetBestInfo ()
-        | _ -> (String.Empty, new List<Recording> ())
+        | _ -> (String.Empty, Seq.empty)
 
-    member x.GetBestInfo () = 
-        let mutable currentScore = 0.0
-        let mutable id = ""
-        let recordings = new List<Recording> ()
-        for result in jsonProvider.Results do
-            if Convert.ToDouble(result.Score) > currentScore then
-                recordings.Clear ()
-                currentScore <- result.Score |> Convert.ToDouble
-                x.ReadRecordings (result) |> recordings.AddRange
-                id <- result.Id
-        (id, recordings)
+    member private x.GetBestInfo () = 
+        jsonProvider.Results 
+        |> Seq.fold (fun a o -> 
+        (
+            o.Score |> Convert.ToDouble,
+            JSonAcoustIDReader.ReadRecordings (o),
+            o.Id
+        ) :: a) []
+        |> Seq.maxBy (fun (score, recordings, id) -> score)
+        |> fun (s, r, i) -> (i, r)
 
-    member x.ReadRecordings (result) = 
-        let recordings = new List<Recording> ()
-        for recording in result.Recordings do
-            {
-                ID = recording.Id; 
-                Title = recording.Title; 
-                Artists = x.ReadArtists (recording.Artists); 
-                ReleaseGroups = x.ReadReleaseGroups (recording.Releasegroups)
-            } |> recordings.Add
-        recordings
+    static member private ReadRecordings (result) = 
+        seq {
+            for recording in result.Recordings do
+                yield {
+                    ID = recording.Id; 
+                    Title = recording.Title; 
+                    Artists = recording.Artists |> JSonAcoustIDReader.ReadArtists
+                    ReleaseGroups = recording.Releasegroups |>Seq.fold (
+                                        fun a o -> 
+                                        { 
+                                            ID = o.Id; 
+                                            Title = o.Title; 
+                                            GroupType = if o.Type.IsNone then "" else o.Type.Value; 
+                                            SecondaryTypes = o.Secondarytypes; 
+                                            Artists = JSonAcoustIDReader.ReadArtists (o.Artists)
+                                        } :: a) []
+                }
+            }
 
-    member x.ReadArtists art_list =
-        let artists = new List<Artist> ()
-        for artist in art_list do
-            {ID = artist.Id; Name = artist.Name} |>  artists.Add
-        artists
-
-    member x.ReadReleaseGroups releasegroup_list =
-        let releaseGroups = new List<ReleaseGroup> ()
-        for releasegroup in releasegroup_list do
-            {
-                ID = releasegroup.Id;
-                Title = releasegroup.Title;
-                GroupType = if releasegroup.Type.IsNone then "" else releasegroup.Type.Value;
-                SecondaryTypes = x.ReadSecondaryTypes (releasegroup);
-                Artists = x.ReadArtists (releasegroup.Artists)
-            } |>  releaseGroups.Add // todo secondarytype, artists
-        releaseGroups
-
-    member x.ReadSecondaryTypes releasegroup = 
-        let list = new List<string> ()
-        for secType in releasegroup.Secondarytypes do
-            secType |> list.Add
-        list
+    static member private ReadArtists art_list =
+        art_list |> Seq.fold (fun a o -> {ID = o.Id; Name = o.Name} :: a) []
 end
