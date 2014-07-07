@@ -39,7 +39,6 @@ type AcoustIDFingerprintJob private () as this = class
     inherit DbIteratorJob (Catalog.GetString ("Computing Fingerprints"))
     static let instance = AcoustIDFingerprintJob () // todo try with lazy()
     let bin_func_checker = "acoustid-fingerprint-checker"
-    let bin_func_rank = "acoustid-fingerprint-rank"
     do
         base.SetResources (Resource.Database)
         base.PriorityHints <- PriorityHints.LongRunning;
@@ -47,22 +46,38 @@ type AcoustIDFingerprintJob private () as this = class
         base.IsBackground <- true;
         base.CanCancel <- true;
         base.DelayShow <- true;
-        printfn "utworzono obiekt"
+
         base.CountCommand <- new HyenaSqliteCommand (String.Format (@"
             SELECT count(DISTINCT TrackID) FROM CoreTracks 
             WHERE HYENA_BINARY_FUNCTION ('{0}', Uri, NULL) = 'ok'", bin_func_checker))
         base.SelectCommand <- new HyenaSqliteCommand (String.Format (@"
             SELECT 
-                DISTINCT (Uri)
-            FROM CoreTracks 
-            WHERE HYENA_BINARY_FUNCTION ('{0}', uri, NULL) = 'ok'
-            ", bin_func_checker, bin_func_rank))
+                DISTINCT (Uri),
+                (CASE
+                    WHEN (IFNULL(CoreTracks.Title, '') = '' AND IFNULL(CoreArtists.Name, '') = '' AND IFNULL(CoreAlbums.Title, '') = '') THEN
+                        0
+                    WHEN (IFNULL(CoreTracks.Title, '') = '' OR IFNULL(CoreArtists.Name, '') = '') THEN
+                        1
+                    WHEN IFNULL(CoreAlbums.Title, '') = '' THEN
+                        2
+                    ELSE
+                        3
+                    END
+                    ) as rank
+            FROM CoreTracks, CoreArtists, CoreAlbums
+            WHERE 
+                HYENA_BINARY_FUNCTION ('{0}', Uri, NULL) = 'ok' AND
+                CoreArtists.ArtistID = CoreTracks.ArtistID AND
+                CoreAlbums.AlbumID = CoreTracks.AlbumID
+            ORDER BY rank ASC
+            LIMIT 1
+            ", bin_func_checker))
             
+        // JOIN CoreArtists ON CoreArtists.ArtistID = CoreTracks.TrackID todo why JOIN doesn't work here?
+        // JOIN CoreAlbums ON  CoreAlbums.AlbumID = CoreTracks.AlbumID
         try this.AddCheckerFunction () with :? ArgumentException -> () // if function was already added
-        try this.AddRankFunction () with :? ArgumentException -> () // if function was already added
 
     override this.IterateCore (reader : HyenaDataReader) =
-        printfn "iteruje core"
         base.Status <- reader.Get<string> (0)
         AcoustIDReader.ReadFingerPrint (reader.Get<string> (0)) |> ignore
 
@@ -81,38 +96,7 @@ type AcoustIDFingerprintJob private () as this = class
             :> obj
             ))
 
-    member private this.AddRankFunction () =
-        BinaryFunction.Add(bin_func_rank, new Func<obj, obj, obj>(fun id b -> 
-            let track_id = id |> Convert.ToInt32
-            //SELECT tracks.*, artists.name, albums.name FROM tracks  join artists on artists.id = tracks.artist join albums on  albums.id=tracks.album where tracks.id = 2
-            let reader = ServiceManager.DbConnection.Query (String.Format (@"
-                SELECT 
-                    CoreTracks.Title, CoreArtists.Name, CoreAlbums.Name, CoreTracks.Url
-                FROM CoreTracks
-                JOIN CoreArtists on CoreArtists.ArtistID = CoreTracks.ArtistID
-                JOIN CoreAlbums on CoreAlbums.AlbumID = CoreTracks.AlbumID
-                WHERE CoreTracks.TrackID = {0}", id |> Convert.ToInt32));
-            if reader.Read () then
-                let empty_title = String.IsNullOrEmpty(reader.Get<string> (0))
-                let empty_artist = String.IsNullOrEmpty(reader.Get<string> (1))
-                let empty_album = String.IsNullOrEmpty(reader.Get<string> (2))
-                let res = 
-                    if empty_title && empty_artist && empty_album then
-                        "0"
-                    else if empty_title || empty_artist then
-                        "1"
-                    else if empty_album then
-                        "2"
-                    else
-                        "3"
-                Console.WriteLine ("Url: {0}, rank: {1}", reader.Get<string>(3), res)
-                res :> obj
-            else
-                "3" :> obj
-            ))
-
     member this.Start () =
-        printfn "startuje"
         base.Register ()
         
     static member Instance with get() = instance

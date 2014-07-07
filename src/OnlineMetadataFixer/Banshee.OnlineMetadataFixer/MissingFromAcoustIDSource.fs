@@ -46,9 +46,7 @@ type MissingFromAcoustIDSource(problemId) as x =
                 let job = AcoustIDFingerprintJob.Instance 
                 try
                     AcoustIDFingerprintJob.Instance.Start ()
-                    printfn " startuje "
-                        
-                with :? System.Exception -> ()
+                with :? System.ArgumentException -> () // if job already started
             )
 
 
