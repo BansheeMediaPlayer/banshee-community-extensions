@@ -41,6 +41,7 @@ open Banshee.Dap.Bluetooth.Mime.Extensions
 open Banshee.Dap.Bluetooth.ObexApi
 open Banshee.Dap.Bluetooth.SupportApi
 open Banshee.Dap.Bluetooth.Wrappers
+open Banshee.Dap.Bluetooth.Ftp
 open Banshee.Hardware
 open Banshee.Sources
 open Banshee.ServiceStack
@@ -48,18 +49,6 @@ open DBus
 open Hyena
 open Hyena.Data.Sqlite
 open Mono.Addins
-
-type NodeType = | Folder | File
-
-type RemoteNode = {
-    path  : string list
-    name  : string
-    ntype : NodeType
-    size  : uint64
-    ctime : uint64
-    atime : uint64
-    mtime : uint64
-    }
 
 module Functions =
     let Singular x = AddinManager.CurrentLocalizer.GetString x
@@ -84,39 +73,10 @@ module Functions =
         with
         | _ -> def
     let SafeUriOf x = SafeUri(Uri("bt:///" + String.Join("/", List.rev x)))
-    let NodeTypeOf x = match x.ToString() with
-                       | "file" -> File
-                       | "folder" -> Folder
-                       | _ -> failwith "Invalid Node Type: %s" x
-    let RemoteNodeOf path (x: Map<string,_>) =
-        let UInt64Of x = let v = ref 0UL
-                         UInt64.TryParse(x.ToString(), v) |> ignore
-                         !v
-        let LookupOrDefaultOf tv key def =
-            let v = Map.tryFind key x
-            match v with
-            | Some v -> tv v
-            | None -> def
-        let nm = x.["Name"].ToString()
-        let nt = x.["Type"].ToString() |> NodeTypeOf
-        let size = LookupOrDefaultOf UInt64Of "Size" 0UL
-        let ctime = LookupOrDefaultOf UInt64Of "Created" 0UL
-        let atime = LookupOrDefaultOf UInt64Of "Accessed" 0UL
-        let mtime = LookupOrDefaultOf UInt64Of "Modified" 0UL
-        { path = path;
-          name = nm;
-          ntype = nt;
-          size = size;
-          ctime = ctime;
-          atime = atime;
-          mtime = mtime }
-    let Iterate (ftp: IFileTransfer) root =
-        let ToDict (x: KeyValuePair<_,_>[]) = x :> seq<_> |> Functions.DictConv
-        let ListFolder path =
-            ftp.ListFolder ()
-            |> Seq.map (fun afi -> ToDict afi |> RemoteNodeOf path)
+    let Iterate (ftp: ICrawler) root =
+        let ListFolder path = ftp.List()
         let rec InnerIterate root (path: string list) (acc: RemoteNode list) =
-            ftp.ChangeFolder root
+            ftp.Down root |> ignore
             let path = root::path
             let children =
               ListFolder path
@@ -125,7 +85,7 @@ module Functions =
                 match i.ntype with
                 | File -> state
                 | Folder -> InnerIterate i.name path state) []
-            ftp.ChangeFolder ".."
+            ftp.Up()
             acc@children
         InnerIterate root [] []
     let FuzzyLookup (x: DatabaseTrackInfo) =
@@ -190,6 +150,7 @@ type BluetoothDevice(dev: IBansheeDevice) =
 
 type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
     inherit DapSource() with
+    let ftp = Crawler(ftp)
     override x.IsReadOnly = false
     override x.BytesUsed = 0L
     override x.BytesCapacity = Int64.MaxValue
@@ -240,39 +201,22 @@ type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
           let fn = sprintf "%02d. %s.%s" y.TrackNumber fsttl (ExtensionOf mt)
           let uri = Functions.SafeUriOf (fn::fsalb::fsart::root::[])
 
-          printfn "cd: %s" root
-          ftp.ChangeFolder root
-          try
-            printfn "cd: %s" fsart
-            ftp.ChangeFolder fsart
-          with
-          | _ -> printfn "md: %s" fsart
-                 ftp.CreateFolder fsart
-          try
-            printfn "cd: %s" fsalb
-            ftp.ChangeFolder fsalb
-          with
-          | _ -> printfn "md: %s" fsalb
-                 ftp.CreateFolder fsalb
+          ftp.Path <- fsalb::fsart::root::[]
           ftp.PutFile z.AbsolutePath fn |> ignore
+          ftp.Up() // FIXME: It's not intended to call this here, but it's
+                   // handy since it blocks until the transfer is complete
           let dti = DatabaseTrackInfo(y, PrimarySource = x, Uri = uri)
           dti.Save(false)
-          printfn "cd: ../../../"
-          ftp.ChangeFolder ".."
-          ftp.ChangeFolder ".."
-          ftp.ChangeFolder ".."
     override x.DeleteTrack y =
         let rec del path =
             match path with
-            | fn::[] -> printfn "rm: %s" fn
-                        ftp.Delete fn
+            | fn::[] -> ftp.Delete fn
                         true
-            | dir::rest -> printfn "cd: %s" dir
-                           ftp.ChangeFolder dir
-                           let rv = del rest
-                           printfn "cd: .."
-                           ftp.ChangeFolder ".."
-                           rv
+            | dir::rest -> if ftp.Down dir then
+                             let rv = del rest
+                             ftp.Up()
+                             rv
+                           else false
             | [] -> false
         let uepath = Uri(y.Uri.AbsoluteUri).AbsolutePath |> Uri.UnescapeDataString
         printfn "DeleteTrack: %s" uepath

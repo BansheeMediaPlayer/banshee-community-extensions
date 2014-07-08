@@ -57,29 +57,6 @@ module Functions =
         | (_, KillswitchState.NoAdapter) -> false
         | (xs, _) -> ks.State <- xs
                      true
-    let PathAdapter x = sprintf "/org/bluez/hci%d" x
-    let DBusMac (x: string) = x.Replace (":", "_")
-    let PathDevice x y = sprintf "/org/bluez/hci%d/dev_%s" x (DBusMac y)
-    let DictConv x = x |> Seq.map (|KeyValue|) |> Map.ofSeq
-    let rec PrintMap x =
-        let PrintVal (v: obj) = match v with
-                                | :? IDictionary as vd -> "{ " + PrintMap vd + " }"
-                                | _ -> sprintf "%s" (v.ToString())
-        let sb = StringBuilder()
-        for key in x.Keys do
-            sb.AppendLine(sprintf "%s => %s" (key.ToString()) (PrintVal x.[key])) |> ignore
-        sb.ToString()
-    let PrintOipMap (oipv: ObjectInterfacePropertyMap) =
-        DictConv oipv
-        |> Map.iter (fun o ipv -> printfn "%s -> {" (o.ToString())
-                                  DictConv ipv
-                                  |> Map.iter (fun i pv -> printf "\t%s => {" (i.ToString())
-                                                           let map = DictConv pv
-                                                           match map with
-                                                           | map when Map.isEmpty map -> printfn " }"
-                                                           | _  -> Map.iter (fun p v -> printf "\n\t\t%s = %s" p (v.ToString())) map
-                                                                   printfn "\n\t}")
-                                  printfn "}")
 
 module Constants =
     let NAME_BLUEZ = "org.bluez"

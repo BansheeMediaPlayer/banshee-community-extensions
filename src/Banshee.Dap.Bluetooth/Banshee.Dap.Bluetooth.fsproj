@@ -85,6 +85,7 @@
     <Compile Include="Banshee.Dap.Bluetooth\Wrappers.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\DeviceManager.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\ClientManager.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Crawler.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\DapGlueApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Gui\AdaptersWidget.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Gui\DeviceWidget.fs" />
