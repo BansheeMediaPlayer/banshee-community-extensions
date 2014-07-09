@@ -45,21 +45,24 @@ type JSonAcoustIDReader (url : string) = class
         jsonProvider.Results 
         |> Seq.fold (fun a o -> 
         (
-            o.Score |> Convert.ToDouble,
-            JSonAcoustIDReader.ReadRecordings (o),
+            o.Score
+            |> Convert.ToDouble,
+            o
+            |> JSonAcoustIDReader.ReadRecordings
+            |> Seq.ofList,
             o.Id
         ) :: a) []
         |> Seq.maxBy (fun (score, recordings, id) -> score)
         |> fun (s, r, i) -> (i, r)
 
     static member private ReadRecordings (result) = 
-        seq {
-            for recording in result.Recordings do
-                yield {
-                    ID = recording.Id; 
-                    Title = recording.Title; 
-                    Artists = recording.Artists |> JSonAcoustIDReader.ReadArtists
-                    ReleaseGroups = recording.Releasegroups |>Seq.fold (
+        result.Recordings
+        |> Seq.fold (fun acc ob ->
+        {
+                    ID = ob.Id; 
+                    Title = ob.Title; 
+                    Artists = ob.Artists |> JSonAcoustIDReader.ReadArtists
+                    ReleaseGroups = ob.Releasegroups |>Seq.fold (
                                         fun a o -> 
                                         { 
                                             ID = o.Id; 
@@ -68,8 +71,7 @@ type JSonAcoustIDReader (url : string) = class
                                             SecondaryTypes = o.Secondarytypes; 
                                             Artists = JSonAcoustIDReader.ReadArtists (o.Artists)
                                         } :: a) []
-                }
-            }
+        } :: acc) []
 
     static member private ReadArtists art_list =
         art_list |> Seq.fold (fun a o -> {ID = o.Id; Name = o.Name} :: a) []
