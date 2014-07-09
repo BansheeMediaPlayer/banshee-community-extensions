@@ -84,6 +84,10 @@ type IBansheeMediaControl =
 type IBansheeClient =
     inherit IClient
 
+type IBansheeSession =
+    inherit INotifyPropertyChanged
+    inherit ISession
+
 [<AbstractClass>]
 type ObjectDecorator<'t> (obj: 't, ps: IPropertyManager) as this =
     let i = Functions.InterfaceOf<'t>()
@@ -232,7 +236,7 @@ type SessionWrapper(obj: ISession, ps: IPropertyManager) =
     member x.Destination = x.GetProp "Destination"
     member x.Target = x.GetProp "Target"
     member x.Root = x.GetProp "Root"
-    interface ISession with
+    interface IBansheeSession with
         member x.GetCapabilities () = x.GetCapabilities ()
         member x.Source = x.Source
         member x.Destination = x.Destination

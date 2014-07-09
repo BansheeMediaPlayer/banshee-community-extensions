@@ -61,14 +61,14 @@ module Functions =
 module Constants =
     let NAME_BLUEZ = "org.bluez"
 
-type AdapterChangedArgs(a:ObjectAction, d: IBansheeAdapter, p: ObjectPath) =
-    inherit ObjectChangedArgs(a, d, p)
+type AdapterChangedArgs(a:ObjectAction, p: ObjectPath, d: IBansheeAdapter) =
+    inherit ObjectChangedArgs(a, p, d)
     member x.Adapter = d
-type DeviceChangedArgs(a:ObjectAction, d: IBansheeDevice, p: ObjectPath) =
-    inherit ObjectChangedArgs(a, d, p)
+type DeviceChangedArgs(a:ObjectAction, p: ObjectPath, d: IBansheeDevice) =
+    inherit ObjectChangedArgs(a, p, d)
     member x.Device = d
-type MediaControlArgs(a: ObjectAction, m: IBansheeMediaControl, p: ObjectPath) =
-    inherit ObjectChangedArgs(a, m, p)
+type MediaControlArgs(a: ObjectAction, p: ObjectPath, m: IBansheeMediaControl) =
+    inherit ObjectChangedArgs(a, p, m)
     member x.MediaControl = m
 
 type AdapterChangedHandler = delegate of obj * AdapterChangedArgs -> unit
@@ -86,27 +86,27 @@ type DeviceManager(system: Bus) as this =
     let add (p: ObjectPath) (o: obj) =
         match box o with
         | :? IBansheeAdapter as aw -> adapters.Add(p, aw)
-                                      aw.PropertyChanged.Add(fun o -> ac.Trigger(this, AdapterChangedArgs(Changed, aw, p)))
-                                      ac.Trigger (this, AdapterChangedArgs(Added, aw, p))
+                                      aw.PropertyChanged.Add(fun o -> ac.Trigger(this, AdapterChangedArgs(Changed, p, aw)))
+                                      ac.Trigger (this, AdapterChangedArgs(Added, p, aw))
         | :? IBansheeDevice as dw -> devices.Add(p, dw)
-                                     dw.PropertyChanged.Add(fun o -> dc.Trigger(this, DeviceChangedArgs(Changed, dw, p)))
-                                     dc.Trigger(this, DeviceChangedArgs(Added, dw, p))
+                                     dw.PropertyChanged.Add(fun o -> dc.Trigger(this, DeviceChangedArgs(Changed, p, dw)))
+                                     dc.Trigger(this, DeviceChangedArgs(Added, p, dw))
         | :? IBansheeMediaControl as mw -> media.Add(p, mw)
-                                           mc.Trigger(this, MediaControlArgs(Added, mw, p))
+                                           mc.Trigger(this, MediaControlArgs(Added, p, mw))
         | _ -> o.ToString() |> printfn "Ignoring Added: %s"
     let rem (p: ObjectPath) (o: obj) =
         match o with
         | :? IBansheeAdapter -> let a = adapters.[p]
                                 adapters.Remove p |> ignore
-                                ac.Trigger(this, AdapterChangedArgs(Removed, a, p))
+                                ac.Trigger(this, AdapterChangedArgs(Removed, p, a))
                                 true
         | :? IBansheeDevice -> let d = devices.[p]
                                devices.Remove p |> ignore
-                               dc.Trigger(this, DeviceChangedArgs(Removed, d, p))
+                               dc.Trigger(this, DeviceChangedArgs(Removed, p, d))
                                true
         | :? IBansheeMediaControl -> let m = media.[p]
                                      media.Remove p |> ignore
-                                     mc.Trigger (this, MediaControlArgs(Removed, m, p))
+                                     mc.Trigger (this, MediaControlArgs(Removed, p, m))
                                      true
         | _ -> o.ToString() |> printfn "Ignoring Removed: %s"
                false

@@ -32,6 +32,7 @@ open Banshee.Dap.Bluetooth.DBusApi
 open Banshee.Dap.Bluetooth.InversionApi
 open Banshee.Dap.Bluetooth.ObexApi
 open Banshee.Dap.Bluetooth.Wrappers
+open Banshee.Dap.Bluetooth.SupportApi
 
 open DBus
 
@@ -43,7 +44,6 @@ type ClientManager(session: Bus) =
     let clients = Dictionary<ObjectPath,IClient>() :> IDictionary<_,_>
     let sessions = Dictionary<ObjectPath,IFileTransfer>() :> IDictionary<_,_>
     let transfers = Dictionary<ObjectPath,ITransfer>() :> IDictionary<_,_>
-    let requests = Dictionary<ObjectPath,_>() :> IDictionary<_,_>
     let add (o: obj) p =
         match o with
         | :? IClient as c -> clients.[p] <- c
@@ -72,11 +72,17 @@ type ClientManager(session: Bus) =
        inv.Refresh ()
     member x.Client = clients.Values.FirstOrDefault()
     member x.Clients = clients.Values
-    member x.Session p = sessions.[p]
+    member x.Session p =
+        let valid = not (Functions.IsNull p) && sessions.ContainsKey p
+        if valid then
+          Some sessions.[p]
+        else
+          None
     member x.Sessions = sessions.Values
     member x.Transfers = transfers.Values
-    member x.CreateSession addr t = let sot = Functions.SessionOf t
-                                    let cp = StringVariantMap()
-                                    cp.["Target"] <- sot
-                                    let p = x.Client.CreateSession addr cp
-                                    sessions.[p]
+    member x.CreateSession addr t =
+        let sot = Functions.SessionOf t
+        let cp = StringVariantMap()
+        cp.["Target"] <- sot
+        x.Client.CreateSession addr cp
+    member x.RemoveSession p = x.Client.RemoveSession p

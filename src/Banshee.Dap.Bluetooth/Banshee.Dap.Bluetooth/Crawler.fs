@@ -31,6 +31,9 @@ open System.Collections.Generic
 open System.Text
 
 open Banshee.Dap.Bluetooth.ObexApi
+open Banshee.Dap.Bluetooth.Client
+open Banshee.Dap.Bluetooth.Wrappers
+open Banshee.Dap.Bluetooth.SupportApi
 
 open DBus
 
@@ -100,6 +103,7 @@ type ICrawler =
     abstract Up : int -> unit
     abstract Root : unit -> unit
     abstract List : unit -> RemoteNode seq
+    abstract Drop : unit -> unit
     abstract Down : string -> bool
     abstract Make : string -> bool
     abstract MkDn : string -> unit
@@ -107,31 +111,71 @@ type ICrawler =
     abstract PutFile : string -> string -> ObjectPath
     abstract Path : string list with get, set
 
-type Crawler(root: IFileTransfer) =
+type Crawler(addr: string, cm: ClientManager) =
     let mutable path : string list = []
+    let mutable ops : ObjectPath = Unchecked.defaultof<_>
+    let check (e: Exception) =
+        match e.Message with
+        | "org.bluez.obex.Error.Failed: Not Found" -> ()
+        | "org.bluez.obex.Error.Failed: Unable to find service record"
+        | "org.bluez.obex.Error.Failed: The transport is not connected" ->
+          printfn "%s: %s" (e.GetType().FullName) e.Message
+          ops <- Unchecked.defaultof<_>
+          path <- []
+        | "org.freedesktop.DBus.Error.NoReply: Message did not receive a reply (timeout by message bus)"
+        | "Object reference not set to an instance of an object" ->
+          raise e
+        | m -> printfn "%s: %s" (e.GetType().FullName) m
+               raise e
+    let rec root () =
+        try
+          match (Functions.IsNull ops, cm.Session ops) with
+          | (_, Some s) -> s
+          | (true, None) -> printfn "Creating Session"
+                            ops <- cm.CreateSession addr Ftp
+                            root()
+          | (false, None) -> System.Threading.Thread.Sleep 500
+                             root()
+        with
+        | e -> check e
+               root()
     member x.Up () =
         match path with
         | [] -> ()
-        | hd::tl -> printfn "cd: .."
-                    root.ChangeFolder ".."
-                    path <- tl
+        | hd::tl -> try
+                      printfn "cd: .."
+                      root().ChangeFolder ".."
+                      path <- tl
+                    with
+                    | e -> check e
     member x.Up y = for i in [0..y] do x.Up()
     member x.Root () = x.Up path.Length
-    member x.List () = root.ListFolder() |> Functions.ToNodeSeq path
-    member x.Down y = try
-                        printfn "cd: %s" y
-                        root.ChangeFolder y
-                        path <- y::path
-                        true
-                      with
-                      | _ -> false
-    member x.Make y = try
-                        printfn "md: %s" y
-                        root.CreateFolder y
-                        path <- y::path
-                        true
-                      with
-                      | _ -> false
+    member x.List () =
+        try
+          root().ListFolder() |> Functions.ToNodeSeq path
+        with
+        | e -> check e; Seq.empty
+    member x.Drop () =
+        if Functions.IsNull ops |> not then
+          cm.RemoveSession ops
+    member x.Down y =
+        try
+          printfn "cd: %s" y
+          root().ChangeFolder y
+          path <- y::path
+          true
+        with
+        | e -> check e
+               false
+    member x.Make y =
+        try
+          printfn "md: %s" y
+          root().CreateFolder y
+          path <- y::path
+          true
+        with
+        | e -> check e
+               false
     member x.MkDn y = (x.Down y || x.Make y) |> ignore
     member private x.Crawl dest =
         let suffix = Functions.SuffixOf path dest
@@ -144,10 +188,19 @@ type Crawler(root: IFileTransfer) =
         // Elsewhere
         | None -> x.Up()
                   x.Crawl dest
-    member x.Delete y = printfn "rm: %s" y
-                        root.Delete y
-    member x.PutFile y z = printfn "put: %s => %s" y z
-                           root.PutFile y z
+    member x.Delete y =
+        try
+          printfn "rm: %s" y
+          root().Delete y
+        with
+        | e -> check e
+    member x.PutFile y z =
+        try
+          printfn "put: %s => %s" y z
+          root().PutFile y z
+        with
+        | e -> check e
+               Unchecked.defaultof<_>
     member x.Path with get () = path
                   and set v = x.Crawl v
     interface ICrawler with
@@ -155,6 +208,7 @@ type Crawler(root: IFileTransfer) =
         member x.Up y = x.Up y
         member x.Root () = x.Root ()
         member x.List () = x.List ()
+        member x.Drop () = x.Drop ()
         member x.Down y = x.Down y
         member x.Make y = x.Make y
         member x.MkDn y = x.MkDn y

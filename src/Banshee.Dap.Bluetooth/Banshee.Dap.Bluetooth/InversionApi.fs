@@ -33,11 +33,11 @@ open DBus
 
 type ObjectAction = | Added | Changed | Removed
 
-type ObjectChangedArgs(a: ObjectAction, obj: obj, path: ObjectPath) =
+type ObjectChangedArgs(a: ObjectAction, path: ObjectPath, obj: obj) =
     inherit EventArgs()
     member x.Action = a
-    member x.Object = obj
     member x.Path = path
+    member x.Object = obj
 
 type ObjectChangedHandler = delegate of obj * ObjectChangedArgs -> unit
 
@@ -55,15 +55,15 @@ type DBusInverter(bus: Bus, name: string, path: ObjectPath) =
                                    let t = itm.[i.Key]
                                    let wp = dw.Put t tfm.[t]
                                    match wp with
-                                   | Some x -> eve.Trigger (dw, ObjectChangedArgs(Added, x, o))
+                                   | Some x -> eve.Trigger (dw, ObjectChangedArgs(Added, o, x))
                                    | _ -> printfn "Creation of %s as %s Failed" (t.ToString()) i.Key)
     let rem (o:ObjectPath) (is:string array) =
         if obm.ContainsKey o then
           let dw = obm.[o]
           is |> Seq.iter (fun i -> if itm.ContainsKey i then
-                                     let wp = dw.Remove itm.[i]
+                                     let wp = dw.Pop itm.[i]
                                      match wp with
-                                     | Some x -> eve.Trigger (dw, ObjectChangedArgs(Removed, x, o))
+                                     | Some x -> eve.Trigger (dw, ObjectChangedArgs(Removed, o, x))
                                      | None -> ())
     do oman.add_InterfacesAdded(fun o ip -> add o ip)
        oman.add_InterfacesRemoved(fun o is -> rem o is)

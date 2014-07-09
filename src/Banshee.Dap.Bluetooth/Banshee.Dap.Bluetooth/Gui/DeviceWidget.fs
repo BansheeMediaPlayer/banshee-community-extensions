@@ -73,13 +73,13 @@ type DeviceWidget(dev: IBansheeDevice, cm: ClientManager) as this =
                                 | (false, true) -> dev.DisconnectProfile Constants.UUID_AUDIO_SINK
                                 | _ -> ())
         conf.Clicked.Add(fun o -> match (conf.Active, !src) with
-                                  | (true, None) -> let ftp = cm.CreateSession dev.Address Ftp
-                                                    let d = new BluetoothDevice(dev)
-                                                    let s = new BluetoothSource(d, ftp)
+                                  | (true, None) -> let d = new BluetoothDevice(dev)
+                                                    let s = new BluetoothSource(d, cm)
                                                     s.LoadDeviceContents ()
                                                     src := Some s
                                                     ServiceManager.SourceManager.AddSource (s)
-                                  | (false, Some x) -> ServiceManager.SourceManager.RemoveSource (x)
+                                  | (false, Some x) -> x.Unmap() |> ignore
+                                                       ServiceManager.SourceManager.RemoveSource (x)
                                                        src := None
                                   | _ -> ())
         this.Refresh ()

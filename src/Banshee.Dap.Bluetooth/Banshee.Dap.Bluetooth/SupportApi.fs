@@ -101,7 +101,7 @@ type IDBusWrapper =
     inherit IComparable<IDBusWrapper>
     abstract Name : string with get
     abstract Path : ObjectPath with get
-    abstract Remove : Type -> obj option
+    abstract Pop : Type -> obj option
     abstract Put : Type -> Factory -> obj option
     abstract Get : unit -> 't option
 
@@ -111,30 +111,33 @@ type DBusWrapper(bus: Bus, name: string, path: ObjectPath, ps: IPropertyManager)
     member x.Name with get () = name
     member x.Path with get () = path
     member x.Properties with get () = ps
-    member x.Remove t = if tim.ContainsKey t then
-                          let i = tim.[t]
-                          let o = iom.[i]
-                          iom.Remove i |> ignore
-                          tim.Remove t |> ignore
-                          ps.Not i
-                          Some o
-                        else None
-    member x.Put t f = try
-                         let i = Functions.InterfaceOf t
-                         let dbo = bus.GetObject(t, name, path)
-                         let o = f dbo ps
-                         if not (ps.Has i) then ps.Use i
-                         tim.[t] <- i
-                         iom.[i] <- o
-                         Some o
-                       with
-                       | _ -> None
-    member x.Get<'t> () = try
-                            let i = tim.[typeof<'t>]
-                            let o = iom.[i] :?> 't
-                            Some o
-                          with
-                          | _ -> None
+    member x.Pop t =
+        if tim.ContainsKey t then
+           let i = tim.[t]
+           let o = iom.[i]
+           iom.Remove i |> ignore
+           tim.Remove t |> ignore
+           ps.Not i
+           Some o
+         else None
+    member x.Put t f =
+        try
+          let i = Functions.InterfaceOf t
+          let dbo = bus.GetObject(t, name, path)
+          let o = f dbo ps
+          if not (ps.Has i) then ps.Use i
+          tim.[t] <- i
+          iom.[i] <- o
+          Some o
+        with
+        | _ -> None
+    member x.Get<'t> () =
+        try
+          let i = tim.[typeof<'t>]
+          let o = iom.[i] :?> 't
+          Some o
+        with
+        | _ -> None
     member x.CompareTo (y: obj) =
         match y with
         | :? IDBusWrapper as y -> let xt = (x.Name, x.Path)
@@ -152,7 +155,7 @@ type DBusWrapper(bus: Bus, name: string, path: ObjectPath, ps: IPropertyManager)
         member x.Equals y = x.Equals y
         member x.CompareTo (y: IDBusWrapper) = x.CompareTo y
         member x.CompareTo (y: obj) = x.CompareTo y
-        member x.Remove t = x.Remove t
+        member x.Pop t = x.Pop t
         member x.Put t f = x.Put t f
         member x.Get () = x.Get ()
     new(bus, name, path, ipv: InterfacePropertyMap) =

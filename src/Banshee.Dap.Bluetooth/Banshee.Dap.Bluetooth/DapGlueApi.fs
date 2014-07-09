@@ -42,6 +42,7 @@ open Banshee.Dap.Bluetooth.ObexApi
 open Banshee.Dap.Bluetooth.SupportApi
 open Banshee.Dap.Bluetooth.Wrappers
 open Banshee.Dap.Bluetooth.Ftp
+open Banshee.Dap.Bluetooth.Client
 open Banshee.Hardware
 open Banshee.Sources
 open Banshee.ServiceStack
@@ -76,39 +77,61 @@ module Functions =
     let Iterate (ftp: ICrawler) root =
         let ListFolder path = ftp.List()
         let rec InnerIterate root (path: string list) (acc: RemoteNode list) =
-            ftp.Down root |> ignore
-            let path = root::path
-            let children =
-              ListFolder path
-              |> Seq.fold (fun state i ->
-                let state = i::state
-                match i.ntype with
-                | File -> state
-                | Folder -> InnerIterate i.name path state) []
-            ftp.Up()
-            acc@children
+            if ftp.Down root then
+              let path = root::path
+              let children =
+                ListFolder path
+                |> Seq.fold (fun state i ->
+                  let state = i::state
+                  match i.ntype with
+                  | File -> state
+                  | Folder -> InnerIterate i.name path state) []
+              ftp.Up()
+              acc@children
+            else acc
         InnerIterate root [] []
     let FuzzyLookup (x: DatabaseTrackInfo) =
+        let TrackIdOf (i: int) (x: string) (sz: int64) =
+            let faq = HyenaSqliteCommand("select TrackID from CoreTracks where " +
+                                         "FileSize = ? and " +
+                                         "TrackNumber = ? and Title like ? limit 1")
+            ServiceManager.DbConnection.Query<int64>(faq, sz, i, "%" + x + "%")
         let ArtistIdOf (x: string) =
-            let faq = HyenaSqliteCommand("select ArtistID from CoreArtists where Name like ? limit 1")
-            ServiceManager.DbConnection.Query<int>(faq, x)
+            let faq = HyenaSqliteCommand("select ArtistID from CoreArtists where " +
+                                         "Name like ? limit 1")
+            ServiceManager.DbConnection.Query<int>(faq, "%" + x + "%")
         let AlbumIdOf (x: int) (y: string) =
-            let faq = HyenaSqliteCommand("select AlbumID from CoreAlbums where ArtistID = ? and Title like ? limit 1")
-            ServiceManager.DbConnection.Query<int>(faq, x, y)
-        match (x.ArtistName, x.AlbumTitle) with
-        | (null, null) | ("", "") -> x
-        | _ ->
-          try
-            let art = ArtistIdOf x.ArtistName
-            let alb = AlbumIdOf art x.AlbumTitle
-            let faq = "PrimarySourceID = 1 and CoreTracks.ArtistID = ? " +
-                      "and CoreTracks.AlbumID = ? and CoreTracks.TrackNumber = ? " +
-                      "and CoreTracks.Title like ?"
-            let dti = DatabaseTrackInfo.Provider.FetchFirstMatching(faq, art, alb, x.TrackNumber, x.TrackTitle)
-            if Functions.IsNull dti then x
-            else dti
-          with
-          | _ -> x
+            let faq = HyenaSqliteCommand("select AlbumID from CoreAlbums where " +
+                                         "ArtistID = ? and Title like ? limit 1")
+            ServiceManager.DbConnection.Query<int>(faq, x, "%" + y + "%")
+        try
+          let tid = TrackIdOf x.TrackNumber x.TrackTitle x.FileSize
+          if 0L <> tid then
+            printfn "Got Lucky: %d => %d. %s at %d bytes"
+              tid x.TrackNumber x.TrackTitle x.FileSize
+            DatabaseTrackInfo.Provider.FetchSingle tid
+          else
+            match (x.ArtistName, x.AlbumTitle) with
+            | (null, null) | ("", "") ->
+              printfn "No Help: %d. %s at %d bytes"
+                x.TrackNumber x.TrackTitle x.FileSize
+              x
+            | _ ->
+              let art = ArtistIdOf x.ArtistName
+              let alb = AlbumIdOf art x.AlbumTitle
+              let num = x.TrackNumber
+              let ttl = "%" + x.TrackTitle + "%"
+              let faq = "PrimarySourceID = 1 and CoreTracks.ArtistID = ? " +
+                        "and CoreTracks.AlbumID = ? and CoreTracks.TrackNumber = ? " +
+                        "and CoreTracks.Title like ?"
+              let dti = DatabaseTrackInfo.Provider.FetchFirstMatching(faq, art, alb, num, ttl)
+              if Functions.IsNull dti then
+                printfn "No Help: by %s from %s - %d. %s at %d bytes"
+                  x.ArtistName x.AlbumTitle x.TrackNumber x.TrackTitle x.FileSize
+                x
+              else dti
+        with
+        | _ -> x
 
 type BluetoothCapabilities() =
     interface IDeviceMediaCapabilities with
@@ -138,6 +161,7 @@ type BluetoothDevice(dev: IBansheeDevice) =
     member x.MediaCapabilities = BluetoothCapabilities() :> IDeviceMediaCapabilities
     member x.ResolveRootUsbDevice () = null
     member x.ResolveUsbPortInfo () = null
+    member x.Device = dev
     interface IDevice with
         member x.Uuid = x.Uuid
         member x.Serial = x.Serial
@@ -148,15 +172,16 @@ type BluetoothDevice(dev: IBansheeDevice) =
         member x.ResolveRootUsbDevice () = x.ResolveRootUsbDevice ()
         member x.ResolveUsbPortInfo () = x.ResolveUsbPortInfo ()
 
-type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
+type BluetoothSource(dev: BluetoothDevice, cm: ClientManager) =
     inherit DapSource() with
-    let ftp = Crawler(ftp)
+    let ftp = Crawler(dev.Device.Address, cm)
     override x.IsReadOnly = false
     override x.BytesUsed = 0L
     override x.BytesCapacity = Int64.MaxValue
     override x.Import () = ()
     override x.CanImport = false
     override x.GetIconNames () = [| dev.Icon |]
+    override x.Eject () = ftp.Drop ()
     override x.LoadFromDevice () =
         base.SetStatus (Functions.Singular "Loading Track Information...", false)
         let nne (f: string) (x: DatabaseTrackInfo) =
@@ -194,7 +219,7 @@ type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
         base.OnTracksAdded ()
     override x.AddTrackToDevice (y, z) =
           let root = dev.MediaCapabilities.AudioFolders.[0]
-          let fsart = FileNamePattern.Escape y.DisplayArtistName
+          let fsart = FileNamePattern.Escape y.DisplayAlbumArtistName
           let fsalb = FileNamePattern.Escape y.DisplayAlbumTitle
           let fsttl = FileNamePattern.Escape y.DisplayTrackTitle
           let mt = ToMimeType y.MimeType
@@ -214,10 +239,14 @@ type BluetoothSource(dev: BluetoothDevice, ftp: IFileTransfer) =
                         true
             | dir::rest -> if ftp.Down dir then
                              let rv = del rest
-                             ftp.Up()
+                             if ftp.List() |> Seq.isEmpty then
+                               ftp.Up()
+                               ftp.Delete dir
+                             else ftp.Up()
                              rv
                            else false
             | [] -> false
+        ftp.Root()
         let uepath = Uri(y.Uri.AbsoluteUri).AbsolutePath |> Uri.UnescapeDataString
         printfn "DeleteTrack: %s" uepath
         uepath.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
