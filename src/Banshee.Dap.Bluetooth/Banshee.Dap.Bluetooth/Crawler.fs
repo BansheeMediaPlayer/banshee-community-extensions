@@ -156,8 +156,9 @@ type Crawler(addr: string, cm: ClientManager) =
         with
         | e -> check e; Seq.empty
     member x.Drop () =
-        if Functions.IsNull ops |> not then
-          cm.RemoveSession ops
+        match cm.Session ops with
+        | Some _ -> cm.RemoveSession ops
+        | None -> ()
     member x.Down y =
         try
           printfn "cd: %s" y
