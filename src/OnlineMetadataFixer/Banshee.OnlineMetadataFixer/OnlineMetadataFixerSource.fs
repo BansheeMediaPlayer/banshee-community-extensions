@@ -63,13 +63,12 @@ type OnlineMetadataFixerSource () =
             with
                 | _ -> ""
 
-    override x.HasTrackInfo () : bool = 
-        true
+    override x.HasTrackDetails with get () = true
     
     override this.IdentifyCore () =
         let artistOrNothing = "IFNULL((SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID), '')"
         let findCmd = new HyenaSqliteCommand (String.Format (@"
-            INSERT INTO MetadataProblems (ProblemType, TypeOrder, Generation, SolutionValue, SolutionOptions, ObjectIds, TrackInfo)
+            INSERT INTO MetadataProblems (ProblemType, TypeOrder, Generation, SolutionValue, SolutionOptions, ObjectIds, TrackDetails)
                 SELECT
                     '{1}', 1, ?,
                      COALESCE (

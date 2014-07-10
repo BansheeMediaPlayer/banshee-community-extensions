@@ -61,12 +61,11 @@ type MissingFromAcoustIDSource(problemId) as x =
             Hyena.Log.WarningFormat ("Cannot read {0} fingerprint. Internal error: {1}.", uri, ex)
             ""
 
-    override x.HasTrackInfo () = 
-        true
+    override x.HasTrackDetails with get () = true
 
     member x.GetFindMethod (condition : string, ?columns : string) =
         new HyenaSqliteCommand (String.Format (@"
-            INSERT INTO MetadataProblems (ProblemType, TypeOrder, Generation, SolutionOptions, ObjectIds, TrackInfo)
+            INSERT INTO MetadataProblems (ProblemType, TypeOrder, Generation, SolutionOptions, ObjectIds, TrackDetails)
                 SELECT
                     '{0}', 1, ?,
                      IFNULL(HYENA_BINARY_FUNCTION ('{0}', uri, {2}), '') as solutions,
