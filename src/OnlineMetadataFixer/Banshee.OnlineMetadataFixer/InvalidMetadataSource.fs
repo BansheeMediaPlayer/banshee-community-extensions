@@ -53,12 +53,13 @@ type InvalidMetadataSource() =
 
     override this.IdentifyCore () =
         (
-            ("IFNULL(HYENA_BINARY_FUNCTION ('{0}', uri, NULL), 'false') = 'true'", "can-be-fixed")
-            |> String.Format,
-            @"Title || ' - ' 
-            || (SELECT Title FROM CoreAlbums  WHERE AlbumID = CoreTracks.AlbumID) || ' - ' 
-            || (SELECT Name FROM CoreArtists  WHERE ArtistID = CoreTracks.ArtistID)"
-            |> this.GetFindMethod,
+            this.GetFindMethod (
+                ("IFNULL(HYENA_BINARY_FUNCTION ('{0}', uri, NULL), 'false') = 'true'", "can-be-fixed")
+                |> String.Format,
+                @"Title || ' - ' 
+                || (SELECT Title FROM CoreAlbums  WHERE AlbumID = CoreTracks.AlbumID) || ' - ' 
+                || (SELECT Name FROM CoreArtists  WHERE ArtistID = CoreTracks.ArtistID)"
+            ),
             this.Generation
         )
         |> ServiceManager.DbConnection.Execute |> ignore;

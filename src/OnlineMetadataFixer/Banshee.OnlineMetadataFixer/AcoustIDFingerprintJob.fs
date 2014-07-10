@@ -37,7 +37,7 @@ open Mono.Unix
 
 type AcoustIDFingerprintJob private () as this = class
     inherit DbIteratorJob (Catalog.GetString ("Computing Fingerprints"))
-    static let instance = AcoustIDFingerprintJob () // todo try with lazy()
+    static let mutable instance = lazy (AcoustIDFingerprintJob ())
     let bin_func_checker = "acoustid-fingerprint-checker"
     do
         base.SetResources (Resource.Database)
@@ -64,17 +64,15 @@ type AcoustIDFingerprintJob private () as this = class
                         3
                     END
                     ) as rank
-            FROM CoreTracks, CoreArtists, CoreAlbums
+            FROM CoreTracks
+            JOIN CoreArtists ON CoreArtists.ArtistID = CoreTracks.ArtistID
+            JOIN CoreAlbums ON  CoreAlbums.AlbumID = CoreTracks.AlbumID
             WHERE 
-                HYENA_BINARY_FUNCTION ('{0}', Uri, NULL) = 'ok' AND
-                CoreArtists.ArtistID = CoreTracks.ArtistID AND
-                CoreAlbums.AlbumID = CoreTracks.AlbumID
+                HYENA_BINARY_FUNCTION ('{0}', Uri, NULL) = 'ok'
             ORDER BY rank ASC
             LIMIT 1
             ", bin_func_checker))
-            
-        // JOIN CoreArtists ON CoreArtists.ArtistID = CoreTracks.TrackID todo why JOIN doesn't work here?
-        // JOIN CoreAlbums ON  CoreAlbums.AlbumID = CoreTracks.AlbumID
+
         try this.AddCheckerFunction () with :? ArgumentException -> () // if function was already added
 
     override this.IterateCore (reader : HyenaDataReader) =
@@ -99,5 +97,5 @@ type AcoustIDFingerprintJob private () as this = class
     member this.Start () =
         base.Register ()
         
-    static member Instance with get() = instance
+    static member Instance with get() = instance.Value
 end

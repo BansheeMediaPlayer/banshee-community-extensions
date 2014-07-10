@@ -36,28 +36,8 @@ open Banshee.ServiceStack;
 
 type OnlineMetadataFixerSource () = 
     inherit Banshee.Fixup.Solver()
-    let fixId = "empty-albums"
-    let artistOrNothing = "IFNULL((SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID), '')"
-    let findCmd = new HyenaSqliteCommand (String.Format (@"
-        INSERT INTO MetadataProblems (ProblemType, TypeOrder, Generation, SolutionValue, SolutionOptions, ObjectIds, TrackInfo)
-            SELECT
-                '{1}', 1, ?,
-                 COALESCE (
-                    NULLIF (
-                        MIN(CASE (upper(Title) = Title AND NOT lower(Title) = Title)
-                            WHEN 1 THEN '~~~'
-                            ELSE Title END),
-                        '~~~'),
-                    Title) as val,
-                 IFNULL(HYENA_BINARY_FUNCTION ('{1}', Title, {0}), '') as albums,                        
-                 TrackID,
-                 Title || ',' || {0}
-            FROM CoreTracks
-            WHERE IFNULL((SELECT Title from CoreAlbums where AlbumID = CoreTracks.AlbumID), '') = '' AND albums <> ''
-                GROUP BY TrackID 
-                ORDER BY Title DESC", artistOrNothing, fixId));
     do
-        base.Id <- fixId
+        base.Id <- "empty-albums"
         base.Name <- Catalog.GetString ("Empty Album Name")
         base.Description <- Catalog.GetString ("Displayed are tracks with empty album's name.")
     
@@ -86,7 +66,26 @@ type OnlineMetadataFixerSource () =
     override x.HasTrackInfo () : bool = 
         true
     
-    override this.IdentifyCore () =              
+    override this.IdentifyCore () =
+        let artistOrNothing = "IFNULL((SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID), '')"
+        let findCmd = new HyenaSqliteCommand (String.Format (@"
+            INSERT INTO MetadataProblems (ProblemType, TypeOrder, Generation, SolutionValue, SolutionOptions, ObjectIds, TrackInfo)
+                SELECT
+                    '{1}', 1, ?,
+                     COALESCE (
+                        NULLIF (
+                            MIN(CASE (upper(Title) = Title AND NOT lower(Title) = Title)
+                                WHEN 1 THEN '~~~'
+                                ELSE Title END),
+                            '~~~'),
+                        Title) as val,
+                     IFNULL(HYENA_BINARY_FUNCTION ('{1}', Title, {0}), '') as albums,                        
+                     TrackID,
+                     Title || ',' || {0}
+                FROM CoreTracks
+                WHERE IFNULL((SELECT Title from CoreAlbums where AlbumID = CoreTracks.AlbumID), '') = '' AND albums <> ''
+                    GROUP BY TrackID 
+                    ORDER BY Title DESC", artistOrNothing, base.Id))
         ServiceManager.DbConnection.Execute ("DELETE FROM CoreAlbums WHERE AlbumID NOT IN (SELECT DISTINCT(AlbumID) FROM CoreTracks)") |> ignore;
         ServiceManager.DbConnection.Execute (findCmd, this.Generation) |> ignore;
 

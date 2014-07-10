@@ -56,7 +56,9 @@ type AcoustIDStorage() =
                 cacheDirectory |> Directory.CreateDirectory |> ignore
 
             let sw = new StreamWriter (hashedFileName, false)
-            sw.Write (duration.ToString () + " " + fingerprint.ToString ())
+            (duration.ToString (), " ", fingerprint.ToString ())
+            |> String.Concat
+            |> sw.Write
             sw.Close ()
         with
         | :? SystemException as ex -> Hyena.Log.WarningFormat ("Cannot save fingerprint: ", ex.Message)

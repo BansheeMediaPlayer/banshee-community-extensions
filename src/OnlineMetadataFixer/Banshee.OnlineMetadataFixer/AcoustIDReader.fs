@@ -49,13 +49,8 @@ type AcoustIDReader() = class
         
         let elements = [src; decoder; chromaPrint; sink]
         
-        (* todo why is it not working?
-        if elements |> Seq.exists (fun x->x = null) then
+        if elements |> Seq.exists (function | null -> true | _ -> false) then
             raise (GstreamerError ("Cannot create GStreamer elements"))
-        Workaround :*)
-        for element in elements do
-            if element = null then
-                raise (GstreamerError ("Cannot create GStreamer elements"))
             
         sink. ["sync"] <- 0
         src. ["location"] <- filename
