@@ -52,9 +52,8 @@ type AllMetadataFixer(id) =
         let solutions = new HashSet<String> ()
         for recording in recordings do
             for release in recording.ReleaseGroups do
-                ((", ", recording.Artists.Select(fun z -> z.Name))
+                String.Concat ((", ", recording.Artists.Select(fun z -> z.Name))
                 |> String.Join, " - ", recording.Title, " - ", release.Title)
-                |> String.Concat
                 |> solutions.Add
                 |> ignore
         solutions
