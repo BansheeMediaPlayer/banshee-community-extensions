@@ -39,7 +39,7 @@ type MissingFromAcoustIDSource(problemId) as x =
     inherit Banshee.Fixup.Solver()
     do
         base.Id <- problemId
-        BinaryFunction.Add(base.Id, new Func<obj, obj, obj>(fun uri b -> x.GetSolutions (uri :?> string, b) :> obj))
+        BinaryFunction.Add(base.Id, new Func<obj, obj, obj>(fun uri column -> x.GetSolutions (uri :?> string, column :?> string) :> obj))
         
         ServiceManager.SourceManager.add_SourceAdded (
             fun e ->
@@ -53,10 +53,10 @@ type MissingFromAcoustIDSource(problemId) as x =
     abstract member ProcessSolution: string * seq<Recording> -> string
     abstract member ProcessProblem: Banshee.Fixup.Problem -> unit
 
-    member private x.GetSolutions (uri : string, b : obj) : String = 
+    member private x.GetSolutions (uri : string, column : string) : String = 
         try
             let id, list = AcoustIDReader.ReadFingerPrint (uri)
-            x.ProcessSolution (id, list)
+            x.ProcessSolution (column, list)
         with GstreamerError (ex) -> 
             Hyena.Log.WarningFormat ("Cannot read {0} fingerprint. Internal error: {1}.", uri, ex)
             ""
@@ -64,19 +64,19 @@ type MissingFromAcoustIDSource(problemId) as x =
     override x.HasTrackInfo () = 
         true
 
-    member x.GetFindMethod (condition : string) =
+    member x.GetFindMethod (condition : string, ?columns : string) =
         new HyenaSqliteCommand (String.Format (@"
             INSERT INTO MetadataProblems (ProblemType, TypeOrder, Generation, SolutionOptions, ObjectIds, TrackInfo)
                 SELECT
                     '{0}', 1, ?,
-                     IFNULL(HYENA_BINARY_FUNCTION ('{0}', uri, NULL), '') as solutions,
+                     IFNULL(HYENA_BINARY_FUNCTION ('{0}', uri, {2}), '') as solutions,
                      TrackID,
                      Uri
                 FROM CoreTracks
                 WHERE
                     ({1}) AND IFNULL(solutions, '') <> ''
                     GROUP BY TrackID
-                    ORDER BY Uri DESC", base.Id, condition));
+                    ORDER BY Uri DESC", base.Id, condition, defaultArg columns "NULL"));
 
     override x.Fix (problems) =
         for problem in problems do

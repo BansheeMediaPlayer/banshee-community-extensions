@@ -11,7 +11,8 @@ SOURCES =  \
 	Banshee.OnlineMetadataFixer/MissingArtistTitleSource.fs \
 	Banshee.OnlineMetadataFixer/MissingFromAcoustIDSource.fs \
 	Banshee.OnlineMetadataFixer/MissingMostOfMetadataSource.fs \
-	Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs
+	Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs \
+	Banshee.OnlineMetadataFixer/InvalidMetadataSource.fs
 
 RESOURCES =  \
 	OnlineMetadataFixer.addin.xml \

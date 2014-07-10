@@ -22,6 +22,7 @@
     <Solver class="Banshee.OnlineMetadataFixer.MissingArtistTitleSource" />
     <Solver class="Banshee.OnlineMetadataFixer.MissingAlbumSource" />
     <Solver class="Banshee.OnlineMetadataFixer.MissingMostOfMetadataSource" />
+    <Solver class="Banshee.OnlineMetadataFixer.InvalidMetadataSource" />
   </Extension>
 
 </Addin>

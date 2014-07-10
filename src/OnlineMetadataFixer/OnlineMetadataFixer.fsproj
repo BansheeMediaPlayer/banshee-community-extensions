@@ -89,6 +89,7 @@
     <Compile Include="Banshee.OnlineMetadataFixer/MissingArtistTitleSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/MissingAlbumSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/MissingMostOfMetadataSource.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/InvalidMetadataSource.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
   <ItemGroup>
