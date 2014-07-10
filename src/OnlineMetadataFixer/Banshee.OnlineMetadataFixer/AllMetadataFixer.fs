@@ -1,5 +1,5 @@
 //
-// MissingArtistTitleSource.fs
+// AllMetadataFixer.fs
 //
 // Author:
 //   Marcin Kolny <marcin.kolny@gmail.com>
@@ -27,40 +27,40 @@
 namespace Banshee.OnlineMetadataFixer
 
 open System
+open System.Collections.Generic
 open System.Linq
 open System.Text.RegularExpressions
-open System.Collections.Generic
 
 open Hyena
 open Hyena.Data.Sqlite
 
 open Banshee.ServiceStack
 
-open Mono.Unix;
-
-type MissingArtistTitleSource () = 
-    inherit MissingFromAcoustIDSource("missing-artist-online-fix")
-    do
-        base.Name <- Catalog.GetString ("Missing Artist and Titles Fix");
-        base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee without artist or title metadata");
+[<AbstractClass>]
+type AllMetadataFixer(id) = 
+    inherit MissingFromAcoustIDSource(id)
 
     override x.IdentifyCore () =
         "DELETE FROM CoreArtists WHERE ArtistID NOT IN (SELECT DISTINCT(ArtistID) FROM CoreTracks)"
         |> ServiceManager.DbConnection.Execute 
         |> ignore
-        
-        ("IFNULL((SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID), '') = '' OR IFNULL(Title, '') = ''"
-        |> x.GetFindMethod, x.Generation)
-        |> ServiceManager.DbConnection.Execute |> ignore;
-    
-    override x.ProcessSolution (id, recordings) =
+        "DELETE FROM CoreAlbums WHERE AlbumID NOT IN (SELECT DISTINCT(AlbumID) FROM CoreTracks)"
+        |> ServiceManager.DbConnection.Execute 
+        |> ignore
+
+    member x.PreProcessSolution (id, recordings) =
         let solutions = new HashSet<String> ()
         for recording in recordings do
-            solutions.Add (String.Join(", ", recording.Artists.Select(fun z -> z.Name)) + " - " + recording.Title) |> ignore
-        String.Join(";;", solutions)
-        
+            for release in recording.ReleaseGroups do
+                ((", ", recording.Artists.Select(fun z -> z.Name))
+                |> String.Join, " - ", recording.Title, " - ", release.Title)
+                |> String.Concat
+                |> solutions.Add
+                |> ignore
+        solutions
+
     override x.ProcessProblem (problem) =
-        let trackMetadata = Regex.Split (problem.SolutionValue, " - ")
+        let trackMetadata = (problem.SolutionValue, " - ") |> Regex.Split
         ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET Title = ? WHERE TrackID = ?;", trackMetadata. [1], problem.ObjectIds. [0]) |> ignore
         
         let artistId = ServiceManager.DbConnection.Query<int>(@"SELECT ArtistID from CoreArtists where Name = ?", trackMetadata. [0])
@@ -72,3 +72,13 @@ type MissingArtistTitleSource () =
                 artistId
         ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET ArtistID = ? WHERE TrackID = ?;",
            newId, problem.ObjectIds. [0]) |> ignore;
+        
+        let albumId = ServiceManager.DbConnection.Query<int>(@"SELECT AlbumID from CoreAlbums where Title = ?", trackMetadata. [2])
+        let newAlbumId = 
+            if albumId = 0 then
+                ServiceManager.DbConnection.Execute (@"INSERT INTO CoreAlbums (Title) VALUES (?)", trackMetadata. [2]) |> ignore
+                ServiceManager.DbConnection.Query<int>(@"SELECT AlbumID from CoreAlbums where Title = ?", trackMetadata. [2])
+            else
+                albumId
+        ServiceManager.DbConnection.Execute (@"UPDATE CoreTracks SET AlbumID = ? WHERE TrackID = ?;",
+                   newAlbumId, problem.ObjectIds. [0]) |> ignore;

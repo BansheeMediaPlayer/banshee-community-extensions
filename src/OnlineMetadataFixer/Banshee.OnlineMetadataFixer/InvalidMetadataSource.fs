@@ -27,10 +27,7 @@
 namespace Banshee.OnlineMetadataFixer
 
 open System
-open System.Collections.Generic
-open System.Linq
 
-open Hyena
 open Hyena.Data.Sqlite
 
 open Banshee.ServiceStack
@@ -38,8 +35,7 @@ open Banshee.ServiceStack
 open Mono.Unix
 
 type InvalidMetadataSource() = 
-    inherit MissingFromAcoustIDSource("invalid-metadata-online-fix")
-    let job = AcoustIDFingerprintJob.Instance
+    inherit AllMetadataFixer("invalid-metadata-online-fix")
     do
         base.Name <- Catalog.GetString ("Invalid Metadata Fix");
         base.Description <- Catalog.GetString ("Displayed are tracks with invalid(different than AcoustID) metadata");
@@ -51,27 +47,26 @@ type InvalidMetadataSource() =
         | true -> "true"
         | _ -> "false"
 
-    override this.IdentifyCore () =
+    override x.IdentifyCore () =
+        base.IdentifyCore ()
         (
-            this.GetFindMethod (
+            x.GetFindMethod (
                 ("IFNULL(HYENA_BINARY_FUNCTION ('{0}', uri, NULL), 'false') = 'true'", "can-be-fixed")
                 |> String.Format,
-                @"Title || ' - ' 
-                || (SELECT Title FROM CoreAlbums  WHERE AlbumID = CoreTracks.AlbumID) || ' - ' 
-                || (SELECT Name FROM CoreArtists  WHERE ArtistID = CoreTracks.ArtistID)"
+                @"(SELECT Name FROM CoreArtists  WHERE ArtistID = CoreTracks.ArtistID) || ' - ' 
+                || Title || ' - ' 
+                || (SELECT Title FROM CoreAlbums  WHERE AlbumID = CoreTracks.AlbumID)"
             ),
-            this.Generation
+            x.Generation
         )
         |> ServiceManager.DbConnection.Execute |> ignore;
     
     override x.ProcessSolution (column, recordings) =
-        let solutions = new HashSet<String> ()
+        let solutions = base.PreProcessSolution (column, recordings)
         if not (column |> String.IsNullOrEmpty) then
-            solutions.Add (column) |> ignore
-        for recording in recordings do
-            for release in recording.ReleaseGroups do
-                solutions.Add (String.Join(", ", recording.Artists.Select(fun z -> z.Name)) + " - " + recording.Title + " - " + release.Title) |> ignore
-        String.Join(";;", solutions)
-        
-    override x.ProcessProblem (problem) =
-        ()
+            if column |> solutions.Contains then
+                solutions.Clear ()
+            else
+                column |> solutions.Add |> ignore
+        (";;", solutions)
+        |> String.Join
