@@ -102,7 +102,7 @@ type Service() as this =
          Gtk.Window.ListToplevels () |> Array.find (fun w -> w :? Banshee.Gui.BaseClientWindow)
 
     member x.OnFocusInEvent =
-        new Gtk.FocusInEventHandler (fun o a ->
+        Gtk.FocusInEventHandler (fun o a ->
             events_source.NotifyUser ()
             banshee_window.Focus.FocusInEvent.RemoveHandler x.OnFocusInEvent)
 

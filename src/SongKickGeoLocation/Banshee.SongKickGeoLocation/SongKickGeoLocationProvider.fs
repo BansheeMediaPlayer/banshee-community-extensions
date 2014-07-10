@@ -38,72 +38,120 @@ open Hyena.Data
 
 open Mono.Addins
 
+open CacheService
+
 module Constants =
     let NAME = "SongKickGeoLocation"
 
 type MozillaGeoLocation = JsonProvider<"./MozillaGeoLocationSample.json">
 type FedoraGeoLocation  = JsonProvider<"./FedoraGeoLocationSample.json">
+type UnifiedGeoLocation = JsonProvider<"./GeoResults.json">
+
 type OpenStreetMap      = XmlProvider<"./OpenStreetMapSample.xml">
 
-type GeoResult =
+type Response =
     | MozillaResponse of MozillaGeoLocation.Root
     | FedoraResponse  of FedoraGeoLocation.Root
-    | NoRespose
+    | NoResponse
+
+type GeoPosition =
+    | Determined of UnifiedGeoLocation.Root
+    | NotDetermined
 
 module Fun =
     let toFloat = JsonExtensions.AsFloat
 
-type Provider() = 
+type Provider() as this =
     inherit BaseLocationProvider()
-
-    let name             = Constants.NAME + ".Service"
+    let name             = Constants.NAME
+    let cache            = CacheManager.GetInstance.Initialize(name)
     let mozillaApiKey    = "2363677d-0913-4a7d-8659-5df67963dc20"
     let fedoraUrl        = "https://geoip.fedoraproject.org/city"
     let mozillaUrl       = "https://location.services.mozilla.com/v1/geolocate?key="
     let openStreetMapUrl = "http://nominatim.openstreetmap.org/reverse?format=xml"
 
+    do
+       cache.CacheStateChanged.AddHandler this.OnCacheChanged
+
     override x.CityName
       with get() =
-        match x.GetDataFromServer () with
-        | MozillaResponse r -> x.DetermineCityByLatAndLong
-                                 (Fun.toFloat r.Location.JsonValue?lat,
-                                  Fun.toFloat r.Location.JsonValue?lng)
-        | FedoraResponse  r -> r.City
-        | NoRespose         -> ""
+        match x.DetermineGeoPosition () with
+        | Determined r  -> r.City
+        | NotDetermined -> "your city"
 
     override x.Latitude
       with get() =
-        match x.GetDataFromServer () with
-        | MozillaResponse x -> Fun.toFloat x.Location.JsonValue?lat
-        | FedoraResponse  x -> Fun.toFloat x.JsonValue?latitude
-        | NoRespose         -> 0.0
+        match x.DetermineGeoPosition () with
+        | Determined r  -> (float) r.Lat
+        | NotDetermined -> 0.0
 
     override x.Longitude
       with get() =
-        match x.GetDataFromServer () with
-           | MozillaResponse x -> Fun.toFloat x.Location.JsonValue?lng
-           | FedoraResponse  x -> Fun.toFloat x.JsonValue?latitude
-           | NoRespose         -> 0.0
+        match x.DetermineGeoPosition () with
+        | Determined r  -> (float) r.Lng
+        | NotDetermined -> 0.0
 
-    member x.GetDataFromServer () =
+    member private x.DetermineGeoPosition () =
+        match cache.Get "geoposition" with
+        | Some r -> Determined (UnifiedGeoLocation.Parse (r.ToString ()))
+        | None   -> x.GetGeoPositionUsingResponse (x.GetResponseFromServer ())
+
+    member private x.GetResponseFromServer () =
         try MozillaResponse <| MozillaGeoLocation.Parse(x.SendPostRequestToMozilla ())
         with _ ->
             try FedoraResponse <| FedoraGeoLocation.Load(fedoraUrl)
-            with _ -> NoRespose
+            with _ -> NoResponse
 
-    member x.DetermineCityByLatAndLong (lat, long) =
+    member private x.ReverseGeoCode (lat, long) =
         let queryUrl = openStreetMapUrl + "&lat=" + lat.ToString()
                                         + "&lon=" + long.ToString()
                                         + "&zoom=11"
         let res = try Some <| OpenStreetMap.Load (queryUrl) with _ -> None
         match res with
         | Some x -> try x.Addressparts.City 
-                    with _ -> (OpenStreetMap.GetSample().Addressparts).City 
-                   // ^^^ if there were no "city" val in xml from server ^^^
+                    with _ -> (OpenStreetMap.GetSample().Addressparts).City
         | None   -> (OpenStreetMap.GetSample().Addressparts).City
 
-    member x.SendPostRequestToMozilla () =
+    member private x.SendPostRequestToMozilla () =
         try Http.RequestString (mozillaUrl + mozillaApiKey,
                                 headers = ["Content-Type", HttpContentTypes.Json],
                                 body = TextRequest "{}")
         with _ -> ""
+    
+    member private x.GetUnifiedJson lat lng city =
+        "{\n" + 
+        "\"lat\": " + lat.ToString() + ",\n" +
+        "\"lng\": " + lng.ToString() + ",\n" +
+        "\"city\": \"" + city.ToString() + "\"\n" +
+        "}"
+
+    member private x.GetGeoPositionUsingResponse res =
+        match res with
+        | MozillaResponse r -> let lat = r.Location.JsonValue?lat
+                               let lng = r.Location.JsonValue?lng
+                               let cn  = x.ReverseGeoCode (Fun.toFloat r.Location.JsonValue?lat, 
+                                                           Fun.toFloat r.Location.JsonValue?lng)
+                               let unifiedjson = x.GetUnifiedJson lat lng cn
+                               cache.Add "geoposition" unifiedjson
+                               Determined <| UnifiedGeoLocation.Parse (unifiedjson)
+        | FedoraResponse  r -> let lat = r.JsonValue?latitude
+                               let lng = r.JsonValue?longitude
+                               let cn  = r.City
+                               let unifiedjson = x.GetUnifiedJson lat lng cn
+                               cache.Add "geoposition" unifiedjson
+                               Determined <| UnifiedGeoLocation.Parse (unifiedjson)
+        | NoResponse        -> NotDetermined
+
+    member private x.UpdateExpiredCache (key : string) (oldValue : UnifiedGeoLocation.Root) =
+        match key with
+        | "geoposition" -> match x.GetGeoPositionUsingResponse (x.GetResponseFromServer ()) with
+                           | Determined r  -> cache.Add "geoposition" r
+                           | NotDetermined -> cache.Add "geoposition" oldValue
+        | _ -> ()
+        Hyena.Log.Information <| name + ": cached GeoPosition updated"
+
+    member private x.OnCacheChanged =
+        CacheService.CacheChangedHandler (fun o a ->
+            match a.State with
+            | Expired -> x.UpdateExpiredCache a.Key (UnifiedGeoLocation.Parse (a.Value.ToString ()))
+            | _ -> ())

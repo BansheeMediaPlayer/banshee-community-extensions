@@ -54,6 +54,9 @@
     <Reference Include="Banshee.SongKick">
       <HintPath>..\..\bin\Banshee.SongKick.dll</HintPath>
     </Reference>
+    <Reference Include="CacheService">
+      <HintPath>..\..\bin\CacheService.dll</HintPath>
+    </Reference>
     <Reference Include="Banshee.NotificationArea">
       <HintPath>..\..\..\banshee\bin\Banshee.NotificationArea.dll</HintPath>
     </Reference>
