@@ -61,7 +61,7 @@ type GeoPosition =
 module Fun =
     let toFloat = JsonExtensions.AsFloat
 
-type Provider() as this =
+type Provider() =
     inherit BaseLocationProvider()
     let name             = Constants.NAME
     let cache            = CacheManager.GetInstance.Initialize(name)
@@ -69,9 +69,6 @@ type Provider() as this =
     let fedoraUrl        = "https://geoip.fedoraproject.org/city"
     let mozillaUrl       = "https://location.services.mozilla.com/v1/geolocate?key="
     let openStreetMapUrl = "http://nominatim.openstreetmap.org/reverse?format=xml"
-
-    do
-       cache.CacheStateChanged.AddHandler this.OnCacheChanged
 
     override x.CityName
       with get() =
@@ -141,17 +138,3 @@ type Provider() as this =
                                cache.Add "geoposition" unifiedjson
                                Determined <| UnifiedGeoLocation.Parse (unifiedjson)
         | NoResponse        -> NotDetermined
-
-    member private x.UpdateExpiredCache (key : string) (oldValue : UnifiedGeoLocation.Root) =
-        match key with
-        | "geoposition" -> match x.GetGeoPositionUsingResponse (x.GetResponseFromServer ()) with
-                           | Determined r  -> cache.Add "geoposition" r
-                           | NotDetermined -> cache.Add "geoposition" oldValue
-        | _ -> ()
-        Hyena.Log.Information <| name + ": cached GeoPosition updated"
-
-    member private x.OnCacheChanged =
-        CacheService.CacheChangedHandler (fun o a ->
-            match a.State with
-            | Expired -> x.UpdateExpiredCache a.Key (UnifiedGeoLocation.Parse (a.Value.ToString ()))
-            | _ -> ())
