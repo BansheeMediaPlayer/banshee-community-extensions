@@ -97,9 +97,9 @@ type Cache internal (nmspace : string) =
     member x.Get (key : string) =
         if File.Exists (x.GetPathToKey key) then
            match x.ReadCacheItemFromFile key with 
-           | Some c when x.IsItemExpired c.created c.expirationTimeout -> 
+           | Some c when x.IsItemExpired c.created c.expirationTimeout ->
                          cc.Trigger (x, CacheChangedArgs(Expired, key, c.value))
-                         Some c.value
+                         None
            | Some c -> Some c.value
            | None   -> None
         else None
