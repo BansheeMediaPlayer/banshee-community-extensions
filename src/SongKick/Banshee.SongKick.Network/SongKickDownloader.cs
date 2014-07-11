@@ -25,12 +25,19 @@
 // THE SOFTWARE.
 using System;
 using System.Text;
+
+using Microsoft.FSharp.Core;
+
 using Banshee.SongKick.Recommendations;
+
+using CacheService;
 
 namespace Banshee.SongKick.Network
 {
     public class SongKickDownloader
     {
+        private Cache cache = CacheManager.GetInstance.Initialize ("songkick");
+
         public string DefaultServiceUri {
             get { return @"http://api.songkick.com/api/3.0/"; }
         }
@@ -52,31 +59,46 @@ namespace Banshee.SongKick.Network
             // http://api.songkick.com/api/3.0/metro_areas/{metro_area_id}/calendar.json?apikey={your_api_key}
             // example url for events in London:
             // http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx6
-            var uriSB = new StringBuilder (DefaultServiceUri);
-            uriSB.Append (@"metro_areas/");
-            uriSB.Append (id.ToString());
-            uriSB.Append (@"/calendar.json?apikey=");
-            uriSB.Append (this.APIKey);
+            string replyString;
+            string key = id.ToString ();
 
-            string replyString = Downloader.download(uriSB.ToString());
-            var resultsPage = new ResultsPage<Event>(replyString, getResultsDelegate);
+            if (IsThereCachedReplyWithKey (key)) {
+                replyString = GetCachedReply (key);
+            } else {
+                var uriSB = new StringBuilder (DefaultServiceUri);
+                uriSB.Append (@"metro_areas/");
+                uriSB.Append (key);
+                uriSB.Append (@"/calendar.json?apikey=");
+                uriSB.Append (this.APIKey);
 
+                replyString = Downloader.download (uriSB.ToString ());
+                CacheReply (key, replyString);
+            }
+
+            var resultsPage = new ResultsPage<Event> (replyString, getResultsDelegate);
             return resultsPage;
         }
 
         public ResultsPage<Event> getArtistsMusicEvents(long id,  ResultsPage<Event>.GetResultsDelegate getResultsDelegate)
         {
             // http://api.songkick.com/api/3.0/artists/{artist_id}/calendar.json?apikey={your_api_key}
+            string replyString;
+            string key = id.ToString ();
 
-            var uriSB = new StringBuilder (DefaultServiceUri);
-            uriSB.Append (@"artists/");
-            uriSB.Append (id.ToString());
-            uriSB.Append (@"/calendar.json?apikey=");
-            uriSB.Append (this.APIKey);
+            if (IsThereCachedReplyWithKey (key)) {
+                replyString = GetCachedReply (key);
+            } else {
+                var uriSB = new StringBuilder (DefaultServiceUri);
+                uriSB.Append (@"artists/");
+                uriSB.Append (key);
+                uriSB.Append (@"/calendar.json?apikey=");
+                uriSB.Append (this.APIKey);
 
-            string replyString = Downloader.download(uriSB.ToString());
-            var resultsPage = new ResultsPage<Event>(replyString, getResultsDelegate);
+                replyString = Downloader.download (uriSB.ToString ());
+                CacheReply (key, replyString);
+            }
 
+            var resultsPage = new ResultsPage<Event> (replyString, getResultsDelegate);
             return resultsPage;
 
         }
@@ -84,14 +106,21 @@ namespace Banshee.SongKick.Network
         public ResultsPage<Event> getLocationMusicEvents(long id,  ResultsPage<Event>.GetResultsDelegate getResultsDelegate)
         {
             // http://api.songkick.com/api/3.0/metro_areas/{metro_area_id}/calendar.json?apikey={your_api_key}
+            string replyString;
+            string key = id.ToString ();
 
-            var uriSB = new StringBuilder (DefaultServiceUri);
-            uriSB.Append (@"metro_areas/");
-            uriSB.Append (id.ToString());
-            uriSB.Append (@"/calendar.json?apikey=");
-            uriSB.Append (this.APIKey);
+            if (IsThereCachedReplyWithKey (key)) {
+                replyString = GetCachedReply (key);
+            } else {
+                var uriSB = new StringBuilder (DefaultServiceUri);
+                uriSB.Append (@"metro_areas/");
+                uriSB.Append (key);
+                uriSB.Append (@"/calendar.json?apikey=");
+                uriSB.Append (this.APIKey);
 
-            string replyString = Downloader.download(uriSB.ToString());
+                replyString = Downloader.download (uriSB.ToString ());
+                CacheReply (key, replyString);
+            }
             var resultsPage = new ResultsPage<Event>(replyString, getResultsDelegate);
 
             return resultsPage;
@@ -101,35 +130,45 @@ namespace Banshee.SongKick.Network
         public ResultsPage<Artist> findArtists(string artist, ResultsPage<Artist>.GetResultsDelegate getResultsDelegate)
         {
             //http://api.songkick.com/api/3.0/search/artists.json?query={search_query}&apikey={your_api_key}
+            string replyString;
 
-            var uriSB = new StringBuilder (DefaultServiceUri);
-            uriSB.Append (@"search/artists.json?query=");
-            uriSB.Append (System.Uri.EscapeDataString(artist));
-            uriSB.Append (@"&apikey=");
-            uriSB.Append (this.APIKey);
+            if (IsThereCachedReplyWithKey (artist)) {
+                replyString = GetCachedReply (artist);
+            } else {
+                var uriSB = new StringBuilder (DefaultServiceUri);
+                uriSB.Append (@"search/artists.json?query=");
+                uriSB.Append (System.Uri.EscapeDataString (artist));
+                uriSB.Append (@"&apikey=");
+                uriSB.Append (this.APIKey);
 
-            string replyString = Downloader.download(uriSB.ToString());
+                replyString = Downloader.download (uriSB.ToString ());
+                CacheReply (artist, replyString);
+            }
+
             var resultsPage = new ResultsPage<Artist>(replyString, getResultsDelegate);
-
             return resultsPage;
-
         }
 
         public ResultsPage<Location> findLocation(string location, ResultsPage<Location>.GetResultsDelegate getResultsDelegate)
         {
             // http://api.songkick.com/api/3.0/search/locations.json?query={search_query}&apikey={your_api_key}
+            string replyString;
 
-            var uriSB = new StringBuilder (DefaultServiceUri);
-            uriSB.Append (@"search/locations.json?query=");
-            uriSB.Append (System.Uri.EscapeDataString(location));
-            uriSB.Append (@"&apikey=");
-            uriSB.Append (this.APIKey);
+            if (IsThereCachedReplyWithKey (location)) {
+                replyString = GetCachedReply (location);
+            } else {
+                var uriSB = new StringBuilder (DefaultServiceUri);
+                uriSB.Append (@"search/locations.json?query=");
+                uriSB.Append (System.Uri.EscapeDataString (location));
+                uriSB.Append (@"&apikey=");
+                uriSB.Append (this.APIKey);
 
-            string replyString = Downloader.download(uriSB.ToString());
+                replyString = Downloader.download (uriSB.ToString ());
+                CacheReply (location, replyString);
+            }
+
             var resultsPage = new ResultsPage<Location>(replyString, getResultsDelegate);
-
             return resultsPage;
-
         }
 
         public ResultsPage<Location> findLocationBasedOnIP(ResultsPage<Location>.GetResultsDelegate getResultsDelegate)
@@ -148,7 +187,20 @@ namespace Banshee.SongKick.Network
             return resultsPage;
         }
 
+        private bool IsThereCachedReplyWithKey (string key)
+        {
+            return (cache.Get (key)) != null;
+        }
 
+        private string GetCachedReply (string key)
+        {
+            return cache.Get (key).Value.ToString ();
+        }
+
+        private void CacheReply (string key, string value)
+        {
+            cache.Add (key, value);
+        }
 
         // invalid API Key uri e.g:
         // http://api.songkick.com/api/3.0/metro_areas/24426/calendar.json?apikey=Qjqhc2hkfU3BaTx600
