@@ -55,6 +55,9 @@
     <Reference Include="Banshee.Widgets">
       <Package>banshee-thickclient</Package>
     </Reference>
+    <Reference Include="MusicBrainz">
+      <HintPath>..\..\banshee\bin\MusicBrainz.dll</HintPath>
+    </Reference>
     <Reference Include="Hyena">
       <Package>banshee-hyena</Package>
     </Reference>
