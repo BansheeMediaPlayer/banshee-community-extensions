@@ -225,7 +225,7 @@ namespace Banshee.Fanart.UI
             "Desired kind of FanartListView's appearance"
             );
 
-        public override void Dispose () {
+        protected override void Dispose (bool disposing) {
             FanartListViews.Remove (this);
             base.Dispose ();
         }
