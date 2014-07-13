@@ -17,7 +17,8 @@ SOURCES =  \
 
 RESOURCES =  \
 	OnlineMetadataFixer.addin.xml \
-	Resources/AcoustIDTrackInfo.json
+	Resources/AcoustIDTrackInfo.json \
+	Resources/MusicBrainzTracks.xml
 
 XBUILD = xbuild
 

@@ -34,6 +34,8 @@ open Mono.Unix;
 open Hyena.Data.Sqlite;
 open Banshee.ServiceStack;
 
+type MusicBrainzTracksXmlProvider = FSharp.Data.XmlProvider<"Resources/MusicBrainzTracks.xml", EmbeddedResource="MusicBrainzTracks.xml">
+
 type OnlineMetadataFixerSource () = 
     inherit Banshee.Fixup.Solver()
     do
@@ -49,19 +51,18 @@ type OnlineMetadataFixerSource () =
         | (_, _) -> 
             let url = String.Format("http://musicbrainz.org/ws/1/track/?type=xml&artist={0}&title={1}", artist, title);
             Hyena.Log.DebugFormat ("Looking for {0} - {1} metadata", artist, title)
-            let s = new HashSet<string> ()
             try
-                let reader = new XmlTextReader (url);
-                while reader.Read() do
-                    if reader.Name = "release" then
-                        reader.Read() |> ignore
-                        while reader.Name <> "release" do
-                            if reader.Name = "title" then
-                                s.Add (reader.ReadInnerXml()) |> ignore
-                            reader.Read() |> ignore
-                String.Join (";;", s)
+                // Workaround a FSharp.Data bug. See here: https://github.com/fsharp/FSharp.Data/issues/642
+                let webClient = new System.Net.WebClient ()
+                let tracks = MusicBrainzTracksXmlProvider.Parse (webClient.DownloadString (url))
+                (";;", seq {
+                        for t in tracks.TrackList.Tracks do
+                            for r in t.ReleaseList.Releases do yield r.Title
+                    }
+                    |> Set.ofSeq)
+                |> String.Join
             with
-                | _ -> ""
+            | _ -> ""
 
     override x.HasTrackDetails with get () = true
     

@@ -39,6 +39,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="Mono.Posix, Version=4.0.0.0" />
     <Reference Include="Banshee.Core, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-core</Package>
@@ -100,6 +101,9 @@
     <EmbeddedResource Include="Resources/AcoustIDTrackInfo.json">
       <LogicalName>AcoustIDTrackInfo.json</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources/MusicBrainzTracks.xml">
+      <LogicalName>MusicBrainzTracks.xml</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -116,6 +120,4 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <ItemGroup>
-  </ItemGroup>
 </Project>

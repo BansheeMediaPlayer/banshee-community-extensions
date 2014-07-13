@@ -1,0 +1,16 @@
+<metadata xmlns="http://musicbrainz.org/ns/mmd-1.0#" xmlns:ext="http://musicbrainz.org/ns/ext-1.0#">
+    <track-list>
+        <track>
+            <release-list>
+                <release type="Compilation"><title>AlbumsTitle</title></release>
+                <release type="Compilation"><title>AlbumsTitle</title></release>
+            </release-list>
+        </track>
+        <track>
+            <release-list>
+                <release type="Compilation"><title>AlbumsTitle</title></release>
+                <release type="Compilation"><title>AlbumsTitle</title></release>
+            </release-list>
+        </track>
+    </track-list>
+</metadata>
