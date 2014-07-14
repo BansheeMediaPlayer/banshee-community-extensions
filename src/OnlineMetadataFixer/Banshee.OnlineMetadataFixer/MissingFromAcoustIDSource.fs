@@ -57,8 +57,8 @@ type MissingFromAcoustIDSource(problemId) as x =
         try
             let id, list = AcoustIDReader.ReadFingerPrint (uri)
             x.ProcessSolution (column, list)
-        with GstreamerError (ex) -> 
-            Hyena.Log.WarningFormat ("Cannot read {0} fingerprint. Internal error: {1}.", uri, ex)
+        with GstreamerError (ex) as e -> 
+            Hyena.Log.Exception (String.Format("Cannot read {0} fingerprint..", uri), e)
             ""
 
     override x.HasTrackDetails with get () = true
