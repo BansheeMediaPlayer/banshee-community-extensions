@@ -15,7 +15,7 @@ AC_DEFUN([SHAMROCK_FIND_MONO_3_0_COMPILER],
  	if test "x$DMCS" = "xno"; then
 	   	AC_PATH_PROG(GMCS, gmcs, no)
 		if test "x$GMCS" = "xno"; then
-		   	AC_MSG_ERROR([You need to install a C♯ compiler.'])
+			AC_MSG_ERROR([`You need to install a C♯ compiler.'])
 		else
 			MCS=$GMCS
 		fi
