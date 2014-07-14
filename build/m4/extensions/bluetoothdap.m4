@@ -7,7 +7,7 @@ AC_DEFUN([BCE_BLUETOOTHDAP],
 
         AC_PATH_PROG(FSC, fsharpc, no)
         if test "x$FSC" = "xno"; then
-            AC_MSG_ERROR([You need to install an F# compiler.'])
+            AC_MSG_ERROR([You need to install an F♯ compiler.'])
         fi
         AC_SUBST(FSC)
 	else
