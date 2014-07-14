@@ -53,10 +53,8 @@ type CacheChangedArgs (s : CacheItemAction, k : string, v : obj) =
     member x.Key   = k
     member x.Value = v
 
-type CacheChangedHandler = delegate of obj * CacheChangedArgs -> unit
-
 type Cache internal (nmspace : string) =
-    let cc = Event<CacheChangedHandler, CacheChangedArgs>()
+    let cc = Event<Action<obj, CacheChangedArgs>, CacheChangedArgs>()
     do
         if not (Banshee.IO.Directory.Exists nmspace)
         then Directory.CreateDirectory (nmspace) |> ignore
@@ -81,8 +79,11 @@ type Cache internal (nmspace : string) =
               value = databits.[0]
               created = DateTime.Parse (databits.[1])
               expirationTimeout = ((float) databits.[2] * 1.0<hours>) }
-        with _ -> Hyena.Log.Error ("Failed reading cache with key : " + key + " from: " + path) 
-                  None
+        with
+            | :? IndexOutOfRangeException as e ->
+                Hyena.Log.Error ("Failed reading cache with key:" + key + " from: " + path
+                                  + "with error message: " + e.Message)
+                None
 
     member private x.WriteValueToFile (key : string) (value : 'a) = 
         let path = x.GetPathToKey key
@@ -111,8 +112,8 @@ type Cache internal (nmspace : string) =
 
     member x.Clear () =
         for file in Directory.EnumerateFiles nmspace do
-          let tempPath = System.IO.Path.Combine(nmspace, file)
-          File.Delete(tempPath)
+          let tempPath = System.IO.Path.Combine (nmspace, file)
+          File.Delete (tempPath)
 
     member x.CacheStateChanged = cc.Publish
 
