@@ -5,7 +5,7 @@ AC_DEFUN([BCE_BLUETOOTHDAP],
 	if test "x$enable_BluetoothDap" = "xyes"; then
 		AM_CONDITIONAL(ENABLE_BLUETOOTHDAP, true)
 
-        AC_PATH_PROG(FSC, fsc, no)
+        AC_PATH_PROG(FSC, fsharpc, no)
         if test "x$FSC" = "xno"; then
             AC_MSG_ERROR([You need to install an F# compiler.'])
         fi
