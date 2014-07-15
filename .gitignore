@@ -62,3 +62,6 @@ src/LastfmFingerprint/liblastfmfpbridge/lastfmfpbridgetest
 DesignTimeURIs
 FreebaseSchema
 WorldBankSchema
+
+# NuGet packages
+src/packages/
