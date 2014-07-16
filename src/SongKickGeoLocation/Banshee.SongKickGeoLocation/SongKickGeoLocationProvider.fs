@@ -87,9 +87,9 @@ type Provider () =
                     x.GetGeoLocation (response)
 
     member private x.GetResponseFromServer () =
-        try SongKickResponse <| SongKickResponse.Load (songkickRequestUri)            with _ ->
-        try MozillaResponse  <| MozillaResponse.Parse (x.SendPostRequestToMozilla ()) with _ ->
-        try FedoraResponse   <| FedoraResponse.Load (fedoraRequestUri)
+        try SongKickResponse <| SongKickResponse.Load (songkickRequestUri) with _ ->
+        try FedoraResponse   <| FedoraResponse.Load (fedoraRequestUri)     with _ ->
+        try MozillaResponse  <| MozillaResponse.Parse (x.SendPostRequestToMozilla ())
         with _ -> NoResponse
 
     member private x.ReverseGeoCode (lat, long) =
