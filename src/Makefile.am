@@ -24,6 +24,7 @@ SUBDIRS = \
 	OpenVP \
 	RadioStationFetcher \
 	RandomByLastfm \
+	CacheService \
 	SongKick \
 	SongKickGeoLocation \
 	StreamRecorder \

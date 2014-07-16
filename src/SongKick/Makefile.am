@@ -1,5 +1,7 @@
 ASSEMBLY = Banshee.SongKick
-LINK = $(BANSHEE_LIBS)
+LINK = $(BANSHEE_LIBS) \
+	-r:../../bin/CacheService.dll \
+	-r:/usr/lib/mono/4.0/FSharp.Core.dll # <- FIXME: use Nullable instead of F#'s Option, to avoid hardcoding this path
 
 SOURCES =  \
 	Banshee.SongKick.Network/Downloader.cs \
@@ -34,7 +36,10 @@ SOURCES =  \
 	Banshee.SongKick.UI/SearchView.cs \
 	Banshee.SongKick.UI/SongKickSourceContents.cs \
 	Banshee.SongKick/SongKickCore.cs \
-	Banshee.SongKick/SongKickSource.cs
+	Banshee.SongKick/SongKickSource.cs \
+	Banshee.SongKick.LocationProvider/BaseLocationProvider.cs \
+	Banshee.SongKick.LocationProvider/LocationProviderManager.cs \
+	Banshee.SongKick.LocationProvider/ICityNameObserver.cs
 
 RESOURCES =  \
 	Resources/concerts_by_songkick.png \

@@ -149,6 +149,7 @@ src/AndroidRemote/Makefile
 src/AppIndicator/Makefile
 src/Awn/Makefile
 src/Banshee.Dap.Bluetooth/Makefile
+src/CacheService/Makefile
 src/ClutterFlow/Makefile
 src/ClutterFlow/Banshee.ClutterFlow/Makefile
 src/ClutterFlow/ClutterFlow/Makefile
