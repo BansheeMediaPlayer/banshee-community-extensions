@@ -1,0 +1,32 @@
+{
+    "resultsPage": {
+        "status": "undefined",
+        "results": {
+            "location": [
+                {
+                    "city": {
+                        "lat": 0.0,
+                        "lng": 0.0,
+                        "country": {
+                            "displayName": "undefined"
+                        },
+                        "displayName": "undefined"
+                    },
+                    "metroArea": {
+                        "lat": 0.0,
+                        "lng": 0.0,
+                        "country": {
+                            "displayName": "undefined"
+                        },
+                        "uri": "http://www.songkick.com",
+                        "displayName": "undefined",
+                        "id": 0
+                    }
+                }
+            ]
+        },
+        "perPage": 50,
+        "page": 1,
+        "totalEntries": 1
+    }
+}

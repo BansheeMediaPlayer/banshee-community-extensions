@@ -26,6 +26,8 @@
 
 namespace Banshee.SongKickGeoLocation
 
+open System
+
 open FSharp.Data
 open FSharp.Data.JsonExtensions
 
@@ -43,74 +45,63 @@ open CacheService
 module Constants =
     let NAME = "SongKickGeoLocation"
 
-type MozillaGeoLocation = JsonProvider<"./MozillaGeoLocationSample.json">
-type FedoraGeoLocation  = JsonProvider<"./FedoraGeoLocationSample.json">
-type UnifiedGeoLocation = JsonProvider<"./GeoResults.json">
+module Fun =
+    let ToFloat (x, y) = (JsonExtensions.AsFloat x, JsonExtensions.AsFloat y)
 
-type OpenStreetMap      = XmlProvider<"./OpenStreetMapSample.xml">
+type MozillaResponse  = JsonProvider<"./Resources/MozillaResponseSample.json",
+                                     EmbeddedResource="MozillaResponseSample.json">
+type FedoraResponse   = JsonProvider<"./Resources/FedoraResponseSample.json",
+                                     EmbeddedResource="FedoraResponseSample.json">
+type SongKickResponse = JsonProvider<"./Resources/SongKickResponseSample.json",
+                                     EmbeddedResource="SongKickResponseSample.json">
+type GeoResult        = JsonProvider<"./Resources/GeoResultSample.json",
+                                     EmbeddedResource="GeoResultSample.json">
 
 type Response =
-    | MozillaResponse of MozillaGeoLocation.Root
-    | FedoraResponse  of FedoraGeoLocation.Root
+    | SongKickResponse of SongKickResponse.Root
+    | MozillaResponse  of MozillaResponse.Root
+    | FedoraResponse   of FedoraResponse.Root
     | NoResponse
 
-type GeoPosition =
-    | Determined of UnifiedGeoLocation.Root
+type GeoLocation =
+    | Determined of GeoResult.Root
     | NotDetermined
 
-module Fun =
-    let toFloat = JsonExtensions.AsFloat
+type Provider () =
+    inherit BaseLocationProvider ()
+    let name                = Constants.NAME
+    let cache               = CacheManager.GetInstance.Initialize (name)
+    let songkickAPIKey      = Banshee.SongKick.SongKickCore.APIKey
+    let mozillaAPIKey       = "2363677d-0913-4a7d-8659-5df67963dc20"
+    let reverseGeoCodeUri   = "http://api.songkick.com/api/3.0/search/locations.json?location=geo:{0},{1}"
+                              + "&apikey=" + songkickAPIKey
+    let mozillaRequestUri   = "https://location.services.mozilla.com/v1/geolocate?key=" + mozillaAPIKey
+    let fedoraRequestUri    = "https://geoip.fedoraproject.org/city"
+    let songkickRequestUri  = "http://api.songkick.com/api/3.0/search/locations.json?location=clientip"
+                              + "&apikey=" + songkickAPIKey
 
-type Provider() =
-    inherit BaseLocationProvider()
-    let name             = Constants.NAME
-    let cache            = CacheManager.GetInstance.Initialize(name)
-    let mozillaApiKey    = "2363677d-0913-4a7d-8659-5df67963dc20"
-    let fedoraUrl        = "https://geoip.fedoraproject.org/city"
-    let mozillaUrl       = "https://location.services.mozilla.com/v1/geolocate?key="
-    let openStreetMapUrl = "http://nominatim.openstreetmap.org/reverse?format=xml"
-
-    override x.CityName
-      with get() =
-        match x.DetermineGeoPosition () with
-        | Determined r  -> r.City
-        | NotDetermined -> "your city"
-
-    override x.Latitude
-      with get() =
-        match x.DetermineGeoPosition () with
-        | Determined r  -> (float) r.Lat
-        | NotDetermined -> 0.0
-
-    override x.Longitude
-      with get() =
-        match x.DetermineGeoPosition () with
-        | Determined r  -> (float) r.Lng
-        | NotDetermined -> 0.0
-
-    member private x.DetermineGeoPosition () =
+    member private x.DetermineGeoLocation () =
         match cache.Get "geoposition" with
-        | Some r -> Determined (UnifiedGeoLocation.Parse (r.ToString ()))
-        | None   -> x.GetGeoPositionUsingResponse (x.GetResponseFromServer ())
+        | Some v -> Determined <| GeoResult.Parse (v.ToString ())
+        | None   -> let response = x.GetResponseFromServer ()
+                    x.GetGeoLocation (response)
 
     member private x.GetResponseFromServer () =
-        try MozillaResponse <| MozillaGeoLocation.Parse(x.SendPostRequestToMozilla ())
-        with _ ->
-            try FedoraResponse <| FedoraGeoLocation.Load(fedoraUrl)
-            with _ -> NoResponse
+        try SongKickResponse <| SongKickResponse.Load (songkickRequestUri)            with _ ->
+        try MozillaResponse  <| MozillaResponse.Parse (x.SendPostRequestToMozilla ()) with _ ->
+        try FedoraResponse   <| FedoraResponse.Load (fedoraRequestUri)
+        with _ -> NoResponse
 
     member private x.ReverseGeoCode (lat, long) =
-        let queryUrl = openStreetMapUrl + "&lat=" + lat.ToString()
-                                        + "&lon=" + long.ToString()
-                                        + "&zoom=11"
-        let res = try Some <| OpenStreetMap.Load (queryUrl) with _ -> None
-        match res with
-        | Some x -> try x.Addressparts.City 
-                    with _ -> (OpenStreetMap.GetSample().Addressparts).City
-        | None   -> (OpenStreetMap.GetSample().Addressparts).City
+        let req = String.Format (reverseGeoCodeUri, lat.ToString (), long.ToString ())
+        let res = SongKickResponse.Load (req)
+        match res.ResultsPage.Status with
+        | "ok" when res.ResultsPage.TotalEntries > 0
+               -> res.ResultsPage.Results.Location.[0].City.DisplayName
+        | _    -> "undefined"
 
     member private x.SendPostRequestToMozilla () =
-        try Http.RequestString (mozillaUrl + mozillaApiKey,
+        try Http.RequestString (mozillaRequestUri,
                                 headers = ["Content-Type", HttpContentTypes.Json],
                                 body = TextRequest "{}")
         with _ -> ""
@@ -122,19 +113,49 @@ type Provider() =
         "\"city\": \"" + city.ToString() + "\"\n" +
         "}"
 
-    member private x.GetGeoPositionUsingResponse res =
-        match res with
-        | MozillaResponse r -> let lat = r.Location.JsonValue?lat
-                               let lng = r.Location.JsonValue?lng
-                               let cn  = x.ReverseGeoCode (Fun.toFloat r.Location.JsonValue?lat, 
-                                                           Fun.toFloat r.Location.JsonValue?lng)
-                               let unifiedjson = x.GetUnifiedJson lat lng cn
-                               cache.Add "geoposition" unifiedjson
-                               Determined <| UnifiedGeoLocation.Parse (unifiedjson)
-        | FedoraResponse  r -> let lat = r.JsonValue?latitude
-                               let lng = r.JsonValue?longitude
-                               let cn  = r.City
-                               let unifiedjson = x.GetUnifiedJson lat lng cn
-                               cache.Add "geoposition" unifiedjson
-                               Determined <| UnifiedGeoLocation.Parse (unifiedjson)
-        | NoResponse        -> NotDetermined
+    member private x.GetGeoLocation res =
+        let unifiedJson =
+            match res with
+            | SongKickResponse r when r.ResultsPage.TotalEntries > 0 ->
+                let lat = r.ResultsPage.Results.Location.[0].City.Lat
+                let lng = r.ResultsPage.Results.Location.[0].City.Lng
+                let cn  = r.ResultsPage.Results.Location.[0].City.DisplayName
+                Some <| x.GetUnifiedJson lat lng cn
+
+            | FedoraResponse r ->
+                let lat = r.JsonValue?latitude
+                let lng = r.JsonValue?longitude
+                let cn  = r.City
+                Some <| x.GetUnifiedJson lat lng cn
+
+            | MozillaResponse r ->
+                let lat = r.Location.Lat
+                let lng = r.Location.Lng
+                let jvLatAndLong = r.Location.JsonValue?lat, r.Location.JsonValue?lng
+                let cn  = x.ReverseGeoCode <| Fun.ToFloat jvLatAndLong
+                Some <| x.GetUnifiedJson lat lng cn
+
+            | _ -> None
+
+        match unifiedJson with
+        | Some json -> cache.Add "geoposition" json
+                       Determined (GeoResult.Parse json)
+        | None      -> NotDetermined
+
+    override x.CityName
+      with get() =
+        match x.DetermineGeoLocation () with
+        | Determined p  -> p.City
+        | NotDetermined -> "undefined"
+
+    override x.Latitude
+      with get() =
+        match x.DetermineGeoLocation () with
+        | Determined r  -> (float) r.Lat
+        | NotDetermined -> 0.0
+
+    override x.Longitude
+      with get() =
+        match x.DetermineGeoLocation () with
+        | Determined r  -> (float) r.Lng
+        | NotDetermined -> 0.0

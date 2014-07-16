@@ -9,6 +9,10 @@ SOURCES =  \
 RESOURCES =  \
 	Resources/city_concerts_logo.png \
 	Resources/songkick_logo_300x300.png \
+	Resources/FedoraResponseSample.json \
+	Resources/GeoResultSample.json \
+	Resources/MozillaResponseSample.json \
+	Resources/SongKickResponseSample.json \
 	SongKickGeoLocation.addin.xml
 
 XBUILD = xbuild

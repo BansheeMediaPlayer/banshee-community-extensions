@@ -114,6 +114,18 @@
     <EmbeddedResource Include="Resources\city_concerts_logo.png">
       <LogicalName>city_concerts_logo.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\FedoraResponseSample.json">
+      <LogicalName>FedoraResponseSample.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\GeoResultSample.json">
+      <LogicalName>GeoResultSample.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\MozillaResponseSample.json">
+      <LogicalName>MozillaResponseSample.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\SongKickResponseSample.json">
+      <LogicalName>SongKickResponseSample.json</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
