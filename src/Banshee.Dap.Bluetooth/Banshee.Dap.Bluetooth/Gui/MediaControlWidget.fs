@@ -28,10 +28,8 @@ namespace Banshee.Dap.Bluetooth.Gui
 open Banshee.Dap.Bluetooth.Wrappers
 open Gtk
 
-type MediaControlWidget(mc: IBansheeMediaControl) as this =
-    inherit VBox(false, 2)
-    let lbl = new Label(UseMarkup = true)
-    let ctrls = new HBox(false, 2)
+type MediaControlWidget(mc: INotifyMediaControl) as this =
+    inherit HBox(false, 5)
     let play = new Button(Image = new Image(IconName = "media-playback-start"))
     let pause = new Button(Image = new Image(IconName = "media-playback-pause"))
     let stop = new Button(Image = new Image(IconName = "media-playback-stop"))
@@ -41,17 +39,15 @@ type MediaControlWidget(mc: IBansheeMediaControl) as this =
     let rwd = new Button(Image = new Image(IconName = "media-seek-backward"))
     let vup = new Button(Image = new Image(IconName = "audio-volume-high"))
     let vdn = new Button(Image = new Image(IconName = "audio-volume-low"))
-    do ctrls.PackStart (prev, false, false, 0u)
-       ctrls.PackStart (rwd, false, false, 0u)
-       ctrls.PackStart (stop, false, false, 0u)
-       ctrls.PackStart (pause, false, false, 0u)
-       ctrls.PackStart (play, false, false, 0u)
-       ctrls.PackStart (fwd, false, false, 0u)
-       ctrls.PackStart (next, false, false, 0u)
-       ctrls.PackEnd (vup, false, false, 0u)
-       ctrls.PackEnd (vdn, false, false, 0u)
-       base.PackStart (lbl, false, false, 10u)
-       base.PackEnd (ctrls, false, false, 5u)
+    do base.PackStart (prev, false, false, 0u)
+       base.PackStart (rwd, false, false, 0u)
+       base.PackStart (stop, false, false, 0u)
+       base.PackStart (pause, false, false, 0u)
+       base.PackStart (play, false, false, 0u)
+       base.PackStart (fwd, false, false, 0u)
+       base.PackStart (next, false, false, 0u)
+       base.PackEnd (vup, false, false, 0u)
+       base.PackEnd (vdn, false, false, 0u)
        base.ShowAll ()
        this.Refresh ()
 
@@ -65,8 +61,4 @@ type MediaControlWidget(mc: IBansheeMediaControl) as this =
        vup.Clicked.Add (fun o -> mc.VolumeUp ())
        vdn.Clicked.Add (fun o -> mc.VolumeDown ())
        mc.PropertyChanged.Add(fun o -> this.Refresh ())
-    member x.Refresh () = match (mc.Connected, lbl.Text) with
-                          | (true, "<b>Ready</b>") -> ()
-                          | (false, "<b>Not Connected</b>") -> ()
-                          | (y, _) -> if y then lbl.Markup <- "<b>Ready</b>"
-                                      else lbl.Markup <- "<b>Not Connected</b>"
+    member x.Refresh () = base.Visible <- mc.Connected

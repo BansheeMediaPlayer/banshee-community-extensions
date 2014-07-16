@@ -23,8 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
-namespace Banshee.Dap.Bluetooth.Wrappers
+module Banshee.Dap.Bluetooth.Wrappers
 
 open System
 open System.ComponentModel
@@ -37,56 +36,30 @@ open Banshee.Dap.Bluetooth.Mime
 open Banshee.Dap.Bluetooth.Mime.Extensions
 open Banshee.Dap.Bluetooth.ObexApi
 open Banshee.Dap.Bluetooth.SupportApi
-open Banshee.Hardware
 
 open DBus
 
+[<Literal>]
+let UUID_OBEXFTP      = "00001106-0000-1000-8000-00805f9b34fb"
+[<Literal>]
+let UUID_HEADSET      = "00001108-0000-1000-8000-00805f9b34fb"
+[<Literal>]
+let UUID_AUDIO_SOURCE = "0000110a-0000-1000-8000-00805f9b34fb"
+[<Literal>]
+let UUID_AUDIO_SINK   = "0000110b-0000-1000-8000-00805f9b34fb"
+[<Literal>]
+let UUID_AVRC_TARGET  = "0000110c-0000-1000-8000-00805f9b34fb"
+[<Literal>]
+let UUID_AVRC         = "0000110e-0000-1000-8000-00805f9b34fb"
+
 type SessionType = | Ftp | Map | Opp | Pbap | Sync
 
-module Constants =
-    let UUID_OBEXFTP      = "00001106-0000-1000-8000-00805f9b34fb"
-    let UUID_HEADSET      = "00001108-0000-1000-8000-00805f9b34fb"
-    let UUID_AUDIO_SOURCE = "0000110a-0000-1000-8000-00805f9b34fb"
-    let UUID_AUDIO_SINK   = "0000110b-0000-1000-8000-00805f9b34fb"
-    let UUID_AVRC_TARGET  = "0000110c-0000-1000-8000-00805f9b34fb"
-    let UUID_AVRC         = "0000110e-0000-1000-8000-00805f9b34fb"
-
-module Functions =
-    let HasUuid (u: string) (x: IBluetoothDevice) =
-        x.UUIDs |> Array.exists (fun uuid -> u = uuid.ToLower())
-    let HasSync x = HasUuid Constants.UUID_OBEXFTP x
-    let HasAudioIn x = HasUuid Constants.UUID_AUDIO_SINK x
-    let HasAudioOut x = HasUuid Constants.UUID_AUDIO_SOURCE x
-    let HasHeadset x = HasUuid Constants.UUID_HEADSET x
-    let SessionOf x = match x with
-                      | Ftp -> "ftp"
-                      | Map -> "map"
-                      | Opp -> "opp"
-                      | Pbap -> "pbap"
-                      | Sync -> "sync"
-
-type IBansheeAdapter =
-    inherit IAdapter
-    inherit INotifyPropertyChanged
-
-type IBansheeDevice =
-    inherit IBluetoothDevice
-    inherit INotifyPropertyChanged
-    abstract Sync : bool with get
-    abstract AudioIn : bool with get
-    abstract AudioOut : bool with get
-    abstract Headset : bool with get
-
-type IBansheeMediaControl =
-    inherit INotifyPropertyChanged
-    inherit IMediaControl
-
-type IBansheeClient =
-    inherit IClient
-
-type IBansheeSession =
-    inherit INotifyPropertyChanged
-    inherit ISession
+let SessionOf x = match x with
+                  | Ftp -> "ftp"
+                  | Map -> "map"
+                  | Opp -> "opp"
+                  | Pbap -> "pbap"
+                  | Sync -> "sync"
 
 [<AbstractClass>]
 type ObjectDecorator<'t> (obj: 't, ps: IPropertyManager) as this =
@@ -98,9 +71,34 @@ type ObjectDecorator<'t> (obj: 't, ps: IPropertyManager) as this =
     member x.GetProp p = ps.Get i p
     member x.SetProp p v = ps.Set i p v
     member x.Interface = i
+    member x.PropertyChanged = e.Publish
     interface INotifyPropertyChanged with
         [<CLIEvent>]
-        member x.PropertyChanged = e.Publish
+        member x.PropertyChanged = x.PropertyChanged
+
+type INotifyAdapter =
+    inherit IAdapter
+    inherit INotifyPropertyChanged
+
+type INotifyDevice =
+    inherit IDevice
+    inherit INotifyPropertyChanged
+
+type INotifyMediaControl =
+    inherit IMediaControl
+    inherit INotifyPropertyChanged
+
+type INotifyMediaTransport =
+    inherit IMediaTransport
+    inherit INotifyPropertyChanged
+
+type INotifySession =
+    inherit ISession
+    inherit INotifyPropertyChanged
+
+type INotifyTransfer =
+    inherit ITransfer
+    inherit INotifyPropertyChanged
 
 type AdapterWrapper (obj: IAdapter, ps: IPropertyManager) =
     inherit ObjectDecorator<IAdapter>(obj, ps)
@@ -120,7 +118,7 @@ type AdapterWrapper (obj: IAdapter, ps: IPropertyManager) =
                                  obj.StartDiscovery ()
     member x.StopDiscovery () = obj.StopDiscovery ()
     member x.RemoveDevice y = obj.RemoveDevice y
-    interface IBansheeAdapter with
+    interface INotifyAdapter with
         member x.Address = x.Address
         member x.Name = x.Name
         member x.Alias with get () = x.Alias
@@ -137,14 +135,10 @@ type AdapterWrapper (obj: IAdapter, ps: IPropertyManager) =
         member x.StopDiscovery () = x.StopDiscovery ()
         member x.RemoveDevice y = x.RemoveDevice y
 
-type DeviceWrapper (obj: IBluetoothDevice, ps: IPropertyManager) =
-    inherit ObjectDecorator<IBluetoothDevice>(obj, ps)
-    member x.Sync = Functions.HasSync x
-    member x.AudioIn = Functions.HasAudioIn x
-    member x.AudioOut = Functions.HasAudioOut x
-    member x.Headset = Functions.HasHeadset x
-    member x.Disconnect () = obj.Disconnect ()
+type DeviceWrapper (obj: IDevice, ps: IPropertyManager) =
+    inherit ObjectDecorator<IDevice>(obj, ps)
     member x.Connect () = obj.Connect ()
+    member x.Disconnect () = obj.Disconnect ()
     member x.ConnectProfile y = obj.ConnectProfile y
     member x.DisconnectProfile y = obj.DisconnectProfile y
     member x.Pair () = obj.Pair ()
@@ -167,13 +161,9 @@ type DeviceWrapper (obj: IBluetoothDevice, ps: IPropertyManager) =
     member x.UUIDs = x.GetProp "UUIDs"
     member x.Modalias = x.GetProp "Modalias"
     member x.Adapter = x.GetProp "Adapter"
-    interface IBansheeDevice with
-        member x.Sync = x.Sync
-        member x.AudioIn = x.AudioIn
-        member x.AudioOut = x.AudioOut
-        member x.Headset = x.Headset
-        member x.Disconnect () = x.Disconnect ()
+    interface INotifyDevice with
         member x.Connect () = x.Connect ()
+        member x.Disconnect () = x.Disconnect ()
         member x.ConnectProfile y = x.ConnectProfile y
         member x.DisconnectProfile y = x.DisconnectProfile y
         member x.Pair () = x.Pair ()
@@ -209,7 +199,7 @@ type MediaControlWrapper(obj: IMediaControl, ps: IPropertyManager) =
     member x.FastForward () = obj.FastForward ()
     member x.Rewind () = obj.Rewind ()
     member x.Connected = x.GetProp "Connected"
-    interface IBansheeMediaControl with
+    interface INotifyMediaControl with
         member x.Play () = x.Play ()
         member x.Pause () = x.Pause ()
         member x.Stop () = x.Stop ()
@@ -221,13 +211,23 @@ type MediaControlWrapper(obj: IMediaControl, ps: IPropertyManager) =
         member x.Rewind () = x.Rewind ()
         member x.Connected = x.Connected
 
-type ClientWrapper(obj: IClient, ps: IPropertyManager) =
-    inherit ObjectDecorator<IClient>(obj, ps)
-    member x.CreateSession (t, spm) = obj.CreateSession t spm
-    member x.RemoveSession o = obj.RemoveSession o
-    interface IBansheeClient with
-        member x.CreateSession t spm = x.CreateSession (t, spm)
-        member x.RemoveSession o = x.RemoveSession o
+type MediaTransportWrapper(obj: IMediaTransport, ps: IPropertyManager) =
+    inherit ObjectDecorator<IMediaTransport>(obj, ps)
+    //member x.Aquire () = obj.Aquire ()
+    //member x.TryAquire () = obj.TryAquire ()
+    //member x.Release () = obj.Release ()
+    member x.Device = x.GetProp "Device"
+    member x.UUID = x.GetProp "UUID"
+    member x.Codec = x.GetProp "Codec"
+    member x.State = x.GetProp "State"
+    interface INotifyMediaTransport with
+        //member x.Aquire () = x.Aquire ()
+        //member x.TryAquire () = x.TryAquire ()
+        //member x.Release () = x.Release ()
+        member x.Device = x.Device
+        member x.UUID = x.UUID
+        member x.Codec = x.Codec
+        member x.State = x.State
 
 type SessionWrapper(obj: ISession, ps: IPropertyManager) =
     inherit ObjectDecorator<ISession>(obj, ps)
@@ -236,7 +236,7 @@ type SessionWrapper(obj: ISession, ps: IPropertyManager) =
     member x.Destination = x.GetProp "Destination"
     member x.Target = x.GetProp "Target"
     member x.Root = x.GetProp "Root"
-    interface IBansheeSession with
+    interface INotifySession with
         member x.GetCapabilities () = x.GetCapabilities ()
         member x.Source = x.Source
         member x.Destination = x.Destination
@@ -256,7 +256,7 @@ type TransferWrapper(obj: ITransfer, ps: IPropertyManager) =
     member x.Size = x.GetProp "Size"
     member x.Transferred = x.GetProp "Transferred"
     member x.Filename = x.GetProp "Filename"
-    interface ITransfer with
+    interface INotifyTransfer with
         member x.Cancel () = x.Cancel ()
         member x.Suspend () = x.Suspend ()
         member x.Resume () = x.Resume ()
@@ -268,17 +268,3 @@ type TransferWrapper(obj: ITransfer, ps: IPropertyManager) =
         member x.Size = x.Size
         member x.Transferred = x.Transferred
         member x.Filename = x.Filename
-
-type FileTransferWrapper(obj: IFileTransfer, ps: IPropertyManager) =
-    inherit SessionWrapper(obj, ps)
-    member x.ChangeFolder y = obj.ChangeFolder y
-    member x.CreateFolder y = obj.CreateFolder y
-    member x.ListFolder () = obj.ListFolder ()
-    member x.PutFile src dst = obj.PutFile src dst
-    member x.Delete y = obj.Delete y
-    interface IFileTransfer with
-        member x.ChangeFolder y = x.ChangeFolder y
-        member x.CreateFolder y = x.CreateFolder y
-        member x.ListFolder () = x.ListFolder ()
-        member x.PutFile src dst = x.PutFile src dst
-        member x.Delete y = x.Delete y

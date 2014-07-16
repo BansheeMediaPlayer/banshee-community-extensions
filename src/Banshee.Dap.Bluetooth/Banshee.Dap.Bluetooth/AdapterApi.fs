@@ -23,7 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace Banshee.Dap.Bluetooth.AdapterApi
+module Banshee.Dap.Bluetooth.AdapterApi
 
 open System
 open System.Collections.Generic
@@ -32,11 +32,11 @@ open Banshee.Dap.Bluetooth.DBusApi
 
 open DBus
 
-module Constants =
-    [<Literal>]
-    let IF_ADAPTER = "org.bluez.Adapter1"
+let NAME_BLUEZ = "org.bluez"
+[<Literal>]
+let IF_ADAPTER = "org.bluez.Adapter1"
 
-[<Interface (Constants.IF_ADAPTER)>]
+[<Interface (IF_ADAPTER)>]
 type IAdapter =
     abstract StartDiscovery : unit -> unit
     abstract StopDiscovery : unit -> unit
@@ -49,8 +49,3 @@ type IAdapter =
     abstract Discoverable : bool with get, set
     abstract Pairable : bool with get, set
     abstract Discovering : bool with get
-
-type AdapterComparer() =
-    interface IEqualityComparer<IAdapter> with
-        member x.Equals (y,z) = y.Address = z.Address
-        member x.GetHashCode y = y.Address.GetHashCode ()

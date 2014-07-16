@@ -23,7 +23,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 namespace Banshee.Dap.Bluetooth.Gui
 
 open System
@@ -32,6 +31,8 @@ open Banshee.Sources
 open Banshee.Sources.Gui
 open Banshee.ServiceStack
 open Banshee.Dap.Bluetooth
+open Banshee.Dap.Bluetooth.Adapters
+open Banshee.Dap.Bluetooth.Devices
 open Banshee.Dap.Bluetooth.Client
 open Banshee.Dap.Bluetooth.DapGlueApi
 open Banshee.Dap.Bluetooth.InversionApi
@@ -45,86 +46,57 @@ module Constants =
     let SORT = 410 // Puts us in "Devices"
     let NAME = "Banshee.Dap.Bluetooth.Gui"
 
-type ManagerContents(s, dm: DeviceManager, cm: ClientManager) as this =
+type ManagerContents(s, am: AdapterManager, dm: DeviceManager, cm: ClientManager) =
     inherit VBox(false, 10)
-    let act = new AdaptersWidget(dm)
+    let act = new AdaptersWidget(am)
     let box = new VBox()
-    let awm = Dictionary<IBansheeAdapter,_>()
-    let dwm = Dictionary<IBansheeDevice,DeviceWidget>()
-    let mwm = Dictionary<IBansheeMediaControl,MediaControlWidget>()
+    let dwm = Dictionary<ObjectPath,DeviceWidget>()
+    let add p = let dw = new DeviceWidget(BansheeDevice(p, am, dm, cm))
+                dwm.[p] <- dw
+                box.PackStart (dw, false, false, 10u)
+    let rem p = use dw = dwm.[p]
+                box.Remove dw
+                dwm.Remove p |> ignore
     do
        base.PackStart (act, false, false, 10u)
        base.PackStart (box, true, true, 10u)
        base.ShowAll ()
-
-       act.PowerEvent.Add (fun o -> if dm.Powered <> act.Power then dm.Powered <- act.Power)
-       act.DiscoverEvent.Add (fun o -> if dm.Discovering <> act.Discovery then dm.Discovering <- act.Discovery)
-
-       dm.AdapterChanged.Add (fun o -> match o.Action with
-                                       | Added -> this.Add o.Adapter
-                                                  act.Refresh ()
-                                       | Changed -> act.Power <- dm.Powered
-                                                    act.Discovery <- dm.Discovering
-                                                    act.Refresh ()
-                                       | Removed -> this.Remove o.Adapter |> ignore
-                                                    act.Refresh ())
-       dm.DeviceChanged.Add (fun o -> match o.Action with
-                                      | Added -> this.Add o.Device
-                                      | Changed -> if dwm.ContainsKey o.Device then
-                                                     dwm.[o.Device].Refresh()
-                                      | Removed -> this.Remove o.Device |> ignore)
-       dm.MediaControlChanged.Add (fun o -> match o.Action with
-                                            | Added -> this.Add o.MediaControl
-                                            | Changed -> mwm.[o.MediaControl].Refresh()
-                                            | Removed -> this.Remove o.MediaControl |> ignore)
-
-       dm.Adapters |> Seq.iter (fun o -> this.Add o)
-       dm.Devices |> Seq.iter (fun o -> this.Add o)
-       dm.MediaControls |> Seq.iter (fun o -> this.Add o)
-    member x.Add (o: obj) = match o with
-                            | :? IBansheeAdapter as a -> awm.[a] <- null
-                                                         act.Power <- act.Power || a.Powered
-                                                         act.Discovery <- act.Discovery || a.Discovering
-                            | :? IBansheeDevice as d -> dwm.[d] <- new DeviceWidget(d, cm)
-                                                        box.PackStart (dwm.[d], false, false, 10u)
-                            //| :? IBansheeMediaControl as m -> mwm.[m] <- new MediaControlWidget(m)
-                            //                                  box.PackStart (mwm.[m], false, false, 10u)
-                            | _ -> ()
-    member x.Remove (o: obj) = match o with
-                               | :? IBansheeAdapter as a -> awm.Remove a
-                               | :? IBansheeDevice as d -> box.Remove dwm.[d]
-                                                           dwm.Remove d
-                               //| :? IBansheeMediaControl as m -> box.Remove mwm.[m]
-                               //                                  mwm.Remove m
-                               | _ -> false
+       dm.DeviceEvent.Add (fun o -> match o.Action with
+                                    | Added -> add o.Path
+                                    | Changed -> if dwm.ContainsKey o.Path then
+                                                   dwm.[o.Path].Refresh()
+                                    | Removed -> rem o.Path)
+       dm.TransportEvent.Add (fun o -> if dwm.ContainsKey o.Object.Device then
+                                         dwm.[o.Object.Device].Refresh())
+       dm.Devices |> Seq.iter (fun o -> add o)
     interface ISourceContents with
         member x.SetSource y = false
         member x.ResetSource () = ()
         member x.Widget with get () = x :> Widget
         member x.Source with get () = s
 
-type ManagerSource(dm: DeviceManager, cm: ClientManager) as this =
-    inherit Source (Functions.Singular "Bluetooth Manager",
+type ManagerSource(am: AdapterManager, dm: DeviceManager, cm: ClientManager) as this =
+    inherit Source (Singular "Bluetooth Manager",
                     "Bluetooth Manager",
                     Constants.SORT,
                     "extension-unique-id")
-    //let act = new ManagerActions(dm) // FIXME: ToggleButton/Switch ToolItem
     do printfn "Initializing ManagerSource"
        base.Properties.SetStringList ("Icon.Name", "bluetooth")
-       base.Properties.Set<ISourceContents> ("Nereid.SourceContents", new ManagerContents(this, dm, cm))
+       base.Properties.Set<ISourceContents> ("Nereid.SourceContents", new ManagerContents(this, am, dm, cm))
        base.Initialize ();
 
 type ManagerService(name: string) =
     do Log.DebugFormat ("Instantiating {0}", name)
+    let mutable am : AdapterManager = Unchecked.defaultof<_>
     let mutable dm : DeviceManager = Unchecked.defaultof<_>
     let mutable cm : ClientManager = Unchecked.defaultof<_>
     let mutable ms : ManagerSource = Unchecked.defaultof<_>
-    member x.DeviceManager = dm
     member x.Dispose () = ServiceManager.SourceManager.RemoveSource (ms)
     member x.ServiceName = name
-    member x.Initialize () = dm <- DeviceManager(Bus.System)
+    member x.Initialize () = am <- AdapterManager(Bus.System)
+                             dm <- DeviceManager(Bus.System)
                              cm <- ClientManager(Bus.Session)
-    member x.DelayedInitialize () = ms <- new ManagerSource(dm, cm)
+    member x.DelayedInitialize () = ms <- new ManagerSource(am, dm, cm)
                                     ServiceManager.SourceManager.AddSource (ms)
     interface IService with
         member x.ServiceName = x.ServiceName

@@ -23,7 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace Banshee.Dap.Bluetooth
+module Banshee.Dap.Bluetooth.Devices
 
 open System
 open System.ComponentModel
@@ -40,101 +40,85 @@ open Banshee.Dap.Bluetooth.ObexApi
 open Banshee.Dap.Bluetooth.SupportApi
 open Banshee.Dap.Bluetooth.InversionApi
 open Banshee.Dap.Bluetooth.Wrappers
-
-open Bluetooth
+open Banshee.Dap.Bluetooth.Adapters
 
 open DBus
 
-module Functions =
-    let SetKillswitch x =
-        use ks = new Killswitch()
-        let xs = match x with
-                 | true -> KillswitchState.SoftBlocked
-                 | false -> KillswitchState.Unblocked
-        match (xs, ks.State) with
-        | (xs, y) when xs = y -> true
-        | (_, KillswitchState.HardBlocked)
-        | (_, KillswitchState.NoAdapter) -> false
-        | (xs, _) -> ks.State <- xs
-                     true
+type Feature =
+    | Sync
+    | AudioOut
+    | AudioIn
+    | Headset
 
-module Constants =
-    let NAME_BLUEZ = "org.bluez"
+let UuidToFeature =
+    function | UUID_AUDIO_SINK   -> Some Feature.AudioOut
+             | UUID_AUDIO_SOURCE -> Some Feature.AudioIn
+             | UUID_HEADSET      -> Some Feature.Headset
+             | UUID_OBEXFTP      -> Some Feature.Sync
+             | _ -> None
+let FeatureToUuid =
+    function | Feature.AudioOut -> UUID_AUDIO_SINK
+             | Feature.AudioIn  -> UUID_AUDIO_SOURCE
+             | Feature.Headset  -> UUID_HEADSET
+             | Feature.Sync     -> UUID_OBEXFTP
+let FromUuids uuids =
+    uuids |> Seq.choose UuidToFeature
+          |> Set.ofSeq
 
-type AdapterChangedArgs(a:ObjectAction, p: ObjectPath, d: IBansheeAdapter) =
-    inherit ObjectChangedArgs(a, p, d)
-    member x.Adapter = d
-type DeviceChangedArgs(a:ObjectAction, p: ObjectPath, d: IBansheeDevice) =
-    inherit ObjectChangedArgs(a, p, d)
-    member x.Device = d
-type MediaControlArgs(a: ObjectAction, p: ObjectPath, m: IBansheeMediaControl) =
-    inherit ObjectChangedArgs(a, p, m)
-    member x.MediaControl = m
+type DBusEventArgs<'t>(a: ObjectAction, path: ObjectPath, obj: 't) =
+    inherit EventArgs()
+    member x.Action = a
+    member x.Path = path
+    member x.Object = obj
 
-type AdapterChangedHandler = delegate of obj * AdapterChangedArgs -> unit
-type DeviceChangedHandler = delegate of obj * DeviceChangedArgs -> unit
-type MediaControlHandler = delegate of obj * MediaControlArgs -> unit
-
-type DeviceManager(system: Bus) as this =
-    let oman = DBusInverter(system, Constants.NAME_BLUEZ, ObjectPath.Root)
-    let adapters = ConcurrentDictionary<_,IBansheeAdapter>() :> IDictionary<_,_>
-    let devices = ConcurrentDictionary<_,IBansheeDevice>() :> IDictionary<_,_>
-    let media = ConcurrentDictionary<_,IBansheeMediaControl>() :> IDictionary<_,_>
-    let ac = Event<AdapterChangedHandler,AdapterChangedArgs>()
-    let dc = Event<DeviceChangedHandler,DeviceChangedArgs>()
-    let mc = Event<MediaControlHandler,MediaControlArgs>()
+type DeviceManager(system: Bus) =
+    let oman = DBusInverter(system, NAME_BLUEZ, ObjectPath.Root)
+    let devices = ConcurrentDictionary<_,INotifyDevice>() :> IDictionary<_,_>
+    let media = ConcurrentDictionary<_,INotifyMediaControl>() :> IDictionary<_,_>
+    let transports = ConcurrentDictionary<_,INotifyMediaTransport>() :> IDictionary<_,_>
+    let notify_device = Event<_>()
+    let notify_media = Event<_>()
+    let notify_transport = Event<_>()
     let add (p: ObjectPath) (o: obj) =
         match box o with
-        | :? IBansheeAdapter as aw -> adapters.Add(p, aw)
-                                      aw.PropertyChanged.Add(fun o -> ac.Trigger(this, AdapterChangedArgs(Changed, p, aw)))
-                                      ac.Trigger (this, AdapterChangedArgs(Added, p, aw))
-        | :? IBansheeDevice as dw -> devices.Add(p, dw)
-                                     dw.PropertyChanged.Add(fun o -> dc.Trigger(this, DeviceChangedArgs(Changed, p, dw)))
-                                     dc.Trigger(this, DeviceChangedArgs(Added, p, dw))
-        | :? IBansheeMediaControl as mw -> media.Add(p, mw)
-                                           mc.Trigger(this, MediaControlArgs(Added, p, mw))
+        | :? INotifyDevice as dw -> devices.Add(p, dw)
+                                    notify_device.Trigger(DBusEventArgs(Added, p, dw))
+        | :? INotifyMediaControl as mcw -> media.Add(p, mcw)
+                                           notify_media.Trigger(DBusEventArgs(Added, p, mcw))
+        | :? INotifyMediaTransport as mtw -> transports.[p] <- mtw
+                                             notify_transport.Trigger(DBusEventArgs(Added, p, mtw))
         | _ -> o.ToString() |> printfn "Ignoring Added: %s"
     let rem (p: ObjectPath) (o: obj) =
         match o with
-        | :? IBansheeAdapter -> let a = adapters.[p]
-                                adapters.Remove p |> ignore
-                                ac.Trigger(this, AdapterChangedArgs(Removed, p, a))
-                                true
-        | :? IBansheeDevice -> let d = devices.[p]
-                               devices.Remove p |> ignore
-                               dc.Trigger(this, DeviceChangedArgs(Removed, p, d))
-                               true
-        | :? IBansheeMediaControl -> let m = media.[p]
-                                     media.Remove p |> ignore
-                                     mc.Trigger (this, MediaControlArgs(Removed, p, m))
-                                     true
+        | :? INotifyDevice as dw -> devices.Remove p |> ignore
+                                    notify_device.Trigger(DBusEventArgs(Removed, p, dw))
+                                    true
+        | :? INotifyMediaControl as mcw -> media.Remove p |> ignore
+                                           notify_media.Trigger(DBusEventArgs(Removed, p, mcw))
+                                           true
+        | :? INotifyMediaTransport as mtw -> transports.Remove p |> ignore
+                                             notify_transport.Trigger(DBusEventArgs(Removed, p, mtw))
+                                             true
         | _ -> o.ToString() |> printfn "Ignoring Removed: %s"
                false
     do
-        oman.Register<IAdapter> (fun o p -> let a = o :?> IAdapter
-                                            AdapterWrapper(a, p) :> obj)
-        oman.Register<IBluetoothDevice> (fun o p -> let d = o :?> IBluetoothDevice
-                                                    DeviceWrapper(d, p) :> obj)
+        oman.Register<IDevice> (fun o p -> let d = o :?> IDevice
+                                           DeviceWrapper(d, p) :> obj)
         oman.Register<IMediaControl> (fun o p -> let m = o :?> IMediaControl
                                                  MediaControlWrapper(m, p) :> obj)
+        oman.Register<IMediaTransport> (fun o p -> let m = o :?> IMediaTransport
+                                                   MediaTransportWrapper(m, p) :> obj)
         oman.ObjectChanged.Add(fun o -> match o.Action with
                                         | Added -> add o.Path o.Object
                                         | Removed -> rem o.Path o.Object |> ignore
                                         | _ -> ())
         oman.Refresh ()
-    member x.AdapterChanged = ac.Publish
-    member x.DeviceChanged = dc.Publish
-    member x.MediaControlChanged = mc.Publish
-    member x.Adapters = adapters.Values
-    member x.Devices = devices.Values
-    member x.MediaControls = media.Values
-    member x.Powered with get () = x.Adapters |> Seq.exists (fun (o: IBansheeAdapter) -> o.Powered)
-                     and set y =
-                        not y |> Functions.SetKillswitch |> ignore
-                        x.Adapters
-                        |> Seq.iter (fun (o: IBansheeAdapter) -> if y <> o.Powered then o.Powered <- y)
-    member x.Discovering with get () = Seq.exists (fun (o: IBansheeAdapter) -> o.Discovering) x.Adapters
-                         and set y = Seq.iter (fun (o: IBansheeAdapter) -> if o.Discovering <> y then
-                                                                             if y then Functions.SetKillswitch false |> ignore
-                                                                                       o.StartDiscovery ()
-                                                                             else o.StopDiscovery ()) x.Adapters
+    member x.DeviceEvent = notify_device.Publish
+    member x.MediaEvent = notify_media.Publish
+    member x.TransportEvent = notify_transport.Publish
+    member x.Devices = devices.Keys
+    member x.Device y = devices.[y]
+    member x.MediaControls = media.Keys
+    member x.MediaControl y = media.[y]
+    member x.Transports = transports.Keys
+    member x.Transport y = transports.[y]

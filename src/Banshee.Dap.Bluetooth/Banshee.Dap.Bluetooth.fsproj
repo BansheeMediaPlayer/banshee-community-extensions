@@ -49,8 +49,12 @@
     <Reference Include="Banshee.Widgets, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-thickclient</Package>
     </Reference>
-    <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gdk-sharp-3.0</Package>
+    </Reference>
     <Reference Include="Mono.Addins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <Reference Include="Hyena, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-hyena</Package>
@@ -61,12 +65,24 @@
     <Reference Include="Hyena.Data.Sqlite, Version=2.9.0.0, Culture=neutral">
       <Package>banshee-hyena-data-sqlite</Package>
     </Reference>
-    <Reference Include="dbus-sharp, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5675b0c3093115b5" />
-    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="cairo-sharp, Version=1.10.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="pango-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="dbus-sharp, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5675b0c3093115b5">
+      <Package>dbus-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>glib-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="cairo-sharp, Version=1.10.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="pango-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gio-sharp-3.0</Package>
+    </Reference>
     <Reference Include="Mono.Posix" />
     <Reference Include="Banshee.Dap">
       <HintPath>\usr\lib\banshee\Extensions\Banshee.Dap.dll</HintPath>
@@ -83,13 +99,16 @@
     <Compile Include="Banshee.Dap.Bluetooth\SupportApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\InversionApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Wrappers.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\AdapterManager.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\DeviceManager.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\ClientManager.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Crawler.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\DapGlueApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\BansheeDevice.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Gui\SpinButtons.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Gui\AdaptersWidget.fs" />
-    <Compile Include="Banshee.Dap.Bluetooth\Gui\DeviceWidget.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Gui\MediaControlWidget.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Gui\DeviceWidget.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Gui\ManagerSource.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />

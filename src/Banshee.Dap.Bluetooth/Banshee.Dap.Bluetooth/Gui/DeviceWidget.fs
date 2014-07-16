@@ -25,68 +25,90 @@
 // THE SOFTWARE.
 namespace Banshee.Dap.Bluetooth.Gui
 
+open System
 open Banshee.ServiceStack
+open Banshee.Dap.Bluetooth
 open Banshee.Dap.Bluetooth.Wrappers
+open Banshee.Dap.Bluetooth.Devices
 open Banshee.Dap.Bluetooth.Client
 open Banshee.Dap.Bluetooth.DapGlueApi
+open Banshee.Dap.Bluetooth.SupportApi
+open Banshee.Dap.Bluetooth.Gui.SpinButtons
 open Gtk
 
-type DeviceWidget(dev: IBansheeDevice, cm: ClientManager) as this =
-    inherit HBox(false, 4)
+type DeviceWidget(dev: IBansheeDevice) =
+    inherit VBox(false, 5, MarginLeft = 10, MarginRight = 10)
     static let PIXBUF_PREFS = "gnome-settings"
     static let PIXBUF_PAIR = Gdk.Pixbuf.LoadFromResource("paired-black.png")
     static let PIXBUF_SYNC = Gdk.Pixbuf.LoadFromResource("21cc-sync.png")
     static let PIXBUF_AI = "audio-input-microphone"
     static let PIXBUF_AO = "audio-speakers"
     static let PIXBUF_HS = "audio-headphones"
-    let icon = new Image()
+    let dev_bt = dev.Device
+    let mutable mcw = Unchecked.defaultof<_>
+    let line1 = new HBox(false, 5)
+    let line2 = new HBox(false, 0)
+    let sbox = new HBox(false, 5)
+    let icon = new Image(IconName = IconOf dev_bt)
     let label = new Label(UseMarkup = true)
-    let bbox = new HBox(true, 10)
     let ai = new ToggleButton(Image = new Image(IconName = PIXBUF_AI))
     let ao = new ToggleButton(Image = new Image(IconName = PIXBUF_AO))
     let hs = new ToggleButton(Image = new Image(IconName = PIXBUF_HS))
     let pair = new ToggleButton(Image = new Image(PIXBUF_PAIR))
-    let conf = new ToggleButton(Image = new Image(PIXBUF_SYNC))
-    let src = ref None
-    let DeviceString () = if dev.Connected then
-                            sprintf "<b>%s</b>" dev.Alias
-                          else
-                            sprintf "%s" dev.Alias
-    do  base.PackStart (icon, false, false, 0u)
-        base.PackStart (label, false, false, 0u)
-        bbox.PackEnd (pair, false, false, 0u)
-        bbox.PackEnd (conf, false, false, 0u)
-        bbox.PackEnd (ai, false, false, 0u)
-        bbox.PackEnd (ao, false, false, 0u)
-        bbox.PackEnd (hs, false, false, 0u)
-        base.PackEnd (bbox, false, false, 10u)
+    let conn = new ToggleButton(Image = new Image(PIXBUF_SYNC))
+    let time = new TimeSpinButton(Sensitive = false)
+    let has_ai () = dev.HasSupport Feature.AudioIn
+    let has_ao () = dev.HasSupport Feature.AudioOut
+    let has_hs () = dev.HasSupport Feature.Headset
+    let has_sy () = dev.HasSupport Feature.Sync
+    let act_ai () = dev.IsConnected Feature.AudioIn
+    let act_ao () = dev.IsConnected Feature.AudioOut
+    let act_hs () = dev.IsConnected Feature.Headset
+    let act_sy () = dev.IsConnected Feature.Sync
+    let act x y f = match (x, y()) with
+                    | (true, false) -> dev.Connect f
+                    | (false, true) -> dev.Disconnect f
+                    | _ -> ()
+    let markup () = if dev_bt.Connected then
+                      sprintf "<b>%s</b>" dev_bt.Alias
+                    else
+                      dev_bt.Alias
+    let fresh () = pair.Visible <- not dev_bt.Paired
+                   label.Markup <- markup()
+                   ai.Active <- act_ai()
+                   ao.Active <- act_ao()
+                   hs.Active <- act_hs()
+                   conn.Active <- act_sy()
+                   ai.Visible <- has_ai()
+                   ao.Visible <- has_ao()
+                   hs.Visible <- has_hs()
+                   sbox.Visible <- has_sy()
+                   match (dev.MediaControl, IsNull mcw) with
+                   | (Some mc, true) -> mcw <- new MediaControlWidget(mc)
+                                        line2.PackStart (mcw, true, true, 0u)
+                   | (None, false) -> line2.Remove mcw
+                                      mcw.Dispose ()
+                                      mcw <- Unchecked.defaultof<_>
+                   | _ -> ()
+    do  sbox.PackStart (time, false, false, 0u)
+        sbox.PackStart (conn, false, false, 0u)
+        line1.PackStart (pair, false, false, 0u)
+        line1.PackStart (icon, false, false, 0u)
+        line1.PackStart (label, false, false, 0u)
+        line1.PackEnd (ai, false, false, 0u)
+        line1.PackEnd (ao, false, false, 0u)
+        line1.PackEnd (hs, false, false, 0u)
+        line1.PackEnd (sbox, false, false, 0u)
+        base.PackStart (line1, false, false, 0u)
+        base.PackStart (line2, false, false, 0u)
         base.ShowAll ()
-        pair.Clicked.Add(fun o -> match (pair.Active, dev.Paired) with
-                                  | (true, false) -> dev.Pair ()
+        fresh ()
+        pair.Toggled.Add(fun o -> match (pair.Active, dev_bt.Paired) with
+                                  | (true, false) -> dev_bt.Pair ()
                                   | _ -> ())
-        ai.Clicked.Add(fun o -> match (ai.Active, dev.Connected) with
-                                | (true, false) -> dev.ConnectProfile Constants.UUID_AUDIO_SOURCE
-                                | (false, true) -> dev.DisconnectProfile Constants.UUID_AUDIO_SOURCE
-                                | _ -> ())
-        ao.Clicked.Add(fun o -> match (ao.Active, dev.Connected) with
-                                | (true, false) -> dev.ConnectProfile Constants.UUID_AUDIO_SINK
-                                | (false, true) -> dev.DisconnectProfile Constants.UUID_AUDIO_SINK
-                                | _ -> ())
-        conf.Clicked.Add(fun o -> match (conf.Active, !src) with
-                                  | (true, None) -> let d = new BluetoothDevice(dev)
-                                                    let s = new BluetoothSource(d, cm)
-                                                    s.LoadDeviceContents ()
-                                                    src := Some s
-                                                    ServiceManager.SourceManager.AddSource (s)
-                                  | (false, Some x) -> x.Unmap() |> ignore
-                                                       ServiceManager.SourceManager.RemoveSource (x)
-                                                       src := None
-                                  | _ -> ())
-        this.Refresh ()
-    member x.Refresh () : unit = icon.IconName <- Functions.IconOf dev
-                                 label.Markup <- DeviceString()
-                                 ai.Visible <- dev.AudioOut
-                                 ao.Visible <- dev.AudioIn
-                                 hs.Visible <- dev.Headset
-                                 conf.Visible <- dev.Sync
-                                 pair.Visible <- not dev.Paired
+        ai.Toggled.Add(fun o -> act ai.Active act_ai Feature.AudioIn)
+        ao.Toggled.Add(fun o -> act ao.Active act_ao Feature.AudioOut)
+        hs.Toggled.Add(fun o -> act hs.Active act_hs Feature.Headset)
+        conn.Toggled.Add(fun o -> act conn.Active act_sy Feature.Sync)
+        dev.Notify.Add(fun o -> fresh ())
+    member x.Refresh () = fresh ()

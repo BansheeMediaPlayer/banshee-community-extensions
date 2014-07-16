@@ -23,11 +23,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace Banshee.Dap.Bluetooth.DBusApi
+module Banshee.Dap.Bluetooth.DBusApi
 
 open System
 open System.Collections.Generic
 open DBus
+
+[<Literal>]
+let IF_DBUS_PROPERTIES = "org.freedesktop.DBus.Properties"
+[<Literal>]
+let IF_DBUS_OBJ_MANAGER = "org.freedesktop.DBus.ObjectManager"
 
 type Functions =
     static member InterfaceOf (x: Type) =
@@ -38,20 +43,13 @@ type Functions =
         | _ -> x.FullName
     static member InterfaceOf<'t> () = Functions.InterfaceOf typeof<'t>
 
-
-module Constants =
-    [<Literal>]
-    let IF_DBUS_PROPERTIES = "org.freedesktop.DBus.Properties"
-    [<Literal>]
-    let IF_DBUS_OBJ_MANAGER = "org.freedesktop.DBus.ObjectManager"
-
 type StringVariantMap = Dictionary<string,obj>
 type InterfacePropertyMap = Dictionary<string,StringVariantMap>
 type ObjectInterfacePropertyMap = Dictionary<ObjectPath,InterfacePropertyMap>
 
 type PropertiesChangedHandler = delegate of string * StringVariantMap * string[] -> unit
 
-[<Interface (Constants.IF_DBUS_PROPERTIES)>]
+[<Interface (IF_DBUS_PROPERTIES)>]
 type IProperties =
     abstract member Get : string -> string -> obj
     abstract member Set : string -> string -> obj -> unit
@@ -62,7 +60,7 @@ type IProperties =
 type InterfacesAddedHandler = delegate of ObjectPath * InterfacePropertyMap -> unit
 type InterfacesRemovedHandler = delegate of ObjectPath * string[] -> unit
 
-[<Interface (Constants.IF_DBUS_OBJ_MANAGER)>]
+[<Interface (IF_DBUS_OBJ_MANAGER)>]
 type IObjectManager =
     abstract member GetManagedObjects : unit -> ObjectInterfacePropertyMap
     [<CLIEvent>]

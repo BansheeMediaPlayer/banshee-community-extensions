@@ -23,7 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace Banshee.Dap.Bluetooth.DapGlueApi
+module Banshee.Dap.Bluetooth.DapGlueApi
 
 open System
 open System.IO
@@ -51,87 +51,86 @@ open Hyena
 open Hyena.Data.Sqlite
 open Mono.Addins
 
-module Functions =
-    let Singular x = AddinManager.CurrentLocalizer.GetString x
-    let Plural x xs n = AddinManager.CurrentLocalizer.GetPluralString (x, xs, n)
-    let inline IconOf< ^a when ^a : (member Icon : string)> (x: ^a) : string =
-        let icon = (^a : (member Icon : string) (x))
-        if Functions.IsNull icon then "bluetooth"
-        else icon
-    let inline VendorProductDeviceOf< ^t when ^t : (member Modalias : string)> (x: ^t) =
-        let parse x = Int16.Parse(x, NumberStyles.HexNumber)
-        let def = (-1s, -1s, -1s)
-        try
-          let alias = (^t : (member Modalias : string) (x))
-          let vpd = alias.Remove(0, alias.LastIndexOf(":") + 1)
-          let parts = vpd.Split("vpd".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
-          match parts.Length with
-          | 3 -> let v = parse parts.[0]
-                 let p = parse parts.[1]
-                 let d = parse parts.[2]
-                 (v, p, d)
-          | _ -> def
-        with
-        | _ -> def
-    let SafeUriOf x = SafeUri(Uri("bt:///" + String.Join("/", List.rev x)))
-    let Iterate (ftp: ICrawler) root =
-        let ListFolder path = ftp.List()
-        let rec InnerIterate root (path: string list) (acc: RemoteNode list) =
-            if ftp.Down root then
-              let path = root::path
-              let children =
-                ListFolder path
-                |> Seq.fold (fun state i ->
-                  let state = i::state
-                  match i.ntype with
-                  | File -> state
-                  | Folder -> InnerIterate i.name path state) []
-              ftp.Up()
-              acc@children
-            else acc
-        InnerIterate root [] []
-    let FuzzyLookup (x: DatabaseTrackInfo) =
-        let TrackIdOf (i: int) (x: string) (sz: int64) =
-            let faq = HyenaSqliteCommand("select TrackID from CoreTracks where " +
-                                         "FileSize = ? and " +
-                                         "TrackNumber = ? and Title like ? limit 1")
-            ServiceManager.DbConnection.Query<int64>(faq, sz, i, "%" + x + "%")
-        let ArtistIdOf (x: string) =
-            let faq = HyenaSqliteCommand("select ArtistID from CoreArtists where " +
-                                         "Name like ? limit 1")
-            ServiceManager.DbConnection.Query<int>(faq, "%" + x + "%")
-        let AlbumIdOf (x: int) (y: string) =
-            let faq = HyenaSqliteCommand("select AlbumID from CoreAlbums where " +
-                                         "ArtistID = ? and Title like ? limit 1")
-            ServiceManager.DbConnection.Query<int>(faq, x, "%" + y + "%")
-        try
-          let tid = TrackIdOf x.TrackNumber x.TrackTitle x.FileSize
-          if 0L <> tid then
-            printfn "Got Lucky: %d => %d. %s at %d bytes"
-              tid x.TrackNumber x.TrackTitle x.FileSize
-            DatabaseTrackInfo.Provider.FetchSingle tid
-          else
-            match (x.ArtistName, x.AlbumTitle) with
-            | (null, null) | ("", "") ->
-              printfn "No Help: %d. %s at %d bytes"
-                x.TrackNumber x.TrackTitle x.FileSize
-              x
-            | _ ->
-              let art = ArtistIdOf x.ArtistName
-              let alb = AlbumIdOf art x.AlbumTitle
-              let num = x.TrackNumber
-              let ttl = "%" + x.TrackTitle + "%"
-              let faq = "PrimarySourceID = 1 and CoreTracks.ArtistID = ? " +
-                        "and CoreTracks.AlbumID = ? and CoreTracks.TrackNumber = ? " +
-                        "and CoreTracks.Title like ?"
-              let dti = DatabaseTrackInfo.Provider.FetchFirstMatching(faq, art, alb, num, ttl)
-              if Functions.IsNull dti then
-                printfn "No Help: by %s from %s - %d. %s at %d bytes"
-                  x.ArtistName x.AlbumTitle x.TrackNumber x.TrackTitle x.FileSize
-                x
-              else dti
-        with
-        | _ -> x
+let Singular x = AddinManager.CurrentLocalizer.GetString x
+let Plural x xs n = AddinManager.CurrentLocalizer.GetPluralString (x, xs, n)
+let inline IconOf< ^a when ^a : (member Icon : string)> (x: ^a) : string =
+    let icon = (^a : (member Icon : string) (x))
+    if IsNull icon then "bluetooth"
+    else icon
+let inline VendorProductDeviceOf< ^t when ^t : (member Modalias : string)> (x: ^t) =
+    let parse x = Int16.Parse(x, NumberStyles.HexNumber)
+    let def = (-1s, -1s, -1s)
+    try
+      let alias = (^t : (member Modalias : string) (x))
+      let vpd = alias.Remove(0, alias.LastIndexOf(":") + 1)
+      let parts = vpd.Split("vpd".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
+      match parts.Length with
+      | 3 -> let v = parse parts.[0]
+             let p = parse parts.[1]
+             let d = parse parts.[2]
+             (v, p, d)
+      | _ -> def
+    with
+    | _ -> def
+let SafeUriOf x = SafeUri(Uri("bt:///" + String.Join("/", List.rev x)))
+let Iterate (ftp: ICrawler) root =
+    let ListFolder path = ftp.List()
+    let rec InnerIterate root (path: string list) (acc: RemoteNode list) =
+        if ftp.Down root then
+          let path = root::path
+          let children =
+            ListFolder path
+            |> Seq.fold (fun state i ->
+              let state = i::state
+              match i.ntype with
+              | File -> state
+              | Folder -> InnerIterate i.name path state) []
+          ftp.Up()
+          acc@children
+        else acc
+    InnerIterate root [] []
+let FuzzyLookup (x: DatabaseTrackInfo) =
+    let TrackIdOf (i: int) (x: string) (sz: int64) =
+        let faq = HyenaSqliteCommand("select TrackID from CoreTracks where " +
+                                     "FileSize = ? and " +
+                                     "TrackNumber = ? and Title like ? limit 1")
+        ServiceManager.DbConnection.Query<int64>(faq, sz, i, "%" + x + "%")
+    let ArtistIdOf (x: string) =
+        let faq = HyenaSqliteCommand("select ArtistID from CoreArtists where " +
+                                     "Name like ? limit 1")
+        ServiceManager.DbConnection.Query<int>(faq, "%" + x + "%")
+    let AlbumIdOf (x: int) (y: string) =
+        let faq = HyenaSqliteCommand("select AlbumID from CoreAlbums where " +
+                                     "ArtistID = ? and Title like ? limit 1")
+        ServiceManager.DbConnection.Query<int>(faq, x, "%" + y + "%")
+    try
+      let tid = TrackIdOf x.TrackNumber x.TrackTitle x.FileSize
+      if 0L <> tid then
+        printfn "Got Lucky: %d => %d. %s at %d bytes"
+          tid x.TrackNumber x.TrackTitle x.FileSize
+        DatabaseTrackInfo.Provider.FetchSingle tid
+      else
+        match (x.ArtistName, x.AlbumTitle) with
+        | (null, null) | ("", "") ->
+          printfn "No Help: %d. %s at %d bytes"
+            x.TrackNumber x.TrackTitle x.FileSize
+          x
+        | _ ->
+          let art = ArtistIdOf x.ArtistName
+          let alb = AlbumIdOf art x.AlbumTitle
+          let num = x.TrackNumber
+          let ttl = "%" + x.TrackTitle + "%"
+          let faq = "PrimarySourceID = 1 and CoreTracks.ArtistID = ? " +
+                    "and CoreTracks.AlbumID = ? and CoreTracks.TrackNumber = ? " +
+                    "and CoreTracks.Title like ?"
+          let dti = DatabaseTrackInfo.Provider.FetchFirstMatching(faq, art, alb, num, ttl)
+          if IsNull dti then
+            printfn "No Help: by %s from %s - %d. %s at %d bytes"
+              x.ArtistName x.AlbumTitle x.TrackNumber x.TrackTitle x.FileSize
+            x
+          else dti
+    with
+    | _ -> x
 
 type BluetoothCapabilities() =
     interface IDeviceMediaCapabilities with
@@ -147,9 +146,9 @@ type BluetoothCapabilities() =
         member x.PlaylistFormats = [||]
         member x.PlaylistPaths = [||]
 
-type BluetoothDevice(dev: IBansheeDevice) =
-    let vpd = Functions.VendorProductDeviceOf dev
-    let icon = Functions.IconOf dev
+type BluetoothDevice(dev: DeviceApi.IDevice) =
+    let vpd = VendorProductDeviceOf dev
+    let icon = IconOf dev
     member x.Icon = icon
     member x.Uuid = dev.Modalias
     member x.Serial = dev.Address
@@ -173,17 +172,29 @@ type BluetoothDevice(dev: IBansheeDevice) =
         member x.ResolveUsbPortInfo () = x.ResolveUsbPortInfo ()
 
 type BluetoothSource(dev: BluetoothDevice, cm: ClientManager) =
-    inherit DapSource() with
+    inherit DapSource()
     let ftp = Crawler(dev.Device.Address, cm)
+    let ue = Event<_>()
+    do base.SupportsVideo <- false
+       base.SupportsPlaylists <- false
+    member x.Ejected = ue.Publish
     override x.IsReadOnly = false
     override x.BytesUsed = 0L
     override x.BytesCapacity = Int64.MaxValue
     override x.Import () = ()
     override x.CanImport = false
     override x.GetIconNames () = [| dev.Icon |]
-    override x.Eject () = ftp.Drop ()
+    override x.Eject () =
+        base.Eject ()
+        ftp.Drop ()
+        ue.Trigger()
+    override x.DeviceInitialize dev =
+        base.DeviceInitialize dev
+        if ftp.Init () |> not then
+          failwith "Crawler Initialisation Failed."
+        x.Initialize ()
     override x.LoadFromDevice () =
-        base.SetStatus (Functions.Singular "Loading Track Information...", false)
+        base.SetStatus (Singular "Loading Track Information...", false)
         let nne (f: string) (x: DatabaseTrackInfo) =
             let fn = Path.GetFileNameWithoutExtension f
             let ex = Path.GetExtension f
@@ -203,16 +214,16 @@ type BluetoothSource(dev: BluetoothDevice, cm: ClientManager) =
             | fn::root::[] -> nne fn x
             | _ -> failwith "Case Not Possible: %A" rn
             x.FileSize <- Convert.ToInt64 rn.size
-            x.Uri <- Functions.SafeUriOf fp
-        let files = Functions.Iterate ftp dev.MediaCapabilities.AudioFolders.[0]
+            x.Uri <- SafeUriOf fp
+        let files = Iterate ftp dev.MediaCapabilities.AudioFolders.[0]
         files |> List.iteri (fun i f ->
-            let txt = Functions.Singular "Processing Track {0} of {1}\u2026"
+            let txt = Singular "Processing Track {0} of {1}\u2026"
             x.SetStatus (String.Format (txt, i, files.Length), false)
             match (f.ntype, ToMimeType f.name) with
             | (File,m) when IsAudio m ->
                 let dti = DatabaseTrackInfo(PrimarySource = x)
                 fx f dti
-                let look = Functions.FuzzyLookup dti
+                let look = FuzzyLookup dti
                 DatabaseTrackInfo(look, Uri = dti.Uri, PrimarySource = x).Save(false)
             | (Folder,f) -> ()
             | _ -> ())
@@ -224,7 +235,7 @@ type BluetoothSource(dev: BluetoothDevice, cm: ClientManager) =
           let fsttl = FileNamePattern.Escape y.DisplayTrackTitle
           let mt = ToMimeType y.MimeType
           let fn = sprintf "%02d. %s.%s" y.TrackNumber fsttl (ExtensionOf mt)
-          let uri = Functions.SafeUriOf (fn::fsalb::fsart::root::[])
+          let uri = SafeUriOf (fn::fsalb::fsart::root::[])
 
           ftp.Path <- fsalb::fsart::root::[]
           ftp.PutFile z.AbsolutePath fn |> ignore
@@ -251,8 +262,3 @@ type BluetoothSource(dev: BluetoothDevice, cm: ClientManager) =
         printfn "DeleteTrack: %s" uepath
         uepath.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
         |> List.ofArray |> del
-    do base.SupportsVideo <- false
-       base.SupportsPlaylists <- false
-       base.DeviceInitialize dev
-       base.Initialize ()
-       base.TrackEqualHandler <- fun dti ti -> dti.Uri = ti.Uri

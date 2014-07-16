@@ -23,9 +23,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace Banshee.Dap.Bluetooth.Ftp
+module Banshee.Dap.Bluetooth.Ftp
 
 open System
+open System.Threading
 open System.Collections
 open System.Collections.Generic
 open System.Text
@@ -36,6 +37,8 @@ open Banshee.Dap.Bluetooth.Wrappers
 open Banshee.Dap.Bluetooth.SupportApi
 
 open DBus
+
+let DEFAULT_TRIES_MAX = 60us
 
 type NodeType = | Folder | File
 
@@ -49,56 +52,56 @@ type RemoteNode = {
     mtime : uint64
     }
 
-module Functions =
-    let rec PrefixOf x y =
-        match (x, y) with
-        | ([],ys) -> Some ys
-        | (xn::xs,yn::ys) when xn = yn -> PrefixOf xs ys
-        | (_,_) -> None
-    let SuffixOf x y =
-        let xr = List.rev x
-        let yr = List.rev y
-        PrefixOf xr yr
-    let NodeTypeOf x = match x.ToString() with
-                       | "file" -> File
-                       | "folder" -> Folder
-                       | _ -> failwith "Invalid Node Type: %s" x
-    let RemoteNodeOf path (x: Map<string,_>) =
-        let UInt64Of x = let v = ref 0UL
-                         UInt64.TryParse(x.ToString(), v) |> ignore
-                         !v
-        let LookupOrDefaultOf tv key def =
-            let v = Map.tryFind key x
-            match v with
-            | Some v -> tv v
-            | None -> def
-        let nm = x.["Name"].ToString()
-        let nt = x.["Type"].ToString() |> NodeTypeOf
-        let size = LookupOrDefaultOf UInt64Of "Size" 0UL
-        let ctime = LookupOrDefaultOf UInt64Of "Created" 0UL
-        let atime = LookupOrDefaultOf UInt64Of "Accessed" 0UL
-        let mtime = LookupOrDefaultOf UInt64Of "Modified" 0UL
-        { path = path;
-          name = nm;
-          ntype = nt;
-          size = size;
-          ctime = ctime;
-          atime = atime;
-          mtime = mtime }
-    let rec PrintMap x =
-        let PrintVal (v: obj) = match v with
-                                | :? IDictionary as vd -> "{ " + PrintMap vd + " }"
-                                | _ -> sprintf "%s" (v.ToString())
-        let sb = StringBuilder()
-        for key in x.Keys do
-            sb.AppendLine(sprintf "%s => %s" (key.ToString()) (PrintVal x.[key])) |> ignore
-        sb.ToString()
-    let DictConv x = x |> Seq.map (|KeyValue|) |> Map.ofSeq
-    let ToDict (x: KeyValuePair<_,_>[]) = x :> seq<_> |> DictConv
-    let ToNodeSeq path nodes =
-        nodes |> Seq.map (fun afi -> ToDict afi |> RemoteNodeOf path)
+let rec PrefixOf x y =
+    match (x, y) with
+    | ([],ys) -> Some ys
+    | (xn::xs,yn::ys) when xn = yn -> PrefixOf xs ys
+    | (_,_) -> None
+let SuffixOf x y =
+    let xr = List.rev x
+    let yr = List.rev y
+    PrefixOf xr yr
+let NodeTypeOf x = match x.ToString() with
+                   | "file" -> File
+                   | "folder" -> Folder
+                   | _ -> failwith "Invalid Node Type: %s" x
+let RemoteNodeOf path (x: Map<string,_>) =
+    let UInt64Of x = let v = ref 0UL
+                     UInt64.TryParse(x.ToString(), v) |> ignore
+                     !v
+    let LookupOrDefaultOf tv key def =
+        let v = Map.tryFind key x
+        match v with
+        | Some v -> tv v
+        | None -> def
+    let nm = x.["Name"].ToString()
+    let nt = x.["Type"].ToString() |> NodeTypeOf
+    let size = LookupOrDefaultOf UInt64Of "Size" 0UL
+    let ctime = LookupOrDefaultOf UInt64Of "Created" 0UL
+    let atime = LookupOrDefaultOf UInt64Of "Accessed" 0UL
+    let mtime = LookupOrDefaultOf UInt64Of "Modified" 0UL
+    { path = path;
+      name = nm;
+      ntype = nt;
+      size = size;
+      ctime = ctime;
+      atime = atime;
+      mtime = mtime }
+let rec PrintMap x =
+    let PrintVal (v: obj) = match v with
+                            | :? IDictionary as vd -> "{ " + PrintMap vd + " }"
+                            | _ -> sprintf "%s" (v.ToString())
+    let sb = StringBuilder()
+    for key in x.Keys do
+        sb.AppendLine(sprintf "%s => %s" (key.ToString()) (PrintVal x.[key])) |> ignore
+    sb.ToString()
+let DictConv x = x |> Seq.map (|KeyValue|) |> Map.ofSeq
+let ToDict (x: KeyValuePair<_,_>[]) = x :> seq<_> |> DictConv
+let ToNodeSeq path nodes =
+    nodes |> Seq.map (fun afi -> ToDict afi |> RemoteNodeOf path)
 
 type ICrawler =
+    abstract Init : unit -> bool
     abstract Up : unit -> unit
     abstract Up : int -> unit
     abstract Root : unit -> unit
@@ -111,7 +114,8 @@ type ICrawler =
     abstract PutFile : string -> string -> ObjectPath
     abstract Path : string list with get, set
 
-type Crawler(addr: string, cm: ClientManager) =
+type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
+    let mutable fails = max_tries
     let mutable path : string list = []
     let mutable ops : ObjectPath = Unchecked.defaultof<_>
     let check (e: Exception) =
@@ -119,9 +123,11 @@ type Crawler(addr: string, cm: ClientManager) =
         | "org.bluez.obex.Error.Failed: Not Found" -> ()
         | "org.bluez.obex.Error.Failed: Unable to find service record"
         | "org.bluez.obex.Error.Failed: The transport is not connected" ->
+          if max_tries >= fails then raise e
           printfn "%s: %s" (e.GetType().FullName) e.Message
           ops <- Unchecked.defaultof<_>
           path <- []
+          fails <- 1us + fails
         | "org.freedesktop.DBus.Error.NoReply: Message did not receive a reply (timeout by message bus)"
         | "Object reference not set to an instance of an object" ->
           raise e
@@ -129,16 +135,23 @@ type Crawler(addr: string, cm: ClientManager) =
                raise e
     let rec root () =
         try
-          match (Functions.IsNull ops, cm.Session ops) with
-          | (_, Some s) -> s
+          match (IsNull ops, cm.Session ops) with
+          | (_, Some s) -> fails <- 0us
+                           s
           | (true, None) -> printfn "Creating Session"
                             ops <- cm.CreateSession addr Ftp
                             root()
-          | (false, None) -> System.Threading.Thread.Sleep 500
+          | (false, None) -> Thread.Sleep 500
                              root()
         with
         | e -> check e
                root()
+    member x.Init () =
+        try
+          root() |> ignore
+          true
+        with
+        | _ -> false
     member x.Up () =
         match path with
         | [] -> ()
@@ -152,12 +165,14 @@ type Crawler(addr: string, cm: ClientManager) =
     member x.Root () = x.Up path.Length
     member x.List () =
         try
-          root().ListFolder() |> Functions.ToNodeSeq path
+          root().ListFolder() |> ToNodeSeq path
         with
         | e -> check e; Seq.empty
     member x.Drop () =
+        fails <- max_tries
         match cm.Session ops with
         | Some _ -> cm.RemoveSession ops
+                    ops <- Unchecked.defaultof<_>
         | None -> ()
     member x.Down y =
         try
@@ -179,7 +194,7 @@ type Crawler(addr: string, cm: ClientManager) =
                false
     member x.MkDn y = (x.Down y || x.Make y) |> ignore
     member private x.Crawl dest =
-        let suffix = Functions.SuffixOf path dest
+        let suffix = SuffixOf path dest
         printfn "%A" suffix
         match suffix with
         // In the directory
@@ -205,6 +220,7 @@ type Crawler(addr: string, cm: ClientManager) =
     member x.Path with get () = path
                   and set v = x.Crawl v
     interface ICrawler with
+        member x.Init () = x.Init ()
         member x.Up () = x.Up ()
         member x.Up y = x.Up y
         member x.Root () = x.Root ()
@@ -217,3 +233,4 @@ type Crawler(addr: string, cm: ClientManager) =
         member x.PutFile y z = x.PutFile y z
         member x.Path with get () = x.Path
                       and set v = x.Path <- v
+    new (addr, cm) = Crawler(addr, cm, DEFAULT_TRIES_MAX)

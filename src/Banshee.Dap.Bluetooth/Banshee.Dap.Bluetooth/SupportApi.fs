@@ -23,8 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
-namespace Banshee.Dap.Bluetooth.SupportApi
+module Banshee.Dap.Bluetooth.SupportApi
 
 open System
 open System.ComponentModel
@@ -35,17 +34,16 @@ open Banshee.Dap.Bluetooth.DBusApi
 
 open DBus
 
-module Functions =
-    let Merge (y: seq<KeyValuePair<'a,'b>>) (x: IDictionary<'a,'b>) =
-        for z in y do x.[z.Key] <- z.Value
-        x
-    let inline IsNull< ^a when ^a : not struct> (x: ^a) =
-        obj.ReferenceEquals (x, Unchecked.defaultof<_>)
+let Merge (y: seq<KeyValuePair<'a,'b>>) (x: IDictionary<'a,'b>) =
+    for z in y do x.[z.Key] <- z.Value
+    x
+let inline IsNull< ^a when ^a : not struct> (x: ^a) =
+    obj.ReferenceEquals (x, Unchecked.defaultof<_>)
 
 type PropertiesUpdatedArgs(i: string, ps: string[]) =
-        inherit EventArgs()
-        member x.Interface with get () = i
-        member x.Properties with get() = ps
+    inherit EventArgs()
+    member x.Interface with get () = i
+    member x.Properties with get() = ps
 
 type PropertiesUpdatedHandler = delegate of obj * PropertiesUpdatedArgs -> unit
 
@@ -63,7 +61,7 @@ type PropertyManager(bus: Bus, name: string, path: ObjectPath, ipv: InterfacePro
     let op = bus.GetObject<IProperties>(name, path)
     let ce = Event<_,_>()
     do op.add_PropertiesChanged(fun i pv ip -> if not (this.Has i) then ipv.[i] <- pv
-                                               else Functions.Merge pv ipv.[i] |> ignore
+                                               else Merge pv ipv.[i] |> ignore
                                                for p in ip do ipv.[i].[p] <- null
                                                let pu = Array.append (pv.Keys.ToArray()) ip
                                                let arg = new PropertiesUpdatedArgs(i, pu)
@@ -95,15 +93,20 @@ type PropertyManager(bus: Bus, name: string, path: ObjectPath, ipv: InterfacePro
 
 type Factory = obj -> IPropertyManager -> obj
 
-type IDBusWrapper =
-    inherit IEquatable<IDBusWrapper>
+type IDBusContainer =
+    inherit IEquatable<IDBusContainer>
     inherit IComparable
-    inherit IComparable<IDBusWrapper>
+    inherit IComparable<IDBusContainer>
     abstract Name : string with get
     abstract Path : ObjectPath with get
+    abstract Get : unit -> 't option
+
+type IDBusWrapper =
+    inherit IDBusContainer
     abstract Pop : Type -> obj option
     abstract Put : Type -> Factory -> obj option
-    abstract Get : unit -> 't option
+    abstract IsEmpty : bool with get
+    abstract Properties : IPropertyManager with get
 
 type DBusWrapper(bus: Bus, name: string, path: ObjectPath, ps: IPropertyManager) =
     let tim = Dictionary<Type, string>()
@@ -117,7 +120,6 @@ type DBusWrapper(bus: Bus, name: string, path: ObjectPath, ps: IPropertyManager)
            let o = iom.[i]
            iom.Remove i |> ignore
            tim.Remove t |> ignore
-           ps.Not i
            Some o
          else None
     member x.Put t f =
@@ -138,6 +140,7 @@ type DBusWrapper(bus: Bus, name: string, path: ObjectPath, ps: IPropertyManager)
           Some o
         with
         | _ -> None
+    member x.IsEmpty = 0 = iom.Count
     member x.CompareTo (y: obj) =
         match y with
         | :? IDBusWrapper as y -> let xt = (x.Name, x.Path)
@@ -149,15 +152,18 @@ type DBusWrapper(bus: Bus, name: string, path: ObjectPath, ps: IPropertyManager)
         | :? IDBusWrapper as ydw -> x.Name = ydw.Name && x.Path = ydw.Path
         | _ -> false
     override x.GetHashCode () = x.Name.GetHashCode() ^^^ x.Path.GetHashCode()
-    interface IDBusWrapper with
+    interface IDBusContainer with
         member x.Name = x.Name
         member x.Path = x.Path
         member x.Equals y = x.Equals y
-        member x.CompareTo (y: IDBusWrapper) = x.CompareTo y
+        member x.CompareTo (y: IDBusContainer) = x.CompareTo y
         member x.CompareTo (y: obj) = x.CompareTo y
+        member x.Get () = x.Get ()
+    interface IDBusWrapper with
+        member x.IsEmpty = x.IsEmpty
         member x.Pop t = x.Pop t
         member x.Put t f = x.Put t f
-        member x.Get () = x.Get ()
+        member x.Properties = x.Properties
     new(bus, name, path, ipv: InterfacePropertyMap) =
         new DBusWrapper(bus, name, path, PropertyManager(bus, name, path, ipv))
     new(bus, name, path) = new DBusWrapper(bus, name, path, InterfacePropertyMap())

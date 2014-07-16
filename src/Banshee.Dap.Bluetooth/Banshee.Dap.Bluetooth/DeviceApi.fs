@@ -23,7 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace Banshee.Dap.Bluetooth.DeviceApi
+module Banshee.Dap.Bluetooth.DeviceApi
 
 open System
 open System.Collections.Generic
@@ -33,14 +33,13 @@ open Banshee.Dap.Bluetooth.DBusApi
 
 open DBus
 
-module Constants =
-    [<Literal>]
-    let IF_DEVICE = "org.bluez.Device1"
+[<Literal>]
+let IF_DEVICE = "org.bluez.Device1"
 
-[<Interface (Constants.IF_DEVICE)>]
-type IBluetoothDevice =
-    abstract Disconnect : unit -> unit
+[<Interface (IF_DEVICE)>]
+type IDevice =
     abstract Connect : unit -> unit
+    abstract Disconnect : unit -> unit
     abstract ConnectProfile : string -> unit
     abstract DisconnectProfile : string -> unit
     abstract Pair : unit -> unit
@@ -60,8 +59,3 @@ type IBluetoothDevice =
     abstract UUIDs : string[] with get
     abstract Modalias : string with get
     abstract Adapter : ObjectPath with get
-
-type DeviceComparer() =
-    interface IEqualityComparer<IBluetoothDevice> with
-        member x.Equals (y,z) = y.Address = z.Address
-        member x.GetHashCode y = y.Address.GetHashCode ()

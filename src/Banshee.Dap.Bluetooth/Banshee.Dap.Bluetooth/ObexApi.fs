@@ -23,7 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace Banshee.Dap.Bluetooth.ObexApi
+module Banshee.Dap.Bluetooth.ObexApi
 
 open System.Collections.Generic
 
@@ -32,24 +32,23 @@ open Banshee.Dap.Bluetooth.DeviceApi
 
 open DBus
 
-module Constants =
-    [<Literal>]
-    let IF_CLIENT = "org.bluez.obex.Client1"
-    [<Literal>]
-    let IF_SESSION = "org.bluez.obex.Session1"
-    [<Literal>]
-    let IF_PUSH = "org.bluez.obex.ObjectPush1"
-    [<Literal>]
-    let IF_TRANSFER = "org.bluez.obex.Transfer1"
-    [<Literal>]
-    let IF_FILETRANSFER = "org.bluez.obex.FileTransfer1"
+[<Literal>]
+let IF_CLIENT = "org.bluez.obex.Client1"
+[<Literal>]
+let IF_SESSION = "org.bluez.obex.Session1"
+[<Literal>]
+let IF_PUSH = "org.bluez.obex.ObjectPush1"
+[<Literal>]
+let IF_TRANSFER = "org.bluez.obex.Transfer1"
+[<Literal>]
+let IF_FILETRANSFER = "org.bluez.obex.FileTransfer1"
 
-[<Interface (Constants.IF_CLIENT)>]
+[<Interface (IF_CLIENT)>]
 type IClient =
     abstract CreateSession : string -> StringVariantMap -> ObjectPath
     abstract RemoveSession : ObjectPath -> unit
 
-[<Interface (Constants.IF_SESSION)>]
+[<Interface (IF_SESSION)>]
 type ISession =
     abstract GetCapabilities : unit -> string
     abstract Source : string with get
@@ -57,7 +56,7 @@ type ISession =
     abstract Target : string with get
     abstract Root : string with get
 
-[<Interface (Constants.IF_TRANSFER)>]
+[<Interface (IF_TRANSFER)>]
 type ITransfer =
     abstract Cancel : unit -> unit
     abstract Suspend : unit -> unit
@@ -71,9 +70,8 @@ type ITransfer =
     abstract Transferred : uint64 with get
     abstract Filename : string with get
 
-[<Interface (Constants.IF_FILETRANSFER)>]
+[<Interface (IF_FILETRANSFER)>]
 type IFileTransfer =
-    inherit ISession
     abstract ChangeFolder : string -> unit
     abstract CreateFolder : string -> unit
     abstract ListFolder : unit -> KeyValuePair<string,obj>[][]

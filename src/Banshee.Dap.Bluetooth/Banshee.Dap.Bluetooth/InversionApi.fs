@@ -56,7 +56,7 @@ type DBusInverter(bus: Bus, name: string, path: ObjectPath) =
                                    let wp = dw.Put t tfm.[t]
                                    match wp with
                                    | Some x -> eve.Trigger (dw, ObjectChangedArgs(Added, o, x))
-                                   | _ -> printfn "Creation of %s as %s Failed" (t.ToString()) i.Key)
+                                   | None -> sprintf "Creation of %s as %s Failed" (t.ToString()) i.Key |> failwith)
     let rem (o:ObjectPath) (is:string array) =
         if obm.ContainsKey o then
           let dw = obm.[o]
@@ -65,6 +65,7 @@ type DBusInverter(bus: Bus, name: string, path: ObjectPath) =
                                      match wp with
                                      | Some x -> eve.Trigger (dw, ObjectChangedArgs(Removed, o, x))
                                      | None -> ())
+          if dw.IsEmpty then obm.Remove o |> ignore
     do oman.add_InterfacesAdded(fun o ip -> add o ip)
        oman.add_InterfacesRemoved(fun o is -> rem o is)
     member x.Register<'t> fac = let t = typeof<'t>

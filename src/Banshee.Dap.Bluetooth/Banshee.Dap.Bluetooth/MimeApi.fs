@@ -23,8 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
-namespace Banshee.Dap.Bluetooth.Mime
+module Banshee.Dap.Bluetooth.Mime
 
 open System
 open System.Text
@@ -37,21 +36,20 @@ type MediaType =
     | Mp3 | Ogg | Wma | Aac | Wav | Flac | M4a
     | Avi | Mp4 | Mpeg | Qt | Wmv
 
-module Constants =
-    let PlaylistTypes = Set [ Asf; M3u; Pls ]
-    let AudioTypes = Set [ Mp3; Ogg; Wma; Aac; Wav; Flac; M4a ]
-    let VideoTypes = Set [ Wmv; Mp4; Avi; Mpeg; Qt ]
+let PlaylistTypes = Set [ Asf; M3u; Pls ]
+let AudioTypes = Set [ Mp3; Ogg; Wma; Aac; Wav; Flac; M4a ]
+let VideoTypes = Set [ Wmv; Mp4; Avi; Mpeg; Qt ]
 
 [<System.Runtime.CompilerServices.Extension>]
 module Extensions =
     [<System.Runtime.CompilerServices.Extension>]
     let IsKnown(this: MediaType) = MediaType.Unrecognised = this
     [<System.Runtime.CompilerServices.Extension>]
-    let IsPlaylist(this: MediaType) = Constants.PlaylistTypes.Contains this
+    let IsPlaylist(this: MediaType) = PlaylistTypes.Contains this
     [<System.Runtime.CompilerServices.Extension>]
-    let IsAudio(this: MediaType) = Constants.AudioTypes.Contains this
+    let IsAudio(this: MediaType) = AudioTypes.Contains this
     [<System.Runtime.CompilerServices.Extension>]
-    let IsVideo(this: MediaType) = Constants.VideoTypes.Contains this
+    let IsVideo(this: MediaType) = VideoTypes.Contains this
     [<System.Runtime.CompilerServices.Extension>]
     let ToString(this: MediaType) =
         match this with

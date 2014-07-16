@@ -23,17 +23,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace Banshee.Dap.Bluetooth.MediaApi
+module Banshee.Dap.Bluetooth.MediaApi
 
 open DBus
 
-module Constants =
-    [<Literal>]
-    let IF_MEDIA_CONTROL = "org.bluez.MediaControl1"
-    [<Literal>]
-    let IF_MEDIA_TRANSPORT = "org.bluez.MediaTransport1"
+[<Literal>]
+let IF_MEDIA_CONTROL = "org.bluez.MediaControl1"
+[<Literal>]
+let IF_MEDIA_TRANSPORT = "org.bluez.MediaTransport1"
 
-[<Interface (Constants.IF_MEDIA_CONTROL)>]
+type TransportState = | Idle | Pending | Active
+
+let StringToState = function
+    | "idle" -> Idle
+    | "pending" -> Pending
+    | "active" -> Active
+    | x -> failwith "Transport State Not Recognised: %s" x
+
+[<Interface (IF_MEDIA_CONTROL)>]
 type IMediaControl =
     abstract Play : unit -> unit
     abstract Pause : unit -> unit
@@ -46,13 +53,11 @@ type IMediaControl =
     abstract Rewind : unit -> unit
     abstract Connected : bool with get
 
-type TransportState = | Idle | Pending | Active
-
-[<Interface (Constants.IF_MEDIA_TRANSPORT)>]
+[<Interface (IF_MEDIA_TRANSPORT)>]
 type IMediaTransport =
-    abstract Aquire : unit -> (ObjectPath * uint16 * uint16)
-    abstract TryAquire : unit -> (ObjectPath * uint16 * uint16)
-    abstract Release : unit -> unit
+    //abstract Aquire : unit -> (ObjectPath * uint16 * uint16)
+    //abstract TryAquire : unit -> (ObjectPath * uint16 * uint16)
+    //abstract Release : unit -> unit
     abstract Device : ObjectPath with get
     abstract UUID : string with get
     abstract Codec : byte with get
