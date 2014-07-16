@@ -3,8 +3,10 @@ Extension Maintainers:
             AlarmClock Bertrand Lorentz
         AlbumArtWriter Kevin Anthony
                Ampache John Moore
+         AndroidRemote Nikitas Stamatopoulos
           AppIndicator Sense Hofstede
                    Awn Marcos Almeida Jr
+             Bluetooth Nicholas Little
            ClutterFlow Mathijs Dumon
         CoverWallpaper David Corrales
  DuplicateSongDetector Kevin Anthony
@@ -21,23 +23,28 @@ Extension Maintainers:
                 Mirage Bertrand Lorentz
                        Dominik Schnitzer
                        Gabriel Burt
+   OnlineMetadataFixer Marcin Kolny
                 OpenVP Chris Howie
    RadioStationFetcher Akseli Mantila
         RandomByLastfm Raimo Radczewski
+              SongKick Tomasz Maczynski
+                       Dmitrii Petukhov
+   SongKickGeoLocation Dmitrii Petukhov
+            SoundCloud Paul Mackin
         StreamRecorder Frank Ziegler
              Telepathy Neil Loknath
  ZeitgeistDataprovider Manish Sinha
 
 General Maintainers:
-  Alexander Kojevnikov
+  Andrés G. Aragoneses
   Bertrand Lorentz
-  Gabriel Burt
 
 Other Contributors:
   Aaron Bockover
   Alex Launi
-  Andrés G. Aragoneses
+  Alexander Kojevnikov
   Chow Loong Jin
+  Gabriel Burt
   Iain Lane
   Jo Shields
   Kriss
