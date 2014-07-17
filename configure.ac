@@ -82,7 +82,7 @@ BCE_AMPACHE
 BCE_ANDROIDREMOTE
 BCE_APPINDICATOR
 BCE_AWN
-BCE_BLUETOOTHDAP
+BCE_BLUETOOTH
 BCE_CLUTTERFLOW
 BCE_COVERWALLPAPER
 BCE_DUPLICATESONGDETECTOR
@@ -148,7 +148,7 @@ src/Ampache/Makefile
 src/AndroidRemote/Makefile
 src/AppIndicator/Makefile
 src/Awn/Makefile
-src/Banshee.Dap.Bluetooth/Makefile
+src/Bluetooth/Makefile
 src/CacheService/Makefile
 src/ClutterFlow/Makefile
 src/ClutterFlow/Banshee.ClutterFlow/Makefile
@@ -223,7 +223,7 @@ ${PACKAGE}-${VERSION}
     AndroidRemote:         ${enable_AndroidRemote}
     AppIndicator:          ${enable_AppIndicator}
     Awn:                   ${enable_Awn}
-    BluetoothDap:          ${enable_BluetoothDap}
+    Bluetooth:             ${enable_Bluetooth}
     ClutterFlow:           ${enable_ClutterFlow}
     CoverWallpaper:        ${enable_CoverWallpaper}
     CueSheets:             no

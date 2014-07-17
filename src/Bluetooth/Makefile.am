@@ -1,7 +1,7 @@
 ASSEMBLY = Banshee.Dap.Bluetooth
 LINK = $(BANSHEE_LIBS)
 
-if ENABLE_BLUETOOTHDAP
+if ENABLE_BLUETOOTH
 include $(top_srcdir)/build/build.mk
 
 $(ASSEMBLY_FILE): 

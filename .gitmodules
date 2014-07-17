@@ -1,3 +1,3 @@
-[submodule "src/Banshee.Dap.Bluetooth/gnome-bluetooth-sharp"]
-	path = src/Banshee.Dap.Bluetooth/gnome-bluetooth-sharp
+[submodule "src/Bluetooth/gnome-bluetooth-sharp"]
+	path = src/Bluetooth/gnome-bluetooth-sharp
 	url = https://github.com/arfbtwn/gnome-bluetooth-sharp.git
