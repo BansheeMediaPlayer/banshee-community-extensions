@@ -76,9 +76,7 @@ namespace Banshee.SongKick.Recommendations
         {
             // TODO: add timezone
             // this can be achieved by parsing "datetime" (e.g. "2012-04-18T20:00:00-0800")
-            DateTime date;
-            DateTime.TryParse (String.Format("{0} {1}", dateString, timeString), out date);
-            return date;
+            return DateTime.Parse (String.Format("{0} {1}", dateString, timeString));
         }
 
         public class EventLocation : IComparable, IComparable<EventLocation> , IComparer<EventLocation>, IComparer
