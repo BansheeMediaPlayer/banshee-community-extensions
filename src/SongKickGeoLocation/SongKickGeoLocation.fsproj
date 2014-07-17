@@ -58,9 +58,6 @@
       <Project>{C9EC9FD3-F68D-4D71-A6F2-2D019D6B7D0B}</Project>
       <Name>CacheService</Name>
     </ProjectReference>
-    <Reference Include="Banshee.NotificationArea">
-      <Package>banshee-notificationarea</Package>
-    </Reference>
     <Reference Include="notify-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>notify-sharp-3.0</Package>
     </Reference>

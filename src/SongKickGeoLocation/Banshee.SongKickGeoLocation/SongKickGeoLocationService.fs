@@ -30,7 +30,6 @@ open System
 open Banshee.Sources
 open Banshee.Kernel
 open Banshee.ServiceStack
-open Banshee.NotificationArea
 open Banshee.SongKick.Recommendations
 open Banshee.SongKick.Search
 open Banshee.SongKick
