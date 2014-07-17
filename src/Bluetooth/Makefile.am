@@ -5,7 +5,7 @@ if ENABLE_BLUETOOTH
 include $(top_srcdir)/build/build.mk
 
 update_submodule:
-	if test -d "../../.git"; then \
+	if test -d "$(top_builddir)/.git"; then \
 		git submodule update --init --recursive gnome-bluetooth-sharp || exit 1; \
 	fi
 
