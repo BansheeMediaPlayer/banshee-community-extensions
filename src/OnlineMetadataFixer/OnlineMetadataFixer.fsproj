@@ -96,7 +96,7 @@
     <Compile Include="Banshee.OnlineMetadataFixer/InvalidMetadataSource.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
-  <Import Project="../.nuget/nuget.targets" />
+  <Import Project="..\.nuget\nuget.targets" />
   <ItemGroup>
     <EmbeddedResource Include="OnlineMetadataFixer.addin.xml">
       <LogicalName>OnlineMetadataFixer.addin.xml</LogicalName>
