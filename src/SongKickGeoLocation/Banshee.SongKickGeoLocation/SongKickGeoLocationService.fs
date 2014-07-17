@@ -67,8 +67,8 @@ type Service() as this =
                        && not (local_events.Contains res)
                     then res.ArtistName <- artist.Name
                          local_events.Add (res)
-            if local_events.Count <> 0
-            then x.NotifyUser()))
+            if local_events.Count <> 0 then
+                x.NotifyUser()))
         true)
 
     member x.IsItInUserCity (lat : float, long : float) =

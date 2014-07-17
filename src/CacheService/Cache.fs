@@ -54,7 +54,7 @@ type CacheChangedArgs (s : CacheItemAction, k : string, v : obj) =
     member x.Value = v
 
 type Cache internal (nmspace : string) =
-    let cc = Event<Action<obj, CacheChangedArgs>, CacheChangedArgs>()
+    let cacheChanged = Event<_> ()
     do
         if not (Banshee.IO.Directory.Exists nmspace)
         then Directory.CreateDirectory (nmspace) |> ignore
@@ -80,9 +80,10 @@ type Cache internal (nmspace : string) =
               created = DateTime.Parse (databits.[1])
               expirationTimeout = ((float) databits.[2] * 1.0<hours>) }
         with
+            | :? System.FormatException
             | :? IndexOutOfRangeException as e ->
-                Hyena.Log.Error ("Failed reading cache with key:" + key + " from: " + path
-                                  + "with error message: " + e.Message)
+                let msg = String.Format ("Cannot read cache with key \"{0}\" located in \"{1}\" ", key, path)
+                Hyena.Log.Exception (msg, e)
                 None
 
     member private x.WriteValueToFile (key : string) (value : 'a) = 
@@ -94,12 +95,13 @@ type Cache internal (nmspace : string) =
 
     member x.Add (key : string) (value : 'a) =
         x.WriteValueToFile key value
+        cacheChanged.Trigger (CacheChangedArgs (Added, key, value))
 
     member x.Get (key : string) =
         if File.Exists (x.GetPathToKey key) then
            match x.ReadCacheItemFromFile key with 
            | Some c when x.IsItemExpired c.created c.expirationTimeout ->
-                         cc.Trigger (x, CacheChangedArgs(Expired, key, c.value))
+                         cacheChanged.Trigger (CacheChangedArgs (Expired, key, c.value))
                          None
            | Some c -> Some c.value
            | None   -> None
@@ -109,13 +111,14 @@ type Cache internal (nmspace : string) =
         let path = x.GetPathToKey key
         if File.Exists path then
            File.Delete path
+        cacheChanged.Trigger (CacheChangedArgs (Removed, key, null))
 
     member x.Clear () =
         for file in Directory.EnumerateFiles nmspace do
           let tempPath = System.IO.Path.Combine (nmspace, file)
           File.Delete (tempPath)
 
-    member x.CacheStateChanged = cc.Publish
+    member x.CacheStateChanged = cacheChanged.Publish
 
     interface ICache with
         member x.Add k v    = x.Add k v
