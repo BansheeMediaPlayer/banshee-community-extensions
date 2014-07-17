@@ -2,9 +2,9 @@
 // SongKickSource.cs
 //
 // Authors:
-//   Tomasz Maczyński
+//   Tomasz Maczyński <tmtimon@gmail.com>
 //
-// Copyright (C) 2011 Tomasz Maczyński
+// Copyright (C) 2013 Tomasz Maczyński
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -30,21 +30,10 @@ using System;
 
 using Mono.Addins;
 
-using Banshee.Base;
 using Banshee.Sources;
 using Banshee.Sources.Gui;
-
-using Banshee.ServiceStack;
-using Banshee.Preferences;
-using Banshee.MediaEngine;
-using Banshee.PlaybackController;
-using Banshee.SongKick.Recommendations;
-using Hyena.Jobs;
-using Banshee.SongKick.Network;
 using Banshee.SongKick.LocationProvider;
 using Banshee.SongKick.UI;
-
-using System.Linq;
 
 namespace Banshee.SongKick
 {
@@ -59,11 +48,10 @@ namespace Banshee.SongKick
         // In the sources TreeView, sets the order value for this source, small on top
         const int sort_order = 190;
 
-
         public SongKickSource () : base (AddinManager.CurrentLocalizer.GetString ("SongKick"),
-                                               AddinManager.CurrentLocalizer.GetString ("SongKick"),
-		                                       sort_order,
-		                                       "extension-unique-id")
+                                         AddinManager.CurrentLocalizer.GetString ("SongKick"),
+                                         sort_order,
+                                         "extension-unique-id")
         {
             //Change comment in lines below to see described behaviour:
             //Properties.Set<ISourceContents> ("Nereid.SourceContents", new SongKickSourceContents ());

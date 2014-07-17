@@ -23,17 +23,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using Hyena.Data.Gui;
-using Banshee.SongKick.Recommendations;
-using Hyena.Data;
-using Hyena.Widgets;
-using Banshee.Collection.Gui;
-using Banshee.SongKick.Network;
-using Hyena;
 
+using System;
 using System.Linq;
 using System.Collections.Generic;
+
+using Banshee.Collection.Gui;
+using Banshee.SongKick.Recommendations;
+using Banshee.SongKick.Network;
+
+using Hyena;
+using Hyena.Data.Gui;
+using Hyena.Data;
+using Hyena.Widgets;
+
 
 namespace Banshee.SongKick.UI
 {
@@ -47,7 +50,7 @@ namespace Banshee.SongKick.UI
         }
         public event RowActivatedHandler<T> RowActivated {
             add { list_view.RowActivated += value; }
-            remove {list_view.RowActivated -= value; }
+            remove { list_view.RowActivated -= value; }
         }
 
         ScrolledWindow window = new ScrolledWindow ();
@@ -95,6 +98,7 @@ namespace Banshee.SongKick.UI
                 return true;
             }
         }
+
         // TODO: do it using OOP
         protected virtual void AddColumns ()
         {

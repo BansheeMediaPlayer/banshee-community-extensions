@@ -23,11 +23,12 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+using System.Collections.Generic;
+
 using Banshee.ServiceStack;
 using Hyena.Data.Sqlite;
-using System.Collections.Generic;
-using Banshee.SongKick.Recommendations;
 
 namespace Banshee.SongKick.Search
 {
@@ -53,8 +54,7 @@ namespace Banshee.SongKick.Search
             CoreArtists;
         */
 
-        private HyenaSqliteConnection connection = ServiceManager.DbConnection;
-        private string topArtistsQuery = @"
+        private const string topArtistsQuery = @"
                 SELECT DISTINCT CoreArtists.Name, CoreArtists.MusicBrainzID FROM 
                   CoreTracks
                 JOIN 
@@ -64,14 +64,11 @@ namespace Banshee.SongKick.Search
                   AND
                     CoreTracks.ArtistID=CoreArtists.ArtistID;";
 
-        public RecommendationProvider ()
+        public IEnumerable<RecommendedArtist> GetRecommendations ()
         {
-        }
-
-        public IEnumerable<RecommendedArtist> getRecommendations() {
             var command = new HyenaSqliteCommand (topArtistsQuery);
 
-            using (IDataReader reader = connection.Query (command)) {
+            using (IDataReader reader = ServiceManager.DbConnection.Query (command)) {
                 while (reader.Read ()) {
                     var artistName = reader.Get<string> (0);
                     var artistMusicBrainzId = reader.Get<string> (1);

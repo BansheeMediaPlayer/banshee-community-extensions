@@ -25,8 +25,10 @@
 // THE SOFTWARE.
 
 using System;
+
 using Banshee.ServiceStack;
 using Banshee.SongKick.Recommendations;
+
 using Hyena.Jobs;
 
 namespace Banshee.SongKick.Network

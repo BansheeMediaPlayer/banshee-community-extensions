@@ -23,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using System.Collections.Generic;
 
@@ -53,7 +54,7 @@ namespace Banshee.SongKick.Recommendations
             catch (KeyNotFoundException) {
                 Hyena.Log.Warning (String.Format ("GetValueAndLogOnFailure failed to get value. Message: {0}", logMsg));
                 return default(V);
-            }                  
+            }
         }
 
         public static T Get<T> (this IDictionary<string, object> item, string key)

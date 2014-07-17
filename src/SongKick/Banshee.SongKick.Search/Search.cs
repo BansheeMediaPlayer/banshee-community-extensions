@@ -23,22 +23,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
-using System.Collections.Generic;
+
 using Banshee.SongKick.Recommendations;
 using Banshee.SongKick.Network;
-using Hyena.Jobs;
 
 namespace Banshee.SongKick.Search
 {
     public abstract class Search<T> where T : IResult
     {
-        public Query Query { get; protected set; }
         public ResultsPage<T> ResultsPage { get; protected set; }
 
-        protected SongKickDownloader downloader;
+        public Query LastQuery { get; protected set; }
 
-        public Search ()
+        protected readonly SongKickDownloader downloader;
+
+        protected Search ()
         {
             downloader = new SongKickDownloader (SongKickCore.APIKey);
         }
@@ -47,35 +48,29 @@ namespace Banshee.SongKick.Search
 
         public override string ToString ()
         {
-            return string.Format ("[Search: Query={0}]", Query);
+            return string.Format ("[Search: Query={0}]", LastQuery);
         }
     }
 
-    public class EventsByArtistSearch : Search<Event> {
-
-        public EventsByArtistSearch () 
-            : base ()
-        {
-        }
-
+    public class EventsByArtistSearch : Search<Event>
+    {
         public override void GetResultsPage (Query query)
         {
-            Query = query;
+            LastQuery = query;
             // temporary solution
             // TODO: add meaningful ResultsError
             // TODO: throw Web Exceptions
             try {
                 long artistId;
                 if (query.Id == null) {
-                    var artist_results_page = 
-                        downloader.findArtists (Query.String, Banshee.SongKick.Recommendations.Artists.GetArtistListResultsDelegate);
+                    var artist_results_page = downloader.FindArtists (query.String, Artists.GetArtistListResultsDelegate);
                     var artist = artist_results_page.results[0];
                     artistId = artist.Id;
                 } else {
                     artistId = (long) query.Id;
                 }
 
-                ResultsPage = downloader.getArtistsMusicEvents(artistId , Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
+                ResultsPage = downloader.GetArtistsMusicEvents (artistId , Events.GetMusicEventListResultsDelegate);
             }
             catch (Exception e) {
                 ResultsPage = new ResultsPage<Event> () { error = new ResultsError("could not download music events")};
@@ -84,16 +79,11 @@ namespace Banshee.SongKick.Search
         }
     }
 
-    public class EventsByLocationSearch : Search<Event> {
-
-        public EventsByLocationSearch () 
-            : base ()
-        {
-        }
-
+    public class EventsByLocationSearch : Search<Event>
+    {
         public override void GetResultsPage (Query query)
         {
-            Query = query;
+            LastQuery = query;
             // temporary solution
             // TODO: add meaningful ResultsError
             // TODO: throw Web Exceptions
@@ -101,14 +91,14 @@ namespace Banshee.SongKick.Search
                 long locationId;
                 if (query.Id == null) {
                     var location_results_page = 
-                        downloader.findLocation (Query.String, Banshee.SongKick.Recommendations.Locations.GetLocationListResultsDelegate);
+                        downloader.FindLocation (query.String, Locations.GetLocationListResultsDelegate);
                     var location = location_results_page.results[0];
                     locationId = location.Id;
                 } else {
                     locationId = (long) query.Id;
                 }
 
-                ResultsPage = downloader.getLocationMusicEvents(locationId, Banshee.SongKick.Recommendations.Events.GetMusicEventListResultsDelegate);
+                ResultsPage = downloader.GetLocationMusicEvents (locationId, Events.GetMusicEventListResultsDelegate);
             }
             catch (Exception e) {
                 ResultsPage = new ResultsPage<Event> () { error = new ResultsError("could not download music events")};
@@ -117,22 +107,16 @@ namespace Banshee.SongKick.Search
         }
     }
 
-    public class LocationSearch : Search<Location> {
-
-        public LocationSearch () 
-            : base ()
-        {
-        }
-
+    public class LocationSearch : Search<Location>
+    {
         public override void GetResultsPage (Query query)
         {
-            Query = query;
+            LastQuery = query;
             // temporary solution
             // TODO: add meaningful ResultsError
             // TODO: throw Web Exceptions
             try {
-                ResultsPage = 
-                    downloader.findLocation (Query.String, Banshee.SongKick.Recommendations.Locations.GetLocationListResultsDelegate);
+                ResultsPage = downloader.FindLocation (query.String, Locations.GetLocationListResultsDelegate);
             }
             catch (Exception e) {
                 ResultsPage = new ResultsPage<Location> () { error = new ResultsError("could not download locations")};
@@ -143,20 +127,14 @@ namespace Banshee.SongKick.Search
 
     public class ArtistSearch : Search<Artist> {
 
-        public ArtistSearch () 
-            : base ()
-        {
-        }
-
         public override void GetResultsPage (Query query)
         {
-            Query = query;
+            LastQuery = query;
             // temporary solution
             // TODO: add meaningful ResultsError
             // TODO: throw Web Exceptions
             try {
-                ResultsPage = 
-                    downloader.findArtists (Query.String, Banshee.SongKick.Recommendations.Artists.GetArtistListResultsDelegate);
+                ResultsPage = downloader.FindArtists (query.String, Artists.GetArtistListResultsDelegate);
             }
             catch (Exception e) {
                 ResultsPage = new ResultsPage<Artist> () { error = new ResultsError("could not download locations")};

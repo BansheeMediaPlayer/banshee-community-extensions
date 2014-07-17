@@ -2,7 +2,7 @@
 // LocalEventsSource.fs
 //
 // Author:
-//   dimart.sp@gmail.com <Dmitrii Petukhov>
+//   Dmitrii Petukhov <dimart.sp@gmail.com>
 //
 // Copyright (c) 2014 Dmitrii Petukhov
 //

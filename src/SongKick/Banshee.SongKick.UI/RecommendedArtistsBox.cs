@@ -23,14 +23,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using Banshee.SongKick.Search;
-using Gtk;
-using Hyena;
-using System.Collections.Generic;
-using Banshee.SongKick.Recommendations;
+
 using System.Linq;
+using System.Collections.Generic;
+
+using Gtk;
+
 using Hyena.Data.Gui;
+using Hyena;
+
+using Banshee.SongKick.Search;
+using Banshee.SongKick.Recommendations;
 
 namespace Banshee.SongKick.UI
 {
@@ -39,12 +42,12 @@ namespace Banshee.SongKick.UI
         private SearchView<RecommendedArtist> recommended_artist_search_view;
 
         private IList<RecommendedArtist> recommended_artists;
-        private SortableMemoryListModel<RecommendedArtist> recommended_artist_model = 
+        private readonly SortableMemoryListModel<RecommendedArtist> recommended_artist_model =
             new SortableMemoryListModel<RecommendedArtist> ();
 
         public event RowActivatedHandler<RecommendedArtist> RowActivated {
             add { recommended_artist_search_view.RowActivated += value; }
-            remove {recommended_artist_search_view.RowActivated -= value; }
+            remove { recommended_artist_search_view.RowActivated -= value; }
         }
 
         public RecommendedArtistsBox ()
@@ -59,15 +62,14 @@ namespace Banshee.SongKick.UI
 
         public IEnumerable<RecommendedArtist> GetRecommendedArtists ()
         {
-            var recommendationProvider = new Banshee.SongKick.Search.RecommendationProvider ();
-            return recommendationProvider.getRecommendations ();
+            return new RecommendationProvider ().GetRecommendations ();
         }
 
         private void PresentRecommendedArtists ()
         {
             PopulateModel ();
 
-            ThreadAssist.ProxyToMain (delegate {
+            ThreadAssist.ProxyToMain (() => {
                 recommended_artist_model.Reload ();
                 recommended_artist_search_view.OnUpdated ();
             });
@@ -77,9 +79,7 @@ namespace Banshee.SongKick.UI
         {
             ThreadAssist.SpawnFromMain (() => {
                 recommended_artists = GetRecommendedArtists ().ToList();
-                ThreadAssist.ProxyToMain (() => {
-                    PresentRecommendedArtists ();
-                });
+                ThreadAssist.ProxyToMain (PresentRecommendedArtists);
 
                 var processor = new RecommendationProcessor (FillAdditionalInfo);
                 processor.EnqueueArtists (recommended_artists);
@@ -88,18 +88,18 @@ namespace Banshee.SongKick.UI
         }
 
         private void FillAdditionalInfo (RecommendedArtist artist, 
-            ResultsPage<Banshee.SongKick.Recommendations.Event> songKickFirstAtristEvents)
+            ResultsPage<Banshee.SongKick.Recommendations.Event> songKickFirstArtistEvents)
         {
-            artist.NumberOfConcerts = 0;   
+            artist.NumberOfConcerts = 0;
 
-            if (songKickFirstAtristEvents.IsStatusOk) {
-                artist.NumberOfConcerts = songKickFirstAtristEvents.results.Count;
+            if (songKickFirstArtistEvents.IsStatusOk) {
+                artist.NumberOfConcerts = songKickFirstArtistEvents.results.Count;
             }
 
             ThreadAssist.ProxyToMain (() => {
-                    recommended_artist_model.Reload ();
-                    recommended_artist_search_view.OnUpdated ();  
-                });
+                recommended_artist_model.Reload ();
+                recommended_artist_search_view.OnUpdated ();
+            });
         }
 
         private void PopulateModel ()

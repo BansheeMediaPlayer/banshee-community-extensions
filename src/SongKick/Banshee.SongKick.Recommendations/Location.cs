@@ -23,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using Hyena.Json;
 
@@ -31,10 +32,13 @@ namespace Banshee.SongKick.Recommendations
     public class Location : IResult
     {
         public long Id { get; private set; }
+
         [DisplayAttribute ("City", DisplayAttribute.DisplayType.Text)]
         public string CityName { get; private set; }
+
         [DisplayAttribute ("Country", DisplayAttribute.DisplayType.Text)]
         public string CityCountryName { get; private set; }
+
         [DisplayAttribute ("State", DisplayAttribute.DisplayType.Text)]
         public string CityStateName { get; private set; }
 

@@ -23,16 +23,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
-using Banshee.Sources.Gui;
-using Hyena.Widgets;
+using System.Linq;
+using System.Collections.Generic;
+
 using Gtk;
+
+using Banshee.Sources.Gui;
 using Banshee.Widgets;
 using Banshee.SongKick.Recommendations;
 using Banshee.SongKick.Search;
+
 using Hyena;
-using System.Linq;
-using System.Collections.Generic;
+using Hyena.Widgets;
+using Hyena.Data.Gui;
 
 namespace Banshee.SongKick.UI
 {
@@ -229,7 +234,9 @@ namespace Banshee.SongKick.UI
         }
 
         public class SongKickLogo : EventBox {
-            public SongKickLogo() {
+
+            public SongKickLogo ()
+            {
                 var songKickImage = new Image(Gdk.Pixbuf.LoadFromResource ("concerts_by_songkick.png"));
                 this.Add (songKickImage);
                 this.VisibleWindow = false;
@@ -242,19 +249,21 @@ namespace Banshee.SongKick.UI
             }
         }
 
-        protected void OnRecommendedArtistRowActivate (object o, Hyena.Data.Gui.RowActivatedArgs<RecommendedArtist> args) {
+        protected void OnRecommendedArtistRowActivate (object o, RowActivatedArgs<RecommendedArtist> args)
+        {
             var recommendedArtist = args.RowValue;
             search_by_artist_contents_box.Search (recommendedArtist.Id, recommendedArtist.Name);
             SetView (search_by_artist_view);
         }
 
-        protected void SearchLocationRowActivate(object o, Hyena.Data.Gui.RowActivatedArgs<Location> args) {
+        protected void SearchLocationRowActivate (object o, RowActivatedArgs<Location> args)
+        {
             var location = args.RowValue;
             search_by_location_contents_box.Search (location.Id, location.CityName);
             SetView(this.search_by_location_view);
         }
 
-        protected void SearchArtistRowActivate (object o, Hyena.Data.Gui.RowActivatedArgs<Artist> args)
+        protected void SearchArtistRowActivate (object o, RowActivatedArgs<Artist> args)
         {
             var artist = args.RowValue;
             search_by_artist_contents_box.Search (artist.Id, artist.DisplayName);

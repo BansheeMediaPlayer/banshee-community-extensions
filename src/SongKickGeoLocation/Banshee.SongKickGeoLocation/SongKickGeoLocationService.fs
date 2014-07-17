@@ -60,7 +60,7 @@ type Service() as this =
         Scheduler.Schedule (new DelegateJob (fun () ->
             let search = new EventsByArtistSearch ()
             let recommendation_provider = new Banshee.SongKick.Search.RecommendationProvider ()
-            let recommendations = recommendation_provider.getRecommendations ()
+            let recommendations = recommendation_provider.GetRecommendations ()
             for artist in recommendations do
                 search.GetResultsPage (new Query(System.Nullable(), artist.Name))
                 for res in search.ResultsPage.results do

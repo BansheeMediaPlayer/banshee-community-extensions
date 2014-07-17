@@ -23,34 +23,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using System.Net;
-using System.IO;
-using System.Text;
-using Banshee.SongKick.Recommendations;
 
 namespace Banshee.SongKick.Network
 {
     public static class Downloader
     {
-        public static string download(string uri)
+        public static string Download (string uri)
         {
-            if (String.IsNullOrEmpty(uri))
-            {
+            if (String.IsNullOrEmpty (uri)) {
                 throw new ArgumentException("Specify uri of resource you want to download");
             }
 
-            string response;
             using (WebClient client = new WebClient ())
             {
-                response = client.DownloadString(uri);
+                return client.DownloadString (uri);
             }
-
-            return response;
         }
     }
-
-    
-
 }
 

@@ -23,10 +23,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+
 using Gtk;
-using Banshee.Widgets;
+
 using Mono.Unix;
+
+using Banshee.Widgets;
 using Banshee.SongKick.Search;
 using Banshee.SongKick.Recommendations;
 using Banshee.SongKick.Network;
@@ -71,13 +75,15 @@ namespace Banshee.SongKick.UI
             PackEnd (search_button, false, false, 2);
         }
 
-        public void PerformSearch() {
+        public void PerformSearch ()
+        {
             var query = new Banshee.SongKick.Search.Query (null, search_entry.Query);
             PerformSearch (query);
         }
 
-        public void PerformSearch(Banshee.SongKick.Search.Query query) {
-            ThreadAssist.ProxyToMain( () => 
+        public void PerformSearch (Banshee.SongKick.Search.Query query)
+        {
+            ThreadAssist.ProxyToMain (() =>
                 search_entry.Query = query.String);
             System.Threading.Thread thread = 
                 new System.Threading.Thread(

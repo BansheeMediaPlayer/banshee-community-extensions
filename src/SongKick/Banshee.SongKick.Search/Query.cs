@@ -23,16 +23,15 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
 
 namespace Banshee.SongKick.Search
 {
     public class Query
     {
         public long? Id { get; private set; }
-        public String String { get; private set; }
+        public string String { get; private set; }
 
-        public Query (long? id, String queryString)
+        public Query (long? id, string queryString)
         {
             Id = id;
             String = queryString;

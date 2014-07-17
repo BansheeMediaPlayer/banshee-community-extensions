@@ -23,10 +23,12 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
-using Hyena.Json;
 using System.Collections.Generic;
 using System.Collections;
+
+using Hyena.Json;
 
 namespace Banshee.SongKick.Recommendations
 {
@@ -35,18 +37,25 @@ namespace Banshee.SongKick.Recommendations
         //adding attribute below is useful during debugging:
         //[DisplayAttribute("ID", DisplayAttribute.DisplayType.Text)]
         public long Id { get; private set; }
+
         [DisplayAttribute ("Name", DisplayAttribute.DisplayType.Text)]
         public string DisplayName { get; private set; }
+
         public string ArtistName { get; set; }
+
         [DisplayAttribute ("Date", DisplayAttribute.DisplayType.Text)]
         public DateTime StartDateTime { get; private set; }
+
         [DisplayAttribute ("Location", DisplayAttribute.DisplayType.Text)]
         public EventLocation Location { get; private set; }
+
         [DisplayAttribute ("Type", DisplayAttribute.DisplayType.Text)]
         public string Type { get; private set; }
+
         [DefaultSortColumn]
         [DisplayAttribute ("Popularity", DisplayAttribute.DisplayType.Text)]
         public double Popularity { get; private set; }
+
         public string Uri { get; private set; }
 
 
@@ -60,12 +69,10 @@ namespace Banshee.SongKick.Recommendations
             Location = new EventLocation (jsonObject.Get<JsonObject> ("location"));
 
             var start = jsonObject.Get<JsonObject> ("start");
-            StartDateTime = getDateTime (
-                start.Get <String> ("date"),
-                start.Get <String> ("time"));
+            StartDateTime = GetDateTime (start.Get <String> ("date"), start.Get <String> ("time"));
         }
 
-        private DateTime getDateTime (String dateString, string timeString)
+        private DateTime GetDateTime (string dateString, string timeString)
         {
             // TODO: add timezone
             // this can be achieved by parsing "datetime" (e.g. "2012-04-18T20:00:00-0800")
@@ -85,8 +92,8 @@ namespace Banshee.SongKick.Recommendations
                 // example:
                 // {"city":"San Francisco, CA, US","lng":-122.4332937,"lat":37.7842398}
                 Name = jsonLocation.Get<String> ("city");
-                Latitude= jsonLocation.Get<double> ("lat");
-                Longitude= jsonLocation.Get<double> ("lng");
+                Latitude = jsonLocation.Get<double> ("lat");
+                Longitude = jsonLocation.Get<double> ("lng");
             }
 
             public override string ToString ()
@@ -98,16 +105,16 @@ namespace Banshee.SongKick.Recommendations
 
             int IComparable<EventLocation>.CompareTo (EventLocation other)
             {
-                return this.Name.CompareTo(other.Name);
+                return this.Name.CompareTo (other.Name);
             }
 
-            int IComparable.CompareTo(object y)
+            int IComparable.CompareTo (object y)
             {
                 if (y is EventLocation) {
                     return (this as IComparable<EventLocation>).CompareTo (y as EventLocation);
-                } else {
-                    throw new InvalidOperationException ("EventLocation can be Compared only to EventLocation");
                 }
+
+                throw new InvalidOperationException ("An EventLocation instance can be compared only to another EventLocation instance");
             }
 
             #endregion
@@ -123,9 +130,9 @@ namespace Banshee.SongKick.Recommendations
             {
                 if ((x is EventLocation) && (y is EventLocation)) {
                     return (this as IComparer<EventLocation>).Compare (x as EventLocation, y as EventLocation);
-                } else {
-                    throw new InvalidOperationException ("EventLocation can be Compared only to EventLocation");
                 }
+
+                throw new InvalidOperationException ("An EventLocation instance can be compared only to another EventLocation instance");
             }
 
             #endregion

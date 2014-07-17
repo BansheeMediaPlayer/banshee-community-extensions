@@ -23,15 +23,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
+
 using Banshee.SongKick.Recommendations;
 
 namespace Banshee.SongKick.Search
 {
-    public partial class RecommendedArtist : IResult {
+    public class RecommendedArtist : IResult
+    {
+
         [DisplayAttribute("Artist", DisplayAttribute.DisplayType.Text)]
         public string Name { get; private set; }
         public string MusicBrainzID { get; private set; }
+
         [DefaultSortColumn]
         [DisplayAttribute("Number of Concerts", DisplayAttribute.DisplayType.Text)]
         public int? NumberOfConcerts { get; set; }
@@ -45,7 +48,8 @@ namespace Banshee.SongKick.Search
             get { return -1; } 
         }
 
-        public RecommendedArtist(string name, string musicBrainzID) {
+        public RecommendedArtist (string name, string musicBrainzID)
+        {
             Name = name;
             MusicBrainzID = musicBrainzID;
         }

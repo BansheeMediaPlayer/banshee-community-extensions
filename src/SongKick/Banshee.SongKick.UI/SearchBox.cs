@@ -23,11 +23,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+
 using Gtk;
+
 using Banshee.SongKick.Recommendations;
-using Hyena;
 using Banshee.SongKick.Search;
+using Hyena;
 
 namespace Banshee.SongKick.UI
 {
@@ -52,7 +55,7 @@ namespace Banshee.SongKick.UI
             this.Spacing = 2;
 
             // add search entry:
-            this.event_search_bar = new SearchBar<T> (presentSearch, search);
+            this.event_search_bar = new SearchBar<T> (PresentSearch, search);
             this.PackStart (event_search_bar, false, false, 2);
 
             //add search results view:
@@ -67,14 +70,15 @@ namespace Banshee.SongKick.UI
             event_search_view.SetModel (event_model);
         }
 
-        public void Search(long? id, string queryString) {
+        public void Search (long? id, string queryString)
+        {
             var searchQuery = new Banshee.SongKick.Search.Query(id, queryString);
             event_search_bar.PerformSearch (searchQuery);
         }
 
-        public void presentSearch (Search<T> search)
+        public void PresentSearch (Search<T> search)
         {
-            Hyena.Log.Information (String.Format("SearchBox: performing search: {0}", search.ToString()));
+            Hyena.Log.Information (String.Format ("SearchBox: performing search: {0}", search.ToString ()));
 
             event_model.Clear ();
 
@@ -84,7 +88,7 @@ namespace Banshee.SongKick.UI
                 }
             }
 
-            ThreadAssist.ProxyToMain (delegate {
+            ThreadAssist.ProxyToMain (() => {
                 event_model.Reload ();
                 event_search_view.OnUpdated ();
             });
