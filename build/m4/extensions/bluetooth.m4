@@ -4,12 +4,7 @@ AC_DEFUN([BCE_BLUETOOTH],
 
 	if test "x$enable_Bluetooth" = "xyes"; then
 		AM_CONDITIONAL(ENABLE_BLUETOOTH, true)
-
-		AC_PATH_PROG(FSC, fsharpc, no)
-		if test "x$FSC" = "xno"; then
-			AC_MSG_ERROR([`You need to install an F♯ compiler.'])
-		fi
-		AC_SUBST(FSC)
+		SHAMROCK_FIND_FSHARP_COMPILER
 	else
 		AM_CONDITIONAL(ENABLE_BLUETOOTH, false)
 	fi
