@@ -4,7 +4,12 @@ LINK = $(BANSHEE_LIBS)
 if ENABLE_BLUETOOTH
 include $(top_srcdir)/build/build.mk
 
-$(ASSEMBLY_FILE): 
+update_submodule:
+	if test -d "../../.git"; then \
+		git submodule update --init --recursive gnome-bluetooth-sharp || exit 1; \
+	fi
+
+$(ASSEMBLY_FILE): update_submodule
 	@mkdir -p $(top_builddir)/bin
 	xbuild Banshee.Dap.Bluetooth.fsproj
 	@if [ -e $(srcdir)/$(notdir $@.config) ]; then \
