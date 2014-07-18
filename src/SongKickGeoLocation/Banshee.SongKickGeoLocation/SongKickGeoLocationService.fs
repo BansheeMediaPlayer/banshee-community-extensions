@@ -87,16 +87,17 @@ type Service() as this =
         else banshee_window.Focus.FocusInEvent.AddHandler x.OnFocusInEvent
 
         for e in local_events do
-            let notification = new Notifications.Notification ()
-            notification.Body <- String.Format (
-                    "{0} in {1} on {2} at {3}",
-                    e.ArtistName,
-                    LocationProviderManager.GetCityName,
-                    e.StartDateTime.ToShortDateString(),
-                    e.StartDateTime.ToShortTimeString())
-            notification.Summary <- "SongKick found a gig near you!"
-            notification.Icon <- Gdk.Pixbuf.LoadFromResource ("songkick_logo_300x300.png")
-            notification.Show ()
+            ThreadAssist.ProxyToMain (fun () ->
+                let notification = new Notifications.Notification ()
+                notification.Body <- String.Format (
+                        "{0} in {1} on {2} at {3}",
+                        e.ArtistName,
+                        LocationProviderManager.GetCityName,
+                        e.StartDateTime.ToShortDateString(),
+                        e.StartDateTime.ToShortTimeString())
+                notification.Summary <- "SongKick found a gig near you!"
+                notification.Icon <- Gdk.Pixbuf.LoadFromResource ("songkick_logo_300x300.png")
+                notification.Show ())
 
     static member GetBansheeWindow () =
          Gtk.Window.ListToplevels () |> Array.find (fun w -> w :? Banshee.Gui.BaseClientWindow)
