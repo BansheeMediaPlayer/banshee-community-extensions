@@ -30,10 +30,12 @@ open System
 open System.IO
 open System.Collections.Generic
 
+open Hyena
+
 [<Measure>] type hours
 
 module Constants = 
-    let cacheRoot = Hyena.Paths.ExtensionCacheRoot
+    let cacheRoot = Paths.ExtensionCacheRoot
     let timeout   = 12<hours>
     let separator = "\n$\n"
     let splitter  = '$'
@@ -83,7 +85,7 @@ type Cache internal (nmspace : string) =
             | :? System.FormatException
             | :? IndexOutOfRangeException as e ->
                 let msg = String.Format ("Cannot read cache with key \"{0}\" located in \"{1}\" ", key, path)
-                Hyena.Log.Error (msg, e)
+                Log.Error (msg, e)
                 None
 
     member private x.WriteValueToFile (key : string) (value : 'a) = 
@@ -95,15 +97,18 @@ type Cache internal (nmspace : string) =
 
     member x.Add (key : string) (value : 'a) =
         x.WriteValueToFile key value
+        Log.Debug ("Added value with key \"" + key + "\" to cache located in " + nmspace)
         cacheChanged.Trigger (CacheChangedArgs (Added, key, value))
 
     member x.Get (key : string) =
         if File.Exists (x.GetPathToKey key) then
            match x.ReadCacheItemFromFile key with 
            | Some c when x.IsItemExpired c.created c.expirationTimeout ->
+                         Log.Debug ("Cannot return a cached value with key \"" + key + "\": Time Expired")
                          cacheChanged.Trigger (CacheChangedArgs (Expired, key, c.value))
                          None
-           | Some c -> Some c.value
+           | Some c -> Log.Debug ("Returned cached value with key \"" + key + "\"")
+                       Some c.value
            | None   -> None
         else None
 
@@ -111,12 +116,14 @@ type Cache internal (nmspace : string) =
         let path = x.GetPathToKey key
         if File.Exists path then
            File.Delete path
-        cacheChanged.Trigger (CacheChangedArgs (Removed, key, null))
+           Log.Debug ("Deleted cached value with key \"" + key + "\" from cache located in " + nmspace)
+           cacheChanged.Trigger (CacheChangedArgs (Removed, key, null))
 
     member x.Clear () =
         for file in Directory.EnumerateFiles nmspace do
           let tempPath = System.IO.Path.Combine (nmspace, file)
           File.Delete (tempPath)
+        Log.Debug ("Cleared cache located in " + nmspace)
 
     member x.CacheStateChanged = cacheChanged.Publish
 
