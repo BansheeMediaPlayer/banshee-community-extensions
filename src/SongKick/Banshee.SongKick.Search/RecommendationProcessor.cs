@@ -80,7 +80,7 @@ namespace Banshee.SongKick.Search
                     }
                 }
             } catch (InvalidOperationException e) { // this exception should never be thrown by Dequeue() thanks to lock
-                Hyena.Log.Exception (e);
+                Hyena.Log.Error (e);
             }
         }
 

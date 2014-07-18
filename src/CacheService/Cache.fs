@@ -83,7 +83,7 @@ type Cache internal (nmspace : string) =
             | :? System.FormatException
             | :? IndexOutOfRangeException as e ->
                 let msg = String.Format ("Cannot read cache with key \"{0}\" located in \"{1}\" ", key, path)
-                Hyena.Log.Exception (msg, e)
+                Hyena.Log.Error (msg, e)
                 None
 
     member private x.WriteValueToFile (key : string) (value : 'a) = 

@@ -74,7 +74,7 @@ namespace Banshee.SongKick.Search
             }
             catch (Exception e) {
                 ResultsPage = new ResultsPage<Event> () { error = new ResultsError("could not download music events")};
-                Hyena.Log.Exception (e);
+                Hyena.Log.Error (e);
             }
         }
     }
@@ -102,7 +102,7 @@ namespace Banshee.SongKick.Search
             }
             catch (Exception e) {
                 ResultsPage = new ResultsPage<Event> () { error = new ResultsError("could not download music events")};
-                Hyena.Log.Exception (e);
+                Hyena.Log.Error (e);
             }
         }
     }
@@ -120,7 +120,7 @@ namespace Banshee.SongKick.Search
             }
             catch (Exception e) {
                 ResultsPage = new ResultsPage<Location> () { error = new ResultsError("could not download locations")};
-                Hyena.Log.Exception (e);
+                Hyena.Log.Error (e);
             }
         }
     }
@@ -138,7 +138,7 @@ namespace Banshee.SongKick.Search
             }
             catch (Exception e) {
                 ResultsPage = new ResultsPage<Artist> () { error = new ResultsError("could not download locations")};
-                Hyena.Log.Exception (e);
+                Hyena.Log.Error (e);
             }
         }
     }
