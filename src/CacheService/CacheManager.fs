@@ -38,6 +38,6 @@ type CacheManager private () =
         if caches.ContainsKey cacheNameSpace then 
             caches.Item cacheNameSpace
         else 
-            let cache = new Cache (Constants.cacheRoot + "/" + cacheNameSpace + "/")
+            let cache = new Cache (Constants.cache_root + "/" + cacheNameSpace + "/")
             caches.Add (cacheNameSpace, cache)
             cache

@@ -35,16 +35,16 @@ open Hyena
 [<Measure>] type hours
 
 module Constants = 
-    let cacheRoot = Paths.ExtensionCacheRoot
-    let timeout   = 12<hours>
-    let separator = "\n$\n"
-    let splitter  = '$'
+    let cache_root = Paths.ExtensionCacheRoot
+    let timeout    = 12<hours>
+    let separator  = "\n$\n"
+    let splitter   = '$'
 
 type internal CacheItem = {
     key : string
     value : obj
     created : DateTime
-    expirationTimeout : float<hours>
+    expiration_timeout : float<hours>
 }
 
 type CacheItemAction = Added | Removed | Expired
@@ -56,7 +56,7 @@ type CacheChangedArgs (s : CacheItemAction, k : string, v : obj) =
     member x.Value = v
 
 type Cache internal (nmspace : string) =
-    let cacheChanged = Event<_> ()
+    let CacheChanged = Event<_> ()
     do
         if not (Banshee.IO.Directory.Exists nmspace)
         then Directory.CreateDirectory (nmspace) |> ignore
@@ -75,18 +75,18 @@ type Cache internal (nmspace : string) =
         use sr       = new StreamReader (path)
         let data     = sr.ReadToEnd ()
         let databits = data.Split (Constants.splitter)
-        try
-            Some <|
-            { key = key
-              value = databits.[0]
-              created = DateTime.Parse (databits.[1])
-              expirationTimeout = ((float) databits.[2] * 1.0<hours>) }
-        with
-            | :? System.FormatException
-            | :? IndexOutOfRangeException as e ->
-                let msg = String.Format ("Cannot read cache with key \"{0}\" located in \"{1}\" ", key, path)
-                Log.Error (msg, e)
-                None
+        match databits.Length with
+        | 3 ->
+            try
+                Some <|
+                { key = key
+                  value = databits.[0]
+                  created = DateTime.Parse (databits.[1])
+                  expiration_timeout = ((float) databits.[2] * 1.0<hours>) }
+            with
+                | :? System.FormatException as e -> Hyena.Log.Error (e)
+                                                    None
+        | _ -> None
 
     member private x.WriteValueToFile (key : string) (value : 'a) = 
         let path = x.GetPathToKey key
@@ -97,35 +97,36 @@ type Cache internal (nmspace : string) =
 
     member x.Add (key : string) (value : 'a) =
         x.WriteValueToFile key value
-        Log.Debug ("Added value with key \"" + key + "\" to cache located in " + nmspace)
-        cacheChanged.Trigger (CacheChangedArgs (Added, key, value))
+        Log.DebugFormat ("In cache was added a value with key: {0}", key)
+        CacheChanged.Trigger (CacheChangedArgs (Added, key, value))
 
     member x.Get (key : string) =
         if File.Exists (x.GetPathToKey key) then
            match x.ReadCacheItemFromFile key with 
-           | Some c when x.IsItemExpired c.created c.expirationTimeout ->
-                         Log.Debug ("Cannot return a cached value with key \"" + key + "\": Time Expired")
-                         cacheChanged.Trigger (CacheChangedArgs (Expired, key, c.value))
+           | Some c when x.IsItemExpired c.created c.expiration_timeout ->
+                         Log.DebugFormat ("Time Expired: cannot return a cached value with key: {0}" + key)
+                         CacheChanged.Trigger (CacheChangedArgs (Expired, key, c.value))
                          None
-           | Some c -> Log.Debug ("Returned cached value with key \"" + key + "\"")
+           | Some c -> Log.DebugFormat ("Got cached value with key: {0}", key)
                        Some c.value
-           | None   -> None
+           | None   -> Log.DebugFormat ("Cannot read cached value with key:", key)
+                       None
         else None
 
     member x.Remove (key : string) =
         let path = x.GetPathToKey key
         if File.Exists path then
            File.Delete path
-           Log.Debug ("Deleted cached value with key \"" + key + "\" from cache located in " + nmspace)
-           cacheChanged.Trigger (CacheChangedArgs (Removed, key, null))
+           Log.DebugFormat ("Deleted cached value with key: ", key)
+           CacheChanged.Trigger (CacheChangedArgs (Removed, key, null))
 
     member x.Clear () =
         for file in Directory.EnumerateFiles nmspace do
           let tempPath = System.IO.Path.Combine (nmspace, file)
           File.Delete (tempPath)
-        Log.Debug ("Cleared cache located in " + nmspace)
+        Log.DebugFormat ("Cleared cache from: {0}" + nmspace)
 
-    member x.CacheStateChanged = cacheChanged.Publish
+    member x.CacheStateChanged = CacheChanged.Publish
 
     interface ICache with
         member x.Add k v    = x.Add k v

@@ -69,16 +69,16 @@ type GeoLocation =
 
 type Provider () =
     inherit BaseLocationProvider ()
-    let name                = Constants.NAME
-    let cache               = CacheManager.GetInstance.Initialize (name)
-    let songkickAPIKey      = Banshee.SongKick.SongKickCore.APIKey
-    let mozillaAPIKey       = "2363677d-0913-4a7d-8659-5df67963dc20"
-    let reverseGeoCodeUri   = "http://api.songkick.com/api/3.0/search/locations.json?location=geo:{0},{1}"
-                              + "&apikey=" + songkickAPIKey
-    let mozillaRequestUri   = "https://location.services.mozilla.com/v1/geolocate?key=" + mozillaAPIKey
-    let fedoraRequestUri    = "https://geoip.fedoraproject.org/city"
-    let songkickRequestUri  = "http://api.songkick.com/api/3.0/search/locations.json?location=clientip"
-                              + "&apikey=" + songkickAPIKey
+    let name                  = Constants.NAME
+    let cache                 = CacheManager.GetInstance.Initialize (name)
+    let songkick_api_key      = Banshee.SongKick.SongKickCore.APIKey
+    let mozilla_api_key       = "2363677d-0913-4a7d-8659-5df67963dc20"
+    let reverse_geocode_uri   = "http://api.songkick.com/api/3.0/search/locations.json?location=geo:{0},{1}"
+                                + "&apikey=" + songkick_api_key
+    let mozilla_request_uri   = "https://location.services.mozilla.com/v1/geolocate?key=" + mozilla_api_key
+    let fedora_request_uri    = "https://geoip.fedoraproject.org/city"
+    let songkick_request_uri  = "http://api.songkick.com/api/3.0/search/locations.json?location=clientip"
+                                + "&apikey=" + songkick_api_key
 
     member private x.DetermineGeoLocation () =
         match cache.Get "geoposition" with
@@ -87,13 +87,13 @@ type Provider () =
                     x.GetGeoLocation (response)
 
     member private x.GetResponseFromServer () =
-        try SongKickResponse <| SongKickResponse.Load (songkickRequestUri) with _ ->
-        try FedoraResponse   <| FedoraResponse.Load (fedoraRequestUri)     with _ ->
+        try SongKickResponse <| SongKickResponse.Load (songkick_request_uri) with _ ->
+        try FedoraResponse   <| FedoraResponse.Load (fedora_request_uri)     with _ ->
         try MozillaResponse  <| MozillaResponse.Parse (x.SendPostRequestToMozilla ())
         with _ -> NoResponse
 
     member private x.ReverseGeoCode (lat, long) =
-        let req = String.Format (reverseGeoCodeUri, lat.ToString (), long.ToString ())
+        let req = String.Format (reverse_geocode_uri, lat.ToString (), long.ToString ())
         let res = SongKickResponse.Load (req)
         match res.ResultsPage.Status with
         | "ok" when res.ResultsPage.TotalEntries > 0
@@ -101,7 +101,7 @@ type Provider () =
         | _    -> "undefined"
 
     member private x.SendPostRequestToMozilla () =
-        try Http.RequestString (mozillaRequestUri,
+        try Http.RequestString (mozilla_request_uri,
                                 headers = ["Content-Type", HttpContentTypes.Json],
                                 body = TextRequest "{}")
         with _ -> ""
