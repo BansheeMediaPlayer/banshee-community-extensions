@@ -35,7 +35,7 @@ namespace Banshee.SongKick.LocationProvider
 {
     public static class LocationProviderManager
     {
-        private static List<ICityNameObserver> cityObservers = new List<ICityNameObserver>();
+        private static List<ICityNameObserver> city_observers = new List<ICityNameObserver>();
 
         private static string city_name = String.Empty;
         public static string GetCityName {
@@ -83,7 +83,7 @@ namespace Banshee.SongKick.LocationProvider
 
         public static void Register (ICityNameObserver o)
         {
-            cityObservers.Add (o);
+            city_observers.Add (o);
             if (HasProvider) {
                 o.OnCityNameUpdated (provider.CityName);
             }
@@ -91,7 +91,7 @@ namespace Banshee.SongKick.LocationProvider
 
         public static void Detach (ICityNameObserver o)
         {
-            cityObservers.Remove (o);
+            city_observers.Remove (o);
         }
 
         public static void RefreshGeoPosition ()
@@ -104,7 +104,7 @@ namespace Banshee.SongKick.LocationProvider
         private static void NotifyObservers () 
         {
             if (HasProvider) {
-                foreach (ICityNameObserver o in cityObservers)
+                foreach (ICityNameObserver o in city_observers.ToArray ())
                 {
                     o.OnCityNameUpdated (city_name);
                 }
