@@ -27,22 +27,28 @@
 namespace Banshee.SongKickGeoLocation
 
 open System
+
 open Banshee.Sources
 open Banshee.Kernel
 open Banshee.ServiceStack
+
 open Banshee.SongKick.Recommendations
 open Banshee.SongKick.Search
 open Banshee.SongKick
+
 open Banshee.SongKick.LocationProvider
 open Banshee.SongKickGeoLocation.UI
+
 open Hyena
 
 type Service() as this =
-    let refresh_timeout = uint32 (1000 * 60 * 60 * 12) // 12 hours
+    let refresh_timeout = uint32 (1000 * 60 * 60 * 12) // 12 hours in ms
     let banshee_window = Service.GetBansheeWindow ()
-    let mutable local_events = new Results<Event> ()
+
+    let mutable city_gigs = new Results<Event> ()
     let mutable refresh_timeout_id = uint32 0
-    let events_source = new LocalEventsSource (local_events)
+
+    static let events_source = new LocalEventsSource ()
 
     member x.Initialize () =
         LocationProviderManager.Register this
@@ -51,25 +57,25 @@ type Service() as this =
             ServiceManager.Get<Banshee.Networking.Network>().StateChanged.AddHandler x.OnNetworkStateChanged)
 
     member x.RefreshLocalConcertsList = new TimeoutHandler (fun () ->
-        if not LocationProviderManager.HasProvider ||
-           not (ServiceManager.Get<Banshee.Networking.Network> ()).Connected
+        if (not LocationProviderManager.HasProvider
+            || not (ServiceManager.Get<Banshee.Networking.Network> ()).Connected)
         then true
         else
-        Hyena.Log.Debug ("Refreshing list of local concerts")
-        Scheduler.Schedule (new DelegateJob (fun () ->
-            let search = new EventsByArtistSearch ()
-            let recommendation_provider = new Banshee.SongKick.Search.RecommendationProvider ()
-            let recommendations = recommendation_provider.GetRecommendations ()
-            for artist in recommendations do
-                search.GetResultsPage (new Query(System.Nullable(), artist.Name))
-                for res in search.ResultsPage.results do
-                    if x.IsItInUserCity (res.Location.Latitude, res.Location.Longitude)
-                       && not (local_events.Contains res)
-                    then res.ArtistName <- artist.Name
-                         local_events.Add (res)
-            if local_events.Count <> 0 then
-                x.NotifyUser()))
-        true)
+            Hyena.Log.Debug ("Refreshing list of local gigs")
+            Scheduler.Schedule (new DelegateJob (fun () ->
+                let search = new EventsByArtistSearch ()
+                let recommendation_provider = new Banshee.SongKick.Search.RecommendationProvider ()
+                let recommendations = recommendation_provider.GetRecommendations ()
+                for artist in recommendations do
+                    search.GetResultsPage (new Query(System.Nullable(), artist.Name))
+                    for res in search.ResultsPage.results do
+                        if x.IsItInUserCity (res.Location.Latitude, res.Location.Longitude)
+                           && not (city_gigs.Contains res)
+                        then res.ArtistName <- artist.Name
+                             city_gigs.Add (res)
+                if city_gigs.Count <> 0 then
+                    x.NotifyUser()))
+            true)
 
     member x.IsItInUserCity (lat : float, long : float) =
         abs (lat  - LocationProviderManager.GetLatitude)  < 1.0 &&
@@ -77,16 +83,17 @@ type Service() as this =
 
     member x.NotifyUser () =
         for src in ServiceManager.SourceManager.Sources do
-            if (src :? SongKickSource && not (src.ContainsChildSource events_source))
-            then src.AddChildSource (events_source)
+            if (src :? SongKickSource && not (src.ContainsChildSource events_source)) then
+                src.AddChildSource (events_source)
 
-        events_source.view.UpdateEvents local_events
+        events_source.view.UpdateEvents city_gigs
 
-        if (banshee_window : Gtk.Window).Focus.HasFocus
-        then events_source.NotifyUser ()
-        else banshee_window.Focus.FocusInEvent.AddHandler x.OnFocusInEvent
+        if (banshee_window : Gtk.Window).Focus.HasFocus then
+            events_source.NotifyUser ()
+        else
+            banshee_window.Focus.FocusInEvent.AddHandler x.OnFocusInEvent
 
-        for e in local_events do
+        for e in city_gigs do
             ThreadAssist.ProxyToMain (fun () ->
                 let notification = new Notifications.Notification ()
                 notification.Body <- String.Format (

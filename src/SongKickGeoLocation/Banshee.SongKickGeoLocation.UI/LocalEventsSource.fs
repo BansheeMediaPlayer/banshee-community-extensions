@@ -53,7 +53,7 @@ module Functions =
     let inline isNull< ^a when ^a : not struct> (x:^a) =
         obj.ReferenceEquals (x, Unchecked.defaultof<_>)
 
-type public LocalEventsSource(events : Results<Event>) as this =
+type public LocalEventsSource () as this =
     inherit Source(AddinManager.CurrentLocalizer.GetString ("Gigs, Recommended for You"),
                    AddinManager.CurrentLocalizer.GetString ("Gigs, Recommended for You"),
                    Constants.SORT_ORDER,
@@ -66,7 +66,7 @@ type public LocalEventsSource(events : Results<Event>) as this =
         base.Properties.SetString ("UnmapSourceActionLabel", Catalog.GetString ("Close Item"))
         base.Properties.SetString ("UnmapSourceActionIconName", "gtk-close")
 
-        this.view <- new LocalEventsView(this, events)
+        this.view <- new LocalEventsView(this)
         base.Properties.Set<ISourceContents> ("Nereid.SourceContents", this.view)
         Hyena.Log.Information ("SongKick CityConcerts source has been instantiated!")
     interface IUnmapableSource with
@@ -78,27 +78,27 @@ type public LocalEventsSource(events : Results<Event>) as this =
             this.Parent.RemoveChildSource (this)
             true
 
-and public LocalEventsView(source : LocalEventsSource, events : Results<Event>) as this =
-    inherit SearchBox<Event>(new EventsByLocationSearch())
+and public LocalEventsView(source : LocalEventsSource) as this =
+    inherit SearchBox<Event> (new EventsByLocationSearch ())
 
     [<DefaultValue>] val mutable source : LocalEventsSource
     [<DefaultValue>] val mutable events : Results<Event>
 
     do
         this.source <- source
-        this.events <- events
         this.UpdateEvents ()
 
     member x.UpdateEvents(events : Results<Event>) =
-            this.events <- events
+            x.events <- events
+            x.event_model.Clear ()
+            for e in this.events do
+                x.event_model.Add(e)
+
             this.UpdateEvents ()
 
     member x.UpdateEvents() =
-            for e in events do
-                this.event_model.Add(e)
-
             base.SetModel (this.event_model)
-            this.event_search_view.OnUpdated ()
+            x.event_search_view.OnUpdated ()
 
     interface ISourceContents with
         member x.SetSource (source : ISource) =
