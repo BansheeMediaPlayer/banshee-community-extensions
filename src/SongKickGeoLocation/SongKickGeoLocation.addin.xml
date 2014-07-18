@@ -3,11 +3,11 @@
     id="Banshee.SongKickGeoLocation"
     version="1.0"
     compatVersion="1.0"
-    copyright="Copyright © 2010 Cool Extension Author. Licensed under the MIT X11 license."
-    name="Concise Title for SongKickGeoLocation"
+    copyright="Copyright © 2010 Dmitrii Petukhov. Licensed under the MIT X11 license."
+    name="SongKick GeoLocation"
     category="Community Extensions"
-    description="Describe your extension, ideally starting with an action verb.  Keep it brief and avoid tech jargon."
-    author="Cool Extension Author"
+    description="Allows SongKick extension to show you city gigs!"
+    author="Dmitrii Petukhov"
     url="http://banshee-project.org/"
     defaultEnabled="false">
 
