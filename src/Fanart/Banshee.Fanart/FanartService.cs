@@ -305,7 +305,7 @@ namespace Banshee.Fanart
                         e is IOException ||
                         e is UnauthorizedAccessException) {
                         Hyena.Log.Debug (String.Format ("Could not delete file {0}", file));
-                        Hyena.Log.Exception (e);
+                        Hyena.Log.Warning (e);
                     } else {
                         throw;
                     }

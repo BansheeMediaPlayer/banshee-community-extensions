@@ -84,7 +84,7 @@ namespace Banshee.Fanart.UI
                     Hyena.Log.Debug (String.Format (
                         "Could not get artist image for artist '{0}' with MBDI {1}.", 
                         artistInfo.Name ?? "", musicBrainzID ?? ""));
-                    Hyena.Log.Exception (e);
+                    Hyena.Log.Error (e);
                     image = null;
                 }
             } else {

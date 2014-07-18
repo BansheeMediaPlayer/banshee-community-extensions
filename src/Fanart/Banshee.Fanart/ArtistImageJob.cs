@@ -158,7 +158,7 @@ namespace Banshee.Fanart
                 save = false;
                 throw;
             } catch (Exception e) {
-                Log.Exception (e);
+                Log.Error (e);
             } finally {
                 if (save) {
                     // additional work might be done here
