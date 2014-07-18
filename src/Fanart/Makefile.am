@@ -3,7 +3,8 @@ LINK = $(BANSHEE_LIBS)
 
 SOURCES =  \
 	Banshee.Fanart.UI/FanartArtistColumnCell.cs \
-	Banshee.Fanart.UI/FanartArtistListView.cs \
+	Banshee.Fanart.UI/FanartDoubleColumn.cs \
+	Banshee.Fanart.UI/FanartSingleColumn.cs \
 	Banshee.Fanart/ArtistImageJob.cs \
 	Banshee.Fanart/CorrectResults.cs \
 	Banshee.Fanart/FanartArtistImageSpec.cs \

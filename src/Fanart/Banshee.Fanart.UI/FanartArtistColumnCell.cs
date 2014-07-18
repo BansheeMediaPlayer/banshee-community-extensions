@@ -44,7 +44,7 @@ namespace Banshee.Fanart.UI
         {
         }
 
-        public override void Render (CellContext context, StateFlags state, double cellWidth, double cellHeight)
+        public override void Render (CellContext context, double cellWidth, double cellHeight)
         {
             // check state and parameters:
             if (BoundObject == null) {
@@ -99,17 +99,21 @@ namespace Banshee.Fanart.UI
                     thumb_width, thumb_height, 
                     has_border, context.Theme.Context.Radius);
             } else {
-                RenderArtistText (artistInfo.DisplayName, cellWidth, context, state);
+                RenderArtistText (artistInfo.DisplayName, cellWidth, context);
             }
         }
 
-        private void RenderArtistText (string name, double cellWidth, CellContext context, StateFlags state)
+        private void RenderArtistText (string name, double cellWidth, CellContext context)
         {
             if (RenderNameWhenNoImage) {
                 Pango.Layout layout = context.Layout;
                 context.Widget.StyleContext.Save ();
                 context.Widget.StyleContext.AddClass ("entry");
-                Cairo.Color text_color = CairoExtensions.GdkRGBAToCairoColor (context.Widget.StyleContext.GetColor (state));
+                int old_size = layout.FontDescription.Size;
+                context.Widget.StyleContext.Save ();
+                context.Widget.StyleContext.AddClass ("entry");
+                Cairo.Color text_color = CairoExtensions.GdkRGBAToCairoColor (context.Widget.StyleContext.GetColor (context.State));
+                context.Widget.StyleContext.Restore ();
                 context.Widget.StyleContext.Restore ();
 
                 layout.Width = Pango.Units.FromPixels((int) cellWidth);
@@ -127,7 +131,8 @@ namespace Banshee.Fanart.UI
                 context.Context.SetSourceColor (text_color);
                 text_color.A = 1;
 
-				Pango.CairoHelper.ShowLayout (context.Context, layout);
+                Pango.CairoHelper.ShowLayout (context.Context, layout);
+                layout.FontDescription.Size = old_size;
             }
         }
 

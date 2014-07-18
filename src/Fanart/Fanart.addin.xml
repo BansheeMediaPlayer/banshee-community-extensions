@@ -79,6 +79,11 @@
        listed in the left-most Source TreeView. -->
   <Extension path="/Banshee/ServiceManager/Service">
     <Service class="Banshee.Fanart.FanartService"/>
-  </Extension>-->  
+  </Extension>
+
+  <Extension path="/Banshee/Gui/ArtistListView">
+    <ArtistListRenderer class="Banshee.Fanart.UI.FanartSingleColumn"/>
+    <ArtistListRenderer class="Banshee.Fanart.UI.FanartDoubleColumn"/>
+  </Extension>
 
 </Addin>

@@ -29,7 +29,7 @@ SHAMROCK_FIND_MONO_RUNTIME
 SHAMROCK_FIND_XBUILD
 
 dnl Banshee deps
-PKG_CHECK_MODULES(BANSHEE, banshee-thickclient >= 2.4.0)
+PKG_CHECK_MODULES(BANSHEE, banshee-thickclient >= 2.9.2)
 AC_SUBST(BANSHEE_LIBS)
 
 dnl Banshee Extensions Path

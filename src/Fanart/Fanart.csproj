@@ -96,7 +96,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Banshee.Fanart.UI\FanartArtistListView.cs" />
     <Compile Include="Fanart\FanartCore.cs" />
     <Compile Include="Fanart\Downloader.cs" />
     <Compile Include="Fanart\FanartDownloader.cs" />
@@ -111,6 +110,8 @@
     <Compile Include="Banshee.Fanart\FanartArtistImageSpec.cs" />
     <Compile Include="Banshee.Fanart.UI\FanartArtistColumnCell.cs" />
     <Compile Include="Banshee.Fanart\FanartMusicBrainz.cs" />
+    <Compile Include="Banshee.Fanart.UI\FanartDoubleColumn.cs" />
+    <Compile Include="Banshee.Fanart.UI\FanartSingleColumn.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

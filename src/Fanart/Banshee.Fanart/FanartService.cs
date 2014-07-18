@@ -58,23 +58,12 @@ namespace Banshee.Fanart
             }
         }
 
-        private bool shouldRestoreDefaultViews = false;
-        private TrackFilterListView<ArtistInfo> oldArtistView;
-        private TrackFilterListView<ArtistInfo> oldAlbumartistView;
-
-
-        private CompositeTrackSourceContents view;
-
         public FanartService ()
         {
         }
 
         void IExtensionService.Initialize ()
         {
-            PrepareViews ();
-            StoreOldViewInfo ();
-            InitializeFanartViews ();
-
             // TODO: check it:
             // TODO: add disposing
             Banshee.Metadata.MetadataService.Instance.AddProvider (
@@ -139,23 +128,6 @@ namespace Banshee.Fanart
             FetchArtistImages ();
         }
 
-        private void PrepareViews ()
-        {
-            var composite_view = ((IClientWindow)ServiceManager.Get ("NereidPlayerInterface")).CompositeView;
-            if (composite_view == null) {
-                throw new InvalidOperationException ("IClientWindow.CompositeView was null");
-            }
-            view = composite_view as CompositeTrackSourceContents;
-            if (view == null) {
-                throw new NotSupportedException ("IClientWindow.CompositeView needs to be of type CompositeTrackSourceContents for FanArt extension to work");
-            }
-        }
-
-        private void InitializeFanartViews () {
-            view.ArtistView = new FanartArtistListView ();
-            view.AlbumartistView = new FanartArtistListView ();
-        }
-
         public void FetchArtistImages ()
         {
             bool force = false;
@@ -194,35 +166,6 @@ namespace Banshee.Fanart
                     job = null;
                 };
                 job.Start ();
-            }
-        }
-
-        private void StoreOldViewInfo ()
-        {
-            if ((view.ArtistView is ArtistListView || view.ArtistView == null) &&
-                (view.AlbumartistView is ArtistListView || view.AlbumartistView == null)) {
-                shouldRestoreDefaultViews = true;
-            } else {
-                Hyena.Log.Warning ("Fanart: ArtistView or AlbumartistView is not and instance of " +
-                                   "ArtistListView, Fanart extension may not function properly " +
-                                   "because of other extensions that are turned on.");
-                shouldRestoreDefaultViews = false;
-
-                oldArtistView = view.ArtistView;
-                oldAlbumartistView = view.AlbumartistView;
-            }     
-        }
-
-        private void RestoreOldViews ()
-        {
-            if (shouldRestoreDefaultViews) {
-                if (view != null) {
-                    view.ArtistView = new ArtistListView ();
-                    view.AlbumartistView = new ArtistListView ();
-                }
-            } else {
-                view.ArtistView = oldArtistView;
-                view.AlbumartistView = oldAlbumartistView;
             }
         }
 
@@ -271,9 +214,6 @@ namespace Banshee.Fanart
             if (disposed) {
                 return;
             }
-
-            RestoreOldViews ();
-
 
             ServiceManager.SourceManager.MusicLibrary.TracksAdded -= OnTracksAdded;
             ServiceManager.SourceManager.MusicLibrary.TracksChanged -= OnTracksChanged;
