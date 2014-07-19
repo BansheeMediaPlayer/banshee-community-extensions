@@ -26,7 +26,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace Banshee.Fanart
+namespace Banshee.FanArt
 {
     public class IncorrectResults : Results
     {

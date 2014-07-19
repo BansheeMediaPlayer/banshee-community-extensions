@@ -35,7 +35,7 @@ using Banshee.Collection.Database;
 using Mono.Unix;
 using Banshee.Metadata;
 
-namespace Banshee.Fanart
+namespace Banshee.FanArt
 {
     public class ArtistImageJob : DbIteratorJob
     {

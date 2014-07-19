@@ -27,17 +27,17 @@ using System;
 using Banshee.Metadata;
 using Banshee.Collection;
 
-namespace Banshee.Fanart
+namespace Banshee.FanArt
 {
-    public class FanartMetadataProvider : BaseMetadataProvider
+    public class FanArtMetadataProvider : BaseMetadataProvider
     {
-        public FanartMetadataProvider ()
+        public FanArtMetadataProvider ()
         {
         }
 
         public override IMetadataLookupJob CreateJob (IBasicTrackInfo track)
         {
-            return new FanartQueryJob (track);
+            return new FanArtQueryJob (track);
         }
     }
 }

@@ -33,7 +33,7 @@ using Banshee.Collection.Gui;
 
 using Hyena.Data.Gui;
 
-namespace Banshee.Fanart.UI
+namespace Banshee.FanArt.UI
 {
     public class DoubleColumnRenderer : IArtistListRenderer
     {

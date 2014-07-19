@@ -28,7 +28,7 @@
 
 using Hyena.Json;
 
-namespace Banshee.Fanart
+namespace Banshee.FanArt
 {
     public abstract class Results
     {

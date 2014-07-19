@@ -34,16 +34,16 @@ using Banshee.Sources;
 using Hyena.Data.Sqlite;
 using Banshee.Sources.Gui;
 using Banshee.Gui;
-using Banshee.Fanart.UI;
+using Banshee.FanArt.UI;
 using Banshee.Collection.Gui;
 using Banshee.Collection;
 using Mono.Addins;
 using System.Linq;
 using System.IO;
 
-namespace Banshee.Fanart
+namespace Banshee.FanArt
 {
-    public class FanartService : IExtensionService
+    public class FanArtService : IExtensionService
     {
         private bool disposed;
         private ArtistImageJob job;
@@ -58,7 +58,7 @@ namespace Banshee.Fanart
             }
         }
 
-        public FanartService ()
+        public FanArtService ()
         {
         }
 
@@ -66,8 +66,7 @@ namespace Banshee.Fanart
         {
             // TODO: check it:
             // TODO: add disposing
-            Banshee.Metadata.MetadataService.Instance.AddProvider (
-                new FanartMetadataProvider ());
+            Banshee.Metadata.MetadataService.Instance.AddProvider (new FanArtMetadataProvider ());
 
             if (!ServiceManager.DbConnection.TableExists ("ArtistImageDownloads")) {
                 ServiceManager.DbConnection.Execute (@"
@@ -236,7 +235,7 @@ namespace Banshee.Fanart
 
         private void DeleteCachedFiles ()
         {
-            var files = FanartArtistImageSpec.GetAllFileArtistImagePaths ();
+            var files = FanArtArtistImageSpec.GetAllFileArtistImagePaths ();
             foreach (var file in files) {
                 try {
                     File.Delete (file);

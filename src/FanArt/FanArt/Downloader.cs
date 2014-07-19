@@ -26,7 +26,7 @@
 using System;
 using System.Net;
 
-namespace Fanart
+namespace FanArt
 {
     public static class Downloader
     {

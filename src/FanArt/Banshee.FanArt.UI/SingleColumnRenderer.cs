@@ -33,15 +33,15 @@ using Banshee.Collection.Gui;
 
 using Hyena.Data.Gui;
 
-namespace Banshee.Fanart.UI
+namespace Banshee.FanArt.UI
 {
-    public class FanartSingleColumn : IArtistListRenderer
+    public class SingleColumnRenderer : IArtistListRenderer
     {
         private readonly ArtistColumnCell image_column_cell;
         private readonly Column image_column;
         private readonly ColumnController column_controller;
 
-        public FanartSingleColumn ()
+        public SingleColumnRenderer ()
         {
             column_controller = new ColumnController ();
             image_column_cell = new ArtistColumnCell { RenderNameWhenNoImage = true };

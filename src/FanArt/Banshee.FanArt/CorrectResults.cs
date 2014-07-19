@@ -31,7 +31,7 @@ using System.Collections;
 
 using Utils;
 
-namespace Banshee.Fanart
+namespace Banshee.FanArt
 {
     public class CorrectResults : Results
     {

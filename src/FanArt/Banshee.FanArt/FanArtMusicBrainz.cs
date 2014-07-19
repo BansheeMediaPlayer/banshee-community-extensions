@@ -27,9 +27,9 @@ using System;
 using Banshee.ServiceStack;
 using Hyena.Data.Sqlite;
 
-namespace Banshee.Fanart
+namespace Banshee.FanArt
 {
-    public static class FanartMusicBrainz
+    public static class FanArtMusicBrainz
     {
         public static string MBIDByArtistID (long dbId) {
             return ServiceManager.DbConnection.Query<string> (

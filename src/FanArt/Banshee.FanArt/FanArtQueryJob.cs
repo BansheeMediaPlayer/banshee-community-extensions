@@ -47,14 +47,14 @@ using Banshee.Streaming;
 using Banshee.Networking;
 using Banshee.Collection.Database;
 using MusicBrainz;
-using Fanart;
+using FanArt;
 using Banshee.ServiceStack;
 
-namespace Banshee.Fanart
+namespace Banshee.FanArt
 {
-    public class FanartQueryJob : MetadataServiceJob
+    public class FanArtQueryJob : MetadataServiceJob
     {
-        public FanartQueryJob (IBasicTrackInfo track)
+        public FanArtQueryJob (IBasicTrackInfo track)
         {
             Track = track;
         }
@@ -120,8 +120,8 @@ namespace Banshee.Fanart
 
         private bool FanartDownload (string artistMusicbrainzID)
         {
-            var fanartDownloader = new FanartDownloader (FanartCore.ApiKey);
-            var answer = fanartDownloader.GetFanartArtistPage (artistMusicbrainzID);
+            var fanartDownloader = new FanArtDownloader (FanartCore.ApiKey);
+            var answer = fanartDownloader.GetFanArtArtistPage (artistMusicbrainzID);
             var results = Results.FromString (answer);
             return Save (artistMusicbrainzID, results);
         }
@@ -156,9 +156,9 @@ namespace Banshee.Fanart
         }
 
         bool SaveArtistImage (string uri, string artistMusicbrainzID) {
-            var filename = FanartArtistImageSpec.CreateArtistImageFileName (artistMusicbrainzID);
+            var filename = FanArtArtistImageSpec.CreateArtistImageFileName (artistMusicbrainzID);
 
-            return SaveHttpStream (new Uri (uri), FanartArtistImageSpec.GetPath (filename), null);
+            return SaveHttpStream (new Uri (uri), FanArtArtistImageSpec.GetPath (filename), null);
         }
 
         private void SaveDbImageData (string artistMusicbrainzID, bool downloaded)

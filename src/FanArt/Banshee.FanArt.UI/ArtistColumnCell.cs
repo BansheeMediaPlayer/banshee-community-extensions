@@ -34,7 +34,7 @@ using Banshee.Collection.Gui;
 using Banshee.Collection;
 using Banshee.Collection.Database;
 
-namespace Banshee.Fanart.UI
+namespace Banshee.FanArt.UI
 {
     public class ArtistColumnCell : ColumnCell
     {
@@ -70,11 +70,11 @@ namespace Banshee.Fanart.UI
             Cairo.ImageSurface image;
 
             // get artist image:
-            if (musicBrainzID != null && FanartMusicBrainz.HasImage (musicBrainzID)) {
+            if (musicBrainzID != null && FanArtMusicBrainz.HasImage (musicBrainzID)) {
                 try {
-                    string imagePath = FanartArtistImageSpec.GetPath (
-                            FanartArtistImageSpec.CreateArtistImageFileName (musicBrainzID)
-                        );
+                    string imagePath = FanArtArtistImageSpec.GetPath (
+                        FanArtArtistImageSpec.CreateArtistImageFileName (musicBrainzID)
+                    );
                     var artistPixbuf = new Gdk.Pixbuf (imagePath);
                     artistPixbuf = artistPixbuf.ScaleSimple (thumb_width, thumb_height, Gdk.InterpType.Bilinear);
                     var artistImage = PixbufImageSurface.Create (artistPixbuf);
@@ -146,11 +146,11 @@ namespace Banshee.Fanart.UI
 
             var dbAlbumArtistInfo = artistInfo as DatabaseAlbumArtistInfo;
             if (dbAlbumArtistInfo != null) {
-                musicBrainzID = FanartMusicBrainz.MBIDByArtistID (dbAlbumArtistInfo.DbId);
+                musicBrainzID = FanArtMusicBrainz.MBIDByArtistID (dbAlbumArtistInfo.DbId);
             }
 
             if (musicBrainzID == null) {
-                musicBrainzID = FanartMusicBrainz.MBIDByArtistName (artistInfo.Name);
+                musicBrainzID = FanArtMusicBrainz.MBIDByArtistName (artistInfo.Name);
             }
 
             return musicBrainzID;

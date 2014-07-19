@@ -31,9 +31,9 @@ using Banshee.Collection;
 using System.IO;
 using Hyena;
 
-namespace Banshee.Fanart
+namespace Banshee.FanArt
 {
-    public class FanartArtistImageSpec
+    public static class FanArtArtistImageSpec
     {
         private static string root_path = Path.Combine (XdgBaseDirectorySpec.GetUserDirectory (
             "XDG_CACHE_HOME", ".cache"),  "media-art");

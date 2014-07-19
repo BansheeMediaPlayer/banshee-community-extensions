@@ -27,21 +27,21 @@ using System;
 using System.Text;
 using Hyena.Json;
 
-namespace Fanart
+namespace FanArt
 {
-    public class FanartDownloader
+    public class FanArtDownloader
     {
         public string ApiKey { get; private set; }
         public string ServiceUri {
             get { return @"http://api.fanart.tv/webservice/"; }
         }
 
-        public FanartDownloader (string apiKey)
+        public FanArtDownloader (string apiKey)
         {
             this.ApiKey = apiKey;
         }
 
-        public String GetFanartArtistPage (string mbid) 
+        public String GetFanArtArtistPage (string mbid) 
         {
             var uri = ServiceUri + @"artist/" + ApiKey + @"/" + mbid + @"/json/musiclogo/1/1";
             return Downloader.Download (uri);

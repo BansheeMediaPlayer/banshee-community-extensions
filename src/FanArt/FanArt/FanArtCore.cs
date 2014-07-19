@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 using System;
 
-namespace Fanart
+namespace FanArt
 {
     public static class FanartCore
     {
