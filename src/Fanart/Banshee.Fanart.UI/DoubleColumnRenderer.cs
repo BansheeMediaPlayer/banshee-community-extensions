@@ -1,5 +1,5 @@
 //
-// FanArtistColumnCellSingle.cs
+// DoubleColumnRenderer.cs
 //
 // Author:
 //   Frank Ziegler <funtastix@googlemail.com>
@@ -29,29 +29,24 @@ using System;
 using Gtk;
 using Mono.Unix;
 
-using Banshee.Collection;
-using Banshee.Collection.Database;
 using Banshee.Collection.Gui;
-using Banshee.Gui;
 
 using Hyena.Data.Gui;
-using Hyena.Gui;
-using Hyena.Gui.Theming;
 
 namespace Banshee.Fanart.UI
 {
-    public class FanartDoubleColumn : IArtistListRenderer
+    public class DoubleColumnRenderer : IArtistListRenderer
     {
-        private FanartArtistColumnCell image_column_cell;
+        private ArtistColumnCell image_column_cell;
         private Column image_column;
         private Column artist_name_column;
         private ColumnController column_controller;
 
-        public FanartDoubleColumn ()
+        public DoubleColumnRenderer ()
         {
             column_controller = new ColumnController ();
             artist_name_column = new Column ("Artist", new ColumnCellText ("DisplayName", true), 0.65);
-            image_column_cell = new FanartArtistColumnCell () { RenderNameWhenNoImage = false };
+            image_column_cell = new ArtistColumnCell () { RenderNameWhenNoImage = false };
             image_column = new Column ("Artist Image", image_column_cell, 0.35);
             column_controller.Add (artist_name_column);
             column_controller.Add (image_column);

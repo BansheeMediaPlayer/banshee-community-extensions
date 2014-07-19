@@ -1,5 +1,5 @@
 //
-// FanartArtistColumnCell.cs
+// ArtistColumnCell.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -23,24 +23,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 
-using Banshee.Collection.Gui;
-using Banshee.Gui;
 using Gtk;
 using Hyena.Data.Gui;
 using Hyena.Gui;
+
+using Banshee.Collection.Gui;
 using Banshee.Collection;
 using Banshee.Collection.Database;
-using Hyena.Gui.Theming;
 
 namespace Banshee.Fanart.UI
 {
-    public class FanartArtistColumnCell : ColumnCell
+    public class ArtistColumnCell : ColumnCell
     {
         public bool RenderNameWhenNoImage { get; set; }
 
-        public FanartArtistColumnCell () : base (null, true)
+        public ArtistColumnCell () : base (null, true)
         {
         }
 

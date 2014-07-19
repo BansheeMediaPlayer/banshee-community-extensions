@@ -82,8 +82,8 @@
   </Extension>
 
   <Extension path="/Banshee/Gui/ArtistListView">
-    <ArtistListRenderer class="Banshee.Fanart.UI.FanartSingleColumn"/>
-    <ArtistListRenderer class="Banshee.Fanart.UI.FanartDoubleColumn"/>
+    <ArtistListRenderer class="Banshee.Fanart.UI.SingleColumnRenderer"/>
+    <ArtistListRenderer class="Banshee.Fanart.UI.DoubleColumnRenderer"/>
   </Extension>
 
 </Addin>

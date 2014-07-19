@@ -2,9 +2,9 @@ ASSEMBLY = Banshee.Fanart
 LINK = $(BANSHEE_LIBS)
 
 SOURCES =  \
-	Banshee.Fanart.UI/FanartArtistColumnCell.cs \
-	Banshee.Fanart.UI/FanartDoubleColumn.cs \
-	Banshee.Fanart.UI/FanartSingleColumn.cs \
+	Banshee.Fanart.UI/ArtistColumnCell.cs \
+	Banshee.Fanart.UI/DoubleColumnRenderer.cs \
+	Banshee.Fanart.UI/SingleColumnRenderer.cs \
 	Banshee.Fanart/ArtistImageJob.cs \
 	Banshee.Fanart/CorrectResults.cs \
 	Banshee.Fanart/FanartArtistImageSpec.cs \
