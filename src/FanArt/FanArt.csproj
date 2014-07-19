@@ -7,7 +7,7 @@
     <ProjectGuid>{DC53C617-A7B7-4922-A83F-BB2BB906957D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <UseParentDirectoryAsNamespace>true</UseParentDirectoryAsNamespace>
-    <AssemblyName>Banshee.Fanart</AssemblyName>
+    <AssemblyName>Banshee.FanArt</AssemblyName>
     <SchemaVersion>2.0</SchemaVersion>
     <Optimize>true</Optimize>
     <ErrorReport>prompt</ErrorReport>
@@ -91,27 +91,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Fanart.addin.xml">
-      <LogicalName>Fanart.addin.xml</LogicalName>
+    <EmbeddedResource Include="FanArt.addin.xml">
+      <LogicalName>FanArt.addin.xml</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Fanart\FanartCore.cs" />
-    <Compile Include="Fanart\Downloader.cs" />
-    <Compile Include="Fanart\FanartDownloader.cs" />
-    <Compile Include="Banshee.Fanart\FanartService.cs" />
-    <Compile Include="Banshee.Fanart\ArtistImageJob.cs" />
-    <Compile Include="Banshee.Fanart\FanartMetadataProvider.cs" />
-    <Compile Include="Banshee.Fanart\FanartQueryJob.cs" />
-    <Compile Include="Banshee.Fanart\Results.cs" />
-    <Compile Include="Banshee.Fanart\CorrectResults.cs" />
-    <Compile Include="Banshee.Fanart\IncorrectResults.cs" />
+    <Compile Include="FanArt\FanartCore.cs" />
+    <Compile Include="FanArt\Downloader.cs" />
+    <Compile Include="FanArt\FanartDownloader.cs" />
+    <Compile Include="Banshee.FanArt\FanArtService.cs" />
+    <Compile Include="Banshee.FanArt\ArtistImageJob.cs" />
+    <Compile Include="Banshee.FanArt\FanArtMetadataProvider.cs" />
+    <Compile Include="Banshee.FanArt\FanArtQueryJob.cs" />
+    <Compile Include="Banshee.FanArt\Results.cs" />
+    <Compile Include="Banshee.FanArt\CorrectResults.cs" />
+    <Compile Include="Banshee.FanArt\IncorrectResults.cs" />
     <Compile Include="Utils\IDictionaryUtils.cs" />
-    <Compile Include="Banshee.Fanart\FanartArtistImageSpec.cs" />
-    <Compile Include="Banshee.Fanart\FanartMusicBrainz.cs" />
-    <Compile Include="Banshee.Fanart.UI\ArtistColumnCell.cs" />
-    <Compile Include="Banshee.Fanart.UI\DoubleColumnRenderer.cs" />
-    <Compile Include="Banshee.Fanart.UI\SingleColumnRenderer.cs" />
+    <Compile Include="Banshee.FanArt\FanArtArtistImageSpec.cs" />
+    <Compile Include="Banshee.FanArt\FanArtMusicBrainz.cs" />
+    <Compile Include="Banshee.FanArt.UI\ArtistColumnCell.cs" />
+    <Compile Include="Banshee.FanArt.UI\DoubleColumnRenderer.cs" />
+    <Compile Include="Banshee.FanArt.UI\SingleColumnRenderer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -130,8 +130,8 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
-    <Folder Include="Banshee.Fanart.UI\" />
-    <Folder Include="Fanart\" />
+    <Folder Include="Banshee.FanArt.UI\" />
+    <Folder Include="FanArt\" />
     <Folder Include="Utils\" />
   </ItemGroup>
 </Project>

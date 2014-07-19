@@ -5,7 +5,7 @@ Project("{4925A630-B079-445d-BCD4-3A9C94FE9307}") = "OnlineMetadataFixer", "src\
 EndProject
 Project("{4925A630-B079-445d-BCD4-3A9C94FE9307}") = "SongKickGeoLocation", "src\SongKickGeoLocation\SongKickGeoLocation.fsproj", "{BD3412F5-B9B8-4339-BDF7-F05325A55A63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanart", "src\Fanart\Fanart.csproj", "{DC53C617-A7B7-4922-A83F-BB2BB906957D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FanArt", "src\FanArt\FanArt.csproj", "{DC53C617-A7B7-4922-A83F-BB2BB906957D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtistListCovers", "src\ArtistListCovers\ArtistListCovers.csproj", "{84071EFB-CF88-4614-95DB-3E56805CADCF}"
 EndProject

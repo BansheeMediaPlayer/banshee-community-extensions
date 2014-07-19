@@ -9,7 +9,7 @@ SUBDIRS = \
 	ClutterFlow \
 	CoverWallpaper \
 	DuplicateSongDetector \
-	Fanart \
+	FanArt \
 	FolderSync \
 	Jamendo \
 	Karaoke \
