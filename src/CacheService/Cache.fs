@@ -75,8 +75,7 @@ type Cache internal (nmspace : string) =
         use sr       = new StreamReader (path)
         let data     = sr.ReadToEnd ()
         let databits = data.Split (Constants.splitter)
-        match databits.Length with
-        | 3 ->
+        if (databits.Length = 3) then
             try
                 Some <|
                 { key = key
@@ -86,7 +85,8 @@ type Cache internal (nmspace : string) =
             with
                 | :? System.FormatException as e -> Hyena.Log.Error (e)
                                                     None
-        | _ -> None
+        else
+            None
 
     member private x.WriteValueToFile (key : string) (value : 'a) = 
         let path = x.GetPathToKey key
@@ -104,7 +104,7 @@ type Cache internal (nmspace : string) =
         if File.Exists (x.GetPathToKey key) then
            match x.ReadCacheItemFromFile key with 
            | Some c when x.IsItemExpired c.created c.expiration_timeout ->
-                         Log.DebugFormat ("Time Expired: cannot return a cached value with key: {0}" + key)
+                         Log.DebugFormat ("Time Expired: cannot return a cached value with key: {0}", key)
                          CacheChanged.Trigger (CacheChangedArgs (Expired, key, c.value))
                          None
            | Some c -> Log.DebugFormat ("Got cached value with key: {0}", key)
