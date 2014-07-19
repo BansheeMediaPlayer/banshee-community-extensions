@@ -52,7 +52,7 @@ namespace Banshee.FanArt.UI
             } 
             var artistInfo = BoundObject as ArtistInfo;
             if (artistInfo == null) {
-                throw new InvalidCastException ("FanartArtistColumnCell can only bind ArtistInfo objects");
+                throw new InvalidCastException ("FanArtArtistColumnCell can only bind ArtistInfo objects");
             }
 
             // majority of artist images has size 400 * 155

@@ -1,5 +1,5 @@
 //
-// FanartCore.cs
+// FanArtCore.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
@@ -26,7 +26,7 @@
 
 namespace FanArt
 {
-    public static class FanartCore
+    public static class FanArtCore
     {
         public static string ApiKey {
             get { return "47733b6f6a151df75318780dda4f5664"; }

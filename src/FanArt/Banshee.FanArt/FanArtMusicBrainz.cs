@@ -1,5 +1,5 @@
 //
-// FanartMusicBrainz.cs
+// FanArtMusicBrainz.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>

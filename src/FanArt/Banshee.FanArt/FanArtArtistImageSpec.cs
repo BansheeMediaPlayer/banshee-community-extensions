@@ -1,5 +1,5 @@
 //
-// FanartArtistImageSpec.cs
+// FanArtArtistImageSpec.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>

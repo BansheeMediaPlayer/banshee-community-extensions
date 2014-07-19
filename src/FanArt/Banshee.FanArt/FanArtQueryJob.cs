@@ -1,5 +1,5 @@
 //
-// FanartQueryJob.cs
+// FanArtQueryJob.cs
 //
 // Author:
 //   Aaron Bockover <abockover@novell.com>
@@ -29,6 +29,8 @@
 // THE SOFTWARE.
 
 using System;
+
+using Hyena;
 
 using Banshee.Metadata;
 using Banshee.Collection;
@@ -72,11 +74,11 @@ namespace Banshee.FanArt
             DatabaseTrackInfo dbtrack = Track as DatabaseTrackInfo;
 
             if (dbtrack != null) {
-                Hyena.Log.Debug (String.Format ("FanartQueryJob : Processing DatabaseTrackInfo {0}", dbtrack));
+                Log.Debug (String.Format ("FanArtQueryJob : Processing DatabaseTrackInfo {0}", dbtrack));
                 var artistMusicbrainzID = dbtrack.Artist.MusicBrainzId ?? dbtrack.ArtistMusicBrainzId;
 
                 if (String.IsNullOrEmpty (artistMusicbrainzID)) { 
-                    Hyena.Log.Debug (String.Format ("FanartQueryJob : Trying to get MusicBrainzId of an artist {0}",
+                    Hyena.Log.Debug (String.Format ("FanArtQueryJob : Trying to get MusicBrainzId of an artist {0}",
                         dbtrack.ArtistName ?? ""));
 
                     var artistQuery = MusicBrainz.Artist.Query (Track.ArtistName);
@@ -89,9 +91,9 @@ namespace Banshee.FanArt
 
                 if (!String.IsNullOrEmpty (artistMusicbrainzID)) {
                     try {
-                        Hyena.Log.Debug (String.Format("FanartQueryJob : Retrieving artist image for MBId={0}", artistMusicbrainzID));
+                        Log.Debug (String.Format ("FanArtQueryJob : Retrieving artist image for MBId={0}", artistMusicbrainzID));
 
-                        return FanartDownload (artistMusicbrainzID);
+                        return FanArtDownload (artistMusicbrainzID);
 
                     } catch (Exception e) {
                         Hyena.Log.Debug (String.Format ("Could not download image for {0}, because of exception {1}", 
@@ -99,16 +101,16 @@ namespace Banshee.FanArt
                     }
                 }
                 return false;
-
-            } else {
-                Hyena.Log.Debug ("Fanart: dbtrack info is null in FanartQueryJob");
             }
+
+            Log.Debug ("FanArt: dbtrack info is null in FanArtQueryJob");
+
             return false;
         }
 
-        private bool FanartDownload (string artistMusicbrainzID)
+        private bool FanArtDownload (string artistMusicbrainzID)
         {
-            var fanartDownloader = new FanArtDownloader (FanartCore.ApiKey);
+            var fanartDownloader = new FanArtDownloader (FanArtCore.ApiKey);
             var answer = fanartDownloader.GetFanArtArtistPage (artistMusicbrainzID);
             var results = Results.FromString (answer);
             return Save (artistMusicbrainzID, results);
@@ -121,7 +123,7 @@ namespace Banshee.FanArt
             if (correctResuts != null) {
                 var bestImageInfo = correctResuts.BestArtistImageInfo;
                 if (bestImageInfo != null) {
-                    Hyena.Log.Debug ("FanartQueryJob: Artist image should be downloaded");
+                    Hyena.Log.Debug ("FanArtQueryJob: Artist image should be downloaded");
                     SaveArtistImage (bestImageInfo.Url, artistMusicbrainzID);
                     downloaded = true;
                     /*
@@ -130,13 +132,11 @@ namespace Banshee.FanArt
                     dbTrack.ArtistMusicBrainzId = artistMusicbrainzID;
                     }
                     */
+                } else {
+                    Log.Debug ("FanArtQueryJob: No artist image was found");
                 }
-                else {
-                    Hyena.Log.Debug ("FanartQueryJob: No artist image was found");
-                }
-            }
-            else {
-                Hyena.Log.Debug ("FanartQueryJob: Results were incorrect");
+            } else {
+                Log.Debug ("FanArtQueryJob: Results were incorrect");
             }
 
             SaveDbImageData (artistMusicbrainzID, downloaded);

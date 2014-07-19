@@ -1,5 +1,5 @@
 //
-// FanartDownloader.cs
+// FanArtDownloader.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>

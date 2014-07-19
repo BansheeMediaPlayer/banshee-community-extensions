@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Addin 
-    id="Banshee.Fanart"
+    id="Banshee.FanArt"
     version="1.0"
     compatVersion="1.0"
     copyright="Copyright © 2013 Tomasz Maczyński. Licensed under the MIT X11 license."
-    name="Fanart"
+    name="FanArt"
     category="Community Extensions"
     description="Display artists' logos in the music library."
     author="Tomasz Maczyński"
@@ -31,7 +31,7 @@
         Here is an example of how to define an extension point:
 
         <Extension path="ExtensionPointPath">
-            <ExtensionPointType class="Banshee.Fanart.FanartExtensionPointType"/>
+            <ExtensionPointType class="Banshee.FanArt.FanArtExtensionPointType"/>
         </Extension>
 
         An extension must have one or more such definitions.
@@ -72,18 +72,18 @@
   <!-- Define a Service extension.  This will instantiate the specified class on startup,
        letting us do whatever we want.
   <Extension path="/Banshee/ServiceManager/Service">
-    <Service class="Banshee.Fanart.FanartService"/>
+    <Service class="Banshee.FanArt.FanArtService"/>
   </Extension>-->
 
   <!-- Define a Source extension.  This will instantiate a new Source object,
        listed in the left-most Source TreeView. -->
   <Extension path="/Banshee/ServiceManager/Service">
-    <Service class="Banshee.Fanart.FanartService"/>
+    <Service class="Banshee.FanArt.FanArtService"/>
   </Extension>
 
   <Extension path="/Banshee/Gui/ArtistListView">
-    <ArtistListRenderer class="Banshee.Fanart.UI.SingleColumnRenderer"/>
-    <ArtistListRenderer class="Banshee.Fanart.UI.DoubleColumnRenderer"/>
+    <ArtistListRenderer class="Banshee.FanArt.UI.SingleColumnRenderer"/>
+    <ArtistListRenderer class="Banshee.FanArt.UI.DoubleColumnRenderer"/>
   </Extension>
 
 </Addin>

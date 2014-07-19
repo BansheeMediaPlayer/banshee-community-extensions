@@ -1,5 +1,5 @@
 //
-// FanartMetadataProvider.cs
+// FanArtMetadataProvider.cs
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>

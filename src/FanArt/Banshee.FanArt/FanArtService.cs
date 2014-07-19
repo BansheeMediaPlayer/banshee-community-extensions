@@ -1,5 +1,5 @@
 //
-// FanartService.cs
+// FanArtService.cs
 //
 // Author:
 //   James Willcox <snorp@novell.com>
@@ -100,7 +100,7 @@ namespace Banshee.FanArt
                 var isEnabled = addins.Any (a => a.LocalId == ExtensionId && a.Enabled);
 
                 if (!isEnabled) {
-                    Hyena.Log.Debug ("Fanart extension is being disabled, performing cleanup");
+                    Log.Debug ("FanArt extension is being disabled, performing cleanup");
                     OnDisabled ();
                 }
             }
@@ -253,7 +253,7 @@ namespace Banshee.FanArt
         #region IService implementation
 
         string IService.ServiceName {
-            get { return "FanartService"; }
+            get { return "FanArtService"; }
         }
 
         #endregion
