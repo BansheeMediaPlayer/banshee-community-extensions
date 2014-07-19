@@ -26,13 +26,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
-using Banshee.ServiceStack;
+
+using Mono.Unix;
+
 using Hyena.Data.Sqlite;
 using Hyena;
 using Hyena.Jobs;
+
+using Banshee.ServiceStack;
 using Banshee.Collection.Database;
-using Mono.Unix;
 using Banshee.Metadata;
 
 namespace Banshee.FanArt

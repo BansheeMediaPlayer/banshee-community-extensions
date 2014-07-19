@@ -25,18 +25,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
-using Banshee.Base;
-using Banshee.Collection;
 using System.IO;
+
 using Hyena;
 
 namespace Banshee.FanArt
 {
     public static class FanArtArtistImageSpec
     {
-        private static string root_path = Path.Combine (XdgBaseDirectorySpec.GetUserDirectory (
-            "XDG_CACHE_HOME", ".cache"),  "media-art");
+        private static string root_path =
+            Path.Combine (XdgBaseDirectorySpec.GetUserDirectory ("XDG_CACHE_HOME", ".cache"),  "media-art");
 
         public static string RootPath {
             get { return root_path; }
@@ -62,6 +62,7 @@ namespace Banshee.FanArt
         public static string[] GetAllFileArtistImagePaths () 
         {
             string fileMask = @"artist-*";
+            //FIXME: use Banshee.IO
             return System.IO.Directory.GetFiles (RootPath, fileMask);
         }
     }

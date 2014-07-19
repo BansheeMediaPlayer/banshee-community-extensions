@@ -27,28 +27,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using System.Collections;
-using System.IO;
-using System.Net;
-//using System.Xml;
-using System.Text;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Web;
-using System.Text.RegularExpressions;
 
-using Hyena;
-using Banshee.Base;
+using System;
+
 using Banshee.Metadata;
-using Banshee.Kernel;
 using Banshee.Collection;
-using Banshee.Streaming;
-using Banshee.Networking;
 using Banshee.Collection.Database;
+using Banshee.ServiceStack;
+
 using MusicBrainz;
 using FanArt;
-using Banshee.ServiceStack;
 
 namespace Banshee.FanArt
 {
@@ -155,7 +143,8 @@ namespace Banshee.FanArt
             return downloaded;
         }
 
-        bool SaveArtistImage (string uri, string artistMusicbrainzID) {
+        private bool SaveArtistImage (string uri, string artistMusicbrainzID)
+        {
             var filename = FanArtArtistImageSpec.CreateArtistImageFileName (artistMusicbrainzID);
 
             return SaveHttpStream (new Uri (uri), FanArtArtistImageSpec.GetPath (filename), null);
@@ -168,10 +157,10 @@ namespace Banshee.FanArt
                 artistMusicbrainzID, downloaded, DateTime.Now);
         }
 
-        private void SaveDbMusicBrainz (string artistName, string artistMBDI) {
+        private void SaveDbMusicBrainz (string artistName, string artistMbId) {
             ServiceManager.DbConnection.Execute (
                 "INSERT OR REPLACE INTO ArtistMusicBrainz (ArtistName, MusicBrainzId, LastAttempt) VALUES (?, ?, ?)",
-                artistName, artistMBDI, DateTime.Now);
+                artistName, artistMbId, DateTime.Now);
         }
     }
 }

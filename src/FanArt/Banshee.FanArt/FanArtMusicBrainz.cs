@@ -23,9 +23,12 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
-using Banshee.ServiceStack;
+
 using Hyena.Data.Sqlite;
+
+using Banshee.ServiceStack;
 
 namespace Banshee.FanArt
 {
@@ -44,13 +47,13 @@ namespace Banshee.FanArt
                 );
         }
 
-        public static bool HasImage (string mbdi) {
+        public static bool HasImage (string mbId) {
             return ServiceManager.DbConnection.Query<bool> (
                 new HyenaSqliteCommand (@"
                     SELECT COUNT(*)>0 FROM ArtistImageDownloads 
                     WHERE MusicBrainzID=? AND 
                     Downloaded=1",
-                    mbdi)
+                    mbId)
                 );
         }
     }

@@ -136,7 +136,8 @@ namespace Banshee.FanArt.UI
             }
         }
 
-        public virtual int ComputeRowHeight (Widget w) {
+        public virtual int ComputeRowHeight (Widget w)
+        {
             return 40;
         }
 

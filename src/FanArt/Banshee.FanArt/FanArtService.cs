@@ -27,19 +27,17 @@
 // THE SOFTWARE.
 
 using System;
-using Banshee.ServiceStack;
-using Hyena;
-using Banshee.Configuration;
-using Banshee.Sources;
-using Hyena.Data.Sqlite;
-using Banshee.Sources.Gui;
-using Banshee.Gui;
-using Banshee.FanArt.UI;
-using Banshee.Collection.Gui;
-using Banshee.Collection;
-using Mono.Addins;
 using System.Linq;
 using System.IO;
+
+using Mono.Addins;
+
+using Hyena;
+using Hyena.Data.Sqlite;
+
+using Banshee.ServiceStack;
+using Banshee.Configuration;
+using Banshee.Sources;
 
 namespace Banshee.FanArt
 {
@@ -94,7 +92,7 @@ namespace Banshee.FanArt
 
         }
 
-        void OnExtensionChanged (object sender, ExtensionEventArgs args)
+        private void OnExtensionChanged (object sender, ExtensionEventArgs args)
         {
             var addinEngine = sender as AddinEngine;
             if (addinEngine != null && addinEngine.CurrentAddin.Id == ExtensionId) {
