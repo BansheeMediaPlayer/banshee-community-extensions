@@ -1,6 +1,6 @@
 AC_DEFUN([BCE_MAGNATUNE],
 [
-	BCE_ARG_DISABLE([Magnatune], [yes])
+	BCE_ARG_DISABLE([Magnatune], [no])
 
 	if test "x$enable_Magnatune" = "xyes"; then
 		AM_CONDITIONAL(ENABLE_MAGNATUNE, true)

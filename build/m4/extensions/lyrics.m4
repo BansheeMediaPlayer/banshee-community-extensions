@@ -1,6 +1,6 @@
 AC_DEFUN([BCE_LYRICS],
 [
-	BCE_ARG_DISABLE([Lyrics], [try])
+	BCE_ARG_DISABLE([Lyrics], [no])
 
 	BCE_CHECK_EXTENSION_DEP([Lyrics], [GCONF_SHARP_20],
 		[gconf-sharp-2.0],

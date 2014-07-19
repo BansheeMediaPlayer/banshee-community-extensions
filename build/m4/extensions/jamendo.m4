@@ -1,6 +1,6 @@
 AC_DEFUN([BCE_JAMENDO],
 [
-	BCE_ARG_DISABLE([Jamendo], [yes])
+	BCE_ARG_DISABLE([Jamendo], [no])
 
 	BCE_CHECK_EXTENSION_DEP([Jamendo], [BANSHEE_WEBBROWSER],
 		[banshee-webbrowser],

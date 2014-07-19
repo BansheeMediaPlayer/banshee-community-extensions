@@ -1,7 +1,7 @@
 # This must be called after BCE_STREAMRECORDER, because it depends on it
 AC_DEFUN([BCE_KARAOKE],
 [
-	BCE_ARG_DISABLE([Karaoke], [yes])
+	BCE_ARG_DISABLE([Karaoke], [no])
 
 	if test "x$enable_Karaoke" = "xyes" \
 		&& test "x$enable_StreamRecorder" = "xno"; then

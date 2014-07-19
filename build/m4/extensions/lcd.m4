@@ -1,6 +1,6 @@
 AC_DEFUN([BCE_LCD],
 [
-	BCE_ARG_DISABLE([LCD], [yes])
+	BCE_ARG_DISABLE([LCD], [no])
 
 	if test "x$enable_LCD" = "xyes"; then
 		AM_CONDITIONAL(ENABLE_LCD, true)
