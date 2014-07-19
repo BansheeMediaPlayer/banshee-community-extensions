@@ -18,8 +18,8 @@
   </Dependencies>
 
   <Extension path="/Banshee/Gui/ArtistListView">
-    <ArtistListRenderer class="Banshee.Collection.Gui.ColumnCellArtistCoverSmall"/>
-    <ArtistListRenderer class="Banshee.Collection.Gui.ColumnCellArtistCoverLarge"/>
+    <ArtistListRenderer class="Banshee.ArtistListCovers.ColumnCellArtistCoverSmall"/>
+    <ArtistListRenderer class="Banshee.ArtistListCovers.ColumnCellArtistCoverLarge"/>
   </Extension>
 
 </Addin>
