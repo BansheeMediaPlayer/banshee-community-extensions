@@ -7,6 +7,8 @@ Project("{4925A630-B079-445d-BCD4-3A9C94FE9307}") = "SongKickGeoLocation", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanart", "src\Fanart\Fanart.csproj", "{DC53C617-A7B7-4922-A83F-BB2BB906957D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtistListCovers", "src\ArtistListCovers\ArtistListCovers.csproj", "{84071EFB-CF88-4614-95DB-3E56805CADCF}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongKick", "src\SongKick\SongKick.csproj", "{460378DF-B87B-4E9A-8B3D-4C5F84D0B733}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidRemote", "src\AndroidRemote\AndroidRemote.csproj", "{696EF9D2-3F3E-4FF9-9D8C-E26C74DD8563}"
@@ -196,6 +198,8 @@ Global
 		{709BF115-AA10-45BF-BEE8-D09C882823AB}.Debug|x86.Build.0 = Debug|Any CPU
 		{709BF115-AA10-45BF-BEE8-D09C882823AB}.Release|x86.ActiveCfg = Release|Any CPU
 		{709BF115-AA10-45BF-BEE8-D09C882823AB}.Release|x86.Build.0 = Release|Any CPU
+		{84071EFB-CF88-4614-95DB-3E56805CADCF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{84071EFB-CF88-4614-95DB-3E56805CADCF}.Debug|x86.Build.0 = Debug|Any CPU
 		{8684E1F1-96B9-4F74-BFBB-3946C163A6B6}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{8684E1F1-96B9-4F74-BFBB-3946C163A6B6}.Debug|x86.Build.0 = Debug|Any CPU
 		{8684E1F1-96B9-4F74-BFBB-3946C163A6B6}.Release|x86.ActiveCfg = Release|Any CPU

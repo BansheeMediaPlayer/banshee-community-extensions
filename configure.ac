@@ -82,6 +82,7 @@ BCE_ALBUMARTWRITER
 BCE_AMPACHE
 BCE_ANDROIDREMOTE
 BCE_APPINDICATOR
+BCE_ARTISTLISTCOVERS
 BCE_AWN
 BCE_BLUETOOTH
 BCE_CLUTTERFLOW
@@ -148,6 +149,7 @@ src/AlbumArtWriter/Makefile
 src/Ampache/Makefile
 src/AndroidRemote/Makefile
 src/AppIndicator/Makefile
+src/ArtistListCovers/Makefile
 src/Awn/Makefile
 src/Bluetooth/Makefile
 src/CacheService/Makefile
@@ -223,6 +225,7 @@ ${PACKAGE}-${VERSION}
     Ampache:               ${enable_Ampache}
     AndroidRemote:         ${enable_AndroidRemote}
     AppIndicator:          ${enable_AppIndicator}
+    ArtistListCovers:      ${enable_ArtistListCovers}
     Awn:                   ${enable_Awn}
     Bluetooth:             ${enable_Bluetooth}
     ClutterFlow:           ${enable_ClutterFlow}

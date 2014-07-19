@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin 
+    id="Banshee.ArtistListCovers"
+    version="1.0"
+    compatVersion="1.0"
+    copyright="Copyright © 2013 Frank Ziegler. Licensed under the MIT X11 license."
+    name="Artist List with Album Covers"
+    category="Community Extensions"
+    description="Adds album covers to the artist list in the browser"
+    author="Frank Ziegler"
+    url="http://banshee-project.org/"
+    defaultEnabled="false">
+
+  <Localizer type="Gettext" catalog="banshee-community-extensions" location="../../../share/locale"/>
+
+  <Dependencies>
+    <Addin id="Banshee.ThickClient" version="1.0"/>
+  </Dependencies>
+
+  <Extension path="/Banshee/Gui/ArtistListView">
+    <ArtistListRenderer class="Banshee.Collection.Gui.ColumnCellArtistCoverSmall"/>
+    <ArtistListRenderer class="Banshee.Collection.Gui.ColumnCellArtistCoverLarge"/>
+  </Extension>
+
+</Addin>
