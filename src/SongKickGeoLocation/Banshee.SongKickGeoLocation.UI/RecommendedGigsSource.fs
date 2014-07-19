@@ -1,5 +1,5 @@
 ﻿//
-// LocalEventsSource.fs
+// RecommendedGigsSource.fs
 //
 // Author:
 //   Dmitrii Petukhov <dimart.sp@gmail.com>
@@ -49,64 +49,54 @@ open Banshee.SongKick.UI
 module Constants =
     let SORT_ORDER = 195
 
-module Functions =
-    let inline isNull< ^a when ^a : not struct> (x:^a) =
-        obj.ReferenceEquals (x, Unchecked.defaultof<_>)
-
-type public LocalEventsSource () as this =
+type public RecommendedGigsSource () as this =
     inherit Source(AddinManager.CurrentLocalizer.GetString ("Gigs, Recommended for You"),
                    AddinManager.CurrentLocalizer.GetString ("Gigs, Recommended for You"),
                    Constants.SORT_ORDER,
-                   "SongKick-city-concerts")
+                   "SongKick-recommended-gigs")
 
-    [<DefaultValue>] val mutable view : LocalEventsView
+    let view = new RecommendedGigsView (this)
 
     do
-        base.Properties.SetStringList ("Icon.Name", "city_concerts_logo")
+        base.Properties.SetStringList ("Icon.Name", "recommended_gigs_logo")
         base.Properties.SetString ("UnmapSourceActionLabel", Catalog.GetString ("Close Item"))
         base.Properties.SetString ("UnmapSourceActionIconName", "gtk-close")
 
-        this.view <- new LocalEventsView(this)
-        base.Properties.Set<ISourceContents> ("Nereid.SourceContents", this.view)
+        base.Properties.Set<ISourceContents> ("Nereid.SourceContents", view)
         Hyena.Log.Information ("SongKick CityConcerts source has been instantiated!")
+
+    member x.View with get () = view
+
     interface IUnmapableSource with
         member x.CanUnmap = true
         member x.ConfirmBeforeUnmap = false
         member x.Unmap() =
-            if (this :> Source) = ServiceManager.SourceManager.ActiveSource
-            then ServiceManager.SourceManager.SetActiveSource (this.Parent)
-            this.Parent.RemoveChildSource (this)
+            if (x :> Source) = ServiceManager.SourceManager.ActiveSource then
+                ServiceManager.SourceManager.SetActiveSource (x.Parent)
+            x.Parent.RemoveChildSource (x)
             true
 
-and public LocalEventsView(source : LocalEventsSource) as this =
+and public RecommendedGigsView (s : RecommendedGigsSource) as this =
     inherit SearchBox<Event> (new EventsByLocationSearch ())
 
-    [<DefaultValue>] val mutable source : LocalEventsSource
-    [<DefaultValue>] val mutable events : Results<Event>
-
     do
-        this.source <- source
-        this.UpdateEvents ()
+        this.UpdateGigs ()
 
-    member x.UpdateEvents(events : Results<Event>) =
-            x.events <- events
+    member x.UpdateGigs(gigs : Results<Event>) =
             x.event_model.Clear ()
-            for e in this.events do
-                x.event_model.Add(e)
+            for g in gigs do
+                x.event_model.Add(g)
+            x.UpdateGigs ()
 
-            this.UpdateEvents ()
-
-    member x.UpdateEvents() =
-            base.SetModel (this.event_model)
+    member private x.UpdateGigs() =
+            x.SetModel (x.event_model)
             x.event_search_view.OnUpdated ()
 
     interface ISourceContents with
-        member x.SetSource (source : ISource) =
-            this.source <- source :?> LocalEventsSource
-            Functions.isNull this.source
+        member x.SetSource s = false 
         member x.ResetSource () = ()
-        member x.Source with get() = this.source :> ISource
-        member x.Widget with get() = this :> Widget
+        member x.Source with get() = s :> ISource
+        member x.Widget with get() = x :> Widget
 
     override x.OnRowActivated (o : obj, args : Hyena.Data.Gui.RowActivatedArgs<Event>) =
             let musicEvent = args.RowValue

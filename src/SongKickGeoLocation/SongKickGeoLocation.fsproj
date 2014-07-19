@@ -99,7 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Banshee.SongKickGeoLocation\SongKickGeoLocationProvider.fs" />
-    <Compile Include="Banshee.SongKickGeoLocation.UI\LocalEventsSource.fs" />
+    <Compile Include="Banshee.SongKickGeoLocation.UI\RecommendedGigsSource.fs" />
     <Compile Include="Banshee.SongKickGeoLocation\SongKickGeoLocationService.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
@@ -110,9 +110,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\songkick_logo_300x300.png">
       <LogicalName>songkick_logo_300x300.png</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\city_concerts_logo.png">
-      <LogicalName>city_concerts_logo.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\FedoraResponseSample.json">
       <LogicalName>FedoraResponseSample.json</LogicalName>
@@ -125,6 +122,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\SongKickResponseSample.json">
       <LogicalName>SongKickResponseSample.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\recommended_gigs_logo.png">
+      <LogicalName>recommended_gigs_logo.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>

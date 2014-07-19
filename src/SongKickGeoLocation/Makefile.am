@@ -2,16 +2,16 @@ ASSEMBLY = Banshee.SongKickGeoLocation
 LINK = $(BANSHEE_LIBS)
 
 SOURCES =  \
-	Banshee.SongKickGeoLocation.UI/LocalEventsSource.fs \
 	Banshee.SongKickGeoLocation/SongKickGeoLocationProvider.fs \
-	Banshee.SongKickGeoLocation/SongKickGeoLocationService.fs
+	Banshee.SongKickGeoLocation/SongKickGeoLocationService.fs \
+	Banshee.SongKickGeoLocation.UI/RecommendedGigsSource.fs
 
 RESOURCES =  \
-	Resources/city_concerts_logo.png \
-	Resources/songkick_logo_300x300.png \
 	Resources/FedoraResponseSample.json \
 	Resources/GeoResultSample.json \
 	Resources/MozillaResponseSample.json \
+	Resources/recommended_gigs_logo.png \
+	Resources/songkick_logo_300x300.png \
 	Resources/SongKickResponseSample.json \
 	SongKickGeoLocation.addin.xml
 
