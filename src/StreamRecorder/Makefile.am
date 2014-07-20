@@ -1,6 +1,5 @@
 ASSEMBLY = Banshee.Streamrecorder
 
-OLD_GLIB = -r:oldGlib=${expanded_libdir}/pkgconfig/../../lib/cli/glib-sharp-2.0/glib-sharp.dll
 LINK = $(BANSHEE_LIBS) $(OLD_GLIB)
 
 GMCS_FLAGS = -unsafe
