@@ -32,12 +32,14 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+extern alias NewGtk;
+using Gtk3=NewGtk.Gtk;
+using Gdk3=NewGtk.Gdk;
 
 using System;
 using Mono.Addins;
 
 using AppIndicator;
-using Gtk;
 using Notifications;
 
 using Hyena;
@@ -127,15 +129,15 @@ namespace Banshee.AppIndicator
 
         private void Initialize ()
         {
-            interface_action_service.GlobalActions.Add (new ActionEntry [] {
-                new ActionEntry ("CloseAction", Stock.Close,
+            interface_action_service.GlobalActions.Add (new Gtk3.ActionEntry [] {
+                new Gtk3.ActionEntry ("CloseAction", Gtk3.Stock.Close,
                     AddinManager.CurrentLocalizer.GetString ("_Close"), "<Control>W",
                     AddinManager.CurrentLocalizer.GetString ("Close"), CloseWindow)
             });
 
             actions = new BansheeActionGroup (interface_action_service, "AppIndicator");
-            actions.Add (new ToggleActionEntry [] {
-                new ToggleActionEntry ("ShowHideAction", null,
+            actions.Add (new Gtk3.ToggleActionEntry [] {
+                new Gtk3.ToggleActionEntry ("ShowHideAction", null,
                     AddinManager.CurrentLocalizer.GetString ("_Show Banshee"), null,
                     AddinManager.CurrentLocalizer.GetString ("Show the Banshee main window"), ToggleShowHide, PrimaryWindowVisible)
             });
@@ -179,7 +181,7 @@ namespace Banshee.AppIndicator
 
             elements_service.PrimaryWindowClose = null;
 
-            Gtk.Action close_action = interface_action_service.GlobalActions["CloseAction"];
+            Gtk3.Action close_action = interface_action_service.GlobalActions["CloseAction"];
             if (close_action != null) {
                 interface_action_service.GlobalActions.Remove (close_action);
             }
@@ -215,9 +217,9 @@ namespace Banshee.AppIndicator
             return true;
         }
 
-        private void OnPrimaryWindowMapped (object o, MapEventArgs args)
+        private void OnPrimaryWindowMapped (object o, Gtk3.MapEventArgs args)
         {
-            ToggleAction showhideaction = (ToggleAction) actions["ShowHideAction"];
+            Gtk3.ToggleAction showhideaction = (Gtk3.ToggleAction) actions["ShowHideAction"];
             if (showhideaction.Active == false) {
                 showhideaction.Active = true;
             }
@@ -255,10 +257,11 @@ namespace Banshee.AppIndicator
                                                       Category.ApplicationStatus);
 
                 // Load the menu
-                Menu menu = (Menu) interface_action_service.UIManager.GetWidget("/AppIndicatorTrayMenu");
+                Gtk3.Menu menu = (Gtk3.Menu) interface_action_service.UIManager.GetWidget("/AppIndicatorTrayMenu");
                 menu.Show ();
 
-                indicator.Menu = menu;
+                //This cannot be enabled at the moment because of the Gtk3/Gtk2 conflict. Need to find a solution
+                //indicator.Menu = menu;
 
                 // Show the tray icon
                 indicator.Status = Status.Active;
@@ -323,7 +326,7 @@ namespace Banshee.AppIndicator
 
         private void ToggleShowHide (object o, EventArgs args)
         {
-            PrimaryWindowVisible = ((ToggleAction)actions["ShowHideAction"]).Active;
+            PrimaryWindowVisible = ((Gtk3.ToggleAction)actions["ShowHideAction"]).Active;
         }
 
         private void ShowTrackNotification ()
@@ -370,7 +373,7 @@ namespace Banshee.AppIndicator
             if (!File.Exists (new SafeUri(image))) {
                 if (artwork_manager_service != null) {
                     // artwork does not exist, try looking up the pixbuf to trigger scaling or conversion
-                    Gdk.Pixbuf tmp_pixbuf = is_notification_daemon
+                    Gdk3.Pixbuf tmp_pixbuf = is_notification_daemon
                         ? artwork_manager_service.LookupScalePixbuf (current_track.ArtworkId, icon_size)
                         : artwork_manager_service.LookupPixbuf (current_track.ArtworkId);
 
@@ -426,7 +429,7 @@ namespace Banshee.AppIndicator
 
             set {
                 elements_service.PrimaryWindow.SetVisible(value);
-                ((ToggleAction)actions["ShowHideAction"]).Active = value;
+                ((Gtk3.ToggleAction)actions["ShowHideAction"]).Active = value;
             }
         }
 

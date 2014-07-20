@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-20 20:20+1000\n"
+"POT-Creation-Date: 2014-07-21 00:21+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -194,30 +194,30 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:132
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:134
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:169
 msgid "_Close"
 msgstr ""
 
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:133
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:135
 #: ../src/DuplicateSongDetector/Banshee.DuplicateSongDetector/DuplicateSongDetectorSource.cs:50
 #: ../src/FolderSync/Banshee.FolderSync/FolderSyncSource.cs:43
 msgid "Close"
 msgstr ""
 
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:139
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:141
 msgid "_Show Banshee"
 msgstr ""
 
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:140
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:142
 msgid "Show the Banshee main window"
 msgstr ""
 
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:231
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:233
 msgid "Still Running"
 msgstr ""
 
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:233
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:235
 msgid ""
 "Banshee was closed to the notification area. Use the <i>Quit</i> option to "
 "end your session."
@@ -226,26 +226,26 @@ msgstr ""
 #. Translators: {0} and {1} are Artist Name and
 #. Album Title, respectively;
 #. e.g. 'by Parkway Drive from Killing with a Smile'
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:308
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:310
 #, csharp-format
 msgid "by '{0}' from '{1}'"
 msgstr ""
 
 #. Translators: {0} is for Album Title;
 #. e.g. 'from Killing with a Smile'
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:313
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:315
 #, csharp-format
 msgid "from '{0}'"
 msgstr ""
 
 #. Translators: {0} is for Artist Name;
 #. e.g. 'by Parkway Drive'
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:318
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:320
 #, csharp-format
 msgid "by '{0}'"
 msgstr ""
 
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:397
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:399
 msgid "Skip this item"
 msgstr ""
 
