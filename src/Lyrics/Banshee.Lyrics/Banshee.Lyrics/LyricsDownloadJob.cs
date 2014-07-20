@@ -74,7 +74,7 @@ namespace Banshee.Lyrics
             try {
                 lyrics = LyricsManager.Instance.DownloadLyrics (track);
             } catch (Exception e) {
-                Log.Exception (e);
+                Log.Warning (e);
                 return;
             }
 

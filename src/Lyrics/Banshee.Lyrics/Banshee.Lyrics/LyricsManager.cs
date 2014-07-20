@@ -156,7 +156,7 @@ namespace Banshee.Lyrics
                     lyrics = source.Source.GetLyrics (track.ArtistName, track.TrackTitle);
                     found = IsLyricsOk (lyrics);
                 } catch (Exception e) {
-                    Log.Exception (e);
+                    Log.Warning (e);
                     continue;
                 } finally {
                     source.IncrementLyrics (found);
@@ -216,7 +216,7 @@ namespace Banshee.Lyrics
                     suggestions = source.Source.GetSuggestions (track.ArtistName, track.TrackTitle);
                     found = !String.IsNullOrEmpty (suggestions);
                 } catch (Exception e) {
-                    Log.Exception (e);
+                    Log.Warning (e);
                     continue;
                 } finally {
                     source.IncrementSuggestions (found);

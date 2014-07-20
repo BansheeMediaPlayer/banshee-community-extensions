@@ -1,6 +1,8 @@
 ASSEMBLY = Banshee.Lyrics
 LINK = $(BANSHEE_LIBS) $(BANSHEE_WEBBROWSER_LIBS) $(GCONF_SHARP_20_LIBS) -r:System.Web.Services -r:System.Xml
 
+GMCS_FLAGS = -warnaserror-:1701
+
 SOURCES =  \
 	Banshee.Lyrics/Banshee.Lyrics.Gui/ContextPage.cs \
 	Banshee.Lyrics/Banshee.Lyrics.Gui/LyricsBrowser.cs \
