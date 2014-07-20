@@ -63,14 +63,14 @@ namespace Banshee.AlarmClock
             isEnabled = new CheckButton (AddinManager.CurrentLocalizer.GetString ("Enable Alarm"));
 
             HBox time_box = new HBox ();
-            time_box.PackStart (new Label (AddinManager.CurrentLocalizer.GetString ("Set Time: ")));
-            time_box.PackStart (spbHour);
-            time_box.PackStart (new Label (" : "));
-            time_box.PackStart (spbMinute);
+            time_box.PackStart (new Label (AddinManager.CurrentLocalizer.GetString ("Set Time: ")), true, true, 2);
+            time_box.PackStart (spbHour, true, true, 2);
+            time_box.PackStart (new Label (" : "), true, true, 2);
+            time_box.PackStart (spbMinute, true, true, 2);
 
             VBox time_box_outer = new VBox (false, 10);
-            time_box_outer.PackStart (isEnabled);
-            time_box_outer.PackStart (time_box);
+            time_box_outer.PackStart (isEnabled, true, true, 2);
+            time_box_outer.PackStart (time_box, true, true, 2);
 
             Button OK = new Button (Gtk.Stock.Ok);
             OK.Clicked += new EventHandler (OnOKClicked);

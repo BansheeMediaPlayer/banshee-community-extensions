@@ -74,15 +74,15 @@ namespace Banshee.AlarmClock
 
             HBox topbox     = new HBox (false, 10);
 
-            topbox.PackStart (prefix);
-            topbox.PackStart (sleepHour);
-            topbox.PackStart (separator);
-            topbox.PackStart (sleepMin);
+            topbox.PackStart (prefix, true, true, 2);
+            topbox.PackStart (sleepHour, true, true, 2);
+            topbox.PackStart (separator, true, true, 2);
+            topbox.PackStart (sleepMin, true, true, 2);
 
             AddStockButton (Stock.Cancel, ResponseType.Cancel);
             start_button = AddButton (AddinManager.CurrentLocalizer.GetString ("Start Timer"), ResponseType.Ok, true);
 
-            VBox.PackStart (topbox);
+            VBox.PackStart (topbox, true, true, 2);
 
             Update ();
         }

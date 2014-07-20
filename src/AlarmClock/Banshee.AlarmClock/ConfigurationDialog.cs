@@ -60,21 +60,21 @@ namespace Banshee.AlarmClock
             VBox fade_big_box = new VBox ();
 
             VBox fade_start_box = new VBox ();
-            fade_start_box.PackEnd (new Label (AddinManager.CurrentLocalizer.GetString ("Start")));
+            fade_start_box.PackEnd (new Label (AddinManager.CurrentLocalizer.GetString ("Start")), true, true, 2);
             fade_start_box.PackStart (fade_start, false, false, 3);
 
             VBox fade_end_box = new VBox ();
-            fade_end_box.PackEnd (new Label (AddinManager.CurrentLocalizer.GetString ("End")));
+            fade_end_box.PackEnd (new Label (AddinManager.CurrentLocalizer.GetString ("End")), true, true, 2);
             fade_end_box.PackStart (fade_end, false, false, 3);
 
             HBox fade_box_group = new HBox ();
-            fade_box_group.PackStart (fade_start_box);
-            fade_box_group.PackStart (fade_end_box);
+            fade_box_group.PackStart (fade_start_box, true, true, 2);
+            fade_box_group.PackStart (fade_end_box, true, true, 2);
 
             Label volume_label = new Label (AddinManager.CurrentLocalizer.GetString ("<b>Volume</b>"));
             volume_label.UseMarkup = true;
             fade_big_box.PackStart (volume_label, false, true, 3);
-            fade_big_box.PackStart (fade_box_group);
+            fade_big_box.PackStart (fade_box_group, true, true, 2);
             Label duration_label = new Label (AddinManager.CurrentLocalizer.GetString ("Duration:"));
             Label duration_seconds_label = new Label (AddinManager.CurrentLocalizer.GetString (" <i>(seconds)</i>"));
             duration_label.UseMarkup = true;
@@ -83,7 +83,7 @@ namespace Banshee.AlarmClock
             duration_box.PackStart (duration_label, false, false, 3);
             duration_box.PackStart (fade_duration, false, false, 3);
             duration_box.PackStart (duration_seconds_label, false, true, 3);
-            fade_big_box.PackStart (duration_box);
+            fade_big_box.PackStart (duration_box, true, true, 2);
 
             Frame alarm_fade_frame = new Frame (AddinManager.CurrentLocalizer.GetString ("Fade-In Adjustment"));
             alarm_fade_frame.Add (fade_big_box);
