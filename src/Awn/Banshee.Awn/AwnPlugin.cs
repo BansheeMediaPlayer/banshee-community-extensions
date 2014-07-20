@@ -86,7 +86,7 @@ namespace Banshee.Awn
                 Log.Debug ("BansheeAwn - Initialized");
 
             } catch (Exception ex) {
-                Log.Exception ("BansheeAwn - Failed loading Awn Extension. ", ex);
+                Log.Warning ("BansheeAwn - Failed loading Awn Extension. ", ex);
                 awn = null;
             }
         }
@@ -155,7 +155,7 @@ namespace Banshee.Awn
                     }
                 }
             } catch (Exception ex) {
-                Log.Exception ("BansheeAwn - Error setting icon", ex);
+                Log.Warning ("BansheeAwn - Error setting icon", ex);
             }
         }
         /*
