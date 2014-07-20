@@ -1,6 +1,6 @@
 AC_DEFUN([BCE_COVERWALLPAPER],
 [
-	BCE_ARG_DISABLE([CoverWallpaper], [no])
+	BCE_ARG_DISABLE([CoverWallpaper], [yes])
 
 	BCE_CHECK_EXTENSION_DEP([CoverWallpaper], [GCONFSHARP],
 		[gconf-sharp-2.0],

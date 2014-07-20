@@ -5,6 +5,8 @@ SOURCES = Banshee.CoverWallpaper/CoverWallpaperService.cs
 
 RESOURCES = Banshee.CoverWallpaper.addin.xml
 
+GMCS_FLAGS = -warnaserror-:1701
+
 if ENABLE_COVERWALLPAPER
 include $(top_srcdir)/build/build.mk
 else
