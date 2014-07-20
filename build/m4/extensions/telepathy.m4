@@ -3,8 +3,8 @@ AC_DEFUN([BCE_TELEPATHY],
 	BCE_ARG_DISABLE([Telepathy], [try])
 
 	BCE_CHECK_EXTENSION_DEP([Telepathy], [NOTIFY_SHARP],
-		[notify-sharp],
-		[notify-sharp was not found. Please install notify-sharp or disable the Telepathy extension by passing --disable-telepathy])
+		[notify-sharp-3.0],
+		[notify-sharp-3.0 was not found. Please install notify-sharp or disable the Telepathy extension by passing --disable-telepathy])
 
 	BCE_CHECK_EXTENSION_DEP([Telepathy], [MONO],
 		[mono >= 2.4.2],

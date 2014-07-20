@@ -251,7 +251,7 @@ namespace Banshee.Telepathy.Data
             try {
                 Contact.DispatchManager.Request <DBusActivity> (Contact, properties);
             } catch (Exception e) {
-                Hyena.Log.Exception (e);
+                Hyena.Log.Warning (e);
             }
         }
 
@@ -265,7 +265,7 @@ namespace Banshee.Telepathy.Data
                     Contact.DispatchManager.Request <StreamActivityListener> (Contact, properties);
                 }
             } catch (Exception e) {
-                Hyena.Log.Exception (e);
+                Hyena.Log.Warning (e);
             }
         }
 		
@@ -379,7 +379,7 @@ namespace Banshee.Telepathy.Data
                     service.RequestPermission ();
                 }
             } catch (Exception e) {
-                Hyena.Log.Exception (e);
+                Hyena.Log.Warning (e);
 				ResetState ();
 				OnError (new TubeManagerErrorEventArgs (ErrorReason.ErrorDuringLoad));
             }
@@ -426,7 +426,7 @@ namespace Banshee.Telepathy.Data
                     download_monitor.Start ();
                 }
             } catch (Exception e) {
-                Hyena.Log.Exception (e);
+                Hyena.Log.Warning (e);
 				ResetState ();
                 OnError (new TubeManagerErrorEventArgs (ErrorReason.ErrorDuringPlaylistLoad));
             }

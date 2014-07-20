@@ -117,7 +117,7 @@ namespace Banshee.Telepathy.Gui
             get { return container; }
         }
 
-        public override void Dispose ()
+        protected override void Dispose (bool disposing)
         {
             ServiceManager.PlayerEngine.DisconnectEvent (OnPlayerEvent);
             Actions.UIManager.RemoveUi (actions_id);
@@ -127,7 +127,7 @@ namespace Banshee.Telepathy.Gui
                 announcer.Dispose ();
             }
 
-            base.Dispose ();
+            base.Dispose (disposing);
         }
 
         private void AnnounceTrack (TrackInfo track)

@@ -81,8 +81,8 @@ namespace Banshee.Telepathy.Gui
             viewport.Add (main_box);
 
             StyleSet += delegate {
-                viewport.ModifyBg (StateType.Normal, Style.Base (StateType.Normal));
-                viewport.ModifyFg (StateType.Normal, Style.Text (StateType.Normal));
+                viewport.ModifyBg (StateType.Normal);
+                viewport.ModifyFg (StateType.Normal);
             };
 
             AddWithFrame (viewport);
@@ -103,8 +103,8 @@ namespace Banshee.Telepathy.Gui
                 contacts_view.Show ();
 
                 contacts.StyleSet += delegate {
-                    contacts_view.ModifyBg (StateType.Normal, Style.Base (StateType.Normal));
-                    contacts_view.ModifyFg (StateType.Normal, Style.Text (StateType.Normal));
+                    contacts_view.ModifyBg (StateType.Normal);
+                    contacts_view.ModifyFg (StateType.Normal);
                 };
             }
 

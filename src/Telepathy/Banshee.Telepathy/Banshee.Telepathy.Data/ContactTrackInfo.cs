@@ -113,7 +113,7 @@ namespace Banshee.Telepathy.Data
                     }
 
                 } catch (Exception e) {
-                    Log.Exception (e);
+                    Log.Warning (e);
                 }
             }
 

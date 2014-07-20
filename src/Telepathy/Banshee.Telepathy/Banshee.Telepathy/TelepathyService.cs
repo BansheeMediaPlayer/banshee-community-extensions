@@ -182,7 +182,7 @@ namespace Banshee.Telepathy
             }
             catch (Exception e) {
                 Log.Error ("Failed to start Banshee.Telepathy.StreamingHTTPProxyServer");
-                Log.Exception (e);
+                Log.Warning (e);
             }
 
             try {
@@ -191,7 +191,7 @@ namespace Banshee.Telepathy
             }
             catch (Exception e) {
                 Log.Error ("Failed to start Banshee.Telepathy.StreamingHTTPProxyServer");
-                Log.Exception (e);
+                Log.Warning (e);
             }
         }
 

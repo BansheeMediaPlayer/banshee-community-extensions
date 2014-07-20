@@ -78,7 +78,7 @@ namespace Banshee.Telepathy.Gui
 
         }
 
-        public override void Render (CellContext context, StateType state, double cellWidth, double cellHeight)
+        public override void Render (CellContext context, double cellWidth, double cellHeight)
         {
             ContactTrackInfo ci = ContactTrackInfo.From (BoundTrack);
             if (ci != null) {
@@ -87,7 +87,7 @@ namespace Banshee.Telepathy.Gui
                 }
             }
 
-            base.Render (context, state, cellWidth, cellHeight);
+            base.Render (context, cellWidth, cellHeight);
         }
     }
 }

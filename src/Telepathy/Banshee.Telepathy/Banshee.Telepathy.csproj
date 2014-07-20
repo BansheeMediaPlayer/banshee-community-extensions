@@ -28,17 +28,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
-    </Reference>
     <Reference Include="Mono.Posix" />
-    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
-    </Reference>
     <Reference Include="Mono.Cairo" />
-    <Reference Include="notify-sharp, Version=0.4.0.0, Culture=neutral, PublicKeyToken=2df29c54e245917a">
-      <Package>notify-sharp</Package>
-    </Reference>
     <Reference Include="Hyena, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-hyena</Package>
       <SpecificVersion>False</SpecificVersion>
@@ -51,9 +42,7 @@
       <Package>banshee-services</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <Package>mono-addins</Package>
-    </Reference>
+    <Reference Include="Mono.Addins, Version=0.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <Reference Include="Hyena.Gui, Version=1.5.0.0, Culture=neutral">
       <Package>banshee-hyena-gui</Package>
       <SpecificVersion>False</SpecificVersion>
@@ -72,6 +61,18 @@
     <Reference Include="Hyena.Data.Sqlite, Version=2.0.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
       <Package>banshee-hyena-data-sqlite</Package>
+    </Reference>
+    <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="notify-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=2df29c54e245917a">
+      <Private>False</Private>
+      <Package>notify-sharp-3.0</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>

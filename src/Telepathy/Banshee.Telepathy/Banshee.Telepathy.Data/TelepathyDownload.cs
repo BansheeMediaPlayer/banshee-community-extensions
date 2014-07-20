@@ -89,7 +89,7 @@ namespace Banshee.Telepathy.Data
 	                            service.DownloadFile (long.Parse (Key.Name) , "audio/mpeg");
 	                        }
 	                        catch (Exception e) {
-	                            Log.Exception (e);
+                                Log.Warning (e);
 	                        }
 						}
                     });

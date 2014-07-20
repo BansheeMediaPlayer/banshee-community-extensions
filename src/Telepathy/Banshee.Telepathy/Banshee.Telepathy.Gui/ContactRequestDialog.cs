@@ -40,7 +40,6 @@ namespace Banshee.Telepathy.Gui
         public ContactRequestDialog (string contact_name) : base ()
         {
             Title = AddinManager.CurrentLocalizer.GetString ("Contact Request");
-            HasSeparator = false;
             BorderWidth = 5;
 
             IconName = "gtk-dialog-authentication";
@@ -70,14 +69,14 @@ namespace Banshee.Telepathy.Gui
 
             vbox.PackStart (message, false, false, 0);
 
-            VBox.PackStart (hbox, true, true, 0);
-            VBox.Remove (ActionArea);
-            VBox.Spacing = 10;
+            ContentArea.PackStart (hbox, true, true, 0);
+            ContentArea.Remove (ActionArea);
+            ContentArea.Spacing = 10;
 
             HBox bottom_box = new HBox ();
             bottom_box.PackStart (ActionArea, false, false, 0);
             bottom_box.ShowAll ();
-            VBox.PackEnd (bottom_box, false, false, 0);
+            ContentArea.PackEnd (bottom_box, false, false, 0);
 
             Button accept_button = new Button ();
             accept_button.Label = AddinManager.CurrentLocalizer.GetString ("Accept");

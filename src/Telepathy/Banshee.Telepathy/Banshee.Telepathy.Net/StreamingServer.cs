@@ -63,7 +63,7 @@ namespace Banshee.Telepathy.Net
                     File.Delete (Address);
                 }
                 catch (Exception e) {
-                    Hyena.Log.Exception (e);
+                    Hyena.Log.Warning (e);
                 }
             }
         }

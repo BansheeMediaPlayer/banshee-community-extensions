@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-20 14:30+1000\n"
+"POT-Creation-Date: 2014-07-20 20:20+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1236,12 +1236,12 @@ msgid "{0} is requesting to browse your library"
 msgstr ""
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:300
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:83
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:82
 msgid "Accept"
 msgstr ""
 
 #: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Data/ContactSource.cs:305
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:94
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:93
 msgid "Reject"
 msgstr ""
 
@@ -1298,7 +1298,7 @@ msgstr ""
 msgid "Contact Request"
 msgstr ""
 
-#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:67
+#: ../src/Telepathy/Banshee.Telepathy/Banshee.Telepathy.Gui/ContactRequestDialog.cs:66
 #, csharp-format
 msgid "{0} would like to browse your music library."
 msgstr ""
