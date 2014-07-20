@@ -50,7 +50,7 @@ namespace Banshee.Jamendo
                 new JamendoDownloadManager (remote_uri, mimetype);
                 Log.Information ("Downloading from Jamendo", remote_uri);
             } catch (Exception e) {
-                Log.Exception ("Invalid Jamendo file: " + remote_uri, e);
+                Log.Warning ("Invalid Jamendo file: " + remote_uri, e);
                 Log.Error ("Invalid Jamendo downloader file", remote_uri, true);
             }
         }
