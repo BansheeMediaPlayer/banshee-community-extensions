@@ -45,7 +45,6 @@ namespace Banshee.LCD
             this.plugin = plugin;
             Title = AddinManager.CurrentLocalizer.GetString ("LCD configuration");
             BorderWidth = 5;
-            HasSeparator = false;
             Resizable = false;
 
             VBox lcdproc_box = new VBox ();
@@ -65,12 +64,12 @@ namespace Banshee.LCD
             port_spin.Changed += new EventHandler (Port_Changed);
 
             Frame lcdproc_frame = new Frame (AddinManager.CurrentLocalizer.GetString ("LCDProc Daemon:"));
-            lcdproc_box.PackStart (host_box);
-            lcdproc_box.PackStart (port_box);
+            lcdproc_box.PackStart (host_box, true, true, 3);
+            lcdproc_box.PackStart (port_box, true, true, 3);
             lcdproc_frame.Add (lcdproc_box);
             lcdproc_frame.ShowAll ();
 
-            VBox.PackStart (lcdproc_frame, false, false, 3);
+            ContentArea.PackStart (lcdproc_frame, false, false, 3);
             AddButton (Stock.Close, ResponseType.Close);
         }
 

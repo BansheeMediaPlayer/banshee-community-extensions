@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-10 17:02+1100\n"
+"POT-Creation-Date: 2014-07-20 14:30+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -631,15 +631,15 @@ msgstr ""
 msgid "LCD configuration"
 msgstr ""
 
-#: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:54
+#: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:53
 msgid "Hostname:"
 msgstr ""
 
-#: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:61
+#: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:60
 msgid "Port:"
 msgstr ""
 
-#: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:67
+#: ../src/LCD/Banshee.LCD/ConfigurationDialog.cs:66
 msgid "LCDProc Daemon:"
 msgstr ""
 
