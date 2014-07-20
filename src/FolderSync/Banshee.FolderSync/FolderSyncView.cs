@@ -67,7 +67,7 @@ namespace Banshee.FolderSync
             // get the currently user-selected playlists
             options.SelectedPlaylists = new List<Playlist> ();
             Gtk.TreeIter iter;
-            Gtk.TreeModel model;
+            Gtk.ITreeModel model;
             var tree_paths = playlist_tree.Selection.GetSelectedRows (out model);
             foreach (var path in tree_paths) {
                 model.GetIter (out iter, path);
@@ -80,7 +80,7 @@ namespace Banshee.FolderSync
         }
 
         public Gtk.ProgressBar Progress = new Gtk.ProgressBar () {
-            Orientation = ProgressBarOrientation.LeftToRight, DoubleBuffered = true };
+            Orientation = Orientation.Horizontal, DoubleBuffered = true };
         public Gtk.Button StartSyncButton = new Button () {
             Label = AddinManager.CurrentLocalizer.GetString("Start sync") };
 
