@@ -39,13 +39,10 @@ SOURCES =  \
 	Banshee.Ampache/Logic/AmpacheAlbumExtensions.cs \
 	Banshee.Ampache/Logic/AmpacheSongExtensions.cs \
 	Banshee.Ampache/Logic/AmpacheViewModel.cs \
-	Banshee.Ampache/Logic/PlayQueue.cs \
-	gtk-gui/Banshee.Ampache.PreferenceView.cs \
-	gtk-gui/generated.cs
+	Banshee.Ampache/Logic/PlayQueue.cs
 
 RESOURCES =  \
 	Ampache.addin.xml \
-	gtk-gui/gui.stetic \
 	Resources/ampache.png
 
 if ENABLE_AMPACHE

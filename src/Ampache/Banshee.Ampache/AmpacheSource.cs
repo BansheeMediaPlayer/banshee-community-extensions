@@ -40,10 +40,11 @@ using Banshee.PlaybackController;
 using Banshee.Streaming;
 
 using Gdk;
+using Banshee.Collection.Database;
 
 namespace Banshee.Ampache
 {
-    public class AmpacheSource : Source, IBasicPlaybackController, ITrackModelSource, IDisposable
+    public class AmpacheSource : PrimarySource, IBasicPlaybackController, ITrackModelSource, IDisposable
     {
         private AmpacheSourceContents _contents;
         private TrackListModel _trackModel;
@@ -51,7 +52,7 @@ namespace Banshee.Ampache
         private AmpachePreferences preferences;
         private bool ignoreChanges;
 
-        public AmpacheSource () : base ("Ampache", "Ampache", 90, "Ampache")
+        public AmpacheSource () : base ("Ampache", "Ampache", "Ampache", 90)
         {
             _trackModel = new MemoryTrackListModel();
             Pixbuf icon = new Pixbuf (System.Reflection.Assembly.GetExecutingAssembly ()
@@ -151,36 +152,29 @@ namespace Banshee.Ampache
         #endregion
 
         #region ITrackModelSource implementation
-        public void Reload ()
+        public override void Reload ()
         {}
 
-        public TrackListModel TrackModel { get { return _trackModel; } }
+        public new TrackListModel TrackModel { get { return _trackModel; } }
 
-        public bool HasDependencies { get { return false; } }
+        public override bool HasDependencies { get { return false; } }
 
-        public bool CanAddTracks { get { return false; } }
+        public override bool CanAddTracks { get { return false; } }
 
-        public bool CanRemoveTracks { get { return false; } }
+        public override bool CanRemoveTracks { get { return false; } }
 
-        public bool CanDeleteTracks { get { return false; } }
+        public override bool CanDeleteTracks { get { return false; } }
 
-        public bool ConfirmRemoveTracks { get { return false; } }
+        public override bool ConfirmRemoveTracks { get { return false; } }
 
-        public bool CanRepeat { get { return false; } }
+        public override bool CanRepeat { get { return false; } }
 
-        public bool CanShuffle { get { return true; } }
+        public override bool CanShuffle { get { return true; } }
 
-        public bool ShowBrowser { get { return false; } }
+        public override bool ShowBrowser { get { return false; } }
 
-        public bool Indexable { get { return false; } }
+        public override bool Indexable { get { return false; } }
 
-        public void RemoveTracks (Hyena.Collections.Selection selection)
-        {
-        }
-
-        public void DeleteTracks (Hyena.Collections.Selection selection)
-        {
-        }
         #endregion
 
         #region Schema Entries
@@ -201,8 +195,9 @@ namespace Banshee.Ampache
         #endregion
 
         #region IDisposable implementation
-        public void Dispose ()
+        public override void Dispose ()
         {
+            base.Dispose ();
            // AmpacheSelectionFactory.TearDown();
             this.preferences.Dispose();
         }

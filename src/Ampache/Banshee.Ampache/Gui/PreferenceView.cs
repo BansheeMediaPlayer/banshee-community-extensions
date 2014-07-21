@@ -27,8 +27,21 @@ using System;
 namespace Banshee.Ampache
 {
     [System.ComponentModel.ToolboxItem(true)]
-    public partial class PreferenceView : Gtk.Bin
+    public class PreferenceView : Gtk.Bin
     {
+        private Gtk.HBox hbox1;
+        private Gtk.Table table1;
+        private Gtk.Label lblUser;
+        private Gtk.Label lblUrl;
+        private Gtk.Label lblPassword;
+        private Gtk.Entry entUser;
+        private Gtk.Entry entUrl;
+        private Gtk.Entry entPassword;
+        private Gtk.VBox vbox1;
+        private Gtk.Button btnSave;
+        private Gtk.Button btnClear;
+
+
         protected virtual void Clean_OnClicked (object sender, System.EventArgs e)
         {
             entUrl.Text = string.Empty;
@@ -41,7 +54,40 @@ namespace Banshee.Ampache
 
         public PreferenceView ()
         {
-            this.Build ();
+            vbox1 = new Gtk.VBox () { Spacing = 6 };
+            table1 = new Gtk.Table (3, 2, true) { RowSpacing = 6, ColumnSpacing = 6 };
+            entPassword = new Gtk.Entry () {
+                CanFocus = true,
+                IsEditable = true,
+                Visibility = false,
+                InvisibleChar = '●'
+            };
+            table1.Attach (entPassword, 1, 2, 2, 3);
+            entUrl = new Gtk.Entry () { CanFocus = true, IsEditable = true };
+            table1.Attach (entUrl, 1, 2, 0, 1);
+            entUser = new Gtk.Entry () { CanFocus = true, IsEditable = true };
+            table1.Attach (entUser, 1, 2, 1, 2);
+            lblPassword = new Gtk.Label ("Password:");
+            table1.Attach (lblPassword, 0, 1, 2, 3);
+            lblUrl = new Gtk.Label ("Ampache Server Name:");
+            table1.Attach (lblUrl, 0, 1, 0 ,1);
+            lblUser = new Gtk.Label ("User Name:");
+            table1.Attach (lblUser, 0, 1, 1, 2);
+            vbox1.PackStart (table1, true, false, 0);
+
+            hbox1 = new Gtk.HBox ();
+            btnSave = new Gtk.Button ();
+            btnSave.Label = "Save";
+            btnSave.Clicked += Save_OnClicked;
+            hbox1.PackStart (btnSave, false, false, 0);
+            btnClear = new Gtk.Button ();
+            btnClear.Label = "Clear";
+            btnClear.Clicked += Clean_OnClicked;
+            hbox1.PackStart (btnClear, true, false, 0);
+            vbox1.PackStart (hbox1, false, false, 0);
+            this.Add (vbox1);
+            ShowAll ();
+
             entUrl.Text = AmpacheSource.AmpacheRootAddress.Get(AmpacheSource.AmpacheRootAddress.DefaultValue);
             entUser.Text = AmpacheSource.UserName.Get(AmpacheSource.UserName.DefaultValue);
             entPassword.Text = AmpacheSource.UserPassword.Get(AmpacheSource.UserPassword.DefaultValue);
