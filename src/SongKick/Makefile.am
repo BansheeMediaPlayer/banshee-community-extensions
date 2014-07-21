@@ -1,7 +1,7 @@
 ASSEMBLY = Banshee.SongKick
 LINK = $(BANSHEE_LIBS) \
 	-r:../../bin/CacheService.dll \
-	-r:/usr/lib/mono/4.0/FSharp.Core.dll # <- FIXME: use Nullable instead of F#'s Option, to avoid hardcoding this path
+	-r:FSharp.Core
 
 SOURCES =  \
 	Banshee.SongKick.Network/Downloader.cs \
