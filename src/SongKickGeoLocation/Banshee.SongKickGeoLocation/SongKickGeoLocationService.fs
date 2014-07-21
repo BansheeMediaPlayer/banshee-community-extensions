@@ -62,11 +62,12 @@ type Service () as this =
         let recommendation_provider = new Banshee.SongKick.Search.RecommendationProvider ()
         let recommendations = recommendation_provider.GetRecommendations ()
         for artist in recommendations do
-            search.GetResultsPage (new Query (System.Nullable (), artist.Name))
-            for res in search.ResultsPage.results do
-                if x.IsItInUserCity (res.Location.Latitude, res.Location.Longitude) then
-                   res.ArtistName <- artist.Name
-                   gigs.Add (res)
+            if (not (String.IsNullOrEmpty (artist.Name))) then
+                search.GetResultsPage (new Query (System.Nullable (), artist.Name))
+                for res in search.ResultsPage.results do
+                    if x.IsItInUserCity (res.Location.Latitude, res.Location.Longitude) then
+                       res.ArtistName <- artist.Name
+                       gigs.Add (res)
         gigs
 
     member private x.RefreshRecommededGigs = new TimeoutHandler (fun () ->
