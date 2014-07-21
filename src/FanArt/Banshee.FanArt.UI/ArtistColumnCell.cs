@@ -86,14 +86,14 @@ namespace Banshee.FanArt.UI
 
                 if (artistPixbuf != null) {
                     artistPixbuf = artistPixbuf.ScaleSimple (thumb_width, thumb_height, Gdk.InterpType.Bilinear);
-                    var artistImage = PixbufImageSurface.Create (artistPixbuf);
-
-                    // display get artist image:
                     bool has_border = false;
-                    ArtworkRenderer.RenderThumbnail (context.Context, artistImage, false,
-                                                     spacing, spacing,
-                                                     thumb_width, thumb_height,
-                                                     has_border, context.Theme.Context.Radius);
+                    using (var artistImage = PixbufImageSurface.Create (artistPixbuf)) {
+                        // display get artist image:
+                        ArtworkRenderer.RenderThumbnail (context.Context, artistImage, false,
+                            spacing, spacing,
+                            thumb_width, thumb_height,
+                            has_border, context.Theme.Context.Radius);
+                    }
 
                     image = true;
                 }
