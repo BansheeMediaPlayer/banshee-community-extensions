@@ -67,28 +67,28 @@ namespace Banshee.FanArt.UI
             int thumb_width = (int) (originalImageWidth * scale);
 
             var musicBrainzID = GetArtistsMbid (artistInfo);
-            Cairo.ImageSurface image;
+            Cairo.ImageSurface image = null;
 
             // get artist image:
             if (musicBrainzID != null && FanArtMusicBrainz.HasImage (musicBrainzID)) {
-                try {
-                    string imagePath = FanArtArtistImageSpec.GetPath (
-                        FanArtArtistImageSpec.CreateArtistImageFileName (musicBrainzID)
-                    );
-                    var artistPixbuf = new Gdk.Pixbuf (imagePath);
-                    artistPixbuf = artistPixbuf.ScaleSimple (thumb_width, thumb_height, Gdk.InterpType.Bilinear);
-                    var artistImage = PixbufImageSurface.Create (artistPixbuf);
+                string imagePath = FanArtArtistImageSpec.GetPath (
+                     FanArtArtistImageSpec.CreateArtistImageFileName (musicBrainzID));
 
-                    image = artistImage;
-                } catch (Exception e) {
+                Gdk.Pixbuf artistPixbuf = null;
+                try {
+                    artistPixbuf = new Gdk.Pixbuf (imagePath);
+                } catch (GLib.GException e) {
                     Hyena.Log.Debug (String.Format (
                         "Could not get artist image for artist '{0}' with MBDI {1}.", 
                         artistInfo.Name ?? "", musicBrainzID ?? ""));
                     Hyena.Log.Error (e);
-                    image = null;
                 }
-            } else {
-                image = null;
+
+                if (artistPixbuf != null) {
+                    artistPixbuf = artistPixbuf.ScaleSimple (thumb_width, thumb_height, Gdk.InterpType.Bilinear);
+                    var artistImage = PixbufImageSurface.Create (artistPixbuf);
+                    image = artistImage;
+                }
             }
 
             if (image != null) {
