@@ -67,7 +67,7 @@ namespace Banshee.FanArt.UI
             int thumb_width = (int) (originalImageWidth * scale);
 
             var musicBrainzID = GetArtistsMbid (artistInfo);
-            Cairo.ImageSurface image = null;
+            bool image = false;
 
             // get artist image:
             if (musicBrainzID != null && FanArtMusicBrainz.HasImage (musicBrainzID)) {
@@ -87,18 +87,19 @@ namespace Banshee.FanArt.UI
                 if (artistPixbuf != null) {
                     artistPixbuf = artistPixbuf.ScaleSimple (thumb_width, thumb_height, Gdk.InterpType.Bilinear);
                     var artistImage = PixbufImageSurface.Create (artistPixbuf);
-                    image = artistImage;
+
+                    // display get artist image:
+                    bool has_border = false;
+                    ArtworkRenderer.RenderThumbnail (context.Context, artistImage, false,
+                                                     spacing, spacing,
+                                                     thumb_width, thumb_height,
+                                                     has_border, context.Theme.Context.Radius);
+
+                    image = true;
                 }
             }
 
-            if (image != null) {
-                // display get artist image:
-                bool has_border = false;
-                ArtworkRenderer.RenderThumbnail (context.Context, image, false, 
-                    spacing, spacing,
-                    thumb_width, thumb_height, 
-                    has_border, context.Theme.Context.Radius);
-            } else {
+            if (!image) {
                 RenderArtistText (artistInfo.DisplayName, cellWidth, context);
             }
         }
