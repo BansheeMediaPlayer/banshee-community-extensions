@@ -399,10 +399,9 @@ namespace Banshee.LiveRadio
             dialog.IconName = "gtk-preferences";
             dialog.Resizable = false;
             dialog.BorderWidth = 6;
-            dialog.HasSeparator = false;
-            dialog.VBox.Spacing = 12;
+            dialog.ContentArea.Spacing = 12;
 
-            dialog.VBox.PackStart (plugin.ConfigurationWidget);
+            dialog.ContentArea.PackStart (plugin.ConfigurationWidget, false, false, 0);
 
             Button save_button = new Button (Stock.Save);
             Button cancel_button = new Button (Stock.Cancel);

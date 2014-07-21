@@ -200,7 +200,7 @@ namespace Banshee.LiveRadio.Plugins
                     }
                     cached_results[genre.GenreKey].Add (new_station);
                 } catch (Exception ex) {
-                    Log.Exception ("[XiphOrgPlugin] <ParseCatalog> ERROR", ex);
+                    Log.Warning ("[XiphOrgPlugin] <ParseCatalog> ERROR", ex);
                     RaiseErrorReturned ("XML Parse Error", ex.Message);
                     continue;
                 }

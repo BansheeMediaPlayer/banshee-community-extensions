@@ -161,7 +161,7 @@ namespace Banshee.LiveRadio.Plugins
                         }
                     }
                 } catch (Exception ex) {
-                    Log.Exception ("[MagnatunePlugin] <ParseGenres> ERROR", ex);
+                    Log.Warning ("[MagnatunePlugin] <ParseGenres> ERROR", ex);
                     RaiseErrorReturned ("XML Parse Error", ex.Message);
                     continue;
                 }
@@ -297,7 +297,7 @@ namespace Banshee.LiveRadio.Plugins
                             }
                         }
                         catch (Exception e) {
-                            Log.Exception ("[MagnatunePlugin] <ParseXmlResponse> ERROR: ", e);
+                            Log.Warning ("[MagnatunePlugin] <ParseXmlResponse> ERROR: ", e);
                             RaiseErrorReturned ("XML Parse Error", e.Message);
                             continue;
                         }
@@ -358,7 +358,7 @@ namespace Banshee.LiveRadio.Plugins
                 }
             }
             catch (Exception e) {
-                Log.Exception ("[MagnatunePlugin] <ParseXmlResponse> ERROR: ", e);
+                Log.Warning ("[MagnatunePlugin] <ParseXmlResponse> ERROR: ", e);
                 RaiseErrorReturned ("XML Parse Error", e.Message);
             }
         }

@@ -124,7 +124,7 @@ namespace Banshee.LiveRadio.Plugins
                         new_genres.Add (genre);
                     }
                 } catch (Exception ex) {
-                    Log.Exception ("[ShoutCastPlugin] <ParseGenres> ERROR", ex);
+                    Log.Warning ("[ShoutCastPlugin] <ParseGenres> ERROR", ex);
                     RaiseErrorReturned ("XML Parse Error", ex.Message);
                     continue;
                 }
@@ -161,7 +161,7 @@ namespace Banshee.LiveRadio.Plugins
                     break;
                 }
                 catch (Exception e) {
-                    Log.Exception ("[ShoutCastPlugin] <ParseXmlResponse> ERROR: ", e);
+                    Log.Warning ("[ShoutCastPlugin] <ParseXmlResponse> ERROR: ", e);
                     RaiseErrorReturned ("XML Parse Error", e.Message);
                     return;
                 }
@@ -221,7 +221,7 @@ namespace Banshee.LiveRadio.Plugins
                     cached_results[key].Add (new_station);
                 }
                 catch (Exception e) {
-                    Log.Exception ("[ShoutCastPlugin] <ParseXmlResponse> ERROR: ", e);
+                    Log.Warning ("[ShoutCastPlugin] <ParseXmlResponse> ERROR: ", e);
                     RaiseErrorReturned ("XML Parse Error", e.Message);
                     continue;
                 }

@@ -286,7 +286,7 @@ namespace Banshee.LiveRadio.Plugins
                                 new_genres.Add (genre);
                         }
                     } catch (Exception ex) {
-                        Log.Exception ("[Live365Plugin] <ParseGenres> ERROR", ex);
+                        Log.Warning ("[Live365Plugin] <ParseGenres> ERROR", ex);
                         RaiseErrorReturned ("XML Parse Error", ex.Message);
                         continue;
                     }
@@ -336,7 +336,7 @@ namespace Banshee.LiveRadio.Plugins
 
                     }
                     catch (Exception e) {
-                        Log.Exception ("[Live365Plugin] <ParseXmlResponse> ERROR: ", e);
+                        Log.Warning ("[Live365Plugin] <ParseXmlResponse> ERROR: ", e);
                         RaiseErrorReturned ("XML Parse Error", e.Message);
                         return;
                     }
@@ -418,7 +418,7 @@ namespace Banshee.LiveRadio.Plugins
 
                         }
                         catch (Exception e) {
-                            Log.Exception ("[Live365Plugin] <ParseXmlResponse> ERROR: ", e);
+                            Log.Warning ("[Live365Plugin] <ParseXmlResponse> ERROR: ", e);
                             RaiseErrorReturned ("General Error", e.Message);
                             continue;
                         }

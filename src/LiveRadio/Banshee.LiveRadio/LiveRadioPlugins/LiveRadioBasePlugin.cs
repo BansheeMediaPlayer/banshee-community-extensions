@@ -395,12 +395,14 @@ namespace Banshee.LiveRadio.Plugins
         {
             List<DatabaseTrackInfo> result;
             try {
+                List<DatabaseTrackInfo> raw_result;
                 if (request_type == LiveRadioRequestType.ByGenre) {
-                    result = new List<DatabaseTrackInfo> (cached_results["Genre:" + query].ToArray ());
+                    raw_result = new List<DatabaseTrackInfo> (cached_results["Genre:" + query].ToArray ());
                 } else {
-                    result = new List<DatabaseTrackInfo> (cached_results[query].ToArray ());
+                    raw_result = new List<DatabaseTrackInfo> (cached_results[query].ToArray ());
                 }
-                foreach (DatabaseTrackInfo track in result)
+                result = new List<DatabaseTrackInfo> (raw_result);
+                foreach (DatabaseTrackInfo track in raw_result)
                     result[result.IndexOf (track)] = new DatabaseTrackInfo (track);
             } catch (Exception e) {
                 result = null;

@@ -181,7 +181,7 @@ namespace Banshee.LiveRadio.Plugins
                         }
                     }
                 } catch (Exception ex) {
-                    Log.Exception ("[RealRadiosPlugin] <ParseGenres> ERROR", ex);
+                    Log.Warning ("[RealRadiosPlugin] <ParseGenres> ERROR", ex);
                     RaiseErrorReturned ("XML Parse Error", ex.Message);
                     continue;
                 }

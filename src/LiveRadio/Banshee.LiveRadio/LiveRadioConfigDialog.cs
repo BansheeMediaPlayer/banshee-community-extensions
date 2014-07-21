@@ -115,9 +115,9 @@ namespace Banshee.LiveRadio
 
             main_container.PackStart (preferences_image, true, true, 5);
             main_container.PackEnd (action_container, true, true, 5);
-            this.VBox.PackStart (main_container, true, true, 5);
+            this.ContentArea.PackStart (main_container, true, true, 5);
 
-            this.VBox.PackStart (notebook, true, true, 5);
+            this.ContentArea.PackStart (notebook, true, true, 5);
 
             AddActionWidget (cancel_button, 0);
             AddActionWidget (apply_button, 0);
@@ -131,8 +131,7 @@ namespace Banshee.LiveRadio
             IconName = "gtk-preferences";
             Resizable = false;
             BorderWidth = 6;
-            HasSeparator = false;
-            this.VBox.Spacing = 12;
+            this.ContentArea.Spacing = 12;
 
             ShowAll ();
         }

@@ -237,7 +237,7 @@ namespace Banshee.LiveRadio
         /// <param name="track">
         /// A <see cref="DatabaseTrackInfo"/> -- the track to be added to its set source
         /// </param>
-        protected override void AddTrack (DatabaseTrackInfo track)
+        public override void AddTrack (DatabaseTrackInfo track)
         {
             track.CanSaveToDatabase = false;
             track.PrimarySource = this;

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-21 00:21+1000\n"
+"POT-Creation-Date: 2014-07-22 00:03+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -173,27 +173,6 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:86
-#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:62
-msgid "Password:"
-msgstr ""
-
-#: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:99
-msgid "Ampache Server Name:"
-msgstr ""
-
-#: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:110
-msgid "User Name:"
-msgstr ""
-
-#: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:131
-msgid "Save"
-msgstr ""
-
-#: ../src/Ampache/gtk-gui/Banshee.Ampache.PreferenceView.cs:142
-msgid "Clear"
-msgstr ""
-
 #: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:134
 #: ../src/RadioStationFetcher/Banshee.RadioStationFetcher/FetcherDialog.cs:169
 msgid "_Close"
@@ -226,26 +205,26 @@ msgstr ""
 #. Translators: {0} and {1} are Artist Name and
 #. Album Title, respectively;
 #. e.g. 'by Parkway Drive from Killing with a Smile'
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:310
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:311
 #, csharp-format
 msgid "by '{0}' from '{1}'"
 msgstr ""
 
 #. Translators: {0} is for Album Title;
 #. e.g. 'from Killing with a Smile'
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:315
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:316
 #, csharp-format
 msgid "from '{0}'"
 msgstr ""
 
 #. Translators: {0} is for Artist Name;
 #. e.g. 'by Parkway Drive'
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:320
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:321
 #, csharp-format
 msgid "by '{0}'"
 msgstr ""
 
-#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:399
+#: ../src/AppIndicator/Banshee.AppIndicator/AppIndicatorService.cs:400
 msgid "Skip this item"
 msgstr ""
 
@@ -619,6 +598,10 @@ msgstr ""
 msgid "Username:"
 msgstr ""
 
+#: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:62
+msgid "Password:"
+msgstr ""
+
 #: ../src/LastfmFingerprint/Banshee.LastfmFingerprint/LoginForm.cs:101
 msgid "Sign up for Last.fm"
 msgstr ""
@@ -683,11 +666,11 @@ msgstr ""
 msgid "Choose By Query"
 msgstr ""
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:581
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:583
 msgid "Yes"
 msgstr ""
 
-#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:581
+#: ../src/LiveRadio/Banshee.LiveRadio/LiveRadioPlugins/LiveRadioBasePlugin.cs:583
 msgid "No"
 msgstr ""
 
