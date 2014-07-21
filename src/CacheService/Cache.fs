@@ -96,12 +96,13 @@ type Cache internal (nmspace : string) =
                   Constants.timeout.ToString ())
 
     member x.Add (key : string) (value : 'a) =
-        x.WriteValueToFile key value
-        Log.DebugFormat ("In cache was added a value with key: {0}", key)
-        CacheChanged.Trigger (CacheChangedArgs (Added, key, value))
+        if not (String.IsNullOrEmpty (key)) then
+            x.WriteValueToFile key value
+            Log.DebugFormat ("In cache was added a value with key: {0}", key)
+            CacheChanged.Trigger (CacheChangedArgs (Added, key, value))
 
     member x.Get (key : string) =
-        if File.Exists (x.GetPathToKey key) then
+        if not (String.IsNullOrEmpty (key)) && File.Exists (x.GetPathToKey key) then
            match x.ReadCacheItemFromFile key with 
            | Some c when x.IsItemExpired c.created c.expiration_timeout ->
                          Log.DebugFormat ("Time Expired: cannot return a cached value with key: {0}", key)
