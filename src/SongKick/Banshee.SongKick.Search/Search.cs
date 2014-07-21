@@ -57,6 +57,10 @@ namespace Banshee.SongKick.Search
         public override void GetResultsPage (Query query)
         {
             LastQuery = query;
+            if (String.IsNullOrEmpty(query.String)) {
+                ResultsPage = new ResultsPage<Event> () { error = new ResultsError("Incorrect")};
+                return;
+            }
             // temporary solution
             // TODO: add meaningful ResultsError
             // TODO: throw Web Exceptions
@@ -84,6 +88,10 @@ namespace Banshee.SongKick.Search
         public override void GetResultsPage (Query query)
         {
             LastQuery = query;
+            if (String.IsNullOrEmpty(query.String)) {
+                ResultsPage = new ResultsPage<Event> () { error = new ResultsError("Incorrect")};
+                return;
+            }
             // temporary solution
             // TODO: add meaningful ResultsError
             // TODO: throw Web Exceptions
@@ -112,6 +120,10 @@ namespace Banshee.SongKick.Search
         public override void GetResultsPage (Query query)
         {
             LastQuery = query;
+            if (String.IsNullOrEmpty(query.String)) {
+                ResultsPage = new ResultsPage<Event> () { error = new ResultsError("Incorrect")};
+                return;
+            }
             // temporary solution
             // TODO: add meaningful ResultsError
             // TODO: throw Web Exceptions
@@ -130,6 +142,10 @@ namespace Banshee.SongKick.Search
         public override void GetResultsPage (Query query)
         {
             LastQuery = query;
+            if (String.IsNullOrEmpty(query.String)) {
+                ResultsPage = new ResultsPage<Event> () { error = new ResultsError("Incorrect")};
+                return;
+            }
             // temporary solution
             // TODO: add meaningful ResultsError
             // TODO: throw Web Exceptions
