@@ -44,7 +44,7 @@ open Hyena
 
 type Service () =
     let default_refresh_time = TimeSpan.FromHours (12.0)
-    let delay_refresh_time   = TimeSpan.FromMinutes (30.0)
+    let delay_refresh_time   = TimeSpan.FromMinutes (15.0)
     let config_variable_name = "last_recommended_gigs_scan"
     let banshee_window = Service.GetBansheeWindow ()
 
@@ -110,13 +110,17 @@ type Service () =
             // if this is the first time when user turn on GeoLocation
             // or saved time was in incorrect format
             // then we should try to update gigs right now
-            TimeSpan.FromSeconds (1.0)
+            // we also give back delay to refresh gigs
+            x.RefreshRecommededGigs.Invoke () |> ignore
+            delay_refresh_time
         else
             let past = DateTime.UtcNow.Subtract (last_update.ToUniversalTime())
             if past > default_refresh_time then
                 // if too much time has passed since last Banshee's start
                 // then we should try to update gigs right now
-                TimeSpan.FromSeconds (1.0)
+                // we also give back delay to refresh gigs
+                x.RefreshRecommededGigs.Invoke () |> ignore
+                delay_refresh_time
             else
                 default_refresh_time.Subtract (past)
 
