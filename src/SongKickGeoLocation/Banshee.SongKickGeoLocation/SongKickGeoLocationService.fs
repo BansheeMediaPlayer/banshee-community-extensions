@@ -42,7 +42,7 @@ open Banshee.SongKickGeoLocation.UI
 
 open Hyena
 
-type Service () =
+type Service () as this =
     let default_refresh_time = TimeSpan.FromHours (12.0)
     let delay_refresh_time   = TimeSpan.FromMinutes (15.0)
     let config_variable_name = "last_recommended_gigs_scan"
@@ -53,7 +53,7 @@ type Service () =
     static let gigs_source = new RecommendedGigsSource ()
 
     member x.Initialize () =
-        x.UpdateRunTimeout () //someone should set RunTimeout for the first time, so we do it manually here
+        LocationProviderManager.Register this
         ServiceManager.Get<Banshee.Networking.Network>().StateChanged.AddHandler x.OnNetworkStateChanged
 
     member private x.GetRecommededGigs () =
@@ -187,6 +187,9 @@ type Service () =
 
     member x.ServiceName = Constants.NAME + ".Service"
 
+    interface ICityNameObserver with
+        //someone should set RunTimeout for the first time, so we do it here manually
+        member x.OnCityNameUpdated (cn) = x.UpdateRunTimeout ()
     interface IService with
         member x.ServiceName = x.ServiceName
     interface IDisposable with
