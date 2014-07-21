@@ -58,7 +58,7 @@ namespace Banshee.SongKick.Search
         {
             LastQuery = query;
             if (String.IsNullOrEmpty(query.String)) {
-                ResultsPage = new ResultsPage<Event> () { error = new ResultsError("Incorrect")};
+                ResultsPage = new ResultsPage<Event> () { error = new ResultsError("Empty query string")};
                 return;
             }
             // temporary solution
@@ -89,7 +89,7 @@ namespace Banshee.SongKick.Search
         {
             LastQuery = query;
             if (String.IsNullOrEmpty(query.String)) {
-                ResultsPage = new ResultsPage<Event> () { error = new ResultsError("Incorrect")};
+                ResultsPage = new ResultsPage<Event> () { error = new ResultsError("Empty query string")};
                 return;
             }
             // temporary solution
@@ -121,7 +121,7 @@ namespace Banshee.SongKick.Search
         {
             LastQuery = query;
             if (String.IsNullOrEmpty(query.String)) {
-                ResultsPage = new ResultsPage<Location> () { error = new ResultsError("Incorrect")};
+                ResultsPage = new ResultsPage<Location> () { error = new ResultsError("Empty query string")};
                 return;
             }
             // temporary solution
@@ -143,7 +143,7 @@ namespace Banshee.SongKick.Search
         {
             LastQuery = query;
             if (String.IsNullOrEmpty(query.String)) {
-                ResultsPage = new ResultsPage<Artist> () { error = new ResultsError("Incorrect")};
+                ResultsPage = new ResultsPage<Artist> () { error = new ResultsError("Empty query string")};
                 return;
             }
             // temporary solution
