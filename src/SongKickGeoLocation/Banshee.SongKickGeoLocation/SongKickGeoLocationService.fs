@@ -76,7 +76,6 @@ type Service () =
             x.IsItTimeToRefresh ()) with
         | (true, true, true) ->
             Log.Debug ("Refreshing list of local gigs")
-            DatabaseConfigurationClient.Client.Set<DateTime> (config_variable_name, DateTime.Now)
             Scheduler.Schedule (new DelegateJob (fun () ->
                 let gigs = x.GetRecommededGigs ()
                 if gigs.Count <> 0 then
