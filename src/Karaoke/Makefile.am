@@ -2,7 +2,7 @@ ASSEMBLY = Banshee.Karaoke
 
 REFS = -r:$(top_builddir)/bin/Banshee.Streamrecorder.dll
 
-LINK = $(BANSHEE_LIBS) $(BANSHEE_WEBBROWSER_LIBS) $(REFS)
+LINK = $(BANSHEE_LIBS) $(BANSHEE_WEBBROWSER_LIBS) $(REFS) $(OLD_GLIB)
 
 SOURCES =  \
 	Banshee.Karaoke/Gui/ContextPage.cs \
