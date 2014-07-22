@@ -1,5 +1,7 @@
 ASSEMBLY = Banshee.FanArt
-LINK = $(BANSHEE_LIBS)
+LINK = $(BANSHEE_LIBS) \
+	-r:../../bin/CacheService.dll \
+	-r:FSharp.Core
 
 SOURCES =  \
 	Banshee.FanArt.UI/ArtistColumnCell.cs \

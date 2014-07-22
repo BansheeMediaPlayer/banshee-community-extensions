@@ -58,6 +58,10 @@
       <HintPath>..\..\banshee\bin\MusicBrainz.dll</HintPath>
       <Package>banshee-musicbrainz</Package>
     </Reference>
+    <ProjectReference Include="..\CacheService\CacheService.fsproj">
+      <Project>{C9EC9FD3-F68D-4D71-A6F2-2D019D6B7D0B}</Project>
+      <Name>CacheService</Name>
+    </ProjectReference>
     <Reference Include="Hyena">
       <Package>banshee-hyena</Package>
     </Reference>
