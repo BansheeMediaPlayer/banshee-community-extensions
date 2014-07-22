@@ -45,6 +45,7 @@ namespace Banshee.FanArt
     {
         private bool disposed;
         private ArtistImageJob job;
+        private FanArtMetadataProvider provider = new FanArtMetadataProvider ();
 
         private string extensionId = null;
         string ExtensionId {
@@ -64,7 +65,7 @@ namespace Banshee.FanArt
         {
             // TODO: check it:
             // TODO: add disposing
-            Banshee.Metadata.MetadataService.Instance.AddProvider (new FanArtMetadataProvider ());
+            Banshee.Metadata.MetadataService.Instance.AddProvider (provider);
 
             if (!ServiceManager.DbConnection.TableExists ("ArtistImageDownloads")) {
                 ServiceManager.DbConnection.Execute (@"
@@ -224,6 +225,8 @@ namespace Banshee.FanArt
             if (job != null) {
                 job.Dispose ();
             }
+            provider.Cancel ();
+            Banshee.Metadata.MetadataService.Instance.RemoveProvider (provider);
             DropDbTables ();
             DeleteCachedFiles ();
         }
