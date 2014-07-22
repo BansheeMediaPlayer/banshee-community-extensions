@@ -185,6 +185,7 @@ type Service () as this =
     member x.Dispose () =
         Application.IdleTimeoutRemove (refresh_timeout_id) |> ignore
         ServiceManager.Get<Banshee.Networking.Network>().StateChanged.RemoveHandler x.OnNetworkStateChanged
+        LocationProviderManager.Detach (this)
 
     member x.ServiceName = Constants.NAME + ".Service"
 
