@@ -9,6 +9,7 @@ SUBDIRS = \
 	ClutterFlow \
 	CoverWallpaper \
 	DuplicateSongDetector \
+	CacheService \
 	FanArt \
 	FolderSync \
 	Jamendo \
@@ -24,7 +25,6 @@ SUBDIRS = \
 	OpenVP \
 	RadioStationFetcher \
 	RandomByLastfm \
-	CacheService \
 	SongKick \
 	SongKickGeoLocation \
 	StreamRecorder \
