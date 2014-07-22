@@ -221,6 +221,9 @@ namespace Banshee.FanArt
 
         private void OnDisabled ()
         {
+            if (job != null) {
+                job.Dispose ();
+            }
             DropDbTables ();
             DeleteCachedFiles ();
         }

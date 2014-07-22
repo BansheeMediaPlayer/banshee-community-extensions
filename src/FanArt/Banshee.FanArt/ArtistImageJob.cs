@@ -41,7 +41,7 @@ using Banshee.Metadata;
 
 namespace Banshee.FanArt
 {
-    public class ArtistImageJob : DbIteratorJob
+    public class ArtistImageJob : DbIteratorJob, IDisposable
     {
         private DateTime last_scan = DateTime.MinValue;
         private TimeSpan retry_every = TimeSpan.FromDays (7);
@@ -110,8 +110,6 @@ namespace Banshee.FanArt
                                                     ServiceManager.SourceManager.MusicLibrary.DbId, /* last_scan ,*/ last_scan - retry_every, last_scan - retry_every, 1
             );
 
-
-
             SetResources (Resource.Database);
             PriorityHints = PriorityHints.LongRunning;
 
@@ -172,11 +170,17 @@ namespace Banshee.FanArt
 
         protected override void OnCancelled ()
         {
+            Hyena.Log.Information ("FanArt: ArtistImageJob is Cancelled");
             base.OnCancelled ();
             AbortThread ();
         }
 
         #endregion
+
+        public void Dispose ()
+        {
+            OnCancelled ();
+        }
     }
 }
 
