@@ -39,11 +39,14 @@ using Banshee.ServiceStack;
 
 using MusicBrainz;
 using FanArt;
+using CacheService;
 
 namespace Banshee.FanArt
 {
     public class FanArtQueryJob : MetadataServiceJob
     {
+        private Cache cache = CacheManager.GetInstance.Initialize ("fanart");
+
         public FanArtQueryJob (IBasicTrackInfo track)
         {
             Track = track;
@@ -111,7 +114,13 @@ namespace Banshee.FanArt
         private bool FanArtDownload (string artistMusicbrainzID)
         {
             var fanartDownloader = new FanArtDownloader (FanArtCore.ApiKey);
-            var answer = fanartDownloader.GetFanArtArtistPage (artistMusicbrainzID);
+            string answer;
+            if (cache.Get (artistMusicbrainzID) != null) {
+                answer = cache.Get (artistMusicbrainzID).Value.ToString();
+            } else {
+                answer = fanartDownloader.GetFanArtArtistPage (artistMusicbrainzID);
+                cache.Add (artistMusicbrainzID, answer);
+            }
             var results = Results.FromString (answer);
             return Save (artistMusicbrainzID, results);
         }
