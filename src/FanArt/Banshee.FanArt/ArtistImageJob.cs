@@ -159,8 +159,6 @@ namespace Banshee.FanArt
             } catch (System.Threading.ThreadAbortException) {
                 save = false;
                 throw;
-            } catch (Exception e) {
-                Log.Error (e);
             } finally {
                 if (save) {
                     // additional work might be done here
