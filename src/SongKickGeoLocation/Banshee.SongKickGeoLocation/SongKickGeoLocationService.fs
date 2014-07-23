@@ -27,6 +27,7 @@
 namespace Banshee.SongKickGeoLocation
 
 open System
+open System.Linq
 
 open Banshee.Sources
 open Banshee.Kernel
@@ -42,6 +43,8 @@ open Banshee.SongKickGeoLocation.UI
 
 open Hyena
 
+open Mono.Addins
+
 type Service () as this =
     let default_refresh_time = TimeSpan.FromHours (12.0)
     let delay_refresh_time   = TimeSpan.FromMinutes (15.0)
@@ -52,9 +55,21 @@ type Service () as this =
 
     static let gigs_source = new RecommendedGigsSource ()
 
+    let extension_event_handler =
+        Mono.Addins.ExtensionEventHandler (fun s a ->
+            let addinEngine = s :?> AddinEngine
+            if (addinEngine <> null && addinEngine.CurrentAddin.Id = this.ExtensionId) then
+                let addins = AddinManager.Registry.GetAddins ()
+                let isEnabled = addins.Any (fun (a) -> a.LocalId = this.ExtensionId && a.Enabled)
+
+                if (not isEnabled) then
+                    Log.Debug ("SongKick extension is being disabled, performing cleanup")
+                    this.OnDisabled ())
+
     member x.Initialize () =
         LocationProviderManager.Register this
         ServiceManager.Get<Banshee.Networking.Network>().StateChanged.AddHandler x.OnNetworkStateChanged
+        AddinManager.ExtensionChanged.AddHandler extension_event_handler
 
     member private x.GetRecommededGigs () =
         let gigs = new Results<Event> ()
@@ -181,6 +196,13 @@ type Service () as this =
                 Threading.Thread.Sleep 500
                 LocationProviderManager.RefreshGeoPosition ()
                 x.RefreshRecommededGigs.Invoke () |> ignore))
+
+    member private x.ExtensionId with get () = AddinManager.CurrentAddin.Id
+
+    member private x.OnDisabled () =
+        AddinManager.ExtensionChanged.RemoveHandler extension_event_handler
+        DatabaseConfigurationClient.Client.Set (config_variable_name, Nullable<DateTime>())
+        x.Dispose ()
 
     member x.Dispose () =
         Application.IdleTimeoutRemove (refresh_timeout_id) |> ignore
