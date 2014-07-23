@@ -102,7 +102,7 @@ type Service () as this =
          | (_, false, true) -> // if it's time to refresh gigs but there is no internet connection
                                // then we delay refresh for "delay_refresh_time"
                                // but it will be ok if internet connection appears earlier! :)
-                               x.DelayRefresh()
+                               x.UpdateRunTimeout (delay_refresh_time)
                                true
          | _ -> true)
 
@@ -140,18 +140,15 @@ type Service () as this =
             else
                 default_refresh_time.Subtract (past)
 
-    member private x.UpdateRunTimeout () =
-        let retryTime = x.GetNextRetryTime ()
+    member private x.UpdateRunTimeout (retryTime : TimeSpan) =
         let t = (uint32) retryTime.TotalMilliseconds
         Application.IdleTimeoutRemove (refresh_timeout_id) |> ignore
         refresh_timeout_id <- Application.RunTimeout (t, x.RefreshRecommededGigs)
         Log.Information ("Recommended gigs list will be updated in " + retryTime.Duration().ToString())
 
-    member private x.DelayRefresh () =
-        let t = (uint32) delay_refresh_time.TotalMilliseconds
-        Application.IdleTimeoutRemove (refresh_timeout_id) |> ignore
-        refresh_timeout_id <- Application.RunTimeout (t, x.RefreshRecommededGigs)
-        Log.Information ("Recommended gigs list will be updated in " + delay_refresh_time.Duration().ToString())
+    member private x.UpdateRunTimeout () =
+        let retryTime = x.GetNextRetryTime ()
+        x.UpdateRunTimeout (retryTime)
 
     member private x.IsItInUserCity (lat : float, long : float) =
         abs (lat  - LocationProviderManager.GetLatitude)  < 1.0 &&
