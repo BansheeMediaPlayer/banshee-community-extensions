@@ -96,7 +96,7 @@ type Cache internal (nmspace : string) =
                   Constants.timeout.ToString ())
 
     member x.Add (key : string) (value : 'a) =
-        if not (String.IsNullOrEmpty (key)) then
+        if not (String.IsNullOrEmpty (key)) && Directory.Exists (nmspace) then
             x.WriteValueToFile key value
             Log.DebugFormat ("In cache was added a value with key: {0}", key)
             CacheChanged.Trigger (CacheChangedArgs (Added, key, value))
