@@ -222,6 +222,7 @@ namespace Banshee.FanArt
 
         private void OnDisabled ()
         {
+            Mono.Addins.AddinManager.ExtensionChanged -= OnExtensionChanged;
             if (job != null) {
                 job.Dispose ();
             }
