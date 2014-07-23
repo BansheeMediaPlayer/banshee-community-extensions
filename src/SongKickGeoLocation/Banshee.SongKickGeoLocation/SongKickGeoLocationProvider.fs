@@ -38,8 +38,6 @@ open Banshee.Sources
 open Hyena
 open Hyena.Data
 
-open Mono.Addins
-
 open CacheService
 
 module Constants =
@@ -70,7 +68,7 @@ type GeoLocation =
 type Provider () =
     inherit BaseLocationProvider ()
     let name                  = Constants.NAME
-    let cache                 = CacheManager.GetInstance.Initialize (name)
+    let cache                 = CacheManager.GetInstance.Initialize (name.ToLower ())
     let songkick_api_key      = Banshee.SongKick.SongKickCore.APIKey
     let mozilla_api_key       = "2363677d-0913-4a7d-8659-5df67963dc20"
     let reverse_geocode_uri   = "http://api.songkick.com/api/3.0/search/locations.json?location=geo:{0},{1}"
