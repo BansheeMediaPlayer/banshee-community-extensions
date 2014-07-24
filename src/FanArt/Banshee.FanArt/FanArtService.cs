@@ -5,8 +5,10 @@
 //   James Willcox <snorp@novell.com>
 //   Gabriel Burt <gburt@novell.com>
 //   Tomasz Maczyński <tmtimon@gmail.com>
+//   Dmitrii Petukhov <dimart.sp@gmail.com>
 //
 // Copyright 2013 Tomasz Maczyński
+// Copyright 2014 Dmitrii Petukhov
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +37,7 @@ using Mono.Addins;
 using Hyena;
 using Hyena.Data.Sqlite;
 
+using Banshee.Networking;
 using Banshee.ServiceStack;
 using Banshee.Configuration;
 using Banshee.Sources;
@@ -43,8 +46,10 @@ namespace Banshee.FanArt
 {
     public class FanArtService : IExtensionService
     {
+        private bool network_failed;
         private bool disposed;
         private ArtistImageJob job;
+
         private FanArtMetadataProvider provider = new FanArtMetadataProvider ();
 
         private string extensionId = null;
@@ -123,6 +128,7 @@ namespace Banshee.FanArt
             ServiceManager.SourceManager.MusicLibrary.TracksAdded += OnTracksAdded;
             ServiceManager.SourceManager.MusicLibrary.TracksChanged += OnTracksChanged;
             ServiceManager.SourceManager.MusicLibrary.TracksDeleted += OnTracksDeleted;
+            ServiceManager.Get<Network>().StateChanged += OnNetworkStateChanged;
             FetchArtistImages ();
         }
 
@@ -155,15 +161,17 @@ namespace Banshee.FanArt
                     }
                 }
 
-                job = new ArtistImageJob (last_scan);
+                if (ServiceManager.Get<Network> ().Connected) {
+                    job = new ArtistImageJob (last_scan);
 
-                job.Finished += delegate {
-                    if (!job.IsCancelRequested) {
-                        DatabaseConfigurationClient.Client.Set<DateTime> (config_variable_name, DateTime.Now);
-                    }
-                    job = null;
-                };
-                job.Start ();
+                    job.Finished += delegate {
+                        if (!job.IsCancelRequested && !network_failed) {
+                            DatabaseConfigurationClient.Client.Set<DateTime> (config_variable_name, DateTime.Now);
+                        }
+                        job = null;
+                    };
+                    job.Start ();
+                }
             }
         }
 
@@ -216,8 +224,20 @@ namespace Banshee.FanArt
             ServiceManager.SourceManager.MusicLibrary.TracksAdded -= OnTracksAdded;
             ServiceManager.SourceManager.MusicLibrary.TracksChanged -= OnTracksChanged;
             ServiceManager.SourceManager.MusicLibrary.TracksDeleted -= OnTracksDeleted;
+            ServiceManager.Get<Network>().StateChanged -= OnNetworkStateChanged;
 
             disposed = true;
+        }
+
+        private void OnNetworkStateChanged (object o, Banshee.Networking.NetworkStateChangedArgs args)
+        {
+            if (!args.Connected && job != null) {
+                network_failed = true;
+                job.Dispose ();
+            } else {
+                network_failed = false;
+                FetchArtistImages ();
+            }
         }
 
         private void OnDisabled ()
