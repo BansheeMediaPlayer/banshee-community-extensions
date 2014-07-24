@@ -60,55 +60,53 @@ namespace Banshee.FanArt
                 @"SELECT count(DISTINCT CoreArtists.ArtistID)
                     FROM CoreTracks, CoreArtists
                     WHERE
-                        CoreTracks.PrimarySourceID = ? AND
-                        " + /*CoreTracks.DateUpdatedStamp > ? AND */ @"
-                        CoreTracks.ArtistID = CoreArtists.ArtistID AND 
-                        (CoreArtists.Name IS NULL OR
-                        CoreArtists.Name NOT IN (
-                            SELECT ArtistName FROM ArtistMusicBrainz WHERE
-                                   LastAttempt > ?
-                            )) AND
-                        (CoreArtists.MusicBrainzID IS NULL OR 
-                        CoreArtists.MusicBrainzID NOT IN (
-                            SELECT ArtistImageDownloads.MusicBrainzID FROM ArtistImageDownloads WHERE                                    
-                                ArtistImageDownloads.MusicBrainzID = ArtistImageDownloads.MusicBrainzID AND 
-                                   (ArtistImageDownloads.LastAttempt > ? OR 
-                                    Downloaded = 1)))
-                        AND (
-                              CoreArtists.Name IS NOT NULL OR 
-                              CoreArtists.MusicBrainzID IS NOT NULL
-                         )",
-                ServiceManager.SourceManager.MusicLibrary.DbId, /*last_scan,*/ last_scan - retry_every, last_scan - retry_every
-            );
-
+                        CoreTracks.PrimarySourceID = ?
+                        AND CoreTracks.ArtistID = CoreArtists.ArtistID
+                        AND (CoreArtists.Name IS NULL
+                             OR CoreArtists.Name
+                                NOT IN (SELECT ArtistName
+                                        FROM ArtistMusicBrainz
+                                        WHERE LastAttempt > ?))
+                        AND (CoreArtists.MusicBrainzID IS NULL
+                             OR CoreArtists.MusicBrainzID
+                                NOT IN ( SELECT ArtistImageDownloads.MusicBrainzID
+                                         FROM ArtistImageDownloads
+                                         WHERE ArtistImageDownloads.MusicBrainzID =
+                                                 ArtistImageDownloads.MusicBrainzID
+                                               AND (ArtistImageDownloads.LastAttempt > ?
+                                                    OR Downloaded = 1)))
+                        AND (CoreArtists.Name IS NOT NULL
+                             OR CoreArtists.MusicBrainzID IS NOT NULL)",
+                ServiceManager.SourceManager.MusicLibrary.DbId,
+                last_scan - retry_every,
+                last_scan - retry_every);
 
             SelectCommand = new HyenaSqliteCommand (String.Format (
                 @"SELECT DISTINCT CoreArtists.ArtistID, CoreArtists.Name, {0}, CoreTracks.TrackID
                     FROM CoreTracks, CoreArtists
-                    WHERE
-                        CoreTracks.PrimarySourceID = ? AND
-                        "  + /*CoreTracks.DateUpdatedStamp > ? AND */ @"
-                        CoreTracks.ArtistID = CoreArtists.ArtistID AND 
-                        (CoreArtists.Name IS NULL OR
-                        CoreArtists.Name NOT IN (
-                            SELECT ArtistName FROM ArtistMusicBrainz WHERE
-                                LastAttempt > ?
-                            )
-                        ) AND
-                        (CoreArtists.MusicBrainzID IS NULL OR 
-                        CoreArtists.MusicBrainzID NOT IN (
-                            SELECT ArtistImageDownloads.MusicBrainzID FROM ArtistImageDownloads WHERE                                    
-                                   (ArtistImageDownloads.LastAttempt > ? OR 
-                                    Downloaded = 1)) 
-                        )
-                    AND (
-                          CoreArtists.Name IS NOT NULL OR 
-                          CoreArtists.MusicBrainzID IS NOT NULL
-                     )
-                    GROUP BY CoreTracks.ArtistID ORDER BY CoreTracks.DateUpdatedStamp DESC LIMIT ?",
+                    WHERE CoreTracks.PrimarySourceID = ?
+                          AND CoreTracks.ArtistID = CoreArtists.ArtistID
+                          AND (CoreArtists.Name IS NULL
+                               OR CoreArtists.Name
+                                  NOT IN (SELECT ArtistName
+                                          FROM ArtistMusicBrainz
+                                          WHERE LastAttempt > ?))
+                          AND (CoreArtists.MusicBrainzID IS NULL
+                               OR CoreArtists.MusicBrainzID
+                                  NOT IN (SELECT ArtistImageDownloads.MusicBrainzID
+                                          FROM ArtistImageDownloads
+                                          WHERE (ArtistImageDownloads.LastAttempt > ?
+                                                 OR Downloaded = 1)))
+                          AND (CoreArtists.Name IS NOT NULL
+                               OR CoreArtists.MusicBrainzID IS NOT NULL)
+                    GROUP BY CoreTracks.ArtistID
+                    ORDER BY CoreTracks.DateUpdatedStamp
+                    DESC LIMIT ?",
                     Banshee.Query.BansheeQuery.UriField.Column),
-                                                    ServiceManager.SourceManager.MusicLibrary.DbId, /* last_scan ,*/ last_scan - retry_every, last_scan - retry_every, 1
-            );
+                    ServiceManager.SourceManager.MusicLibrary.DbId,
+                    last_scan - retry_every,
+                    last_scan - retry_every,
+                    1);
 
             SetResources (Resource.Database);
             PriorityHints = PriorityHints.LongRunning;

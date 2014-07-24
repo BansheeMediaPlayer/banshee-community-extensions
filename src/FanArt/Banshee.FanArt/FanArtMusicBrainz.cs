@@ -37,16 +37,20 @@ namespace Banshee.FanArt
     public static class FanArtMusicBrainz
     {
         public static string MBIDByArtistID (long dbId) {
-            return ServiceManager.DbConnection.Query<string> (
-                    String.Format (@"SELECT MusicBrainzID FROM CoreArtists WHERE ArtistID={0} LIMIT 1" , dbId)
-                );
+            return ServiceManager.DbConnection.Query<string>
+                (new HyenaSqliteCommand (@"SELECT MusicBrainzID
+                                           FROM CoreArtists
+                                           WHERE ArtistID=? LIMIT 1",
+                                           dbId.ToString()));
         }
 
         public static string MBIDByArtistName (string artistName)
         {
-            return ServiceManager.DbConnection.Query<string> (
-                    new HyenaSqliteCommand (@"SELECT MusicBrainzID FROM ArtistMusicBrainz WHERE ArtistName=? LIMIT 1" , artistName)
-                );
+            return ServiceManager.DbConnection.Query<string>
+                (new HyenaSqliteCommand (@"SELECT MusicBrainzID
+                                           FROM ArtistMusicBrainz
+                                           WHERE ArtistName=? LIMIT 1",
+                                           artistName));
         }
 
         public static string ArtistNameByMBID (string mbId)
@@ -59,13 +63,12 @@ namespace Banshee.FanArt
         }
 
         public static bool HasImage (string mbId) {
-            return ServiceManager.DbConnection.Query<bool> (
-                new HyenaSqliteCommand (@"
-                    SELECT COUNT(*)>0 FROM ArtistImageDownloads 
-                    WHERE MusicBrainzID=? AND 
-                    Downloaded=1",
-                    mbId)
-                );
+            return ServiceManager.DbConnection.Query<bool>
+                (new HyenaSqliteCommand (@"SELECT COUNT(*)>0
+                                           FROM ArtistImageDownloads
+                                           WHERE MusicBrainzID=?
+                                                 AND Downloaded=1",
+                                           mbId));
         }
     }
 }
