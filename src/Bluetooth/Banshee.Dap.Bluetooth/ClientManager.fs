@@ -34,6 +34,8 @@ open Banshee.Dap.Bluetooth.ObexApi
 open Banshee.Dap.Bluetooth.Wrappers
 open Banshee.Dap.Bluetooth.SupportApi
 
+open Hyena.Log
+
 open DBus
 
 let NAME_BLUEZ_OBEX = "org.bluez.obex"
@@ -48,13 +50,13 @@ type ClientManager(session: Bus) =
         | :? IClient as c -> clients.[p] <- c
         | :? IFileTransfer as s -> sessions.[p] <- s
         | :? INotifyTransfer as t -> transfers.[p] <- t
-        | _ -> o.ToString() |> printfn "Ignoring Added: %s"
+        | _ -> o.ToString() |> Warnf "Ignoring Added: %s"
     let rem (o: obj) (p: ObjectPath) =
         match o with
         | :? IClient -> clients.Remove p
         | :? IFileTransfer -> sessions.Remove p
         | :? INotifyTransfer -> transfers.Remove p
-        | _ -> o.ToString() |> printfn "Ignoring Removed: %s"
+        | _ -> o.ToString() |> Warnf "Ignoring Removed: %s"
                false
     do inv.Register<IClient>(fun o p -> o)
        inv.Register<ISession>(fun o p -> let s = o :?> ISession

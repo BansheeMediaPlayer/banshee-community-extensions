@@ -34,6 +34,7 @@ open Banshee.Dap.Bluetooth.SupportApi
 open Banshee.ServiceStack
 open DBus
 open Hyena
+open Hyena.Log
 
 type IBansheeDevice =
     abstract Device : INotifyDevice with get
@@ -72,7 +73,8 @@ type BansheeDevice(path: ObjectPath,
     let conn (a,f) =
                  if a then am.PowerOn dev.Adapter
                  let uuid = FeatureToUuid f
-                 printfn "Connecting: %A => %s" (a,f) uuid
+                 let sf = sprintf "Connecting: %A => %s" (a,f) uuid
+                 Infof "Dap.Bluetooth: Connecting: %A => %s" (a,f) uuid
                  match (a,f) with
                  | (true, Feature.Sync) -> src_clean true
                  | (false, Feature.Sync) -> src_clean false

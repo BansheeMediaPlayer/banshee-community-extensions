@@ -99,6 +99,7 @@
     <Compile Include="Banshee.Dap.Bluetooth\SupportApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\InversionApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Wrappers.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\HyenaGlueApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\AdapterManager.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\DeviceManager.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\ClientManager.fs" />

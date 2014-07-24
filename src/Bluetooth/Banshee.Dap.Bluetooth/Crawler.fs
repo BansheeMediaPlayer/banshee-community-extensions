@@ -36,6 +36,8 @@ open Banshee.Dap.Bluetooth.Client
 open Banshee.Dap.Bluetooth.Wrappers
 open Banshee.Dap.Bluetooth.SupportApi
 
+open Hyena.Log
+
 open DBus
 
 let DEFAULT_TRIES_MAX = 60us
@@ -124,21 +126,21 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
         | "org.bluez.obex.Error.Failed: Unable to find service record"
         | "org.bluez.obex.Error.Failed: The transport is not connected" ->
           if max_tries >= fails then raise e
-          printfn "%s: %s" (e.GetType().FullName) e.Message
+          Errorf "Dap.Bluetooth: %s: %s" (e.GetType().FullName) e.Message
           ops <- Unchecked.defaultof<_>
           path <- []
           fails <- 1us + fails
         | "org.freedesktop.DBus.Error.NoReply: Message did not receive a reply (timeout by message bus)"
         | "Object reference not set to an instance of an object" ->
           raise e
-        | m -> printfn "%s: %s" (e.GetType().FullName) m
+        | m -> Errorf "Dap.Bluetooth: %s = %s" (e.GetType().FullName) m
                raise e
     let rec root () =
         try
           match (IsNull ops, cm.Session ops) with
           | (_, Some s) -> fails <- 0us
                            s
-          | (true, None) -> printfn "Creating Session"
+          | (true, None) -> Infof "Dap.Bluetooth: Creating Session"
                             ops <- cm.CreateSession addr Ftp
                             root()
           | (false, None) -> Thread.Sleep 500
@@ -156,7 +158,7 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
         match path with
         | [] -> ()
         | hd::tl -> try
-                      printfn "cd: .."
+                      Infof "Dap.Bluetooth: cd: .."
                       root().ChangeFolder ".."
                       path <- tl
                     with
@@ -176,7 +178,7 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
         | None -> ()
     member x.Down y =
         try
-          printfn "cd: %s" y
+          Infof "Dap.Bluetooth: cd: %s" y
           root().ChangeFolder y
           path <- y::path
           true
@@ -185,7 +187,7 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
                false
     member x.Make y =
         try
-          printfn "md: %s" y
+          Infof "Dap.Bluetooth: md: %s" y
           root().CreateFolder y
           path <- y::path
           true
@@ -195,7 +197,7 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
     member x.MkDn y = (x.Down y || x.Make y) |> ignore
     member private x.Crawl dest =
         let suffix = SuffixOf path dest
-        printfn "%A" suffix
+        Infof "Dap.Bluetooth: suffix: %A" suffix
         match suffix with
         // In the directory
         | Some [] -> ()
@@ -206,13 +208,13 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
                   x.Crawl dest
     member x.Delete y =
         try
-          printfn "rm: %s" y
+          Infof "Dap.Bluetooth: rm: %s" y
           root().Delete y
         with
         | e -> check e
     member x.PutFile y z =
         try
-          printfn "put: %s => %s" y z
+          Infof "Dap.Bluetooth: put: %s => %s" y z
           root().PutFile y z
         with
         | e -> check e

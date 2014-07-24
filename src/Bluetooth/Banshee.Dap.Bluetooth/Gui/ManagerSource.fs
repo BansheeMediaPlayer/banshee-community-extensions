@@ -41,6 +41,7 @@ open Banshee.Gui
 open DBus
 open Gtk
 open Hyena
+open Hyena.Log
 
 module Constants =
     let SORT = 410 // Puts us in "Devices"
@@ -80,13 +81,12 @@ type ManagerSource(am: AdapterManager, dm: DeviceManager, cm: ClientManager) as 
                     "Bluetooth Manager",
                     Constants.SORT,
                     "extension-unique-id")
-    do printfn "Initializing ManagerSource"
+    do Infof "Dap.Bluetooth: Initializing ManagerSource"
        base.Properties.SetStringList ("Icon.Name", "bluetooth")
        base.Properties.Set<ISourceContents> ("Nereid.SourceContents", new ManagerContents(this, am, dm, cm))
        base.Initialize ();
 
 type ManagerService(name: string) =
-    do Log.DebugFormat ("Instantiating {0}", name)
     let mutable am : AdapterManager = Unchecked.defaultof<_>
     let mutable dm : DeviceManager = Unchecked.defaultof<_>
     let mutable cm : ClientManager = Unchecked.defaultof<_>

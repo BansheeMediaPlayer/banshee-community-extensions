@@ -48,6 +48,7 @@ open Banshee.Sources
 open Banshee.ServiceStack
 open DBus
 open Hyena
+open Hyena.Log
 open Hyena.Data.Sqlite
 open Mono.Addins
 
@@ -106,13 +107,13 @@ let FuzzyLookup (x: DatabaseTrackInfo) =
     try
       let tid = TrackIdOf x.TrackNumber x.TrackTitle x.FileSize
       if 0L <> tid then
-        printfn "Got Lucky: %d => %d. %s at %d bytes"
+        Debugf "Got Lucky: %d => %d. %s at %d bytes"
           tid x.TrackNumber x.TrackTitle x.FileSize
         DatabaseTrackInfo.Provider.FetchSingle tid
       else
         match (x.ArtistName, x.AlbumTitle) with
         | (null, null) | ("", "") ->
-          printfn "No Help: %d. %s at %d bytes"
+          Debugf "No Help: %d. %s at %d bytes"
             x.TrackNumber x.TrackTitle x.FileSize
           x
         | _ ->
@@ -125,7 +126,7 @@ let FuzzyLookup (x: DatabaseTrackInfo) =
                     "and CoreTracks.Title like ?"
           let dti = DatabaseTrackInfo.Provider.FetchFirstMatching(faq, art, alb, num, ttl)
           if IsNull dti then
-            printfn "No Help: by %s from %s - %d. %s at %d bytes"
+            Debugf "No Help: by %s from %s - %d. %s at %d bytes"
               x.ArtistName x.AlbumTitle x.TrackNumber x.TrackTitle x.FileSize
             x
           else dti
@@ -259,6 +260,6 @@ type BluetoothSource(dev: BluetoothDevice, cm: ClientManager) =
             | [] -> false
         ftp.Root()
         let uepath = Uri(y.Uri.AbsoluteUri).AbsolutePath |> Uri.UnescapeDataString
-        printfn "DeleteTrack: %s" uepath
+        Infof "Dap.Bluetooth: DeleteTrack: %s" uepath
         uepath.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
         |> List.ofArray |> del

@@ -42,6 +42,7 @@ open Banshee.Dap.Bluetooth.InversionApi
 open Banshee.Dap.Bluetooth.Wrappers
 open Banshee.Dap.Bluetooth.Adapters
 
+open Hyena.Log
 open DBus
 
 type Feature =
@@ -87,7 +88,7 @@ type DeviceManager(system: Bus) =
                                            notify_media.Trigger(DBusEventArgs(Added, p, mcw))
         | :? INotifyMediaTransport as mtw -> transports.[p] <- mtw
                                              notify_transport.Trigger(DBusEventArgs(Added, p, mtw))
-        | _ -> o.ToString() |> printfn "Ignoring Added: %s"
+        | _ -> o.ToString() |> Warnf "Dap.Bluetooth: Ignoring Added %s"
     let rem (p: ObjectPath) (o: obj) =
         match o with
         | :? INotifyDevice as dw -> devices.Remove p |> ignore
@@ -99,7 +100,7 @@ type DeviceManager(system: Bus) =
         | :? INotifyMediaTransport as mtw -> transports.Remove p |> ignore
                                              notify_transport.Trigger(DBusEventArgs(Removed, p, mtw))
                                              true
-        | _ -> o.ToString() |> printfn "Ignoring Removed: %s"
+        | _ -> o.ToString() |> Warnf "Dap.Bluetooth: Ignoring Removed %s"
                false
     do
         oman.Register<IDevice> (fun o p -> let d = o :?> IDevice
