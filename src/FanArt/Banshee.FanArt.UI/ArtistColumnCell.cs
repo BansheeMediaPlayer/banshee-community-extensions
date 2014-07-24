@@ -27,12 +27,15 @@
 using System;
 
 using Gtk;
+using Hyena.Data.Sqlite;
 using Hyena.Data.Gui;
 using Hyena.Gui;
+
 
 using Banshee.Collection.Gui;
 using Banshee.Collection;
 using Banshee.Collection.Database;
+using Banshee.ServiceStack;
 
 namespace Banshee.FanArt.UI
 {
@@ -55,6 +58,40 @@ namespace Banshee.FanArt.UI
                 throw new InvalidCastException ("FanArtArtistColumnCell can only bind ArtistInfo objects");
             }
 
+            var musicBrainzID = GetArtistsMbid (artistInfo);
+            bool image = false;
+
+            // get artist image:
+            if (musicBrainzID != null && FanArtMusicBrainz.HasImage (musicBrainzID)) {
+                string imagePath = FanArtArtistImageSpec.GetPath (
+                     FanArtArtistImageSpec.CreateArtistImageFileName (musicBrainzID));
+
+                var fas = ServiceManager.Get<FanArtService> ();
+                if (!Banshee.IO.File.Exists (new Hyena.SafeUri (imagePath))) {
+
+                        ServiceManager.DbConnection.Execute (
+                            "INSERT OR REPLACE INTO ArtistImageDownloads (MusicBrainzID, Downloaded, LastAttempt) VALUES (?, ?, ?)",
+                            musicBrainzID, 0, DateTime.MinValue);
+
+                        var artistName = FanArtMusicBrainz.ArtistNameByMBID (musicBrainzID);
+                        ServiceManager.DbConnection.Execute (
+                            "INSERT OR REPLACE INTO ArtistMusicBrainz (ArtistName, MusicBrainzId, LastAttempt) VALUES (?, ?, ?)",
+                            artistName, musicBrainzID, DateTime.MinValue);
+
+                        fas.FetchArtistImages (true);
+
+                } else {
+                    image = RenderArtistImage (imagePath, context);
+                }
+            }
+
+            if (!image) {
+                RenderArtistText (artistInfo.DisplayName, cellWidth, context);
+            }
+        }
+
+        private bool RenderArtistImage (string imagePath, CellContext context)
+        {
             // majority of artist images has size 400 * 155
             int originalImageWidth = 400;
             int orginalImageHeight = 155;
@@ -65,43 +102,22 @@ namespace Banshee.FanArt.UI
             int spacing = 0;
             int thumb_height = (int) (orginalImageHeight * scale);
             int thumb_width = (int) (originalImageWidth * scale);
+            Gdk.Pixbuf artistPixbuf = null;
+            artistPixbuf = new Gdk.Pixbuf (imagePath);
 
-            var musicBrainzID = GetArtistsMbid (artistInfo);
-            bool image = false;
-
-            // get artist image:
-            if (musicBrainzID != null && FanArtMusicBrainz.HasImage (musicBrainzID)) {
-                string imagePath = FanArtArtistImageSpec.GetPath (
-                     FanArtArtistImageSpec.CreateArtistImageFileName (musicBrainzID));
-
-                Gdk.Pixbuf artistPixbuf = null;
-                try {
-                    artistPixbuf = new Gdk.Pixbuf (imagePath);
-                } catch (GLib.GException e) {
-                    Hyena.Log.Debug (String.Format (
-                        "Could not get artist image for artist '{0}' with MBDI {1}.", 
-                        artistInfo.Name ?? "", musicBrainzID ?? ""));
-                    Hyena.Log.Error (e);
+            if (artistPixbuf != null) {
+                artistPixbuf = artistPixbuf.ScaleSimple (thumb_width, thumb_height, Gdk.InterpType.Bilinear);
+                bool has_border = false;
+                using (var artistImage = PixbufImageSurface.Create (artistPixbuf)) {
+                    // display get artist image:
+                    ArtworkRenderer.RenderThumbnail (context.Context, artistImage, false,
+                        spacing, spacing,
+                        thumb_width, thumb_height,
+                        has_border, context.Theme.Context.Radius);
                 }
-
-                if (artistPixbuf != null) {
-                    artistPixbuf = artistPixbuf.ScaleSimple (thumb_width, thumb_height, Gdk.InterpType.Bilinear);
-                    bool has_border = false;
-                    using (var artistImage = PixbufImageSurface.Create (artistPixbuf)) {
-                        // display get artist image:
-                        ArtworkRenderer.RenderThumbnail (context.Context, artistImage, false,
-                            spacing, spacing,
-                            thumb_width, thumb_height,
-                            has_border, context.Theme.Context.Radius);
-                    }
-
-                    image = true;
-                }
+                return true;
             }
-
-            if (!image) {
-                RenderArtistText (artistInfo.DisplayName, cellWidth, context);
-            }
+            return false;
         }
 
         private void RenderArtistText (string name, double cellWidth, CellContext context)
