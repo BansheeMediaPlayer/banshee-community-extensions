@@ -152,7 +152,8 @@ namespace Banshee.FanArt
                     Log.Debug ("FanArtQueryJob: No artist image was found");
                 }
             } else {
-                Log.Debug ("FanArtQueryJob: Results were incorrect");
+                Log.Debug ("FanArtQueryJob: ArtistImage wasn't downloaded. " +
+                    "FanArt's Response cannot be parsed as JSON.");
             }
 
             SaveDbImageData (artistMusicbrainzID, downloaded);
