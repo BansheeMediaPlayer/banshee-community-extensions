@@ -3,8 +3,10 @@
 //
 // Author:
 //   Tomasz Maczyński <tmtimon@gmail.com>
-//
+//   Dmitrii Petukhov <dimart.sp@gmail.com>
+
 // Copyright 2013 Tomasz Maczyński
+// Copyright 2014 Dmitrii Petukhov
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -45,6 +47,15 @@ namespace Banshee.FanArt
             return ServiceManager.DbConnection.Query<string> (
                     new HyenaSqliteCommand (@"SELECT MusicBrainzID FROM ArtistMusicBrainz WHERE ArtistName=? LIMIT 1" , artistName)
                 );
+        }
+
+        public static string ArtistNameByMBID (string mbId)
+        {
+            return ServiceManager.DbConnection.Query<string>
+                (new HyenaSqliteCommand (@"SELECT ArtistName
+                                           FROM ArtistMusicBrainz
+                                           WHERE MusicBrainzId = ? LIMIT 1",
+                                           mbId));
         }
 
         public static bool HasImage (string mbId) {
