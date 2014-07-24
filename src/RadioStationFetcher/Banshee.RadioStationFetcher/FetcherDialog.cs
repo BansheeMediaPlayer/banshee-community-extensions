@@ -49,7 +49,7 @@ namespace Banshee.RadioStationFetcher
         public static int freeText_search = 1;
 
         private Button close_button;
-        private ComboBox genre_entry;
+        private ComboBoxText genre_entry;
         private Entry freeText_entry;
         private Button genre_button;
         private Button freeText_button;
@@ -66,11 +66,6 @@ namespace Banshee.RadioStationFetcher
             ShowAll ();
         }
 
-        public void HideDialog ()
-        {
-            HideAll ();
-        }
-
         public void InitializeDialog ()
         {
             FillGenreList ();
@@ -82,10 +77,9 @@ namespace Banshee.RadioStationFetcher
             SkipTaskbarHint = true;
 
             BorderWidth = 6;
-            HasSeparator = false;
             DefaultResponse = ResponseType.Ok;
 
-            VBox.Spacing = 6;
+            ContentArea.Spacing = 6;
 
             HBox split_box = new HBox ();
             split_box.Spacing = 12;
@@ -121,7 +115,7 @@ namespace Banshee.RadioStationFetcher
             table.RowSpacing = 6;
             table.ColumnSpacing = 6;
 
-            genre_entry = ComboBox.NewText ();
+            genre_entry = new ComboBoxText ();
             freeText_entry = new Entry ();
 
             genre_button = new Button (AddinManager.CurrentLocalizer.GetString ("Get stations"));
@@ -162,7 +156,7 @@ namespace Banshee.RadioStationFetcher
             split_box.PackStart (main_box, true, true, 0);
             split_box.Show ();
 
-            VBox.PackStart (split_box, true, true, 0);
+            ContentArea.PackStart (split_box, true, true, 0);
 
             close_button = new Button ();
             close_button.Image = new Image ("gtk-close", IconSize.Button);
@@ -178,14 +172,13 @@ namespace Banshee.RadioStationFetcher
             close_button.Clicked += OnCloseButtonClick;
 
             statusbar = new Statusbar ();
-            statusbar.HasResizeGrip = false;
             SetStatusBarMessage (source_name);
             main_box.PackEnd (statusbar, false, false, 0);
         }
 
         public void OnCloseButtonClick (object o, EventArgs args)
         {
-            HideDialog ();
+            this.Hide ();
         }
 
         private void OnGenreQueryButtonClick (object o, EventArgs args)
@@ -290,13 +283,13 @@ namespace Banshee.RadioStationFetcher
 
         protected override bool OnDeleteEvent (Gdk.Event evnt)
         {
-            HideAll ();
+            Hide ();
             return true;
         }
 
         protected override void OnClose()
         {
-            HideAll ();
+            Hide ();
         }
 
         protected void SetStatusBarMessage (string message)

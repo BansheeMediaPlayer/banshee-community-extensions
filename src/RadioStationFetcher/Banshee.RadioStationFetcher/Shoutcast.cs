@@ -289,7 +289,7 @@ namespace Banshee.RadioStationFetcher
                     station_list.Add (new_station);
                 }
                 catch (Exception e) {
-                    Log.Exception ("[Shoutcast] <ParseQuery> ERROR: ", e);
+                    Log.Warning ("[Shoutcast] <ParseQuery> ERROR: ", e);
                     continue;
                 }
             }

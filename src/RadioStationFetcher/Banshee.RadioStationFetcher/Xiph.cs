@@ -275,7 +275,7 @@ namespace Banshee.RadioStationFetcher
                     station_list.Add (new_station);
                 }
                 catch (Exception e) {
-                    Log.Exception ("[Xiph] <ParseQuery> ERROR", e);
+                    Log.Warning ("[Xiph] <ParseQuery> ERROR", e);
                     continue;
                 }
             }
