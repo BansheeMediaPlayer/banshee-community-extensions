@@ -161,7 +161,7 @@ namespace Banshee.FanArt
                     }
                 }
 
-                if (ServiceManager.Get<Network> ().Connected) {
+                if (ServiceManager.Get<Network> ().Connected && !IsThereActiveJob ()) {
                     job = new ArtistImageJob (last_scan);
 
                     job.Finished += delegate {
@@ -275,6 +275,14 @@ namespace Banshee.FanArt
                     }
                 }
             }
+        }
+
+        public bool IsThereActiveJob ()
+        {
+            if (job != null) {
+                return job.State != Hyena.Jobs.JobState.Completed;
+            }
+            return false;
         }
 
         #region IService implementation

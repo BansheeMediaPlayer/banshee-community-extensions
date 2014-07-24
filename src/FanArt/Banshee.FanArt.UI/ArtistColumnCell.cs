@@ -68,7 +68,7 @@ namespace Banshee.FanArt.UI
 
                 var fas = ServiceManager.Get<FanArtService> ();
                 if (!Banshee.IO.File.Exists (new Hyena.SafeUri (imagePath))) {
-
+                    if (!fas.IsThereActiveJob ()) {
                         ServiceManager.DbConnection.Execute (
                             "INSERT OR REPLACE INTO ArtistImageDownloads (MusicBrainzID, Downloaded, LastAttempt) VALUES (?, ?, ?)",
                             musicBrainzID, 0, DateTime.MinValue);
@@ -79,7 +79,7 @@ namespace Banshee.FanArt.UI
                             artistName, musicBrainzID, DateTime.MinValue);
 
                         fas.FetchArtistImages (true);
-
+                    }
                 } else {
                     image = RenderArtistImage (imagePath, context);
                 }
