@@ -77,6 +77,9 @@
     <Reference Include="gstreamer-sharp, Version=0.99.0.0, Culture=neutral, PublicKeyToken=5cbf79803e97ff61">
       <Package>gstreamer-sharp-1.0</Package>
     </Reference>
+    <Reference Include="Gnome.Keyring, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1a73e1bde00c9b66">
+      <Package>gnome-keyring-sharp-1.0</Package>
+    </Reference>
     <Reference Include="FSharp.Data">
       <HintPath>..\packages\FSharp.Data.2.0.9\lib\net40\FSharp.Data.dll</HintPath>
     </Reference>
@@ -94,6 +97,7 @@
     <Compile Include="Banshee.OnlineMetadataFixer/MissingAlbumSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/MissingMostOfMetadataSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/InvalidMetadataSource.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/PasswordManager.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
   <Import Project="..\.nuget\nuget.targets" />
