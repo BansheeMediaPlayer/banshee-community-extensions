@@ -63,7 +63,7 @@ type OnlineMetadataFixerSource () =
                 |> String.Join
             with
             | :? System.Net.WebException as ex -> 
-                Hyena.Log.Exception(ex)
+                Hyena.Log.Error (ex)
                 ""
 
     override x.HasTrackDetails with get () = true

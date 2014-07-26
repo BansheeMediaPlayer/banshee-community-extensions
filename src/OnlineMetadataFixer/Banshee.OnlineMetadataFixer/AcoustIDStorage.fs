@@ -61,7 +61,7 @@ type AcoustIDStorage() =
             |> sw.Write
             sw.Close ()
         with
-        | :? IOException as ex -> Hyena.Log.Exception ("Cannot save fingerprint: ", ex)
+        | :? IOException as ex -> Hyena.Log.Error ("Cannot save fingerprint: ", ex)
 
     static member LoadFingerprint (filename) =
         let hashedFileName = AcoustIDStorage.GetHashedFilename (filename)
@@ -73,7 +73,7 @@ type AcoustIDStorage() =
                 (Convert.ToInt64 (a. [0]), Some (a. [1]))
             with
             | :? IOException as ex ->
-                Hyena.Log.Exception ("Cannot read fingerprint: ", ex)
+                Hyena.Log.Error ("Cannot read fingerprint: ", ex)
                 (0L, None)
         else
             (0L, None)
