@@ -85,11 +85,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Banshee.OnlineMetadataFixer/PasswordManager.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/HelperRecords.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/AcoustIDStorage.fs" />
-    <Compile Include="Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/JSonAcoustIDReader.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/AcoustIDReader.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer\AcoustIDSender.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/AcoustIDFingerprintJob.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/MissingFromAcoustIDSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/AllMetadataFixer.fs" />
@@ -97,7 +99,6 @@
     <Compile Include="Banshee.OnlineMetadataFixer/MissingAlbumSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/MissingMostOfMetadataSource.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer/InvalidMetadataSource.fs" />
-    <Compile Include="Banshee.OnlineMetadataFixer/PasswordManager.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
   <Import Project="..\.nuget\nuget.targets" />

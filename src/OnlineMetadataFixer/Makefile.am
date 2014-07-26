@@ -4,6 +4,7 @@ LINK = $(BANSHEE_LIBS)
 SOURCES =  \
 	Banshee.OnlineMetadataFixer/AcoustIDFingerprintJob.fs \
 	Banshee.OnlineMetadataFixer/AcoustIDReader.fs \
+	Banshee.OnlineMetadataFixer/AcoustIDSender.fs \
 	Banshee.OnlineMetadataFixer/AcoustIDStorage.fs \
 	Banshee.OnlineMetadataFixer/AllMetadataFixer.fs \
 	Banshee.OnlineMetadataFixer/HelperRecords.fs \
