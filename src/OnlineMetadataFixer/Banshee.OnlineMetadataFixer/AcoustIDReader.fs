@@ -37,6 +37,9 @@ type AcoustIDReader() = class
     static let acoustIDKey = "TP95csTg"
     static let timeout = uint64 Constants.SECOND * 10UL
 
+    static member AcoustIDKey
+        with get() = acoustIDKey
+
     static member private BuildPipeline (filename) =
         if not Gst.Application.IsInitialized then 
             Gst.Application.Init ()

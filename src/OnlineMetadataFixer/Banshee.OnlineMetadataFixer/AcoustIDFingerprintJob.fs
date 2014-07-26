@@ -63,7 +63,16 @@ type AcoustIDFingerprintJob private () as this = class
                     ELSE
                         3
                     END
-                    ) as rank
+                    ) as rank,
+                    Duration,
+                    BitRate,
+                    IFNULL(CoreTracks.Title, ''),
+                    IFNULL(CoreArtists.Name, ''), 
+                    IFNULL(CoreAlbums.Title, ''),
+                    IFNULL(CoreAlbums.ArtistName, ''),
+                    CoreTracks.Year,
+                    TrackNumber,
+                    Disc
             FROM CoreTracks
             JOIN CoreArtists ON CoreArtists.ArtistID = CoreTracks.ArtistID
             JOIN CoreAlbums ON  CoreAlbums.AlbumID = CoreTracks.AlbumID
@@ -78,6 +87,20 @@ type AcoustIDFingerprintJob private () as this = class
     override this.IterateCore (reader : HyenaDataReader) =
         base.Status <- reader.Get<string> (0)
         AcoustIDReader.ReadFingerPrint (reader.Get<string> (0)) |> ignore
+        try
+            AcoustIDSender.Send (
+                reader.Get<string> (0),
+                reader.Get<int> (2),
+                reader.Get<int> (3),
+                reader.Get<string> (4),
+                reader.Get<string> (5),
+                reader.Get<string> (6),
+                reader.Get<string> (7),
+                reader.Get<int> (8),
+                reader.Get<int> (9),
+                reader.Get<int> (10)
+            )
+        with :? System.ArgumentException -> () // in case of invalid obligatory fields
 
     override this.OnCancelled () =
         base.AbortThread ()
