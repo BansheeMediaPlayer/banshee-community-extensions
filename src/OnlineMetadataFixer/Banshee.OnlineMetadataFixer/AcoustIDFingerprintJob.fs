@@ -35,9 +35,10 @@ open Hyena.Jobs
 
 open Mono.Unix
 
+[<AllowNullLiteral>]
 type AcoustIDFingerprintJob private () as this = class
     inherit DbIteratorJob (Catalog.GetString ("Computing Fingerprints"))
-    static let mutable instance = lazy (AcoustIDFingerprintJob ())
+    static let mutable instance : AcoustIDFingerprintJob = null
     let bin_func_checker = "acoustid-fingerprint-checker"
     do
         base.SetResources (Resource.Database)
@@ -121,6 +122,10 @@ type AcoustIDFingerprintJob private () as this = class
 
     member this.Start () =
         base.Register ()
-        
-    static member Instance with get() = instance.Value
+        instance.Finished.AddHandler (fun s e -> instance <- null)
+
+    static member Instance with get() = 
+                            if obj.ReferenceEquals (instance, Unchecked.defaultof<_>) then
+                                instance <- new AcoustIDFingerprintJob ()
+                            instance
 end

@@ -41,13 +41,16 @@ type MissingFromAcoustIDSource(problemId) as x =
         base.Id <- problemId
         BinaryFunction.Add(base.Id, new Func<obj, obj, obj>(fun uri column -> x.GetSolutions (uri :?> string, column :?> string) :> obj))
         
-        ServiceManager.SourceManager.add_SourceAdded (
-            fun e ->
-                let job = AcoustIDFingerprintJob.Instance 
-                try
-                    AcoustIDFingerprintJob.Instance.Start ()
-                with :? System.ArgumentException -> () // if job already started
-            )
+        let compute_fingerprints = new Banshee.Sources.PrimarySource.TrackEventHandler(
+                                    fun s e ->
+                                        let job = AcoustIDFingerprintJob.Instance 
+                                        try
+                                            AcoustIDFingerprintJob.Instance.Start ()
+                                        with :? System.ArgumentException -> () // if job already started
+        )
+
+        compute_fingerprints.Invoke (null, null)
+        ServiceManager.SourceManager.MusicLibrary.add_TracksAdded (compute_fingerprints)
 
 
     abstract member ProcessSolution: string * seq<Recording> -> string
