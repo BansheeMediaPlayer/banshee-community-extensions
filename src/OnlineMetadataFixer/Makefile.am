@@ -20,6 +20,7 @@ SOURCES =  \
 RESOURCES =  \
 	OnlineMetadataFixer.addin.xml \
 	Resources/AcoustIDTrackInfo.json \
+	Resources/AcoustIDSubmissionStatus.json \
 	Resources/MusicBrainzTracks.xml
 
 if ENABLE_ONLINEMETADATAFIXER

@@ -64,15 +64,15 @@ type AcoustIDFingerprintJob private () as this = class
                         3
                     END
                     ) as rank,
-                    Duration,
-                    BitRate,
+                    CoreTracks.Duration,
+                    CoreTracks.BitRate,
                     IFNULL(CoreTracks.Title, ''),
                     IFNULL(CoreArtists.Name, ''), 
                     IFNULL(CoreAlbums.Title, ''),
                     IFNULL(CoreAlbums.ArtistName, ''),
                     CoreTracks.Year,
-                    TrackNumber,
-                    Disc
+                    CoreTracks.TrackNumber,
+                    CoreTracks.Disc
             FROM CoreTracks
             JOIN CoreArtists ON CoreArtists.ArtistID = CoreTracks.ArtistID
             JOIN CoreAlbums ON  CoreAlbums.AlbumID = CoreTracks.AlbumID
@@ -88,6 +88,7 @@ type AcoustIDFingerprintJob private () as this = class
         base.Status <- reader.Get<string> (0)
         AcoustIDReader.ReadFingerPrint (reader.Get<string> (0)) |> ignore
         try
+            Hyena.Log.Debug (String.Format ("Trying to send metadata of {0} file to an AcoustID service", reader.Get<string> (0)))
             AcoustIDSender.Send (
                 reader.Get<string> (0),
                 reader.Get<int> (2),
@@ -100,7 +101,8 @@ type AcoustIDFingerprintJob private () as this = class
                 reader.Get<int> (9),
                 reader.Get<int> (10)
             )
-        with :? System.ArgumentException -> () // in case of invalid obligatory fields
+        with :? System.ArgumentException as ex -> // in case of invalid obligatory fields
+            Hyena.Log.DebugException (ex)
 
     override this.OnCancelled () =
         base.AbortThread ()

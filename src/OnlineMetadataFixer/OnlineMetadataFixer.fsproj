@@ -112,6 +112,9 @@
     <EmbeddedResource Include="Resources/MusicBrainzTracks.xml">
       <LogicalName>MusicBrainzTracks.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources/AcoustIDSubmissionStatus.json">
+      <LogicalName>AcoustIDSubmissionStatus.json</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
