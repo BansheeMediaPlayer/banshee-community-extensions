@@ -40,6 +40,7 @@ type AcoustIDFingerprintJob private () as this = class
     inherit DbIteratorJob (Catalog.GetString ("Computing Fingerprints"))
     static let mutable instance : AcoustIDFingerprintJob = null
     let bin_func_checker = "acoustid-fingerprint-checker"
+    let bin_func_fingpr_exist = "acoustid-fingerprint-exists"
     do
         base.SetResources (Resource.Database)
         base.PriorityHints <- PriorityHints.LongRunning;
@@ -64,16 +65,7 @@ type AcoustIDFingerprintJob private () as this = class
                     ELSE
                         3
                     END
-                    ) as rank,
-                    CoreTracks.Duration,
-                    CoreTracks.BitRate,
-                    IFNULL(CoreTracks.Title, ''),
-                    IFNULL(CoreArtists.Name, ''), 
-                    IFNULL(CoreAlbums.Title, ''),
-                    IFNULL(CoreAlbums.ArtistName, ''),
-                    CoreTracks.Year,
-                    CoreTracks.TrackNumber,
-                    CoreTracks.Disc
+                    ) as rank
             FROM CoreTracks
             JOIN CoreArtists ON CoreArtists.ArtistID = CoreTracks.ArtistID
             JOIN CoreAlbums ON  CoreAlbums.AlbumID = CoreTracks.AlbumID
@@ -88,22 +80,6 @@ type AcoustIDFingerprintJob private () as this = class
     override this.IterateCore (reader : HyenaDataReader) =
         base.Status <- reader.Get<string> (0)
         AcoustIDReader.ReadFingerPrint (reader.Get<string> (0)) |> ignore
-        try
-            Hyena.Log.Debug (String.Format ("Trying to send metadata of {0} file to an AcoustID service", reader.Get<string> (0)))
-            AcoustIDSender.Send (
-                reader.Get<string> (0),
-                reader.Get<int> (2),
-                reader.Get<int> (3),
-                reader.Get<string> (4),
-                reader.Get<string> (5),
-                reader.Get<string> (6),
-                reader.Get<string> (7),
-                reader.Get<int> (8),
-                reader.Get<int> (9),
-                reader.Get<int> (10)
-            )
-        with :? System.ArgumentException as ex -> // in case of invalid obligatory fields
-            Hyena.Log.DebugException (ex)
 
     override this.OnCancelled () =
         base.AbortThread ()
@@ -119,10 +95,25 @@ type AcoustIDFingerprintJob private () as this = class
             | _ -> "no"
             :> obj
             ))
+        BinaryFunction.Add(bin_func_fingpr_exist, new Func<obj, obj, obj>(fun uri b ->
+            match uri :?> string |> AcoustIDStorage.FingerprintExists with
+            | true -> "ok"
+            | _ -> "no"
+            :> obj
+            ))
 
     member this.Start () =
         base.Register ()
-        instance.Finished.AddHandler (fun s e -> instance <- null)
+        instance.Finished.AddHandler (fun s e -> 
+            instance <- null
+            ServiceManager.DbConnection.Execute (String.Format (@"
+                INSERT OR IGNORE INTO AcoustIDSubmissions (TrackID, Timestamp)
+                    SELECT TrackID, 0
+                    FROM CoreTracks
+                    WHERE HYENA_BINARY_FUNCTION ('{0}', Uri, NULL) = 'ok'
+                    ", bin_func_fingpr_exist)) |> ignore
+            AcoustIDSubmitJob.Instance.Start ()
+        )
 
     static member Instance with get() = 
                             if obj.ReferenceEquals (instance, Unchecked.defaultof<_>) then

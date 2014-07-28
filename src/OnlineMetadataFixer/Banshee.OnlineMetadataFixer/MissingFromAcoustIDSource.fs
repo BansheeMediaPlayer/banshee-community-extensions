@@ -43,7 +43,6 @@ type MissingFromAcoustIDSource(problemId) as x =
         
         let compute_fingerprints = new Banshee.Sources.PrimarySource.TrackEventHandler(
                                     fun s e ->
-                                        let job = AcoustIDFingerprintJob.Instance 
                                         try
                                             AcoustIDFingerprintJob.Instance.Start ()
                                         with :? System.ArgumentException -> () // if job already started
@@ -51,7 +50,18 @@ type MissingFromAcoustIDSource(problemId) as x =
 
         compute_fingerprints.Invoke (null, null)
         ServiceManager.SourceManager.MusicLibrary.add_TracksAdded (compute_fingerprints)
-
+        ServiceManager.SourceManager.MusicLibrary.add_TracksChanged(fun s o ->
+                                        try
+                                            AcoustIDSubmitJob.Instance.Start ()
+                                        with :? System.ArgumentException -> () // if job already started
+        )
+        
+        if ServiceManager.DbConnection.TableExists ("AcoustIDSubmissions") |> not then
+            ServiceManager.DbConnection.Execute (@"
+                CREATE TABLE AcoustIDSubmissions (
+                    TrackID INTEGER UNIQUE,
+                    Timestamp INTEGER NOT NULL
+                )") |> ignore
 
     abstract member ProcessSolution: string * seq<Recording> -> string
     abstract member ProcessProblem: Banshee.Fixup.Problem -> unit
