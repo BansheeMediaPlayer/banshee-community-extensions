@@ -37,10 +37,11 @@ open Banshee.ServiceStack
 [<AbstractClass>]
 type MissingFromAcoustIDSource(problemId) as x = 
     inherit Banshee.Fixup.Solver()
+    let preferences = AcoustIDPreferences.Instance
     do
         base.Id <- problemId
         BinaryFunction.Add(base.Id, new Func<obj, obj, obj>(fun uri column -> x.GetSolutions (uri :?> string, column :?> string) :> obj))
-        
+                        
         let compute_fingerprints = new Banshee.Sources.PrimarySource.TrackEventHandler(
                                     fun s e ->
                                         try
@@ -75,6 +76,8 @@ type MissingFromAcoustIDSource(problemId) as x =
             ""
 
     override x.HasTrackDetails with get () = true
+    
+    override x.PreferencesSection with get () = preferences.Section
 
     member x.GetFindMethod (condition : string, ?columns : string) =
         new HyenaSqliteCommand (String.Format (@"

@@ -30,21 +30,27 @@ open System
 open Gnome.Keyring
 
 type PasswordManager() = 
-    let keyring = "banshee-acoustid"
+    static let keyring = "banshee-acoustid"
     
     static member private CheckIsKeyringAvailable () =
         if Ring.Available |> not then
             "The gnome-keyring-daemon cannot be reached." |> Hyena.Log.Error
         Ring.Available
 
-    static member SavePassword (password) =
+    static member SaveAcoustIDKey (password) =
         if PasswordManager.CheckIsKeyringAvailable () then
-            let defaultRing = Ring.GetDefaultKeyring ();
-            Ring.CreateItem (defaultRing, ItemType.GenericSecret, "acoustid-key", new System.Collections.Hashtable(), password, true) |> ignore
+            try
+                Ring.CreateKeyring (keyring, String.Empty);
+            with :? KeyringException as ex -> () // keyring might already exists
 
-    static member ReadPassword () =
+            Ring.CreateItem (keyring, ItemType.GenericSecret, "acoustid-key", new System.Collections.Hashtable(), password, true) |> ignore
+
+    static member ReadAcoustIDKey () =
         if PasswordManager.CheckIsKeyringAvailable () then
-            let defaultRing = Ring.GetDefaultKeyring ();
-            Ring.GetItemInfo(defaultRing, 1).Secret
+            try
+                Ring.GetItemInfo(keyring, 1).Secret
+            with :? KeyringException as ex -> // keyring might not exists
+                Hyena.Log.Warning (ex);
+                String.Empty
         else
             String.Empty

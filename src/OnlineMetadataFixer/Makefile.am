@@ -3,6 +3,7 @@ LINK = $(BANSHEE_LIBS)
 
 SOURCES =  \
 	Banshee.OnlineMetadataFixer/AcoustIDFingerprintJob.fs \
+	Banshee.OnlineMetadataFixer/AcoustIDPreferences.fs \
 	Banshee.OnlineMetadataFixer/AcoustIDReader.fs \
 	Banshee.OnlineMetadataFixer/AcoustIDSender.fs \
 	Banshee.OnlineMetadataFixer/AcoustIDStorage.fs \
@@ -20,8 +21,8 @@ SOURCES =  \
 
 RESOURCES =  \
 	OnlineMetadataFixer.addin.xml \
-	Resources/AcoustIDTrackInfo.json \
 	Resources/AcoustIDSubmissionStatus.json \
+	Resources/AcoustIDTrackInfo.json \
 	Resources/MusicBrainzTracks.xml
 
 if ENABLE_ONLINEMETADATAFIXER
