@@ -69,8 +69,8 @@ type AcoustIDPreferences private () as x =
 
             button_box.PackStart (new Label (Catalog.GetString ("_API Key")), false, false, 0u);
 
-            let apikey_entry = new Entry (Text = PasswordManager.ReadAcoustIDKey ())
-            apikey_entry.FocusOutEvent.AddHandler (fun s o -> PasswordManager.SaveAcoustIDKey (apikey_entry.Text));
+            let apikey_entry = new Entry (Text = AcoustIDKeysHelper.ReadAcoustIDKey ())
+            apikey_entry.FocusOutEvent.AddHandler (fun s o -> AcoustIDKeysHelper.SaveAcoustIDKey (apikey_entry.Text));
             apikey_entry.GrabFocus ()
             button_box.PackStart (apikey_entry, true, true, 10u)
 

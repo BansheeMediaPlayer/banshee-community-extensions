@@ -54,7 +54,7 @@ type AcoustIDSender() =
             let builder = new System.Text.StringBuilder ("http://api.acoustid.org/v2/submit?format=json&client=")
             AcoustIDReader.AcoustIDKey |> builder.Append |> ignore
             AcoustIDSender.AppendObligatory (builder, "duration", (duration/1000).ToString (), "0")
-            AcoustIDSender.AppendObligatory (builder, "user", PasswordManager.ReadAcoustIDKey ())
+            AcoustIDSender.AppendObligatory (builder, "user", AcoustIDKeysHelper.ReadAcoustIDKey ())
             AcoustIDSender.AppendObligatory (builder, "fingerprint", fileFP.Value)
             AcoustIDSender.Append (builder, "bitrate", bitrate.ToString (), "0")
             AcoustIDSender.Append (builder, "track", title)

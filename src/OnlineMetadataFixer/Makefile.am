@@ -3,6 +3,7 @@ LINK = $(BANSHEE_LIBS)
 
 SOURCES =  \
 	Banshee.OnlineMetadataFixer/AcoustIDFingerprintJob.fs \
+	Banshee.OnlineMetadataFixer/AcoustIDKeysHelper.fs \
 	Banshee.OnlineMetadataFixer/AcoustIDPreferences.fs \
 	Banshee.OnlineMetadataFixer/AcoustIDReader.fs \
 	Banshee.OnlineMetadataFixer/AcoustIDSender.fs \
@@ -16,8 +17,7 @@ SOURCES =  \
 	Banshee.OnlineMetadataFixer/MissingArtistTitleSource.fs \
 	Banshee.OnlineMetadataFixer/MissingFromAcoustIDSource.fs \
 	Banshee.OnlineMetadataFixer/MissingMostOfMetadataSource.fs \
-	Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs \
-	Banshee.OnlineMetadataFixer/PasswordManager.fs
+	Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs
 
 RESOURCES =  \
 	OnlineMetadataFixer.addin.xml \
