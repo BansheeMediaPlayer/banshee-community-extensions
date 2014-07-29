@@ -111,8 +111,11 @@ type AcoustIDSubmitJob private () as this = class
         base.AbortThread ()
 
     member this.Start () =
-        base.Register ()
-        instance.Finished.AddHandler (fun s e -> instance <- null)
+        if  AcoustIDKeysHelper.ReadAcoustIDKey () |> String.IsNullOrEmpty then
+            Hyena.Log.Debug ("Metadata will not be sent to AcoustID service. Enter AcoustID API key first.")
+        else
+            base.Register ()
+            instance.Finished.AddHandler (fun s e -> instance <- null)
 
     static member Instance with get() = 
                             if obj.ReferenceEquals (instance, Unchecked.defaultof<_>) then
