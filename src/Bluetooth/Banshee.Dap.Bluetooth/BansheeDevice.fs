@@ -58,11 +58,15 @@ type BansheeDevice(path: ObjectPath,
         ThreadAssist.ProxyToMain(fun () ->
             match (IsNull src, a) with
             | (true, true) ->
-                src <- new BluetoothSource(dap, cm)
-                src.Ejected.Add(fun o -> src_clean false)
-                src.DeviceInitialize (dap)
-                src.LoadDeviceContents ()
-                ServiceManager.SourceManager.AddSource(src)
+                try
+                  src <- new BluetoothSource(dap, cm)
+                  src.DeviceInitialize (dap)
+                  src.Ejected.Add(fun o -> src_clean false)
+                  src.LoadDeviceContents ()
+                  ServiceManager.SourceManager.AddSource(src)
+                with
+                | e -> Log.Warning e
+                       src <- Unchecked.defaultof<_>
                 notify.Trigger()
             | (false, false) ->
                 ServiceManager.SourceManager.RemoveSource(src)
@@ -73,8 +77,9 @@ type BansheeDevice(path: ObjectPath,
     let conn (a,f) =
                  if a then am.PowerOn dev.Adapter
                  let uuid = FeatureToUuid f
-                 let sf = sprintf "Connecting: %A => %s" (a,f) uuid
-                 Infof "Dap.Bluetooth: Connecting: %A => %s" (a,f) uuid
+                 let deacon = if a then "Connecting" else "Disconnecting"
+                 let sf = sprintf "%s %A (%s)" deacon f uuid
+                 Infof "Dap.Bluetooth: %s" sf
                  match (a,f) with
                  | (true, Feature.Sync) -> src_clean true
                  | (false, Feature.Sync) -> src_clean false

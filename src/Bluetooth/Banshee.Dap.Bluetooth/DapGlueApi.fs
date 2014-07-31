@@ -36,6 +36,7 @@ open Banshee.Base
 open Banshee.Collection.Database
 open Banshee.Dap
 open Banshee.Dap.Bluetooth
+open Banshee.Dap.Bluetooth.AuxillaryApi
 open Banshee.Dap.Bluetooth.Mime
 open Banshee.Dap.Bluetooth.Mime.Extensions
 open Banshee.Dap.Bluetooth.ObexApi
@@ -90,6 +91,49 @@ let Iterate (ftp: ICrawler) root =
           acc@children
         else acc
     InnerIterate root [] []
+let dbifill (node: RemoteNode) (dbi: DatabaseTrackInfo) =
+    let uri = node.name::node.path |> SafeUriOf
+    let path = uri.AbsoluteUri |> Uri.UnescapeDataString
+    Debugf "Evaluating: %A" path
+    let dn = Path.GetDirectoryName path
+    let fn = Path.GetFileNameWithoutExtension path
+    let ex = Path.GetExtension path
+    dbi.FileSize <- Convert.ToInt64 node.size
+    dbi.Uri <- uri
+    dbi.MimeType <- ToMimeType ex |> ToString
+    match dn with
+    | Match "^.*/[^/]+/([^/]+) - ([^/]+)$" [full;artist;album] ->
+        Debugf "Match 1.1: '%s' by '%s'" album artist
+        dbi.ArtistName <- artist
+        dbi.AlbumTitle <- album
+    | Match "^.*/[^/]+/([^/]+)/([^/]+)$" [full;artist;album] ->
+        Debugf "Match 1.2: '%s' by '%s'" album artist
+        dbi.ArtistName <- artist
+        dbi.AlbumTitle <- album
+    | _ -> ()
+    match fn with
+    | Match "^(\d+)\.\s*([^-]+)$" [full;no;title] ->
+        Debugf "Match 2.1: %A" [full;no;title]
+        dbi.TrackNumber <- Int32.Parse no
+        dbi.TrackTitle <- title
+    | Match "^(\d+) - ([^-]+)$" [full;no;title] ->
+        Debugf "Match 2.2: %A" [full;no;title]
+        dbi.TrackNumber <- Int32.Parse no
+        dbi.TrackTitle <- title
+    | Match "^([^-]+) - ([^-]+) - (\d+) - ([^-]+)$" [full;artist;album;no;title] ->
+        Debugf "Match 2.3: %A" [full;artist;album;no;title]
+        dbi.ArtistName <- artist
+        dbi.AlbumTitle <- album
+        dbi.TrackNumber <- Int32.Parse no
+        dbi.TrackTitle <- title
+    | Match "^([^-]+) - (\d+) - ([^-]+)$" [full;artist;no;title] ->
+        Debugf "Match 2.4: %A" [full;artist;no;title]
+        dbi.ArtistName <- artist
+        dbi.TrackNumber <- Int32.Parse no
+        dbi.TrackTitle <- title
+    | _ ->
+        Debugf "Default: %A" uri
+        dbi.TrackTitle <- fn
 let FuzzyLookup (x: DatabaseTrackInfo) =
     let TrackIdOf (i: int) (x: string) (sz: int64) =
         let faq = HyenaSqliteCommand("select TrackID from CoreTracks where " +
@@ -113,8 +157,7 @@ let FuzzyLookup (x: DatabaseTrackInfo) =
       else
         match (x.ArtistName, x.AlbumTitle) with
         | (null, null) | ("", "") ->
-          Debugf "No Help: %d. %s at %d bytes"
-            x.TrackNumber x.TrackTitle x.FileSize
+          Warnf "No Help 1: %A" x
           x
         | _ ->
           let art = ArtistIdOf x.ArtistName
@@ -126,8 +169,7 @@ let FuzzyLookup (x: DatabaseTrackInfo) =
                     "and CoreTracks.Title like ?"
           let dti = DatabaseTrackInfo.Provider.FetchFirstMatching(faq, art, alb, num, ttl)
           if IsNull dti then
-            Debugf "No Help: by %s from %s - %d. %s at %d bytes"
-              x.ArtistName x.AlbumTitle x.TrackNumber x.TrackTitle x.FileSize
+            Warnf "No Help 2: %A" x
             x
           else dti
     with
@@ -135,7 +177,7 @@ let FuzzyLookup (x: DatabaseTrackInfo) =
 
 type BluetoothCapabilities() =
     interface IDeviceMediaCapabilities with
-        member x.AudioFolders = [| "Music" |]
+        member x.AudioFolders = [| Singular "Music" |]
         member x.VideoFolders = [||]
         member x.CoverArtFileName = ""
         member x.CoverArtFileType = ""
@@ -172,8 +214,31 @@ type BluetoothDevice(dev: DeviceApi.IDevice) =
         member x.ResolveRootUsbDevice () = x.ResolveRootUsbDevice ()
         member x.ResolveUsbPortInfo () = x.ResolveUsbPortInfo ()
 
+type LoadCache() =
+    let mutable cache = Unchecked.defaultof<_>
+    let confirmed = HashSet<int64>()
+    member x.Start y =
+        cache <- CachedList<DatabaseTrackInfo>.CreateFromSourceModel y
+        Debugf "LoadCache: cached %d tracks" cache.Count
+    member x.Confirm y = confirmed.Add y
+    member x.Done () =
+        cache.Count - confirmed.Count
+        |> Debugf "LoadCache: confirmed %d, removing %d tracks" confirmed.Count
+        confirmed
+        |> Seq.map (fun id -> DatabaseTrackInfo(CacheEntryId = id))
+        |> cache.Remove
+        cache
+    member x.Dispose () =
+        if IsNull cache |> not then
+            cache.Dispose ()
+            confirmed.Clear ()
+            cache <- Unchecked.defaultof<_>
+    interface IDisposable with
+        override x.Dispose () = x.Dispose ()
+
 type BluetoothSource(dev: BluetoothDevice, cm: ClientManager) =
     inherit DapSource()
+    let load = new LoadCache()
     let ftp = Crawler(dev.Device.Address, cm)
     let ue = Event<_>()
     do base.SupportsVideo <- false
@@ -189,6 +254,19 @@ type BluetoothSource(dev: BluetoothDevice, cm: ClientManager) =
         base.Eject ()
         ftp.Drop ()
         ue.Trigger()
+    member x.RemoveTrackList (y: CachedList<_>) =
+        ServiceManager.DbConnection.Execute (
+            x.remove_list_command,
+            DateTime.Now,
+            y.CacheId,
+            y.CacheId
+        ) |> ignore
+    override x.PreLoad () =
+        load.Start x.DatabaseTrackModel
+    override x.PostLoad () =
+        load.Done () |> x.RemoveTrackList
+        load.Dispose ()
+        base.PostLoad ()
     override x.DeviceInitialize dev =
         base.DeviceInitialize dev
         if ftp.Init () |> not then
@@ -196,54 +274,39 @@ type BluetoothSource(dev: BluetoothDevice, cm: ClientManager) =
         x.Initialize ()
     override x.LoadFromDevice () =
         base.SetStatus (Singular "Loading Track Information...", false)
-        let nne (f: string) (x: DatabaseTrackInfo) =
-            let fn = Path.GetFileNameWithoutExtension f
-            let ex = Path.GetExtension f
-            let m = Regex.Match(fn, "^(\d+)\.\s(.*)$")
-            if m.Success then
-              x.TrackNumber <- Int32.Parse(m.Groups.[1].Value)
-              x.TrackTitle <- m.Groups.[2].Value
-            else
-              x.TrackTitle <- fn
-            x.MimeType <- ToMimeType ex |> ToString
-        let fx (rn: RemoteNode) (x: DatabaseTrackInfo) =
-            let fp = rn.name::rn.path
-            match fp with
-            | fn::al::ar::root::[] -> x.ArtistName <- ar
-                                      x.AlbumTitle <- al
-                                      nne fn x
-            | fn::root::[] -> nne fn x
-            | _ -> failwith "Case Not Possible: %A" rn
-            x.FileSize <- Convert.ToInt64 rn.size
-            x.Uri <- SafeUriOf fp
         let files = Iterate ftp dev.MediaCapabilities.AudioFolders.[0]
         files |> List.iteri (fun i f ->
             let txt = Singular "Processing Track {0} of {1}\u2026"
             x.SetStatus (String.Format (txt, i, files.Length), false)
-            match (f.ntype, ToMimeType f.name) with
-            | (File,m) when IsAudio m ->
-                let dti = DatabaseTrackInfo(PrimarySource = x)
-                fx f dti
-                let look = FuzzyLookup dti
-                DatabaseTrackInfo(look, Uri = dti.Uri, PrimarySource = x).Save(false)
-            | (Folder,f) -> ()
-            | _ -> ())
+            let tid = f.name::f.path |> SafeUriOf |> DatabaseTrackInfo.GetTrackIdForUri
+            if 0L <> tid then
+              load.Confirm tid |> ignore
+            else
+              match (f.ntype, ToMimeType f.name) with
+              | (File,m) when IsAudio m ->
+                  let dti = DatabaseTrackInfo(PrimarySource = x)
+                  dbifill f dti
+                  let look = FuzzyLookup dti
+                  Debugf "BluetoothSource: Looks like '%A'" look
+                  DatabaseTrackInfo(look, Uri = dti.Uri, PrimarySource = x).Save(false)
+              | (Folder,f) -> ()
+              | _ -> ())
         base.OnTracksAdded ()
     override x.AddTrackToDevice (y, z) =
-          let root = dev.MediaCapabilities.AudioFolders.[0]
-          let fsart = FileNamePattern.Escape y.DisplayAlbumArtistName
-          let fsalb = FileNamePattern.Escape y.DisplayAlbumTitle
-          let fsttl = FileNamePattern.Escape y.DisplayTrackTitle
-          let mt = ToMimeType y.MimeType
-          let fn = sprintf "%02d. %s.%s" y.TrackNumber fsttl (ExtensionOf mt)
-          let uri = SafeUriOf (fn::fsalb::fsart::root::[])
+        let root = dev.MediaCapabilities.AudioFolders.[0]
+        let fsart = FileNamePattern.Escape y.DisplayAlbumArtistName
+        let fsalb = FileNamePattern.Escape y.DisplayAlbumTitle
+        let fsttl = FileNamePattern.Escape y.DisplayTrackTitle
+        let mt = ToMimeType y.MimeType
+        let fn = sprintf "%02d. %s.%s" y.TrackNumber fsttl (ExtensionOf mt)
+        let uri = SafeUriOf (fn::fsalb::fsart::root::[])
 
-          ftp.Path <- fsalb::fsart::root::[]
-          ftp.PutFile z.AbsolutePath fn |> ignore
-          ftp.Up() // FIXME: It's not intended to call this here, but it's
-                   // handy since it blocks until the transfer is complete
-          let dti = DatabaseTrackInfo(y, PrimarySource = x, Uri = uri)
-          dti.Save(false)
+        ftp.Path <- fsalb::fsart::root::[]
+        ftp.PutFile z.AbsolutePath fn |> ignore
+        ftp.Up() // FIXME: It's not intended to call this here, but it's
+               // handy since it blocks until the transfer is complete
+        let dti = DatabaseTrackInfo(y, PrimarySource = x, Uri = uri)
+        dti.Save(false)
     override x.DeleteTrack y =
         let rec del path =
             match path with

@@ -27,6 +27,7 @@ module Banshee.Dap.Bluetooth.Gui.SpinButtons
 
 open System
 open System.Text.RegularExpressions
+open Banshee.Dap.Bluetooth.AuxillaryApi
 open Gtk
 open Gdk
 
@@ -42,13 +43,6 @@ type FormatSpinButton(adjust: Adjustment, climb, digits, get, set) as this =
                                          o.RetVal <- GTK_INPUT_ERROR)
        this.Output.Add(fun o -> this.Text <- this.Value |> set
                                 o.RetVal <- TRUE)
-
-let inline (|Match|_|) rex text =
-    let m = Regex.Match(text, rex)
-    if m.Success then
-        Some [ for i in m.Groups -> i.Value ]
-    else
-        None
 
 let rex = @"^(\d{1,2}):(\d{2})$"
 

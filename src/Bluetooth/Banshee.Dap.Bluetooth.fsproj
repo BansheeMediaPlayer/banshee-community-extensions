@@ -90,6 +90,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Banshee.Dap.Bluetooth\AuxillaryApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\MimeApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\DBusApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\AdapterApi.fs" />

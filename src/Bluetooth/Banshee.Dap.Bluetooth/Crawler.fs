@@ -116,37 +116,83 @@ type ICrawler =
     abstract PutFile : string -> string -> ObjectPath
     abstract Path : string list with get, set
 
+type rooter = unit -> IFileTransfer
+
 type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
     let mutable fails = max_tries
     let mutable path : string list = []
     let mutable ops : ObjectPath = Unchecked.defaultof<_>
     let check (e: Exception) =
+        Errorf "Dap.Bluetooth: Fails = %d: %s => %s" fails (e.GetType().FullName) e.Message
         match e.Message with
         | "org.bluez.obex.Error.Failed: Not Found" -> ()
         | "org.bluez.obex.Error.Failed: Unable to find service record"
         | "org.bluez.obex.Error.Failed: The transport is not connected" ->
           if max_tries >= fails then raise e
-          Errorf "Dap.Bluetooth: %s: %s" (e.GetType().FullName) e.Message
-          ops <- Unchecked.defaultof<_>
-          path <- []
           fails <- 1us + fails
         | "org.freedesktop.DBus.Error.NoReply: Message did not receive a reply (timeout by message bus)"
         | "Object reference not set to an instance of an object" ->
           raise e
-        | m -> Errorf "Dap.Bluetooth: %s = %s" (e.GetType().FullName) m
-               raise e
-    let rec root () =
+        | m ->
+          raise e
+    let up (root: rooter) =
+        match path with
+        | [] -> ()
+        | hd::tl ->
+          try
+            Debugf "Dap.Bluetooth: cd: .."
+            root().ChangeFolder ".."
+            path <- tl
+          with
+          | e -> check e
+    let down (root: rooter) y =
         try
-          match (IsNull ops, cm.Session ops) with
-          | (_, Some s) -> fails <- 0us
-                           s
-          | (true, None) -> Infof "Dap.Bluetooth: Creating Session"
-                            ops <- cm.CreateSession addr Ftp
-                            root()
-          | (false, None) -> Thread.Sleep 500
-                             root()
+          Debugf "Dap.Bluetooth: cd: %s" y
+          root().ChangeFolder y
+          path <- y::path
+          true
         with
         | e -> check e
+               false
+    let make (root: rooter) y =
+        try
+          Debugf "Dap.Bluetooth: md: %s" y
+          root().CreateFolder y
+          path <- y::path
+          true
+        with
+        | e -> check e
+               false
+    let mkdn root y = (down root y || make root y) |> ignore
+    let restore root =
+        path |> List.rev |> List.iter (fun dir -> mkdn root dir)
+    let rec crawl root dest =
+        let suffix = SuffixOf path dest
+        Debugf "Dap.Bluetooth: suffix: %A" suffix
+        match suffix with
+        // In the directory
+        | Some [] -> ()
+        // In a parent directory
+        | Some d -> List.iter (fun i -> mkdn root i) d
+        // Elsewhere
+        | None -> up root
+                  crawl root dest
+    let rec root () =
+        try
+          match (fails, cm.Session ops) with
+          | (0us, Some s) -> s
+          | (_, Some s) ->
+            fails <- 0us
+            Debugf "Dap.Bluetooth: Setting Path %A" path
+            restore root
+            s
+          | (_, None) ->
+            Debugf "Dap.Bluetooth: Requesting Session"
+            ops <- cm.CreateSession addr Ftp
+            root()
+        with
+        | e -> check e
+               if 0us < fails then Thread.Sleep 500
                root()
     member x.Init () =
         try
@@ -154,15 +200,7 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
           true
         with
         | _ -> false
-    member x.Up () =
-        match path with
-        | [] -> ()
-        | hd::tl -> try
-                      Infof "Dap.Bluetooth: cd: .."
-                      root().ChangeFolder ".."
-                      path <- tl
-                    with
-                    | e -> check e
+    member x.Up () = up root
     member x.Up y = for i in [0..y] do x.Up()
     member x.Root () = x.Up path.Length
     member x.List () =
@@ -176,51 +214,24 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
         | Some _ -> cm.RemoveSession ops
                     ops <- Unchecked.defaultof<_>
         | None -> ()
-    member x.Down y =
-        try
-          Infof "Dap.Bluetooth: cd: %s" y
-          root().ChangeFolder y
-          path <- y::path
-          true
-        with
-        | e -> check e
-               false
-    member x.Make y =
-        try
-          Infof "Dap.Bluetooth: md: %s" y
-          root().CreateFolder y
-          path <- y::path
-          true
-        with
-        | e -> check e
-               false
-    member x.MkDn y = (x.Down y || x.Make y) |> ignore
-    member private x.Crawl dest =
-        let suffix = SuffixOf path dest
-        Infof "Dap.Bluetooth: suffix: %A" suffix
-        match suffix with
-        // In the directory
-        | Some [] -> ()
-        // In a parent directory
-        | Some d -> List.iter (fun i -> x.MkDn i) d
-        // Elsewhere
-        | None -> x.Up()
-                  x.Crawl dest
+    member x.Down y = down root y
+    member x.Make y = make root y
+    member x.MkDn y = mkdn root y
     member x.Delete y =
         try
-          Infof "Dap.Bluetooth: rm: %s" y
+          Debugf "Dap.Bluetooth: rm: %s" y
           root().Delete y
         with
         | e -> check e
     member x.PutFile y z =
         try
-          Infof "Dap.Bluetooth: put: %s => %s" y z
+          Debugf "Dap.Bluetooth: put: %s => %s" y z
           root().PutFile y z
         with
         | e -> check e
                Unchecked.defaultof<_>
     member x.Path with get () = path
-                  and set v = x.Crawl v
+                  and set v = crawl root v
     interface ICrawler with
         member x.Init () = x.Init ()
         member x.Up () = x.Up ()
