@@ -63,7 +63,8 @@ namespace Banshee.SongKick.UI
 
             search_entry.Activated += (o, a) => { search_button.Activate (); };
 
-            if (this.GetType() == typeof(SearchBar<Location>)) {
+            if ((this.GetType() == typeof(SearchBar<Location>)) ||
+                (this.GetType() == typeof(SearchBar<Event>) && Search is EventsByLocationSearch)) {
                 LocationProviderManager.Register (this);
             }
 
