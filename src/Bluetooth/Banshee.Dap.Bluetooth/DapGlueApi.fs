@@ -275,6 +275,10 @@ type BluetoothSource(dev: BluetoothDevice, cm: ClientManager) =
         if ftp.Init () |> not then
           failwith "Crawler Initialisation Failed."
         x.Initialize ()
+    member x.SequentialLoad () =
+        x.PreLoad ()
+        x.LoadFromDevice ()
+        x.PostLoad ()
     override x.LoadFromDevice () =
         base.SetStatus (Singular "Loading Track Information...", false)
         let files = Iterate ftp dev.MediaCapabilities.AudioFolders.[0]

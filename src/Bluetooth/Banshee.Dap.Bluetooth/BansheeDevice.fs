@@ -35,6 +35,7 @@ open Banshee.Dap.Bluetooth.Devices
 open Banshee.Dap.Bluetooth.Wrappers
 open Banshee.Dap.Bluetooth.SupportApi
 open Banshee.ServiceStack
+open Banshee.Sources
 open DBus
 open Hyena
 open Hyena.Log
@@ -60,27 +61,39 @@ type BansheeDevice(path: ObjectPath,
     let cnf = DeviceSchema(dev.Address)
     let dap = BluetoothDevice(dev)
     let mutable src : BluetoothSource = Unchecked.defaultof<_>
-    let rec src_clean a =
-        match (IsNull src, a) with
-        | (true, true) ->
-            try
-              src <- new BluetoothSource(dap, cm)
-              src.DeviceInitialize (dap)
-              ThreadAssist.ProxyToMain
-                (fun () -> ServiceManager.SourceManager.AddSource src)
-              src.Ejected.Add(fun o -> src_clean false)
-              src.LoadDeviceContents ()
-            with
-            | e -> Log.Warning e
-                   src <- Unchecked.defaultof<_>
-            notify.Trigger()
-        | (false, false) ->
-            ThreadAssist.ProxyToMain
-              (fun () -> ServiceManager.SourceManager.RemoveSource src)
-            src.Unmap () |> ignore
-            src <- Unchecked.defaultof<_>
-            notify.Trigger()
-        | _ -> ()
+    let src_add = InvokeHandler(fun () -> ServiceManager.SourceManager.AddSource src)
+    let src_rem = InvokeHandler(fun () -> ServiceManager.SourceManager.RemoveSource src)
+    let src_destroy () =
+        if IsNull src |> not then
+          ThreadAssist.BlockingProxyToMain src_rem
+          src.Unmap () |> ignore
+          src <- Unchecked.defaultof<_>
+    let src_construct schedule =
+        try
+          src <- new BluetoothSource(dap, cm)
+          src.DeviceInitialize dap
+          ThreadAssist.BlockingProxyToMain src_add
+          src.SequentialLoad ()
+          src.Ejected.Add src_destroy
+          if schedule || src.Sync.AutoSync then
+            src.Sync.DapLoaded ()
+            src.Sync.Sync ()
+            if schedule then
+              src_destroy ()
+        with
+        | e -> Log.Warning e
+               src <- Unchecked.defaultof<_>
+    let src_clean a schedule =
+        ThreadAssist.SpawnFromMain (fun () ->
+          match (IsNull src, a) with
+          | (true, true) ->
+              src_construct schedule
+              notify.Trigger ()
+          | (false, false) ->
+              src_destroy ()
+              notify.Trigger ()
+          | _ -> ()
+        ) |> ignore
     let conn (a,f) =
         if a then am.PowerOn dev.Adapter
         let uuid = FeatureToUuid f
@@ -88,8 +101,7 @@ type BansheeDevice(path: ObjectPath,
         let sf = sprintf "%s %A (%s)" deacon f uuid
         Infof "Dap.Bluetooth: %s" sf
         match (a,f) with
-        | (true, Feature.Sync) -> src_clean true
-        | (false, Feature.Sync) -> src_clean false
+        | (x, Feature.Sync) -> src_clean x false
         | (true, _) -> dev.ConnectProfile uuid
         | (false, _) -> dev.DisconnectProfile uuid
     let set_sync () =
@@ -104,9 +116,9 @@ type BansheeDevice(path: ObjectPath,
         notify.Trigger ()
     do set_sync ()
        dev.PropertyChanged.Add(fun o -> notify.Trigger())
-       timer.Elapsed.Add (fun o -> src_clean true
+       timer.Elapsed.Add (fun o -> src_clean true true
                                    set_sync ())
-       cnf.Notify.Add (fun o -> set_sync ())
+       cnf.Notify.Add set_sync
     member x.Config = cnf
     member x.Device = dev
     member x.Support = dev.UUIDs |> FromUuids
