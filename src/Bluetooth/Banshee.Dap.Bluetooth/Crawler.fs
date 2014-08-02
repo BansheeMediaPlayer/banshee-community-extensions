@@ -186,6 +186,7 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
                   crawl root dest
     let rec root () =
         try
+          if 0us < fails then Thread.Sleep 500
           match (fails, cm.Session ops) with
           | (0us, Some s) -> s
           | (_, Some s) ->
@@ -196,7 +197,6 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
           | (_, None) ->
             Debugf "Dap.Bluetooth: Requesting Session"
             ops <- cm.CreateSession addr Ftp
-            Thread.Sleep 500
             root()
         with
         | e -> check e
