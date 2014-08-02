@@ -122,11 +122,19 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
     let mutable fails = max_tries
     let mutable path : string list = []
     let mutable ops : ObjectPath = Unchecked.defaultof<_>
+    let drop () =
+        try
+          match cm.Session ops with
+          | Some _ -> cm.RemoveSession ops
+          | None -> ()
+        with
+        | _ -> ()
+        ops <- Unchecked.defaultof<_>
     let record (e: Exception) =
         Warnf "Dap.Bluetooth: Fails = %d: %s => %s" fails (e.GetType().FullName) e.Message
         if max_tries <= fails then raise e
         fails <- 1us + fails
-        ops <- Unchecked.defaultof<_>
+        drop ()
     let check (e: Exception) =
         Debugf "Dap.Bluetooth: Fails = %d: %s => %s" fails (e.GetType().FullName) e.Message
         if IsNull e.Message then record e
@@ -203,6 +211,7 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
                root()
     member x.Init () =
         try
+          fails <- max_tries
           root() |> ignore
           true
         with
@@ -215,12 +224,7 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
           root().ListFolder() |> ToNodeSeq path
         with
         | e -> check e; Seq.empty
-    member x.Drop () =
-        fails <- max_tries
-        match cm.Session ops with
-        | Some _ -> cm.RemoveSession ops
-                    ops <- Unchecked.defaultof<_>
-        | None -> ()
+    member x.Drop () = drop ()
     member x.Down y = down root y
     member x.Make y = make root y
     member x.MkDn y = mkdn root y
