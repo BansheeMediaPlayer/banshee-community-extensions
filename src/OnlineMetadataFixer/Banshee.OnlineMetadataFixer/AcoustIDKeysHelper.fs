@@ -41,7 +41,7 @@ type AcoustIDKeysHelper() =
         if AcoustIDKeysHelper.CheckIsKeyringAvailable () then
             try
                 Ring.CreateKeyring (keyring, String.Empty);
-            with :? KeyringException as ex -> () // keyring might already exists
+            with :? KeyringException as ex -> () // keyring might already exist
 
             Ring.CreateItem (keyring, ItemType.GenericSecret, "acoustid-key", new System.Collections.Hashtable(), password, true) |> ignore
 
@@ -49,7 +49,7 @@ type AcoustIDKeysHelper() =
         if AcoustIDKeysHelper.CheckIsKeyringAvailable () then
             try
                 Ring.GetItemInfo(keyring, 1).Secret
-            with :? KeyringException as ex -> // keyring might not exists
+            with :? KeyringException as ex -> // keyring might not exist
                 Hyena.Log.Warning (ex);
                 String.Empty
         else
