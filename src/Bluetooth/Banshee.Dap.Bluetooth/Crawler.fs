@@ -122,19 +122,26 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
     let mutable fails = max_tries
     let mutable path : string list = []
     let mutable ops : ObjectPath = Unchecked.defaultof<_>
+    let record (e: Exception) =
+        Warnf "Dap.Bluetooth: Fails = %d: %s => %s" fails (e.GetType().FullName) e.Message
+        if max_tries <= fails then raise e
+        fails <- 1us + fails
+        ops <- Unchecked.defaultof<_>
     let check (e: Exception) =
-        Errorf "Dap.Bluetooth: Fails = %d: %s => %s" fails (e.GetType().FullName) e.Message
-        match e.Message with
-        | "org.bluez.obex.Error.Failed: Not Found" -> ()
-        | "org.bluez.obex.Error.Failed: Unable to find service record"
-        | "org.bluez.obex.Error.Failed: The transport is not connected" ->
-          if max_tries >= fails then raise e
-          fails <- 1us + fails
-        | "org.freedesktop.DBus.Error.NoReply: Message did not receive a reply (timeout by message bus)"
-        | "Object reference not set to an instance of an object" ->
-          raise e
-        | m ->
-          raise e
+        Debugf "Dap.Bluetooth: Fails = %d: %s => %s" fails (e.GetType().FullName) e.Message
+        if IsNull e.Message then record e
+        else
+          let parts = e.Message.Split (":".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
+          match parts.[0].Trim() with
+          | "org.bluez.obex.Error.Failed" ->
+            match parts.[1].Trim() with
+            | "Not Found" -> ()
+            | "Unable to find service record"
+            | "The transport is not connected"
+            | _ -> record e
+          | "org.freedesktop.DBus.Error.NoReply"
+          | "Object reference not set to an instance of an object"
+          | _ -> raise e
     let up (root: rooter) =
         match path with
         | [] -> ()
@@ -182,17 +189,17 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
           match (fails, cm.Session ops) with
           | (0us, Some s) -> s
           | (_, Some s) ->
-            fails <- 0us
             Debugf "Dap.Bluetooth: Setting Path %A" path
+            fails <- 0us
             restore root
             s
           | (_, None) ->
             Debugf "Dap.Bluetooth: Requesting Session"
             ops <- cm.CreateSession addr Ftp
+            Thread.Sleep 500
             root()
         with
         | e -> check e
-               if 0us < fails then Thread.Sleep 500
                root()
     member x.Init () =
         try

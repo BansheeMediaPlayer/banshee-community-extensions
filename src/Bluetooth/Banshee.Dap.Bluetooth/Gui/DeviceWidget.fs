@@ -35,6 +35,7 @@ open Banshee.Dap.Bluetooth.DapGlueApi
 open Banshee.Dap.Bluetooth.SupportApi
 open Banshee.Dap.Bluetooth.Gui.SpinButtons
 open Gtk
+open Hyena
 
 type DeviceWidget(dev: IBansheeDevice) =
     inherit VBox(false, 5, MarginLeft = 10, MarginRight = 10)
@@ -44,6 +45,7 @@ type DeviceWidget(dev: IBansheeDevice) =
     static let PIXBUF_AI = "audio-input-microphone"
     static let PIXBUF_AO = "audio-speakers"
     static let PIXBUF_HS = "audio-headphones"
+    static let PIXBUF_TIME = "preferences-system-time"
     let dev_bt = dev.Device
     let mutable mcw = Unchecked.defaultof<_>
     let line1 = new HBox(false, 5)
@@ -56,7 +58,8 @@ type DeviceWidget(dev: IBansheeDevice) =
     let hs = new ToggleButton(Image = new Image(IconName = PIXBUF_HS))
     let pair = new ToggleButton(Image = new Image(PIXBUF_PAIR))
     let conn = new ToggleButton(Image = new Image(PIXBUF_SYNC))
-    let time = new TimeSpinButton(Sensitive = false)
+    let conf = new ToggleButton(Image = new Image(IconName = PIXBUF_TIME))
+    let time = new TimeSpinButton()
     let has_ai () = dev.HasSupport Feature.AudioIn
     let has_ao () = dev.HasSupport Feature.AudioOut
     let has_hs () = dev.HasSupport Feature.Headset
@@ -73,24 +76,31 @@ type DeviceWidget(dev: IBansheeDevice) =
                       sprintf "<b>%s</b>" dev_bt.Alias
                     else
                       dev_bt.Alias
-    let fresh () = pair.Visible <- not dev_bt.Paired
-                   label.Markup <- markup()
-                   ai.Active <- act_ai()
-                   ao.Active <- act_ao()
-                   hs.Active <- act_hs()
-                   conn.Active <- act_sy()
-                   ai.Visible <- has_ai()
-                   ao.Visible <- has_ao()
-                   hs.Visible <- has_hs()
-                   sbox.Visible <- has_sy()
-                   match (dev.MediaControl, IsNull mcw) with
-                   | (Some mc, true) -> mcw <- new MediaControlWidget(mc)
-                                        line2.PackStart (mcw, true, true, 0u)
-                   | (None, false) -> line2.Remove mcw
-                                      mcw.Dispose ()
-                                      mcw <- Unchecked.defaultof<_>
-                   | _ -> ()
+    let fresh () =
+        ThreadAssist.BlockingProxyToMain (fun () ->
+            pair.Visible <- not dev_bt.Paired
+            label.Markup <- markup()
+            ai.Active <- act_ai()
+            ao.Active <- act_ao()
+            hs.Active <- act_hs()
+            conn.Active <- act_sy()
+            conf.Active <- dev.Config.Auto
+            ai.Visible <- has_ai()
+            ao.Visible <- has_ao()
+            hs.Visible <- has_hs()
+            sbox.Visible <- has_sy()
+            time.Visible <- dev.Config.Auto
+            time.Value <- float dev.Config.Time
+            match (dev.MediaControl, IsNull mcw) with
+            | (Some mc, true) -> mcw <- new MediaControlWidget(mc)
+                                 line2.PackStart (mcw, true, true, 0u)
+            | (None, false) -> line2.Remove mcw
+                               mcw.Dispose ()
+                               mcw <- Unchecked.defaultof<_>
+            | _ -> ()
+        )
     do  sbox.PackStart (time, false, false, 0u)
+        sbox.PackStart (conf, false, false, 0u)
         sbox.PackStart (conn, false, false, 0u)
         line1.PackStart (pair, false, false, 0u)
         line1.PackStart (icon, false, false, 0u)
@@ -103,6 +113,11 @@ type DeviceWidget(dev: IBansheeDevice) =
         base.PackStart (line2, false, false, 0u)
         base.ShowAll ()
         fresh ()
+        conf.Toggled.Add(fun o ->
+            match (conf.Active, dev.Config.Auto) with
+            | (x, y) when x <> y -> dev.Config.Auto <- x
+            | _ -> ())
+        time.ValueChanged.Add(fun o -> dev.Config.Time <- time.ValueAsInt)
         pair.Toggled.Add(fun o -> match (pair.Active, dev_bt.Paired) with
                                   | (true, false) -> dev_bt.Pair ()
                                   | _ -> ())

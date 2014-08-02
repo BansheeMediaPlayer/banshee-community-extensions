@@ -25,8 +25,11 @@
 // THE SOFTWARE.
 namespace Banshee.Dap.Bluetooth
 
+open System
+open System.Timers
 open Banshee.Dap.Bluetooth.Adapters
 open Banshee.Dap.Bluetooth.Client
+open Banshee.Dap.Bluetooth.Configuration
 open Banshee.Dap.Bluetooth.DapGlueApi
 open Banshee.Dap.Bluetooth.Devices
 open Banshee.Dap.Bluetooth.Wrappers
@@ -37,6 +40,7 @@ open Hyena
 open Hyena.Log
 
 type IBansheeDevice =
+    abstract Config : DeviceSchema with get
     abstract Device : INotifyDevice with get
     abstract MediaControl : INotifyMediaControl option with get
     abstract Support : Set<Feature> with get
@@ -52,40 +56,58 @@ type BansheeDevice(path: ObjectPath,
                    cm: ClientManager) =
     let notify = Event<_>()
     let dev = dm.Device path
+    let timer = new System.Timers.Timer()
+    let cnf = DeviceSchema(dev.Address)
     let dap = BluetoothDevice(dev)
     let mutable src : BluetoothSource = Unchecked.defaultof<_>
     let rec src_clean a =
-        ThreadAssist.ProxyToMain(fun () ->
-            match (IsNull src, a) with
-            | (true, true) ->
-                try
-                  src <- new BluetoothSource(dap, cm)
-                  src.DeviceInitialize (dap)
-                  src.Ejected.Add(fun o -> src_clean false)
-                  src.LoadDeviceContents ()
-                  ServiceManager.SourceManager.AddSource(src)
-                with
-                | e -> Log.Warning e
-                       src <- Unchecked.defaultof<_>
-                notify.Trigger()
-            | (false, false) ->
-                ServiceManager.SourceManager.RemoveSource(src)
-                src.Unmap () |> ignore
-                src <- Unchecked.defaultof<_>
-                notify.Trigger()
-            | _ -> ())
+        match (IsNull src, a) with
+        | (true, true) ->
+            try
+              src <- new BluetoothSource(dap, cm)
+              src.DeviceInitialize (dap)
+              ThreadAssist.ProxyToMain
+                (fun () -> ServiceManager.SourceManager.AddSource src)
+              src.Ejected.Add(fun o -> src_clean false)
+              src.LoadDeviceContents ()
+            with
+            | e -> Log.Warning e
+                   src <- Unchecked.defaultof<_>
+            notify.Trigger()
+        | (false, false) ->
+            ThreadAssist.ProxyToMain
+              (fun () -> ServiceManager.SourceManager.RemoveSource src)
+            src.Unmap () |> ignore
+            src <- Unchecked.defaultof<_>
+            notify.Trigger()
+        | _ -> ()
     let conn (a,f) =
-                 if a then am.PowerOn dev.Adapter
-                 let uuid = FeatureToUuid f
-                 let deacon = if a then "Connecting" else "Disconnecting"
-                 let sf = sprintf "%s %A (%s)" deacon f uuid
-                 Infof "Dap.Bluetooth: %s" sf
-                 match (a,f) with
-                 | (true, Feature.Sync) -> src_clean true
-                 | (false, Feature.Sync) -> src_clean false
-                 | (true, _) -> dev.ConnectProfile uuid
-                 | (false, _) -> dev.DisconnectProfile uuid
-    do dev.PropertyChanged.Add(fun o -> notify.Trigger())
+        if a then am.PowerOn dev.Adapter
+        let uuid = FeatureToUuid f
+        let deacon = if a then "Connecting" else "Disconnecting"
+        let sf = sprintf "%s %A (%s)" deacon f uuid
+        Infof "Dap.Bluetooth: %s" sf
+        match (a,f) with
+        | (true, Feature.Sync) -> src_clean true
+        | (false, Feature.Sync) -> src_clean false
+        | (true, _) -> dev.ConnectProfile uuid
+        | (false, _) -> dev.DisconnectProfile uuid
+    let set_sync () =
+        if cnf.Auto then
+          let next = cnf.Next
+          let span = next - DateTime.Now
+          timer.Interval <- span.TotalMilliseconds
+          timer.Enabled <- true
+          Infof "BansheeDevice: next sync for %s at %A" dev.Alias next
+        else
+          timer.Enabled <- false
+        notify.Trigger ()
+    do set_sync ()
+       dev.PropertyChanged.Add(fun o -> notify.Trigger())
+       timer.Elapsed.Add (fun o -> src_clean true
+                                   set_sync ())
+       cnf.Notify.Add (fun o -> set_sync ())
+    member x.Config = cnf
     member x.Device = dev
     member x.Support = dev.UUIDs |> FromUuids
     member x.Connect y = conn (true, y)
@@ -95,6 +117,7 @@ type BansheeDevice(path: ObjectPath,
                                        |> Seq.map (fun o -> o.UUID)
                                        |> FromUuids
     interface IBansheeDevice with
+        member x.Config = x.Config
         member x.Device = x.Device
         member x.MediaControl =
             dm.MediaControls

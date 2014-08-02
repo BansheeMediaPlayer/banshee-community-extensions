@@ -171,6 +171,9 @@ let FuzzyLookup (x: DatabaseTrackInfo) =
           if IsNull dti then
             Warnf "No Help 2: %A" x
             x
+          else if dti.FileSize <> x.FileSize then
+            Warnf "Excepting FileSize, Looks Like %A (%d vs %d)" dti dti.FileSize x.FileSize
+            x
           else dti
     with
     | _ -> x
