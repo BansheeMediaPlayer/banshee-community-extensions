@@ -42,6 +42,9 @@
                          ],
         "title": "dummy-recording-title", 
         "id": "dummy-recording-id"
+        },
+        {
+          "id": "dummy-recording-id"
         }
       ],
       "score": "score",

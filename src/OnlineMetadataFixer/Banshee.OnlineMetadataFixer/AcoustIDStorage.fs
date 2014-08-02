@@ -75,6 +75,9 @@ type AcoustIDStorage() =
             | :? IOException as ex ->
                 Hyena.Log.Error ("Cannot read fingerprint: ", ex)
                 (0L, None)
+            | :? FormatException as ex ->
+                Hyena.Log.Error ("Cannot read fingerprint: ", ex)
+                (0L, None)
         else
             (0L, None)
             

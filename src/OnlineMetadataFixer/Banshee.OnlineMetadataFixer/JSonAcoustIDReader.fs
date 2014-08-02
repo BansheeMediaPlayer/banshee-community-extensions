@@ -42,25 +42,28 @@ type JSonAcoustIDReader (url : string) = class
         | _ -> (String.Empty, Seq.empty)
 
     member private x.GetBestInfo () = 
-        jsonProvider.Results 
-        |> Seq.fold (fun a o -> 
-        (
-            o.Score
-            |> Convert.ToDouble,
-            o
-            |> JSonAcoustIDReader.ReadRecordings
-            |> Seq.ofList,
-            o.Id
-        ) :: a) []
-        |> Seq.maxBy (fun (score, recordings, id) -> score)
-        |> fun (s, r, i) -> (i, r)
+        if jsonProvider.Results |> Array.isEmpty then
+            (String.Empty, Seq.empty)
+        else
+            jsonProvider.Results 
+            |> Seq.fold (fun a o -> 
+            (
+                o.Score
+                |> Convert.ToDouble,
+                o
+                |> JSonAcoustIDReader.ReadRecordings
+                |> Seq.ofList,
+                o.Id
+            ) :: a) []
+            |> Seq.maxBy (fun (score, recordings, id) -> score)
+            |> fun (s, r, i) -> (i, r)
 
     static member private ReadRecordings (result) = 
         result.Recordings
         |> Seq.fold (fun acc ob ->
         {
                     ID = ob.Id; 
-                    Title = ob.Title; 
+                    Title = if ob.Title.IsSome then ob.Title.Value else String.Empty;
                     Artists = ob.Artists |> JSonAcoustIDReader.ReadArtists
                     ReleaseGroups = ob.Releasegroups |>Seq.fold (
                                         fun a o -> 

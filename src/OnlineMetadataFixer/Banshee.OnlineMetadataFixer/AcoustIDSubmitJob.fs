@@ -101,21 +101,18 @@ type AcoustIDSubmitJob private () as this = class
                 reader.Get<int> (8),
                 reader.Get<int> (9)
             )
-            ServiceManager.DbConnection.Execute (
-                new HyenaSqliteCommand ("UPDATE AcoustIDSubmissions SET Timestamp = ? WHERE TrackID = ?"),
-                DateTime.Now, reader.Get<int> (10)) |> ignore
         with :? System.ArgumentException as ex -> // in case of invalid obligatory fields
             Hyena.Log.DebugException (ex)
+        ServiceManager.DbConnection.Execute (
+            new HyenaSqliteCommand ("UPDATE AcoustIDSubmissions SET Timestamp = ? WHERE TrackID = ?"),
+            DateTime.Now, reader.Get<int> (10)) |> ignore
 
     override this.OnCancelled () =
         base.AbortThread ()
 
     member this.Start () =
-        if  AcoustIDKeysHelper.ReadAcoustIDKey () |> String.IsNullOrEmpty then
-            Hyena.Log.Debug ("Metadata will not be sent to AcoustID service. Enter AcoustID API key first.")
-        else
-            base.Register ()
-            instance.Finished.AddHandler (fun s e -> instance <- null)
+        base.Register ()
+        instance.Finished.AddHandler (fun s e -> instance <- null)
 
     static member Instance with get() = 
                             if obj.ReferenceEquals (instance, Unchecked.defaultof<_>) then
