@@ -57,7 +57,7 @@ type MissingFromAcoustIDSource(problemId) as x =
                                         with :? System.ArgumentException -> () // if job already started
         )
         
-        if ServiceManager.DbConnection.TableExists ("AcoustIDSubmissions") |> not then
+        if not (ServiceManager.DbConnection.TableExists ("AcoustIDSubmissions")) then
             ServiceManager.DbConnection.Execute (@"
                 CREATE TABLE AcoustIDSubmissions (
                     TrackID INTEGER UNIQUE,

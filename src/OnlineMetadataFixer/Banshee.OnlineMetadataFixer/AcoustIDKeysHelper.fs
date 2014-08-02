@@ -33,7 +33,7 @@ type AcoustIDKeysHelper() =
     static let keyring = "banshee-acoustid"
     
     static member private CheckIsKeyringAvailable () =
-        if Ring.Available |> not then
+        if not (Ring.Available) then
             "The gnome-keyring-daemon cannot be reached." |> Hyena.Log.Error
         Ring.Available
 

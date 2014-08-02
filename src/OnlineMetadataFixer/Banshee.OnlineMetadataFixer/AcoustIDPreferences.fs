@@ -45,21 +45,21 @@ type AcoustIDPreferences private () as x =
     do
         let service = ServiceManager.Get<PreferenceService> ();
       
-        if obj.ReferenceEquals (service, null) |> not then
+        if not (obj.ReferenceEquals (service, null)) then
             apikey_section.Add (new VoidPreference ("acoustid-pref")) |> ignore
             service.InstallWidgetAdapters.AddHandler (install_handler)
             
     interface IDisposable with
         member x.Dispose () =
             let service = ServiceManager.Get<PreferenceService> ()
-            if obj.ReferenceEquals (service, null) |> not then
+            if not (obj.ReferenceEquals (service, null)) then
                 service.InstallWidgetAdapters.RemoveHandler (install_handler)
             ()
     
     member x.Section with get () = apikey_section
     
     member x.OnPreferencesServiceInstallWidgetAdapters (sender, args) =
-        if obj.ReferenceEquals (apikey_section, null) |> not then
+        if not (obj.ReferenceEquals (apikey_section, null)) then
             let align = new Alignment (0.5f, 0.5f, 1.0f, 1.0f);
             align.LeftPadding <- 20u
             align.RightPadding <- 20u

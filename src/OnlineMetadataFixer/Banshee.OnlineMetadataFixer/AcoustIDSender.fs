@@ -33,7 +33,7 @@ type AcoustIDSubmissionStatus = FSharp.Data.JsonProvider<"Resources/AcoustIDSubm
 type AcoustIDSender() = 
     static member private Append(builder : System.Text.StringBuilder, key, value, ?additional_condition) = 
         let ac = defaultArg additional_condition String.Empty
-        if value |> String.IsNullOrEmpty |> not && value.Equals(ac) |> not then
+        if not (value |> String.IsNullOrEmpty) && not (value.Equals(ac)) then
             ("&{0}={1}", key, value)
             |> String.Format
             |> builder.Append
