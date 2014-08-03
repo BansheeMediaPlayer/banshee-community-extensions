@@ -94,8 +94,7 @@ type Service () as this =
             Log.Debug ("Refreshing list of local gigs")
             Scheduler.Schedule (new DelegateJob (fun () ->
                 let gigs = x.GetRecommededGigs ()
-                if gigs.Count <> 0 then
-                   x.NotifyUser(gigs)
+                x.NotifyUser(gigs)
                 DatabaseConfigurationClient.Client.Set<DateTime> (config_variable_name, DateTime.Now)
                 x.UpdateRunTimeout ()))
             true
@@ -155,29 +154,43 @@ type Service () as this =
         abs (long - LocationProviderManager.GetLongitude) < 1.0
 
     member private x.NotifyUser (gigs : Results<Event>) =
-        for src in ServiceManager.SourceManager.Sources do
-            if (src :? SongKickSource && not (src.ContainsChildSource gigs_source)) then
-                src.AddChildSource (gigs_source)
-
-        gigs_source.View.UpdateGigs (gigs)
-
-        if (banshee_window : Gtk.Window).Focus.HasFocus then
-            gigs_source.NotifyUser ()
-        else
-            banshee_window.Focus.FocusInEvent.AddHandler x.OnFocusInEvent
-
-        for g in gigs do
+        if gigs.Count = 0 then
             ThreadAssist.ProxyToMain (fun () ->
-                let notification = new Notifications.Notification ()
-                notification.Body <- String.Format (
-                        "{0} in {1} on {2} at {3}",
-                        g.ArtistName,
-                        LocationProviderManager.GetCityName,
-                        g.StartDateTime.ToShortDateString(),
-                        g.StartDateTime.ToShortTimeString())
-                notification.Summary <- "SongKick found a gig near you!"
+                let notification = new Notifications.Notification ("SongKick can't find a gig near you!",
+                                     "Maybe it's time to take a trip? Check out where to go in Banshee!")
                 notification.Icon <- Gdk.Pixbuf.LoadFromResource ("songkick_logo_300x300.png")
                 notification.Show ())
+        else
+            for src in ServiceManager.SourceManager.Sources do
+                if (src :? SongKickSource && not (src.ContainsChildSource gigs_source)) then
+                    src.AddChildSource (gigs_source)
+
+            gigs_source.View.UpdateGigs (gigs)
+
+            if (banshee_window : Gtk.Window).Focus.HasFocus then
+                gigs_source.NotifyUser ()
+            else
+                banshee_window.Focus.FocusInEvent.AddHandler x.OnFocusInEvent
+
+            if gigs.Count > 3 then
+                ThreadAssist.ProxyToMain (fun () ->
+                    let notification = new Notifications.Notification ("SongKick found so many gigs near you!",
+                                         "Check out all of them in Banshee!")
+                    notification.Icon <- Gdk.Pixbuf.LoadFromResource ("songkick_logo_300x300.png")
+                    notification.Show ())
+            else
+                for g in gigs do
+                    ThreadAssist.ProxyToMain (fun () ->
+                        let notification = new Notifications.Notification ()
+                        notification.Body <- String.Format (
+                                "{0} in {1} on {2} at {3}",
+                                g.ArtistName,
+                                LocationProviderManager.GetCityName,
+                                g.StartDateTime.ToShortDateString(),
+                                g.StartDateTime.ToShortTimeString())
+                        notification.Summary <- "SongKick found a gig near you!"
+                        notification.Icon <- Gdk.Pixbuf.LoadFromResource ("songkick_logo_300x300.png")
+                        notification.Show ())
 
     static member private GetBansheeWindow () =
          Gtk.Window.ListToplevels () |> Array.find (fun w -> w :? Banshee.Gui.BaseClientWindow)
