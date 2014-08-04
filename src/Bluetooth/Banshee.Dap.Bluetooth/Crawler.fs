@@ -194,7 +194,8 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
                   crawl root dest
     let rec root () =
         try
-          if 0us < fails then TimeSpan.FromSeconds 0.5 |> Thread.Sleep
+          if 0us < fails then
+            TimeSpan.FromSeconds 0.5 |> Thread.Sleep
           match (fails, cm.Session ops) with
           | (0us, Some s) -> s
           | (_, Some s) ->
