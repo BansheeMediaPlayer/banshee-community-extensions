@@ -92,16 +92,16 @@
     <Compile Include="Banshee.OnlineMetadataFixer\JSonAcoustIDReader.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer\AcoustIDReader.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer\AcoustIDSender.fs" />
-    <Compile Include="Banshee.OnlineMetadataFixer\OnlineMetadataFixerSource.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer\OnlineMetadataFixerSolver.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer\AcoustIDSubmitJob.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer\AcoustIDFingerprintJob.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer\AcoustIDPreferences.fs" />
-    <Compile Include="Banshee.OnlineMetadataFixer\MissingFromAcoustIDSource.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer\MissingFromAcoustIDSolver.fs" />
     <Compile Include="Banshee.OnlineMetadataFixer\AllMetadataFixer.fs" />
-    <Compile Include="Banshee.OnlineMetadataFixer\MissingArtistTitleSource.fs" />
-    <Compile Include="Banshee.OnlineMetadataFixer\MissingAlbumSource.fs" />
-    <Compile Include="Banshee.OnlineMetadataFixer\MissingMostOfMetadataSource.fs" />
-    <Compile Include="Banshee.OnlineMetadataFixer\InvalidMetadataSource.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer\MissingArtistTitleSolver.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer\MissingAlbumSolver.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer\MissingMostOfMetadataSolver.fs" />
+    <Compile Include="Banshee.OnlineMetadataFixer\InvalidMetadataSolver.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
   <Import Project="..\.nuget\nuget.targets" />

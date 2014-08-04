@@ -1,5 +1,5 @@
 //
-// MissingFromAcoustIDSource.fs
+// MissingFromAcoustIDSolver.fs
 //
 // Author:
 //   Marcin Kolny <marcin.kolny@gmail.com>
@@ -36,8 +36,8 @@ open Hyena.Data.Sqlite
 open Banshee.ServiceStack
 
 [<AbstractClass>]
-type MissingFromAcoustIDSource(problemId) as x = 
-    inherit Banshee.Fixup.Solver()
+type MissingFromAcoustIDSolver (problemId) as x = 
+    inherit Banshee.Fixup.Solver ()
     let preferences = AcoustIDPreferences.Instance
     do
         base.Id <- problemId

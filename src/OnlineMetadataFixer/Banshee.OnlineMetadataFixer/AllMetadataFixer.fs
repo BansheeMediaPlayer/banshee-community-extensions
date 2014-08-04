@@ -37,8 +37,8 @@ open Hyena.Data.Sqlite
 open Banshee.ServiceStack
 
 [<AbstractClass>]
-type AllMetadataFixer(id) = 
-    inherit MissingFromAcoustIDSource(id)
+type AllMetadataFixer (id) = 
+    inherit MissingFromAcoustIDSolver (id)
 
     override x.IdentifyCore () =
         "DELETE FROM CoreArtists WHERE ArtistID NOT IN (SELECT DISTINCT(ArtistID) FROM CoreTracks)"

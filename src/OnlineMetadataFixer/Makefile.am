@@ -11,13 +11,13 @@ SOURCES =  \
 	Banshee.OnlineMetadataFixer/AcoustIDSubmitJob.fs \
 	Banshee.OnlineMetadataFixer/AllMetadataFixer.fs \
 	Banshee.OnlineMetadataFixer/HelperRecords.fs \
-	Banshee.OnlineMetadataFixer/InvalidMetadataSource.fs \
+	Banshee.OnlineMetadataFixer/InvalidMetadataSolver.fs \
 	Banshee.OnlineMetadataFixer/JSonAcoustIDReader.fs \
-	Banshee.OnlineMetadataFixer/MissingAlbumSource.fs \
-	Banshee.OnlineMetadataFixer/MissingArtistTitleSource.fs \
-	Banshee.OnlineMetadataFixer/MissingFromAcoustIDSource.fs \
-	Banshee.OnlineMetadataFixer/MissingMostOfMetadataSource.fs \
-	Banshee.OnlineMetadataFixer/OnlineMetadataFixerSource.fs
+	Banshee.OnlineMetadataFixer/MissingAlbumSolver.fs \
+	Banshee.OnlineMetadataFixer/MissingArtistTitleSolver.fs \
+	Banshee.OnlineMetadataFixer/MissingFromAcoustIDSolver.fs \
+	Banshee.OnlineMetadataFixer/MissingMostOfMetadataSolver.fs \
+	Banshee.OnlineMetadataFixer/OnlineMetadataFixerSolver.fs
 
 RESOURCES =  \
 	OnlineMetadataFixer.addin.xml \

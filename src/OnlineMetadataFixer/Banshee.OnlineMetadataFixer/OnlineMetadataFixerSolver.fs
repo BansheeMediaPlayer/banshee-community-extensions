@@ -1,5 +1,5 @@
 ﻿//
-// OnlineMetadataFixerSource.fs 
+// OnlineMetadataFixerSolver.fs 
 //
 // Authors:
 //   Marcin Kolny <marcin.kolny@gmail.com>
@@ -36,14 +36,14 @@ open Banshee.ServiceStack;
 
 type MusicBrainzTracksXmlProvider = FSharp.Data.XmlProvider<"Resources/MusicBrainzTracks.xml", EmbeddedResource="MusicBrainzTracks.xml">
 
-type OnlineMetadataFixerSource () = 
-    inherit Banshee.Fixup.Solver()
+type OnlineMetadataFixerSolver () = 
+    inherit Banshee.Fixup.Solver ()
     do
         base.Id <- "empty-albums"
         base.Name <- Catalog.GetString ("Empty Album Name")
         base.Description <- Catalog.GetString ("Displayed are tracks with empty album's name.")
     
-        BinaryFunction.Add(base.Id, new Func<obj, obj, obj>(fun a b -> OnlineMetadataFixerSource.GetAlbumTitle (a :?> string, b :?> string) :> obj))
+        BinaryFunction.Add(base.Id, new Func<obj, obj, obj>(fun a b -> OnlineMetadataFixerSolver.GetAlbumTitle (a :?> string, b :?> string) :> obj))
 
     static member GetAlbumTitle (title : String, artist : String) : String =
         match (title, artist) with

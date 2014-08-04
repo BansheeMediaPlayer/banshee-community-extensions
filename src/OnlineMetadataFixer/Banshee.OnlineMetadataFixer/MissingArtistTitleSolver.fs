@@ -1,5 +1,5 @@
 //
-// MissingArtistTitleSource.fs
+// MissingArtistTitleSolver.fs
 //
 // Author:
 //   Marcin Kolny <marcin.kolny@gmail.com>
@@ -38,8 +38,8 @@ open Banshee.ServiceStack
 
 open Mono.Unix;
 
-type MissingArtistTitleSource () = 
-    inherit MissingFromAcoustIDSource("missing-artist-online-fix")
+type MissingArtistTitleSolver () = 
+    inherit MissingFromAcoustIDSolver ("missing-artist-online-fix")
     do
         base.Name <- Catalog.GetString ("Missing Artist and Titles Fix");
         base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee without artist or title metadata");

@@ -1,5 +1,5 @@
 //
-// InvalidMetadataSource.fs
+// MissingMostOfMetadataSolver.fs
 //
 // Author:
 //   Marcin Kolny <marcin.kolny@gmail.com>
@@ -34,39 +34,21 @@ open Banshee.ServiceStack
 
 open Mono.Unix
 
-type InvalidMetadataSource() = 
-    inherit AllMetadataFixer("invalid-metadata-online-fix")
+type MissingMostOfMetadataSolver () = 
+    inherit AllMetadataFixer ("missing-most-of-metadata-online-fix")
     do
-        base.Name <- Catalog.GetString ("Invalid Metadata Fix");
-        base.Description <- Catalog.GetString ("Displayed are tracks with invalid(different than AcoustID) metadata");
-        
-        BinaryFunction.Add("can-be-fixed", new Func<obj, obj, obj>(fun a b -> InvalidMetadataSource.CanBeFixed (a :?> string, b) :> obj))
-
-    static member private CanBeFixed (url : String, b : obj) : String =
-        match url |> AcoustIDStorage.FingerprintMayExists with
-        | true -> "true"
-        | _ -> "false"
+        base.Name <- Catalog.GetString ("Missing Most of Metadata Fix");
+        base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee without most of metadata");
 
     override x.IdentifyCore () =
         base.IdentifyCore ()
-        (
-            x.GetFindMethod (
-                ("IFNULL(HYENA_BINARY_FUNCTION ('{0}', uri, NULL), 'false') = 'true'", "can-be-fixed")
-                |> String.Format,
-                @"(SELECT Name FROM CoreArtists  WHERE ArtistID = CoreTracks.ArtistID) || ' - ' 
-                || Title || ' - ' 
-                || (SELECT Title FROM CoreAlbums  WHERE AlbumID = CoreTracks.AlbumID)"
-            ),
-            x.Generation
-        )
+        
+        (@"IFNULL((SELECT Name from CoreArtists where ArtistID = CoreTracks.ArtistID), '') = '' AND
+        IFNULL(Title, '') = '' AND
+        IFNULL((SELECT Title from CoreAlbums where AlbumID = CoreTracks.AlbumID), '') = ''"
+        |> x.GetFindMethod, x.Generation)
         |> ServiceManager.DbConnection.Execute |> ignore;
-    
-    override x.ProcessSolution (column, recordings) =
-        let solutions = base.PreProcessSolution (column, recordings)
-        if not (column |> String.IsNullOrEmpty) then
-            if column |> solutions.Contains then
-                solutions.Clear ()
-            else
-                column |> solutions.Add |> ignore
-        (";;", solutions)
+
+    override x.ProcessSolution (id, recordings) =
+        (";;", base.PreProcessSolution (id, recordings))
         |> String.Join

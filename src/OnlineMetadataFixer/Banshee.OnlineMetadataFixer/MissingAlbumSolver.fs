@@ -1,5 +1,5 @@
 //
-// MissingAlbumSource.fs
+// MissingAlbumSolver.fs
 //
 // Author:
 //   Marcin Kolny <marcin.kolny@gmail.com>
@@ -36,8 +36,8 @@ open Banshee.ServiceStack
 
 open Mono.Unix;
 
-type MissingAlbumSource () = 
-    inherit MissingFromAcoustIDSource("missing-album-online-fix")
+type MissingAlbumSolver () = 
+    inherit MissingFromAcoustIDSolver ("missing-album-online-fix")
     do
         base.Name <- Catalog.GetString ("Missing Albums Fix");
         base.Description <- Catalog.GetString ("Displayed are tracks loaded in Banshee without album metadata");
