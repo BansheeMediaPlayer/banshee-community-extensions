@@ -28,6 +28,7 @@ namespace Banshee.OnlineMetadataFixer
 
 open System
 open System.Collections.Generic
+open Mono.Unix
 
 open Hyena
 open Hyena.Data.Sqlite
@@ -51,10 +52,11 @@ type MissingFromAcoustIDSource(problemId) as x =
 
         compute_fingerprints.Invoke (null, null)
         ServiceManager.SourceManager.MusicLibrary.add_TracksAdded (compute_fingerprints)
-        ServiceManager.SourceManager.MusicLibrary.add_TracksChanged(fun s o ->
-                                        try
-                                            AcoustIDSubmitJob.Instance.Start ()
-                                        with :? System.ArgumentException -> () // if job already started
+        ServiceManager.SourceManager.MusicLibrary.add_TracksChanged(
+            fun s o ->
+                try
+                    AcoustIDSubmitJob.Instance.Start ()
+                with :? System.ArgumentException -> () // if job already started
         )
         
         if not (ServiceManager.DbConnection.TableExists ("AcoustIDSubmissions")) then
@@ -97,4 +99,17 @@ type MissingFromAcoustIDSource(problemId) as x =
         for problem in problems do
             if not (String.IsNullOrEmpty (problem.SolutionValue)) then
                 x.ProcessProblem (problem)
+
+    override x.SetStatus (status_message, preferences_page_id) =
+        status_message.FreezeNotify ();
+        if AcoustIDKeysHelper.ReadAcoustIDKey () = String.Empty then
+            status_message.AddAction (new Banshee.Sources.MessageAction (Catalog.GetString ("AcoustID Settings"), new EventHandler (fun s e -> 
+                try
+                    let dialog = new Banshee.Preferences.Gui.PreferenceDialog ()
+                    dialog.ShowSourcePageId (preferences_page_id)
+                    dialog.Run () |> ignore
+                    dialog.Destroy ()
+                with :? ApplicationException -> ()
+            )))
+        status_message.ThawNotify ();
 
