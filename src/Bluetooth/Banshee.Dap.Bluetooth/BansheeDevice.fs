@@ -27,6 +27,7 @@ namespace Banshee.Dap.Bluetooth
 
 open System
 open System.Timers
+open System.Reflection
 open Banshee.Dap.Bluetooth.Adapters
 open Banshee.Dap.Bluetooth.Client
 open Banshee.Dap.Bluetooth.Configuration
@@ -77,7 +78,15 @@ type BansheeDevice(path: ObjectPath,
           src.Ejected.Add src_destroy
           if schedule || src.Sync.AutoSync then
             src.Sync.DapLoaded ()
-            src.Sync.Sync ()
+            let m = typeof<Banshee.Dap.DapSync>.GetMethod ("RateLimitedSync", BindingFlags.NonPublic ||| BindingFlags.Instance)
+            if IsNull m |> not then
+              Debugf "Dap.Bluetooth: Executing Synchronously %A" m
+              m.Invoke (src.Sync, [||]) |> ignore
+              if schedule then
+                src_destroy ()
+            else
+              Warnf "Dap.Bluetooth: Executing Asynchronously"
+              src.Sync.Sync ()
         with
         | e -> Log.Warning e
                src <- Unchecked.defaultof<_>
