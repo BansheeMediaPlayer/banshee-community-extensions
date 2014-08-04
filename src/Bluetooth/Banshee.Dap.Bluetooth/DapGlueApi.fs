@@ -270,8 +270,8 @@ type BluetoothSource(dev: BluetoothDevice, cm: ClientManager) =
         load.Done () |> x.RemoveTrackList
         load.Dispose ()
         base.PostLoad ()
-    override x.DeviceInitialize dev =
-        base.DeviceInitialize dev
+    override x.DeviceInitialize (dev, force) =
+        base.DeviceInitialize (dev, force)
         if ftp.Init () |> not then
           failwith "Crawler Initialisation Failed."
         x.Initialize ()

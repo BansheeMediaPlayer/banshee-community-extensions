@@ -71,15 +71,13 @@ type BansheeDevice(path: ObjectPath,
     let src_construct schedule =
         try
           src <- new BluetoothSource(dap, cm)
-          src.DeviceInitialize dap
+          src.DeviceInitialize (dap, false)
           ThreadAssist.BlockingProxyToMain src_add
           src.SequentialLoad ()
           src.Ejected.Add src_destroy
           if schedule || src.Sync.AutoSync then
             src.Sync.DapLoaded ()
             src.Sync.Sync ()
-            if schedule then
-              src_destroy ()
         with
         | e -> Log.Warning e
                src <- Unchecked.defaultof<_>
