@@ -76,7 +76,7 @@ type BansheeDevice(path: ObjectPath,
           ThreadAssist.BlockingProxyToMain src_add
           src.SequentialLoad ()
           src.Ejected.Add src_destroy
-          if schedule || src.Sync.AutoSync then
+          if schedule && not src.Sync.AutoSync then
             src.Sync.DapLoaded ()
             let m = typeof<Banshee.Dap.DapSync>.GetMethod ("RateLimitedSync", BindingFlags.NonPublic ||| BindingFlags.Instance)
             if IsNull m |> not then
