@@ -27,18 +27,22 @@ namespace Banshee.Dap.Bluetooth.Gui
 
 open Banshee.Dap.Bluetooth.Wrappers
 open Gtk
+open Hyena
 
 type MediaControlWidget(mc: INotifyMediaControl) as this =
     inherit HBox(false, 5)
-    let play = new Button(Image = new Image(IconName = "media-playback-start"))
-    let pause = new Button(Image = new Image(IconName = "media-playback-pause"))
-    let stop = new Button(Image = new Image(IconName = "media-playback-stop"))
-    let next = new Button(Image = new Image(IconName = "media-skip-forward"))
-    let prev = new Button(Image = new Image(IconName = "media-skip-backward"))
-    let fwd = new Button(Image = new Image(IconName = "media-seek-forward"))
-    let rwd = new Button(Image = new Image(IconName = "media-seek-backward"))
-    let vup = new Button(Image = new Image(IconName = "audio-volume-high"))
-    let vdn = new Button(Image = new Image(IconName = "audio-volume-low"))
+    let button_icon x = new Button(Image = new Image(IconName = x))
+    let play = button_icon "media-playback-start"
+    let pause = button_icon "media-playback-pause"
+    let stop = button_icon "media-playback-stop"
+    let next = button_icon "media-skip-forward"
+    let prev = button_icon "media-skip-backward"
+    let fwd = button_icon "media-seek-forward"
+    let rwd = button_icon "media-seek-backward"
+    let vup = button_icon "audio-volume-high"
+    let vdn = button_icon "audio-volume-low"
+    let fresh () =
+        ThreadAssist.BlockingProxyToMain (fun () -> this.Visible <- mc.Connected)
     do base.PackStart (prev, false, false, 0u)
        base.PackStart (rwd, false, false, 0u)
        base.PackStart (stop, false, false, 0u)
@@ -61,4 +65,4 @@ type MediaControlWidget(mc: INotifyMediaControl) as this =
        vup.Clicked.Add (fun o -> mc.VolumeUp ())
        vdn.Clicked.Add (fun o -> mc.VolumeDown ())
        mc.PropertyChanged.Add(fun o -> this.Refresh ())
-    member x.Refresh () = base.Visible <- mc.Connected
+    member x.Refresh () = fresh ()
