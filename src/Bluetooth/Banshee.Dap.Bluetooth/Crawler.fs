@@ -130,10 +130,10 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
         with
         | _ -> ()
         ops <- Unchecked.defaultof<_>
+        fails <- 1us + fails
     let record (e: Exception) =
         Warnf "Dap.Bluetooth: Fails = %d: %s => %s" fails (e.GetType().FullName) e.Message
         if max_tries <= fails then raise e
-        fails <- 1us + fails
         drop ()
     let check (e: Exception) =
         Debugf "Dap.Bluetooth: Fails = %d: %s => %s" fails (e.GetType().FullName) e.Message
@@ -179,8 +179,6 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
         | e -> check e
                false
     let mkdn root y = (down root y || make root y) |> ignore
-    let restore root =
-        path |> List.rev |> List.iter (fun dir -> mkdn root dir)
     let rec crawl root dest =
         let suffix = SuffixOf path dest
         Debugf "Dap.Bluetooth: suffix: %A" suffix
@@ -192,6 +190,10 @@ type Crawler(addr: string, cm: ClientManager, max_tries: uint16) =
         // Elsewhere
         | None -> up root
                   crawl root dest
+    let restore root =
+        let old = path
+        path <- []
+        crawl root old
     let rec root () =
         try
           if 0us < fails then
