@@ -46,6 +46,7 @@ type GnomeRfkill() =
         let path = ObjectPath (PATH_GNOME_RFKILL)
         let ob = Bus.Session.GetObject<IRfkill>(NAME_GNOME, path)
         let pm = PropertyManager (Bus.Session, NAME_GNOME, path)
+        pm.Use IF_RFKILL
         RfkillWrapper(ob, pm)
     member x.Set y =
         let has  = ksw.BluetoothHasAirplaneMode
