@@ -18,11 +18,11 @@
   </Dependencies>
 
   <Extension path="/Banshee/MetadataFix/Solver">
-    <Solver class="Banshee.OnlineMetadataFixer.OnlineMetadataFixerSource" />
-    <Solver class="Banshee.OnlineMetadataFixer.MissingArtistTitleSource" />
-    <Solver class="Banshee.OnlineMetadataFixer.MissingAlbumSource" />
-    <Solver class="Banshee.OnlineMetadataFixer.MissingMostOfMetadataSource" />
-    <Solver class="Banshee.OnlineMetadataFixer.InvalidMetadataSource" />
+    <Solver class="Banshee.OnlineMetadataFixer.OnlineMetadataFixerSolver" />
+    <Solver class="Banshee.OnlineMetadataFixer.MissingArtistTitleSolver" />
+    <Solver class="Banshee.OnlineMetadataFixer.MissingAlbumSolver" />
+    <Solver class="Banshee.OnlineMetadataFixer.MissingMostOfMetadataSolver" />
+    <Solver class="Banshee.OnlineMetadataFixer.InvalidMetadataSolver" />
   </Extension>
 
 </Addin>
