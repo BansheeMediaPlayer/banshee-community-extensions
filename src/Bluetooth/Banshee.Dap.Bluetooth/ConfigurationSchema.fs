@@ -27,7 +27,7 @@ module Banshee.Dap.Bluetooth.Configuration
 
 open System
 open Banshee.Configuration
-open Banshee.Dap.Bluetooth.DapGlueApi
+open Banshee.Dap.Bluetooth.DapGlue
 
 let AUTO_DSHORT = Singular "Whether scheduled synchronisation is enabled for this device"
 let TIME_DSHORT = Singular "What time scheduled synchronisation should occur"

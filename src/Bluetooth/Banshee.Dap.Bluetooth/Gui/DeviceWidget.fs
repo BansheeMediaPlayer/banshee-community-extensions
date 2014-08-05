@@ -31,7 +31,7 @@ open Banshee.Dap.Bluetooth
 open Banshee.Dap.Bluetooth.Wrappers
 open Banshee.Dap.Bluetooth.Devices
 open Banshee.Dap.Bluetooth.Client
-open Banshee.Dap.Bluetooth.DapGlueApi
+open Banshee.Dap.Bluetooth.DapGlue
 open Banshee.Dap.Bluetooth.SupportApi
 open Banshee.Dap.Bluetooth.Gui.SpinButtons
 open Gtk

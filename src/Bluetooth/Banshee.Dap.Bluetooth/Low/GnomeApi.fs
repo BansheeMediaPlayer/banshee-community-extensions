@@ -1,5 +1,5 @@
 ﻿//
-// HyenaGlueApi.fs
+// GnomeApi.fs
 //
 // Author:
 //   Nicholas Little <arealityfarbetween@googlemail.com>
@@ -23,16 +23,22 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace Hyena
+module Banshee.Dap.Bluetooth.GnomeApi
 
-open Printf
-open Hyena
+open DBus
 
-module Log =
-    let Warnf x = kprintf Log.Warning x
-    let Errorf x = kprintf Log.Error x
-    let Infof x = kprintf Log.Information x
-    let Debugf x =
-        if Log.Debugging then
-          kprintf Log.Debug x
-        else Unchecked.defaultof<'a>
+[<Literal>]
+let IF_RFKILL = "org.gnome.SettingsDaemon.Rfkill"
+
+let NAME_GNOME = "org.gnome.SettingsDaemon"
+
+let PATH_GNOME_RFKILL = "/org/gnome/SettingsDaemon/Rfkill"
+
+[<Interface (IF_RFKILL)>]
+type IRfkill =
+    abstract AirplaneMode : bool with get, set
+    abstract HasAirplaneMode : bool
+    abstract HardwareAirplaneMode : bool
+    abstract BluetoothAirplaneMode : bool with get, set
+    abstract BluetoothHasAirplaneMode : bool
+    abstract BluetoothHardwareAirplaneMode : bool

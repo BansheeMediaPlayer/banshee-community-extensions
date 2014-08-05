@@ -1,5 +1,5 @@
 ﻿//
-// DapGlueApi.fs
+// DapGlue.fs
 //
 // Author:
 //   Nicholas J. Little <arealityfarbetween@googlemail.com>
@@ -23,7 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-module Banshee.Dap.Bluetooth.DapGlueApi
+module Banshee.Dap.Bluetooth.DapGlue
 
 open System
 open System.IO

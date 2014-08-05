@@ -90,23 +90,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Banshee.Dap.Bluetooth\AuxillaryApi.fs" />
-    <Compile Include="Banshee.Dap.Bluetooth\MimeApi.fs" />
-    <Compile Include="Banshee.Dap.Bluetooth\DBusApi.fs" />
-    <Compile Include="Banshee.Dap.Bluetooth\AdapterApi.fs" />
-    <Compile Include="Banshee.Dap.Bluetooth\DeviceApi.fs" />
-    <Compile Include="Banshee.Dap.Bluetooth\MediaApi.fs" />
-    <Compile Include="Banshee.Dap.Bluetooth\ObexApi.fs" />
-    <Compile Include="Banshee.Dap.Bluetooth\GnomeApi.fs" />
-    <Compile Include="Banshee.Dap.Bluetooth\SupportApi.fs" />
-    <Compile Include="Banshee.Dap.Bluetooth\InversionApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Low\AuxillaryApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Low\MimeApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Low\DBusApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Low\AdapterApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Low\DeviceApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Low\MediaApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Low\ObexApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Low\GnomeApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Low\SupportApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Low\InversionApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Low\HyenaApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Wrappers.fs" />
-    <Compile Include="Banshee.Dap.Bluetooth\HyenaGlueApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\AdapterManager.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\DeviceManager.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\ClientManager.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Crawler.fs" />
-    <Compile Include="Banshee.Dap.Bluetooth\DapGlueApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\DapGlue.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\ConfigurationSchema.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\BansheeDevice.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Gui\SpinButtons.fs" />
@@ -129,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banshee.Dap.Bluetooth\Gui\" />
+    <Folder Include="Banshee.Dap.Bluetooth\Low\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Attribution.txt" />
