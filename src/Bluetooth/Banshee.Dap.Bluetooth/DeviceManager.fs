@@ -72,8 +72,8 @@ type DBusEventArgs<'t>(a: ObjectAction, path: ObjectPath, obj: 't) =
     member x.Path = path
     member x.Object = obj
 
-type DeviceManager(system: Bus) =
-    let oman = DBusInverter(system, NAME_BLUEZ, ObjectPath.Root)
+type DeviceManager() =
+    let oman = DBusInverter(Bus.System, NAME_BLUEZ, ObjectPath.Root)
     let devices = ConcurrentDictionary<_,INotifyDevice>() :> IDictionary<_,_>
     let media = ConcurrentDictionary<_,INotifyMediaControl>() :> IDictionary<_,_>
     let transports = ConcurrentDictionary<_,INotifyMediaTransport>() :> IDictionary<_,_>

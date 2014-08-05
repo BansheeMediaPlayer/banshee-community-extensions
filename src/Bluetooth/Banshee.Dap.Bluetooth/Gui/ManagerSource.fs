@@ -93,9 +93,9 @@ type ManagerService(name: string) =
     let mutable ms : ManagerSource = Unchecked.defaultof<_>
     member x.Dispose () = ServiceManager.SourceManager.RemoveSource (ms)
     member x.ServiceName = name
-    member x.Initialize () = am <- AdapterManager(Bus.System)
-                             dm <- DeviceManager(Bus.System)
-                             cm <- ClientManager(Bus.Session)
+    member x.Initialize () = am <- AdapterManager()
+                             dm <- DeviceManager()
+                             cm <- ClientManager()
     member x.DelayedInitialize () = ms <- new ManagerSource(am, dm, cm)
                                     ServiceManager.SourceManager.AddSource (ms)
     interface IService with

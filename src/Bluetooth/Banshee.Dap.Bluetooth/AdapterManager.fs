@@ -28,35 +28,39 @@ module Banshee.Dap.Bluetooth.Adapters
 open System.Collections.Generic
 open System.ComponentModel
 open Banshee.Dap.Bluetooth.AdapterApi
+open Banshee.Dap.Bluetooth.GnomeApi
 open Banshee.Dap.Bluetooth.InversionApi
+open Banshee.Dap.Bluetooth.SupportApi
 open Banshee.Dap.Bluetooth.Wrappers
 open DBus
-open global.Bluetooth
+open Hyena.Log
 
 let tryFind y (dict: IDictionary<_,_>) =
     if dict.ContainsKey y then Some dict.[y]
     else None
 
-let SetKillswitch x =
-    use ks = new Killswitch()
-    let xs = match x with
-             | true -> KillswitchState.SoftBlocked
-             | false -> KillswitchState.Unblocked
-    match (xs, ks.State) with
-    | (_, KillswitchState.HardBlocked)
-    | (_, KillswitchState.NoAdapter) -> false
-    | (xs, y) when xs = y -> true
-    | (xs, _) -> ks.State <- xs
-                 true
-
-type AdapterManager(bus: Bus) =
-    let inv = DBusInverter(bus, NAME_BLUEZ, ObjectPath.Root)
+type AdapterManager() =
+    let inv = DBusInverter(Bus.System, NAME_BLUEZ, ObjectPath.Root)
+    let ksw =
+        let op = ObjectPath (PATH_GNOME_RFKILL)
+        let ob = Bus.Session.GetObject<IRfkill> (NAME_GNOME, op)
+        let ps = PropertyManager(Bus.Session, NAME_GNOME, op)
+        ps.Use IF_RFKILL
+        RfkillWrapper (ob, ps)
     let ads = Dictionary<ObjectPath, AdapterWrapper>()
     let notify = Event<_>()
     let get_pow () = ads.Values |> Seq.exists (fun a -> a.Powered)
     let get_dis () = ads.Values |> Seq.exists (fun a -> a.Discovering)
-    let set_ksw x = SetKillswitch x |> ignore
-                    notify.Trigger()
+    let set_ksw x =
+        let has  = ksw.BluetoothHasAirplaneMode
+        let hard = ksw.BluetoothHardwareAirplaneMode
+        let soft = ksw.BluetoothAirplaneMode
+        let status = (has, hard, soft)
+        Debugf "Killswitch: %A" status
+        match status with
+        | (true, false, soft) when soft <> x ->
+          ksw.BluetoothAirplaneMode <- x
+        | (_, _, _) -> ()
     let set_pow x = not x |> set_ksw
                     ads.Values |> Seq.iter (fun a -> if x <> a.Powered then a.Powered <- x)
     let set_dis x = if x then set_pow x

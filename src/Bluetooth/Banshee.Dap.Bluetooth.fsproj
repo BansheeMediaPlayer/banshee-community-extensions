@@ -97,6 +97,7 @@
     <Compile Include="Banshee.Dap.Bluetooth\DeviceApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\MediaApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\ObexApi.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\GnomeApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\SupportApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\InversionApi.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Wrappers.fs" />
@@ -131,11 +132,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Attribution.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="gnome-bluetooth-sharp\GnomeBluetooth.csproj">
-      <Project>{F10BDA1E-3B53-4A41-A15D-02191220733E}</Project>
-      <Name>GnomeBluetooth</Name>
-    </ProjectReference>
   </ItemGroup>
 </Project>

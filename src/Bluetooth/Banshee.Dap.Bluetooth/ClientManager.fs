@@ -40,8 +40,8 @@ open DBus
 
 let NAME_BLUEZ_OBEX = "org.bluez.obex"
 
-type ClientManager(session: Bus) =
-    let inv = DBusInverter(session, NAME_BLUEZ_OBEX, ObjectPath.Root)
+type ClientManager() =
+    let inv = DBusInverter(Bus.Session, NAME_BLUEZ_OBEX, ObjectPath.Root)
     let clients = Dictionary<ObjectPath,IClient>() :> IDictionary<_,_>
     let sessions = Dictionary<ObjectPath,IFileTransfer>() :> IDictionary<_,_>
     let transfers = Dictionary<ObjectPath,INotifyTransfer>() :> IDictionary<_,_>

@@ -35,6 +35,7 @@ open Banshee.Dap.Bluetooth.MediaApi
 open Banshee.Dap.Bluetooth.Mime
 open Banshee.Dap.Bluetooth.Mime.Extensions
 open Banshee.Dap.Bluetooth.ObexApi
+open Banshee.Dap.Bluetooth.GnomeApi
 open Banshee.Dap.Bluetooth.SupportApi
 
 open DBus
@@ -98,6 +99,10 @@ type INotifySession =
 
 type INotifyTransfer =
     inherit ITransfer
+    inherit INotifyPropertyChanged
+
+type INotifyRfkill =
+    inherit IRfkill
     inherit INotifyPropertyChanged
 
 type AdapterWrapper (obj: IAdapter, ps: IPropertyManager) =
@@ -268,3 +273,31 @@ type TransferWrapper(obj: ITransfer, ps: IPropertyManager) =
         member x.Size = x.Size
         member x.Transferred = x.Transferred
         member x.Filename = x.Filename
+
+type RfkillWrapper (obj: IRfkill, ps: IPropertyManager) =
+    inherit ObjectDecorator<IRfkill>(obj, ps)
+    member x.AirplaneMode
+        with get () = x.GetProp "AirplaneMode"
+        and  set v  = x.SetProp "AirplaneMode" v
+    member x.HasAirplaneMode =
+        x.GetProp "HasAirplaneMode"
+    member x.HardwareAirplaneMode =
+        x.GetProp "HardwareAirplaneMode"
+    member x.BluetoothAirplaneMode
+        with get () = x.GetProp "BluetoothAirplaneMode"
+        and  set v  = x.SetProp "BluetoothAirplaneMode" v
+    member x.BluetoothHasAirplaneMode =
+        x.GetProp "BluetoothHasAirplaneMode"
+    member x.BluetoothHardwareAirplaneMode =
+        x.GetProp "BluetoothHardwareAirplaneMode"
+    interface IRfkill with
+        override x.AirplaneMode
+            with get () = x.AirplaneMode
+            and  set v  = x.AirplaneMode <- v
+        override x.HasAirplaneMode = x.HasAirplaneMode
+        override x.HardwareAirplaneMode = x.HardwareAirplaneMode
+        override x.BluetoothAirplaneMode
+            with get () = x.BluetoothAirplaneMode
+            and  set v  = x.BluetoothAirplaneMode <- v
+        override x.BluetoothHasAirplaneMode = x.BluetoothHasAirplaneMode
+        override x.BluetoothHardwareAirplaneMode = x.BluetoothHardwareAirplaneMode
