@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 namespace Hyena
 
+open System.Threading
 open Printf
 open Hyena
 
@@ -36,3 +37,15 @@ module Log =
         if Log.Debugging then
           kprintf Log.Debug x
         else Unchecked.defaultof<'a>
+
+module ThreadAssist =
+    let Spawn (x: _ -> _) = ThreadStart(x)
+                            |> ThreadAssist.Spawn
+    let MainSpawn (x: _ -> _) = ThreadStart(x)
+                                |> ThreadAssist.SpawnFromMain
+    let Proxy (x: _ -> _) = InvokeHandler(x)
+                            |> ThreadAssist.ProxyToMain
+    let Block (x: _ -> _) = InvokeHandler(x)
+                            |> ThreadAssist.BlockingProxyToMain
+    let Handler (x: _ -> _) = fun _ -> Spawn x |> ignore
+    let BlockHandler (x: _ -> _) = fun _ -> Block x

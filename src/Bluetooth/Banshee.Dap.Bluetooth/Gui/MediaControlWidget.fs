@@ -27,7 +27,7 @@ namespace Banshee.Dap.Bluetooth.Gui
 
 open Banshee.Dap.Bluetooth.Wrappers
 open Gtk
-open Hyena
+open Hyena.ThreadAssist
 
 type MediaControlWidget(mc: INotifyMediaControl) as this =
     inherit HBox(false, 5)
@@ -41,8 +41,7 @@ type MediaControlWidget(mc: INotifyMediaControl) as this =
     let rwd = button_icon "media-seek-backward"
     let vup = button_icon "audio-volume-high"
     let vdn = button_icon "audio-volume-low"
-    let fresh () =
-        ThreadAssist.BlockingProxyToMain (fun () -> this.Visible <- mc.Connected)
+    let fresh = BlockHandler (fun _ -> this.Visible <- mc.Connected)
     do base.PackStart (prev, false, false, 0u)
        base.PackStart (rwd, false, false, 0u)
        base.PackStart (stop, false, false, 0u)

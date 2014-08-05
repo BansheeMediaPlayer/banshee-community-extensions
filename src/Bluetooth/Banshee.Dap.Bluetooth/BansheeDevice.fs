@@ -27,7 +27,6 @@ namespace Banshee.Dap.Bluetooth
 
 open System
 open System.Timers
-open System.Reflection
 open Banshee.Dap.Bluetooth.Adapters
 open Banshee.Dap.Bluetooth.Client
 open Banshee.Dap.Bluetooth.Configuration
@@ -39,6 +38,7 @@ open Banshee.ServiceStack
 open Banshee.Sources
 open DBus
 open Hyena
+open Hyena.ThreadAssist
 open Hyena.Log
 
 type IBansheeDevice =
@@ -62,56 +62,39 @@ type BansheeDevice(path: ObjectPath,
     let cnf = DeviceSchema(dev.Address)
     let dap = BluetoothDevice(dev)
     let mutable src : BluetoothSource = Unchecked.defaultof<_>
-    let src_add = InvokeHandler(fun () -> ServiceManager.SourceManager.AddSource src)
-    let src_rem = InvokeHandler(fun () -> ServiceManager.SourceManager.RemoveSource src)
-    let src_destroy () =
+    let src_add () = ServiceManager.SourceManager.AddSource src
+    let src_rem () = ServiceManager.SourceManager.RemoveSource src
+    let src_destroy _ =
         if IsNull src |> not then
-          ThreadAssist.BlockingProxyToMain src_rem
+          Block src_rem
           src.Unmap () |> ignore
           src <- Unchecked.defaultof<_>
-    let src_construct schedule =
-        try
+    let src_construct _ =
+        if IsNull src then
           src <- new BluetoothSource(dap, cm)
           src.DeviceInitialize (dap, false)
-          ThreadAssist.BlockingProxyToMain src_add
-          src.SequentialLoad ()
           src.Ejected.Add src_destroy
-          if schedule && not src.Sync.AutoSync then
-            src.Sync.DapLoaded ()
-            let m = typeof<Banshee.Dap.DapSync>.GetMethod ("RateLimitedSync", BindingFlags.NonPublic ||| BindingFlags.Instance)
-            if IsNull m |> not then
-              Debugf "Dap.Bluetooth: Executing Synchronously %A" m
-              m.Invoke (src.Sync, [||]) |> ignore
-              if schedule then
-                src_destroy ()
-            else
-              Warnf "Dap.Bluetooth: Executing Asynchronously"
-              src.Sync.Sync ()
-        with
-        | e -> Log.Warning e
-               src <- Unchecked.defaultof<_>
-    let src_clean a schedule =
-        ThreadAssist.SpawnFromMain (fun () ->
-          match (IsNull src, a) with
-          | (true, true) ->
-              src_construct schedule
-              notify.Trigger ()
-          | (false, false) ->
-              src_destroy ()
-              notify.Trigger ()
-          | _ -> ()
-        ) |> ignore
+          Block src_add
+          src.SequentialLoad ()
+    let src_clean a =
+          if a then
+            src_construct ()
+          else
+            src_destroy ()
+          notify.Trigger ()
     let conn (a,f) =
         if a then am.PowerOn dev.Adapter
         let uuid = FeatureToUuid f
         let deacon = if a then "Connecting" else "Disconnecting"
         let sf = sprintf "%s %A (%s)" deacon f uuid
         Infof "Dap.Bluetooth: %s" sf
-        match (a,f) with
-        | (x, Feature.Sync) -> src_clean x false
-        | (true, _) -> dev.ConnectProfile uuid
-        | (false, _) -> dev.DisconnectProfile uuid
-    let set_sync () =
+        Spawn (fun () ->
+          match (a,f) with
+          | (x, Feature.Sync) -> src_clean x
+          | (true, _) -> dev.ConnectProfile uuid
+          | (false, _) -> dev.DisconnectProfile uuid)
+        |> ignore
+    let set_sync _ =
         if cnf.Auto then
           let next = cnf.Next
           let span = next - DateTime.Now
@@ -121,10 +104,10 @@ type BansheeDevice(path: ObjectPath,
         else
           timer.Enabled <- false
         notify.Trigger ()
+    let src_sync = Handler (fun _ -> set_sync (); src_clean true; src.Sync.Sync ())
     do set_sync ()
        dev.PropertyChanged.Add(fun o -> notify.Trigger())
-       timer.Elapsed.Add (fun o -> src_clean true true
-                                   set_sync ())
+       timer.Elapsed.Add src_sync
        cnf.Notify.Add set_sync
     member x.Config = cnf
     member x.Device = dev

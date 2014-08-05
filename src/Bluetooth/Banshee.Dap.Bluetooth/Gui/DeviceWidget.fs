@@ -35,7 +35,7 @@ open Banshee.Dap.Bluetooth.DapGlue
 open Banshee.Dap.Bluetooth.SupportApi
 open Banshee.Dap.Bluetooth.Gui.SpinButtons
 open Gtk
-open Hyena
+open Hyena.ThreadAssist
 
 type DeviceWidget(dev: IBansheeDevice) =
     inherit VBox(false, 5, MarginLeft = 10, MarginRight = 10)
@@ -82,7 +82,7 @@ type DeviceWidget(dev: IBansheeDevice) =
                     else
                       dev_bt.Alias
     let fresh () =
-        ThreadAssist.BlockingProxyToMain (fun () ->
+        Block (fun () ->
             pair.Visible <- not dev_bt.Paired
             label.Markup <- markup()
             ai.Active <- act_ai()
