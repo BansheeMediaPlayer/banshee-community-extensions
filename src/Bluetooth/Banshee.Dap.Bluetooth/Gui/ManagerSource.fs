@@ -87,15 +87,18 @@ type ManagerSource(am: AdapterManager, dm: DeviceManager, cm: ClientManager) as 
        base.Initialize ();
 
 type ManagerService(name: string) =
+    let mutable ks : GnomeRfkill = Unchecked.defaultof<_>
     let mutable am : AdapterManager = Unchecked.defaultof<_>
     let mutable dm : DeviceManager = Unchecked.defaultof<_>
     let mutable cm : ClientManager = Unchecked.defaultof<_>
     let mutable ms : ManagerSource = Unchecked.defaultof<_>
     member x.Dispose () = ServiceManager.SourceManager.RemoveSource (ms)
     member x.ServiceName = name
-    member x.Initialize () = am <- AdapterManager()
-                             dm <- DeviceManager()
-                             cm <- ClientManager()
+    member x.Initialize () =
+        ks <- GnomeRfkill()
+        am <- AdapterManager(ks.Set)
+        dm <- DeviceManager()
+        cm <- ClientManager()
     member x.DelayedInitialize () = ms <- new ManagerSource(am, dm, cm)
                                     ServiceManager.SourceManager.AddSource (ms)
     interface IService with

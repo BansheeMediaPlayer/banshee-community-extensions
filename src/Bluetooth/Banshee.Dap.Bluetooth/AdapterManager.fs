@@ -39,29 +39,32 @@ let tryFind y (dict: IDictionary<_,_>) =
     if dict.ContainsKey y then Some dict.[y]
     else None
 
-type AdapterManager() =
-    let inv = DBusInverter(Bus.System, NAME_BLUEZ, ObjectPath.Root)
+type switcher = (bool -> bool)
+
+type GnomeRfkill() =
     let ksw =
-        let op = ObjectPath (PATH_GNOME_RFKILL)
-        let ob = Bus.Session.GetObject<IRfkill> (NAME_GNOME, op)
-        let ps = PropertyManager(Bus.Session, NAME_GNOME, op)
-        ps.Use IF_RFKILL
-        RfkillWrapper (ob, ps)
-    let ads = Dictionary<ObjectPath, AdapterWrapper>()
-    let notify = Event<_>()
-    let get_pow () = ads.Values |> Seq.exists (fun a -> a.Powered)
-    let get_dis () = ads.Values |> Seq.exists (fun a -> a.Discovering)
-    let set_ksw x =
+        let path = ObjectPath (PATH_GNOME_RFKILL)
+        let ob = Bus.Session.GetObject<IRfkill>(NAME_GNOME, path)
+        let pm = PropertyManager (Bus.Session, NAME_GNOME, path)
+        RfkillWrapper(ob, pm)
+    member x.Set y =
         let has  = ksw.BluetoothHasAirplaneMode
         let hard = ksw.BluetoothHardwareAirplaneMode
         let soft = ksw.BluetoothAirplaneMode
         let status = (has, hard, soft)
         Debugf "Killswitch: %A" status
         match status with
-        | (true, false, soft) when soft <> x ->
-          ksw.BluetoothAirplaneMode <- x
-        | (_, _, _) -> ()
-    let set_pow x = not x |> set_ksw
+        | (true, false, soft) when soft <> y ->
+          ksw.BluetoothAirplaneMode <- y; true
+        | (_, _, _) -> false
+
+type AdapterManager(switch: switcher) =
+    let inv = DBusInverter(Bus.System, NAME_BLUEZ, ObjectPath.Root)
+    let ads = Dictionary<ObjectPath, AdapterWrapper>()
+    let notify = Event<_>()
+    let get_pow () = ads.Values |> Seq.exists (fun a -> a.Powered)
+    let get_dis () = ads.Values |> Seq.exists (fun a -> a.Discovering)
+    let set_pow x = not x |> switch |> ignore
                     ads.Values |> Seq.iter (fun a -> if x <> a.Powered then a.Powered <- x)
     let set_dis x = if x then set_pow x
                     ads.Values |> Seq.iter (fun a -> match (x, a.Discovering) with
@@ -85,7 +88,7 @@ type AdapterManager() =
         inv.Refresh ()
     member x.Adapters = ads.Keys
     member x.Adapter y = ads |> tryFind y
-    member x.PowerOn y = set_ksw false
+    member x.PowerOn y = switch false |> ignore
                          ads.[y].Powered <- true
     member x.Powered with get () = get_pow ()
                      and set v = set_pow v
