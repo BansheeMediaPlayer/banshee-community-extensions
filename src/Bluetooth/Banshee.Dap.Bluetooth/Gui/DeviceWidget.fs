@@ -39,6 +39,7 @@ open Hyena
 
 type DeviceWidget(dev: IBansheeDevice) =
     inherit VBox(false, 5, MarginLeft = 10, MarginRight = 10)
+    static let ICON_SIZE = int IconSize.LargeToolbar
     static let PIXBUF_PREFS = "gnome-settings"
     static let PIXBUF_PAIR = Gdk.Pixbuf.LoadFromResource("paired-black.png")
     static let PIXBUF_SYNC = Gdk.Pixbuf.LoadFromResource("21cc-sync.png")
@@ -46,19 +47,23 @@ type DeviceWidget(dev: IBansheeDevice) =
     static let PIXBUF_AO = "audio-speakers"
     static let PIXBUF_HS = "audio-headphones"
     static let PIXBUF_TIME = "preferences-system-time"
+    static let toggle_icon x =
+        new ToggleButton(Image = new Image(IconName = x, IconSize = ICON_SIZE))
+    static let toggle_buffer (x: Gdk.Pixbuf) =
+        new ToggleButton(Image = new Image(x))
     let dev_bt = dev.Device
     let mutable mcw = Unchecked.defaultof<_>
     let line1 = new HBox(false, 5)
     let line2 = new HBox(false, 0)
     let sbox = new HBox(false, 5)
-    let icon = new Image(IconName = IconOf dev_bt)
+    let icon = new Image(IconName = IconOf dev_bt, IconSize = ICON_SIZE)
     let label = new Label(UseMarkup = true)
-    let ai = new ToggleButton(Image = new Image(IconName = PIXBUF_AI))
-    let ao = new ToggleButton(Image = new Image(IconName = PIXBUF_AO))
-    let hs = new ToggleButton(Image = new Image(IconName = PIXBUF_HS))
-    let pair = new ToggleButton(Image = new Image(PIXBUF_PAIR))
-    let conn = new ToggleButton(Image = new Image(PIXBUF_SYNC))
-    let conf = new ToggleButton(Image = new Image(IconName = PIXBUF_TIME))
+    let ai = toggle_icon PIXBUF_AI
+    let ao = toggle_icon PIXBUF_AO
+    let hs = toggle_icon PIXBUF_HS
+    let pair = toggle_buffer PIXBUF_PAIR
+    let conn = toggle_buffer PIXBUF_SYNC
+    let conf = toggle_icon PIXBUF_TIME
     let time = new TimeSpinButton()
     let has_ai () = dev.HasSupport Feature.AudioIn
     let has_ao () = dev.HasSupport Feature.AudioOut
