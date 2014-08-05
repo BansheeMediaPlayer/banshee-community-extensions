@@ -55,9 +55,12 @@ type GnomeRfkill() =
         let status = (has, hard, soft)
         Debugf "Killswitch: %A" status
         match status with
+        | (false, _, _) -> true
+        | (true, true, _) -> false
+        | (true, false, soft) when soft = y -> true
         | (true, false, soft) when soft <> y ->
           ksw.BluetoothAirplaneMode <- y; true
-        | (_, _, _) -> false
+        | (_, _, _) -> true
 
 type AdapterManager(switch: switcher) =
     let inv = DBusInverter(Bus.System, NAME_BLUEZ, ObjectPath.Root)
