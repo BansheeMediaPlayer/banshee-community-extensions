@@ -109,9 +109,10 @@
     <Compile Include="Banshee.Dap.Bluetooth\DapGlue.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\ConfigurationSchema.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\BansheeDevice.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Gui\Popover.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Gui\SpinButtons.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Gui\AdaptersWidget.fs" />
-    <Compile Include="Banshee.Dap.Bluetooth\Gui\MediaControlWidget.fs" />
+    <Compile Include="Banshee.Dap.Bluetooth\Gui\MediaControlButton.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Gui\DeviceWidget.fs" />
     <Compile Include="Banshee.Dap.Bluetooth\Gui\ManagerSource.fs" />
   </ItemGroup>

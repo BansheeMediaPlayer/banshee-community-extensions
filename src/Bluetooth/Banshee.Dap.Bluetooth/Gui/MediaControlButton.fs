@@ -1,5 +1,5 @@
 ﻿//
-// MediaControlWidget.fs
+// MediaControlButton.fs
 //
 // Author:
 //   Nicholas J. Little <arealityfarbetween@googlemail.com>
@@ -27,16 +27,21 @@ namespace Banshee.Dap.Bluetooth.Gui
 
 open Banshee.Dap.Bluetooth.Wrappers
 open Gtk
+open Gtk.Extensions
 open Hyena.Log
 open Hyena.ThreadAssist
 
-type MediaControlButton(img: Image, mc: INotifyMediaControl) as this =
-    inherit ToggleButton(Image = img)
-    let menu = new Menu()
-    let button_icon x =
-        let img = new Image(IconName = x)
-        let item = new MenuItem (Child = img)
-        item
+type MediaControlButton (img: Image, mc: INotifyMediaControl) as this =
+    inherit ToggleButton (Image = img)
+    let menu = new VBox (true, 1)
+    let pop = new Popover (this)
+    let item x = new Button (Image = x)
+    let button_icon x = new Image (IconName = x) |> item
+    let hboxof xs =
+        let box = new HBox (true, 1)
+        xs |> Seq.iter (fun x -> box.PackStart (x, true, true, 0u))
+        box
+    let pack x = menu.PackStart (x, false, false, 0u)
     let play = button_icon "media-playback-start"
     let pause = button_icon "media-playback-pause"
     let stop = button_icon "media-playback-stop"
@@ -48,32 +53,26 @@ type MediaControlButton(img: Image, mc: INotifyMediaControl) as this =
     let vdn = button_icon "audio-volume-low"
     let hidden _ = this.Active <- false
     do
-       menu.Append prev
-       menu.Append rwd
-       menu.Append stop
-       menu.Append pause
-       menu.Append play
-       menu.Append fwd
-       menu.Append next
-       menu.Append vup
-       menu.Append vdn
+       hboxof [prev;next] |> pack
+       hboxof [rwd;fwd] |> pack
+       hboxof [pause;stop;play] |> pack
+       hboxof [vup;vdn] |> pack
        menu.ShowAll ()
-       menu.Hidden.Add hidden
+       pop.Add menu
+       pop.Hidden.Add hidden
 
-       play.Activated.Add (fun o -> mc.Play ())
-       pause.Activated.Add (fun o -> mc.Pause ())
-       stop.Activated.Add (fun o -> mc.Stop ())
-       next.Activated.Add (fun o -> mc.Next ())
-       prev.Activated.Add (fun o -> mc.Previous ())
-       rwd.Activated.Add (fun o -> mc.Rewind ())
-       fwd.Activated.Add (fun o -> mc.FastForward ())
-       vup.Activated.Add (fun o -> mc.VolumeUp ())
-       vdn.Activated.Add (fun o -> mc.VolumeDown ())
-    override x.OnToggled () =
-        if x.Active then
-          menu.Popup ()
-        else
-          menu.Popdown ()
+       play.Clicked.Add (fun o -> mc.Play ())
+       pause.Clicked.Add (fun o -> mc.Pause ())
+       stop.Clicked.Add (fun o -> mc.Stop ())
+       next.Clicked.Add (fun o -> mc.Next ())
+       prev.Clicked.Add (fun o -> mc.Previous ())
+       rwd.Clicked.Add (fun o -> mc.Rewind ())
+       fwd.Clicked.Add (fun o -> mc.FastForward ())
+       vup.Clicked.Add (fun o -> mc.VolumeUp ())
+       vdn.Clicked.Add (fun o -> mc.VolumeDown ())
+    override x.OnToggled () = if x.Active then pop.Show ()
     new (mc) =
-        let img = new Image(IconName = "media-playback-start", IconSize = int IconSize.LargeToolbar)
+        let icon = "applications-multimedia"
+        let size = int IconSize.LargeToolbar
+        let img = new Image (IconName = icon, IconSize = size)
         new MediaControlButton (img, mc)
