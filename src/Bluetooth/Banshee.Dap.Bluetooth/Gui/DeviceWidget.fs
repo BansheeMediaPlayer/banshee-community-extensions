@@ -54,7 +54,6 @@ type DeviceWidget(dev: IBansheeDevice) =
     let dev_bt = dev.Device
     let mutable mcw = Unchecked.defaultof<_>
     let line1 = new HBox(false, 5)
-    let line2 = new HBox(false, 0)
     let sbox = new HBox(false, 5)
     let icon = new Image(IconName = IconOf dev_bt, IconSize = ICON_SIZE)
     let label = new Label(UseMarkup = true)
@@ -97,13 +96,14 @@ type DeviceWidget(dev: IBansheeDevice) =
             time.Visible <- dev.Config.Auto
             time.Value <- float dev.Config.Time
             match (dev.MediaControl, IsNull mcw) with
-            | (Some mc, true) -> mcw <- new MediaControlWidget(mc)
-                                 line2.PackStart (mcw, true, true, 0u)
-            | (None, false) -> line2.Remove mcw
+            | (Some mc, true) -> mcw <- new MediaControlButton(mc)
+                                 line1.PackStart (mcw, false, false, 0u)
+                                 mc.PropertyChanged.Add (fun o -> mcw.Visible <- mc.Connected)
+                                 if mc.Connected then mcw.ShowNow ()
+            | (None, false) -> line1.Remove mcw
                                mcw.Dispose ()
                                mcw <- Unchecked.defaultof<_>
-            | _ -> ()
-        )
+            | _ -> ())
     do  sbox.PackStart (time, false, false, 0u)
         sbox.PackStart (conf, false, false, 0u)
         sbox.PackStart (conn, false, false, 0u)
@@ -115,7 +115,6 @@ type DeviceWidget(dev: IBansheeDevice) =
         line1.PackEnd (hs, false, false, 0u)
         line1.PackEnd (sbox, false, false, 0u)
         base.PackStart (line1, false, false, 0u)
-        base.PackStart (line2, false, false, 0u)
         base.ShowAll ()
         fresh ()
         conf.Toggled.Add(fun o ->
