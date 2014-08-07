@@ -56,7 +56,7 @@ type MediaControlButton (img: Image, mc: INotifyMediaControl) as this =
        hboxof [prev;next] |> pack
        hboxof [rwd;fwd] |> pack
        hboxof [pause;stop;play] |> pack
-       hboxof [vup;vdn] |> pack
+       hboxof [vdn;vup] |> pack
        menu.ShowAll ()
        pop.Add menu
        pop.Hidden.Add hidden
