@@ -40,7 +40,6 @@ open Hyena.ThreadAssist
 type DeviceWidget(dev: IBansheeDevice) =
     inherit VBox(false, 5, MarginLeft = 10, MarginRight = 10)
     static let ICON_SIZE = int IconSize.LargeToolbar
-    static let PIXBUF_PREFS = "gnome-settings"
     static let PIXBUF_PAIR = Gdk.Pixbuf.LoadFromResource("paired-black.png")
     static let PIXBUF_SYNC = Gdk.Pixbuf.LoadFromResource("21cc-sync.png")
     static let PIXBUF_AI = "audio-input-microphone"
