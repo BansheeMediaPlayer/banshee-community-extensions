@@ -25,12 +25,33 @@
 // THE SOFTWARE.
 
 namespace Banshee.OnlineMetadataFixer
+
 open System
 
+open Banshee.ServiceStack
 
 type AcoustIDSubmissionStatus = FSharp.Data.JsonProvider<"Resources/AcoustIDSubmissionStatus.json", EmbeddedResource="AcoustIDTrackInfo.json">
 
 type AcoustIDSender() = 
+    static let selectCommand = @"SELECT 
+                DISTINCT (Uri),
+                CoreTracks.Duration,
+                CoreTracks.BitRate,
+                IFNULL(CoreTracks.Title, ''),
+                IFNULL(CoreArtists.Name, ''), 
+                IFNULL(CoreAlbums.Title, ''),
+                IFNULL(CoreAlbums.ArtistName, ''),
+                CoreTracks.Year,
+                CoreTracks.TrackNumber,
+                CoreTracks.Disc,
+                CoreTracks.TrackID
+            FROM CoreTracks
+            JOIN CoreArtists ON CoreArtists.ArtistID = CoreTracks.ArtistID
+            JOIN CoreAlbums ON  CoreAlbums.AlbumID = CoreTracks.AlbumID
+            JOIN AcoustIDSubmissions ON AcoustIDSubmissions.TrackID = CoreTracks.TrackID"
+    
+    static member SelectCommand with get () = selectCommand
+
     static member private Append(builder : System.Text.StringBuilder, key, value, ?additional_condition) = 
         let ac = defaultArg additional_condition String.Empty
         if not (value |> String.IsNullOrEmpty) && not (value.Equals(ac)) then
@@ -67,6 +88,7 @@ type AcoustIDSender() =
             builder.ToString () |> AcoustIDSender.WebRequest
         else
             Hyena.Log.Warning (String.Format("Cannot read fingerprint of file {0}", uri))
+            false
             
     static member private WebRequest (url : string) =
         // Workaround a FSharp.Data bug. See here: https://github.com/fsharp/FSharp.Data/issues/642
@@ -79,3 +101,36 @@ type AcoustIDSender() =
             for result in jsonProvider.Submissions do
                 Hyena.Log.Debug (String.Format ("Submission status: {0}, ID: {1}", result.Status, result.Id))
                 Hyena.Log.Debug (String.Format ("Look up the status of submission on the website: http://api.acoustid.org/v2/submission_status?client={0}&id={1}", AcoustIDReader.AcoustIDKey, result.Id))
+            true
+        else
+            false
+    
+    static member CanRunPlugin () =
+        let reader = ServiceManager.DbConnection.Query (String.Format (@"
+            {0}
+            WHERE 
+                IFNULL(CoreTracks.Title, '') <> '' AND
+                IFNULL(CoreAlbums.Title, '') <> '' AND
+                IFNULL(CoreArtists.Name, '') <> ''
+            LIMIT 1", selectCommand))
+        
+        if reader.Read () then
+            if String.IsNullOrEmpty (AcoustIDKeysHelper.ReadAcoustIDKey ()) then
+                false
+            else
+                try
+                    AcoustIDSender.Send (
+                        reader.Get<string> (0),
+                        reader.Get<int> (1),
+                        reader.Get<int> (2),
+                        reader.Get<string> (3),
+                        reader.Get<string> (4),
+                        reader.Get<string> (5),
+                        reader.Get<string> (6),
+                        reader.Get<int> (7),
+                        reader.Get<int> (8),
+                        reader.Get<int> (9)
+                    )
+                with :? System.Net.WebException -> false                    
+        else
+            true

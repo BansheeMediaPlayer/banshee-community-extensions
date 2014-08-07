@@ -53,26 +53,11 @@ type AcoustIDSubmitJob private () as this = class
             JOIN AcoustIDSubmissions ON AcoustIDSubmissions.TrackID = CoreTracks.TrackID
             WHERE 
                 AcoustIDSubmissions.Timestamp < CoreTracks.DateUpdatedStamp")
-        base.SelectCommand <- new HyenaSqliteCommand (@"
-            SELECT 
-                DISTINCT (Uri),
-                CoreTracks.Duration,
-                CoreTracks.BitRate,
-                IFNULL(CoreTracks.Title, ''),
-                IFNULL(CoreArtists.Name, ''), 
-                IFNULL(CoreAlbums.Title, ''),
-                IFNULL(CoreAlbums.ArtistName, ''),
-                CoreTracks.Year,
-                CoreTracks.TrackNumber,
-                CoreTracks.Disc,
-                CoreTracks.TrackID
-            FROM CoreTracks
-            JOIN CoreArtists ON CoreArtists.ArtistID = CoreTracks.ArtistID
-            JOIN CoreAlbums ON  CoreAlbums.AlbumID = CoreTracks.AlbumID
-            JOIN AcoustIDSubmissions ON AcoustIDSubmissions.TrackID = CoreTracks.TrackID
+        base.SelectCommand <- new HyenaSqliteCommand (String.Format (@"
+            {0}
             WHERE
                 AcoustIDSubmissions.Timestamp < CoreTracks.DateUpdatedStamp
-            LIMIT 1")
+            LIMIT 1", AcoustIDSender.SelectCommand))
             
         try this.AddCheckerFunction () with :? ArgumentException -> () // if function was already added
 
@@ -100,7 +85,7 @@ type AcoustIDSubmitJob private () as this = class
                 reader.Get<int> (7),
                 reader.Get<int> (8),
                 reader.Get<int> (9)
-            )
+            ) |> ignore
         with :? System.ArgumentException as ex -> // in case of invalid obligatory fields
             Hyena.Log.DebugException (ex)
         ServiceManager.DbConnection.Execute (

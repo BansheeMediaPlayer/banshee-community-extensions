@@ -82,9 +82,7 @@ type MissingFromAcoustIDSolver (problemId) as x =
     override x.PreferencesSection with get () = preferences.Section
 
     member x.GetFindMethod (condition : string, ?columns : string) =
-        let doSearch = AcoustIDKeysHelper.ReadAcoustIDKey ()
-                    |> String.IsNullOrEmpty
-                    |> not
+        let doSearch = AcoustIDSender.CanRunPlugin ()
                     |> System.Convert.ToInt32
         new HyenaSqliteCommand (String.Format (@"
             INSERT INTO MetadataProblems (ProblemType, TypeOrder, Generation, SolutionOptions, ObjectIds, TrackDetails)
@@ -107,7 +105,7 @@ type MissingFromAcoustIDSolver (problemId) as x =
 
     override x.SetStatus (status_message, preferences_page_id) =
         status_message.FreezeNotify ();
-        if AcoustIDKeysHelper.ReadAcoustIDKey () = String.Empty then
+        if not (AcoustIDSender.CanRunPlugin ()) then
             status_message.Text <- "Please enter a valid API key for using this plugin."
             status_message.AddAction (new Banshee.Sources.MessageAction (Catalog.GetString ("AcoustID Settings"), new EventHandler (fun s e -> 
                 try
