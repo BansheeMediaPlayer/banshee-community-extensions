@@ -32,9 +32,7 @@ open System.Collections.Generic
 type AcoustIDJsonProvider = FSharp.Data.JsonProvider<"Resources/AcoustIDTrackInfo.json", EmbeddedResource="AcoustIDTrackInfo.json">
 
 type JSonAcoustIDReader (url : string) = class
-    // Workaround a FSharp.Data bug. See here: https://github.com/fsharp/FSharp.Data/issues/642
-    let webClient = new System.Net.WebClient ()
-    let jsonProvider = AcoustIDJsonProvider.Parse (webClient.DownloadString (url))
+    let jsonProvider = AcoustIDJsonProvider.Load (url)
 
     member x.GetInfo () =
         match jsonProvider.Status with

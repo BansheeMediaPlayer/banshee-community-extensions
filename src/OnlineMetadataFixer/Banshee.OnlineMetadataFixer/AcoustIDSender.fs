@@ -91,9 +91,7 @@ type AcoustIDSender() =
             false
             
     static member private WebRequest (url : string) =
-        // Workaround a FSharp.Data bug. See here: https://github.com/fsharp/FSharp.Data/issues/642
-        let webClient = new System.Net.WebClient ()
-        let jsonProvider = AcoustIDSubmissionStatus.Parse (webClient.DownloadString (url))
+        let jsonProvider = AcoustIDSubmissionStatus.Load (url)
             
         Hyena.Log.Debug ("Submitting metadata to AcoustID status: " + jsonProvider.Status)
         

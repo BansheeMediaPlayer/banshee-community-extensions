@@ -52,9 +52,7 @@ type OnlineMetadataFixerSolver () =
             let url = String.Format("http://musicbrainz.org/ws/1/track/?type=xml&artist={0}&title={1}", artist, title);
             Hyena.Log.DebugFormat ("Looking for {0} - {1} metadata", artist, title)
             try
-                // Workaround a FSharp.Data bug. See here: https://github.com/fsharp/FSharp.Data/issues/642
-                let webClient = new System.Net.WebClient ()
-                let tracks = MusicBrainzTracksXmlProvider.Parse (webClient.DownloadString (url))
+                let tracks = MusicBrainzTracksXmlProvider.Load (url)
                 (";;", seq {
                         for t in tracks.TrackList.Tracks do
                             for r in t.ReleaseList.Releases do yield r.Title
