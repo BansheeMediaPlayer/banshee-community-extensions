@@ -34,11 +34,14 @@ function check_autotool_version () {
 }
 
 function run () {
+	which $1 >/dev/null || {
+		error "Could not find '$1', which is required to configure $PROJECT"
+	}
 	echo "Running $@ ..."
 	$@ 2>.autogen.log || {
 		cat .autogen.log 1>&2
 		rm .autogen.log
-		error "Could not run $1, which is required to configure $PROJECT"
+		error "There were errors when running '$1', a step that is required to configure $PROJECT"
 	}
 	rm .autogen.log
 }
